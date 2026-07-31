@@ -24,7 +24,7 @@
     "x": 4,
     "y": 0
   },
-  "sprite": "stone_turtle/sprite.png",
+  "sprite": "stone_turtle/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "stone_turtle/rotations/south.png",
-    "west": "stone_turtle/rotations/west.png",
-    "east": "stone_turtle/rotations/east.png",
-    "north": "stone_turtle/rotations/north.png",
-    "south-east": "stone_turtle/rotations/south-east.png",
-    "south-west": "stone_turtle/rotations/south-west.png",
-    "north-east": "stone_turtle/rotations/north-east.png",
-    "north-west": "stone_turtle/rotations/north-west.png"
+    "south": "stone_turtle/rotations/south.webp",
+    "west": "stone_turtle/rotations/west.webp",
+    "east": "stone_turtle/rotations/east.webp",
+    "north": "stone_turtle/rotations/north.webp",
+    "south-east": "stone_turtle/rotations/south-east.webp",
+    "south-west": "stone_turtle/rotations/south-west.webp",
+    "north-east": "stone_turtle/rotations/north-east.webp",
+    "north-west": "stone_turtle/rotations/north-west.webp"
   },
   "animations": {
     "attack": {
@@ -52,13 +52,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__east.png",
+          "strip": "stone_turtle/animations/attack__east.webp",
           "gif": "stone_turtle/animations/attack__east.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/east/00.png",
-            "stone_turtle/animations/attack/east/01.png",
-            "stone_turtle/animations/attack/east/02.png",
-            "stone_turtle/animations/attack/east/03.png"
+            "stone_turtle/animations/attack/east/00.webp",
+            "stone_turtle/animations/attack/east/01.webp",
+            "stone_turtle/animations/attack/east/02.webp",
+            "stone_turtle/animations/attack/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:36 GMT",
           "src_frames": 4,
@@ -66,13 +66,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__north.png",
+          "strip": "stone_turtle/animations/attack__north.webp",
           "gif": "stone_turtle/animations/attack__north.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/north/00.png",
-            "stone_turtle/animations/attack/north/01.png",
-            "stone_turtle/animations/attack/north/02.png",
-            "stone_turtle/animations/attack/north/03.png"
+            "stone_turtle/animations/attack/north/00.webp",
+            "stone_turtle/animations/attack/north/01.webp",
+            "stone_turtle/animations/attack/north/02.webp",
+            "stone_turtle/animations/attack/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:38 GMT",
           "src_frames": 4,
@@ -80,13 +80,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__north-east.png",
+          "strip": "stone_turtle/animations/attack__north-east.webp",
           "gif": "stone_turtle/animations/attack__north-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/north-east/00.png",
-            "stone_turtle/animations/attack/north-east/01.png",
-            "stone_turtle/animations/attack/north-east/02.png",
-            "stone_turtle/animations/attack/north-east/03.png"
+            "stone_turtle/animations/attack/north-east/00.webp",
+            "stone_turtle/animations/attack/north-east/01.webp",
+            "stone_turtle/animations/attack/north-east/02.webp",
+            "stone_turtle/animations/attack/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:39 GMT",
           "src_frames": 4,
@@ -94,13 +94,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__north-west.png",
+          "strip": "stone_turtle/animations/attack__north-west.webp",
           "gif": "stone_turtle/animations/attack__north-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/north-west/00.png",
-            "stone_turtle/animations/attack/north-west/01.png",
-            "stone_turtle/animations/attack/north-west/02.png",
-            "stone_turtle/animations/attack/north-west/03.png"
+            "stone_turtle/animations/attack/north-west/00.webp",
+            "stone_turtle/animations/attack/north-west/01.webp",
+            "stone_turtle/animations/attack/north-west/02.webp",
+            "stone_turtle/animations/attack/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:51:56 GMT",
           "src_frames": 4,
@@ -108,13 +108,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__south.png",
+          "strip": "stone_turtle/animations/attack__south.webp",
           "gif": "stone_turtle/animations/attack__south.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/south/00.png",
-            "stone_turtle/animations/attack/south/01.png",
-            "stone_turtle/animations/attack/south/02.png",
-            "stone_turtle/animations/attack/south/03.png"
+            "stone_turtle/animations/attack/south/00.webp",
+            "stone_turtle/animations/attack/south/01.webp",
+            "stone_turtle/animations/attack/south/02.webp",
+            "stone_turtle/animations/attack/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:42 GMT",
           "src_frames": 4,
@@ -122,13 +122,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__south-east.png",
+          "strip": "stone_turtle/animations/attack__south-east.webp",
           "gif": "stone_turtle/animations/attack__south-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/south-east/00.png",
-            "stone_turtle/animations/attack/south-east/01.png",
-            "stone_turtle/animations/attack/south-east/02.png",
-            "stone_turtle/animations/attack/south-east/03.png"
+            "stone_turtle/animations/attack/south-east/00.webp",
+            "stone_turtle/animations/attack/south-east/01.webp",
+            "stone_turtle/animations/attack/south-east/02.webp",
+            "stone_turtle/animations/attack/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:43 GMT",
           "src_frames": 4,
@@ -136,13 +136,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__south-west.png",
+          "strip": "stone_turtle/animations/attack__south-west.webp",
           "gif": "stone_turtle/animations/attack__south-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/south-west/00.png",
-            "stone_turtle/animations/attack/south-west/01.png",
-            "stone_turtle/animations/attack/south-west/02.png",
-            "stone_turtle/animations/attack/south-west/03.png"
+            "stone_turtle/animations/attack/south-west/00.webp",
+            "stone_turtle/animations/attack/south-west/01.webp",
+            "stone_turtle/animations/attack/south-west/02.webp",
+            "stone_turtle/animations/attack/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:51:57 GMT",
           "src_frames": 4,
@@ -150,13 +150,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/attack__west.png",
+          "strip": "stone_turtle/animations/attack__west.webp",
           "gif": "stone_turtle/animations/attack__west.gif",
           "frame_paths": [
-            "stone_turtle/animations/attack/west/00.png",
-            "stone_turtle/animations/attack/west/01.png",
-            "stone_turtle/animations/attack/west/02.png",
-            "stone_turtle/animations/attack/west/03.png"
+            "stone_turtle/animations/attack/west/00.webp",
+            "stone_turtle/animations/attack/west/01.webp",
+            "stone_turtle/animations/attack/west/02.webp",
+            "stone_turtle/animations/attack/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:46 GMT",
           "src_frames": 4,
@@ -170,13 +170,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__east.png",
+          "strip": "stone_turtle/animations/walk__east.webp",
           "gif": "stone_turtle/animations/walk__east.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/east/00.png",
-            "stone_turtle/animations/walk/east/01.png",
-            "stone_turtle/animations/walk/east/02.png",
-            "stone_turtle/animations/walk/east/03.png"
+            "stone_turtle/animations/walk/east/00.webp",
+            "stone_turtle/animations/walk/east/01.webp",
+            "stone_turtle/animations/walk/east/02.webp",
+            "stone_turtle/animations/walk/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:23 GMT",
           "src_frames": 4,
@@ -184,13 +184,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__north.png",
+          "strip": "stone_turtle/animations/walk__north.webp",
           "gif": "stone_turtle/animations/walk__north.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/north/00.png",
-            "stone_turtle/animations/walk/north/01.png",
-            "stone_turtle/animations/walk/north/02.png",
-            "stone_turtle/animations/walk/north/03.png"
+            "stone_turtle/animations/walk/north/00.webp",
+            "stone_turtle/animations/walk/north/01.webp",
+            "stone_turtle/animations/walk/north/02.webp",
+            "stone_turtle/animations/walk/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:24 GMT",
           "src_frames": 4,
@@ -198,13 +198,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__north-east.png",
+          "strip": "stone_turtle/animations/walk__north-east.webp",
           "gif": "stone_turtle/animations/walk__north-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/north-east/00.png",
-            "stone_turtle/animations/walk/north-east/01.png",
-            "stone_turtle/animations/walk/north-east/02.png",
-            "stone_turtle/animations/walk/north-east/03.png"
+            "stone_turtle/animations/walk/north-east/00.webp",
+            "stone_turtle/animations/walk/north-east/01.webp",
+            "stone_turtle/animations/walk/north-east/02.webp",
+            "stone_turtle/animations/walk/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:26 GMT",
           "src_frames": 4,
@@ -212,13 +212,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__north-west.png",
+          "strip": "stone_turtle/animations/walk__north-west.webp",
           "gif": "stone_turtle/animations/walk__north-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/north-west/00.png",
-            "stone_turtle/animations/walk/north-west/01.png",
-            "stone_turtle/animations/walk/north-west/02.png",
-            "stone_turtle/animations/walk/north-west/03.png"
+            "stone_turtle/animations/walk/north-west/00.webp",
+            "stone_turtle/animations/walk/north-west/01.webp",
+            "stone_turtle/animations/walk/north-west/02.webp",
+            "stone_turtle/animations/walk/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:27 GMT",
           "src_frames": 4,
@@ -226,13 +226,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__south.png",
+          "strip": "stone_turtle/animations/walk__south.webp",
           "gif": "stone_turtle/animations/walk__south.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/south/00.png",
-            "stone_turtle/animations/walk/south/01.png",
-            "stone_turtle/animations/walk/south/02.png",
-            "stone_turtle/animations/walk/south/03.png"
+            "stone_turtle/animations/walk/south/00.webp",
+            "stone_turtle/animations/walk/south/01.webp",
+            "stone_turtle/animations/walk/south/02.webp",
+            "stone_turtle/animations/walk/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:29 GMT",
           "src_frames": 4,
@@ -240,13 +240,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__south-east.png",
+          "strip": "stone_turtle/animations/walk__south-east.webp",
           "gif": "stone_turtle/animations/walk__south-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/south-east/00.png",
-            "stone_turtle/animations/walk/south-east/01.png",
-            "stone_turtle/animations/walk/south-east/02.png",
-            "stone_turtle/animations/walk/south-east/03.png"
+            "stone_turtle/animations/walk/south-east/00.webp",
+            "stone_turtle/animations/walk/south-east/01.webp",
+            "stone_turtle/animations/walk/south-east/02.webp",
+            "stone_turtle/animations/walk/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:30 GMT",
           "src_frames": 4,
@@ -254,13 +254,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__south-west.png",
+          "strip": "stone_turtle/animations/walk__south-west.webp",
           "gif": "stone_turtle/animations/walk__south-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/south-west/00.png",
-            "stone_turtle/animations/walk/south-west/01.png",
-            "stone_turtle/animations/walk/south-west/02.png",
-            "stone_turtle/animations/walk/south-west/03.png"
+            "stone_turtle/animations/walk/south-west/00.webp",
+            "stone_turtle/animations/walk/south-west/01.webp",
+            "stone_turtle/animations/walk/south-west/02.webp",
+            "stone_turtle/animations/walk/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:32 GMT",
           "src_frames": 4,
@@ -268,13 +268,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/walk__west.png",
+          "strip": "stone_turtle/animations/walk__west.webp",
           "gif": "stone_turtle/animations/walk__west.gif",
           "frame_paths": [
-            "stone_turtle/animations/walk/west/00.png",
-            "stone_turtle/animations/walk/west/01.png",
-            "stone_turtle/animations/walk/west/02.png",
-            "stone_turtle/animations/walk/west/03.png"
+            "stone_turtle/animations/walk/west/00.webp",
+            "stone_turtle/animations/walk/west/01.webp",
+            "stone_turtle/animations/walk/west/02.webp",
+            "stone_turtle/animations/walk/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:33 GMT",
           "src_frames": 4,
@@ -288,13 +288,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__east.png",
+          "strip": "stone_turtle/animations/angry__east.webp",
           "gif": "stone_turtle/animations/angry__east.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/east/00.png",
-            "stone_turtle/animations/angry/east/01.png",
-            "stone_turtle/animations/angry/east/02.png",
-            "stone_turtle/animations/angry/east/03.png"
+            "stone_turtle/animations/angry/east/00.webp",
+            "stone_turtle/animations/angry/east/01.webp",
+            "stone_turtle/animations/angry/east/02.webp",
+            "stone_turtle/animations/angry/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:47 GMT",
           "src_frames": 4,
@@ -302,13 +302,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__north.png",
+          "strip": "stone_turtle/animations/angry__north.webp",
           "gif": "stone_turtle/animations/angry__north.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/north/00.png",
-            "stone_turtle/animations/angry/north/01.png",
-            "stone_turtle/animations/angry/north/02.png",
-            "stone_turtle/animations/angry/north/03.png"
+            "stone_turtle/animations/angry/north/00.webp",
+            "stone_turtle/animations/angry/north/01.webp",
+            "stone_turtle/animations/angry/north/02.webp",
+            "stone_turtle/animations/angry/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:48 GMT",
           "src_frames": 4,
@@ -316,13 +316,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__north-east.png",
+          "strip": "stone_turtle/animations/angry__north-east.webp",
           "gif": "stone_turtle/animations/angry__north-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/north-east/00.png",
-            "stone_turtle/animations/angry/north-east/01.png",
-            "stone_turtle/animations/angry/north-east/02.png",
-            "stone_turtle/animations/angry/north-east/03.png"
+            "stone_turtle/animations/angry/north-east/00.webp",
+            "stone_turtle/animations/angry/north-east/01.webp",
+            "stone_turtle/animations/angry/north-east/02.webp",
+            "stone_turtle/animations/angry/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:50 GMT",
           "src_frames": 4,
@@ -330,13 +330,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__north-west.png",
+          "strip": "stone_turtle/animations/angry__north-west.webp",
           "gif": "stone_turtle/animations/angry__north-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/north-west/00.png",
-            "stone_turtle/animations/angry/north-west/01.png",
-            "stone_turtle/animations/angry/north-west/02.png",
-            "stone_turtle/animations/angry/north-west/03.png"
+            "stone_turtle/animations/angry/north-west/00.webp",
+            "stone_turtle/animations/angry/north-west/01.webp",
+            "stone_turtle/animations/angry/north-west/02.webp",
+            "stone_turtle/animations/angry/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:52 GMT",
           "src_frames": 4,
@@ -344,13 +344,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__south.png",
+          "strip": "stone_turtle/animations/angry__south.webp",
           "gif": "stone_turtle/animations/angry__south.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/south/00.png",
-            "stone_turtle/animations/angry/south/01.png",
-            "stone_turtle/animations/angry/south/02.png",
-            "stone_turtle/animations/angry/south/03.png"
+            "stone_turtle/animations/angry/south/00.webp",
+            "stone_turtle/animations/angry/south/01.webp",
+            "stone_turtle/animations/angry/south/02.webp",
+            "stone_turtle/animations/angry/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:54 GMT",
           "src_frames": 4,
@@ -358,13 +358,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__south-east.png",
+          "strip": "stone_turtle/animations/angry__south-east.webp",
           "gif": "stone_turtle/animations/angry__south-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/south-east/00.png",
-            "stone_turtle/animations/angry/south-east/01.png",
-            "stone_turtle/animations/angry/south-east/02.png",
-            "stone_turtle/animations/angry/south-east/03.png"
+            "stone_turtle/animations/angry/south-east/00.webp",
+            "stone_turtle/animations/angry/south-east/01.webp",
+            "stone_turtle/animations/angry/south-east/02.webp",
+            "stone_turtle/animations/angry/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:55 GMT",
           "src_frames": 4,
@@ -372,13 +372,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__south-west.png",
+          "strip": "stone_turtle/animations/angry__south-west.webp",
           "gif": "stone_turtle/animations/angry__south-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/south-west/00.png",
-            "stone_turtle/animations/angry/south-west/01.png",
-            "stone_turtle/animations/angry/south-west/02.png",
-            "stone_turtle/animations/angry/south-west/03.png"
+            "stone_turtle/animations/angry/south-west/00.webp",
+            "stone_turtle/animations/angry/south-west/01.webp",
+            "stone_turtle/animations/angry/south-west/02.webp",
+            "stone_turtle/animations/angry/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:56 GMT",
           "src_frames": 4,
@@ -386,13 +386,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/angry__west.png",
+          "strip": "stone_turtle/animations/angry__west.webp",
           "gif": "stone_turtle/animations/angry__west.gif",
           "frame_paths": [
-            "stone_turtle/animations/angry/west/00.png",
-            "stone_turtle/animations/angry/west/01.png",
-            "stone_turtle/animations/angry/west/02.png",
-            "stone_turtle/animations/angry/west/03.png"
+            "stone_turtle/animations/angry/west/00.webp",
+            "stone_turtle/animations/angry/west/01.webp",
+            "stone_turtle/animations/angry/west/02.webp",
+            "stone_turtle/animations/angry/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:41:58 GMT",
           "src_frames": 4,
@@ -406,13 +406,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__east.png",
+          "strip": "stone_turtle/animations/idle__east.webp",
           "gif": "stone_turtle/animations/idle__east.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/east/00.png",
-            "stone_turtle/animations/idle/east/01.png",
-            "stone_turtle/animations/idle/east/02.png",
-            "stone_turtle/animations/idle/east/03.png"
+            "stone_turtle/animations/idle/east/00.webp",
+            "stone_turtle/animations/idle/east/01.webp",
+            "stone_turtle/animations/idle/east/02.webp",
+            "stone_turtle/animations/idle/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:00 GMT",
           "src_frames": 4,
@@ -420,13 +420,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__north.png",
+          "strip": "stone_turtle/animations/idle__north.webp",
           "gif": "stone_turtle/animations/idle__north.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/north/00.png",
-            "stone_turtle/animations/idle/north/01.png",
-            "stone_turtle/animations/idle/north/02.png",
-            "stone_turtle/animations/idle/north/03.png"
+            "stone_turtle/animations/idle/north/00.webp",
+            "stone_turtle/animations/idle/north/01.webp",
+            "stone_turtle/animations/idle/north/02.webp",
+            "stone_turtle/animations/idle/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:01 GMT",
           "src_frames": 4,
@@ -434,13 +434,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__north-east.png",
+          "strip": "stone_turtle/animations/idle__north-east.webp",
           "gif": "stone_turtle/animations/idle__north-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/north-east/00.png",
-            "stone_turtle/animations/idle/north-east/01.png",
-            "stone_turtle/animations/idle/north-east/02.png",
-            "stone_turtle/animations/idle/north-east/03.png"
+            "stone_turtle/animations/idle/north-east/00.webp",
+            "stone_turtle/animations/idle/north-east/01.webp",
+            "stone_turtle/animations/idle/north-east/02.webp",
+            "stone_turtle/animations/idle/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:02 GMT",
           "src_frames": 4,
@@ -448,13 +448,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__north-west.png",
+          "strip": "stone_turtle/animations/idle__north-west.webp",
           "gif": "stone_turtle/animations/idle__north-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/north-west/00.png",
-            "stone_turtle/animations/idle/north-west/01.png",
-            "stone_turtle/animations/idle/north-west/02.png",
-            "stone_turtle/animations/idle/north-west/03.png"
+            "stone_turtle/animations/idle/north-west/00.webp",
+            "stone_turtle/animations/idle/north-west/01.webp",
+            "stone_turtle/animations/idle/north-west/02.webp",
+            "stone_turtle/animations/idle/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:04 GMT",
           "src_frames": 4,
@@ -462,13 +462,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__south.png",
+          "strip": "stone_turtle/animations/idle__south.webp",
           "gif": "stone_turtle/animations/idle__south.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/south/00.png",
-            "stone_turtle/animations/idle/south/01.png",
-            "stone_turtle/animations/idle/south/02.png",
-            "stone_turtle/animations/idle/south/03.png"
+            "stone_turtle/animations/idle/south/00.webp",
+            "stone_turtle/animations/idle/south/01.webp",
+            "stone_turtle/animations/idle/south/02.webp",
+            "stone_turtle/animations/idle/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:05 GMT",
           "src_frames": 4,
@@ -476,13 +476,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__south-east.png",
+          "strip": "stone_turtle/animations/idle__south-east.webp",
           "gif": "stone_turtle/animations/idle__south-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/south-east/00.png",
-            "stone_turtle/animations/idle/south-east/01.png",
-            "stone_turtle/animations/idle/south-east/02.png",
-            "stone_turtle/animations/idle/south-east/03.png"
+            "stone_turtle/animations/idle/south-east/00.webp",
+            "stone_turtle/animations/idle/south-east/01.webp",
+            "stone_turtle/animations/idle/south-east/02.webp",
+            "stone_turtle/animations/idle/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:08 GMT",
           "src_frames": 4,
@@ -490,13 +490,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__south-west.png",
+          "strip": "stone_turtle/animations/idle__south-west.webp",
           "gif": "stone_turtle/animations/idle__south-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/south-west/00.png",
-            "stone_turtle/animations/idle/south-west/01.png",
-            "stone_turtle/animations/idle/south-west/02.png",
-            "stone_turtle/animations/idle/south-west/03.png"
+            "stone_turtle/animations/idle/south-west/00.webp",
+            "stone_turtle/animations/idle/south-west/01.webp",
+            "stone_turtle/animations/idle/south-west/02.webp",
+            "stone_turtle/animations/idle/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:10 GMT",
           "src_frames": 4,
@@ -504,13 +504,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "stone_turtle/animations/idle__west.png",
+          "strip": "stone_turtle/animations/idle__west.webp",
           "gif": "stone_turtle/animations/idle__west.gif",
           "frame_paths": [
-            "stone_turtle/animations/idle/west/00.png",
-            "stone_turtle/animations/idle/west/01.png",
-            "stone_turtle/animations/idle/west/02.png",
-            "stone_turtle/animations/idle/west/03.png"
+            "stone_turtle/animations/idle/west/00.webp",
+            "stone_turtle/animations/idle/west/01.webp",
+            "stone_turtle/animations/idle/west/02.webp",
+            "stone_turtle/animations/idle/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:11 GMT",
           "src_frames": 4,
@@ -524,18 +524,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "stone_turtle/animations/die__east.png",
+          "strip": "stone_turtle/animations/die__east.webp",
           "gif": "stone_turtle/animations/die__east.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/east/00.png",
-            "stone_turtle/animations/die/east/01.png",
-            "stone_turtle/animations/die/east/02.png",
-            "stone_turtle/animations/die/east/03.png",
-            "stone_turtle/animations/die/east/04.png",
-            "stone_turtle/animations/die/east/05.png",
-            "stone_turtle/animations/die/east/06.png",
-            "stone_turtle/animations/die/east/07.png",
-            "stone_turtle/animations/die/east/08.png"
+            "stone_turtle/animations/die/east/00.webp",
+            "stone_turtle/animations/die/east/01.webp",
+            "stone_turtle/animations/die/east/02.webp",
+            "stone_turtle/animations/die/east/03.webp",
+            "stone_turtle/animations/die/east/04.webp",
+            "stone_turtle/animations/die/east/05.webp",
+            "stone_turtle/animations/die/east/06.webp",
+            "stone_turtle/animations/die/east/07.webp",
+            "stone_turtle/animations/die/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:12 GMT",
           "src_frames": 9,
@@ -543,16 +543,16 @@
         },
         "north": {
           "frames": 7,
-          "strip": "stone_turtle/animations/die__north.png",
+          "strip": "stone_turtle/animations/die__north.webp",
           "gif": "stone_turtle/animations/die__north.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/north/00.png",
-            "stone_turtle/animations/die/north/01.png",
-            "stone_turtle/animations/die/north/02.png",
-            "stone_turtle/animations/die/north/03.png",
-            "stone_turtle/animations/die/north/04.png",
-            "stone_turtle/animations/die/north/05.png",
-            "stone_turtle/animations/die/north/06.png"
+            "stone_turtle/animations/die/north/00.webp",
+            "stone_turtle/animations/die/north/01.webp",
+            "stone_turtle/animations/die/north/02.webp",
+            "stone_turtle/animations/die/north/03.webp",
+            "stone_turtle/animations/die/north/04.webp",
+            "stone_turtle/animations/die/north/05.webp",
+            "stone_turtle/animations/die/north/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:15 GMT",
           "src_frames": 9,
@@ -560,17 +560,17 @@
         },
         "north-east": {
           "frames": 8,
-          "strip": "stone_turtle/animations/die__north-east.png",
+          "strip": "stone_turtle/animations/die__north-east.webp",
           "gif": "stone_turtle/animations/die__north-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/north-east/00.png",
-            "stone_turtle/animations/die/north-east/01.png",
-            "stone_turtle/animations/die/north-east/02.png",
-            "stone_turtle/animations/die/north-east/03.png",
-            "stone_turtle/animations/die/north-east/04.png",
-            "stone_turtle/animations/die/north-east/05.png",
-            "stone_turtle/animations/die/north-east/06.png",
-            "stone_turtle/animations/die/north-east/07.png"
+            "stone_turtle/animations/die/north-east/00.webp",
+            "stone_turtle/animations/die/north-east/01.webp",
+            "stone_turtle/animations/die/north-east/02.webp",
+            "stone_turtle/animations/die/north-east/03.webp",
+            "stone_turtle/animations/die/north-east/04.webp",
+            "stone_turtle/animations/die/north-east/05.webp",
+            "stone_turtle/animations/die/north-east/06.webp",
+            "stone_turtle/animations/die/north-east/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:16 GMT",
           "src_frames": 9,
@@ -578,17 +578,17 @@
         },
         "north-west": {
           "frames": 8,
-          "strip": "stone_turtle/animations/die__north-west.png",
+          "strip": "stone_turtle/animations/die__north-west.webp",
           "gif": "stone_turtle/animations/die__north-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/north-west/00.png",
-            "stone_turtle/animations/die/north-west/01.png",
-            "stone_turtle/animations/die/north-west/02.png",
-            "stone_turtle/animations/die/north-west/03.png",
-            "stone_turtle/animations/die/north-west/04.png",
-            "stone_turtle/animations/die/north-west/05.png",
-            "stone_turtle/animations/die/north-west/06.png",
-            "stone_turtle/animations/die/north-west/07.png"
+            "stone_turtle/animations/die/north-west/00.webp",
+            "stone_turtle/animations/die/north-west/01.webp",
+            "stone_turtle/animations/die/north-west/02.webp",
+            "stone_turtle/animations/die/north-west/03.webp",
+            "stone_turtle/animations/die/north-west/04.webp",
+            "stone_turtle/animations/die/north-west/05.webp",
+            "stone_turtle/animations/die/north-west/06.webp",
+            "stone_turtle/animations/die/north-west/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:18 GMT",
           "src_frames": 9,
@@ -596,17 +596,17 @@
         },
         "south": {
           "frames": 8,
-          "strip": "stone_turtle/animations/die__south.png",
+          "strip": "stone_turtle/animations/die__south.webp",
           "gif": "stone_turtle/animations/die__south.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/south/00.png",
-            "stone_turtle/animations/die/south/01.png",
-            "stone_turtle/animations/die/south/02.png",
-            "stone_turtle/animations/die/south/03.png",
-            "stone_turtle/animations/die/south/04.png",
-            "stone_turtle/animations/die/south/05.png",
-            "stone_turtle/animations/die/south/06.png",
-            "stone_turtle/animations/die/south/07.png"
+            "stone_turtle/animations/die/south/00.webp",
+            "stone_turtle/animations/die/south/01.webp",
+            "stone_turtle/animations/die/south/02.webp",
+            "stone_turtle/animations/die/south/03.webp",
+            "stone_turtle/animations/die/south/04.webp",
+            "stone_turtle/animations/die/south/05.webp",
+            "stone_turtle/animations/die/south/06.webp",
+            "stone_turtle/animations/die/south/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:20 GMT",
           "src_frames": 9,
@@ -614,16 +614,16 @@
         },
         "south-east": {
           "frames": 7,
-          "strip": "stone_turtle/animations/die__south-east.png",
+          "strip": "stone_turtle/animations/die__south-east.webp",
           "gif": "stone_turtle/animations/die__south-east.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/south-east/00.png",
-            "stone_turtle/animations/die/south-east/01.png",
-            "stone_turtle/animations/die/south-east/02.png",
-            "stone_turtle/animations/die/south-east/03.png",
-            "stone_turtle/animations/die/south-east/04.png",
-            "stone_turtle/animations/die/south-east/05.png",
-            "stone_turtle/animations/die/south-east/06.png"
+            "stone_turtle/animations/die/south-east/00.webp",
+            "stone_turtle/animations/die/south-east/01.webp",
+            "stone_turtle/animations/die/south-east/02.webp",
+            "stone_turtle/animations/die/south-east/03.webp",
+            "stone_turtle/animations/die/south-east/04.webp",
+            "stone_turtle/animations/die/south-east/05.webp",
+            "stone_turtle/animations/die/south-east/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:22 GMT",
           "src_frames": 9,
@@ -631,16 +631,16 @@
         },
         "south-west": {
           "frames": 7,
-          "strip": "stone_turtle/animations/die__south-west.png",
+          "strip": "stone_turtle/animations/die__south-west.webp",
           "gif": "stone_turtle/animations/die__south-west.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/south-west/00.png",
-            "stone_turtle/animations/die/south-west/01.png",
-            "stone_turtle/animations/die/south-west/02.png",
-            "stone_turtle/animations/die/south-west/03.png",
-            "stone_turtle/animations/die/south-west/04.png",
-            "stone_turtle/animations/die/south-west/05.png",
-            "stone_turtle/animations/die/south-west/06.png"
+            "stone_turtle/animations/die/south-west/00.webp",
+            "stone_turtle/animations/die/south-west/01.webp",
+            "stone_turtle/animations/die/south-west/02.webp",
+            "stone_turtle/animations/die/south-west/03.webp",
+            "stone_turtle/animations/die/south-west/04.webp",
+            "stone_turtle/animations/die/south-west/05.webp",
+            "stone_turtle/animations/die/south-west/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:23 GMT",
           "src_frames": 9,
@@ -648,18 +648,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "stone_turtle/animations/die__west.png",
+          "strip": "stone_turtle/animations/die__west.webp",
           "gif": "stone_turtle/animations/die__west.gif",
           "frame_paths": [
-            "stone_turtle/animations/die/west/00.png",
-            "stone_turtle/animations/die/west/01.png",
-            "stone_turtle/animations/die/west/02.png",
-            "stone_turtle/animations/die/west/03.png",
-            "stone_turtle/animations/die/west/04.png",
-            "stone_turtle/animations/die/west/05.png",
-            "stone_turtle/animations/die/west/06.png",
-            "stone_turtle/animations/die/west/07.png",
-            "stone_turtle/animations/die/west/08.png"
+            "stone_turtle/animations/die/west/00.webp",
+            "stone_turtle/animations/die/west/01.webp",
+            "stone_turtle/animations/die/west/02.webp",
+            "stone_turtle/animations/die/west/03.webp",
+            "stone_turtle/animations/die/west/04.webp",
+            "stone_turtle/animations/die/west/05.webp",
+            "stone_turtle/animations/die/west/06.webp",
+            "stone_turtle/animations/die/west/07.webp",
+            "stone_turtle/animations/die/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:25 GMT",
           "src_frames": 9,

@@ -1,5 +1,9 @@
 {
-  "_comment": "On-disk art format for monsters/. The pipeline WRITES this format and READS whichever of .png/.webp is present, so the migration is: (1) consumers gain WebP support, (2) flip art_ext here and run pipeline/to_webp.py --class all in the same commit. Lossless WebP is ~66% smaller than the Pillow-written PNGs on this domain (measured over 816 sampled files; no file got bigger). Classes and their consumers are documented in pipeline/to_webp.py.",
-  "art_ext": ".png",
-  "webp": { "lossless": true, "method": 6, "exact": true }
+  "_comment": "On-disk art format for monsters/. FLIPPED TO WEBP 2026-07-31 after the games agent shipped scripts/imagelib.mjs (PNG IHDR + WebP RIFF dims, synchronous WebP decode) and the wiki moved to ART_EXTS=[webp,png]. The pipeline WRITES this format and READS whichever of .png/.webp is present, so the migration is: (1) consumers gain WebP support, (2) flip art_ext here and run pipeline/to_webp.py --class all in the same commit. Lossless WebP is ~66% smaller than the Pillow-written PNGs on this domain (measured over 816 sampled files; no file got bigger). Classes and their consumers are documented in pipeline/to_webp.py.",
+  "art_ext": ".webp",
+  "webp": {
+    "lossless": true,
+    "method": 6,
+    "exact": true
+  }
 }

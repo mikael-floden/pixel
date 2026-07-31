@@ -24,7 +24,7 @@
     "x": 0,
     "y": 0
   },
-  "sprite": "night_beast/sprite.png",
+  "sprite": "night_beast/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "night_beast/rotations/south.png",
-    "west": "night_beast/rotations/west.png",
-    "east": "night_beast/rotations/east.png",
-    "north": "night_beast/rotations/north.png",
-    "south-east": "night_beast/rotations/south-east.png",
-    "south-west": "night_beast/rotations/south-west.png",
-    "north-east": "night_beast/rotations/north-east.png",
-    "north-west": "night_beast/rotations/north-west.png"
+    "south": "night_beast/rotations/south.webp",
+    "west": "night_beast/rotations/west.webp",
+    "east": "night_beast/rotations/east.webp",
+    "north": "night_beast/rotations/north.webp",
+    "south-east": "night_beast/rotations/south-east.webp",
+    "south-west": "night_beast/rotations/south-west.webp",
+    "north-east": "night_beast/rotations/north-east.webp",
+    "north-west": "night_beast/rotations/north-west.webp"
   },
   "animations": {
     "walk": {
@@ -52,15 +52,15 @@
       "directions": {
         "east": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__east.png",
+          "strip": "night_beast/animations/walk__east.webp",
           "gif": "night_beast/animations/walk__east.gif",
           "frame_paths": [
-            "night_beast/animations/walk/east/00.png",
-            "night_beast/animations/walk/east/01.png",
-            "night_beast/animations/walk/east/02.png",
-            "night_beast/animations/walk/east/03.png",
-            "night_beast/animations/walk/east/04.png",
-            "night_beast/animations/walk/east/05.png"
+            "night_beast/animations/walk/east/00.webp",
+            "night_beast/animations/walk/east/01.webp",
+            "night_beast/animations/walk/east/02.webp",
+            "night_beast/animations/walk/east/03.webp",
+            "night_beast/animations/walk/east/04.webp",
+            "night_beast/animations/walk/east/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:29 GMT",
           "src_frames": 6,
@@ -68,15 +68,15 @@
         },
         "north": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__north.png",
+          "strip": "night_beast/animations/walk__north.webp",
           "gif": "night_beast/animations/walk__north.gif",
           "frame_paths": [
-            "night_beast/animations/walk/north/00.png",
-            "night_beast/animations/walk/north/01.png",
-            "night_beast/animations/walk/north/02.png",
-            "night_beast/animations/walk/north/03.png",
-            "night_beast/animations/walk/north/04.png",
-            "night_beast/animations/walk/north/05.png"
+            "night_beast/animations/walk/north/00.webp",
+            "night_beast/animations/walk/north/01.webp",
+            "night_beast/animations/walk/north/02.webp",
+            "night_beast/animations/walk/north/03.webp",
+            "night_beast/animations/walk/north/04.webp",
+            "night_beast/animations/walk/north/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:31 GMT",
           "src_frames": 6,
@@ -84,15 +84,15 @@
         },
         "north-east": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__north-east.png",
+          "strip": "night_beast/animations/walk__north-east.webp",
           "gif": "night_beast/animations/walk__north-east.gif",
           "frame_paths": [
-            "night_beast/animations/walk/north-east/00.png",
-            "night_beast/animations/walk/north-east/01.png",
-            "night_beast/animations/walk/north-east/02.png",
-            "night_beast/animations/walk/north-east/03.png",
-            "night_beast/animations/walk/north-east/04.png",
-            "night_beast/animations/walk/north-east/05.png"
+            "night_beast/animations/walk/north-east/00.webp",
+            "night_beast/animations/walk/north-east/01.webp",
+            "night_beast/animations/walk/north-east/02.webp",
+            "night_beast/animations/walk/north-east/03.webp",
+            "night_beast/animations/walk/north-east/04.webp",
+            "night_beast/animations/walk/north-east/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:33 GMT",
           "src_frames": 6,
@@ -100,15 +100,15 @@
         },
         "north-west": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__north-west.png",
+          "strip": "night_beast/animations/walk__north-west.webp",
           "gif": "night_beast/animations/walk__north-west.gif",
           "frame_paths": [
-            "night_beast/animations/walk/north-west/00.png",
-            "night_beast/animations/walk/north-west/01.png",
-            "night_beast/animations/walk/north-west/02.png",
-            "night_beast/animations/walk/north-west/03.png",
-            "night_beast/animations/walk/north-west/04.png",
-            "night_beast/animations/walk/north-west/05.png"
+            "night_beast/animations/walk/north-west/00.webp",
+            "night_beast/animations/walk/north-west/01.webp",
+            "night_beast/animations/walk/north-west/02.webp",
+            "night_beast/animations/walk/north-west/03.webp",
+            "night_beast/animations/walk/north-west/04.webp",
+            "night_beast/animations/walk/north-west/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:34 GMT",
           "src_frames": 6,
@@ -116,15 +116,15 @@
         },
         "south": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__south.png",
+          "strip": "night_beast/animations/walk__south.webp",
           "gif": "night_beast/animations/walk__south.gif",
           "frame_paths": [
-            "night_beast/animations/walk/south/00.png",
-            "night_beast/animations/walk/south/01.png",
-            "night_beast/animations/walk/south/02.png",
-            "night_beast/animations/walk/south/03.png",
-            "night_beast/animations/walk/south/04.png",
-            "night_beast/animations/walk/south/05.png"
+            "night_beast/animations/walk/south/00.webp",
+            "night_beast/animations/walk/south/01.webp",
+            "night_beast/animations/walk/south/02.webp",
+            "night_beast/animations/walk/south/03.webp",
+            "night_beast/animations/walk/south/04.webp",
+            "night_beast/animations/walk/south/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:36 GMT",
           "src_frames": 6,
@@ -132,15 +132,15 @@
         },
         "south-east": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__south-east.png",
+          "strip": "night_beast/animations/walk__south-east.webp",
           "gif": "night_beast/animations/walk__south-east.gif",
           "frame_paths": [
-            "night_beast/animations/walk/south-east/00.png",
-            "night_beast/animations/walk/south-east/01.png",
-            "night_beast/animations/walk/south-east/02.png",
-            "night_beast/animations/walk/south-east/03.png",
-            "night_beast/animations/walk/south-east/04.png",
-            "night_beast/animations/walk/south-east/05.png"
+            "night_beast/animations/walk/south-east/00.webp",
+            "night_beast/animations/walk/south-east/01.webp",
+            "night_beast/animations/walk/south-east/02.webp",
+            "night_beast/animations/walk/south-east/03.webp",
+            "night_beast/animations/walk/south-east/04.webp",
+            "night_beast/animations/walk/south-east/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:37 GMT",
           "src_frames": 6,
@@ -148,15 +148,15 @@
         },
         "south-west": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__south-west.png",
+          "strip": "night_beast/animations/walk__south-west.webp",
           "gif": "night_beast/animations/walk__south-west.gif",
           "frame_paths": [
-            "night_beast/animations/walk/south-west/00.png",
-            "night_beast/animations/walk/south-west/01.png",
-            "night_beast/animations/walk/south-west/02.png",
-            "night_beast/animations/walk/south-west/03.png",
-            "night_beast/animations/walk/south-west/04.png",
-            "night_beast/animations/walk/south-west/05.png"
+            "night_beast/animations/walk/south-west/00.webp",
+            "night_beast/animations/walk/south-west/01.webp",
+            "night_beast/animations/walk/south-west/02.webp",
+            "night_beast/animations/walk/south-west/03.webp",
+            "night_beast/animations/walk/south-west/04.webp",
+            "night_beast/animations/walk/south-west/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:39 GMT",
           "src_frames": 6,
@@ -164,15 +164,15 @@
         },
         "west": {
           "frames": 6,
-          "strip": "night_beast/animations/walk__west.png",
+          "strip": "night_beast/animations/walk__west.webp",
           "gif": "night_beast/animations/walk__west.gif",
           "frame_paths": [
-            "night_beast/animations/walk/west/00.png",
-            "night_beast/animations/walk/west/01.png",
-            "night_beast/animations/walk/west/02.png",
-            "night_beast/animations/walk/west/03.png",
-            "night_beast/animations/walk/west/04.png",
-            "night_beast/animations/walk/west/05.png"
+            "night_beast/animations/walk/west/00.webp",
+            "night_beast/animations/walk/west/01.webp",
+            "night_beast/animations/walk/west/02.webp",
+            "night_beast/animations/walk/west/03.webp",
+            "night_beast/animations/walk/west/04.webp",
+            "night_beast/animations/walk/west/05.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:41 GMT",
           "src_frames": 6,
@@ -186,13 +186,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__east.png",
+          "strip": "night_beast/animations/idle__east.webp",
           "gif": "night_beast/animations/idle__east.gif",
           "frame_paths": [
-            "night_beast/animations/idle/east/00.png",
-            "night_beast/animations/idle/east/01.png",
-            "night_beast/animations/idle/east/02.png",
-            "night_beast/animations/idle/east/03.png"
+            "night_beast/animations/idle/east/00.webp",
+            "night_beast/animations/idle/east/01.webp",
+            "night_beast/animations/idle/east/02.webp",
+            "night_beast/animations/idle/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:42 GMT",
           "src_frames": 4,
@@ -200,13 +200,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__north.png",
+          "strip": "night_beast/animations/idle__north.webp",
           "gif": "night_beast/animations/idle__north.gif",
           "frame_paths": [
-            "night_beast/animations/idle/north/00.png",
-            "night_beast/animations/idle/north/01.png",
-            "night_beast/animations/idle/north/02.png",
-            "night_beast/animations/idle/north/03.png"
+            "night_beast/animations/idle/north/00.webp",
+            "night_beast/animations/idle/north/01.webp",
+            "night_beast/animations/idle/north/02.webp",
+            "night_beast/animations/idle/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:44 GMT",
           "src_frames": 4,
@@ -214,13 +214,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__north-east.png",
+          "strip": "night_beast/animations/idle__north-east.webp",
           "gif": "night_beast/animations/idle__north-east.gif",
           "frame_paths": [
-            "night_beast/animations/idle/north-east/00.png",
-            "night_beast/animations/idle/north-east/01.png",
-            "night_beast/animations/idle/north-east/02.png",
-            "night_beast/animations/idle/north-east/03.png"
+            "night_beast/animations/idle/north-east/00.webp",
+            "night_beast/animations/idle/north-east/01.webp",
+            "night_beast/animations/idle/north-east/02.webp",
+            "night_beast/animations/idle/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:45 GMT",
           "src_frames": 4,
@@ -228,13 +228,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__north-west.png",
+          "strip": "night_beast/animations/idle__north-west.webp",
           "gif": "night_beast/animations/idle__north-west.gif",
           "frame_paths": [
-            "night_beast/animations/idle/north-west/00.png",
-            "night_beast/animations/idle/north-west/01.png",
-            "night_beast/animations/idle/north-west/02.png",
-            "night_beast/animations/idle/north-west/03.png"
+            "night_beast/animations/idle/north-west/00.webp",
+            "night_beast/animations/idle/north-west/01.webp",
+            "night_beast/animations/idle/north-west/02.webp",
+            "night_beast/animations/idle/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:46 GMT",
           "src_frames": 4,
@@ -242,13 +242,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__south.png",
+          "strip": "night_beast/animations/idle__south.webp",
           "gif": "night_beast/animations/idle__south.gif",
           "frame_paths": [
-            "night_beast/animations/idle/south/00.png",
-            "night_beast/animations/idle/south/01.png",
-            "night_beast/animations/idle/south/02.png",
-            "night_beast/animations/idle/south/03.png"
+            "night_beast/animations/idle/south/00.webp",
+            "night_beast/animations/idle/south/01.webp",
+            "night_beast/animations/idle/south/02.webp",
+            "night_beast/animations/idle/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:48 GMT",
           "src_frames": 4,
@@ -256,13 +256,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__south-east.png",
+          "strip": "night_beast/animations/idle__south-east.webp",
           "gif": "night_beast/animations/idle__south-east.gif",
           "frame_paths": [
-            "night_beast/animations/idle/south-east/00.png",
-            "night_beast/animations/idle/south-east/01.png",
-            "night_beast/animations/idle/south-east/02.png",
-            "night_beast/animations/idle/south-east/03.png"
+            "night_beast/animations/idle/south-east/00.webp",
+            "night_beast/animations/idle/south-east/01.webp",
+            "night_beast/animations/idle/south-east/02.webp",
+            "night_beast/animations/idle/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:51 GMT",
           "src_frames": 4,
@@ -270,13 +270,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__south-west.png",
+          "strip": "night_beast/animations/idle__south-west.webp",
           "gif": "night_beast/animations/idle__south-west.gif",
           "frame_paths": [
-            "night_beast/animations/idle/south-west/00.png",
-            "night_beast/animations/idle/south-west/01.png",
-            "night_beast/animations/idle/south-west/02.png",
-            "night_beast/animations/idle/south-west/03.png"
+            "night_beast/animations/idle/south-west/00.webp",
+            "night_beast/animations/idle/south-west/01.webp",
+            "night_beast/animations/idle/south-west/02.webp",
+            "night_beast/animations/idle/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:52 GMT",
           "src_frames": 4,
@@ -284,13 +284,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "night_beast/animations/idle__west.png",
+          "strip": "night_beast/animations/idle__west.webp",
           "gif": "night_beast/animations/idle__west.gif",
           "frame_paths": [
-            "night_beast/animations/idle/west/00.png",
-            "night_beast/animations/idle/west/01.png",
-            "night_beast/animations/idle/west/02.png",
-            "night_beast/animations/idle/west/03.png"
+            "night_beast/animations/idle/west/00.webp",
+            "night_beast/animations/idle/west/01.webp",
+            "night_beast/animations/idle/west/02.webp",
+            "night_beast/animations/idle/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:53 GMT",
           "src_frames": 4,
@@ -304,18 +304,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "night_beast/animations/die__east.png",
+          "strip": "night_beast/animations/die__east.webp",
           "gif": "night_beast/animations/die__east.gif",
           "frame_paths": [
-            "night_beast/animations/die/east/00.png",
-            "night_beast/animations/die/east/01.png",
-            "night_beast/animations/die/east/02.png",
-            "night_beast/animations/die/east/03.png",
-            "night_beast/animations/die/east/04.png",
-            "night_beast/animations/die/east/05.png",
-            "night_beast/animations/die/east/06.png",
-            "night_beast/animations/die/east/07.png",
-            "night_beast/animations/die/east/08.png"
+            "night_beast/animations/die/east/00.webp",
+            "night_beast/animations/die/east/01.webp",
+            "night_beast/animations/die/east/02.webp",
+            "night_beast/animations/die/east/03.webp",
+            "night_beast/animations/die/east/04.webp",
+            "night_beast/animations/die/east/05.webp",
+            "night_beast/animations/die/east/06.webp",
+            "night_beast/animations/die/east/07.webp",
+            "night_beast/animations/die/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:55 GMT",
           "src_frames": 9,
@@ -323,18 +323,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "night_beast/animations/die__north.png",
+          "strip": "night_beast/animations/die__north.webp",
           "gif": "night_beast/animations/die__north.gif",
           "frame_paths": [
-            "night_beast/animations/die/north/00.png",
-            "night_beast/animations/die/north/01.png",
-            "night_beast/animations/die/north/02.png",
-            "night_beast/animations/die/north/03.png",
-            "night_beast/animations/die/north/04.png",
-            "night_beast/animations/die/north/05.png",
-            "night_beast/animations/die/north/06.png",
-            "night_beast/animations/die/north/07.png",
-            "night_beast/animations/die/north/08.png"
+            "night_beast/animations/die/north/00.webp",
+            "night_beast/animations/die/north/01.webp",
+            "night_beast/animations/die/north/02.webp",
+            "night_beast/animations/die/north/03.webp",
+            "night_beast/animations/die/north/04.webp",
+            "night_beast/animations/die/north/05.webp",
+            "night_beast/animations/die/north/06.webp",
+            "night_beast/animations/die/north/07.webp",
+            "night_beast/animations/die/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:56 GMT",
           "src_frames": 9,
@@ -342,18 +342,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "night_beast/animations/die__north-east.png",
+          "strip": "night_beast/animations/die__north-east.webp",
           "gif": "night_beast/animations/die__north-east.gif",
           "frame_paths": [
-            "night_beast/animations/die/north-east/00.png",
-            "night_beast/animations/die/north-east/01.png",
-            "night_beast/animations/die/north-east/02.png",
-            "night_beast/animations/die/north-east/03.png",
-            "night_beast/animations/die/north-east/04.png",
-            "night_beast/animations/die/north-east/05.png",
-            "night_beast/animations/die/north-east/06.png",
-            "night_beast/animations/die/north-east/07.png",
-            "night_beast/animations/die/north-east/08.png"
+            "night_beast/animations/die/north-east/00.webp",
+            "night_beast/animations/die/north-east/01.webp",
+            "night_beast/animations/die/north-east/02.webp",
+            "night_beast/animations/die/north-east/03.webp",
+            "night_beast/animations/die/north-east/04.webp",
+            "night_beast/animations/die/north-east/05.webp",
+            "night_beast/animations/die/north-east/06.webp",
+            "night_beast/animations/die/north-east/07.webp",
+            "night_beast/animations/die/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:58 GMT",
           "src_frames": 9,
@@ -361,18 +361,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "night_beast/animations/die__north-west.png",
+          "strip": "night_beast/animations/die__north-west.webp",
           "gif": "night_beast/animations/die__north-west.gif",
           "frame_paths": [
-            "night_beast/animations/die/north-west/00.png",
-            "night_beast/animations/die/north-west/01.png",
-            "night_beast/animations/die/north-west/02.png",
-            "night_beast/animations/die/north-west/03.png",
-            "night_beast/animations/die/north-west/04.png",
-            "night_beast/animations/die/north-west/05.png",
-            "night_beast/animations/die/north-west/06.png",
-            "night_beast/animations/die/north-west/07.png",
-            "night_beast/animations/die/north-west/08.png"
+            "night_beast/animations/die/north-west/00.webp",
+            "night_beast/animations/die/north-west/01.webp",
+            "night_beast/animations/die/north-west/02.webp",
+            "night_beast/animations/die/north-west/03.webp",
+            "night_beast/animations/die/north-west/04.webp",
+            "night_beast/animations/die/north-west/05.webp",
+            "night_beast/animations/die/north-west/06.webp",
+            "night_beast/animations/die/north-west/07.webp",
+            "night_beast/animations/die/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:59 GMT",
           "src_frames": 9,
@@ -380,18 +380,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "night_beast/animations/die__south.png",
+          "strip": "night_beast/animations/die__south.webp",
           "gif": "night_beast/animations/die__south.gif",
           "frame_paths": [
-            "night_beast/animations/die/south/00.png",
-            "night_beast/animations/die/south/01.png",
-            "night_beast/animations/die/south/02.png",
-            "night_beast/animations/die/south/03.png",
-            "night_beast/animations/die/south/04.png",
-            "night_beast/animations/die/south/05.png",
-            "night_beast/animations/die/south/06.png",
-            "night_beast/animations/die/south/07.png",
-            "night_beast/animations/die/south/08.png"
+            "night_beast/animations/die/south/00.webp",
+            "night_beast/animations/die/south/01.webp",
+            "night_beast/animations/die/south/02.webp",
+            "night_beast/animations/die/south/03.webp",
+            "night_beast/animations/die/south/04.webp",
+            "night_beast/animations/die/south/05.webp",
+            "night_beast/animations/die/south/06.webp",
+            "night_beast/animations/die/south/07.webp",
+            "night_beast/animations/die/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:01 GMT",
           "src_frames": 9,
@@ -399,18 +399,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "night_beast/animations/die__south-east.png",
+          "strip": "night_beast/animations/die__south-east.webp",
           "gif": "night_beast/animations/die__south-east.gif",
           "frame_paths": [
-            "night_beast/animations/die/south-east/00.png",
-            "night_beast/animations/die/south-east/01.png",
-            "night_beast/animations/die/south-east/02.png",
-            "night_beast/animations/die/south-east/03.png",
-            "night_beast/animations/die/south-east/04.png",
-            "night_beast/animations/die/south-east/05.png",
-            "night_beast/animations/die/south-east/06.png",
-            "night_beast/animations/die/south-east/07.png",
-            "night_beast/animations/die/south-east/08.png"
+            "night_beast/animations/die/south-east/00.webp",
+            "night_beast/animations/die/south-east/01.webp",
+            "night_beast/animations/die/south-east/02.webp",
+            "night_beast/animations/die/south-east/03.webp",
+            "night_beast/animations/die/south-east/04.webp",
+            "night_beast/animations/die/south-east/05.webp",
+            "night_beast/animations/die/south-east/06.webp",
+            "night_beast/animations/die/south-east/07.webp",
+            "night_beast/animations/die/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:03 GMT",
           "src_frames": 9,
@@ -418,18 +418,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "night_beast/animations/die__south-west.png",
+          "strip": "night_beast/animations/die__south-west.webp",
           "gif": "night_beast/animations/die__south-west.gif",
           "frame_paths": [
-            "night_beast/animations/die/south-west/00.png",
-            "night_beast/animations/die/south-west/01.png",
-            "night_beast/animations/die/south-west/02.png",
-            "night_beast/animations/die/south-west/03.png",
-            "night_beast/animations/die/south-west/04.png",
-            "night_beast/animations/die/south-west/05.png",
-            "night_beast/animations/die/south-west/06.png",
-            "night_beast/animations/die/south-west/07.png",
-            "night_beast/animations/die/south-west/08.png"
+            "night_beast/animations/die/south-west/00.webp",
+            "night_beast/animations/die/south-west/01.webp",
+            "night_beast/animations/die/south-west/02.webp",
+            "night_beast/animations/die/south-west/03.webp",
+            "night_beast/animations/die/south-west/04.webp",
+            "night_beast/animations/die/south-west/05.webp",
+            "night_beast/animations/die/south-west/06.webp",
+            "night_beast/animations/die/south-west/07.webp",
+            "night_beast/animations/die/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:05 GMT",
           "src_frames": 9,
@@ -437,18 +437,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "night_beast/animations/die__west.png",
+          "strip": "night_beast/animations/die__west.webp",
           "gif": "night_beast/animations/die__west.gif",
           "frame_paths": [
-            "night_beast/animations/die/west/00.png",
-            "night_beast/animations/die/west/01.png",
-            "night_beast/animations/die/west/02.png",
-            "night_beast/animations/die/west/03.png",
-            "night_beast/animations/die/west/04.png",
-            "night_beast/animations/die/west/05.png",
-            "night_beast/animations/die/west/06.png",
-            "night_beast/animations/die/west/07.png",
-            "night_beast/animations/die/west/08.png"
+            "night_beast/animations/die/west/00.webp",
+            "night_beast/animations/die/west/01.webp",
+            "night_beast/animations/die/west/02.webp",
+            "night_beast/animations/die/west/03.webp",
+            "night_beast/animations/die/west/04.webp",
+            "night_beast/animations/die/west/05.webp",
+            "night_beast/animations/die/west/06.webp",
+            "night_beast/animations/die/west/07.webp",
+            "night_beast/animations/die/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:06 GMT",
           "src_frames": 9,
@@ -462,13 +462,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__east.png",
+          "strip": "night_beast/animations/attack__east.webp",
           "gif": "night_beast/animations/attack__east.gif",
           "frame_paths": [
-            "night_beast/animations/attack/east/00.png",
-            "night_beast/animations/attack/east/01.png",
-            "night_beast/animations/attack/east/02.png",
-            "night_beast/animations/attack/east/03.png"
+            "night_beast/animations/attack/east/00.webp",
+            "night_beast/animations/attack/east/01.webp",
+            "night_beast/animations/attack/east/02.webp",
+            "night_beast/animations/attack/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:07 GMT",
           "src_frames": 4,
@@ -476,13 +476,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__north.png",
+          "strip": "night_beast/animations/attack__north.webp",
           "gif": "night_beast/animations/attack__north.gif",
           "frame_paths": [
-            "night_beast/animations/attack/north/00.png",
-            "night_beast/animations/attack/north/01.png",
-            "night_beast/animations/attack/north/02.png",
-            "night_beast/animations/attack/north/03.png"
+            "night_beast/animations/attack/north/00.webp",
+            "night_beast/animations/attack/north/01.webp",
+            "night_beast/animations/attack/north/02.webp",
+            "night_beast/animations/attack/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:09 GMT",
           "src_frames": 4,
@@ -490,13 +490,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__north-east.png",
+          "strip": "night_beast/animations/attack__north-east.webp",
           "gif": "night_beast/animations/attack__north-east.gif",
           "frame_paths": [
-            "night_beast/animations/attack/north-east/00.png",
-            "night_beast/animations/attack/north-east/01.png",
-            "night_beast/animations/attack/north-east/02.png",
-            "night_beast/animations/attack/north-east/03.png"
+            "night_beast/animations/attack/north-east/00.webp",
+            "night_beast/animations/attack/north-east/01.webp",
+            "night_beast/animations/attack/north-east/02.webp",
+            "night_beast/animations/attack/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:10 GMT",
           "src_frames": 4,
@@ -504,13 +504,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__north-west.png",
+          "strip": "night_beast/animations/attack__north-west.webp",
           "gif": "night_beast/animations/attack__north-west.gif",
           "frame_paths": [
-            "night_beast/animations/attack/north-west/00.png",
-            "night_beast/animations/attack/north-west/01.png",
-            "night_beast/animations/attack/north-west/02.png",
-            "night_beast/animations/attack/north-west/03.png"
+            "night_beast/animations/attack/north-west/00.webp",
+            "night_beast/animations/attack/north-west/01.webp",
+            "night_beast/animations/attack/north-west/02.webp",
+            "night_beast/animations/attack/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:12 GMT",
           "src_frames": 4,
@@ -518,13 +518,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__south.png",
+          "strip": "night_beast/animations/attack__south.webp",
           "gif": "night_beast/animations/attack__south.gif",
           "frame_paths": [
-            "night_beast/animations/attack/south/00.png",
-            "night_beast/animations/attack/south/01.png",
-            "night_beast/animations/attack/south/02.png",
-            "night_beast/animations/attack/south/03.png"
+            "night_beast/animations/attack/south/00.webp",
+            "night_beast/animations/attack/south/01.webp",
+            "night_beast/animations/attack/south/02.webp",
+            "night_beast/animations/attack/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:13 GMT",
           "src_frames": 4,
@@ -532,13 +532,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__south-east.png",
+          "strip": "night_beast/animations/attack__south-east.webp",
           "gif": "night_beast/animations/attack__south-east.gif",
           "frame_paths": [
-            "night_beast/animations/attack/south-east/00.png",
-            "night_beast/animations/attack/south-east/01.png",
-            "night_beast/animations/attack/south-east/02.png",
-            "night_beast/animations/attack/south-east/03.png"
+            "night_beast/animations/attack/south-east/00.webp",
+            "night_beast/animations/attack/south-east/01.webp",
+            "night_beast/animations/attack/south-east/02.webp",
+            "night_beast/animations/attack/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:14 GMT",
           "src_frames": 4,
@@ -546,13 +546,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__south-west.png",
+          "strip": "night_beast/animations/attack__south-west.webp",
           "gif": "night_beast/animations/attack__south-west.gif",
           "frame_paths": [
-            "night_beast/animations/attack/south-west/00.png",
-            "night_beast/animations/attack/south-west/01.png",
-            "night_beast/animations/attack/south-west/02.png",
-            "night_beast/animations/attack/south-west/03.png"
+            "night_beast/animations/attack/south-west/00.webp",
+            "night_beast/animations/attack/south-west/01.webp",
+            "night_beast/animations/attack/south-west/02.webp",
+            "night_beast/animations/attack/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:16 GMT",
           "src_frames": 4,
@@ -560,13 +560,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "night_beast/animations/attack__west.png",
+          "strip": "night_beast/animations/attack__west.webp",
           "gif": "night_beast/animations/attack__west.gif",
           "frame_paths": [
-            "night_beast/animations/attack/west/00.png",
-            "night_beast/animations/attack/west/01.png",
-            "night_beast/animations/attack/west/02.png",
-            "night_beast/animations/attack/west/03.png"
+            "night_beast/animations/attack/west/00.webp",
+            "night_beast/animations/attack/west/01.webp",
+            "night_beast/animations/attack/west/02.webp",
+            "night_beast/animations/attack/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:17 GMT",
           "src_frames": 4,
@@ -580,13 +580,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__east.png",
+          "strip": "night_beast/animations/angry__east.webp",
           "gif": "night_beast/animations/angry__east.gif",
           "frame_paths": [
-            "night_beast/animations/angry/east/00.png",
-            "night_beast/animations/angry/east/01.png",
-            "night_beast/animations/angry/east/02.png",
-            "night_beast/animations/angry/east/03.png"
+            "night_beast/animations/angry/east/00.webp",
+            "night_beast/animations/angry/east/01.webp",
+            "night_beast/animations/angry/east/02.webp",
+            "night_beast/animations/angry/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:19 GMT",
           "src_frames": 4,
@@ -594,13 +594,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__north.png",
+          "strip": "night_beast/animations/angry__north.webp",
           "gif": "night_beast/animations/angry__north.gif",
           "frame_paths": [
-            "night_beast/animations/angry/north/00.png",
-            "night_beast/animations/angry/north/01.png",
-            "night_beast/animations/angry/north/02.png",
-            "night_beast/animations/angry/north/03.png"
+            "night_beast/animations/angry/north/00.webp",
+            "night_beast/animations/angry/north/01.webp",
+            "night_beast/animations/angry/north/02.webp",
+            "night_beast/animations/angry/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:20 GMT",
           "src_frames": 4,
@@ -608,13 +608,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__north-east.png",
+          "strip": "night_beast/animations/angry__north-east.webp",
           "gif": "night_beast/animations/angry__north-east.gif",
           "frame_paths": [
-            "night_beast/animations/angry/north-east/00.png",
-            "night_beast/animations/angry/north-east/01.png",
-            "night_beast/animations/angry/north-east/02.png",
-            "night_beast/animations/angry/north-east/03.png"
+            "night_beast/animations/angry/north-east/00.webp",
+            "night_beast/animations/angry/north-east/01.webp",
+            "night_beast/animations/angry/north-east/02.webp",
+            "night_beast/animations/angry/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:22 GMT",
           "src_frames": 4,
@@ -622,13 +622,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__north-west.png",
+          "strip": "night_beast/animations/angry__north-west.webp",
           "gif": "night_beast/animations/angry__north-west.gif",
           "frame_paths": [
-            "night_beast/animations/angry/north-west/00.png",
-            "night_beast/animations/angry/north-west/01.png",
-            "night_beast/animations/angry/north-west/02.png",
-            "night_beast/animations/angry/north-west/03.png"
+            "night_beast/animations/angry/north-west/00.webp",
+            "night_beast/animations/angry/north-west/01.webp",
+            "night_beast/animations/angry/north-west/02.webp",
+            "night_beast/animations/angry/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:24 GMT",
           "src_frames": 4,
@@ -636,13 +636,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__south.png",
+          "strip": "night_beast/animations/angry__south.webp",
           "gif": "night_beast/animations/angry__south.gif",
           "frame_paths": [
-            "night_beast/animations/angry/south/00.png",
-            "night_beast/animations/angry/south/01.png",
-            "night_beast/animations/angry/south/02.png",
-            "night_beast/animations/angry/south/03.png"
+            "night_beast/animations/angry/south/00.webp",
+            "night_beast/animations/angry/south/01.webp",
+            "night_beast/animations/angry/south/02.webp",
+            "night_beast/animations/angry/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:25 GMT",
           "src_frames": 4,
@@ -650,13 +650,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__south-east.png",
+          "strip": "night_beast/animations/angry__south-east.webp",
           "gif": "night_beast/animations/angry__south-east.gif",
           "frame_paths": [
-            "night_beast/animations/angry/south-east/00.png",
-            "night_beast/animations/angry/south-east/01.png",
-            "night_beast/animations/angry/south-east/02.png",
-            "night_beast/animations/angry/south-east/03.png"
+            "night_beast/animations/angry/south-east/00.webp",
+            "night_beast/animations/angry/south-east/01.webp",
+            "night_beast/animations/angry/south-east/02.webp",
+            "night_beast/animations/angry/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:26 GMT",
           "src_frames": 4,
@@ -664,13 +664,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__south-west.png",
+          "strip": "night_beast/animations/angry__south-west.webp",
           "gif": "night_beast/animations/angry__south-west.gif",
           "frame_paths": [
-            "night_beast/animations/angry/south-west/00.png",
-            "night_beast/animations/angry/south-west/01.png",
-            "night_beast/animations/angry/south-west/02.png",
-            "night_beast/animations/angry/south-west/03.png"
+            "night_beast/animations/angry/south-west/00.webp",
+            "night_beast/animations/angry/south-west/01.webp",
+            "night_beast/animations/angry/south-west/02.webp",
+            "night_beast/animations/angry/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:28 GMT",
           "src_frames": 4,
@@ -678,13 +678,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "night_beast/animations/angry__west.png",
+          "strip": "night_beast/animations/angry__west.webp",
           "gif": "night_beast/animations/angry__west.gif",
           "frame_paths": [
-            "night_beast/animations/angry/west/00.png",
-            "night_beast/animations/angry/west/01.png",
-            "night_beast/animations/angry/west/02.png",
-            "night_beast/animations/angry/west/03.png"
+            "night_beast/animations/angry/west/00.webp",
+            "night_beast/animations/angry/west/01.webp",
+            "night_beast/animations/angry/west/02.webp",
+            "night_beast/animations/angry/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:35:29 GMT",
           "src_frames": 4,

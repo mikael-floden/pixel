@@ -24,7 +24,7 @@
     "x": 0,
     "y": 0
   },
-  "sprite": "snow_demon/sprite.png",
+  "sprite": "snow_demon/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "snow_demon/rotations/south.png",
-    "west": "snow_demon/rotations/west.png",
-    "east": "snow_demon/rotations/east.png",
-    "north": "snow_demon/rotations/north.png",
-    "south-east": "snow_demon/rotations/south-east.png",
-    "north-east": "snow_demon/rotations/north-east.png",
-    "north-west": "snow_demon/rotations/north-west.png",
-    "south-west": "snow_demon/rotations/south-west.png"
+    "south": "snow_demon/rotations/south.webp",
+    "west": "snow_demon/rotations/west.webp",
+    "east": "snow_demon/rotations/east.webp",
+    "north": "snow_demon/rotations/north.webp",
+    "south-east": "snow_demon/rotations/south-east.webp",
+    "north-east": "snow_demon/rotations/north-east.webp",
+    "north-west": "snow_demon/rotations/north-west.webp",
+    "south-west": "snow_demon/rotations/south-west.webp"
   },
   "animations": {
     "angry": {
@@ -52,13 +52,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__east.png",
+          "strip": "snow_demon/animations/angry__east.webp",
           "gif": "snow_demon/animations/angry__east.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/east/00.png",
-            "snow_demon/animations/angry/east/01.png",
-            "snow_demon/animations/angry/east/02.png",
-            "snow_demon/animations/angry/east/03.png"
+            "snow_demon/animations/angry/east/00.webp",
+            "snow_demon/animations/angry/east/01.webp",
+            "snow_demon/animations/angry/east/02.webp",
+            "snow_demon/animations/angry/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:32 GMT",
           "src_frames": 4,
@@ -66,13 +66,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__north.png",
+          "strip": "snow_demon/animations/angry__north.webp",
           "gif": "snow_demon/animations/angry__north.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/north/00.png",
-            "snow_demon/animations/angry/north/01.png",
-            "snow_demon/animations/angry/north/02.png",
-            "snow_demon/animations/angry/north/03.png"
+            "snow_demon/animations/angry/north/00.webp",
+            "snow_demon/animations/angry/north/01.webp",
+            "snow_demon/animations/angry/north/02.webp",
+            "snow_demon/animations/angry/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:33 GMT",
           "src_frames": 4,
@@ -80,13 +80,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__north-east.png",
+          "strip": "snow_demon/animations/angry__north-east.webp",
           "gif": "snow_demon/animations/angry__north-east.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/north-east/00.png",
-            "snow_demon/animations/angry/north-east/01.png",
-            "snow_demon/animations/angry/north-east/02.png",
-            "snow_demon/animations/angry/north-east/03.png"
+            "snow_demon/animations/angry/north-east/00.webp",
+            "snow_demon/animations/angry/north-east/01.webp",
+            "snow_demon/animations/angry/north-east/02.webp",
+            "snow_demon/animations/angry/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:34 GMT",
           "src_frames": 4,
@@ -94,13 +94,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__north-west.png",
+          "strip": "snow_demon/animations/angry__north-west.webp",
           "gif": "snow_demon/animations/angry__north-west.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/north-west/00.png",
-            "snow_demon/animations/angry/north-west/01.png",
-            "snow_demon/animations/angry/north-west/02.png",
-            "snow_demon/animations/angry/north-west/03.png"
+            "snow_demon/animations/angry/north-west/00.webp",
+            "snow_demon/animations/angry/north-west/01.webp",
+            "snow_demon/animations/angry/north-west/02.webp",
+            "snow_demon/animations/angry/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:35 GMT",
           "src_frames": 4,
@@ -108,13 +108,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__south.png",
+          "strip": "snow_demon/animations/angry__south.webp",
           "gif": "snow_demon/animations/angry__south.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/south/00.png",
-            "snow_demon/animations/angry/south/01.png",
-            "snow_demon/animations/angry/south/02.png",
-            "snow_demon/animations/angry/south/03.png"
+            "snow_demon/animations/angry/south/00.webp",
+            "snow_demon/animations/angry/south/01.webp",
+            "snow_demon/animations/angry/south/02.webp",
+            "snow_demon/animations/angry/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:36 GMT",
           "src_frames": 4,
@@ -122,13 +122,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__south-east.png",
+          "strip": "snow_demon/animations/angry__south-east.webp",
           "gif": "snow_demon/animations/angry__south-east.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/south-east/00.png",
-            "snow_demon/animations/angry/south-east/01.png",
-            "snow_demon/animations/angry/south-east/02.png",
-            "snow_demon/animations/angry/south-east/03.png"
+            "snow_demon/animations/angry/south-east/00.webp",
+            "snow_demon/animations/angry/south-east/01.webp",
+            "snow_demon/animations/angry/south-east/02.webp",
+            "snow_demon/animations/angry/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:37 GMT",
           "src_frames": 4,
@@ -136,13 +136,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__south-west.png",
+          "strip": "snow_demon/animations/angry__south-west.webp",
           "gif": "snow_demon/animations/angry__south-west.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/south-west/00.png",
-            "snow_demon/animations/angry/south-west/01.png",
-            "snow_demon/animations/angry/south-west/02.png",
-            "snow_demon/animations/angry/south-west/03.png"
+            "snow_demon/animations/angry/south-west/00.webp",
+            "snow_demon/animations/angry/south-west/01.webp",
+            "snow_demon/animations/angry/south-west/02.webp",
+            "snow_demon/animations/angry/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:38 GMT",
           "src_frames": 4,
@@ -150,13 +150,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "snow_demon/animations/angry__west.png",
+          "strip": "snow_demon/animations/angry__west.webp",
           "gif": "snow_demon/animations/angry__west.gif",
           "frame_paths": [
-            "snow_demon/animations/angry/west/00.png",
-            "snow_demon/animations/angry/west/01.png",
-            "snow_demon/animations/angry/west/02.png",
-            "snow_demon/animations/angry/west/03.png"
+            "snow_demon/animations/angry/west/00.webp",
+            "snow_demon/animations/angry/west/01.webp",
+            "snow_demon/animations/angry/west/02.webp",
+            "snow_demon/animations/angry/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:40 GMT",
           "src_frames": 4,
@@ -170,13 +170,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__east.png",
+          "strip": "snow_demon/animations/idle__east.webp",
           "gif": "snow_demon/animations/idle__east.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/east/00.png",
-            "snow_demon/animations/idle/east/01.png",
-            "snow_demon/animations/idle/east/02.png",
-            "snow_demon/animations/idle/east/03.png"
+            "snow_demon/animations/idle/east/00.webp",
+            "snow_demon/animations/idle/east/01.webp",
+            "snow_demon/animations/idle/east/02.webp",
+            "snow_demon/animations/idle/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:49:19 GMT",
           "src_frames": 4,
@@ -184,13 +184,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__north.png",
+          "strip": "snow_demon/animations/idle__north.webp",
           "gif": "snow_demon/animations/idle__north.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/north/00.png",
-            "snow_demon/animations/idle/north/01.png",
-            "snow_demon/animations/idle/north/02.png",
-            "snow_demon/animations/idle/north/03.png"
+            "snow_demon/animations/idle/north/00.webp",
+            "snow_demon/animations/idle/north/01.webp",
+            "snow_demon/animations/idle/north/02.webp",
+            "snow_demon/animations/idle/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:41 GMT",
           "src_frames": 4,
@@ -198,13 +198,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__north-east.png",
+          "strip": "snow_demon/animations/idle__north-east.webp",
           "gif": "snow_demon/animations/idle__north-east.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/north-east/00.png",
-            "snow_demon/animations/idle/north-east/01.png",
-            "snow_demon/animations/idle/north-east/02.png",
-            "snow_demon/animations/idle/north-east/03.png"
+            "snow_demon/animations/idle/north-east/00.webp",
+            "snow_demon/animations/idle/north-east/01.webp",
+            "snow_demon/animations/idle/north-east/02.webp",
+            "snow_demon/animations/idle/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:42 GMT",
           "src_frames": 4,
@@ -212,13 +212,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__north-west.png",
+          "strip": "snow_demon/animations/idle__north-west.webp",
           "gif": "snow_demon/animations/idle__north-west.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/north-west/00.png",
-            "snow_demon/animations/idle/north-west/01.png",
-            "snow_demon/animations/idle/north-west/02.png",
-            "snow_demon/animations/idle/north-west/03.png"
+            "snow_demon/animations/idle/north-west/00.webp",
+            "snow_demon/animations/idle/north-west/01.webp",
+            "snow_demon/animations/idle/north-west/02.webp",
+            "snow_demon/animations/idle/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:43 GMT",
           "src_frames": 4,
@@ -226,13 +226,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__south.png",
+          "strip": "snow_demon/animations/idle__south.webp",
           "gif": "snow_demon/animations/idle__south.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/south/00.png",
-            "snow_demon/animations/idle/south/01.png",
-            "snow_demon/animations/idle/south/02.png",
-            "snow_demon/animations/idle/south/03.png"
+            "snow_demon/animations/idle/south/00.webp",
+            "snow_demon/animations/idle/south/01.webp",
+            "snow_demon/animations/idle/south/02.webp",
+            "snow_demon/animations/idle/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:44 GMT",
           "src_frames": 4,
@@ -240,13 +240,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__south-east.png",
+          "strip": "snow_demon/animations/idle__south-east.webp",
           "gif": "snow_demon/animations/idle__south-east.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/south-east/00.png",
-            "snow_demon/animations/idle/south-east/01.png",
-            "snow_demon/animations/idle/south-east/02.png",
-            "snow_demon/animations/idle/south-east/03.png"
+            "snow_demon/animations/idle/south-east/00.webp",
+            "snow_demon/animations/idle/south-east/01.webp",
+            "snow_demon/animations/idle/south-east/02.webp",
+            "snow_demon/animations/idle/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:45 GMT",
           "src_frames": 4,
@@ -254,13 +254,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__south-west.png",
+          "strip": "snow_demon/animations/idle__south-west.webp",
           "gif": "snow_demon/animations/idle__south-west.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/south-west/00.png",
-            "snow_demon/animations/idle/south-west/01.png",
-            "snow_demon/animations/idle/south-west/02.png",
-            "snow_demon/animations/idle/south-west/03.png"
+            "snow_demon/animations/idle/south-west/00.webp",
+            "snow_demon/animations/idle/south-west/01.webp",
+            "snow_demon/animations/idle/south-west/02.webp",
+            "snow_demon/animations/idle/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:46 GMT",
           "src_frames": 4,
@@ -268,13 +268,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "snow_demon/animations/idle__west.png",
+          "strip": "snow_demon/animations/idle__west.webp",
           "gif": "snow_demon/animations/idle__west.gif",
           "frame_paths": [
-            "snow_demon/animations/idle/west/00.png",
-            "snow_demon/animations/idle/west/01.png",
-            "snow_demon/animations/idle/west/02.png",
-            "snow_demon/animations/idle/west/03.png"
+            "snow_demon/animations/idle/west/00.webp",
+            "snow_demon/animations/idle/west/01.webp",
+            "snow_demon/animations/idle/west/02.webp",
+            "snow_demon/animations/idle/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:47 GMT",
           "src_frames": 4,
@@ -288,18 +288,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__east.png",
+          "strip": "snow_demon/animations/die__east.webp",
           "gif": "snow_demon/animations/die__east.gif",
           "frame_paths": [
-            "snow_demon/animations/die/east/00.png",
-            "snow_demon/animations/die/east/01.png",
-            "snow_demon/animations/die/east/02.png",
-            "snow_demon/animations/die/east/03.png",
-            "snow_demon/animations/die/east/04.png",
-            "snow_demon/animations/die/east/05.png",
-            "snow_demon/animations/die/east/06.png",
-            "snow_demon/animations/die/east/07.png",
-            "snow_demon/animations/die/east/08.png"
+            "snow_demon/animations/die/east/00.webp",
+            "snow_demon/animations/die/east/01.webp",
+            "snow_demon/animations/die/east/02.webp",
+            "snow_demon/animations/die/east/03.webp",
+            "snow_demon/animations/die/east/04.webp",
+            "snow_demon/animations/die/east/05.webp",
+            "snow_demon/animations/die/east/06.webp",
+            "snow_demon/animations/die/east/07.webp",
+            "snow_demon/animations/die/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:48 GMT",
           "src_frames": 9,
@@ -307,18 +307,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__north.png",
+          "strip": "snow_demon/animations/die__north.webp",
           "gif": "snow_demon/animations/die__north.gif",
           "frame_paths": [
-            "snow_demon/animations/die/north/00.png",
-            "snow_demon/animations/die/north/01.png",
-            "snow_demon/animations/die/north/02.png",
-            "snow_demon/animations/die/north/03.png",
-            "snow_demon/animations/die/north/04.png",
-            "snow_demon/animations/die/north/05.png",
-            "snow_demon/animations/die/north/06.png",
-            "snow_demon/animations/die/north/07.png",
-            "snow_demon/animations/die/north/08.png"
+            "snow_demon/animations/die/north/00.webp",
+            "snow_demon/animations/die/north/01.webp",
+            "snow_demon/animations/die/north/02.webp",
+            "snow_demon/animations/die/north/03.webp",
+            "snow_demon/animations/die/north/04.webp",
+            "snow_demon/animations/die/north/05.webp",
+            "snow_demon/animations/die/north/06.webp",
+            "snow_demon/animations/die/north/07.webp",
+            "snow_demon/animations/die/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:49 GMT",
           "src_frames": 9,
@@ -326,18 +326,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__north-east.png",
+          "strip": "snow_demon/animations/die__north-east.webp",
           "gif": "snow_demon/animations/die__north-east.gif",
           "frame_paths": [
-            "snow_demon/animations/die/north-east/00.png",
-            "snow_demon/animations/die/north-east/01.png",
-            "snow_demon/animations/die/north-east/02.png",
-            "snow_demon/animations/die/north-east/03.png",
-            "snow_demon/animations/die/north-east/04.png",
-            "snow_demon/animations/die/north-east/05.png",
-            "snow_demon/animations/die/north-east/06.png",
-            "snow_demon/animations/die/north-east/07.png",
-            "snow_demon/animations/die/north-east/08.png"
+            "snow_demon/animations/die/north-east/00.webp",
+            "snow_demon/animations/die/north-east/01.webp",
+            "snow_demon/animations/die/north-east/02.webp",
+            "snow_demon/animations/die/north-east/03.webp",
+            "snow_demon/animations/die/north-east/04.webp",
+            "snow_demon/animations/die/north-east/05.webp",
+            "snow_demon/animations/die/north-east/06.webp",
+            "snow_demon/animations/die/north-east/07.webp",
+            "snow_demon/animations/die/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:50 GMT",
           "src_frames": 9,
@@ -345,18 +345,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__north-west.png",
+          "strip": "snow_demon/animations/die__north-west.webp",
           "gif": "snow_demon/animations/die__north-west.gif",
           "frame_paths": [
-            "snow_demon/animations/die/north-west/00.png",
-            "snow_demon/animations/die/north-west/01.png",
-            "snow_demon/animations/die/north-west/02.png",
-            "snow_demon/animations/die/north-west/03.png",
-            "snow_demon/animations/die/north-west/04.png",
-            "snow_demon/animations/die/north-west/05.png",
-            "snow_demon/animations/die/north-west/06.png",
-            "snow_demon/animations/die/north-west/07.png",
-            "snow_demon/animations/die/north-west/08.png"
+            "snow_demon/animations/die/north-west/00.webp",
+            "snow_demon/animations/die/north-west/01.webp",
+            "snow_demon/animations/die/north-west/02.webp",
+            "snow_demon/animations/die/north-west/03.webp",
+            "snow_demon/animations/die/north-west/04.webp",
+            "snow_demon/animations/die/north-west/05.webp",
+            "snow_demon/animations/die/north-west/06.webp",
+            "snow_demon/animations/die/north-west/07.webp",
+            "snow_demon/animations/die/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:51 GMT",
           "src_frames": 9,
@@ -364,18 +364,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__south.png",
+          "strip": "snow_demon/animations/die__south.webp",
           "gif": "snow_demon/animations/die__south.gif",
           "frame_paths": [
-            "snow_demon/animations/die/south/00.png",
-            "snow_demon/animations/die/south/01.png",
-            "snow_demon/animations/die/south/02.png",
-            "snow_demon/animations/die/south/03.png",
-            "snow_demon/animations/die/south/04.png",
-            "snow_demon/animations/die/south/05.png",
-            "snow_demon/animations/die/south/06.png",
-            "snow_demon/animations/die/south/07.png",
-            "snow_demon/animations/die/south/08.png"
+            "snow_demon/animations/die/south/00.webp",
+            "snow_demon/animations/die/south/01.webp",
+            "snow_demon/animations/die/south/02.webp",
+            "snow_demon/animations/die/south/03.webp",
+            "snow_demon/animations/die/south/04.webp",
+            "snow_demon/animations/die/south/05.webp",
+            "snow_demon/animations/die/south/06.webp",
+            "snow_demon/animations/die/south/07.webp",
+            "snow_demon/animations/die/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:53 GMT",
           "src_frames": 9,
@@ -383,18 +383,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__south-east.png",
+          "strip": "snow_demon/animations/die__south-east.webp",
           "gif": "snow_demon/animations/die__south-east.gif",
           "frame_paths": [
-            "snow_demon/animations/die/south-east/00.png",
-            "snow_demon/animations/die/south-east/01.png",
-            "snow_demon/animations/die/south-east/02.png",
-            "snow_demon/animations/die/south-east/03.png",
-            "snow_demon/animations/die/south-east/04.png",
-            "snow_demon/animations/die/south-east/05.png",
-            "snow_demon/animations/die/south-east/06.png",
-            "snow_demon/animations/die/south-east/07.png",
-            "snow_demon/animations/die/south-east/08.png"
+            "snow_demon/animations/die/south-east/00.webp",
+            "snow_demon/animations/die/south-east/01.webp",
+            "snow_demon/animations/die/south-east/02.webp",
+            "snow_demon/animations/die/south-east/03.webp",
+            "snow_demon/animations/die/south-east/04.webp",
+            "snow_demon/animations/die/south-east/05.webp",
+            "snow_demon/animations/die/south-east/06.webp",
+            "snow_demon/animations/die/south-east/07.webp",
+            "snow_demon/animations/die/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:54 GMT",
           "src_frames": 9,
@@ -402,18 +402,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__south-west.png",
+          "strip": "snow_demon/animations/die__south-west.webp",
           "gif": "snow_demon/animations/die__south-west.gif",
           "frame_paths": [
-            "snow_demon/animations/die/south-west/00.png",
-            "snow_demon/animations/die/south-west/01.png",
-            "snow_demon/animations/die/south-west/02.png",
-            "snow_demon/animations/die/south-west/03.png",
-            "snow_demon/animations/die/south-west/04.png",
-            "snow_demon/animations/die/south-west/05.png",
-            "snow_demon/animations/die/south-west/06.png",
-            "snow_demon/animations/die/south-west/07.png",
-            "snow_demon/animations/die/south-west/08.png"
+            "snow_demon/animations/die/south-west/00.webp",
+            "snow_demon/animations/die/south-west/01.webp",
+            "snow_demon/animations/die/south-west/02.webp",
+            "snow_demon/animations/die/south-west/03.webp",
+            "snow_demon/animations/die/south-west/04.webp",
+            "snow_demon/animations/die/south-west/05.webp",
+            "snow_demon/animations/die/south-west/06.webp",
+            "snow_demon/animations/die/south-west/07.webp",
+            "snow_demon/animations/die/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:49:20 GMT",
           "src_frames": 9,
@@ -421,18 +421,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "snow_demon/animations/die__west.png",
+          "strip": "snow_demon/animations/die__west.webp",
           "gif": "snow_demon/animations/die__west.gif",
           "frame_paths": [
-            "snow_demon/animations/die/west/00.png",
-            "snow_demon/animations/die/west/01.png",
-            "snow_demon/animations/die/west/02.png",
-            "snow_demon/animations/die/west/03.png",
-            "snow_demon/animations/die/west/04.png",
-            "snow_demon/animations/die/west/05.png",
-            "snow_demon/animations/die/west/06.png",
-            "snow_demon/animations/die/west/07.png",
-            "snow_demon/animations/die/west/08.png"
+            "snow_demon/animations/die/west/00.webp",
+            "snow_demon/animations/die/west/01.webp",
+            "snow_demon/animations/die/west/02.webp",
+            "snow_demon/animations/die/west/03.webp",
+            "snow_demon/animations/die/west/04.webp",
+            "snow_demon/animations/die/west/05.webp",
+            "snow_demon/animations/die/west/06.webp",
+            "snow_demon/animations/die/west/07.webp",
+            "snow_demon/animations/die/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:49:21 GMT",
           "src_frames": 9,
@@ -446,13 +446,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__east.png",
+          "strip": "snow_demon/animations/attack__east.webp",
           "gif": "snow_demon/animations/attack__east.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/east/00.png",
-            "snow_demon/animations/attack/east/01.png",
-            "snow_demon/animations/attack/east/02.png",
-            "snow_demon/animations/attack/east/03.png"
+            "snow_demon/animations/attack/east/00.webp",
+            "snow_demon/animations/attack/east/01.webp",
+            "snow_demon/animations/attack/east/02.webp",
+            "snow_demon/animations/attack/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:57 GMT",
           "src_frames": 4,
@@ -460,13 +460,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__north.png",
+          "strip": "snow_demon/animations/attack__north.webp",
           "gif": "snow_demon/animations/attack__north.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/north/00.png",
-            "snow_demon/animations/attack/north/01.png",
-            "snow_demon/animations/attack/north/02.png",
-            "snow_demon/animations/attack/north/03.png"
+            "snow_demon/animations/attack/north/00.webp",
+            "snow_demon/animations/attack/north/01.webp",
+            "snow_demon/animations/attack/north/02.webp",
+            "snow_demon/animations/attack/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:58 GMT",
           "src_frames": 4,
@@ -474,13 +474,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__north-east.png",
+          "strip": "snow_demon/animations/attack__north-east.webp",
           "gif": "snow_demon/animations/attack__north-east.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/north-east/00.png",
-            "snow_demon/animations/attack/north-east/01.png",
-            "snow_demon/animations/attack/north-east/02.png",
-            "snow_demon/animations/attack/north-east/03.png"
+            "snow_demon/animations/attack/north-east/00.webp",
+            "snow_demon/animations/attack/north-east/01.webp",
+            "snow_demon/animations/attack/north-east/02.webp",
+            "snow_demon/animations/attack/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:52:59 GMT",
           "src_frames": 4,
@@ -488,13 +488,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__north-west.png",
+          "strip": "snow_demon/animations/attack__north-west.webp",
           "gif": "snow_demon/animations/attack__north-west.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/north-west/00.png",
-            "snow_demon/animations/attack/north-west/01.png",
-            "snow_demon/animations/attack/north-west/02.png",
-            "snow_demon/animations/attack/north-west/03.png"
+            "snow_demon/animations/attack/north-west/00.webp",
+            "snow_demon/animations/attack/north-west/01.webp",
+            "snow_demon/animations/attack/north-west/02.webp",
+            "snow_demon/animations/attack/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:00 GMT",
           "src_frames": 4,
@@ -502,13 +502,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__south.png",
+          "strip": "snow_demon/animations/attack__south.webp",
           "gif": "snow_demon/animations/attack__south.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/south/00.png",
-            "snow_demon/animations/attack/south/01.png",
-            "snow_demon/animations/attack/south/02.png",
-            "snow_demon/animations/attack/south/03.png"
+            "snow_demon/animations/attack/south/00.webp",
+            "snow_demon/animations/attack/south/01.webp",
+            "snow_demon/animations/attack/south/02.webp",
+            "snow_demon/animations/attack/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:01 GMT",
           "src_frames": 4,
@@ -516,13 +516,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__south-east.png",
+          "strip": "snow_demon/animations/attack__south-east.webp",
           "gif": "snow_demon/animations/attack__south-east.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/south-east/00.png",
-            "snow_demon/animations/attack/south-east/01.png",
-            "snow_demon/animations/attack/south-east/02.png",
-            "snow_demon/animations/attack/south-east/03.png"
+            "snow_demon/animations/attack/south-east/00.webp",
+            "snow_demon/animations/attack/south-east/01.webp",
+            "snow_demon/animations/attack/south-east/02.webp",
+            "snow_demon/animations/attack/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:02 GMT",
           "src_frames": 4,
@@ -530,13 +530,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__south-west.png",
+          "strip": "snow_demon/animations/attack__south-west.webp",
           "gif": "snow_demon/animations/attack__south-west.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/south-west/00.png",
-            "snow_demon/animations/attack/south-west/01.png",
-            "snow_demon/animations/attack/south-west/02.png",
-            "snow_demon/animations/attack/south-west/03.png"
+            "snow_demon/animations/attack/south-west/00.webp",
+            "snow_demon/animations/attack/south-west/01.webp",
+            "snow_demon/animations/attack/south-west/02.webp",
+            "snow_demon/animations/attack/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:04 GMT",
           "src_frames": 4,
@@ -544,13 +544,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "snow_demon/animations/attack__west.png",
+          "strip": "snow_demon/animations/attack__west.webp",
           "gif": "snow_demon/animations/attack__west.gif",
           "frame_paths": [
-            "snow_demon/animations/attack/west/00.png",
-            "snow_demon/animations/attack/west/01.png",
-            "snow_demon/animations/attack/west/02.png",
-            "snow_demon/animations/attack/west/03.png"
+            "snow_demon/animations/attack/west/00.webp",
+            "snow_demon/animations/attack/west/01.webp",
+            "snow_demon/animations/attack/west/02.webp",
+            "snow_demon/animations/attack/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:05 GMT",
           "src_frames": 4,
@@ -564,13 +564,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__east.png",
+          "strip": "snow_demon/animations/walk__east.webp",
           "gif": "snow_demon/animations/walk__east.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/east/00.png",
-            "snow_demon/animations/walk/east/01.png",
-            "snow_demon/animations/walk/east/02.png",
-            "snow_demon/animations/walk/east/03.png"
+            "snow_demon/animations/walk/east/00.webp",
+            "snow_demon/animations/walk/east/01.webp",
+            "snow_demon/animations/walk/east/02.webp",
+            "snow_demon/animations/walk/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:49:22 GMT",
           "src_frames": 4,
@@ -578,13 +578,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__north.png",
+          "strip": "snow_demon/animations/walk__north.webp",
           "gif": "snow_demon/animations/walk__north.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/north/00.png",
-            "snow_demon/animations/walk/north/01.png",
-            "snow_demon/animations/walk/north/02.png",
-            "snow_demon/animations/walk/north/03.png"
+            "snow_demon/animations/walk/north/00.webp",
+            "snow_demon/animations/walk/north/01.webp",
+            "snow_demon/animations/walk/north/02.webp",
+            "snow_demon/animations/walk/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:06 GMT",
           "src_frames": 4,
@@ -592,13 +592,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__north-east.png",
+          "strip": "snow_demon/animations/walk__north-east.webp",
           "gif": "snow_demon/animations/walk__north-east.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/north-east/00.png",
-            "snow_demon/animations/walk/north-east/01.png",
-            "snow_demon/animations/walk/north-east/02.png",
-            "snow_demon/animations/walk/north-east/03.png"
+            "snow_demon/animations/walk/north-east/00.webp",
+            "snow_demon/animations/walk/north-east/01.webp",
+            "snow_demon/animations/walk/north-east/02.webp",
+            "snow_demon/animations/walk/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:07 GMT",
           "src_frames": 4,
@@ -606,13 +606,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__north-west.png",
+          "strip": "snow_demon/animations/walk__north-west.webp",
           "gif": "snow_demon/animations/walk__north-west.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/north-west/00.png",
-            "snow_demon/animations/walk/north-west/01.png",
-            "snow_demon/animations/walk/north-west/02.png",
-            "snow_demon/animations/walk/north-west/03.png"
+            "snow_demon/animations/walk/north-west/00.webp",
+            "snow_demon/animations/walk/north-west/01.webp",
+            "snow_demon/animations/walk/north-west/02.webp",
+            "snow_demon/animations/walk/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:08 GMT",
           "src_frames": 4,
@@ -620,13 +620,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__south.png",
+          "strip": "snow_demon/animations/walk__south.webp",
           "gif": "snow_demon/animations/walk__south.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/south/00.png",
-            "snow_demon/animations/walk/south/01.png",
-            "snow_demon/animations/walk/south/02.png",
-            "snow_demon/animations/walk/south/03.png"
+            "snow_demon/animations/walk/south/00.webp",
+            "snow_demon/animations/walk/south/01.webp",
+            "snow_demon/animations/walk/south/02.webp",
+            "snow_demon/animations/walk/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:09 GMT",
           "src_frames": 4,
@@ -634,13 +634,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__south-east.png",
+          "strip": "snow_demon/animations/walk__south-east.webp",
           "gif": "snow_demon/animations/walk__south-east.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/south-east/00.png",
-            "snow_demon/animations/walk/south-east/01.png",
-            "snow_demon/animations/walk/south-east/02.png",
-            "snow_demon/animations/walk/south-east/03.png"
+            "snow_demon/animations/walk/south-east/00.webp",
+            "snow_demon/animations/walk/south-east/01.webp",
+            "snow_demon/animations/walk/south-east/02.webp",
+            "snow_demon/animations/walk/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:11 GMT",
           "src_frames": 4,
@@ -648,13 +648,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__south-west.png",
+          "strip": "snow_demon/animations/walk__south-west.webp",
           "gif": "snow_demon/animations/walk__south-west.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/south-west/00.png",
-            "snow_demon/animations/walk/south-west/01.png",
-            "snow_demon/animations/walk/south-west/02.png",
-            "snow_demon/animations/walk/south-west/03.png"
+            "snow_demon/animations/walk/south-west/00.webp",
+            "snow_demon/animations/walk/south-west/01.webp",
+            "snow_demon/animations/walk/south-west/02.webp",
+            "snow_demon/animations/walk/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:12 GMT",
           "src_frames": 4,
@@ -662,13 +662,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "snow_demon/animations/walk__west.png",
+          "strip": "snow_demon/animations/walk__west.webp",
           "gif": "snow_demon/animations/walk__west.gif",
           "frame_paths": [
-            "snow_demon/animations/walk/west/00.png",
-            "snow_demon/animations/walk/west/01.png",
-            "snow_demon/animations/walk/west/02.png",
-            "snow_demon/animations/walk/west/03.png"
+            "snow_demon/animations/walk/west/00.webp",
+            "snow_demon/animations/walk/west/01.webp",
+            "snow_demon/animations/walk/west/02.webp",
+            "snow_demon/animations/walk/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:49:23 GMT",
           "src_frames": 4,

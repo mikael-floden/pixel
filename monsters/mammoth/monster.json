@@ -24,7 +24,7 @@
     "x": 0,
     "y": 0
   },
-  "sprite": "mammoth/sprite.png",
+  "sprite": "mammoth/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "mammoth/rotations/south.png",
-    "west": "mammoth/rotations/west.png",
-    "east": "mammoth/rotations/east.png",
-    "north": "mammoth/rotations/north.png",
-    "south-east": "mammoth/rotations/south-east.png",
-    "north-east": "mammoth/rotations/north-east.png",
-    "north-west": "mammoth/rotations/north-west.png",
-    "south-west": "mammoth/rotations/south-west.png"
+    "south": "mammoth/rotations/south.webp",
+    "west": "mammoth/rotations/west.webp",
+    "east": "mammoth/rotations/east.webp",
+    "north": "mammoth/rotations/north.webp",
+    "south-east": "mammoth/rotations/south-east.webp",
+    "north-east": "mammoth/rotations/north-east.webp",
+    "north-west": "mammoth/rotations/north-west.webp",
+    "south-west": "mammoth/rotations/south-west.webp"
   },
   "animations": {
     "angry": {
@@ -52,13 +52,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__east.png",
+          "strip": "mammoth/animations/angry__east.webp",
           "gif": "mammoth/animations/angry__east.gif",
           "frame_paths": [
-            "mammoth/animations/angry/east/00.png",
-            "mammoth/animations/angry/east/01.png",
-            "mammoth/animations/angry/east/02.png",
-            "mammoth/animations/angry/east/03.png"
+            "mammoth/animations/angry/east/00.webp",
+            "mammoth/animations/angry/east/01.webp",
+            "mammoth/animations/angry/east/02.webp",
+            "mammoth/animations/angry/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:33 GMT",
           "src_frames": 4,
@@ -66,13 +66,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__north.png",
+          "strip": "mammoth/animations/angry__north.webp",
           "gif": "mammoth/animations/angry__north.gif",
           "frame_paths": [
-            "mammoth/animations/angry/north/00.png",
-            "mammoth/animations/angry/north/01.png",
-            "mammoth/animations/angry/north/02.png",
-            "mammoth/animations/angry/north/03.png"
+            "mammoth/animations/angry/north/00.webp",
+            "mammoth/animations/angry/north/01.webp",
+            "mammoth/animations/angry/north/02.webp",
+            "mammoth/animations/angry/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:33 GMT",
           "src_frames": 4,
@@ -80,13 +80,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__north-east.png",
+          "strip": "mammoth/animations/angry__north-east.webp",
           "gif": "mammoth/animations/angry__north-east.gif",
           "frame_paths": [
-            "mammoth/animations/angry/north-east/00.png",
-            "mammoth/animations/angry/north-east/01.png",
-            "mammoth/animations/angry/north-east/02.png",
-            "mammoth/animations/angry/north-east/03.png"
+            "mammoth/animations/angry/north-east/00.webp",
+            "mammoth/animations/angry/north-east/01.webp",
+            "mammoth/animations/angry/north-east/02.webp",
+            "mammoth/animations/angry/north-east/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:30 GMT",
           "src_frames": 4,
@@ -94,13 +94,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__north-west.png",
+          "strip": "mammoth/animations/angry__north-west.webp",
           "gif": "mammoth/animations/angry__north-west.gif",
           "frame_paths": [
-            "mammoth/animations/angry/north-west/00.png",
-            "mammoth/animations/angry/north-west/01.png",
-            "mammoth/animations/angry/north-west/02.png",
-            "mammoth/animations/angry/north-west/03.png"
+            "mammoth/animations/angry/north-west/00.webp",
+            "mammoth/animations/angry/north-west/01.webp",
+            "mammoth/animations/angry/north-west/02.webp",
+            "mammoth/animations/angry/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:38 GMT",
           "src_frames": 4,
@@ -108,13 +108,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__south.png",
+          "strip": "mammoth/animations/angry__south.webp",
           "gif": "mammoth/animations/angry__south.gif",
           "frame_paths": [
-            "mammoth/animations/angry/south/00.png",
-            "mammoth/animations/angry/south/01.png",
-            "mammoth/animations/angry/south/02.png",
-            "mammoth/animations/angry/south/03.png"
+            "mammoth/animations/angry/south/00.webp",
+            "mammoth/animations/angry/south/01.webp",
+            "mammoth/animations/angry/south/02.webp",
+            "mammoth/animations/angry/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:39 GMT",
           "src_frames": 4,
@@ -122,13 +122,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__south-east.png",
+          "strip": "mammoth/animations/angry__south-east.webp",
           "gif": "mammoth/animations/angry__south-east.gif",
           "frame_paths": [
-            "mammoth/animations/angry/south-east/00.png",
-            "mammoth/animations/angry/south-east/01.png",
-            "mammoth/animations/angry/south-east/02.png",
-            "mammoth/animations/angry/south-east/03.png"
+            "mammoth/animations/angry/south-east/00.webp",
+            "mammoth/animations/angry/south-east/01.webp",
+            "mammoth/animations/angry/south-east/02.webp",
+            "mammoth/animations/angry/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:41 GMT",
           "src_frames": 4,
@@ -136,13 +136,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__south-west.png",
+          "strip": "mammoth/animations/angry__south-west.webp",
           "gif": "mammoth/animations/angry__south-west.gif",
           "frame_paths": [
-            "mammoth/animations/angry/south-west/00.png",
-            "mammoth/animations/angry/south-west/01.png",
-            "mammoth/animations/angry/south-west/02.png",
-            "mammoth/animations/angry/south-west/03.png"
+            "mammoth/animations/angry/south-west/00.webp",
+            "mammoth/animations/angry/south-west/01.webp",
+            "mammoth/animations/angry/south-west/02.webp",
+            "mammoth/animations/angry/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:42 GMT",
           "src_frames": 4,
@@ -150,13 +150,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "mammoth/animations/angry__west.png",
+          "strip": "mammoth/animations/angry__west.webp",
           "gif": "mammoth/animations/angry__west.gif",
           "frame_paths": [
-            "mammoth/animations/angry/west/00.png",
-            "mammoth/animations/angry/west/01.png",
-            "mammoth/animations/angry/west/02.png",
-            "mammoth/animations/angry/west/03.png"
+            "mammoth/animations/angry/west/00.webp",
+            "mammoth/animations/angry/west/01.webp",
+            "mammoth/animations/angry/west/02.webp",
+            "mammoth/animations/angry/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:43 GMT",
           "src_frames": 4,
@@ -170,13 +170,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__east.png",
+          "strip": "mammoth/animations/attack__east.webp",
           "gif": "mammoth/animations/attack__east.gif",
           "frame_paths": [
-            "mammoth/animations/attack/east/00.png",
-            "mammoth/animations/attack/east/01.png",
-            "mammoth/animations/attack/east/02.png",
-            "mammoth/animations/attack/east/03.png"
+            "mammoth/animations/attack/east/00.webp",
+            "mammoth/animations/attack/east/01.webp",
+            "mammoth/animations/attack/east/02.webp",
+            "mammoth/animations/attack/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:45 GMT",
           "src_frames": 4,
@@ -184,13 +184,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__north.png",
+          "strip": "mammoth/animations/attack__north.webp",
           "gif": "mammoth/animations/attack__north.gif",
           "frame_paths": [
-            "mammoth/animations/attack/north/00.png",
-            "mammoth/animations/attack/north/01.png",
-            "mammoth/animations/attack/north/02.png",
-            "mammoth/animations/attack/north/03.png"
+            "mammoth/animations/attack/north/00.webp",
+            "mammoth/animations/attack/north/01.webp",
+            "mammoth/animations/attack/north/02.webp",
+            "mammoth/animations/attack/north/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:31 GMT",
           "src_frames": 4,
@@ -198,13 +198,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__north-east.png",
+          "strip": "mammoth/animations/attack__north-east.webp",
           "gif": "mammoth/animations/attack__north-east.gif",
           "frame_paths": [
-            "mammoth/animations/attack/north-east/00.png",
-            "mammoth/animations/attack/north-east/01.png",
-            "mammoth/animations/attack/north-east/02.png",
-            "mammoth/animations/attack/north-east/03.png"
+            "mammoth/animations/attack/north-east/00.webp",
+            "mammoth/animations/attack/north-east/01.webp",
+            "mammoth/animations/attack/north-east/02.webp",
+            "mammoth/animations/attack/north-east/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:33 GMT",
           "src_frames": 4,
@@ -212,13 +212,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__north-west.png",
+          "strip": "mammoth/animations/attack__north-west.webp",
           "gif": "mammoth/animations/attack__north-west.gif",
           "frame_paths": [
-            "mammoth/animations/attack/north-west/00.png",
-            "mammoth/animations/attack/north-west/01.png",
-            "mammoth/animations/attack/north-west/02.png",
-            "mammoth/animations/attack/north-west/03.png"
+            "mammoth/animations/attack/north-west/00.webp",
+            "mammoth/animations/attack/north-west/01.webp",
+            "mammoth/animations/attack/north-west/02.webp",
+            "mammoth/animations/attack/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:48 GMT",
           "src_frames": 4,
@@ -226,13 +226,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__south.png",
+          "strip": "mammoth/animations/attack__south.webp",
           "gif": "mammoth/animations/attack__south.gif",
           "frame_paths": [
-            "mammoth/animations/attack/south/00.png",
-            "mammoth/animations/attack/south/01.png",
-            "mammoth/animations/attack/south/02.png",
-            "mammoth/animations/attack/south/03.png"
+            "mammoth/animations/attack/south/00.webp",
+            "mammoth/animations/attack/south/01.webp",
+            "mammoth/animations/attack/south/02.webp",
+            "mammoth/animations/attack/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:50 GMT",
           "src_frames": 4,
@@ -240,13 +240,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__south-east.png",
+          "strip": "mammoth/animations/attack__south-east.webp",
           "gif": "mammoth/animations/attack__south-east.gif",
           "frame_paths": [
-            "mammoth/animations/attack/south-east/00.png",
-            "mammoth/animations/attack/south-east/01.png",
-            "mammoth/animations/attack/south-east/02.png",
-            "mammoth/animations/attack/south-east/03.png"
+            "mammoth/animations/attack/south-east/00.webp",
+            "mammoth/animations/attack/south-east/01.webp",
+            "mammoth/animations/attack/south-east/02.webp",
+            "mammoth/animations/attack/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:52 GMT",
           "src_frames": 4,
@@ -254,13 +254,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__south-west.png",
+          "strip": "mammoth/animations/attack__south-west.webp",
           "gif": "mammoth/animations/attack__south-west.gif",
           "frame_paths": [
-            "mammoth/animations/attack/south-west/00.png",
-            "mammoth/animations/attack/south-west/01.png",
-            "mammoth/animations/attack/south-west/02.png",
-            "mammoth/animations/attack/south-west/03.png"
+            "mammoth/animations/attack/south-west/00.webp",
+            "mammoth/animations/attack/south-west/01.webp",
+            "mammoth/animations/attack/south-west/02.webp",
+            "mammoth/animations/attack/south-west/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:35 GMT",
           "src_frames": 4,
@@ -268,13 +268,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "mammoth/animations/attack__west.png",
+          "strip": "mammoth/animations/attack__west.webp",
           "gif": "mammoth/animations/attack__west.gif",
           "frame_paths": [
-            "mammoth/animations/attack/west/00.png",
-            "mammoth/animations/attack/west/01.png",
-            "mammoth/animations/attack/west/02.png",
-            "mammoth/animations/attack/west/03.png"
+            "mammoth/animations/attack/west/00.webp",
+            "mammoth/animations/attack/west/01.webp",
+            "mammoth/animations/attack/west/02.webp",
+            "mammoth/animations/attack/west/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:36 GMT",
           "src_frames": 4,
@@ -288,13 +288,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__east.png",
+          "strip": "mammoth/animations/idle__east.webp",
           "gif": "mammoth/animations/idle__east.gif",
           "frame_paths": [
-            "mammoth/animations/idle/east/00.png",
-            "mammoth/animations/idle/east/01.png",
-            "mammoth/animations/idle/east/02.png",
-            "mammoth/animations/idle/east/03.png"
+            "mammoth/animations/idle/east/00.webp",
+            "mammoth/animations/idle/east/01.webp",
+            "mammoth/animations/idle/east/02.webp",
+            "mammoth/animations/idle/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:56 GMT",
           "src_frames": 4,
@@ -302,13 +302,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__north.png",
+          "strip": "mammoth/animations/idle__north.webp",
           "gif": "mammoth/animations/idle__north.gif",
           "frame_paths": [
-            "mammoth/animations/idle/north/00.png",
-            "mammoth/animations/idle/north/01.png",
-            "mammoth/animations/idle/north/02.png",
-            "mammoth/animations/idle/north/03.png"
+            "mammoth/animations/idle/north/00.webp",
+            "mammoth/animations/idle/north/01.webp",
+            "mammoth/animations/idle/north/02.webp",
+            "mammoth/animations/idle/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:57 GMT",
           "src_frames": 4,
@@ -316,13 +316,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__north-east.png",
+          "strip": "mammoth/animations/idle__north-east.webp",
           "gif": "mammoth/animations/idle__north-east.gif",
           "frame_paths": [
-            "mammoth/animations/idle/north-east/00.png",
-            "mammoth/animations/idle/north-east/01.png",
-            "mammoth/animations/idle/north-east/02.png",
-            "mammoth/animations/idle/north-east/03.png"
+            "mammoth/animations/idle/north-east/00.webp",
+            "mammoth/animations/idle/north-east/01.webp",
+            "mammoth/animations/idle/north-east/02.webp",
+            "mammoth/animations/idle/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:59 GMT",
           "src_frames": 4,
@@ -330,13 +330,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__north-west.png",
+          "strip": "mammoth/animations/idle__north-west.webp",
           "gif": "mammoth/animations/idle__north-west.gif",
           "frame_paths": [
-            "mammoth/animations/idle/north-west/00.png",
-            "mammoth/animations/idle/north-west/01.png",
-            "mammoth/animations/idle/north-west/02.png",
-            "mammoth/animations/idle/north-west/03.png"
+            "mammoth/animations/idle/north-west/00.webp",
+            "mammoth/animations/idle/north-west/01.webp",
+            "mammoth/animations/idle/north-west/02.webp",
+            "mammoth/animations/idle/north-west/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:37 GMT",
           "src_frames": 4,
@@ -344,13 +344,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__south.png",
+          "strip": "mammoth/animations/idle__south.webp",
           "gif": "mammoth/animations/idle__south.gif",
           "frame_paths": [
-            "mammoth/animations/idle/south/00.png",
-            "mammoth/animations/idle/south/01.png",
-            "mammoth/animations/idle/south/02.png",
-            "mammoth/animations/idle/south/03.png"
+            "mammoth/animations/idle/south/00.webp",
+            "mammoth/animations/idle/south/01.webp",
+            "mammoth/animations/idle/south/02.webp",
+            "mammoth/animations/idle/south/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:38 GMT",
           "src_frames": 4,
@@ -358,13 +358,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__south-east.png",
+          "strip": "mammoth/animations/idle__south-east.webp",
           "gif": "mammoth/animations/idle__south-east.gif",
           "frame_paths": [
-            "mammoth/animations/idle/south-east/00.png",
-            "mammoth/animations/idle/south-east/01.png",
-            "mammoth/animations/idle/south-east/02.png",
-            "mammoth/animations/idle/south-east/03.png"
+            "mammoth/animations/idle/south-east/00.webp",
+            "mammoth/animations/idle/south-east/01.webp",
+            "mammoth/animations/idle/south-east/02.webp",
+            "mammoth/animations/idle/south-east/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:39 GMT",
           "src_frames": 4,
@@ -372,13 +372,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__south-west.png",
+          "strip": "mammoth/animations/idle__south-west.webp",
           "gif": "mammoth/animations/idle__south-west.gif",
           "frame_paths": [
-            "mammoth/animations/idle/south-west/00.png",
-            "mammoth/animations/idle/south-west/01.png",
-            "mammoth/animations/idle/south-west/02.png",
-            "mammoth/animations/idle/south-west/03.png"
+            "mammoth/animations/idle/south-west/00.webp",
+            "mammoth/animations/idle/south-west/01.webp",
+            "mammoth/animations/idle/south-west/02.webp",
+            "mammoth/animations/idle/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:04 GMT",
           "src_frames": 4,
@@ -386,13 +386,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "mammoth/animations/idle__west.png",
+          "strip": "mammoth/animations/idle__west.webp",
           "gif": "mammoth/animations/idle__west.gif",
           "frame_paths": [
-            "mammoth/animations/idle/west/00.png",
-            "mammoth/animations/idle/west/01.png",
-            "mammoth/animations/idle/west/02.png",
-            "mammoth/animations/idle/west/03.png"
+            "mammoth/animations/idle/west/00.webp",
+            "mammoth/animations/idle/west/01.webp",
+            "mammoth/animations/idle/west/02.webp",
+            "mammoth/animations/idle/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:06 GMT",
           "src_frames": 4,
@@ -406,13 +406,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__east.png",
+          "strip": "mammoth/animations/walk__east.webp",
           "gif": "mammoth/animations/walk__east.gif",
           "frame_paths": [
-            "mammoth/animations/walk/east/00.png",
-            "mammoth/animations/walk/east/01.png",
-            "mammoth/animations/walk/east/02.png",
-            "mammoth/animations/walk/east/03.png"
+            "mammoth/animations/walk/east/00.webp",
+            "mammoth/animations/walk/east/01.webp",
+            "mammoth/animations/walk/east/02.webp",
+            "mammoth/animations/walk/east/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:41 GMT",
           "src_frames": 4,
@@ -420,13 +420,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__north.png",
+          "strip": "mammoth/animations/walk__north.webp",
           "gif": "mammoth/animations/walk__north.gif",
           "frame_paths": [
-            "mammoth/animations/walk/north/00.png",
-            "mammoth/animations/walk/north/01.png",
-            "mammoth/animations/walk/north/02.png",
-            "mammoth/animations/walk/north/03.png"
+            "mammoth/animations/walk/north/00.webp",
+            "mammoth/animations/walk/north/01.webp",
+            "mammoth/animations/walk/north/02.webp",
+            "mammoth/animations/walk/north/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:43 GMT",
           "src_frames": 4,
@@ -434,13 +434,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__north-east.png",
+          "strip": "mammoth/animations/walk__north-east.webp",
           "gif": "mammoth/animations/walk__north-east.gif",
           "frame_paths": [
-            "mammoth/animations/walk/north-east/00.png",
-            "mammoth/animations/walk/north-east/01.png",
-            "mammoth/animations/walk/north-east/02.png",
-            "mammoth/animations/walk/north-east/03.png"
+            "mammoth/animations/walk/north-east/00.webp",
+            "mammoth/animations/walk/north-east/01.webp",
+            "mammoth/animations/walk/north-east/02.webp",
+            "mammoth/animations/walk/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:10 GMT",
           "src_frames": 4,
@@ -448,13 +448,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__north-west.png",
+          "strip": "mammoth/animations/walk__north-west.webp",
           "gif": "mammoth/animations/walk__north-west.gif",
           "frame_paths": [
-            "mammoth/animations/walk/north-west/00.png",
-            "mammoth/animations/walk/north-west/01.png",
-            "mammoth/animations/walk/north-west/02.png",
-            "mammoth/animations/walk/north-west/03.png"
+            "mammoth/animations/walk/north-west/00.webp",
+            "mammoth/animations/walk/north-west/01.webp",
+            "mammoth/animations/walk/north-west/02.webp",
+            "mammoth/animations/walk/north-west/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:44 GMT",
           "src_frames": 4,
@@ -462,13 +462,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__south.png",
+          "strip": "mammoth/animations/walk__south.webp",
           "gif": "mammoth/animations/walk__south.gif",
           "frame_paths": [
-            "mammoth/animations/walk/south/00.png",
-            "mammoth/animations/walk/south/01.png",
-            "mammoth/animations/walk/south/02.png",
-            "mammoth/animations/walk/south/03.png"
+            "mammoth/animations/walk/south/00.webp",
+            "mammoth/animations/walk/south/01.webp",
+            "mammoth/animations/walk/south/02.webp",
+            "mammoth/animations/walk/south/03.webp"
           ],
           "lm": "Thu, 30 Jul 2026 11:09:45 GMT",
           "src_frames": 4,
@@ -476,13 +476,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__south-east.png",
+          "strip": "mammoth/animations/walk__south-east.webp",
           "gif": "mammoth/animations/walk__south-east.gif",
           "frame_paths": [
-            "mammoth/animations/walk/south-east/00.png",
-            "mammoth/animations/walk/south-east/01.png",
-            "mammoth/animations/walk/south-east/02.png",
-            "mammoth/animations/walk/south-east/03.png"
+            "mammoth/animations/walk/south-east/00.webp",
+            "mammoth/animations/walk/south-east/01.webp",
+            "mammoth/animations/walk/south-east/02.webp",
+            "mammoth/animations/walk/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:14 GMT",
           "src_frames": 4,
@@ -490,13 +490,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__south-west.png",
+          "strip": "mammoth/animations/walk__south-west.webp",
           "gif": "mammoth/animations/walk__south-west.gif",
           "frame_paths": [
-            "mammoth/animations/walk/south-west/00.png",
-            "mammoth/animations/walk/south-west/01.png",
-            "mammoth/animations/walk/south-west/02.png",
-            "mammoth/animations/walk/south-west/03.png"
+            "mammoth/animations/walk/south-west/00.webp",
+            "mammoth/animations/walk/south-west/01.webp",
+            "mammoth/animations/walk/south-west/02.webp",
+            "mammoth/animations/walk/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:15 GMT",
           "src_frames": 4,
@@ -504,13 +504,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "mammoth/animations/walk__west.png",
+          "strip": "mammoth/animations/walk__west.webp",
           "gif": "mammoth/animations/walk__west.gif",
           "frame_paths": [
-            "mammoth/animations/walk/west/00.png",
-            "mammoth/animations/walk/west/01.png",
-            "mammoth/animations/walk/west/02.png",
-            "mammoth/animations/walk/west/03.png"
+            "mammoth/animations/walk/west/00.webp",
+            "mammoth/animations/walk/west/01.webp",
+            "mammoth/animations/walk/west/02.webp",
+            "mammoth/animations/walk/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:17 GMT",
           "src_frames": 4,
@@ -524,13 +524,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "mammoth/animations/die__east.png",
+          "strip": "mammoth/animations/die__east.webp",
           "gif": "mammoth/animations/die__east.gif",
           "frame_paths": [
-            "mammoth/animations/die/east/00.png",
-            "mammoth/animations/die/east/01.png",
-            "mammoth/animations/die/east/02.png",
-            "mammoth/animations/die/east/03.png"
+            "mammoth/animations/die/east/00.webp",
+            "mammoth/animations/die/east/01.webp",
+            "mammoth/animations/die/east/02.webp",
+            "mammoth/animations/die/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:18 GMT",
           "src_frames": 4,
@@ -538,13 +538,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "mammoth/animations/die__north.png",
+          "strip": "mammoth/animations/die__north.webp",
           "gif": "mammoth/animations/die__north.gif",
           "frame_paths": [
-            "mammoth/animations/die/north/00.png",
-            "mammoth/animations/die/north/01.png",
-            "mammoth/animations/die/north/02.png",
-            "mammoth/animations/die/north/03.png"
+            "mammoth/animations/die/north/00.webp",
+            "mammoth/animations/die/north/01.webp",
+            "mammoth/animations/die/north/02.webp",
+            "mammoth/animations/die/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:19 GMT",
           "src_frames": 4,
@@ -552,13 +552,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "mammoth/animations/die__north-east.png",
+          "strip": "mammoth/animations/die__north-east.webp",
           "gif": "mammoth/animations/die__north-east.gif",
           "frame_paths": [
-            "mammoth/animations/die/north-east/00.png",
-            "mammoth/animations/die/north-east/01.png",
-            "mammoth/animations/die/north-east/02.png",
-            "mammoth/animations/die/north-east/03.png"
+            "mammoth/animations/die/north-east/00.webp",
+            "mammoth/animations/die/north-east/01.webp",
+            "mammoth/animations/die/north-east/02.webp",
+            "mammoth/animations/die/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 12:21:19 GMT",
           "src_frames": 4,
@@ -566,13 +566,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "mammoth/animations/die__north-west.png",
+          "strip": "mammoth/animations/die__north-west.webp",
           "gif": "mammoth/animations/die__north-west.gif",
           "frame_paths": [
-            "mammoth/animations/die/north-west/00.png",
-            "mammoth/animations/die/north-west/01.png",
-            "mammoth/animations/die/north-west/02.png",
-            "mammoth/animations/die/north-west/03.png"
+            "mammoth/animations/die/north-west/00.webp",
+            "mammoth/animations/die/north-west/01.webp",
+            "mammoth/animations/die/north-west/02.webp",
+            "mammoth/animations/die/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:22 GMT",
           "src_frames": 4,
@@ -580,13 +580,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "mammoth/animations/die__south.png",
+          "strip": "mammoth/animations/die__south.webp",
           "gif": "mammoth/animations/die__south.gif",
           "frame_paths": [
-            "mammoth/animations/die/south/00.png",
-            "mammoth/animations/die/south/01.png",
-            "mammoth/animations/die/south/02.png",
-            "mammoth/animations/die/south/03.png"
+            "mammoth/animations/die/south/00.webp",
+            "mammoth/animations/die/south/01.webp",
+            "mammoth/animations/die/south/02.webp",
+            "mammoth/animations/die/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:23 GMT",
           "src_frames": 4,
@@ -594,13 +594,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "mammoth/animations/die__south-east.png",
+          "strip": "mammoth/animations/die__south-east.webp",
           "gif": "mammoth/animations/die__south-east.gif",
           "frame_paths": [
-            "mammoth/animations/die/south-east/00.png",
-            "mammoth/animations/die/south-east/01.png",
-            "mammoth/animations/die/south-east/02.png",
-            "mammoth/animations/die/south-east/03.png"
+            "mammoth/animations/die/south-east/00.webp",
+            "mammoth/animations/die/south-east/01.webp",
+            "mammoth/animations/die/south-east/02.webp",
+            "mammoth/animations/die/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:24 GMT",
           "src_frames": 4,
@@ -608,13 +608,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "mammoth/animations/die__south-west.png",
+          "strip": "mammoth/animations/die__south-west.webp",
           "gif": "mammoth/animations/die__south-west.gif",
           "frame_paths": [
-            "mammoth/animations/die/south-west/00.png",
-            "mammoth/animations/die/south-west/01.png",
-            "mammoth/animations/die/south-west/02.png",
-            "mammoth/animations/die/south-west/03.png"
+            "mammoth/animations/die/south-west/00.webp",
+            "mammoth/animations/die/south-west/01.webp",
+            "mammoth/animations/die/south-west/02.webp",
+            "mammoth/animations/die/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:26 GMT",
           "src_frames": 4,
@@ -622,13 +622,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "mammoth/animations/die__west.png",
+          "strip": "mammoth/animations/die__west.webp",
           "gif": "mammoth/animations/die__west.gif",
           "frame_paths": [
-            "mammoth/animations/die/west/00.png",
-            "mammoth/animations/die/west/01.png",
-            "mammoth/animations/die/west/02.png",
-            "mammoth/animations/die/west/03.png"
+            "mammoth/animations/die/west/00.webp",
+            "mammoth/animations/die/west/01.webp",
+            "mammoth/animations/die/west/02.webp",
+            "mammoth/animations/die/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:55:28 GMT",
           "src_frames": 4,
