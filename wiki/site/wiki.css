@@ -243,7 +243,6 @@ button { font: inherit; cursor: pointer; }
 .thumb-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
 /* Tight against the artwork above it (maintainer 2026-07-31). */
 .card .thumb-chip { margin: 2px 0 4px; }
-.rarity-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
 
 /* ---- loot: what drops what ----
    One row shape serves BOTH directions — a creature's drops and an item's
@@ -286,7 +285,6 @@ button { font: inherit; cursor: pointer; }
 .item-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
 .item-tools .seg button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; }
 .item-tools .dir-btn { min-width: 38px; font-size: 15px; line-height: 1; }
-.item-tools .count-note { font-size: 12.5px; margin-left: auto; font-variant-numeric: tabular-nums; }
 /* Not dropped by anything yet — the normal resting state, dimmed not warned. */
 .card.dim { opacity: 0.62; }
 .card.dim:hover { opacity: 1; }

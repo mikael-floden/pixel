@@ -642,18 +642,25 @@ function pct(chance) {
  *  type that declares it inherits the treatment for free. */
 const oneToOne = (it) => !!state.data.itemTypes?.[it?.type]?.one_per_monster;
 const itemSources = (it) => it?.droppedBy ?? [];
-const rarityOf = (it) => state.data.itemRarities?.[it?.rarity] ?? null;
+/** What KIND of thing this is, in the maintainer's words. The items agent's
+ *  own table is the source, except where the maintainer has named a type
+ *  differently for players (2026-07-31: MISC reads "Miscellaneous", not the
+ *  pipeline's "Junk") — asked of the tag, so a retitle upstream can't
+ *  silently change what players read. */
+const TYPE_NAMES = { MISC: "Miscellaneous" };
+const typeLabel = (t) => TYPE_NAMES[t] ?? state.data.itemTypes?.[t]?.label ?? t ?? "Item";
 /** The chip under an item's picture. For a 1-to-1 type it names the creature —
  *  every Soulstone is literally called "Soulstone", so the creature is the
  *  only thing that tells two of them apart. Decisions key off the SOURCE
  *  COUNT, never off soulOf alone: that is null for "unbound" AND for the
  *  "bound twice" the data must never contain but might. */
 function itemChip(it) {
+  // A 1-to-1 type has something better to say than its own name: the
+  // creature. Everything else just says WHAT IT IS — not how rare it is
+  // (maintainer 2026-07-31: "I don't like the Common/Uncommon/Rare/Epic
+  // thing. This should just say the item type").
   if (oneToOne(it)) return h("div", { class: "thumb-chip" }, soulChip(it, true));
-  const r = rarityOf(it);
-  return h("div", { class: "thumb-chip", title: r ? `Sells in the ${it.rarity} band` : "" },
-    r ? h("span", { class: "rarity-dot", style: `background:${r.color}` }) : null,
-    it.rarity ? titleCaseWord(it.rarity) : (state.data.itemTypes?.[it.type]?.label ?? "Item"));
+  return h("div", { class: "thumb-chip" }, typeLabel(it.type));
 }
 /** The creature a 1-to-1 stone belongs to. ALWAYS its name — a Soulstone
  *  carries no other identity. Bare = inline pill; `plain` = chip contents. */
@@ -667,7 +674,6 @@ function soulChip(it, plain = false) {
   if (names.length === 0) return wrap("No creature carries this soul", "Unbound");
   return wrap(names.join(", "), names.join(" · "));
 }
-const titleCaseWord = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
 /** What an item sells for: the maintainer's gold coin and the number, no
  *  sentence around it (2026-07-31 — "this is more clean and says it all").
  *  The coin is authored 32×32 at 1×, so it is drawn at 32 and never resampled. */
@@ -1349,8 +1355,8 @@ function viewItems() {
       : (Number(a.value) || 0) - (Number(b.value) || 0) || String(a.name).localeCompare(String(b.name))));
 
   const typeSeg = h("span", { class: "seg" });
-  for (const [t, text] of [["", "All"], ...present.map((t) => [t, state.data.itemTypes[t].label ?? t])]) {
-    const b = h("button", { title: t ? state.data.itemTypes[t].label : "Everything" }, text);
+  for (const [t, text] of [["", "All"], ...present.map((t) => [t, typeLabel(t)])]) {
+    const b = h("button", { title: t ? typeLabel(t) : "Everything" }, text);
     if (t === itemView.type) b.classList.add("on");
     b.addEventListener("click", () => { itemView.type = t; route(); });
     typeSeg.append(b);
@@ -1380,8 +1386,7 @@ function viewItems() {
     h("p", { class: "muted" }, state.admin
       ? `${all.length} items from the items agent. Click one to see what drops it, what it sells for, and to rate or remove it.`
       : "Everything you can pick up, sell or merge — and the creatures that carry it."),
-    h("div", { class: "item-tools" }, typeSeg, sortSeg, dirBtn,
-      h("span", { class: "muted count-note" }, String(list.length))),
+    h("div", { class: "item-tools" }, typeSeg, sortSeg, dirBtn),
     h("div", { class: "grid" }, ...list.map((it) => {
       const src = itemSources(it);
       return h("a", { class: `card${src.length ? "" : " dim"}`, href: `#/items/${it.id}` },
