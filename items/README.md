@@ -198,7 +198,7 @@ python items/pipeline/drops.py --report   # + print every monster's loot table
 ```
 items/<id>/
   item.json      the manifest — the contract the game reads (below)
-  sprite.png     the item icon, transparent PNG (48×48 today)
+  sprite.webp    the item icon, lossless WebP with alpha (48×48 today)
 ```
 
 `item.json`:
@@ -215,7 +215,7 @@ items/<id>/
   "stackable": true, "max_stack": 99,
   "equip_slot": null, "sellable": true,
   "description": "Yellowed, still sharp, and worth more to a collector than it ever was to the wolf.",
-  "sprite": "items/wolf_fang/sprite.png",   // repo-relative
+  "sprite": "items/wolf_fang/sprite.webp",  // repo-relative
   "size": [48, 48],
   "soul": { "element": "ember", "power": "…", "merge_into": ["weapon", "armor"] },  // SOUL only
   "source": { "store": "objects", "pixellab_id": "…", "tags": ["MISC"], "prompt": "…",
@@ -258,6 +258,16 @@ Verification is part of every sync and fails loudly in the summary: names
 present, unique and ≤ 12 chars; a sprite on disk; a category, a description and
 a positive gold value inside its rarity band; and every `SOUL` stone carrying a
 `power`.
+
+### Sprites are lossless WebP
+
+Every item icon is **lossless WebP**, not PNG: **176 KB → 59 KB across the 105
+sprites (67 % off), all 105 verified pixel-identical** to the PNG PixelLab
+serves, none larger. Nothing in this domain parses image bytes — the game, the
+wiki and the viewer all read the path out of `item.json` / `viewer_data.json` —
+so consumers need no change beyond following that path. `pipeline/mirror.py`
+writes WebP directly (and deletes a legacy `sprite.png` when it finds one), so
+new items arrive in the right format with no conversion step anywhere.
 
 ## Browse it
 

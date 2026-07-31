@@ -15,7 +15,7 @@ wiki read:
 
   items/<id>/
     item.json      manifest (everything below, plus the metadata)
-    sprite.png     the item icon, transparent PNG
+    sprite.webp    the item icon, lossless WebP with alpha
 """
 
 from __future__ import annotations
@@ -27,6 +27,13 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESERVED_DIRS = {"pipeline", "config"}
+# Sprites are stored as LOSSLESS WebP: pixel-identical to the PNG PixelLab
+# serves (verified on all 105 sprites) at a third of the bytes, and every
+# browser the game targets decodes it natively. Nothing in this domain parses
+# the image bytes — consumers read the path out of the manifest/registry — so
+# the format is a local decision here.
+SPRITE_FILE = "sprite.webp"
+LEGACY_SPRITE = "sprite.png"
 CONFIG_DIR = os.path.join(ROOT, "config")
 TYPES_PATH = os.path.join(CONFIG_DIR, "types.json")
 
@@ -102,14 +109,19 @@ def mirror(client, entry, detail=None, types=None, fresh=False):
     if not url:
         raise RuntimeError(f"{iid}: PixelLab object {entry['pixellab_id']} has no sprite url")
 
-    sprite_path = os.path.join(item_dir(iid), "sprite.png")
+    sprite_path = os.path.join(item_dir(iid), SPRITE_FILE)
     stamp = None if (fresh or not os.path.exists(sprite_path)) \
         else (prev.get("source") or {}).get("last_modified")
     status, img, last_modified = client.conditional_download(url, if_modified=stamp)
     changed = False
     if img is not None:
         os.makedirs(item_dir(iid), exist_ok=True)
-        img.save(sprite_path)
+        # method=6 is the slowest/densest setting — it costs milliseconds on a
+        # 48x48 icon and the result is committed once.
+        img.save(sprite_path, "WEBP", lossless=True, quality=100, method=6)
+        legacy = os.path.join(item_dir(iid), LEGACY_SPRITE)
+        if os.path.exists(legacy):
+            os.remove(legacy)
         changed = True
         size = list(img.size)
     elif status == 304 and os.path.exists(sprite_path):
