@@ -448,6 +448,35 @@ function joinDrops(items, tuning) {
   return { dangling, bound, unbound, multi, dropped: sources.size };
 }
 
+// --------------------------------------------------------------------- lore
+// The lore agent's rollup is one file, like items/viewer_data.json. `entities`
+// is a LOOKUP TABLE, never a list to iterate: data.json is rebuilt from the
+// live domains on every deploy while lore.json only changes when the lore
+// agent next runs, so between a monster being deleted and that run lore.json
+// still names an id we no longer have.
+let loreEntities = {}, loreMeta = null;
+function buildLore() {
+  const doc = readJson(join(ROOT, "lore", "lore.json"));
+  if (!doc) return null;
+  loreEntities = doc.entities ?? {};
+  const rl = join(ROOT, "lore", "RED_LINE.md");
+  loreMeta = {
+    generated_at: doc.generated_at ?? null,
+    default_icon: doc.default_icon ?? null,
+    layout_budget: doc.layout_budget ?? null,
+    // A MARKER ONLY, never the contents: 26 KB of Game-Master markdown must not
+    // ride in a file every player fetches on every load. The page fetches it.
+    redLine: isFile(rl) ? { path: "lore/RED_LINE.md", bytes: statSync(rl).size } : null,
+  };
+  return (doc.entries ?? [])
+    // Normalise ONCE so no view can reach an undefined chapter or an unnamed
+    // icon. `chapter` is always an own property; null means "not a chapter".
+    .map((e) => ({ ...e, chapter: Number.isInteger(e.chapter) ? e.chapter : null, icon: e.icon || doc.default_icon || null }))
+    // The lore build's own key: non-chapters land after the numbered ones.
+    // This is the ONE ordering authority — the site never re-sorts.
+    .sort((a, b) => (a.chapter ?? 999) - (b.chapter ?? 999) || String(a.id).localeCompare(String(b.id)));
+}
+
 // --------------------------------------------------------------- constants
 function buildConstants() {
   // Read-only discovery of `export const NAME = <number literal>` in
@@ -672,6 +701,7 @@ const objects = buildObjects();
 const sounds = buildSounds();
 const music = buildMusic();
 const items = buildItems();
+const lore = buildLore();
 const constants = buildConstants();
 // Real creature bounds inside each frame (wiki/tools/art-bounds.py): lets the
 // viewer crop away transparent padding and draw everyone at ONE scale, so the
@@ -699,6 +729,23 @@ const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevel
 // a monster added this run is already joined.
 const drops = joinDrops(items, tuning);
 
+// ONE AUTHOR, ONE TEXT: the lore agent's `description` REPLACES the owning
+// domain's, per entity, keyed by that domain's folder id. Coverage is sparse
+// by design (items 1 of 105; objects/tiles absent entirely), so every hop
+// optional-chains and a miss is a no-op — substituting per DOMAIN instead of
+// per ENTITY would flip 104 item pages to text that does not exist.
+// NB the name collision: monsters and characters already ship their OWN
+// `lore` blurb; `loreDesc` is the lore agent's replacement for it.
+for (const [dom, list] of Object.entries({ monsters, characters, objects, items, tiles })) {
+  for (const e of list ?? []) {
+    const rec = loreEntities[dom]?.[e.id];
+    if (!rec) continue;
+    if (rec.description) e.loreDesc = rec.description;
+    if (rec.lore?.length) e.loreStory = rec.lore;
+    if (rec.related?.length) e.loreRelated = rec.related;
+  }
+}
+
 const data = {
   format: "pixel-wiki-data@1",
   generated_at: new Date().toISOString(),
@@ -719,6 +766,9 @@ const data = {
   itemTypes, itemRarities,
   // Health of the item↔monster join, for the admin view.
   drops,
+  // The lore agent's own metadata. `redLine` is a MARKER — the document is
+  // fetched by the page, never baked into a file every player loads.
+  loreMeta,
   counts: {
     monsters: monsters?.length ?? 0,
     characters: characters?.length ?? 0,
@@ -728,6 +778,9 @@ const data = {
     sounds: sounds?.length ?? 0,
     music: music?.length ?? 0,
     items: items?.length ?? 0,
+    lore: lore?.length ?? 0,
+    // Chapters only — the admin surface; the start tile counts all tales.
+    lore_chapters: lore?.filter((e) => Number.isInteger(e.chapter)).length ?? 0,
     constants: constants.length,
   },
   // Absent domains become empty lists — the site must render, not blank out,
@@ -735,6 +788,7 @@ const data = {
   domains: {
     monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
     objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
+    lore: lore ?? [],
   },
   constants,
 };

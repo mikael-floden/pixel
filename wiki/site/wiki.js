@@ -18,7 +18,7 @@ const assetUrl = (rel) => new URL(rel, ROOT).href;
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items"];
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
@@ -457,11 +457,15 @@ const SECTIONS = {
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
   items:      { label: "Items",         noun: "items",      icon: "items",      count: (d) => d.counts.items },
+  // "tales", not "chapters": the section holds 9 chapters AND one people
+  // article, and a tile reading "10 chapters" over a page whose Chapters
+  // group says 9 reads as a bug.
+  lore:       { label: "Lore",          noun: "tales",      icon: "lore",       count: (d) => d.counts.lore },
   // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
 };
-const SECTION_ORDER = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "tuning"];
+const SECTION_ORDER = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
 const label = (slug) => SECTIONS[slug]?.label ?? slug;
 /** The maintainer's 48x48 pixel art, drawn ONLY at whole multiples of 48 and
  *  never resampled — `image-rendering: pixelated` plus an exact CSS size, so
@@ -569,7 +573,7 @@ function viewHome() {
 /* --- monsters --- */
 function viewMonsters() {
   const q = state.query;
-  const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind));
+  const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
   return h("div", {},
     sectionHead("monsters"),
     h("p", { class: "muted" }, state.admin
@@ -593,14 +597,18 @@ function viewMonsters() {
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }
-const monsterLore = (m) => m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
-const objectBlurb = (o) => `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
+const monsterLore = (m) => m.loreDesc ?? m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
+// The admin tail is folded INTO the accessor, not added as a second <p>:
+// loreSlot reserves the height of the tallest blurb by mapping ONE function
+// over the domain, so the visible text and the ghost list must come from the
+// same accessor or the reserve stops being the true maximum.
+const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? ` · ${o.category}` : ""}${state.admin && o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
 /** What a hero IS, in words a player understands — "Human · Female", never
  *  the pipeline folder id (maintainer 2026-07-30). */
 const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
 /** Authored in characters2/metadata.json; the placeholder only runs for a
  *  hero the characters agent has not written up yet. */
-const heroLore = (c) => c.lore ?? "One of the heroes you can set out as. Their story has not been written down yet — the chroniclers of Nangijala are still at work.";
+const heroLore = (c) => c.loreDesc ?? c.lore ?? "One of the heroes you can set out as. Their story has not been written down yet — the chroniclers of Nangijala are still at work.";
 /** A lore paragraph that always occupies the height of the LONGEST lore in
  *  its domain, so paging next/next/next can't move the animation viewer
  *  below it (maintainer 2026-07-30: "the animation preview jumps up and
@@ -614,6 +622,147 @@ function loreSlot(text, all) {
     .map((t) => h("p", { class: "muted lore ghost", "aria-hidden": "true" }, t));
   return h("div", { class: "lore-slot" }, h("p", { class: "muted lore" }, text), ...ghosts);
 }
+/* ------------------------------------------------------------------- lore */
+const loreList = () => state.data.domains.lore ?? [];   // build.mjs sorted it; never re-sort
+// One table for every category decision — the group heading AND the chip under
+// the picture. An unknown category never throws and never prints a raw slug.
+const LORE_CATEGORY = {
+  chapter: { plural: "Chapters", chip: (e) => (Number.isInteger(e.chapter) ? `Chapter ${e.chapter}` : "A chapter") },
+  people:  { plural: "Peoples",  chip: () => "A people" },
+  place:   { plural: "Places",   chip: () => "A place" },
+  faction: { plural: "Factions", chip: () => "A faction" },
+};
+const loreCat = (e) => LORE_CATEGORY[e?.category] ?? { plural: "Writings", chip: () => "A tale" };
+const chipText = (e) => loreCat(e).chip(e);
+/** An entry's 48×48 emblem, drawn at 48 or 96 and never resampled. Entry icons
+ *  are REPO-relative (unlike sectionIcon, which is site-relative), so they go
+ *  through assetUrl(). The size comes from the MARKUP so the box is reserved
+ *  before the image loads — an unsized img that pops in shifts the list. */
+function loreIcon(e, size = 48) {
+  const src = e?.icon ?? state.data.loreMeta?.default_icon;
+  if (!src) return h("span", { class: "item-icon item-noart", style: `width:${size}px;height:${size}px` });
+  const img = h("img", { class: "lore-icon item-icon", src: assetUrl(src), alt: "", width: String(size), height: String(size), loading: "lazy" });
+  // Hidden, never display:none — the reserved box must survive a 404 or the row collapses.
+  img.addEventListener("error", () => { img.style.visibility = "hidden"; });
+  return img;
+}
+
+/* --- the paged long text: ONE component for the story card and the red line.
+   Only the CURRENT page is in the DOM. Deliberately NOT loreSlot's ghost stack:
+   story pages legitimately run ~110..710px tall, so reserving the tallest would
+   leave ~600px of dead cream on the short ones. The pager lives in the panel
+   TITLE row instead — above every variable-height thing — and the panel is
+   always the LAST element on its page, so nothing can move while paging. */
+const STORY_PAGE_CHARS = 700;
+const STORY_ORPHAN_CHARS = 140;
+/** Greedy fill by character budget. PARAGRAPHS ARE ATOMIC — one re-wraps
+ *  differently on every page and reads as a bug — so an oversized paragraph
+ *  becomes its own page. Never paginate by paragraph COUNT: they run 30 to
+ *  1262 characters. A last page that is one short paragraph joins the one
+ *  before it rather than dangling. */
+function paginate(paras, budget = STORY_PAGE_CHARS) {
+  const pages = [];
+  let cur = [], n = 0;
+  for (const raw of paras ?? []) {
+    const p = String(raw ?? "").trim();
+    if (!p) continue;
+    if (cur.length && n + p.length > budget) { pages.push(cur); cur = []; n = 0; }
+    cur.push(p); n += p.length;
+  }
+  if (cur.length) pages.push(cur);
+  const last = pages[pages.length - 1];
+  if (pages.length > 1 && last.length === 1 && last[0].length < STORY_ORPHAN_CHARS) {
+    pages[pages.length - 2] = pages[pages.length - 2].concat(pages.pop());
+  }
+  return pages;
+}
+/** @param pages array of THUNKS returning Node[] — only the visible page exists. */
+function pagedPanel({ title, pages, aside = null, klass = "" }) {
+  if (!pages.length) return null;
+  let i = 0;
+  const body = h("div", { class: "story-body" });
+  const count = h("span", { class: "detail-count" });
+  const mk = (glyph, lbl, step) => {
+    const b = h("button", { class: "nav-btn", type: "button", title: lbl, "aria-label": lbl }, glyph);
+    // A plain button re-rendering IN PLACE. Never the hash: a hashchange re-runs
+    // route(), which rebuilds the whole view and destroys the animation player.
+    b.addEventListener("click", () => { const t = i + step; if (t >= 0 && t < pages.length) { i = t; draw(); } });
+    return b;
+  };
+  const prev = mk("‹", "Previous page", -1), next = mk("›", "Next page", +1);
+  const draw = () => {
+    body.replaceChildren(...pages[i]());
+    count.textContent = `${i + 1} / ${pages.length}`;   // mutated in place — the
+    prev.disabled = i === 0;                             // buttons are never rebuilt
+    next.disabled = i === pages.length - 1;              // under the reader's finger
+  };
+  draw();
+  const panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },
+    // Counter LEFT of the buttons (crumbRow's rule) so ‹ › keep their spot as
+    // "9 / 16" widens.
+    h("div", { class: "panel-title" }, title,
+      pages.length > 1 ? h("span", { class: "detail-nav" }, count, prev, next) : null),
+    aside, body);
+  panel.goToPage = (n) => { if (n >= 0 && n < pages.length) { i = n; draw(); } };
+  return panel;
+}
+
+/* --- cross-references. ALWAYS resolved against the OWNING domain in data.json,
+   never against lore.json: almost no item has a lore record, so a lore-sourced
+   label would be blank for nearly all of them. --- */
+let _loreIx = null, _charIx = null, _objIx = null, _tileIx = null;
+const loreById      = (id) => (_loreIx ??= new Map(loreList().map((e) => [e.id, e]))).get(id);
+const characterById = (id) => (_charIx ??= new Map((state.data.domains.characters ?? []).map((c) => [c.id, c]))).get(id);
+const objectById    = (id) => (_objIx  ??= new Map((state.data.domains.objects ?? []).map((o) => [o.id, o]))).get(id);
+const tileTypeById  = (id) => (_tileIx ??= new Map((state.data.domains.tiles ?? []).map((t) => [t.id, t]))).get(id);
+const refPic = (x) => (x?.preview
+  ? h("img", { class: "item-icon mon-icon", src: assetUrl(x.preview), alt: "", width: "48", height: "48", loading: "lazy" })
+  : h("span", { class: "item-icon item-noart" }));
+function resolveRef(ref) {
+  const { domain, id } = ref ?? {};
+  if (!domain || !id) return null;
+  if (domain === "lore")       { const e = loreById(id);      return e  && { href: `#/lore/${e.id}`,       name: e.name,        art: loreIcon(e, 48),    where: chipText(e) }; }
+  if (domain === "monsters")   { const m = monsterById(id);   return m  && { href: `#/monsters/${m.id}`,   name: m.name,        art: refPic(m),          where: label("monsters") }; }
+  if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: label("characters") }; }
+  if (domain === "items")      { const it = itemById(id);     return it && { href: `#/items/${it.id}`,     name: itemLabel(it), art: itemSprite(it, 48), where: label("items") }; }
+  if (domain === "objects")    { const o = objectById(id);    return o  && { href: `#/objects/${o.id}`,    name: o.name,        art: refPic(o),          where: label("objects") }; }
+  if (domain === "tiles")      { const t = tileTypeById(id);  return t  && { href: `#/tiles/${t.id}`,      name: t.name,        art: h("span", { class: "item-icon item-noart" }), where: label("tiles") }; }
+  return null;                                  // an unknown domain is dropped
+}
+/** "Read next". Author order preserved (the lore agent chose it), deduped. An
+ *  unresolvable reference is DROPPED for players and flagged for the admin. */
+function loreLinks(related, { title = "Read next" } = {}) {
+  const seen = new Set(), rows = [];
+  for (const ref of related ?? []) {
+    const key = `${ref?.domain}/${ref?.id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const r = resolveRef(ref);
+    if (r) rows.push(h("a", { class: "drop-row", href: r.href }, r.art,
+      h("span", { class: "drop-name" }, r.name), h("span", { class: "drop-worth muted" }, r.where)));
+    else if (state.admin) rows.push(h("div", { class: "drop-row" },
+      h("span", { class: "item-icon item-noart" }),
+      h("span", { class: "drop-name" }, key, h("span", { class: "pill warn" }, "no such entry"))));
+  }
+  if (!rows.length) return null;
+  return h("div", { class: "see-also" },
+    h("div", { class: "panel-title see-also-title" }, title),
+    h("div", { class: "drop-list" }, ...rows));
+}
+/** The long story, in a card at the BOTTOM of an entity's page — many readers
+ *  will never open it, so it must cost them nothing (maintainer 2026-07-31).
+ *  No story ⇒ NO CARD AT ALL, never a placeholder. */
+function storyCard(title, paras, related) {
+  const chunks = paginate(paras);
+  if (!chunks.length) return null;
+  return pagedPanel({
+    title, klass: "story-card",
+    aside: loreLinks(related),                       // fixed height, ABOVE the body
+    pages: chunks.map((ps) => () => ps.map((p) => h("p", {}, p))),
+  });
+}
+const heroStoryTitle = (c) => (c.sex === "Female" ? "Her story" : c.sex === "Male" ? "His story" : "Their story");
+
 /** The level chip that sits under a monster's picture — on the cards AND on
  *  the monster page, where it also gives the portrait column a constant
  *  height so paging next/next/next doesn't shift the animation (maintainer
@@ -968,7 +1117,10 @@ function viewMonster(id) {
     dropsPanel(m.id),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Stats"),
-      statsEditor(m.id)));
+      statsEditor(m.id)),
+    // The long story, last on the page ALWAYS — the pager is the only control
+    // above variable-height content, so nothing may be appended below it.
+    storyCard("The story", m.loreStory, m.loreRelated));
 }
 
 /* --- characters --- */
@@ -1027,7 +1179,8 @@ function viewCharacter(id) {
       muteGameBtn(),
       ...related.map((s) => h("div", {},
         h("h3", { style: "margin-top:10px" }, s.name, " ", h("span", { class: "pill" }, s.category)),
-        ...s.takes.map((t) => takeRow("sounds", s.path, t))))));
+        ...s.takes.map((t) => takeRow("sounds", s.path, t))))),
+    storyCard(heroStoryTitle(c), c.loreStory, c.loreRelated));   // always last
 }
 
 /* --- tiles --- */
@@ -1299,7 +1452,8 @@ function viewObject(id) {
         h("h1", {}, o.name),
         loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
-    hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."));
+    hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."),
+    storyCard("The story", o.loreStory, o.loreRelated));   // always last
 }
 
 /* --- sounds --- */
@@ -1389,7 +1543,7 @@ const itemLabel = (it) => {
   const src = itemSources(it);
   return src.length === 1 ? `${it.name} — ${monsterById(src[0].monster)?.name ?? src[0].monster}` : `${it.name} — unbound`;
 };
-const itemBlurb = (it) => it.description ?? "";
+const itemBlurb = (it) => it.loreDesc ?? it.description ?? "";
 // The Items browser's own view state: which type, and how it is sorted.
 // Kept across renders so coming back from an item keeps your place.
 const itemView = { type: "", sort: "value", dir: -1 };
@@ -1483,7 +1637,233 @@ function viewItem(id) {
     // NO "what it grants" panel: merging is not in the game yet, and the
     // wiki does not promise mechanics that do not exist (maintainer
     // 2026-07-31). It returns when the effects are real.
-    droppedByPanel(it));
+    droppedByPanel(it),
+    storyCard("The story", it.loreStory, it.loreRelated));   // always last
+}
+
+/* --- lore views --- */
+function viewLore() {
+  const list = loreList();
+  if (!list.length) {
+    return h("div", {}, sectionHead("lore"),
+      h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "Nothing written down"),
+        h("p", { class: "muted" }, "No chapter of Nangijala is set down here.")));
+  }
+  // Groups in FIRST-APPEARANCE order of the already-sorted array, so Chapters
+  // is always first and a future category appends with no code change.
+  const groups = [];
+  for (const e of list) {
+    const key = e.category ?? "";
+    let g = groups.find((x) => x.key === key);
+    if (!g) groups.push((g = { key, head: loreCat(e).plural, rows: [] }));
+    g.rows.push(e);
+  }
+  const row = (e) => h("a", { class: "drop-row lore-row", href: `#/lore/${e.id}` },
+    // Empty for a non-chapter, so every title still starts on the same x.
+    h("span", { class: "lore-no" }, Number.isInteger(e.chapter) ? String(e.chapter) : ""),
+    e.preview ? h("img", { class: "item-icon", src: assetUrl(e.preview), alt: "", width: "48", height: "48", loading: "lazy" }) : loreIcon(e, 48),
+    h("span", { class: "drop-name lore-row-text" },
+      h("span", { class: "lore-name" }, e.name),
+      h("span", { class: "lore-sum" }, e.summary ?? "")),
+    h("span", { class: "card-badges" }, ...entityBadge("lore", e.path)));
+  return h("div", {},
+    sectionHead("lore"),
+    h("p", { class: "muted" }, state.admin
+      ? `${list.length} tales from the lore agent — the one author who now writes every description in this wiki. Rate a chapter, approve it or send it back, and leave a note; the lore agent reads the verdicts on its next run.`
+      : "The chronicles of Nangijala — what the world still remembers of itself. Read them in order, or read the one you want. Nothing here is required."),
+    // The desk sits FIRST because it is the editor-in-chief's home screen and
+    // the admin must not scroll the whole contents to reach the red line. It
+    // costs players nothing — they never render it.
+    state.admin ? loreDesk() : null,
+    ...groups.flatMap((g) => [
+      h("h2", {}, g.head, h("span", { class: "pill", style: "margin-left:8px" }, String(g.rows.length))),
+      h("div", { class: "drop-list lore-list" }, ...g.rows.map(row)),
+    ]));
+}
+/** Admin only — a progress report is legal here, and nowhere else. */
+function loreDesk() {
+  const list = loreList();
+  const LORE_DOMS = ["monsters", "characters", "items", "objects", "tiles"];
+  const hasLore = (e) => !!(e.loreDesc || e.loreStory?.length);
+  // Derived from the entities actually rendered, so it can never claim
+  // coverage the pages do not have.
+  const row = (slug) => {
+    const dom = state.data.domains[slug] ?? [];
+    const covered = dom.filter(hasLore).length;
+    const missing = dom.filter((e) => !hasLore(e)).map((e) => e.name ?? e.id);
+    return h("a", { class: "drop-row", href: `#/${slug}`,
+      title: missing.length && missing.length <= 12 ? `Still to write: ${missing.join(", ")}` : "" },
+      sectionIcon(slug, 48),
+      h("span", { class: "drop-name" }, label(slug)),
+      h("span", { class: "drop-worth muted" }, `${covered} of ${dom.length}`),
+      h("span", { class: "drop-pct" }, dom.length ? `${Math.round((100 * covered) / dom.length)}%` : "—"));
+  };
+  const unjudged = list.filter((e) => { const f = fb("lore", e.path); return !f.status && !f.rating; }).length;
+  const rl = state.data.loreMeta?.redLine;
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "The lore agent's desk",
+      h("span", { class: "pill" }, `${list.length} tales`),
+      unjudged ? h("span", { class: "pill warn" }, `${unjudged} unjudged`) : null),
+    h("p", { class: "muted" }, "One author writes all of it: the chapters below, and the short line and the long story on every creature, hero, prop and item page. Where the lore agent has written a description, it replaces the one the owning domain shipped."),
+    h("h3", {}, "Written up"),
+    h("div", { class: "drop-list" }, ...LORE_DOMS.map(row)),
+    rl ? h("div", {},
+      h("h3", {}, "The red line"),
+      h("p", { class: "muted" }, "The Game Master's document — the backbone every chapter hangs off: five laws, three ages, one antagonist, and the questions it refuses to answer."),
+      h("p", { class: "muted" }, RED_LINE_HONESTY),
+      h("a", { class: "ghost-btn", href: "#/lore/red-line" }, "The red line →")) : null);
+}
+function viewLoreEntry(e) {
+  const list = loreList();
+  const i = list.findIndex((x) => x.id === e.id);
+  const prev = list[(i - 1 + list.length) % list.length], next = list[(i + 1) % list.length];
+  // the_falling's body[0] is byte-identical to its summary — without this the
+  // same sentence prints twice, three lines apart, on the first chapter a
+  // reader opens. Exact match only, so a rewritten summary can never silently
+  // swallow a paragraph.
+  const bodyParas = (e.body ?? []).filter((p, n) => !(n === 0 && p === e.summary));
+  return h("div", { class: "lore-read" },
+    crumbRow("#/lore", `← ${label("lore")}`, "lore", list, e.id),
+    h("div", { class: "detail-head" },
+      // No .checker behind the emblem: a chessboard says "here is a sprite's
+      // alpha"; this is a plaque. The chip is load-bearing — it gives the left
+      // column its own height so the summary's reserve lands beside something
+      // taller instead of opening a hole.
+      h("div", { class: "portrait-col" },
+        h("div", { class: "portrait" }, loreIcon(e, 96)),
+        h("div", { class: "thumb-chip" }, chipText(e))),
+      h("div", { class: "meta" },
+        h("h1", {}, e.name),
+        state.admin ? h("p", { class: "muted" },
+          `${e.id} · ${e.path} · ${e.category}${Number.isInteger(e.chapter) ? ` · chapter ${e.chapter}` : ""} · icon ${e.icon_id ?? "—"}${e.tags?.length ? ` · ${e.tags.join(", ")}` : ""} · ${(e.body ?? []).reduce((n, p) => n + p.split(/\s+/).length, 0).toLocaleString()} words in ${(e.body ?? []).length} paragraphs`) : null,
+        loreSlot(e.summary ?? "", list.map((x) => x.summary ?? "")),
+        feedbackRow("lore", e.path))),
+    // Every paragraph is a TEXT NODE. No innerHTML, no markdown path for
+    // lore.json content — "plain text only" is an authoring convention backed
+    // by a partial checker, so markup that slips through must show up as
+    // literal characters: obvious, and unmistakably the lore agent's bug.
+    h("div", { class: "chapter-body" }, ...bodyParas.map((p) => h("p", {}, p))),
+    loreLinks(e.related) ? h("div", { class: "panel" }, loreLinks(e.related)) : null,
+    // After three screens of prose the crumbRow is far off-screen; the rail
+    // names the destination where the reader actually is.
+    list.length > 1 ? h("div", { class: "read-rail" },
+      h("a", { href: `#/lore/${prev.id}` }, h("span", { class: "rail-label" }, "Previous"), prev.name),
+      h("a", { class: "to-next", href: `#/lore/${next.id}` }, h("span", { class: "rail-label" }, "Next"), next.name)) : null);
+}
+
+/* --- the red line: the Game Master's document, admin only --- */
+// THE HONESTY SENTENCE. lore/RED_LINE.md is served at /assets/lore/RED_LINE.md
+// by a bare express.static mount on an --allow-unauthenticated service, from a
+// public repository. The wiki controls who is INVITED to read it, not who CAN.
+// The words private/secret/secure/hidden may appear only inside a sentence
+// that denies them, and there is no fake gate — no token, no obfuscation —
+// because that would imply protection the server does not provide.
+const RED_LINE_HONESTY = "Kept out of the player wiki, but not hidden: it is served at /assets/lore/RED_LINE.md and lives in the public repository. Treat it as unpublished, never as secret.";
+let redLineText = null;
+async function fetchText(url) {
+  try { const r = await fetch(url, { cache: "no-cache" }); return r.ok ? await r.text() : null; }
+  catch { return null; }
+}
+/** Split on the document's own `## ` boundaries. A character budget would cut a
+ *  law in half; these never do. */
+function redLineSections(md) {
+  const out = [];
+  let cur = { num: null, title: "The Red Line", lines: [] };
+  for (const line of md.split(/\r?\n/)) {
+    if (/^## /.test(line)) {
+      out.push(cur);
+      const t = line.slice(3).trim(), m = t.match(/^(\d+)\.\s*(.*)$/);
+      cur = { num: m ? m[1] : null, title: m ? m[2] : t, lines: [] };
+    } else if (/^# /.test(line) && !out.length && !cur.lines.length) {
+      /* the page's own h1 already names the document */
+    } else cur.lines.push(line);
+  }
+  out.push(cur);
+  return out;
+}
+/* The ONLY markdown surface in the wiki, written against this one file's
+   inventory. lore.json is plain text by contract and must NEVER reach it.
+   No innerHTML anywhere: anything unhandled ships as literal characters. */
+function mdInline(str) {
+  const out = [];
+  for (const part of String(str).split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|_[^_]+_)/g)) {
+    if (!part) continue;
+    if (/^\*\*[\s\S]+\*\*$/.test(part)) out.push(h("strong", {}, part.slice(2, -2)));
+    else if (/^`[^`]+`$/.test(part)) out.push(h("code", {}, part.slice(1, -1)));
+    else if (/^\*[^*]+\*$/.test(part) || /^_[^_]+_$/.test(part)) out.push(h("em", {}, part.slice(1, -1)));
+    else out.push(document.createTextNode(part));
+  }
+  return out;
+}
+function mdBlocks(lines) {
+  const out = [];
+  let i = 0;
+  const take = (re) => { const buf = []; while (i < lines.length && re.test(lines[i])) buf.push(lines[i++]); return buf; };
+  while (i < lines.length) {
+    const line = lines[i];
+    if (!line.trim()) { i++; continue; }
+    if (/^#{1,2} /.test(line)) { out.push(h("h2", {}, ...mdInline(line.replace(/^#{1,2} /, "")))); i++; continue; }
+    if (/^### /.test(line)) { out.push(h("h3", {}, ...mdInline(line.slice(4)))); i++; continue; }
+    if (/^-{3,}$/.test(line.trim())) { out.push(h("hr", {})); i++; continue; }
+    if (/^> ?/.test(line)) { out.push(h("blockquote", {}, ...take(/^> ?/).map((l) => h("p", {}, ...mdInline(l.replace(/^> ?/, "")))))); continue; }
+    if (/^\s*[-*] /.test(line)) { out.push(h("ul", {}, ...take(/^\s*[-*] /).map((l) => h("li", {}, ...mdInline(l.replace(/^\s*[-*] /, "")))))); continue; }
+    if (/^\s*\d+\. /.test(line)) { out.push(h("ol", {}, ...take(/^\s*\d+\. /).map((l) => h("li", {}, ...mdInline(l.replace(/^\s*\d+\. /, "")))))); continue; }
+    if (/^\|/.test(line)) {
+      const rows = take(/^\|/).map((l) => l.replace(/^\||\|$/g, "").split("|").map((c) => c.trim()))
+        .filter((cells) => !cells.every((c) => /^:?-{2,}:?$/.test(c)));
+      if (rows.length) {
+        out.push(h("div", { class: "table-scroll" }, h("table", { class: "tune" },
+          h("thead", {}, h("tr", {}, ...rows[0].map((c) => h("th", {}, ...mdInline(c))))),
+          h("tbody", {}, ...rows.slice(1).map((r) => h("tr", {}, ...r.map((c) => h("td", {}, ...mdInline(c)))))))));
+      }
+      continue;
+    }
+    const para = take(/^(?!\s*$|#{1,3} |-{3,}$|> ?|\s*[-*] |\s*\d+\. |\|)/);
+    if (para.length) out.push(h("p", {}, ...mdInline(para.join(" "))));
+    else i++;
+  }
+  return out;
+}
+function viewRedLine() {
+  const box = h("div", {}, h("p", { class: "loading" }, "Opening the red line…"));
+  const render = (md) => {
+    if (md == null) {
+      box.replaceChildren(h("p", { class: "muted" }, "The red line is not in this build. It lives at lore/RED_LINE.md in the repository."));
+      return;
+    }
+    const secs = redLineSections(md);
+    // The card title is the CONSTANT string: a varying section title plus the
+    // counter and two buttons will not fit one flex row at drawer width, and
+    // the pager would drop to a second row on some pages and not others.
+    const panel = pagedPanel({
+      title: "The red line",
+      pages: secs.map((sec, n) => () => (n ? [h("h2", {}, sec.title), ...mdBlocks(sec.lines)] : mdBlocks(sec.lines))),
+    });
+    const jump = h("div", { class: "drop-list" }, ...secs.map((sec, n) => {
+      const b = h("button", { class: "drop-row", type: "button" },
+        h("span", { class: "lore-no" }, sec.num ?? ""),
+        h("span", { class: "drop-name" }, sec.title));
+      b.addEventListener("click", () => panel.goToPage(n));
+      return b;
+    }));
+    box.replaceChildren(
+      // A <details> is closed and constant-height, so opening it and paging
+      // never moves anything.
+      h("details", { class: "tile-group" }, h("summary", {}, `Jump to a section (${secs.length})`), jump),
+      panel);
+  };
+  if (redLineText != null) render(redLineText);
+  else fetchText(assetUrl("lore/RED_LINE.md")).then((md) => { if (md != null) redLineText = md; render(md); });
+  return h("div", { class: "lore-read" },
+    h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: "#/lore" }, `← ${label("lore")}`)),
+    h("h1", {}, "The Red Line"),
+    h("div", { class: "pill-row" },
+      h("span", { class: "pill" }, "Game Master"),
+      h("span", { class: "pill warn" }, "not in the game yet")),
+    h("p", { class: "muted" }, "Written for you, not for players — they are meant to find this out by reading the chapters and playing."),
+    h("p", { class: "muted" }, RED_LINE_HONESTY),
+    box);
 }
 
 /* --- tuning --- */
@@ -1538,6 +1918,10 @@ function viewSearch() {
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
   d.sounds.forEach((s) => matches(q, s.id, s.name, s.description, s.usage) && hits.push(["sounds", s.name, "#/sounds", null]));
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
+  // Entry ids and tags are pipeline slugs — admin only, so a player cannot
+  // surface an entry by typing a folder id.
+  (d.lore ?? []).forEach((e) => matches(q, e.name, e.summary, ...(e.body ?? []), ...(state.admin ? [e.id, ...(e.tags ?? [])] : []))
+    && hits.push(["lore", e.name, `#/lore/${e.id}`, loreIcon(e, 96)]));
   // A soul stone's name is shared by all of them — search its creature too,
   // and label the hit with the creature so 28 identical rows never appear.
   (d.items ?? []).forEach((it) => matches(q, it.id, it.name, it.description, it.category, it.rarity, itemLabel(it))
@@ -1548,7 +1932,10 @@ function viewSearch() {
     h("p", { class: "muted" }, `${hits.length} hits`),
     h("div", { class: "grid" }, ...hits.slice(0, 60).map(([domain, name, href, img]) =>
       h("a", { class: "card", href },
-        img ? h("div", { class: "thumb checker" }, h("img", { src: assetUrl(img), loading: "lazy", alt: name })) : null,
+        // A repo-relative path OR a ready Node (the lore emblem, which gets
+        // no chessboard — it is a plaque, not a sprite).
+        img ? h("div", { class: typeof img === "string" ? "thumb checker" : "thumb" },
+          typeof img === "string" ? h("img", { src: assetUrl(img), loading: "lazy", alt: name }) : img) : null,
         h("div", { class: "card-name" }, name),
         h("div", { class: "card-sub" }, label(domain))))));
 }
@@ -1568,6 +1955,14 @@ function route() {
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();
   else if (page === "items") view = id ? viewItem(id) : viewItems();
+  else if (page === "lore") {
+    // Resolve the ENTRY first so a future entry can never be shadowed by the
+    // reserved slug — structurally impossible, not merely unlikely.
+    const e = id ? loreList().find((x) => x.id === id) : null;
+    if (e) view = viewLoreEntry(e);
+    else if (id === "red-line") view = state.admin ? viewRedLine() : viewLore();
+    else view = viewLore();          // an unknown id lands on the list, never a dead page
+  }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
   else view = viewHome();
@@ -1622,6 +2017,7 @@ function buildKnownIds() {
   d.objects.forEach((o) => add(o.path));
   d.music.forEach((t) => { add(t.path); add(`${t.path}/${t.id}`); });
   d.items.forEach((it) => add(it.path));
+  (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
   d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(`${g.dir}/${f}`.replace(/\.png$/, "")))); });
   d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
 }
