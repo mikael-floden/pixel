@@ -435,6 +435,56 @@ try {
     }
   }
 
+  // ---- OCCLUDER VIEW-CULL + DECK EXPOSURE (perf #2/#3) ----
+  // rebuildOccluders only builds occluder images that can be seen, and gives
+  // deck slabs the exposed-face rule terrain already had. Culling an occluder
+  // can never leave a hole (the ground RT paints the terrain), but it CAN
+  // mis-sort a body — so the invariant is about occluderMeta, which is what
+  // resolveBodyDepth reads: every non-prop meta record overlapping the view
+  // must still have drawn art behind it. `metaWithoutArt` must be 0, standing
+  // AND walking (the camera drifts up to OCC_STEP between rebuilds).
+  // Runs on occlusion_test: the only compact world with BOTH raised terrain
+  // (level 32) and decks, so it exercises the terrain cull and the deck
+  // exposure rule. monster_demo/glow_test/prop_demo are all flat — the check
+  // is vacuous there.
+  {
+    await page.goto("http://localhost:5173/", { waitUntil: "load" });
+    await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
+    await page.evaluate(() => {
+      const i = window.__mlSelect.worlds().findIndex((w) => /occlusion_test/.test(w));
+      if (i >= 0) window.__mlSelect.pickWorld(i);
+      window.__mlSelect.commit();
+    });
+    await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
+    await page.waitForTimeout(3000);
+    const audit = await page.evaluate(() => (window.__ml.occAudit ? window.__ml.occAudit() : null));
+    if (!audit) fail("occAudit probe missing");
+    if (audit.built + audit.culled === 0)
+      fail("occAudit: nothing built and nothing culled — the occluder pass did not run");
+    if (audit.culled === 0)
+      fail("occAudit: culled 0 images on a level-32 world with decks — the cull is not active");
+    if (audit.metaWithoutArt > 0)
+      fail(
+        `occAudit: ${audit.metaWithoutArt} visible occluder columns draw NOTHING ` +
+          `(bodies would clip against terrain that is not there): ${JSON.stringify(audit.offenders)}`,
+      );
+    let worst = 0;
+    let peakCulled = audit.culled;
+    for (const key of ["ArrowDown", "ArrowRight", "ArrowUp"]) {
+      await page.keyboard.down(key);
+      for (let i = 0; i < 5; i++) {
+        await page.waitForTimeout(320);
+        const a = await page.evaluate(() => window.__ml.occAudit());
+        worst = Math.max(worst, a.metaWithoutArt);
+        peakCulled = Math.max(peakCulled, a.culled);
+      }
+      await page.keyboard.up(key);
+      await page.waitForTimeout(200);
+    }
+    if (worst > 0) fail(`occAudit: ${worst} columns drew nothing while WALKING (cull margin too tight)`);
+    console.log(`occluder cull OK (built ${audit.built}, culled up to ${peakCulled}, 0 uncovered columns)`);
+  }
+
   if (errors.length) fail("page errors: " + errors.slice(0, 3).join(" | "));
   console.log("SMOKE OK — all browser-glue checks passed in one session");
 } finally {

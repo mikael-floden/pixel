@@ -319,6 +319,17 @@ const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
 // span, in px. Both the clip mask and the foam crest follow it.
 const BOW_FRAC = 0.14;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
+// Occluder rebuild cadence, and the slack every occluder cull margin is
+// derived FROM. The set is only re-evaluated once the camera centre has
+// drifted this far, so anything culled must stay invisible for a whole
+// OCC_STEP of camera travel — every cull box below is grown by at least this
+// much (plus a tile) or geometry would wink in at the leading screen edge.
+const OCC_STEP = 96;
+// Extra cull margin beyond OCC_STEP: one tile of art, plus room for the
+// biggest body art box that resolveBodyDepth can test against a column
+// (a mammoth spans ~190px) — a column that could still sort against an
+// on-screen body must keep its images, not just the ones that draw.
+const OCC_CULL_PAD = OCC_STEP + 64 + 200;
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
@@ -601,6 +612,9 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
+  // reported by __ml.occCount() so the win is measurable, not asserted.
+  private occCulled = 0;
   // --- Occlusion fade: tall geometry ABOVE the local player's level near the
   // player is faded to a faint ghost (moved behind the player) so it stops
   // hiding the character; a REVEAL layer redraws the player-level ground the
@@ -1099,7 +1113,66 @@ export class WorldScene extends Phaser.Scene {
       chatPush: (name: string, text: string, tMs?: number) =>
         this.hud?.pushChat(name, text, tMs != null ? new Date(tMs) : undefined),
       // Debug: occluder build state (maps2 z-order verification).
-      occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
+      occCount: () => ({
+        maps2: this.maps2,
+        occluders: this.occluders.length,
+        meta: this.occluderMeta.length,
+        culled: this.occCulled,
+      }),
+      // CULL AUDIT (perf #2/#3). Checks the built occluder set against
+      // Phaser's OWN bounds and the camera's OWN worldView — never against
+      // the cull arithmetic in rebuildOccluders, so a wrong formula there
+      // cannot agree with itself.
+      //   offScreenBuilt  — images we built that don't touch the view (waste,
+      //                     harmless; the pad guarantees some of this)
+      //   metaWithoutArt  — cells whose meta says the column overlaps the
+      //                     view but which contributed NO image. This is the
+      //                     one that can be a BUG: resolveBodyDepth would
+      //                     clamp/crop a body against terrain that the
+      //                     occluder layer no longer draws.
+      occAudit: () => {
+        const v = this.cameras.main.worldView;
+        let onScreen = 0;
+        let offScreenBuilt = 0;
+        for (const o of this.occluders) {
+          const b = o.getBounds();
+          if (b.right >= v.x && b.x <= v.right && b.bottom >= v.y && b.y <= v.bottom) onScreen++;
+          else offScreenBuilt++;
+        }
+        // Which cells actually got at least one image this rebuild?
+        const drawn = new Set<number>();
+        for (const o of this.occluders) {
+          const c = o.getData("oc") as number | undefined;
+          const r = o.getData("or") as number | undefined;
+          if (c !== undefined && r !== undefined) drawn.add(r * 100000 + c);
+        }
+        let metaWithoutArt = 0;
+        let propMeta = 0;
+        const offenders: Array<Record<string, number>> = [];
+        for (const m of this.occluderMeta) {
+          if (m.x1 < v.x || m.x0 > v.right || m.y1 < v.y || m.y0 > v.bottom) continue;
+          // PROPS (solid) live in `propImgs`, never in `occluders`, and are
+          // not touched by the cull — their meta legitimately has no occluder
+          // image, so they are not offenders.
+          if (m.solid) {
+            propMeta++;
+            continue;
+          }
+          if (drawn.has(m.row * 100000 + m.col)) continue;
+          metaWithoutArt++;
+          if (offenders.length < 5) offenders.push({ col: m.col, row: m.row, top: m.top });
+        }
+        return {
+          built: this.occluders.length,
+          culled: this.occCulled,
+          onScreen,
+          offScreenBuilt,
+          meta: this.occluderMeta.length,
+          metaWithoutArt,
+          propMeta,
+          offenders,
+        };
+      },
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
       // Tap-to-move probes: set/inspect the autopilot target directly, and
@@ -1256,6 +1329,22 @@ export class WorldScene extends Phaser.Scene {
           l: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, litLvl, false).map((v) => +v.toFixed(3)),
           lSunk: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, rendLvl, false).map((v) => +v.toFixed(3)),
           lBase: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, baseLvl, false).map((v) => +v.toFixed(3)),
+        };
+      },
+      // What terrain is currently COVERING my avatar — `coverY` is the wall/
+      // slab top line that crops the lit copy, and it is set purely from
+      // occluderMeta by resolveBodyDepth. This is the invariant the occluder
+      // cull must not break: standing UNDER a deck (cave slab, bridge) or
+      // behind a cliff must still report a cover line.
+      myCover: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        if (!av) return null;
+        return {
+          coverY: av.coverY ?? null,
+          depth: +av.sprite.depth.toFixed(1),
+          elev: +(av.elev / MAP_GEOMETRY.lh).toFixed(2),
+          litVisible: av.lit ? av.lit.visible : null,
+          litCropped: av.lit ? !!av.lit.isCropped : null,
         };
       },
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
@@ -4560,16 +4649,65 @@ export class WorldScene extends Phaser.Scene {
 
   /** Draw the local player's swim-stamina bar (bottom-centre HUD), shown only
    * while swimming or recovering. */
-  /** First stack level to DRAW for a DEMO station column: the lvl-0 copy is
-   * underground — drawing it pushed the column's base one full block below
-   * its grid diamond (and past its hitbox; playtester overlay check).
-   * MAIN-WORLD terraces keep their full stacks: a global cut left floating
-   * wall fragments at partially-exposed cells (measured). */
+  /** First cliff-face level of a terrain column that is actually EXPOSED —
+   * one above the LOWER of the E/S front neighbours' tops. The rationale is
+   * at the call site: the ground RT already bakes every cell's full face
+   * stack with the lower FRONT cells drawn over it, so re-drawing a COVERED
+   * face here — on top of the RT, at occluder depth — repaints a wall over
+   * the front cell's ground (the "half-tile" terrace tear).
+   *
+   * DECK-BLIND ON PURPOSE (do not "fix" this): it reads only base terrain
+   * levels. A deck is a slab covering the BAND [level-thickness, level], not
+   * a prefix [0..h], so folding a deck's height into this "first level to
+   * draw" number is not expressible here and would UNDER-draw. Measured on
+   * the_island2: a naive deck-aware variant cuts 4,748 terrain faces that
+   * nothing covers — a far worse tear than the one this rule fixed. Over-
+   * drawing because of a deck is the safe direction, and costs 0 faces on
+   * every shipped world today.
+   * (`solid` is vestigial — the one caller always passes false.) */
   private stackFrom(col: number, row: number, l: number, solid: boolean): number {
     if (solid) return l;
     const lE = this.world?.rows[row]?.[col + 1]?.l ?? -1;
     const lS = this.world?.rows[row + 1]?.[col]?.l ?? -1;
     return Math.max(0, Math.min(l, Math.min(lE, lS) + 1));
+  }
+
+  /** The DECK equivalent of stackFrom: the first slab-face level of this deck
+   * cell that no FRONT (E/S) neighbour already covers.
+   *
+   * The deck branch had no exposure test at all — it drew `thickness` face
+   * images at EVERY deck cell. the_island2's 12 cave decks are 16-32 levels
+   * thick, so an interior cave cell cost 17-33 images, and decks were ~65% of
+   * every occluder image in the mountain window (measured: 9,952 of 15,228).
+   * A cell deep inside a slab is walled in by its own neighbours on both
+   * front sides and needs only its TOP.
+   *
+   * Cover is a BAND, not a prefix: a neighbour covers `[nLvl0, nLevel]` from
+   * its own slab, and `[0, n.l]` from its base column. Only the CONTIGUOUS
+   * run that reaches down to my own bottom (`from`) actually hides my faces —
+   * a neighbour slab floating higher than my bottom leaves open air below it,
+   * and a face there is genuinely visible from underneath. Returning `from`
+   * (draw everything) is always the safe answer. */
+  private deckCoverFrom(col: number, row: number, from: number, level: number): number {
+    const w = this.world;
+    if (!w) return from;
+    // How far up from `from` does this neighbour cover CONTIGUOUSLY?
+    const coverTop = (c: number, r: number): number => {
+      const cell = w.rows[r]?.[c];
+      if (!cell) return -1; // off-map / void: covers nothing
+      let top = cell.l; // base column covers [0 .. l]
+      const nd = this.deckIndex.get(r * w.width + c);
+      if (nd) {
+        const nLo = Math.max(0, nd.deck.level - nd.deck.thickness);
+        // The slab extends the run only if it MEETS the base column (or my
+        // own bottom) — otherwise there is open air between them.
+        if (nLo <= top + 1 || nLo <= from) top = Math.max(top, nd.deck.level);
+      }
+      return top;
+    };
+    const cover = Math.min(coverTop(col + 1, row), coverTop(col, row + 1));
+    // One above the lower front cover, clamped into my own [from, level] band.
+    return Math.max(from, Math.min(level, cover + 1));
   }
 
   private artYOff(key: string): number {
@@ -4790,6 +4928,40 @@ export class WorldScene extends Phaser.Scene {
     const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
     const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
     const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    // VIEW CULL (perf 2026-07-31). The scan window above is deliberately huge:
+    // its bottom carries `maxLevel * lh` (640px on the_island2) because a tall
+    // column's ART rises from a footprint far below the screen, so those cells
+    // MUST still be scanned. But an individual face/top IMAGE at level `lvl`
+    // is drawn at `by - lvl*lh` and is one tile tall — most of them land
+    // nowhere near the view. Measured: 82% of every image built never
+    // intersects the camera at all.
+    //
+    // Culling an occluder can never leave a HOLE: the ground RT (depth
+    // -1,000,000) already paints all this terrain. An occluder is only a
+    // duplicate re-issued at sprite depth so bodies can interleave with it —
+    // so the sole cost of over-culling is a body sorting wrongly against
+    // terrain, which is why the box is padded by OCC_CULL_PAD (a full rebuild
+    // step, a tile, and the widest body art box) rather than hugging the view.
+    // occluderMeta is NOT culled: it is one record per CELL, it is what
+    // resolveBodyDepth actually reads, and it is not what costs anything.
+    const cx0 = cam.worldView.x - OCC_CULL_PAD;
+    const cx1 = cam.worldView.right + OCC_CULL_PAD;
+    const cy0 = cam.worldView.y - OCC_CULL_PAD;
+    const cy1 = cam.worldView.bottom + OCC_CULL_PAD;
+    let culled = 0;
+    /** Is a tile-sized image drawn at (ix, iy) inside the cull box? */
+    const shows = (ix: number, iy: number) =>
+      ix + tileSize >= cx0 && ix <= cx1 && iy + tileSize >= cy0 && iy <= cy1;
+    /** Does a WHOLE column (its occluderMeta box: art top `iyTop` down to the
+     * footprint at `iyBot`) reach the cull box? A column that does MUST keep
+     * at least one image — `resolveBodyDepth` clamps a body's depth and crops
+     * its lit copy from the META box, so a column that still sorts against an
+     * on-screen body while drawing nothing produces the classic artifact: a
+     * body cut off at `coverY` behind terrain that is no longer there. Columns
+     * that fail this test are outside view+OCC_CULL_PAD entirely and can never
+     * overlap an on-screen body's art box, so culling them whole is safe. */
+    const columnShows = (ix: number, iyTop: number, iyBot: number) =>
+      ix + tileSize >= cx0 && ix <= cx1 && iyBot >= cy0 && iyTop <= cy1;
     for (let v = v0; v <= v1; v++) {
       for (let u = u0; u <= u1; u++) {
         if ((u + v) & 1) continue;
@@ -4815,16 +4987,35 @@ export class WorldScene extends Phaser.Scene {
               const by0 = this.iso.oy + v * dy;
               const dDepth = by0 + dy;
               const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              for (let lvl = lvl0; lvl < dk.deck.level; lvl++)
+              // EXPOSED slab faces only — the rule the terrain branch has had
+              // since the terrace-tear fix, which the deck branch never got.
+              // A cave cell walled in by its own slab on both front sides
+              // needs nothing but its top; these decks are 16-32 thick, and
+              // this was ~65% of every occluder image in the mountain window.
+              const dFrom = this.deckCoverFrom(col, row, lvl0, dk.deck.level);
+              for (let lvl = dFrom; lvl < dk.deck.level; lvl++) {
+                if (!shows(bx0, by0 - lvl * lh)) {
+                  culled++;
+                  continue;
+                }
                 this.occluders.push(
                   this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row, dk.deck.level, dDepth),
                 );
-              this.occluders.push(
-                this.tagOccluder(
-                  this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
-                  col, row, dk.deck.level, dDepth,
-                ),
-              );
+              }
+              culled += dFrom - lvl0;
+              // The deck TOP is the walkable surface — it is what occludes a
+              // body walking UNDER the slab. Never exposure-cull it, and keep
+              // it whenever the COLUMN reaches the cull box (not merely when
+              // the top tile itself does), so a meta record can never describe
+              // terrain that draws nothing.
+              if (columnShows(bx0, by0 - dk.deck.level * lh, by0 + tileSize))
+                this.occluders.push(
+                  this.tagOccluder(
+                    this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
+                    col, row, dk.deck.level, dDepth,
+                  ),
+                );
+              else culled++;
               this.occluderMeta.push({
                 col, row, top: dk.deck.level, solid: false, depth: dDepth,
                 x0: bx0, x1: bx0 + tileSize, y0: by0 - dk.deck.level * lh, y1: by0 + tileSize,
@@ -4851,21 +5042,31 @@ export class WorldScene extends Phaser.Scene {
           // faces here — on top of the RT at a high depth — re-exposed them,
           // painting the front cell's ground back into a wall (the "half-tile"
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++)
+          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++) {
+            if (!shows(bx, by - lvl * lh)) {
+              culled++;
+              continue;
+            }
             this.occluders.push(
               this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
             );
-          this.occluders.push(
-            // Occluder images CAN flip directly (setFlipX) — matches the RT's
-            // mirrored top so the two layers stay pixel-aligned for flipped cells.
-            this.tagOccluder(
-              this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
-              col,
-              row,
-              cell.l,
-              oDepth,
-            ),
-          );
+          }
+          // Keep the top whenever the COLUMN reaches the cull box, so every
+          // meta record in range still has drawn art behind it (see
+          // columnShows).
+          if (columnShows(bx, by - cell.l * lh, by + tileSize))
+            this.occluders.push(
+              // Occluder images CAN flip directly (setFlipX) — matches the RT's
+              // mirrored top so the two layers stay pixel-aligned for flipped cells.
+              this.tagOccluder(
+                this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+                col,
+                row,
+                cell.l,
+                oDepth,
+              ),
+            );
+          else culled++;
           this.occluderMeta.push({
             col,
             row,
@@ -4970,6 +5171,8 @@ export class WorldScene extends Phaser.Scene {
         });
       }
     }
+
+    this.occCulled = culled;
 
     // Placed props (maps2 world@1) share the occluder rebuild: they're tall
     // billboards that also occlude characters, so building them here — under

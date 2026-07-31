@@ -106,6 +106,53 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   bridge onto same-level ground" scans every the_island2 span cell and drives the
   real follower off it (fails on the base-only baseline, 4/40 stuck). TODO:
   occlusion-FADE when standing under a deck (see yourself inside the house).
+- **OCCLUDER VIEW-CULL + DECK EXPOSURE** (perf #2/#3, 2026-07-31 — the walking
+  hitch). `rebuildOccluders` destroys and recreates the whole occluder set
+  whenever the camera centre drifts `OCC_STEP` (96px), and it built **14.4
+  images per cell** — 13,521 live images at the_island2's mountain, of which a
+  measured **82% never intersected the camera at all**. Two subtractive fixes,
+  no new runtime state:
+  (#3, the bigger one) the DECK branch had **no exposure test at all** — it drew
+  every face level of every deck cell, and the_island2's 12 cave decks are
+  16-32 levels thick, so an interior cave cell cost 17-33 images (~65% of every
+  image in the mountain window). `deckCoverFrom` gives decks the exposed-face
+  rule terrain has had since the terrace-tear fix, comparing BANDS: a slab
+  covers `[level-thickness, level]`, and only a CONTIGUOUS run reaching my own
+  bottom actually hides my faces (a slab floating higher leaves open air, and a
+  face under it is genuinely visible from below).
+  (#2) each face/top image is skipped unless it lands in the camera view grown
+  by `OCC_CULL_PAD` (a full rebuild step + a tile + the widest body art box).
+  **DO NOT make `stackFrom` deck-aware** — it is deck-blind ON PURPOSE. Deck
+  cover is a band, not a prefix, so a naive deck-aware variant cuts 4,748
+  terrain faces on the_island2 that nothing covers — a worse tear than the one
+  stackFrom was written to fix. Over-drawing because of a deck is the safe
+  direction and costs 0 faces on every shipped world.
+  WHY CULLING IS SAFE AT ALL: an occluder never contributes terrain pixels —
+  the ground RT (depth −1,000,000) already paints all of it. Occluders are a
+  duplicate re-issued at sprite depth purely so bodies can interleave, so
+  over-culling can only mis-SORT a body, never leave a hole. The real invariant
+  is therefore about `occluderMeta` (one record per CELL, never culled — it is
+  what `resolveBodyDepth` reads for depth and `coverY`): **a meta record
+  overlapping the view must still have drawn art behind it**, or a body clips
+  against terrain that is not there. That is why the TOP image is kept whenever
+  the whole COLUMN reaches the cull box (`columnShows`), not merely when the
+  top tile itself does — the first cut culled per-tile and the audit found 94
+  uncovered columns. Probe `__ml.occAudit()` checks this against Phaser's own
+  `getBounds()` and the camera's own `worldView`, never against the cull
+  arithmetic: `metaWithoutArt` must be 0 (props are excluded — they draw from
+  `propImgs` and are never culled). Measured: images 13,521 → 3,885 at the
+  mountain (3.5×), mean 4,000 → 1,462; `coverY` under every thick cave slab is
+  **bit-identical** to the pre-cull build (13 spots, same values). Gate: the
+  occluder block of `verify-smoke.mjs`, run on `occlusion_test` (the only
+  compact world with BOTH level-32 terrain and decks — the other small worlds
+  are flat and make the check vacuous), standing and walking.
+  STILL OPEN: this cuts the image COUNT, not the churn — ~92% of the set is
+  identical between consecutive rebuilds, and the worst walking frame only fell
+  971 → 784ms. The remaining spike is the destroy-all/create-all itself plus
+  `redrawGround`, which has the SAME unconditional deck face loop (~9,000 extra
+  `batchDraw`s per redraw) on its own 256px schedule. Pooling the images or
+  trimming the RT are the next moves — both need their own verification (the RT
+  trim is NOT a drop-in: it skips void cells).
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).
