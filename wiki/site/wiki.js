@@ -679,7 +679,27 @@ function paginate(paras, budget = STORY_PAGE_CHARS) {
   }
   return pages;
 }
-/** @param pages array of THUNKS returning Node[] — only the visible page exists. */
+/** Put an element's top just under the sticky topbar. */
+function scrollToTopOf(el) {
+  const bar = $("#topbar")?.getBoundingClientRect().height ?? 0;
+  window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - bar - 8));
+}
+/** A story card must ALWAYS be able to reach the top of the viewport, so a
+ *  link can drop a reader straight into it (maintainer 2026-07-31). It is the
+ *  last thing on its page, so without a tail there is nothing to scroll into
+ *  and a short card stays stranded mid-screen. Sized exactly — zero tail once
+ *  the card is taller than the viewport — and recomputed on every page turn,
+ *  because turning a page changes the card's height. */
+function fitStoryTail() {
+  const content = $("#content"), card = $(".story-card");
+  if (!content) return;
+  if (!card) { content.style.paddingBottom = ""; return; }
+  const bar = $("#topbar")?.getBoundingClientRect().height ?? 0;
+  const need = window.innerHeight - card.getBoundingClientRect().height - bar - 8;
+  content.style.paddingBottom = `${Math.max(120, Math.round(need))}px`;
+}
+/** @param pages array of THUNKS returning Node[] — only the visible page exists.
+ *  @param title a string or a Node (the story card heads with its entity). */
 function pagedPanel({ title, pages, aside = null, klass = "" }) {
   if (!pages.length) return null;
   let i = 0;
@@ -689,9 +709,18 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
     const b = h("button", { class: "nav-btn", type: "button", title: lbl, "aria-label": lbl }, glyph);
     // A plain button re-rendering IN PLACE. Never the hash: a hashchange re-runs
     // route(), which rebuilds the whole view and destroys the animation player.
-    b.addEventListener("click", () => { const t = i + step; if (t >= 0 && t < pages.length) { i = t; draw(); } });
+    b.addEventListener("click", () => {
+      const t = i + step;
+      if (t < 0 || t >= pages.length) return;
+      i = t; draw();
+      // A new page starts at ITS top — the control is at the bottom, so
+      // without this you would be left staring at the end of the page you
+      // just turned to (maintainer 2026-07-31).
+      if (panel) { fitStoryTail(); scrollToTopOf(panel); }
+    });
     return b;
   };
+  let panel = null;
   const prev = mk("‹", "Previous page", -1), next = mk("›", "Next page", +1);
   const draw = () => {
     body.replaceChildren(...pages[i]());
@@ -709,7 +738,7 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
   // page control at the BOTTOM RIGHT where the text ends, then "Read next"
   // last of all. The pager and the links used to sit above the prose, between
   // the reader and the thing they opened the card for.
-  const panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },
+  panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },
     h("div", { class: "panel-title" }, title),
     body,
     // Counter LEFT of the buttons (crumbRow's rule) so ‹ › keep their spot as
@@ -773,12 +802,22 @@ function loreLinks(related, { title = "Read next" } = {}) {
 /** The long story, in a card at the BOTTOM of an entity's page — many readers
  *  will never open it, so it must cost them nothing (maintainer 2026-07-31).
  *  No story ⇒ NO CARD AT ALL, never a placeholder. */
-function storyCard(title, paras, related) {
+function storyCard({ label: what, art, name, paras, related }) {
   const chunks = paginate(paras);
   if (!chunks.length) return null;
+  // The card RE-INTRODUCES its entity (maintainer 2026-07-31): a link can drop
+  // a reader straight onto this card with the rest of the page above the fold,
+  // so the card has to say who it is about on its own. Thumbnail left, name
+  // right — smaller than the page's own h1, because this is a reminder, not a
+  // second title.
+  const head = h("div", { class: "story-head" },
+    art ?? null,
+    h("div", { class: "story-who" },
+      h("div", { class: "story-name" }, name ?? ""),
+      h("div", { class: "story-what muted" }, what)));
   return pagedPanel({
-    title, klass: "story-card",
-    aside: loreLinks(related),                       // fixed height, ABOVE the body
+    title: head, klass: "story-card",
+    aside: loreLinks(related),                       // last in the card
     pages: chunks.map((ps) => () => ps.map((p) => h("p", {}, p))),
   });
 }
@@ -1141,7 +1180,7 @@ function viewMonster(id) {
       statsEditor(m.id)),
     // The long story, last on the page ALWAYS — the pager is the only control
     // above variable-height content, so nothing may be appended below it.
-    storyCard("The story", m.loreStory, m.loreRelated));
+    storyCard({ label: "The story", art: refPic(m), name: m.name, paras: m.loreStory, related: m.loreRelated }));
 }
 
 /* --- characters --- */
@@ -1201,7 +1240,7 @@ function viewCharacter(id) {
       ...related.map((s) => h("div", {},
         h("h3", { style: "margin-top:10px" }, s.name, " ", h("span", { class: "pill" }, s.category)),
         ...s.takes.map((t) => takeRow("sounds", s.path, t))))),
-    storyCard(heroStoryTitle(c), c.loreStory, c.loreRelated));   // always last
+    storyCard({ label: heroStoryTitle(c), art: refPic(c), name: c.name, paras: c.loreStory, related: c.loreRelated }));   // always last
 }
 
 /* --- tiles --- */
@@ -1474,7 +1513,7 @@ function viewObject(id) {
         loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
     hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."),
-    storyCard("The story", o.loreStory, o.loreRelated));   // always last
+    storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last
 }
 
 /* --- sounds --- */
@@ -1659,7 +1698,7 @@ function viewItem(id) {
     // wiki does not promise mechanics that do not exist (maintainer
     // 2026-07-31). It returns when the effects are real.
     droppedByPanel(it),
-    storyCard("The story", it.loreStory, it.loreRelated));   // always last
+    storyCard({ label: "The story", art: itemSprite(it, 48), name: itemLabel(it), paras: it.loreStory, related: it.loreRelated }));   // always last
 }
 
 /* --- lore views --- */
@@ -1993,6 +2032,8 @@ function route() {
   $("#content").replaceChildren(view);
   renderNav();
   setMenu(false);
+  // A story card must always be able to reach the top of the viewport.
+  fitStoryTail();
 }
 
 // Open/close the mobile nav; keep the scrim and the hosting game drawer
@@ -2136,6 +2177,7 @@ function initChrome() {
     }
     window.scrollTo(0, 0);
   });
+  window.addEventListener("resize", fitStoryTail);
   window.addEventListener("beforeunload", (e) => { if (state.dirty.size) e.preventDefault(); });
 }
 

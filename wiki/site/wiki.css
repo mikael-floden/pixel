@@ -624,3 +624,10 @@ button.drop-row {
    still left of the buttons so ‹ › keep their spot as "9 / 16" widens. */
 .page-rail { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 12px 0 4px; }
 .page-rail .detail-count { margin: 0; }
+/* The story card re-introduces its entity: thumbnail left, name right, both
+   smaller than the page's own title — a reminder for a reader who was linked
+   straight here, not a second heading. */
+.story-head { display: flex; align-items: center; gap: 12px; }
+.story-who { min-width: 0; }
+.story-name { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.2; }
+.story-what { font-size: 12.5px; }
