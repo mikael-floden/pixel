@@ -242,6 +242,44 @@ button { font: inherit; cursor: pointer; }
 }
 .thumb-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
 .card .thumb-chip { margin: 8px 0 2px; }
+.rarity-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+/* ---- loot: what drops what ----
+   One row shape serves BOTH directions — a creature's drops and an item's
+   sources — so the two tables read as one idea seen from either end. Every
+   row is a LINK (maintainer 2026-07-31: the old list printed the folder id
+   and went nowhere). Item art is authored 48x48 at 1x, so it is drawn at 48
+   or 96 and never resampled. */
+.drop-list { display: flex; flex-direction: column; }
+.drop-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 4px; border-top: 1px solid var(--border);
+  color: var(--ink); border-radius: 8px;
+}
+.drop-list .drop-row:first-child { border-top: 0; }
+.drop-row:hover { background: var(--surface-2); text-decoration: none; }
+/* Size comes from the markup's width/height (48 or 96 — whole multiples of
+   the authored 48), NEVER from CSS: a max-width or a forced size resamples
+   the art. The generic `.card .thumb img { max-width:100% }` would do exactly
+   that inside a 110px-tall thumb, so item icons opt out of it. */
+.item-icon { flex: none; image-rendering: pixelated; }
+.card .thumb img.item-icon { max-width: none; max-height: none; object-fit: none; }
+.item-noart { display: inline-block; width: 48px; height: 48px; border: 1px dashed var(--border-strong); border-radius: 8px; }
+/* A creature's sprite is a big frame with a small creature in it — show it
+   whole, letterboxed into the same 48px slot the item icons use. */
+.mon-icon { object-fit: contain; }
+.drop-name { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.drop-worth { font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.drop-pct {
+  font-variant-numeric: tabular-nums; font-weight: 600;
+  min-width: 52px; text-align: right; white-space: nowrap;
+}
+.pill.soul { background: var(--accent-soft); color: var(--accent-ink); }
+.pill.gold { background: var(--star); color: #2a2205; }
+:root[data-theme="dark"] .pill.gold, html:not([data-theme]) .pill.gold { color: #241d04; }
+/* Not dropped by anything yet — the normal resting state, dimmed not warned. */
+.card.dim { opacity: 0.62; }
+.card.dim:hover { opacity: 1; }
 .crumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; display: inline-block; }
 
 .panel {

@@ -622,6 +622,125 @@ function levelBadge(stats) {
   return h("div", { class: "thumb-chip", title: "How hard this creature is to fight" },
     "Level ", h("b", {}, String(stats.level ?? "?")));
 }
+/* --- loot: the item ↔ creature join (build.mjs precomputes both ways) --- */
+let _itemIx = null, _monIx = null;
+const itemById = (id) => (_itemIx ??= new Map((state.data.domains.items ?? []).map((i) => [i.id, i]))).get(id);
+const monsterById = (id) => (_monIx ??= new Map((state.data.domains.monsters ?? []).map((m) => [m.id, m]))).get(id);
+/** A drop chance (a FRACTION) as a percentage a human can read. The data spans
+ *  0.006..0.45, so a fixed precision either prints "1%" for three different
+ *  odds or "45.0%" for none of them: keep one decimal below 10%, whole
+ *  numbers above, and never round a real chance down to "0%". */
+function pct(chance) {
+  const n = Number(chance);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const p = Math.min(100, n * 100);
+  if (p < 0.1) return "<0.1%";
+  return `${p < 10 ? +p.toFixed(1) : Math.round(p)}%`;
+}
+/** Is this item's type bound 1-to-1 to a creature? Asked of the ITEMS AGENT'S
+ *  own type table (`one_per_monster`), never by testing for "SOUL" — a future
+ *  type that declares it inherits the treatment for free. */
+const oneToOne = (it) => !!state.data.itemTypes?.[it?.type]?.one_per_monster;
+const itemSources = (it) => it?.droppedBy ?? [];
+const rarityOf = (it) => state.data.itemRarities?.[it?.rarity] ?? null;
+/** The chip under an item's picture. For a 1-to-1 type it names the creature —
+ *  every Soulstone is literally called "Soulstone", so the creature is the
+ *  only thing that tells two of them apart. Decisions key off the SOURCE
+ *  COUNT, never off soulOf alone: that is null for "unbound" AND for the
+ *  "bound twice" the data must never contain but might. */
+function itemChip(it) {
+  const src = itemSources(it);
+  if (oneToOne(it)) {
+    if (src.length === 1) {
+      const m = monsterById(src[0].monster);
+      return h("div", { class: "thumb-chip", title: `The soul of ${m?.name ?? src[0].monster}` },
+        "Soul of ", h("b", {}, m?.name ?? src[0].monster));
+    }
+    if (src.length === 0) {
+      return h("div", { class: "thumb-chip", title: "No creature in Nangijala carries this soul yet — it waits for one" }, "Unbound");
+    }
+    return h("div", { class: "thumb-chip", title: src.map((s) => monsterById(s.monster)?.name ?? s.monster).join(", ") },
+      "Soul of ", h("b", {}, String(src.length)), " creatures");
+  }
+  const r = rarityOf(it);
+  return h("div", { class: "thumb-chip", title: r ? `Sells in the ${it.rarity} band` : "" },
+    r ? h("span", { class: "rarity-dot", style: `background:${r.color}` }) : null,
+    it.rarity ? titleCaseWord(it.rarity) : (state.data.itemTypes?.[it.type]?.label ?? "Item"));
+}
+const titleCaseWord = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+/** What an item sells for. Always rendered, always one line. */
+function goldPill(it) {
+  const v = Number(it?.value);
+  return Number.isFinite(v) && v > 0
+    ? h("span", { class: "pill gold" }, `Sells for ${v} gold`)
+    : h("span", { class: "pill" }, "No shop value");
+}
+/** An item's sprite at a WHOLE multiple of its authored 48px (never resampled). */
+function itemSprite(it, size = 48) {
+  return it?.preview
+    ? h("img", { class: "item-icon", src: assetUrl(it.preview), alt: "", width: String(size), height: String(size), loading: "lazy" })
+    : h("span", { class: "item-icon item-noart", style: `width:${size}px;height:${size}px` });
+}
+/** WHAT THIS CREATURE DROPS — icon, name, worth, chance, each row a link to
+ *  the item's page (maintainer 2026-07-31: the old list printed the folder id
+ *  in a monospace chip and went nowhere). */
+function dropsPanel(monsterId) {
+  const stats = monsterStats(monsterId);
+  const rows = (stats?.loot ?? [])
+    .filter((l) => l?.item)                              // "+ add drop" writes a blank row
+    .map((l) => ({ l, it: itemById(l.item) }))
+    .filter((r) => r.it || state.admin)                  // an id the registry lost: never shown to players
+    .sort((a, b) => (Number(b.l.chance) || -1) - (Number(a.l.chance) || -1)
+      || String(a.it?.name ?? a.l.item).localeCompare(String(b.it?.name ?? b.l.item)));
+  if (!rows.length) {
+    return h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "Drops"),
+      h("p", { class: "muted" }, "Nothing yet — no loot has been assigned to this creature."));
+  }
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "Drops", h("span", { class: "pill" }, String(rows.length))),
+    h("div", { class: "drop-list" }, ...rows.map(({ l, it }) => {
+      const soul = it && oneToOne(it);
+      return h("a", { class: "drop-row", href: it ? `#/items/${it.id}` : "#/items" },
+        itemSprite(it),
+        h("span", { class: "drop-name" },
+          it?.name ?? l.item,
+          soul ? h("span", { class: "pill soul" }, "its soul") : null,
+          !it ? h("span", { class: "pill warn" }, "unknown item") : null),
+        h("span", { class: "drop-worth muted" }, it && it.value ? `${it.value} g` : ""),
+        h("span", { class: "drop-pct" }, pct(l.chance) ?? "—"));
+    })));
+}
+/** WHERE THIS ITEM COMES FROM — the same table reversed, each row a link to
+ *  the creature's page. */
+function droppedByPanel(it) {
+  const src = itemSources(it);
+  const soul = oneToOne(it);
+  if (!src.length) {
+    return h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "Dropped by", h("span", { class: "pill" }, "none yet")),
+      h("p", { class: "muted" }, soul
+        ? "This stone has not found its creature yet. Unused is the normal resting state here — content is made ahead of the world that uses it."
+        : "No creature drops this yet. Unused is the normal resting state here — content is made ahead of the world that uses it."));
+  }
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "Dropped by",
+      h("span", { class: "pill" }, src.length === 1 ? "1 creature" : `${src.length} creatures`),
+      soul && src.length > 1 ? h("span", { class: "pill warn", title: "A soul stone is meant to belong to exactly one creature" }, "should be one") : null),
+    h("div", { class: "drop-list" }, ...src.map((s) => {
+      const m = monsterById(s.monster);
+      const st = monsterStats(s.monster);
+      return h("a", { class: "drop-row", href: m ? `#/monsters/${m.id}` : "#/monsters" },
+        m?.preview
+          ? h("img", { class: "item-icon mon-icon", src: assetUrl(m.preview), alt: "", loading: "lazy" })
+          : h("span", { class: "item-icon item-noart" }),
+        h("span", { class: "drop-name" },
+          m?.name ?? s.monster,
+          !m ? h("span", { class: "pill warn" }, "unknown creature") : null),
+        h("span", { class: "drop-worth muted" }, m && st?.level ? `Lv ${st.level}` : ""),
+        h("span", { class: "drop-pct" }, pct(s.chance) ?? "—"));
+    })));
+}
 /** A monster's effective stats: its tuned entry over the shared defaults. */
 function monsterStats(id) {
   const t = state.tuning.monsters;
@@ -640,16 +759,10 @@ function statsEditor(monsterId) {
   // must never sneak an entry into the next save).
   const stats = t.monsters[monsterId] ?? { ...t.defaults, loot: [] };
   if (!state.admin) {
-    // Players see the creature's stats + drops as wiki lore, read-only.
-    return h("div", {},
-      h("div", { class: "stat-grid ro" }, ...STAT_FIELDS.map(([key, label]) =>
-        h("label", {}, label, h("span", { class: "stat-value" }, String(stats[key] ?? t.defaults[key] ?? 0))))),
-      (stats.loot ?? []).filter((l) => l.item).length
-        ? h("div", { style: "margin-top:14px" },
-            h("div", { class: "panel-title" }, "Drops"),
-            ...stats.loot.filter((l) => l.item).map((l) =>
-              h("div", { class: "loot-row" }, h("code", {}, l.item), h("span", { class: "muted" }, `${+(100 * (l.chance ?? 0)).toFixed(2)}%`))))
-        : null);
+    // Players see the stats read-only; the drops are their own panel now
+    // (dropsPanel — icons, real names and a link to each item's page).
+    return h("div", { class: "stat-grid ro" }, ...STAT_FIELDS.map(([key, label]) =>
+      h("label", {}, label, h("span", { class: "stat-value" }, String(stats[key] ?? t.defaults[key] ?? 0)))));
   }
   const edited = () => {
     t.monsters[monsterId] = stats;
@@ -813,6 +926,8 @@ function viewMonster(id) {
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
     zoneMapPanel(m.id),
+    // What it drops, each row a link to that item's page.
+    dropsPanel(m.id),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Stats"),
       statsEditor(m.id)));
@@ -1184,23 +1299,91 @@ function viewMusic() {
 }
 
 /* --- items --- */
+/** Every item that carries a usable id, normalised. Foreign data: never
+ *  produce a feedback key of "undefined". Ordered by type (the items agent's
+ *  own table order), then by what it is worth, so a page opens on the
+ *  headline loot rather than on whatever sorted first alphabetically. */
+function itemOrder() {
+  const typeRank = Object.keys(state.data.itemTypes ?? {});
+  return (state.data.domains.items ?? [])
+    .filter((it) => it && (it.path || it.id))
+    .map((it) => ({ ...it, path: it.path ?? `items/${it.id}`, name: it.name ?? it.id }))
+    .sort((a, b) => (typeRank.indexOf(a.type) - typeRank.indexOf(b.type))
+      || (Number(b.value) || 0) - (Number(a.value) || 0)
+      || String(a.name).localeCompare(String(b.name)));
+}
+/** A soul stone's display name is the same for all of them, so it is always
+ *  followed by its creature — in the nav counter, in search hits, anywhere. */
+const itemLabel = (it) => {
+  if (!oneToOne(it)) return it.name;
+  const src = itemSources(it);
+  return src.length === 1 ? `${it.name} — ${monsterById(src[0].monster)?.name ?? src[0].monster}` : `${it.name} — unbound`;
+};
+const itemBlurb = (it) => it.description ?? "";
 function viewItems() {
-  // A future items agent's registry is foreign data — only render entries
-  // that carry a usable id, and never produce feedback keyed "undefined".
-  const list = (state.data.domains.items ?? []).filter((it) => it && (it.path || it.id))
-    .map((it) => ({ ...it, path: it.path ?? `items/${it.id}`, name: it.name ?? it.id }));
+  const all = itemOrder();
+  const list = all.filter((it) => matches(state.query, it.id, it.name, it.description, it.category, it.rarity, itemLabel(it)));
+  const unused = all.filter((it) => !itemSources(it).length).length;
+  if (!all.length) {
+    return h("div", {}, sectionHead("items"),
+      h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "No items yet"),
+        h("p", { class: "muted" }, "Nothing has been forged yet — loot appears here as it is made.")));
+  }
   return h("div", {},
     sectionHead("items"),
-    list.length
-      ? h("div", { class: "grid" }, ...list.map((it) =>
-          h("div", { class: "card" },
-            it.preview ? h("div", { class: "thumb checker" }, h("img", { src: assetUrl(it.preview), alt: it.name, loading: "lazy" })) : null,
-            h("div", { class: "card-name" }, it.name),
-            h("div", { class: "card-sub" }, it.description ?? ""),
-            feedbackRow("items", it.path, { note: false }))))
-      : h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, "No items yet"),
-          h("p", { class: "muted" }, "The items agent hasn't shipped anything — the moment an items/ domain lands in the repo, its loot appears here automatically (and monsters will show what they drop, with percentages, from live/tuning/monsters.json).")));
+    h("p", { class: "muted" }, state.admin
+      ? `${all.length} items from the items agent. Click one to see what drops it, what it sells for, and to rate or remove it.`
+      : "Everything you can pick up, sell or merge — and the creatures that carry it."),
+    // Unused is the NORMAL resting state in this repo: content is made ahead
+    // of the world that uses it (maintainer 2026-07-31). Say so plainly
+    // instead of dressing it as a warning.
+    unused ? h("p", { class: "muted" },
+      h("span", { class: "pill" }, `${unused} of ${all.length} not dropped by anything yet`)) : null,
+    h("div", { class: "grid" }, ...list.map((it) => {
+      const src = itemSources(it);
+      return h("a", { class: `card${src.length ? "" : " dim"}`, href: `#/items/${it.id}` },
+        h("div", { class: "thumb checker" }, itemSprite(it, 96)),
+        itemChip(it),
+        h("div", { class: "card-name" }, it.name),
+        h("div", { class: "card-sub" }, goldPill(it)),
+        h("div", { class: "card-sub" }, src.length
+          ? `${src.length === 1 ? "1 creature" : `${src.length} creatures`} drop${src.length === 1 ? "s" : ""} it`
+          : "not dropped yet"),
+        h("div", { class: "card-badges" }, ...entityBadge("items", it.path)));
+    })));
+}
+function viewItem(id) {
+  const all = itemOrder();
+  const it = all.find((x) => x.id === id);
+  if (!it) return h("p", {}, "Unknown item.");
+  const type = state.data.itemTypes?.[it.type];
+  return h("div", {},
+    crumbRow("#/items", `← ${label("items")}`, "items", all.map((x) => ({ id: x.id, name: itemLabel(x) })), it.id),
+    h("div", { class: "detail-head" },
+      h("div", { class: "portrait-col" },
+        h("div", { class: "portrait checker" }, itemSprite(it, 96)),
+        itemChip(it)),
+      h("div", { class: "meta" },
+        h("h1", {}, it.name),
+        h("div", { class: "spawn-line" }, goldPill(it)),
+        // Pipeline facts stay behind the admin flag, as everywhere else.
+        state.admin ? h("p", { class: "muted" },
+          `${it.id} · ${it.type}${type?.label ? ` (${type.label})` : ""}${it.category ? ` · ${it.category}` : ""}${it.rarity ? ` · ${it.rarity}` : ""}${it.stackable ? ` · stacks to ${it.max_stack}` : ""}`) : null,
+        // LAST variable-height element in this column — see loreSlot.
+        loreSlot(itemBlurb(it), all.map(itemBlurb)),
+        feedbackRow("items", it.path))),
+    // What a stone grants when merged — the items agent's own words.
+    it.soul?.power
+      ? h("div", { class: "panel" },
+          h("div", { class: "panel-title" }, "What it grants",
+            it.soul.element ? h("span", { class: "pill" }, it.soul.element) : null),
+          h("p", {}, it.soul.power),
+          it.soul.merge_into?.length
+            ? h("p", { class: "muted" }, `Merged into ${it.soul.merge_into.join(" or ")} — the stone is used up.`)
+            : null)
+      : null,
+    droppedByPanel(it));
 }
 
 /* --- tuning --- */
@@ -1255,6 +1438,10 @@ function viewSearch() {
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
   d.sounds.forEach((s) => matches(q, s.id, s.name, s.description, s.usage) && hits.push(["sounds", s.name, "#/sounds", null]));
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
+  // A soul stone's name is shared by all of them — search its creature too,
+  // and label the hit with the creature so 28 identical rows never appear.
+  (d.items ?? []).forEach((it) => matches(q, it.id, it.name, it.description, it.category, it.rarity, itemLabel(it))
+    && hits.push(["items", itemLabel(it), `#/items/${it.id}`, it.preview]));
   if (state.admin) state.data.constants.forEach((c) => matches(q, c.name, c.description) && hits.push(["tuning", c.name, "#/tuning", null]));
   return h("div", {},
     h("h1", {}, `Search: “${q}”`),
@@ -1280,7 +1467,7 @@ function route() {
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();
-  else if (page === "items") view = viewItems();
+  else if (page === "items") view = id ? viewItem(id) : viewItems();
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
   else view = viewHome();
