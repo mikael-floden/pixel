@@ -36,13 +36,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain"
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -984,7 +982,7 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -994,8 +992,10 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
-          }
+            "clear_water": 0.125,
+            "black_mountain": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [

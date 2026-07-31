@@ -158,7 +158,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     if t_to:
         mtargets[other] = tilemeta.target_abL(t_to)
     ctx = {"ground_type": gid, "transition_to": other}
-    raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
+    raw_by_file = {common.stem(t["file"]): t for t in (req.get("tiles") or [])}
 
     ds = pp["deseam"]
     cr = pp["clean_top_rim"]
@@ -217,9 +217,11 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         if gc.get("enabled"):                          # LAST: bleed silhouette outward to close
             im = normalize.close_iso_gaps(              # the background-through-gaps grid seam
                 im, alpha_thresh=gc["alpha_thresh"], grow=gc["grow"])
-        im.save(os.path.join(dest, fn))
+        out_fn = common.processed_name(fn)   # raw may be .webp; output stays .png
+        im.save(os.path.join(dest, out_fn))
         # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
-        entry = dict(raw_by_file.get(fn, {"file": fn}))
+        entry = dict(raw_by_file.get(common.stem(fn), {}))
+        entry["file"] = out_fn
         entry.update(tilemeta.tile_metadata(im, mtargets, ctx))
         tiles_meta.append(entry)
     n = len(tiles_meta)

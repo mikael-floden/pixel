@@ -36,12 +36,13 @@
             "saturated_grass",
             "saturated_grass",
             "crystal_ice",
-            "saturated_grass"
+            "crystal_ice"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "crystal_ice": 0.125
-          }
+            "saturated_grass": 0.75,
+            "crystal_ice": 0.25
+          },
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -513,12 +514,11 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "saturated_grass",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "saturated_grass": 0.125
+            "crystal_ice": 1.0
           }
         },
         "SE": {
@@ -1069,12 +1069,13 @@
             "saturated_grass",
             "crystal_ice",
             "crystal_ice",
-            "saturated_grass"
+            "crystal_ice"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "crystal_ice": 0.25
-          }
+            "saturated_grass": 0.625,
+            "crystal_ice": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [

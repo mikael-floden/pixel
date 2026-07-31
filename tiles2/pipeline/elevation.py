@@ -226,7 +226,7 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
     refs = terrain.get("harmonize_refs") or [gid]
     ref_targets = [t for t in (postprocess.type_target(r, cfg, cache) for r in refs) if t]
 
-    raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
+    raw_by_file = {common.stem(t["file"]): t for t in (req.get("tiles") or [])}
     emit_target = postprocess.type_target(gid, cfg, cache)   # material colour for glow gating
     tiles_meta = []
     n_emit = 0
@@ -261,8 +261,10 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
                 edge_margin=cr.get("edge_margin", 22))  # only; the rising object is untouched, and
         # gap_close is intentionally NOT run here — props are placed in isolation, and its
         # outward bleed would fatten a lone sprite's silhouette.
-        im.save(os.path.join(dest, fn))
-        entry = dict(raw_by_file.get(fn, {"file": fn}))
+        out_fn = common.processed_name(fn)   # raw may be .webp; output stays .png
+        im.save(os.path.join(dest, out_fn))
+        entry = dict(raw_by_file.get(common.stem(fn), {}))
+        entry["file"] = out_fn
         # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,
         # fires) are tile-indexed in the SAME metadata maps2 already reads — computed
         # on the FINAL harmonised image. Mark features:["shiny"] (the tag maps2's

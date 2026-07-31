@@ -34,19 +34,17 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "clear_water",
+            "clear_water",
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "black_mountain": 0.375
-          },
-          "divider": 0.625
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -56,10 +54,8 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "clear_water": 0.875
-          },
-          "divider": 0.125
+            "clear_water": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -81,19 +77,19 @@
         "NW": {
           "samples": [
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "clear_water": 0.5
+            "black_mountain": 0.125,
+            "clear_water": 0.875
           },
-          "divider": 0.5
+          "divider": 0.125
         }
       },
       "features": [

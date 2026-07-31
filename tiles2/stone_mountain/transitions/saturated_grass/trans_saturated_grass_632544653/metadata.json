@@ -997,13 +997,11 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "stone_mountain"
+            "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "stone_mountain": 0.125
-          },
-          "divider": 0.875
+            "saturated_grass": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -1037,7 +1035,7 @@
         },
         "NW": {
           "samples": [
-            "stone_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -1047,10 +1045,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "saturated_grass": 0.875
-          },
-          "divider": 0.125
+            "saturated_grass": 1.0
+          }
         }
       },
       "features": [

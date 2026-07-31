@@ -132,6 +132,30 @@ def list_raw_sheets(gid, kind=None, other=None):
     return out
 
 
+TILE_EXTS = (".png", ".webp")
+
+
 def tile_files(d):
-    return sorted(f for f in os.listdir(d)
-                  if f.startswith("tile_") and f.endswith(".png")) if os.path.isdir(d) else []
+    """Tile files in a sheet dir, in index order, in EITHER format.
+
+    raw/ sheets are stored as lossless WebP (~24% smaller, and raw/ has no consumer
+    outside tiles2), while the processed game-facing tiles stay .png because maps2's
+    world.json bakes their exact paths. Readers therefore must not assume an
+    extension — this is the single chokepoint they all go through."""
+    return sorted((f for f in os.listdir(d)
+                   if f.startswith("tile_") and f.endswith(TILE_EXTS)),
+                  key=lambda f: os.path.splitext(f)[0]) if os.path.isdir(d) else []
+
+
+def processed_name(fn):
+    """Output filename for a processed tile: ALWAYS .png regardless of the raw source
+    format, so converting raw/ to WebP can never change a game-facing path."""
+    return os.path.splitext(fn)[0] + ".png"
+
+
+def stem(fn):
+    """'tile_03.webp' -> 'tile_03'. Used to match a tile against request.json entries,
+    which record the filename as it was at GENERATION time — so a raw sheet converted
+    to WebP must still find its per-tile record (index/width/height) instead of
+    silently dropping it from the sheet metadata maps2 reads."""
+    return os.path.splitext(fn)[0]

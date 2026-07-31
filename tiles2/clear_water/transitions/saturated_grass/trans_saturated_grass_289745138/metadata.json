@@ -34,19 +34,17 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "clear_water": 0.375
-          },
-          "divider": 0.625
+            "saturated_grass": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "clear_water",
+            "saturated_grass",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -56,8 +54,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "saturated_grass": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [

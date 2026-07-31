@@ -1079,14 +1079,12 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "regular_snow",
-            "regular_snow"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "regular_snow": 0.25
-          },
-          "divider": 0.75
+            "saturated_grass": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -1120,8 +1118,8 @@
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "saturated_grass",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -1130,10 +1128,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.25,
-            "saturated_grass": 0.75
-          },
-          "divider": 0.25
+            "saturated_grass": 1.0
+          }
         }
       },
       "features": [

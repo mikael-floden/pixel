@@ -962,16 +962,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
+            "saturated_grass",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "lightdark_dirt": 0.5
-          },
-          "divider": 0.5
+            "saturated_grass": 0.875,
+            "lightdark_dirt": 0.125
+          }
         },
         "SE": {
           "samples": [

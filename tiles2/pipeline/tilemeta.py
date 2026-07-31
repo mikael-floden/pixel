@@ -72,10 +72,22 @@ def classify(img, targets):
     return d.argmin(-1), d.min(-1), tids
 
 
-def _majority(idx, sx, sy, tids):
+def _majority(idx, sx, sy, tids, al=None):
+    """Nearest-material vote over a 3x3 window, counting OPAQUE pixels only.
+
+    Edge samples sit near the diamond rim, so their window straddles the silhouette.
+    A transparent pixel has no material — but `classify` still assigns it one from
+    whatever RGB happens to sit under it, so those pixels used to vote. That made the
+    edge labels the map builder pairs on depend on invisible data (they shifted the
+    moment raw/ moved to WebP, which zeroes RGB under alpha==0). Masking them out
+    makes the vote depend only on pixels that actually exist."""
     H, W = idx.shape
-    vals = [idx[min(max(sy + dy, 0), H - 1), min(max(sx + dx, 0), W - 1)]
-            for dy in (-1, 0, 1) for dx in (-1, 0, 1)]
+    cells = [(min(max(sy + dy, 0), H - 1), min(max(sx + dx, 0), W - 1))
+             for dy in (-1, 0, 1) for dx in (-1, 0, 1)]
+    if al is not None:
+        op = [(y, x) for y, x in cells if al[y, x]]
+        cells = op or cells                 # all-transparent window: fall back rather than fail
+    vals = [idx[y, x] for y, x in cells]
     return tids[max(set(vals), key=vals.count)]
 
 
@@ -94,7 +106,7 @@ def _divider(samples):
     return round(runs[0][1] / len(samples), 3) if len(runs) == 2 else None
 
 
-def edges(img, c, idx, tids, k=SAMPLES_PER_EDGE):
+def edges(img, c, idx, tids, k=SAMPLES_PER_EDGE, al=None):
     cx, cy = c["C"]
     out = {}
     seq = {"NE": (c["N"], c["E"]), "SE": (c["E"], c["S"]),
@@ -107,7 +119,7 @@ def edges(img, c, idx, tids, k=SAMPLES_PER_EDGE):
             y = p0[1] + (p1[1] - p0[1]) * t
             dx, dy = cx - x, cy - y
             n = (dx * dx + dy * dy) ** 0.5 or 1
-            s.append(_majority(idx, int(round(x + dx / n * 3)), int(round(y + dy / n * 3)), tids))
+            s.append(_majority(idx, int(round(x + dx / n * 3)), int(round(y + dy / n * 3)), tids, al))
         e = {"samples": s, "ratio": _ratio(s)}
         div = _divider(s)
         if div is not None:
@@ -178,11 +190,12 @@ def tile_metadata(img, targets, sheet_meta):
     if not c or not targets:
         return {}
     idx, dmin, tids = classify(img, targets)
+    al = np.asarray(img.convert("RGBA"))[:, :, 3] > 16
     comp = composition(img, c, idx, tids)
     feats = feature_tags(img, c, dmin)
     return {
         "composition": comp,
-        "edges": edges(img, c, idx, tids),
+        "edges": edges(img, c, idx, tids, al=al),
         "features": feats,
         "description": describe(sheet_meta, comp, feats),
     }
