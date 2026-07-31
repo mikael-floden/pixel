@@ -55,10 +55,19 @@ def convert_one(png_path, apply=False):
 
 
 def _git_rm(paths):
-    """Remove the superseded PNGs through git so the rename is staged."""
+    """Remove the superseded PNGs, staging the deletion in git when the file is
+    actually tracked. Falls back to a plain unlink for anything git doesn't own
+    (a scratch/shadow copy outside the repo — used to rehearse a conversion),
+    so this tool works on any tree."""
+    repo = os.path.dirname(ROOT)
     for i in range(0, len(paths), 400):                     # keep argv small
-        subprocess.run(["git", "rm", "-q", "--"] + paths[i:i + 400],
-                       cwd=os.path.dirname(ROOT), check=True)
+        batch = paths[i:i + 400]
+        rc = subprocess.run(["git", "rm", "-q", "--"] + batch,
+                            cwd=repo, capture_output=True).returncode
+        if rc != 0:                                          # untracked / not a repo
+            for p in batch:
+                if os.path.exists(p):
+                    os.remove(p)
 
 
 def walk_pngs(base):

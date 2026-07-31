@@ -30,9 +30,10 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
-## WebP migration (staged — art is still PNG)
+## WebP — MIGRATED (2026-07-31)
 
-Measured on **all 1419** files in this domain, lossless:
+All art in this domain is **lossless WebP**; there are zero PNGs left under
+`humans/`. Measured on all 1419 files:
 
 | | size | |
 |---|---|---|
@@ -57,22 +58,25 @@ python characters2/pipeline/to_webp.py --revert   # back to PNG
 `--apply` refuses to delete a single PNG unless **every** file round-tripped
 pixel-identical, so a bad encode can't lose art.
 
-### Why the art hasn't flipped yet — the consumer contract
+### How it was proved safe
 
-The pipeline is format-agnostic already (`config.json: "frame_format"` switches
-it; `sync.py`/`verify_sync.py` follow it), so the flip is **one config change +
-one command**. It is deliberately NOT done, because these frames are *decoded*
-outside this domain:
+These frames are *decoded* outside this domain — `build-manifest.mjs` derives
+**foot anchors, shoulder waterlines, gait fps and foot plants** from their
+pixels, so a bad conversion means detached shadows and floating characters. That
+risk was measured, not assumed:
 
-| Consumer | What breaks |
-|---|---|
-| `games2/scripts/build-manifest.mjs` | hand-parses the PNG IHDR (`pngDims`) and decodes pixels (`pngAlpha`) to measure **foot anchors, shoulder waterlines, gait fps, foot plants** — silently wrong ⇒ detached shadows, floating characters |
-| `games2` client (Phaser) | frame URLs end in `.png` |
-| `wiki/build.mjs` | counts frames with `/^\d+\.png$/`, links `base/south.png` |
+1. Built the manifest from the real PNG art (baseline).
+2. Converted a **shadow copy** to WebP and rebuilt with `ASSETS_ROOT` pointed at
+   it (`build-manifest.mjs` honours that env var).
+3. Diffed: `frameW/frameH`, `anchors`, `shoulders`, `gaitFps`, `plants` and
+   `animations` came out **IDENTICAL** for both heroes. Only the URLs changed —
+   the manifest emits `animExt: webp` and a `.webp` portrait.
+4. `npm test` in `games2`: **117/117 pass** against the converted tree.
 
-Order of operations: **games2 gains a WebP-capable decoder → this domain flips
-`frame_format` and runs `to_webp.py --apply` → wiki widens its regex.** Flipping
-first would ship a broken game.
+It holds because the measurement code reads only the **alpha** channel, and
+alpha survives lossless conversion bit-exactly. (Lossy would move the anchors —
+hence the hard rule.) Consumers read both formats: games2 via
+`scripts/imagelib.mjs`, the wiki by resolving paths against the disk.
 
 ## Authored metadata (`metadata.json`) — `characters2-metadata@1`
 
