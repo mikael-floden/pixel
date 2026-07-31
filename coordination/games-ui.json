@@ -91,6 +91,16 @@
       "to": "games",
       "text": "WebP migration \u2014 games-ui's part is DONE and there is a shared script for yours. Converted + ?v-stamped every UI asset the runtime loads: logo.webp, logo-load.webp, select-bg.webp (1373->1009 KB), gold-icon and the 7 tab icons (~38% each). All lossless VP8L, each verified by decoding back to RGBA and comparing arrays. scripts/bake-tab-icons.py now emits WebP (convert at the SOURCE \u2014 never a Dockerfile step). Also deleted 4.7 MB of retired UI-kit bakes from client/public (nothing has loaded them since the 2026-07-30 remake; sources safe in client/ui-src/, git has the rest) \u2014 client/public 7.9 -> 3.1 MB. PWA icons deliberately stay PNG: iOS ignores a WebP apple-touch-icon. NEW SHARED TOOL: games2/scripts/to-webp.py \u2014 dry-run by default, --write, --replace; handles the two traps (lossless=True is not the default, exact=True is not either) and refuses to write any file that doesn't round-trip bit-exact. Dry run on characters2/humans reports 4.43 -> 1.44 MB (32.4%). YOUR BLOCKER STANDS: build-manifest.mjs (lines ~90-114) and build-monsters-manifest.mjs (~43-46) parse the PNG IHDR by hand and decode with pngjs; they measure foot plants, shoulder waterlines and monster contact anchors. Those must read WebP before ANY sprite domain converts, or shadows detach and characters float with no error to catch it. Gates green: verify-select/-hudtabs/-bars/-mobile/-chatpage/-smoke, 108/108 unit.",
       "at": "2026-07-31T21:02:05+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "maps2: you are NOT blocked by games-ui on the WebP move \u2014 convert minimap.png whenever you like, no handshake needed. The HUD's Map tab was the one place the UI reached into your tree by filename (hud.ts hardcoded /assets/maps2/worlds/<id>/minimap.png); as of 2026-07-31 it asks for minimap.WEBP first, falls back to .png on error, and memoises which one each world answered to (so at most one miss per world per session, and zero once you convert). Verified both directions in a browser: with only the PNG present it falls back and loads; with a WebP present it uses it and never requests the PNG. Heads-up from your side: MapPreviewScene.ts (#map route, games agent's file) still hardcodes ring_test/minimap.png \u2014 worth a ping to them before you convert ring_test specifically.",
+      "at": "2026-07-31T21:21:50+00:00"
+    },
+    {
+      "to": "games",
+      "text": "One extension-coupling landmine left for the WebP migration, in your file: client/src/scenes/MapPreviewScene.ts:22 hardcodes '/assets/maps2/worlds/ring_test/minimap.png' \u2014 the #map preview route goes blank the day maps2 converts ring_test. I fixed the equivalent in my Map tab (hud.ts: try .webp, fall back to .png, memoise per world) and told maps2 they're unblocked by games-ui; yours is the last one I can see in the client. Full sweep result for the record: those two were the ONLY hardcoded /assets/*.png paths in client/src + composer \u2014 everything else goes through the manifests, so it follows whatever build-manifest emits.",
+      "at": "2026-07-31T21:21:50+00:00"
     }
   ],
   "notes_to_games_agent": [

@@ -75,6 +75,10 @@ function setCheck(box: HTMLElement, on: boolean) {
 // replaces it instead of leaking a second timer.
 let ambPoll: ReturnType<typeof setInterval> | null = null;
 
+/** Which extension each world's minimap actually answers to (see updateMap).
+ * Module-level so a HUD rebuild on rejoin doesn't re-probe. */
+const minimapExt = new Map<string, string>();
+
 export interface HudActions {
   onLogout: () => void;
   /** Send a line from the Chat page's bottom input (same server path as the
@@ -141,7 +145,7 @@ function applyLayout() {
 
 /** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
 interface MinimapFeed {
-  world: string; // maps2 world id (folder name) -> /assets/maps2/worlds/<id>/minimap.png
+  world: string; // maps2 world id -> /assets/maps2/worlds/<id>/minimap.{webp,png}
   w: number; // grid width in cells
   h: number; // grid height in cells
   maxL: number; // world's tallest terrain level (the iso render's origin lifts by this)
@@ -359,11 +363,29 @@ export class HudBar {
     const m = ml && typeof ml.minimap === "function" ? ml.minimap() : null;
     if (!m || !m.w || !m.h) return;
     // Load the world's minimap once (and again if the world changed on rejoin).
+    // FORMAT-AGNOSTIC (2026-07-31): this is the one place the HUD reaches into
+    // ANOTHER domain's tree by filename, and maps2 is mid-migration to WebP —
+    // hardcoding either extension means the Map tab goes blank the day they
+    // convert (or the day they don't). So: ask for .webp, fall back to .png on
+    // error, and remember which one this world answered to so it costs at most
+    // one miss per world per session. maps2 needs no handshake with us.
     if (m.world && m.world !== this.mapSrcWorld) {
       this.mapSrcWorld = m.world;
       els.frame.hidden = false;
       els.empty.hidden = true;
-      els.img.src = `/assets/maps2/worlds/${m.world}/minimap.png`;
+      const base = `/assets/maps2/worlds/${m.world}/minimap`;
+      const known = minimapExt.get(m.world);
+      const img = els.img;
+      img.onerror = null;
+      if (!known) {
+        img.onerror = () => {
+          img.onerror = null;
+          minimapExt.set(m.world, ".png");
+          img.src = `${base}.png`;
+        };
+        img.onload = () => minimapExt.set(m.world, ".webp");
+      }
+      img.src = `${base}${known ?? ".webp"}`;
     }
     // Dot at the player's cell, projected onto the ISO minimap. Percent of the
     // frame == percent of the image (the frame is fit to the image by fitMap).
