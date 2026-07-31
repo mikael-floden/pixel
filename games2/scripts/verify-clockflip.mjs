@@ -1,27 +1,33 @@
-// Wiki-style clock verification (UI remake 2026-07-30): the zodiac wheel PNG +
-// frame canvas are GONE — the clock is a plain CSS dial (.ml-clock) fixed
-// top-centre with a DAY face and a NIGHT face (night opacity 0/1 cross-fades
-// over 1.25s) and a slim .ml-clock-hand DIV rotating about the hub. The
-// HAND-OFF LOGIC is unchanged and is what this gate protects: each day/night
-// boundary winds the hand FORWARD (+360 to the rotate() target — net +180 on
-// screen, never backwards, no teleport) while the faces cross-fade; instant
-// join-style syncs snap both without animation.
+// Time-of-day PILL verification ("Fern starfall", 2026-07-31). The half-dial
+// with its two cross-fading faces and its rotating .ml-clock-hand is GONE, and
+// with it the whole hand-off machinery this gate used to protect: the +360
+// winding, the 1.25s glide, and the SERVER-side freeze (WorldRoom's
+// handoffHoldMs) that stopped the world clock while the hand jumped 180°.
+//
+// The pill is REAL PIXEL ART — a 40x12 art-pixel scene painted into a canvas
+// and shown at x2 — and the sun and moon ride a continuous BELT: the body
+// leaving the right edge and the body entering on the left are the same
+// motion. So the property to protect is now CONTINUITY: park the world clock a
+// hair on either side of sunset (and of sunrise) and the picture must be
+// essentially the same picture. That is the proof there is nothing left to
+// freeze.
+//
 // Drives the REAL client headlessly against a dev stack.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = process.env.OUT || "/tmp";
+const AW = 40; // art pixels across (clock.ts)
+const AH = 12;
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const fail = (m) => {
   throw new Error(m);
 };
-const mod360 = (d) => ((d % 360) + 360) % 360;
 try {
-  // Device-width mobile geometry — the HUD/visual QA convention since the remake.
-  // Device-width mobile geometry, but dsf 1: software-GL at dsf 2 starves the
-  // page to ~0.5fps timer slices and every timing observation goes blind.
+  // Device-width mobile geometry — the HUD/visual QA convention since the
+  // remake. dsf 1: software-GL at dsf 2 starves the page to ~0.5fps.
   const ctx = await browser.newContext({
     viewport: { width: 393, height: 851 },
     isMobile: true,
@@ -37,186 +43,217 @@ try {
   await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 30000 });
   // ms-polled (NOT waitForSelector): the software-GL page starves rAF, which
   // can wedge Playwright's raf-based selector wait even on a visible node.
-  await page.waitForFunction(() => !!document.querySelector(".ml-clock .ml-clock-hand"), null, {
+  await page.waitForFunction(() => !!document.querySelector(".ml-clock canvas"), null, {
     timeout: 15000,
     polling: 100,
   });
   await page.waitForTimeout(1200);
 
-  const handDeg = () =>
-    page.evaluate(() => {
-      const h = document.querySelector(".ml-clock-hand");
-      const m = /rotate\(([-\d.]+)deg\)/.exec(h.style.transform || "rotate(0deg)");
-      return m ? +m[1] : 0;
-    });
-  const nightOpacity = () =>
-    page.evaluate(() => +getComputedStyle(document.querySelector(".ml-clock-face.night")).opacity);
-  const shotClock = (name) =>
-    page.screenshot({ path: `${OUT}/${name}`, clip: { x: 0, y: 0, width: 393, height: 120 } });
+  // Everything below reads the canvas BACKING STORE (40x12 art pixels), not a
+  // screenshot: exact art-pixel coordinates, immune to starvation and scaling.
+  await page.evaluate(
+    ([AW, AH]) => {
+      const cv = document.querySelector(".ml-clock canvas");
+      const c2 = cv.getContext("2d");
+      const near = (p, i, hex, tol) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return Math.abs(p[i] - r) <= tol && Math.abs(p[i + 1] - g) <= tol && Math.abs(p[i + 2] - b) <= tol;
+      };
+      window.__pill = {
+        // Raw art pixels as a flat array — the diff metric operates on these.
+        px: () => Array.from(c2.getImageData(0, 0, AW, AH).data),
+        // Centroid + count of the pixels matching a body's core colour.
+        body: (hex, tol = 10) => {
+          const d = c2.getImageData(0, 0, AW, AH).data;
+          let n = 0;
+          let sx = 0;
+          let sy = 0;
+          for (let y = 0; y < AH; y++)
+            for (let x = 0; x < AW; x++) {
+              const i = (y * AW + x) * 4;
+              if (!near(d, i, hex, tol)) continue;
+              n++;
+              sx += x;
+              sy += y;
+            }
+          return { n, x: n ? sx / n : -1, y: n ? sy / n : -1 };
+        },
+        // Mean luma of the TOP half (the sky, above the hills).
+        sky: () => {
+          const d = c2.getImageData(0, 0, AW, 5).data;
+          let s = 0;
+          for (let i = 0; i < d.length; i += 4) s += (d[i] * 3 + d[i + 1] * 6 + d[i + 2]) / 10;
+          return s / (d.length / 4);
+        },
+      };
+      // Mean absolute per-channel difference between two px() snapshots.
+      window.__pillDiff = (a, b) => {
+        let s = 0;
+        let n = 0;
+        for (let i = 0; i < a.length; i += 4)
+          for (let k = 0; k < 3; k++, n++) s += Math.abs(a[i + k] - b[i + k]);
+        return s / n;
+      };
+    },
+    [AW, AH],
+  );
 
-  // ---- 1. structure: fixed round CSS dial top-centre, two faces + hand DIV,
-  //         1.25s fades wired, zero <img> art, taps pass through ----
+  const SUN = "#ffe08a";
+  const MOON = "#f6f2e4";
+  // Park the world clock at (phase, progress) — instant, no ease to wait out.
+  const at = (idx, t) => page.evaluate(([i, p]) => window.__ml.timeOfDay(i, true, p), [idx, t]);
+  const body = (hex) => page.evaluate((h) => window.__pill.body(h), hex);
+  const pixels = () => page.evaluate(() => window.__pill.px());
+  const sky = () => page.evaluate(() => window.__pill.sky());
+  const shotClock = (name) =>
+    page.screenshot({ path: `${OUT}/${name}`, clip: { x: 0, y: 0, width: 393, height: 60 } });
+
+  // ---- 1. structure: a fixed pass-through canvas pill top-centre, art-res
+  //         backing store at x2, nearest-neighbour, no dial parts left ----
   const s = await page.evaluate(() => {
     const root = document.querySelector(".ml-clock");
     const cs = getComputedStyle(root);
     const r = root.getBoundingClientRect();
-    const night = document.querySelector(".ml-clock-face.night");
-    const hand = document.querySelector(".ml-clock-hand");
+    const cv = root.querySelector("canvas");
     return {
       pos: cs.position,
       pe: cs.pointerEvents,
-      radius: cs.borderRadius,
       top: r.top,
       cx: r.left + r.width / 2,
-      w: r.width,
-      h: r.height,
       vw: innerWidth,
-      day: !!root.querySelector(".ml-clock-face.day"),
-      nightFade: parseFloat(getComputedStyle(night).transitionDuration),
-      handFade: parseFloat(getComputedStyle(hand).transitionDuration),
-      handOriginY: getComputedStyle(hand).transformOrigin.split(" ")[1],
+      cw: cv.width,
+      ch: cv.height,
+      rect: cv.getBoundingClientRect(),
+      smooth: getComputedStyle(cv).imageRendering,
       imgs: root.querySelectorAll("img").length,
+      relics: root.querySelectorAll(".ml-clock-hand, .ml-clock-face, .ml-clock-hub").length,
     };
   });
-  if (s.pos !== "fixed" || s.pe !== "none") fail(`dial not a fixed pass-through (${s.pos}/${s.pe})`);
-  if (Math.abs(s.top - 8) > 2) fail(`dial top ${s.top}px, want ~8`);
-  if (Math.abs(s.cx - s.vw / 2) > 2) fail(`dial centre x ${s.cx} vs viewport mid ${s.vw / 2}`);
-  if (Math.abs(s.w - 54) > 1 || Math.abs(s.h - 54) > 1) fail(`dial ${s.w}x${s.h}, want 54x54`);
-  if (!(s.radius.includes("50%") || parseFloat(s.radius) >= s.w / 2 - 1)) fail(`dial not round (${s.radius})`);
-  if (!s.day) fail("day face missing");
-  if (Math.abs(s.nightFade - 1.25) > 0.01) fail(`night-face fade ${s.nightFade}s, want 1.25`);
-  if (Math.abs(s.handFade - 1.25) > 0.01) fail(`hand glide ${s.handFade}s, want 1.25`);
-  if (s.handOriginY !== "0px") fail(`hand pivot y ${s.handOriginY}, want 0px (hub at dial centre)`);
-  if (s.imgs !== 0) fail(`${s.imgs} <img> inside the dial — wheel/hand art should be gone`);
-  console.log(`structure OK (54px CSS dial top-centre, 1.25s fades, no art imgs)`);
+  if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
+  if (Math.abs(s.top - 8) > 2) fail(`pill top ${s.top}px, want ~8`);
+  if (Math.abs(s.cx - s.vw / 2) > 2) fail(`pill centre x ${s.cx} vs viewport mid ${s.vw / 2}`);
+  if (s.cw !== AW || s.ch !== AH) fail(`canvas backing store ${s.cw}x${s.ch}, want ${AW}x${AH} art px`);
+  if (Math.abs(s.rect.width - AW * 2) > 1 || Math.abs(s.rect.height - AH * 2) > 1)
+    fail(`canvas drawn ${s.rect.width}x${s.rect.height}, want ${AW * 2}x${AH * 2} (x2 exact)`);
+  if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
+  if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
+  if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
+  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, top-centre pass-through)`);
 
-  // ---- 2. day baseline: day face down (night opacity 0), hand straight down ----
-  await page.evaluate(() => window.__ml.timeOfDay(2)); // Day, instant, phaseT pinned 0.5
-  await page.waitForTimeout(400);
-  const name0 = await page.evaluate(() => window.__ml.timeOfDay().name);
-  if (name0 !== "Day") fail(`probe round-trip says ${name0}, want Day`);
-  const o0 = await nightOpacity();
-  if (o0 > 0.02) fail(`day: night face opacity ${o0}, want 0`);
-  const d0 = await handDeg();
-  const p0 = mod360(d0);
-  if (p0 > 0.5 && p0 < 359.5) fail(`day hand at ${d0}deg (mod ${p0}), want 0 mod 360`);
-  await shotClock("clockflip-day.png");
-  console.log(`day face OK (night opacity ${o0}, hand ${d0}deg)`);
+  // ---- 2. the sun ARCS: low at morning, apex dead-centre at noon, low and
+  //         far right at evening — and it is GONE at midnight ----
+  await at(2, 0.5); // Day, mid-phase = the sun's apex
+  const sunDay = await body(SUN);
+  if (sunDay.n < 8) fail(`day: only ${sunDay.n} sun px on the pill`);
+  if (Math.abs(sunDay.x - AW / 2) > 3) fail(`noon sun at x=${sunDay.x.toFixed(1)}, want the middle (~20)`);
+  if (sunDay.y > 4) fail(`noon sun at y=${sunDay.y.toFixed(1)}, want the arc's apex (<=4)`);
+  await shotClock("clock-day.png");
 
-  // ---- 3. evening -> night: LIVE hand-off cross-fades the face and winds the
-  //         hand +360 (net +180 over the top) — no snap, never backwards ----
-  // CSS transition EVENTS are the starvation-proof witness of a real fade: a
-  // snapped change (transition:none commit) fires none, and transitionend's
-  // elapsedTime reports the true 1.25s however late the event is delivered.
-  // (Sampling computed opacity misses the whole fade when software-GL starves
-  // the page — measured ~2.2s per timer slice at dsf 2.)
-  await page.evaluate(() => {
-    const night = document.querySelector(".ml-clock-face.night");
-    const hand = document.querySelector(".ml-clock-hand");
-    const log = (window.__flipLog = {
-      nightStart: 0,
-      nightEnd: 0,
-      nightElapsed: -1,
-      handStart: 0,
-      handEnd: 0,
-      handElapsed: -1,
-    });
-    night.addEventListener("transitionstart", (e) => e.propertyName === "opacity" && log.nightStart++);
-    night.addEventListener("transitionend", (e) => {
-      if (e.propertyName !== "opacity") return;
-      log.nightEnd++;
-      log.nightElapsed = e.elapsedTime;
-    });
-    hand.addEventListener("transitionstart", (e) => e.propertyName === "transform" && log.handStart++);
-    hand.addEventListener("transitionend", (e) => {
-      if (e.propertyName !== "transform") return;
-      log.handEnd++;
-      log.handElapsed = e.elapsedTime;
-    });
-  });
-  const flipLog = () => page.evaluate(() => window.__flipLog);
+  await at(1, 0.5); // Morning
+  const sunMorn = await body(SUN);
+  if (!(sunMorn.x < AW / 2 - 6)) fail(`morning sun at x=${sunMorn.x.toFixed(1)}, want the left half`);
+  if (!(sunMorn.y > sunDay.y)) fail(`morning sun (y=${sunMorn.y.toFixed(1)}) not below noon's apex`);
 
-  await page.evaluate(() => window.__ml.timeOfDay(3, false)); // Evening: same face, no flip
-  await page.waitForFunction(() => window.__flipLog.handEnd >= 1, null, { timeout: 25000, polling: 150 });
-  const dEve = await handDeg();
-  const oEve = await nightOpacity();
-  const lEve = await flipLog();
-  if (oEve > 0.02) fail(`evening flipped the night face on (${oEve})`);
-  if (lEve.nightStart !== 0) fail("evening started a face cross-fade — same parity must keep the day face");
-  if (Math.abs(lEve.handElapsed - 1.25) > 0.01) fail(`evening hand glide ran ${lEve.handElapsed}s, want 1.25`);
-  if (Math.abs(mod360(dEve) - 71.25) > 1) fail(`evening hand ${dEve} (mod ${mod360(dEve)}), want ~71.25`);
-  if (!(dEve > d0)) fail(`hand went backwards day->evening: ${d0} -> ${dEve}`);
-  // Trigger the live change; in the SAME task the flip must only be ARMED —
-  // the face still dark-off (a live change animates, it never snaps).
-  const armed = await page.evaluate(() => {
-    window.__ml.timeOfDay(0, false); // Night
-    return +getComputedStyle(document.querySelector(".ml-clock-face.night")).opacity;
-  });
-  if (armed > 0.05) fail(`night face jumped instantly on a live change (${armed}) — no cross-fade`);
-  // Mid-cross-fade screenshot, best effort (a starved page may settle first).
-  await page
-    .waitForFunction(() => window.__flipLog.nightStart >= 1, null, { timeout: 8000, polling: 100 })
-    .catch(() => {});
-  await shotClock("clockflip-mid.png");
-  await page.waitForFunction(() => window.__flipLog.nightEnd >= 1 && window.__flipLog.handEnd >= 2, null, {
-    timeout: 25000,
-    polling: 150,
-  });
-  const dN = await handDeg();
-  const oN = await nightOpacity();
-  const lN = await flipLog();
-  if (lN.nightStart < 1) fail("night face never cross-faded (no transitionstart)");
-  if (Math.abs(lN.nightElapsed - 1.25) > 0.01) fail(`face cross-fade ran ${lN.nightElapsed}s, want 1.25`);
-  if (Math.abs(lN.handElapsed - 1.25) > 0.01) fail(`hand-off glide ran ${lN.handElapsed}s, want 1.25`);
-  if (oN < 0.99) fail(`night face opacity ${oN} after the flip, want 1`);
-  if (!(dN > dEve)) fail(`hand went backwards at hand-off: ${dEve} -> ${dN} (teleport?)`);
-  if (Math.abs(dN - dEve - 288.75) > 1)
-    fail(`night flip wound ${dEve} -> ${dN}, want +288.75 (to 0deg with +360 winding)`);
-  if (Math.abs(mod360(dN)) > 1 && Math.abs(mod360(dN) - 360) > 1)
-    fail(`night hand ${dN} (mod ${mod360(dN)}), want 0 mod 360`);
-  await shotClock("clockflip-night.png");
-  console.log(`night hand-off OK (1.25s cross-fade to opacity ${oN}, hand ${dEve} -> ${dN})`);
+  await at(3, 0.5); // Evening
+  const sunEve = await body(SUN);
+  if (!(sunEve.x > AW / 2 + 6)) fail(`evening sun at x=${sunEve.x.toFixed(1)}, want the right half`);
+  if (!(sunEve.y > sunDay.y)) fail(`evening sun (y=${sunEve.y.toFixed(1)}) not below noon's apex`);
+  console.log(
+    `sun arc OK (x ${sunMorn.x.toFixed(1)} -> ${sunDay.x.toFixed(1)} -> ${sunEve.x.toFixed(1)}, ` +
+      `y ${sunMorn.y.toFixed(1)} -> ${sunDay.y.toFixed(1)} -> ${sunEve.y.toFixed(1)})`,
+  );
 
-  // ---- 4. night -> morning: flips again (+360 winding), day face returns ----
-  await page.evaluate(() => window.__ml.timeOfDay(1, false)); // Morning
-  await page.waitForFunction(() => window.__flipLog.nightEnd >= 2 && window.__flipLog.handEnd >= 3, null, {
-    timeout: 25000,
-    polling: 150,
-  });
-  const nameM = await page.evaluate(() => window.__ml.timeOfDay().name);
-  if (nameM !== "Morning") fail(`probe round-trip says ${nameM}, want Morning`);
-  const dM = await handDeg();
-  const oM = await nightOpacity();
-  if (oM > 0.01) fail(`morning: night face still at ${oM}, want 0 (day face back)`);
-  if (Math.abs(dM - dN - 288.75) > 1)
-    fail(`morning flip wound ${dN} -> ${dM}, want +288.75 (to -71.25deg with +360 winding)`);
-  console.log(`morning hand-off OK (hand ${dN} -> ${dM}, day face back)`);
+  // ---- 3. midnight: the MOON is at the apex, the sun has set, sky is dark ----
+  const skyDay = await sky();
+  await at(0, 0.5); // Night, mid-phase = midnight
+  const moon = await body(MOON);
+  const sunNight = await body(SUN);
+  const skyNight = await sky();
+  if (moon.n < 8) fail(`midnight: only ${moon.n} moon px on the pill`);
+  if (Math.abs(moon.x - AW / 2) > 3) fail(`midnight moon at x=${moon.x.toFixed(1)}, want the middle`);
+  if (moon.y > 4) fail(`midnight moon at y=${moon.y.toFixed(1)}, want the arc's apex (<=4)`);
+  if (sunNight.n > 0) fail(`${sunNight.n} sun px still visible at midnight — the sun must be below the hills`);
+  if (!(skyNight < skyDay * 0.5)) fail(`night sky luma ${skyNight.toFixed(1)} vs day ${skyDay.toFixed(1)}`);
+  await shotClock("clock-night.png");
+  console.log(`midnight OK (moon at apex, no sun, sky luma ${skyNight.toFixed(1)} vs day ${skyDay.toFixed(1)})`);
 
-  // ---- 5. instant join-style sync lands the right face without animation ----
-  const inst = await page.evaluate(() => {
-    window.__ml.timeOfDay(0); // Night, instant
-    const o = +getComputedStyle(document.querySelector(".ml-clock-face.night")).opacity;
-    const h = document.querySelector(".ml-clock-hand");
-    const im = /rotate\(([-\d.]+)deg\)/.exec(h.style.transform || "");
-    const t = getComputedStyle(h).transform; // matrix(a,b,...) — the DRAWN angle
-    const mm = /matrix\(([-\d.e]+),\s*([-\d.e]+)/.exec(t) || [0, "1", "0"];
-    const drawn = (Math.atan2(+mm[2], +mm[1]) * 180) / Math.PI;
-    return { o, d: im ? +im[1] : 0, drawn };
+  // ---- 4. THE BELT — no hand-off, nothing to freeze. A hair either side of
+  //         sunset (evening's end / night's start) the pill must draw
+  //         essentially the same frame: the sun leaving on the right and the
+  //         moon arriving on the left are ONE continuous motion. Same at
+  //         sunrise. The old dial jumped its hand 180° here, which is why the
+  //         server had to stop the world clock for 1.25s. ----
+  await at(3, 0.999); // last instant of evening
+  const beforeSunset = await pixels();
+  await at(0, 0.001); // first instant of night
+  const afterSunset = await pixels();
+  await at(0, 0.999); // last instant of night
+  const beforeSunrise = await pixels();
+  await at(1, 0.001); // first instant of morning
+  const afterSunrise = await pixels();
+  // Control: a REAL step through time, to prove the metric can see a change.
+  await at(2, 0.5);
+  const noon = await pixels();
+  await at(2, 0.75);
+  const afterNoon = await pixels();
+
+  const diff = (a, b) => page.evaluate(([x, y]) => window.__pillDiff(x, y), [a, b]);
+  const dSunset = await diff(beforeSunset, afterSunset);
+  const dSunrise = await diff(beforeSunrise, afterSunrise);
+  const dControl = await diff(noon, afterNoon);
+  if (dControl < 3) fail(`the diff metric is blind (a quarter-phase of DAY moved it only ${dControl.toFixed(2)})`);
+  if (dSunset > 1.5) fail(`sunset JUMPS: mean pixel delta ${dSunset.toFixed(2)} across the boundary (want <1.5)`);
+  if (dSunrise > 1.5) fail(`sunrise JUMPS: mean pixel delta ${dSunrise.toFixed(2)} across the boundary`);
+  console.log(
+    `belt continuity OK (sunset delta ${dSunset.toFixed(2)}, sunrise ${dSunrise.toFixed(2)}, ` +
+      `control step ${dControl.toFixed(2)})`,
+  );
+
+  // The belt in motion around that boundary: the sun works its way right and
+  // SINKS behind the hills, and the moon climbs out of them on the left.
+  await at(3, 0.2);
+  const setA = await body(SUN);
+  await at(3, 0.6);
+  const setB = await body(SUN);
+  await at(3, 0.95);
+  const setC = await body(SUN);
+  if (!(setB.x > setA.x && setC.x > setB.x))
+    fail(`evening sun went backwards (${setA.x.toFixed(1)} -> ${setB.x.toFixed(1)} -> ${setC.x.toFixed(1)})`);
+  if (!(setB.y >= setA.y && setC.y >= setB.y))
+    fail(`evening sun rose instead of setting (y ${setA.y} -> ${setB.y} -> ${setC.y})`);
+  if (!(setC.n < setA.n / 2))
+    fail(`evening sun not sinking behind the hills (${setA.n} -> ${setC.n} px still showing)`);
+  await shotClock("clock-sunset.png");
+
+  await at(0, 0.05);
+  const riseA = await body(MOON);
+  await at(0, 0.2);
+  const riseB = await body(MOON);
+  if (riseA.n < 1) fail("no moon just after sunset — it should be climbing out of the hills on the left");
+  if (!(riseA.x < AW * 0.25)) fail(`the new moon entered at x=${riseA.x.toFixed(1)}, want the left edge`);
+  if (!(riseB.x > riseA.x)) fail(`the moon went backwards (${riseA.x.toFixed(1)} -> ${riseB.x.toFixed(1)})`);
+  if (!(riseB.y < riseA.y)) fail(`the moon sank instead of rising (y ${riseA.y} -> ${riseB.y})`);
+  console.log(
+    `belt motion OK (sun sets right x ${setA.x.toFixed(1)}->${setC.x.toFixed(1)}, ` +
+      `${setA.n}->${setC.n} px above the hills; moon rises left ` +
+      `x ${riseA.x.toFixed(1)}->${riseB.x.toFixed(1)}, ${riseA.n}->${riseB.n} px)`,
+  );
+
+  // ---- 5. clockStar(): the HUD echo of a world shooting star repaints the
+  //         pill SYNCHRONOUSLY (no CSS animation to starve) ----
+  await at(0, 0.5); // night — a streak reads loudest against the dark sky
+  const star = await page.evaluate(() => {
+    const before = window.__pill.px();
+    window.__ml.star();
+    return window.__pillDiff(before, window.__pill.px());
   });
-  if (inst.o < 0.99) fail(`instant night: opacity ${inst.o} right after the call — want a snapped 1`);
-  if (Math.abs(inst.d - dM - 431.25) > 1)
-    fail(`instant night wound ${dM} -> ${inst.d}, want +431.25 (+360 winding, hand to 0)`);
-  const drawnMod = mod360(inst.drawn);
-  if (drawnMod > 1 && drawnMod < 359) fail(`instant night DRAWN at ${inst.drawn}deg — transition not snapped`);
-  // No transition events may fire for a snapped sync (give delivery a moment).
-  await page.waitForTimeout(2500);
-  const lI = await flipLog();
-  if (lI.nightStart !== 2 || lI.handStart !== 3)
-    fail(`instant sync animated (face fades ${lI.nightStart}, hand glides ${lI.handStart} — want 2/3)`);
-  console.log(`instant night sync OK (opacity ${inst.o}, hand ${inst.d}deg, drawn ${inst.drawn.toFixed(2)})`);
+  if (!(star > 0)) fail("a shooting star left no trace on the pill");
+  console.log(`clockStar OK (repaint delta ${star.toFixed(3)})`);
 
   if (errors.length) fail(`page errors: ${errors.join(" | ")}`);
-  console.log("CLOCKFLIP OK — CSS dial cross-fades faces and winds the hand forward at every hand-off");
+  console.log("CLOCK OK — the sun and moon ride one continuous belt; no hand-off, no freeze");
   console.log("PASS");
 } finally {
   await browser.close();

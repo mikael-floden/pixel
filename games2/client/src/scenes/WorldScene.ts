@@ -72,7 +72,7 @@ import { bindLiveTuning, liveTuningSnapshot } from "../live";
 import { ChatUI } from "../chat";
 import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
-import { setClockPhase, setClockAngle, clockStar } from "../clock";
+import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { fadeToBlack } from "../fade";
@@ -284,7 +284,9 @@ function sunFromHand(deg: number, night: boolean, f: number): [number, number, n
   return [cx / n, cy / n, slope, strength];
 }
 
-const TIME_TRANSITION_S = 1.25; // in step with clock.ts FADE_S + WorldRoom.handoffHoldMs (day<->night 2x faster)
+// Ambient/sun ease for a manual phase SKIP only — time itself is continuous,
+// and the clock pill is a pure function of it (no fade, no hand-off hold).
+const TIME_TRANSITION_S = 1.25;
 // The starting phase + count live in shared/ — time-of-day is WORLD STATE
 // (server-owned, synced): [1] / the HUD button send "timeofday" and the
 // state listener applies the change for everyone. TIME_PHASES must stay in
@@ -1522,15 +1524,27 @@ export class WorldScene extends Phaser.Scene {
       nightShader: () => !!this.night && this.night.active,
       // Get/set the time-of-day phase (by index or name); instant when set —
       // headless probes sample grades without waiting out the transition.
-      timeOfDay: (which?: number | string, instant = true) => {
+      // `phaseT` pins the progress WITHIN the phase (default 0.5 = the phase's
+      // calibrated keyframe, which every grade gate samples); pass 0/1 to park
+      // the world clock exactly on a phase boundary — that's how the clock
+      // gate checks the sun and moon cross sunset/sunrise continuously.
+      timeOfDay: (which?: number | string, instant = true, phaseT = 0.5) => {
         if (which !== undefined) {
           const idx =
             typeof which === "number"
               ? which % TIME_PHASES.length
               : TIME_PHASES.findIndex((p) => p.name.toLowerCase() === String(which).toLowerCase());
-          if (idx >= 0) this.setTimeOfDay(idx, instant, 0.5); // probes pin the exact keyframe
+          if (idx >= 0) this.setTimeOfDay(idx, instant, phaseT);
         }
-        return { name: TIME_PHASES[this.timeIdx].name, t: this.timeT, ambient: [...this.curAmbient] };
+        const ha = handAngle(this.timeIdx + this.phaseT);
+        return {
+          name: TIME_PHASES[this.timeIdx].name,
+          t: this.timeT,
+          ambient: [...this.curAmbient],
+          phaseT: this.phaseT,
+          f: ha.f,
+          night: ha.night,
+        };
       },
       // Place/clear a debug light at a grid position (headless probes).
       probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
@@ -2862,7 +2876,7 @@ export class WorldScene extends Phaser.Scene {
       for (let ch = 0; ch < 4; ch++)
         this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
       this.curTorchF = this.timeFromTorchF + (blend.torchF - this.timeFromTorchF) * e;
-      setClockAngle(ha.deg);
+      setClockTime(ha.f, ha.night);
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
@@ -3052,7 +3066,6 @@ export class WorldScene extends Phaser.Scene {
     this.timeIdx = idx;
     this.timeT = instant ? 1 : 0;
     this.timeStart = this.time.now;
-    setClockPhase(idx, instant); // celestial dial top-centre follows the phase
     if (instant) {
       // Read the freshest synced progress directly (patch listener order is
       // not guaranteed within the join sync) — unless a LOCAL probe pinned
@@ -3064,7 +3077,7 @@ export class WorldScene extends Phaser.Scene {
       this.curAmbient = [...blend.ambient];
       this.curSun = sunFromHand(ha.deg, ha.night, ha.f);
       this.curTorchF = blend.torchF;
-      setClockAngle(ha.deg, true);
+      setClockTime(ha.f, ha.night);
     }
   }
 

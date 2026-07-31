@@ -723,24 +723,22 @@ visible head/shoulders are ABOVE the surface).
   approved keyframes (local probes pin phaseT = 0.5). Natural rollover
   enters at phaseT 0; a manual SKIP lands at 0.5 (the phase's
   characteristic look, for frozen testing); unfreeze RESUMES from the
-  held phaseT (never restarts the phase). The hand reads the half-dial
-  as a 12-HOUR face crossed TWICE per game day (maintainer's wedge
-  marking): the SUNLIT sweep spans morning+day+evening — phases share
-  the -90..+90 arc IN PROPORTION TO THEIR DURATIONS (handAngle), "12"
-  straight down at day's middle — and the NIGHT sweep spans the night
-  phase ("12" at midnight) over its OWN duration: with night now a third
-  of the sunlit sum the night sweep runs the same full half-circle at 3x
-  the angular speed. At each hand-off (sunset = evening's
-  end; night's end) the hand JUMPS from 100% left back to 100% right
-  (setClockAngle snaps backward deltas). THE SUN IS THE HAND
+  held phaseT (never restarts the phase). The sky is read TWICE per game
+  day: the SUNLIT sweep spans morning+day+evening — phases share the
+  -90..+90 arc IN PROPORTION TO THEIR DURATIONS (handAngle), noon at
+  day's middle — and the NIGHT sweep spans the night phase (midnight at
+  its middle) over its OWN duration: with night a third of the sunlit
+  sum it runs the same full half-circle at 3x the angular speed. Each
+  boundary (sunset = evening's end, sunrise = night's end) is a HAND-OFF
+  between the two sweeps, and NOTHING special happens there any more —
+  see the clock pill below. THE SUN IS THE HAND
   (maintainer: "directional light always points in the clock arrow
   direction"): sunFromHand derives the grid cast from the hand angle
   by inverting the iso projection (passes exactly through the old
   keyframes: -90 -> (R2,-R2), 0 -> (R2,R2), +90 -> (-R2,R2)), slope
   0.34..0.45 by altitude, strength 0 all night (no sun = no wrong
   direction) with ~6%-of-sweep sunrise/sunset ramps; SUN_PHASES
-  remains only as the sunVec(DEFAULT_TIME_IDX) init. The dial
-  cross-fade stays the only faded discrete event. CAREFUL: local
+  remains only as the sunVec(DEFAULT_TIME_IDX) init. CAREFUL: local
   probes pin phaseT via setTimeOfDay's tOverride param — reading
   state.phaseT inside setTimeOfDay once clobbered the probe keyframe
   (only worked because fresh rooms default to 0.5). WorldState.timeSpeed (settings "time speed"
@@ -779,36 +777,44 @@ visible head/shoulders are ABOVE the surface).
   full Day and 1 otherwise — the shader light's colour scales by it so
   flames melt away as daylight arrives and rekindle as it passes (the
   switch keeps the preference).
-- The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase half-moon
-  SKY DISC top-centre under the frame's gem (pointer-events none): four
-  pre-keyed, pixel-aligned PNGs (ui/clock_<phase>.png, cut from the
-  maintainer's sheet-3 mocks by scripts/build-clock.mjs) cross-fade on
-  the ambient's 2.5s clock via setClockPhase(). Extraction rules
-  (maintainer's red marking): the dial is ONLY the connected half-disc
-  below the frame rail — the mock's floating dot arcs / numerals /
-  labels are detached and MUST NOT ship with the dials; the mock gem's
-  tip is notched out (measured contour) and the frame's real gem covers
-  the notch at mount. The DOT ARC ships separately (ui/clock_dots.png,
-  cut once from the day quadrant by size+warm-colour filter) as its OWN
-  static layer: the dots must NEVER fade with phase cross-fades —
-  always the same. Assets bake at EXACTLY the display resolution
-  (the sheet-3 mocks are 1:1 game screenshots, so DIV=1 — full mock res,
-  ~204px dials; a ÷2 bake shipped once and read half-size (maintainer:
-  "the scale is wrong and should be x2"); registered on one shared
-  canvas by each disc's own axis + the rail row — quadrant-centre registration drifted ~10px;
-  the mocks have NO clean pixel grid — do not grid-guess) and render
-  1 asset px = 1 CSS px + pixelated so the browser never resamples
-  (resampling = mush; a COARSER chunk grid was tried and rejected — it
-  melted the art to mud). Dials get hard pixel-stair alpha; the HAND
-  (sheet-3: ornate gold, points RIGHT as authored, sun-face disc = hub,
-  kept in its original colours) keeps SOFT averaged alpha — it rotates
-  at runtime and a thresholded shaft shreds into a ragged line. The
-  hand is its OWN layer above the dials — never fades, only rotates;
-  pivot = the semicircle centre (mid top edge, behind the gem). CAREFUL:
-  CSS rotate() from straight-down sweeps screen-LEFT for positive
-  angles — this shipped inverted once; convention is documented in
-  clock.ts. The version badge sits top-LEFT (main.ts) so it stays off
-  the dial.
+- The CLOCK PILL — "Fern starfall" (client/src/clock.ts, maintainer
+  2026-07-31, chosen from a long design round: 5 -> 10 -> 20 -> 21
+  candidates; the winner is the papercut family with Fern's greens, Sea
+  glass's plain disc sun and Storm's starfield + falling star). A tiny
+  landscape sits top-centre, pass-through, between the two stat chips:
+  REAL PIXEL ART, a 40x12 art-pixel scene painted into an ImageData
+  buffer and shown at x2 (80x24 css) with `image-rendering:pixelated`,
+  so the grid is exact. Flat cut-paper layers, hard edges, NO dithering
+  and NO gradients (the earlier rounds were rejected for exactly those:
+  "you still use dithering and horizontal stripes a lot").
+  THE MOTION, and why the hand-off machinery is GONE: the sun crosses
+  left->right and sets behind the hills on the right; the moon rises from
+  the left at that same instant and makes the same trip. Each body is
+  drawn THREE times, one pill-width apart, so the copy leaving the right
+  edge and the copy entering the left are ONE continuous belt — there is
+  no discontinuity to hide. Hills are painted LAST, so a body outside the
+  pill sits below the horizon and is hidden: it really sets. The art is a
+  PURE FUNCTION of the cycle position u = night ? 0.5+f/2 : f/2 (f/night
+  straight from handAngle), so a join, a phase skip and a per-frame tick
+  are all just "paint this u" — setClockTime(f, night) is the only
+  entry point besides clockStar(). It cannot drift and resumes correctly
+  from any state.
+  DELETED WITH IT (do not resurrect): the half-dial's two cross-fading
+  faces and its rotating hand, the +360 winding that kept the hand from
+  ever running backwards, the 1.25s glide — and the SERVER-side freeze
+  (WorldRoom.handoffHoldMs) that pinned phaseT at 0 for 1.25s of wall
+  time at each hand-off so the hand could catch up. A rendering artifact
+  had leaked into the authoritative sim; the belt made it unnecessary
+  (maintainer: "the transition is instant so we no longer need the
+  'freeze time when animating to night' hack"). Gate:
+  scripts/verify-clockflip.mjs reads the canvas BACKING STORE (art-pixel
+  coordinates, starvation-proof) and asserts the arc, the sunless
+  midnight, and above all CONTINUITY — parked a hair either side of
+  sunset and of sunrise the pill must draw the same frame (measured mean
+  pixel delta 0.00/0.01 vs 14.9 for a real quarter-phase step). Probe:
+  `__ml.timeOfDay(idx, instant, phaseT)` — the third arg parks the world
+  clock anywhere inside a phase (0/1 = exactly on a boundary).
+  The version badge sits bottom-centre (main.ts), clear of the pill.
 
 - AURORA NIGHTS: WorldState.aurora (server-rolled in advanceTime — 45%
   of nights, auroraChance room option for tests; gone by morning).

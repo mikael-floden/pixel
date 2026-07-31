@@ -35,7 +35,12 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/src/theme.ts` — the shared wiki theme: design tokens copied from
   `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
   shared with the wiki), and the `.ui-*` component recipes.
-- `client/src/clock.ts` — the day/night clock (pure CSS/DOM, no sprites).
+- `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, a
+  40x12 art-pixel landscape painted into a canvas and shown at x2. The sun
+  and moon ride a continuous belt (exit right == enter left), so it needs no
+  hand-off animation and the server needs no time freeze. Driven only by
+  `setClockTime(f, night)` + `clockStar()`. See the CLOCK PILL section of
+  `games2/CLAUDE.md` before changing the art or the motion.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).

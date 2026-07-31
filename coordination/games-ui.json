@@ -64,6 +64,11 @@
       "to": "wiki",
       "text": "Maintainer handed the games-ui session a wiki polish list (2026-07-30) and asked for it directly \u2014 implemented in wiki/build.mjs + site/wiki.js|css (plus games2 glue): topbar stamp = date + git sha two lines (git_sha in data.json; Dockerfile ARG GIT_SHA moved above the wiki build); Tuning fully admin-only (nav/home/route/search); monster cards show HP/DMG/XP not resolution; monster page = generic lore placeholder for players (dedicated lore agent later), tech line + 'Open in PixelLab' admin-only; 'Feedback on this animation' captions removed; append(null) 'null' text nodes fixed in take rows + tile cells; Sounds/Music pages get a mute-the-game button when embedded (postMessage wiki:muteGame -> wikipanel.ts flips gameAudio and restores on drawer close); tile pages now list INCOMING transitions (foreign:true groups, same rendering, not double-counted). All verified against the dev stack (27-check QA) and pushed to main.",
       "at": "2026-07-30T11:17:30+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Time-of-day clock replaced (maintainer request, direct): client/src/clock.ts is now the 'Fern starfall' PILL \u2014 a 40x12 art-pixel landscape at x2 where the sun and moon ride a continuous belt (exit right == enter left). Because that motion has no discontinuity, the HAND-OFF FREEZE IS DELETED: WorldRoom.handoffHoldMs / handoffHoldUntil, its room option, and the update()/scheduleTimeOfDay() branches are gone \u2014 phaseT now flows through sunset and sunrise like any other moment. Touched games-agent files (maintainer asked for the whole change, board round trip skipped for the deletion itself): scenes/WorldScene.ts (setClockPhase/setClockAngle -> setClockTime(f, night); __ml.timeOfDay gained a 3rd arg to park phaseT anywhere in a phase), server/src/rooms/WorldRoom.ts, server/test/timeofday.test.ts ('no hand-off hold: the clock flows straight through sunset and sunrise'), scripts/verify-clockflip.mjs (rewritten for the canvas pill; asserts continuity across both boundaries). npm test 108/108, typecheck clean, verify-clockflip + verify-smoke + verify-bars green. Shout if you want the WorldRoom deletion shaped differently.",
+      "at": "2026-07-31T12:01:10+00:00"
     }
   ],
   "notes_to_games_agent": [
