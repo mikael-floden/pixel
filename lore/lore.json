@@ -1,0 +1,496 @@
+{
+  "format": "pixel-lore@1",
+  "generated_at": "2026-07-31T00:23:38Z",
+  "note": "Authored by the lore agent. 'entities' are per-entity blurbs keyed by the owning domain's folder id \u2014 merge them where a domain has no text of its own; the domain's own copy always wins. 'entries' are standalone lore articles (chapters, peoples, places). Plain text only. Cross-references are {domain, id} pairs.",
+  "entities": {
+    "characters": {
+      "default_boy": {
+        "lore": "A young man of the human dead. No claws, no scales, nothing in the blood \u2014 he came down with his name still on him, which is more than most manage.",
+        "story": [
+          "He fell recently. Recently enough that the grass where he landed has not entirely stood back up, and recently enough that he still occasionally checks his pockets for something he last had on the other side.",
+          "He came down with his name. That is worth more than it sounds \u2014 most do not, not at first, and some never get it back \u2014 and whoever met his star that night did the job properly and got him to say it aloud while he still could.",
+          "He has nothing else. What he is wearing is what he arrived in, which is what he was wearing at the end, and he has not yet decided whether that is a hard thing to think about. Nobody who falls has anything. It is the one experience every soul in Nangijala has had, and it is why a stranger here will feed you without being asked.",
+          "There is nothing exceptional about him and this is not modesty. He has no claws and no scales and nothing in the blood. What he has is a quick pair of hands, a stubborn streak he had before he died, and the ordinary human inability to see a light come down over the next field and not walk over to find out who it was.",
+          "In this particular country that last thing is not a small quality. It is very nearly the whole of what has held the place together."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          },
+          {
+            "domain": "characters",
+            "id": "default_girl"
+          }
+        ]
+      },
+      "default_girl": {
+        "lore": "A young woman of the human dead, level-headed and hard to rattle. She has worked out most of what has happened to her and has not yet told anyone how she feels about it.",
+        "story": [
+          "She fell recently, and she took it better than most people take it, which she is aware is a strange thing to be good at.",
+          "By the second evening she had worked out most of it on her own: that the fall was the end of something, that the people around the fire were being kind rather than helpful, and that nobody was going to explain the important part because nobody entirely knows it. She has asked good questions ever since and has not once asked whether it is really true.",
+          "She carries no blade yet. She arrived with what she stands in, like everybody, and has been in no hurry to fix that; she has been busy watching how this place works, which is a better use of a first season than most new stars make of it.",
+          "What she is is hard to rattle. Not brave in the way the tellers mean when they are working a room \u2014 brave in the flat, unremarkable way of somebody who looks at a thing that should be frightening, decides how frightened to be, and is then that amount of frightened and no more. It is the quality that carried humankind as far as it got, and it is worth more here than a blade is.",
+          "She has not yet said what she is waiting for. Everybody in Nangijala is waiting for something. She will get around to it."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          },
+          {
+            "domain": "lore",
+            "id": "the_long_morning"
+          },
+          {
+            "domain": "characters",
+            "id": "default_boy"
+          }
+        ]
+      }
+    },
+    "items": {
+      "hollow_black_soulstone": {
+        "lore": "Black, and cracked all the way through with nothing in the cracks. The stone a thing leaves when what reached the bottom of it was never its own.",
+        "story": [
+          "Every soulstone is the last hard piece of something \u2014 one fact, one appetite, one habit of being, pressed down until it is nearly a mineral. Almost all of them are warm and solid and read, to anyone who has handled a few, like a life that got very small.",
+          "This one is cracked all the way through, and there is nothing in the cracks.",
+          "That is not damage. It came out like that. The people who work the eastern ground have taken enough of them now to be certain, and it has caused a good deal of quiet discussion, because a stone is supposed to be the bottom of a creature and this one appears to be the bottom of something that was never there.",
+          "The working explanation, and it is only that, is that what reached the bottom of Grinmask was not Grinmask. Something else was in the shape, doing the wearing, and when the shape broke it was the visitor's last hard piece that fell into the grass. If that is right, then everyone carrying one of these is carrying a fragment of the thing under the mountain, which several people have pointed out and nobody has stopped doing.",
+          "It cuts through armour the way it cuts through most things. Whatever is compressed in there does not recognise a boundary as an argument."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "masked_shadow_creature"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      }
+    },
+    "monsters": {
+      "masked_shadow_creature": {
+        "lore": "Not a thing that thinned. A thing that was emptied, all at once, and the dark that moved in kept the face because a face is the last part to go.",
+        "story": [
+          "Everything else in the wild is running on habit \u2014 a shape that outlasted whoever was inside it, going patiently through the last motions it ever learned. Grinmask is not that, and anyone who has met both can tell within a heartbeat.",
+          "It was emptied. Not over centuries, the ordinary way, with the details going gently and nobody at any point in distress. All at once, the way a room is emptied, and something else moved into the space that was left.",
+          "What is in there now is a sliver of moving dark, and it is not the creature's own. It is wearing the outside. This is why it does not behave like anything else out there: a thing at the stage of Habit is uninterested in you and will only hurt you because you walked into its round, but Grinmask skips. It plays. It has a preference about being watched. There is somebody's intention operating in that shape and it did not come from the shape.",
+          "Break it and the dark simply stops being there \u2014 no struggle, no leaving, it is present and then it is not. What falls is the mask, which lands in the dirt and does not thin. It sits there being exactly a face for as long as anybody leaves it, long after everything else about the creature has stopped being anywhere at all.",
+          "It is still smiling. It was always going to be smiling. A face is the easiest part of a person to remember and the last part to let go, and the mask is not a disguise the creature put on. It is the only piece of the original that the emptying did not take.",
+          "This is the observation that started the whole investigation into the eastern mountain, and the masks are still the best evidence anyone has of what is down there. Nobody has yet explained why a hungry thing should bother leaving the faces behind."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "items",
+            "id": "hollow_black_soulstone"
+          }
+        ]
+      }
+    }
+  },
+  "entries": [
+    {
+      "id": "the_falling",
+      "name": "The Falling",
+      "path": "lore/entries/the_falling",
+      "category": "chapter",
+      "summary": "Nobody walks into Nangijala. You fall into it, once, and the whole sky sees you do it.",
+      "body": [
+        "Nobody walks into Nangijala. You fall into it, once, and the whole sky sees you do it.",
+        "Look up on any clear night and wait. Sooner or later a line of light will open at one horizon and close at the other, and somewhere under it a person is sitting up in the grass with no idea where they are. That is all an arrival is. There is no gate, no ferryman, no one taking names. There is a streak of light that everybody sees, and then there is somebody new.",
+        "You arrive with what you were wearing and nothing else. Whatever you were carrying at the end stays at the end. Some people come down with a coat and a good pair of boots and consider themselves fortunate for a hundred years afterwards.",
+        "What you mostly do not arrive with is your name. This surprises people who have not seen it happen. The name is not taken; it simply does not always make the journey, and a new star will sit for an hour trying to produce it the way you try to produce a word you have known your whole life. Some get it back. Some never do, and go on quite happily as whatever the first person to reach them called them.",
+        "Which is why we go and meet them. It is the oldest courtesy in Nangijala and the only one that everybody still keeps: when you see a star come down, you walk to where it landed. You tell them what has happened. You tell them it is not going to hurt. And then, before it goes, you ask them for their name and one true thing about themselves, and you listen properly while they say it.",
+        "It costs nothing and it is the single most useful thing one person can do for another here, for reasons that took this world a very long time to work out.",
+        "Not every star has somebody in it. On some nights you will see one fall and go to the place and find nothing at all \u2014 no one in the grass, no track, nothing bent. Those are called wild stars. The tellers say they are people who arrived with too little left to arrive with. Nobody enjoys talking about it, and everybody goes and looks anyway, every time, in case this one is different.",
+        "There is a fire burning at the place where new stars come down. Somebody lit it a very long time ago so that the first thing anyone saw here would be a light with a person beside it. Whether that somebody is still around is a question this book will come back to."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_long_morning"
+        }
+      ],
+      "tags": [
+        "arrival",
+        "core",
+        "starting-area"
+      ],
+      "chapter": 1,
+      "preview": null
+    },
+    {
+      "id": "the_age_of_coming",
+      "name": "The Age of Coming",
+      "path": "lore/entries/the_age_of_coming",
+      "category": "chapter",
+      "summary": "Why one afternoon's walk crosses an aqueduct, a windmill, a line of telegraph poles and a ring of standing stones.",
+      "body": [
+        "Walk east from the meadow for an afternoon and you will pass under a broken aqueduct, through a field of standing stones, past a windmill with three sails, and along a line of poles strung with wire that goes from nowhere to nowhere. None of these things belong to the same world. All of them are here.",
+        "This is not a curiosity. It is the plainest evidence we have for how Nangijala is built, and the first thing a new star should be told once they have stopped shaking.",
+        "The dead arrive from everywhere and every when. They arrive remembering, and here, remembering is not a private event. A thing held firmly enough in enough minds simply is. Somebody came down out of the sky knowing exactly what an aqueduct was, and knew it so well and for so long that there is an aqueduct. Somebody else, falling a very long way from them in every sense, brought a windmill.",
+        "Neither of them was wrong. The world does not choose between them. It builds both, side by side, and lets the grass grow up through whichever one is being thought about less.",
+        "The oldest of us call the first stretch of the world's history the Age of Coming, and everything good to look at dates from it. It was an age with no maintenance and no scarcity, because nobody had yet noticed that anything needed maintaining. People fell, and the country got larger and stranger and more beautiful, and the building was tremendous.",
+        "You can still read what people brought. Somebody remembered a lighthouse hard enough that there is a lighthouse standing in the shallows, warning nothing, its lamp cold. Somebody brought a triumphal arch and set it in a field for a victory that happened in a country that is not here. Somebody brought a well, and a shrine of stacked stones, and a scarecrow, and a great oak with a house in it. There is a statue standing in the ice with a face nobody recognises, and everyone agrees it must have been important to whoever carried it here.",
+        "That is the second thing the ruins tell you, and it is less comfortable than the first. Everything built in the Age of Coming was built out of one person's certainty. When the certainty went, the building stayed \u2014 for a while.",
+        "The age ended without ceremony. Things began, here and there, to go soft. A wall that had stood since anyone could remember was suddenly not as tall as it had been, and then was a heap, and then was a green place where a heap used to be. Nobody understood it. There was a long stretch of the world's history during which the finest minds in Nangijala believed the answer had something to do with the sea.",
+        "It did not. What was happening was much simpler, and once somebody finally said it out loud, everything changed."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        }
+      ],
+      "tags": [
+        "history",
+        "ruins",
+        "world"
+      ],
+      "chapter": 2,
+      "preview": null
+    },
+    {
+      "id": "the_age_of_fires",
+      "name": "The Age of Fires",
+      "path": "lore/entries/the_age_of_fires",
+      "category": "chapter",
+      "summary": "The discovery that held the world together, and the argument that came with it.",
+      "body": [
+        "The discovery, when it finally came, was so plain that it embarrassed everybody who had spent centuries on the sea theory.",
+        "The things people talk about stay.",
+        "That is the whole of it. A thing remembered by one person alone holds its shape for a while and then begins to go. A thing spoken about \u2014 told, aloud, to somebody who is actually listening \u2014 holds very much longer, and a thing told often enough by enough people does not go at all. The bridge over the gorge has stood through everything because for a great many years there was never a week when somebody was not telling somebody else about the bridge over the gorge.",
+        "What followed is remembered as the Age of Fires, and it was the best of us.",
+        "The fires were lit \u2014 real ones, because you cannot get people to sit down and listen in the dark and the cold \u2014 and there was a rota. That word does not sound like the foundation of a civilisation, but that is exactly what it was. Somebody was responsible for each fire. Somebody walked a circuit between them. When a star came down, a keeper went to it, told the new arrival what had happened to them, and asked for their name and one true thing while they could still say it, and then carried that name to the next fire and said it there.",
+        "Whole districts of Nangijala were held up, stone by stone, by people who were good at talking in the evening. Some of them are still standing.",
+        "It is worth being honest about the flaw, because everybody here has an opinion about it and a new star will be asked their view within a month.",
+        "A told story grows. It is retold slightly warmer, slightly braver, slightly better shaped, every time, by people who mean nothing but well. Keep a man alive by telling him for forty years and at the end of it you have a man \u2014 solid, present, in no danger of going anywhere \u2014 who is not quite the man who fell. The fire-keepers know this. Most of them have decided it is a price worth paying, and a few of them have decided it very defensively.",
+        "So there came a second party, who said: write it down. Set it down exactly, once, and it is safe from all of you. And they were right, and they were thorough, and they made the Chronicle, which is the book you are reading now.",
+        "And then they found the thing that nobody has yet explained. A person recorded perfectly \u2014 every detail fixed, nothing drifting, the record sitting there entire and correct \u2014 goes Quiet anyway, on the usual schedule, with their own complete and beautiful account open on the shelf beside them.",
+        "The fire-keepers say the reason is obvious and that they have been saying it the whole time. It was never the accuracy. It was the listening.",
+        "The Chroniclers, who are not fools, have never accepted this, because it is not an explanation, it is a slogan. The argument is unresolved. It is the only argument in Nangijala that everybody has taken a side in, and you will be asked."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_chronicle"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_coming"
+        }
+      ],
+      "tags": [
+        "history",
+        "fires",
+        "factions",
+        "core"
+      ],
+      "chapter": 3,
+      "preview": null
+    },
+    {
+      "id": "the_quiet",
+      "name": "The Quiet",
+      "path": "lore/entries/the_quiet",
+      "category": "chapter",
+      "summary": "You cannot die here. Something else can happen to you instead, and it is worse, and it is what most of the creatures in the world already are.",
+      "body": [
+        "You cannot die in Nangijala. That door is behind you and it does not open twice. New stars find this reassuring for about a season.",
+        "What can still happen to you is this. You can be forgotten \u2014 by everyone else, and then, in the end, by yourself \u2014 until there is nothing holding your shape but habit. It takes a long time and it does not hurt at any point, which is the part people find hard to hear.",
+        "It goes in four stages, and they have been called the same four things for as long as anybody has been counting.",
+        "You begin Bright. You know who you were and you can say it: your name, your work, the face of somebody you loved, the road home. Most people who fall are Bright for a very long time, particularly if somebody is telling them.",
+        "Then you Fade. The particulars go first, and they go so gently you cannot catch them at it. You know that you loved someone. You cannot produce the face. You know there was a road home and you could not now say which direction it ran. A faded person is entirely themselves, and entirely present, and simply has less and less to say about it.",
+        "Then there is Habit, and this is where it stops being sad and starts being frightening, because at some point the person is gone and the behaviour is still running. A thing that still walks its round. A thing that still guards its bridge, faithfully, for a keeper whose name went out of the world before it did. A thing that still comes home in the evening to a house that is not there any more and stands in the place where the door used to be.",
+        "This is what almost everything you will meet in the wild already is.",
+        "It is worth saying plainly, because new stars arrive with ideas about monsters. The creatures out there are not wicked. Very nearly none of them chose anything. They are shapes that outlasted their occupants and kept doing the last thing they were doing, and they will attack you for reasons that stopped being reasons a long time ago. Do not hate them. They are what happens.",
+        "And then, at the end, the Quiet. The shape lets go. There is no body and no grave, because there was no death; the thing simply stops being anywhere, and afterwards the place it was seems slightly wider than it should. People who have watched it happen say the worst part is how ordinary it looks.",
+        "The Quiet is what this world is afraid of. Not the creatures, not the cave, not the winter. Every fire, every rota, every argument between the tellers and the Chroniclers, every stranger who walks half a night to meet a falling star \u2014 all of it is the same species of answer to the same single question.",
+        "Which is: who is going to remember me, and for how long, and will they do it out loud."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        },
+        {
+          "domain": "lore",
+          "id": "the_hole_under_the_mountain"
+        }
+      ],
+      "tags": [
+        "core",
+        "creatures",
+        "death"
+      ],
+      "chapter": 4,
+      "preview": null
+    },
+    {
+      "id": "the_hard_pieces",
+      "name": "The Hard Pieces",
+      "path": "lore/entries/the_hard_pieces",
+      "category": "chapter",
+      "summary": "What a soulstone is, why it is warm, and why an entire economy grew up around breaking open things that cannot fight back properly.",
+      "body": [
+        "Everything that thins gets thinner all the way down and then stops. At the very bottom there is one thing left that will not go any further, and if you break the shape open it falls out into the grass. It is about the size of an egg. It is warm.",
+        "This is a soulstone, and it is the only object in Nangijala that is guaranteed not to fade.",
+        "It is not a soul. A soul is a whole person and no person ends up in a stone. What is in there is the last piece \u2014 one fact, one appetite, one habit of being, pressed down over centuries until it is very nearly a mineral. A thing that spent its existence burning leaves a stone that is still, in some stubborn way, about burning. A thing that endured cold leaves a stone that endures it.",
+        "Because a soulstone cannot be forgotten, it cannot decay, and in a world where everything else is quietly going soft that makes it the most valuable substance there is. Work one into a blade or set it into armour and it will lend you a little of what it remembers. It does not make you stronger. It makes you harder to argue with.",
+        "One kind of creature gives one kind of stone, and no two kinds give the same one. Nobody decided this. It is simply what it looks like when a particular way of forgetting reaches the bottom, and it means that a stone is a fair record of a kind of creature in a way that a drawing or a description never is.",
+        "The people who do this for a living have two words for the work, and you can tell a great deal about somebody from which one they use in front of you.",
+        "The polite word is releasing. It is not dishonest. A thing at the stage of Habit has nothing left in it, and the shape it is wearing is going to let go regardless; break it and the last hard piece is saved instead of lost with everything else. Put like that it is a mercy, and a good many people who do it have thought about it carefully and concluded exactly that.",
+        "The other word is cracking, and it is what the same people say to each other.",
+        "The distance between those two words is the entire moral range of the profession and there is no point pretending otherwise. Everybody carrying a bag of warm stones has made their peace with it in their own way, and the ones who talk about it least have usually thought about it most.",
+        "Then there is the rest of what comes off them. Teeth, hide, bone, quills, feathers, cracked stone, a knife somebody was still carrying. Junk, and worth almost nothing, and collected by absolutely everybody.",
+        "It is not the material that is wanted. It is that a pile of a creature's leavings is a story with the details still on it \u2014 this one had a jaw like that, this one carried a blade of that make \u2014 and details are precisely what goes first. Somebody, somewhere, is buying every scrap of it, and has been for a long time, and has never satisfactorily explained what for."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_gold_agreement"
+        }
+      ],
+      "tags": [
+        "core",
+        "economy",
+        "items",
+        "soulstones"
+      ],
+      "chapter": 5,
+      "preview": null
+    },
+    {
+      "id": "the_gold_agreement",
+      "name": "The Gold Agreement",
+      "path": "lore/entries/the_gold_agreement",
+      "category": "chapter",
+      "summary": "Nangijala did not choose a currency. It discovered the one substance nobody has ever managed to misremember.",
+      "body": [
+        "Nangijala never decided on money. There was no mint, no decree, nobody with the authority to declare anything legal tender to anybody. What happened instead is that somebody eventually noticed a peculiar fact about gold, and the fact did the rest.",
+        "Gold is the only thing that everybody remembers the same.",
+        "Consider what that means in a country built the way this one is. Two people fall a thousand years and half a world apart. Ask them for a road and you will get two roads. Ask them for a house, a boat, a loaf, a king, and you will get two of each, and both will be real, and they will sit in the same field disagreeing with one another forever.",
+        "Ask them both for a gold coin and you get the same coin.",
+        "Weight, colour, the particular soft way it takes a mark from a thumbnail, the fact that it will not tarnish and will not go green and will not go anywhere at all \u2014 everybody who ever handled it came away with an identical impression, and they carried that identical impression down out of the sky. Gold is the one point in the whole of human memory where there is no argument to have.",
+        "So gold does not drift. It is the only common thing here that doesn't. Every other object in your possession is being held in shape by somebody's attention and will begin to go soft the moment that attention wanders, but a coin is a coin is a coin, and will still be exactly a coin when the house you are standing in has become a green place where a house used to be.",
+        "That is the whole reason it is money. Not scarcity \u2014 there is a great deal of it, and more falling all the time. It is money because it is the only thing you can put in a box and come back to.",
+        "There is a joke among the tellers that gold is the one honest thing in Nangijala because it is the only object nobody has ever managed to improve in the retelling. Like most jokes here it is repeated a little too often by people who are not laughing."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_coming"
+        }
+      ],
+      "tags": [
+        "economy",
+        "gold"
+      ],
+      "chapter": 6,
+      "preview": null
+    },
+    {
+      "id": "the_long_morning",
+      "name": "The Long Morning",
+      "path": "lore/entries/the_long_morning",
+      "category": "chapter",
+      "summary": "There is a further shore, and the way to it is open to anybody, and almost nobody goes.",
+      "body": [
+        "Nangijala is not the last place. This is not in dispute, which is unusual for anything in this book.",
+        "Every so often somebody here stops being here. Not the Quiet \u2014 nothing like the Quiet. A person who is entirely Bright, entirely themselves, who has got all the way back to their own name and their own face and the road home and does not need one other living soul to hold any of it for them, will one evening simply not be in the room, and everybody who knew them will find that they remember them perfectly and feel no grief at all, which is the strangest part of the whole business.",
+        "And that night the northern sky lights up.",
+        "The tellers call it the Long Morning, and they call the lights the far edge of somebody else's dawn, seen from underneath. It is a beautiful thing to say and there is no evidence for it whatsoever. Nobody has come back. Not once, not ever, not a word.",
+        "The Chroniclers regard that silence as disqualifying and have said so at length. The fire-keepers regard it as the entire point, and have said so at greater length.",
+        "What is not in dispute is that the way is open, and that it is open to everybody, and that it appears to cost nothing at all. Remember yourself completely and you may go on. That is the requirement, and it is the only requirement, and it has never once been observed to fail.",
+        "So the question a new star always eventually asks \u2014 usually about a year in, usually at somebody's fire, usually with the face of a person who thinks they have spotted something everybody else has missed \u2014 is why on earth is anybody still here.",
+        "The answers are not complicated. Almost nobody's is.",
+        "There are people waiting for somebody who has not fallen yet, and who will not go on ahead of them, and who have been standing at the meeting-places for a very long time getting slowly stranger. There are people who did fall, and whose person fell too, and thinned, and is still out there as a shape doing something faithful and empty; and they will not leave a thing that still has their name in its mouth. There are people who did something in the life before this one and cannot make going on feel like anything but getting away with it.",
+        "And there are the keepers, who could go tomorrow, and who have the rota.",
+        "Ask anybody here why they are still here and they will tell you, if you have sat with them long enough. Everybody in Nangijala has an answer to that question. It is the answer that makes them a person rather than a shape."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        }
+      ],
+      "tags": [
+        "core",
+        "aurora",
+        "endings"
+      ],
+      "chapter": 7,
+      "preview": null
+    },
+    {
+      "id": "the_hole_under_the_mountain",
+      "name": "The Hole Under the Mountain",
+      "path": "lore/entries/the_hole_under_the_mountain",
+      "category": "chapter",
+      "summary": "There is one mouth in the east massif, everybody knows where it is, and the ground around it forgets on a clock you can time with a candle.",
+      "body": [
+        "Everything else in this book is the world working as it always has. This chapter is not that.",
+        "There is a cave under the eastern mountain. It has one mouth, it is not hidden, and every single person in Nangijala can tell you roughly where it is. There is no legend about finding it. The whole difficulty has always been the other direction.",
+        "Near it, things forget faster.",
+        "That is the plain observation, and it was made carefully, by people who did not want it to be true. Ground that had been held for centuries \u2014 good ground, in the rota, with a fire on it \u2014 went soft in a season. Then the season became a month. A keeper working the eastern circuit reported that she had lost the name of her own fire while walking toward the mouth and had it back within an hour of walking away, and she was not a woman anybody had ever known to lose anything.",
+        "Things that go in come out wrong, or come out wearing something else's face, or do not come out.",
+        "The creatures around it are not like the creatures anywhere else, and anybody who has been near both can tell the difference immediately. Out in the world a beast is a shape that outlasted its occupant \u2014 it is running on habit, it is empty, and there is something almost restful about how uninterested it is in you. The things near the mouth are not empty in that way. They were emptied. It happened to them, all at once, and something is still wearing the outside.",
+        "When you break one, a mask comes down out of it and lands in the dirt, and it is still smiling. This is the detail that started the entire investigation, because the mask does not thin. Nothing about it goes soft. It sits there afterwards being exactly a face, indefinitely, long after everything else about the creature has stopped being anywhere at all.",
+        "There is a great deal of argument about what is down there and none of it is worth writing down yet. Two things, though, are worth stating, because both are checkable and both are unsettling.",
+        "The first is that the hole is new. Not new the way a season is new \u2014 new the way a wound is. The Age of Fires had no hole under the eastern mountain. There are people still walking around, thinning quietly, who remember when the east road was simply a road, and if you buy them an evening they will tell you what the ground there used to feel like.",
+        "The second is that whatever is down there is not angry with anybody. Nothing about it is angry. It has never once been observed to do anything out of malice, or vengeance, or any of the ordinary reasons a thing does harm.",
+        "It is hungry. That is all it is. The tellers say that is worse, and the tellers are right."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        }
+      ],
+      "tags": [
+        "core",
+        "cave",
+        "antagonist",
+        "mystery"
+      ],
+      "chapter": 8,
+      "preview": null
+    },
+    {
+      "id": "the_chronicle",
+      "name": "The Chronicle",
+      "path": "lore/entries/the_chronicle",
+      "category": "chapter",
+      "summary": "A note on the book you are holding: who writes it, why they write it, and what an empty page in it actually means.",
+      "body": [
+        "A word about this book, since you are already in it.",
+        "The Chronicle is the work of the Chroniclers, who hold that a thing written down exactly is a thing saved exactly, and who have been setting Nangijala down page by page for a long time now. Every creature described here was gone and looked at by somebody. Every account of the ages was assembled out of what people at fires could still be got to say. It is not a story anybody made up. It is a record, kept badly at the edges and very well in the middle, by people who took it seriously.",
+        "They are, it should be said, not universally loved for it. The tellers hold that a written thing stops growing, and they are not wrong. There is a stiffness to a page that there is not to an evening.",
+        "But consider what the alternative has cost. There are districts of this world that were held up for centuries by three people who were good at talking, and when those three thinned, the district went, and there is now nothing there but good grazing and a name nobody can source. The Chronicle exists because somebody looked at that and decided they would rather have a stiff and complete account of a place than a warm and vanished one.",
+        "So: read it, and treat what it says as true, because it was checked.",
+        "And when you find a page with nothing on it \u2014 a creature with no account, a place with no history, a name with no person attached \u2014 understand what you are looking at. It does not mean that nothing is known. It means no chronicler has got there yet. There are a great many more things in Nangijala than there are people willing to sit down and write about them, and the gap has been widening for some time.",
+        "If you know something that is not in here, the Chroniclers would like to hear it. That is not a formality. It is very nearly the entire method."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        }
+      ],
+      "tags": [
+        "meta",
+        "factions",
+        "chroniclers"
+      ],
+      "chapter": 9,
+      "preview": null
+    },
+    {
+      "id": "the_human_dead",
+      "name": "The Human Dead",
+      "path": "lore/entries/the_human_dead",
+      "category": "people",
+      "summary": "No claws, no scales, nothing in the blood. What humans brought to Nangijala instead was a habit of telling each other things, and it turned out to be the only thing that mattered.",
+      "body": [
+        "Of everything that falls out of the sky into Nangijala, the human dead are neither the oldest nor the strongest nor the strangest, and they know it. A human arrives with no claws, no scales, nothing in the blood, and nothing to trade on but nerve and a quick pair of hands.",
+        "What they do have is a habit, and the habit turns out to be the most important fact about this world.",
+        "Humans talk. Not usefully, most of the time \u2014 they talk about the weather, and about people who are not present, and about what happened to them once in a place that no longer exists. They do it at the ends of days. They do it around fires, without being asked, as though something in them cannot sit in front of a light with another person and stay quiet.",
+        "In any other country that would be a pleasant nothing. Here it is maintenance. Every one of those idle evenings is a thing being held in shape, and the reason so much of Nangijala is still standing is that a species which cannot stop chattering fell into a world that is built out of being talked about. The fire-keepers did not invent the practice. They only noticed what everybody was already doing and wrote a rota for it.",
+        "It has made humans, on the whole, the ones who go and meet the stars. Not out of any particular virtue \u2014 they are as petty here as anywhere and the arguments in this world are almost all theirs \u2014 but because a human who sees a light come down over the next field is constitutionally incapable of not walking over to see who it was.",
+        "They are also the ones who fight, which follows from the same thing rather than from any talent for it. A human will go a long way out of their way for somebody they have sat with. Give them a reason and a blade and they will walk into the black rock after a thing that has nothing left in it, and come back with a warm stone in their pocket and a story about it, and tell the story that night, and hold up a corner of the world for another year without ever once thinking of it that way.",
+        "They fall young and they fall old and they fall in every state of readiness. Most arrive with nothing but what they stand in. Nearly all of them, given a season and somebody to listen, get their name back."
+      ],
+      "related": [
+        {
+          "domain": "characters",
+          "id": "default_boy"
+        },
+        {
+          "domain": "characters",
+          "id": "default_girl"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        }
+      ],
+      "tags": [
+        "people",
+        "race",
+        "heroes"
+      ],
+      "preview": null
+    }
+  ]
+}

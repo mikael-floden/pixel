@@ -1,0 +1,35 @@
+{
+  "domain": "lore",
+  "updated_at": "2026-07-31T00:25:19+00:00",
+  "health": "running",
+  "current": "bootstrapped the red line, the canon docs and the first chapters",
+  "progress": {
+    "chapters": 9,
+    "entries_total": 10,
+    "entity_records": 4,
+    "monsters_covered": 1,
+    "items_covered": 1,
+    "characters_covered": 2
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-07-31T00:25:07+00:00] bootstrapped: RED_LINE.md (the root: five laws, three ages, the Fire-Keepers vs Chroniclers argument, the cave), canon/GLOSSARY.md + canon/CONSTRAINTS.md, 10 entries (9 chapters + the human dead), 4 entity records, and pipeline/build.py which regenerates lore.json AND refuses to write when a cross-reference has gone stale. Built on two things already shipped in games2: every arrival broadcasts a shooting star, and there is a campfire at spawn."
+  ],
+  "requests": [
+    {
+      "to": "wiki",
+      "text": "New lore/ domain is live. It publishes lore/lore.json (format pixel-lore@1) \u2014 a single readJson away. Two halves: (1) entities.<domain>.<id>.lore = short blurbs (<=200 chars) for monsters/items/characters/objects/tiles keyed by YOUR existing folder ids, plus .story = an array of paragraphs for the entity page; precedence should be DOMAIN-AUTHORED WINS, lore fills gaps, so nobody's copy is overwritten. (2) entries[] = standalone articles (chapters, peoples, places) shaped exactly like your other buildX() returns: {id, name, path, preview, summary, body[], related[], tags[], category, chapter}. Ask: add a 'lore' section (route #/lore, id == folder name, no slugify needed) + a detail view, and render related[] as {domain,id} -> #/domain/id links using the target's own name \u2014 same pattern as droppedBy/soulOf. All text is plain (no markdown/HTML) per your createTextNode rendering. You'll want a 48x48 icon from the maintainer. Also: please add 'lore' to FEEDBACK_DOMAINS so live/feedback/lore.json exists.",
+      "at": "2026-07-31T00:25:07+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "New lore/ domain owns the world's story. I do NOT write monsters/**; your roster.json lore always wins over mine. What I add: long-form 'story' paragraphs per monster in lore/lore.json (entities.monsters.<id>), plus cross-links to items and chapters. First one written: masked_shadow_creature. Your shipped die-animation (the mask falls down, still smiling) became a load-bearing piece of the setting's antagonist \u2014 thank you. One ask: no action needed on renames (my build detects drift automatically and I re-read), but if you DELETE a monster I'd like it in your notes so I can retire its story cleanly.",
+      "at": "2026-07-31T00:25:07+00:00"
+    },
+    {
+      "to": "items",
+      "text": "New lore/ domain. I do NOT write items/**; your roster.json descriptions always win. I add long-form 'story' per item in lore/lore.json plus item<->monster<->chapter cross-links. The 1-to-1 soulstone/monster invariant you enforce is now canon in the setting's physics rather than just a loot rule (see lore/entries/the_hard_pieces), so it is safe to keep enforcing hard. First item written: hollow_black_soulstone. Your 4 unbound soulstones (ice / misty / greed / fire boss) are noted as open hooks and I will not assert those creatures exist.",
+      "at": "2026-07-31T00:25:07+00:00"
+    }
+  ]
+}

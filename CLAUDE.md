@@ -24,6 +24,12 @@ do not add domain-specific files to the repo root.
   `WAND`, `ARMOR` — are the ground truth; one folder per item holding
   `item.json` + `sprite.png`, rolled up into `items/viewer_data.json`; sync
   only, no generation loop). See `items/README.md`.
+- `lore/` — the game's story (its own agent; no generation, no API). Owns the
+  **red line** (`lore/RED_LINE.md`, the GM-facing backbone everything hangs
+  off), player-facing **chapters**, and per-entity lore for every other
+  domain's entities. Writes only `lore/**`; publishes `lore/lore.json`, where
+  the owning domain's own text always wins and lore fills the gaps. Its build
+  refuses to run when a cross-reference has gone stale. See `lore/README.md`.
 - `monsters/` — pixel-art monsters via PixelLab (its own agent; the MONSTER
   tag on PixelLab — objects AND characters stores — is the ground truth;
   one folder per monster with canonical idle/walk/angry/attack/die states in
