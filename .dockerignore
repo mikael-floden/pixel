@@ -10,6 +10,12 @@ games2/.data
 !objects
 !characters2
 !tiles2
+# ...but NOT the tiles2 generator's source sheets. tiles2/<terrain>/raw/ is the
+# pre-postprocess output the tiles2 agent keeps so it can re-tune and re-run
+# (tiles2/config/tiles2.json: "Raw is always kept"). The GAME never reaches it:
+# zero references in any maps2 world.json, in games2 source, or in the wiki's
+# build/data. 4,648 files / 34 MB baked into every image for nothing.
+tiles2/*/raw
 !maps2
 !sounds
 !music
