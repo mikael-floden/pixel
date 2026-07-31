@@ -771,8 +771,35 @@ function resolveRef(ref) {
   if (domain === "tiles")      { const t = tileTypeById(id);  return t  && { href: `#/tiles/${t.id}`,      name: t.name,        art: h("span", { class: "item-icon item-noart" }), where: label("tiles") }; }
   return null;                                  // an unknown domain is dropped
 }
-/** "Read next". Author order preserved (the lore agent chose it), deduped. An
- *  unresolvable reference is DROPPED for players and flagged for the admin. */
+/** A chapter's readable paragraphs. the_falling's body[0] repeats its summary
+ *  verbatim; exact match only, so a rewritten summary can never silently
+ *  swallow a paragraph. Shared with hasStory() so the page and the "Read next"
+ *  filter can never disagree about whether a chapter has anything in it. */
+const chapterParas = (e) => (e?.body ?? []).filter((p, n) => !(n === 0 && p === e.summary));
+/** The entity behind a reference, for the four domains that render a story
+ *  card. Tiles, sounds and music are absent ON PURPOSE: their pages have no
+ *  card, so no amount of loreStory in the record would give a reader anything
+ *  to land on. */
+function storyEntity(domain, id) {
+  if (domain === "monsters")   return monsterById(id);
+  if (domain === "characters") return characterById(id);
+  if (domain === "objects")    return objectById(id);
+  if (domain === "items")      return itemById(id);
+  return null;
+}
+/** Does this reference lead to something you can actually READ? "Read next" is
+ *  a promise, and a page with no story keeps none of it — the reader clicks
+ *  expecting prose and gets a stat sheet (maintainer 2026-07-31). Answered by
+ *  the same paginate() the target page will run, so the two cannot drift. */
+function hasStory(ref) {
+  const { domain, id } = ref ?? {};
+  if (domain === "lore") return chapterParas(loreById(id)).length > 0;
+  return paginate(storyEntity(domain, id)?.loreStory).length > 0;
+}
+/** "Read next". Author order preserved (the lore agent chose it), deduped. A
+ *  reference that is unresolvable — or that resolves to a page with no story —
+ *  is DROPPED for players and flagged for the admin, who is the one who can
+ *  get it written. */
 function loreLinks(related, { title = "Read next" } = {}) {
   const seen = new Set(), rows = [];
   for (const ref of related ?? []) {
@@ -780,7 +807,7 @@ function loreLinks(related, { title = "Read next" } = {}) {
     if (seen.has(key)) continue;
     seen.add(key);
     const r = resolveRef(ref);
-    if (r) {
+    if (r && hasStory(ref)) {
       const a = h("a", { class: "drop-row", href: r.href }, r.art,
         h("span", { class: "drop-name" }, r.name), h("span", { class: "drop-worth muted" }, r.where));
       // Where the reader should LAND. A chapter is a thing you read from the
@@ -791,8 +818,9 @@ function loreLinks(related, { title = "Read next" } = {}) {
       rows.push(a);
     }
     else if (state.admin) rows.push(h("div", { class: "drop-row" },
-      h("span", { class: "item-icon item-noart" }),
-      h("span", { class: "drop-name" }, key, h("span", { class: "pill warn" }, "no such entry"))));
+      r?.art ?? h("span", { class: "item-icon item-noart" }),
+      h("span", { class: "drop-name" }, r ? r.name : key,
+        h("span", { class: "pill warn" }, r ? "no story yet" : "no such entry"))));
   }
   if (!rows.length) return null;
   return h("div", { class: "see-also" },
@@ -1783,9 +1811,8 @@ function viewLoreEntry(e) {
   const prev = list[(i - 1 + list.length) % list.length], next = list[(i + 1) % list.length];
   // the_falling's body[0] is byte-identical to its summary — without this the
   // same sentence prints twice, three lines apart, on the first chapter a
-  // reader opens. Exact match only, so a rewritten summary can never silently
-  // swallow a paragraph.
-  const bodyParas = (e.body ?? []).filter((p, n) => !(n === 0 && p === e.summary));
+  // reader opens.
+  const bodyParas = chapterParas(e);
   return h("div", { class: "lore-read" },
     crumbRow("#/lore", `← ${label("lore")}`, "lore", list, e.id),
     h("div", { class: "detail-head" },
