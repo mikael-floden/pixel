@@ -1134,7 +1134,9 @@ function viewTileType(id) {
  *  at 2 made every scene twice the size the game shows (maintainer
  *  2026-07-31) — and pushed the wider scenes past the column, where
  *  `max-width:100%` then RESAMPLED the pixel art by a fraction. */
-function isoScene(cells, images, scale = 1) {
+/** [a, b] -> [a, divider, b]; a lone cell is left alone. */
+const withDivider = (cells) => (cells.length > 1 ? [cells[0], h("div", { class: "pair-div" }), cells[1]] : cells);
+function isoScene(cells, images, scale = 1, pad = 4) {
   const iso = state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
   const draws = [];
   for (const cell of cells) {
@@ -1150,7 +1152,6 @@ function isoScene(cells, images, scale = 1) {
   const py = (d) => (d.c + d.r) * iso.dy - d.z * iso.levelPx - iso.dy;
   const minX = Math.min(...draws.map(px)), maxX = Math.max(...draws.map((d) => px(d) + iso.tilePx));
   const minY = Math.min(...draws.map(py)), maxY = Math.max(...draws.map((d) => py(d) + iso.tilePx));
-  const pad = 4;
   const canvas = h("canvas", {
     width: (maxX - minX + pad * 2) * scale,
     height: (maxY - minY + pad * 2) * scale,
@@ -1202,22 +1203,41 @@ function viewTileInstance(typeId, rel) {
   // Mid-wall: 3 cells along the run × 3 face levels, the tile dead centre so
   // clean base sits above, below, both sides and on every diagonal.
   const wallStack = (mid) => (mid ? [B, T, B] : [B, B, B]);
+  // Copy is short on purpose: two scenes share a row, so each caption gets
+  // half the column (maintainer 2026-07-31).
   const scenes = [
-    ["On clean ground", "The tile surrounded by the type's clean base — how it sits in open terrain.", grid3(T, B)],
-    ["Tiled with itself", "A 3×3 field of only this tile — repetition and seams.", grid3(T, T)],
-    ["Stacked — cliff of itself", "Three 3-high stacks of only this tile meeting at a corner — the cliff and the corner it builds.", vCliff],
-    ["In a wall — face ↘", "A clean-base wall running down-right, the tile dead centre — base tile above, below and to both sides.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 3, img: B, stack: wallStack(c === 1), top: B }))],
-    ["In a wall — face ↙", "The same wall running down-left — the other cliff face.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 3, img: B, stack: wallStack(r === 1), top: B }))],
+    ["On clean ground", "Surrounded by the clean base — open terrain.", grid3(T, B)],
+    ["Tiled with itself", "Only this tile — repetition and seams.", grid3(T, T)],
+    ["Stacked — a cliff of itself", "Three 3-high stacks meeting at a corner.", vCliff],
+    ["In a wall — face ↘", "Wall running down-right, the tile dead centre.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 3, img: B, stack: wallStack(c === 1), top: B }))],
+    ["In a wall — face ↙", "The same wall running down-left.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 3, img: B, stack: wallStack(r === 1), top: B }))],
   ];
-  const sceneBox = h("div", { class: "iso-scenes" },
-    ...scenes.map(([title, hint]) => h("div", { class: "iso-scene" },
-      h("div", { class: "panel-title" }, title),
-      h("p", { class: "muted iso-hint" }, hint),
-      h("div", { class: "iso-stage checker" }, h("span", { class: "muted" }, "rendering…")))));
+  // TWO SCENES PER ROW, sharing one chessboard (maintainer 2026-07-31: "we
+  // can reuse the same chessbox to draw both examples ... this way we can
+  // click next next next and see more on the same screen"). Pairs are chosen
+  // so the two halves belong together — the two flat fields, then the two
+  // wall faces — with the cliff standing alone between them.
+  const PAIRS = [[0, 1], [2], [3, 4]];
+  const sceneBox = h("div", { class: "iso-scenes" }, ...PAIRS.map((pair) =>
+    h("div", { class: `iso-scene${pair.length > 1 ? " paired" : ""}` },
+      // The divider is its own 1px GRID COLUMN, not a border on one cell —
+      // a border would make the right half 1px + its padding narrower, and
+      // these halves have to hold a 192px canvas each with nothing to spare.
+      h("div", { class: "pair-row heads" }, ...withDivider(pair.map((i) => h("div", { class: "pair-cell" },
+        h("div", { class: "panel-title" }, scenes[i][0]),
+        h("p", { class: "muted iso-hint" }, scenes[i][1]))))),
+      h("div", { class: "pair-row iso-stage checker" }, ...withDivider(pair.map((i) =>
+        h("div", { class: "pair-cell stage-cell", "data-scene": String(i) },
+          h("span", { class: "muted" }, "rendering…"))))))));
   loadImages([T, B], (imgs) => {
-    sceneBox.querySelectorAll(".iso-stage").forEach((stage, i) => {
-      stage.replaceChildren(isoScene(scenes[i][2], imgs));
-    });
+    // pad 0 on a shared row: the built-in 4px margin each side is what would
+    // push two 3x3 fields (200px each) past a phone column, and trimming
+    // transparent padding is free — unlike scaling, which resamples the art.
+    for (const cell of sceneBox.querySelectorAll(".stage-cell")) {
+      const i = Number(cell.dataset.scene);
+      const paired = cell.parentElement.children.length > 1;
+      cell.replaceChildren(isoScene(scenes[i][2], imgs, 1, paired ? 0 : 4));
+    }
   });
 
   return h("div", {},

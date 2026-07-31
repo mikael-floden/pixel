@@ -504,11 +504,31 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
   background: var(--accent); color: #fff; pointer-events: none; opacity: 0.92;
 }
 .tile-portrait img { image-rendering: pixelated; width: 128px; height: 128px; }
-.iso-scenes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
+.iso-scenes { display: grid; gap: 14px; margin-top: 16px; }
 .iso-scene { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 12px 14px; }
 .iso-hint { margin: 2px 0 10px; font-size: 12.5px; }
-.iso-stage { display: flex; justify-content: center; align-items: center; min-height: 140px; border-radius: 8px; padding: 10px; overflow-x: auto; }
-.iso-canvas { image-rendering: pixelated; max-width: 100%; }
+.iso-stage { min-height: 140px; border-radius: 8px; padding: 8px 0; }
+/* TWO scenes share one chessboard: a divider runs between them through both
+   the captions and the stage, so one row shows two examples and paging the
+   tiles costs half the scrolling (maintainer 2026-07-31).
+   The divider is its OWN 1px grid column, so the two halves are exactly
+   equal — a border on one cell would steal that pixel plus its padding from
+   the right half, and each half has to hold a 192px canvas with ~5px to
+   spare on a phone. */
+.pair-row { display: grid; grid-template-columns: 1fr; }
+.paired .pair-row { grid-template-columns: 1fr 1px 1fr; }
+.pair-div { background: var(--border); }
+.pair-cell { min-width: 0; display: flex; flex-direction: column; }
+.pair-row.iso-stage .pair-cell { align-items: center; justify-content: center; overflow-x: auto; }
+.paired .heads .pair-cell:first-child { padding-right: 12px; }
+.paired .heads .pair-cell:last-child { padding-left: 12px; }
+/* The shared chessboard spans the panel edge to edge — those 28px of panel
+   padding are exactly what two 3×3 fields need. */
+.paired .iso-stage { margin: 0 -14px; border-radius: 0; }
+.iso-scene .panel-title { font-size: 15px; }
+/* Pixel art: the canvas is drawn at the game's own size and must never be
+   squeezed to fit — a narrow cell scrolls instead. */
+.iso-canvas { image-rendering: pixelated; flex: none; }
 
 /* ---- usage in the default world ---- */
 .use-pill {
