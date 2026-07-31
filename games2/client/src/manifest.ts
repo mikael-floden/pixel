@@ -13,6 +13,12 @@ export interface CharacterDef {
   // walk -> walking, run -> running-8-frames, jump -> jumping-1, kick ->
   // high-kick). Frames: <root>/animations/<animSrc[state]>/<dir>/<n>.png.
   animSrc?: Record<string, string>;
+  // state -> frame file EXTENSION when it is not "png" (the art domains are
+  // migrating to lossless WebP: ~3x smaller, pixel-identical). Absent means png,
+  // so an all-PNG manifest is unchanged. Per STATE, not per character, because
+  // conversion happens one animation folder at a time — a half-converted
+  // character still resolves every URL correctly.
+  animExt?: Record<string, string>;
   // Foot-plant events per gait/direction (footstep marks): the frame index
   // where a foot touches down + the landing pixel in FRAME coords (see
   // build-manifest.mjs plantsOf).
@@ -56,11 +62,14 @@ export async function loadManifest(): Promise<Manifest> {
   return cache;
 }
 
-/** characters2 stores animations as frame FOLDERS (not strips): one PNG per
- * frame at <root>/animations/<srcAnim>/<dir>/<n>.png (unpadded n). */
+/** characters2 stores animations as frame FOLDERS (not strips): one image per
+ * frame at <root>/animations/<srcAnim>/<dir>/<n>.<ext> (unpadded n). The
+ * extension comes from the MANIFEST (animExt), never guessed here — the builder
+ * reads what is actually on disk, so a PNG->WebP conversion needs no game edit. */
 export function frameUrl(def: CharacterDef, state: string, dir: string, n: number): string {
   const src = def.animSrc?.[state] ?? state;
-  return `${def.root}/animations/${src}/${dir}/${n}.png`;
+  const ext = def.animExt?.[state] ?? "png";
+  return `${def.root}/animations/${src}/${dir}/${n}.${ext}`;
 }
 
 /** Phaser texture key for one character frame. */

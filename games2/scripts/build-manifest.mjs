@@ -4,7 +4,11 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inflateSync } from "node:zlib";
+// PNG *and* lossless WebP — the art domains are migrating and this builder was
+// the blocker (it hand-parsed the IHDR). The PNG paths inside imagelib are the
+// originals moved verbatim, so a PNG repo still produces the identical
+// manifest; see scripts/imagelib.mjs and server/test/imagelib.test.ts.
+import { imgAlpha, imgDims, findImg, countFrames, IMG_EXTS } from "./imagelib.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, ".."); // pixel/games2
@@ -87,65 +91,10 @@ function dirsIn(p) {
   return readdirSync(p).filter((n) => statSync(join(p, n)).isDirectory());
 }
 
-/** Read a PNG's [width, height] from its IHDR header (no image library). */
-function pngDims(p) {
-  const b = readFileSync(p);
-  return [b.readUInt32BE(16), b.readUInt32BE(20)];
-}
-
-/**
- * Minimal PNG decode (8-bit RGBA/RGB, non-interlaced — what PixelLab emits)
- * returning an alpha-test function. No image library so this also runs inside
- * the production Docker build.
- */
-function pngAlpha(p) {
-  const b = readFileSync(p);
-  const w = b.readUInt32BE(16);
-  const h = b.readUInt32BE(20);
-  const bitDepth = b[24];
-  const colorType = b[25];
-  const interlace = b[28];
-  if (bitDepth !== 8 || (colorType !== 6 && colorType !== 2) || interlace !== 0) return null;
-  const channels = colorType === 6 ? 4 : 3;
-  // Concatenate IDAT chunks, inflate, unfilter.
-  let off = 8;
-  const idat = [];
-  while (off < b.length) {
-    const len = b.readUInt32BE(off);
-    const type = b.toString("ascii", off + 4, off + 8);
-    if (type === "IDAT") idat.push(b.subarray(off + 8, off + 8 + len));
-    if (type === "IEND") break;
-    off += 12 + len;
-  }
-  const raw = inflateSync(Buffer.concat(idat));
-  const stride = w * channels;
-  const img = Buffer.alloc(h * stride);
-  for (let y = 0; y < h; y++) {
-    const filter = raw[y * (stride + 1)];
-    const line = raw.subarray(y * (stride + 1) + 1, (y + 1) * (stride + 1));
-    const out = img.subarray(y * stride, (y + 1) * stride);
-    const prev = y > 0 ? img.subarray((y - 1) * stride, y * stride) : null;
-    for (let i = 0; i < stride; i++) {
-      const a = i >= channels ? out[i - channels] : 0; // left
-      const bb = prev ? prev[i] : 0; // up
-      const c = prev && i >= channels ? prev[i - channels] : 0; // up-left
-      let v = line[i];
-      if (filter === 1) v += a;
-      else if (filter === 2) v += bb;
-      else if (filter === 3) v += (a + bb) >> 1;
-      else if (filter === 4) {
-        const pth = a + bb - c;
-        const pa = Math.abs(pth - a);
-        const pb = Math.abs(pth - bb);
-        const pc = Math.abs(pth - c);
-        v += pa <= pb && pa <= pc ? a : pb <= pc ? bb : c;
-      }
-      out[i] = v & 0xff;
-    }
-  }
-  const opaque = (x, y) => (colorType === 2 ? true : img[y * stride + x * channels + 3] > 64);
-  return { w, h, opaque };
-}
+// pngDims / pngAlpha used to live here. They moved VERBATIM into
+// scripts/imagelib.mjs (as imgDims / imgAlpha) when the art domains started
+// migrating to lossless WebP, so both formats resolve through one dispatch and
+// the PNG behaviour — including the `> 64` alpha threshold — is unchanged.
 
 /**
  * SHOULDER LINE (swimming waterline): the two shoulder points, so the swim
@@ -286,7 +235,7 @@ const blobCenter = (b) => (b.minX + b.maxX + 1) / 2; // pixel x spans [x, x+1)
  * so the shadow drifted out from between the feet as the character turned.
  */
 function footAnchor(framePath) {
-  const png = pngAlpha(framePath);
+  const png = imgAlpha(framePath);
   if (!png) return null;
   const { w, h, opaque } = png;
   let top = -1;
@@ -381,7 +330,8 @@ function gaitFpsOf(animsDir, animations, animSrc) {
       if (!n) continue;
       let spread = 0; // max foot-blob separation across the cycle = step px
       for (let i = 0; i < n; i++) {
-        const png = pngAlpha(join(animsDir, src, d, `${i}.png`));
+        const fp = findImg(join(animsDir, src, d), String(i));
+        const png = fp && imgAlpha(fp);
         if (!png) continue;
         const sole = soleOf(png);
         if (sole < 0) continue;
@@ -417,7 +367,8 @@ function gaitFpsOf(animsDir, animations, animSrc) {
 function plantsOf(animsDir, src, dir, n) {
   const grounded = []; // per frame: [{x, y}]
   for (let i = 0; i < n; i++) {
-    const png = pngAlpha(join(animsDir, src, dir, `${i}.png`));
+    const fp = findImg(join(animsDir, src, dir), String(i));
+    const png = fp && imgAlpha(fp);
     if (!png) return [];
     const sole = soleOf(png);
     if (sole < 0) return [];
@@ -467,23 +418,37 @@ function scan() {
     // source folder each state maps to) so the client can build frame URLs.
     const animations = {};
     const animSrc = {};
+    // state -> file extension when it is NOT png (WebP migration). Absent = png,
+    // so a fully-PNG repo emits a byte-identical manifest.
+    const animExt = {};
     let frameW = 0;
     let frameH = 0;
     const animMap = animMapFor(id);
     for (const [state, src] of Object.entries(animMap)) {
       const perDir = {};
+      let stateExt = null;
       for (const d of DIRECTIONS) {
         const frameDir = join(animsDir, src, d);
         if (!existsSync(frameDir)) continue; // some anims (high-kick) lack NE/NW
-        const count = readdirSync(frameDir).filter((f) => /^\d+\.png$/.test(f)).length;
+        const count = countFrames(frameDir);
         if (count > 0) {
           perDir[d] = count;
-          if (!frameH) [frameW, frameH] = pngDims(join(frameDir, "0.png"));
+          const f0 = findImg(frameDir, "0");
+          if (!frameH) [frameW, frameH] = imgDims(f0);
+          // Record the extension the art ACTUALLY ships so the client never has
+          // to guess (it used to hardcode ".png" in frameUrl). Mixed extensions
+          // inside one animation would be a half-finished conversion — warn
+          // rather than silently emitting URLs that 404 for some directions.
+          const ext = f0.slice(f0.lastIndexOf(".") + 1).toLowerCase();
+          if (stateExt && stateExt !== ext)
+            console.warn(`[manifest] ${id}: state "${state}" mixes .${stateExt} and .${ext} across directions — finish the conversion`);
+          stateExt = stateExt || ext;
         }
       }
       if (Object.keys(perDir).length) {
         animations[state] = perDir;
         animSrc[state] = src;
+        if (stateExt && stateExt !== "png") animExt[state] = stateExt;
       } else if (!existsSync(join(animsDir, src))) {
         // Loud, not silent: a mapped folder that doesn't exist means the art was
         // renamed on PixelLab and characters2/animation_map.json is stale.
@@ -503,7 +468,8 @@ function scan() {
       const ys = [];
       let top;
       for (let i = 0; i < n; i++) {
-        const a = footAnchor(join(animsDir, animMap.idle, d, `${i}.png`));
+        const ap = findImg(join(animsDir, animMap.idle, d), String(i));
+        const a = ap && footAnchor(ap);
         if (a) {
           xs.push(a.x);
           ys.push(a.y);
@@ -529,7 +495,8 @@ function scan() {
       const keys = ["lx", "ly", "rx", "ry"];
       const acc = { lx: [], ly: [], rx: [], ry: [] };
       for (let i = 0; i < n; i++) {
-        const png = pngAlpha(join(animsDir, animMap.idle, d, `${i}.png`));
+        const sp = findImg(join(animsDir, animMap.idle, d), String(i));
+        const png = sp && imgAlpha(sp);
         const s = png && shoulderLine(png);
         if (s) for (const k of keys) acc[k].push(s[k]);
       }
@@ -553,6 +520,12 @@ function scan() {
       if (Object.keys(byDir).length) plants[state] = byDir;
     }
     const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
+    // The select screen pivots through base/<dir>.<ext>; resolve the extension
+    // that is actually on disk rather than assuming png (WebP migration).
+    const portraitPath = findImg(join(charDir, "base"), "south");
+    const portraitExt = portraitPath
+      ? portraitPath.slice(portraitPath.lastIndexOf(".") + 1).toLowerCase()
+      : IMG_EXTS[0];
     characters.push({
       uid: id,
       skeleton: "humans",
@@ -560,11 +533,13 @@ function scan() {
       name: DISPLAY[id] || id,
       root: webRoot,
       // No portrait.png in characters2 — use the south rotation as the face.
-      portrait: `${webRoot}/base/south.png`,
+      // Extension resolved from disk: base/ converts to WebP like everything else.
+      portrait: `${webRoot}/base/south.${portraitExt}`,
       frameW,
       frameH,
       animations,
       animSrc,
+      ...(Object.keys(animExt).length ? { animExt } : {}),
       anchors,
       shoulders,
       gaitFps,

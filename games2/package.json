@@ -21,6 +21,7 @@
     "manifest:force": "node scripts/manifest.mjs --force"
   },
   "devDependencies": {
+    "@cwasm/webp": "^0.1.5",
     "@types/compression": "^1.8.1",
     "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",

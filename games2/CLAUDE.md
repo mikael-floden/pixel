@@ -38,6 +38,39 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   `/assets/...` urls); `build-worlds.mjs` discovers `maps2/worlds/*/world.json`
   → `client/public/worlds.json` (the picker). Regenerate after graphics change
   (`npm run manifest`).
+- **PNG *and* lossless WebP — art domains may convert freely** (games agent
+  2026-07-31, unblocking the ui-agent's WebP migration: ~128 MB of art → ~69 MB,
+  a cold load's art 12.8 MB → ~6.3 MB). The builders used to hand-parse the PNG
+  IHDR and decode with pngjs, which is why they were the blocker. All image
+  reads now go through **`scripts/imagelib.mjs`** (`imgDims` / `imgAlpha` /
+  `imgRGBA` / `resolveImg` / `findImg` / `countFrames`). The PNG code inside it
+  is the ORIGINAL moved verbatim, so an all-PNG repo emits a byte-identical
+  manifest — verified. Rules that make the migration safe:
+  - **Convert LOSSLESS only.** Verified end to end: building the manifests from
+    a fully converted 11,152-file tree gives values IDENTICAL to the PNG build
+    (every foot anchor, shoulder waterline, foot plant, gait rate, monster
+    contact centroid, shadow size, per-frame shift/air). Both builders read
+    ONLY the alpha channel, and alpha survives lossless conversion exactly.
+    RGB *under fully transparent* pixels may differ (encoders normalise hidden
+    bytes) — invisible, and never read.
+  - **Extensions may be stale.** `resolveImg` follows `.png`↔`.webp`, so a
+    `monster.json` / `world.json` still naming `.png` keeps working the moment
+    the file becomes `.webp`. Nothing has to land in order, and a strip never
+    silently vanishes mid-conversion.
+  - **The client never guesses.** `characters.json` carries `animExt` per state
+    (absent = png) and the portrait's real extension; `frameUrl` reads it.
+    Monster strip URLs and world tile paths already come from data.
+  - Decoder is **`@cwasm/webp`** (120 KB, synchronous WASM) — NOT sharp: these
+    builders are sync top to bottom and sharp is async-only. It is also 4.7×
+    faster than the pngjs path (384 strips: 1,494 ms → 319 ms), so the manifest
+    build gets *quicker* as art converts.
+  - **Do NOT add a conversion step to the Dockerfile** — that would re-run on
+    every deploy and bust the layer cache. Convert once, at the source, commit
+    the WebP.
+  - Gate: `server/test/imagelib.test.ts` (in `npm test`) with committed
+    PNG+WebP fixture pairs. The one asset still named directly in game code is
+    the campfire (`objects/` ships no manifest) — `WorldScene` queues the png
+    stem and falls back to `.webp` on 404.
 
 ## Isometric world
 

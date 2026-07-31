@@ -385,9 +385,12 @@ function spritePreview(
   box.appendChild(img);
   img.alt = label;
   img.src = c.portrait;
-  // Rotations live beside the portrait: <root>/base/<dir>.png.
-  let urls: string[] | null = c.portrait.endsWith("/south.png")
-    ? directions.map((d) => c.portrait.replace(/south\.png$/, `${d}.png`))
+  // Rotations live beside the portrait: <root>/base/<dir>.<ext>. Keep the
+  // portrait's OWN extension — the manifest resolves it from disk, so this
+  // follows characters2 through the PNG->WebP migration without an edit here.
+  const rot = /\/south\.(png|webp)$/.exec(c.portrait);
+  let urls: string[] | null = rot
+    ? directions.map((d) => c.portrait.replace(/south\.(png|webp)$/, `${d}.${rot[1]}`))
     : null;
   urls?.forEach((u) => {
     const p = new Image();

@@ -7,7 +7,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PNG } from "pngjs";
+// PNG *and* lossless WebP. imagelib keeps the PNG path byte-identical (pngjs
+// underneath) and adds a synchronous WebP decode — measured 4.7x faster than
+// pngjs, and pixel-identical on all 384 shipped strips. This builder reads ONLY
+// the alpha channel (data[...*4+3]), and alpha survives lossless conversion
+// exactly, so every measured contact anchor is unchanged. See imagelib.mjs.
+import { imgRGBA, imgDims, resolveImg } from "./imagelib.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, ".."); // pixel/games2
@@ -40,11 +45,7 @@ const ANIM_MAP = (() => {
   return null;
 })();
 
-/** Read a PNG's [width, height] from its IHDR header (no image library). */
-function pngDims(p) {
-  const b = readFileSync(p);
-  return [b.readUInt32BE(16), b.readUInt32BE(20)];
-}
+// pngDims moved to scripts/imagelib.mjs as imgDims (PNG IHDR + WebP RIFF).
 
 // Winged/floating monsters that are MEANT to hover (maintainer 2026-07-30:
 // "no monster is flying unless they have wings and the flying animation is
@@ -89,7 +90,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
   for (const [dir, abs] of Object.entries(stripAbsPaths)) {
     let png;
     try {
-      png = PNG.sync.read(readFileSync(abs));
+      png = imgRGBA(abs);
     } catch {
       continue;
     }
@@ -431,17 +432,22 @@ function scan() {
         const dd = dirs[d];
         if (!dd || !dd.strip) continue;
         const rel = dd.strip.split("\\").join("/");
-        const abs = join(MONSTERS, rel);
-        if (!existsSync(abs)) continue;
+        // Follow a STALE extension: monster.json is the monsters agent's file
+        // and during the WebP migration it can still say .png after the strip
+        // became .webp (or the reverse). Without this the strip silently
+        // vanishes from the manifest and the monster loses a whole direction.
+        const abs = resolveImg(join(MONSTERS, rel));
+        if (!abs) continue;
+        const relReal = abs.slice(MONSTERS.length + 1).split("\\").join("/");
         perDirFrames[d] = dd.frames;
         // strip is repo-relative (e.g. "poring/animations/jump__south.png").
-        perDirStrip[d] = "/assets/monsters/" + rel;
+        perDirStrip[d] = "/assets/monsters/" + relReal;
         perDirAbs[d] = abs;
         // MEASURED frame size per strip (IHDR only — cheap). The monster.json
         // `size` field goes stale when art is repaired/resized in place; the
         // client MUST slice each spritesheet with the strip's real dims or
         // frames bleed into each other (found 2026-07-30: 8+ monsters stale).
-        const [sw, sh] = pngDims(abs);
+        const [sw, sh] = imgDims(abs);
         perDirDims[d] = { w: Math.round(sw / (dd.frames || 1)), h: sh };
       }
       if (Object.keys(perDirFrames).length) {

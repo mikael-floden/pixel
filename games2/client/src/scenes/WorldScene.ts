@@ -108,7 +108,14 @@ const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
 const CAMPFIRE_KEY = "campfire-burn";
-const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.png";
+// The ONE art asset the game names directly instead of reading from a manifest
+// (objects/ ships no manifest). Because of that it cannot follow the PNG->WebP
+// migration automatically the way character frames, monster strips and world
+// tiles do — so preload queues BOTH stems and takes whichever arrives, and the
+// loser's 404 costs one cheap request during the migration window only. If
+// objects/ ever gains a manifest, delete this and read the url from it.
+const CAMPFIRE_STEM = "/assets/objects/campfire/animations/burn__south";
+const CAMPFIRE_URL = `${CAMPFIRE_STEM}.png`;
 const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
@@ -798,9 +805,19 @@ export class WorldScene extends Phaser.Scene {
       // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
+      // Queue the png stem and, only if it 404s, the webp one (see CAMPFIRE_STEM).
+      // placeCampfire already guards on textures.exists, so a total miss just
+      // means no bonfire rather than a broken scene.
       this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
+      });
+      this.load.once(`loaderror`, (f: Phaser.Loader.File) => {
+        if (f.key !== CAMPFIRE_KEY) return;
+        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.webp`), {
+          frameWidth: CAMPFIRE_FRAME,
+          frameHeight: CAMPFIRE_FRAME,
+        });
       });
     }
   }
