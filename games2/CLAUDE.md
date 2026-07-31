@@ -709,10 +709,15 @@ visible head/shoulders are ABOVE the surface).
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
-  clock advances the phase per TIME_PHASE_SECONDS ([40, 25, 70, 25] —
-  NIGHT TICKS 3x AS FAST (maintainer 2026-07-22): a third of the sunlit
-  sum in wall time so darkness doesn't dominate play, short dawn/dusk,
-  long day; 160s full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
+  clock advances the phase per TIME_PHASE_SECONDS ([50, 25, 50, 25] —
+  the maintainer's ratios, 2026-07-31: night 1/3, morning 1/6, day 1/3,
+  evening 1/6, a 150s cycle. DAY == NIGHT is load-bearing, not taste:
+  the clock pill runs the sun over morning+day+evening and the moon over
+  evening+night+morning, and those spans are equal ONLY while day and
+  night are — which is what makes the two bodies move at the same speed.
+  Superseded "night ticks 3x as fast" (40s vs a 120s sunlit sum), whose
+  whole point was to keep darkness short; the 1/3 night does that too,
+  without a racing moon). Time is CONTINUOUS (maintainer: "the clock arrow
   and the shadow should move continuously... not swap from day to
   evening that sudden" — the discrete jumps were why time kept LOOKING
   frozen): WorldState.phaseT (0..1 progress, written by the 20Hz sim
@@ -723,15 +728,13 @@ visible head/shoulders are ABOVE the surface).
   approved keyframes (local probes pin phaseT = 0.5). Natural rollover
   enters at phaseT 0; a manual SKIP lands at 0.5 (the phase's
   characteristic look, for frozen testing); unfreeze RESUMES from the
-  held phaseT (never restarts the phase). The sky is read TWICE per game
-  day: the SUNLIT sweep spans morning+day+evening — phases share the
-  -90..+90 arc IN PROPORTION TO THEIR DURATIONS (handAngle), noon at
-  day's middle — and the NIGHT sweep spans the night phase (midnight at
-  its middle) over its OWN duration: with night a third of the sunlit
-  sum it runs the same full half-circle at 3x the angular speed. Each
-  boundary (sunset = evening's end, sunrise = night's end) is a HAND-OFF
-  between the two sweeps, and NOTHING special happens there any more —
-  see the clock pill below. THE SUN IS THE HAND
+  held phaseT (never restarts the phase). The SUNLIT sweep spans
+  morning+day+evening — phases share the -90..+90 arc IN PROPORTION TO
+  THEIR DURATIONS (handAngle), noon at day's middle — and its `f` is
+  exactly the sun's normalised position on the clock pill, so the cast
+  shadow and the drawn sun can't disagree. Night has its own sweep with
+  the sun's strength pinned to 0. Nothing special happens at either
+  boundary any more — see the clock pill below. THE SUN IS THE HAND
   (maintainer: "directional light always points in the clock arrow
   direction"): sunFromHand derives the grid cast from the hand angle
   by inverting the iso projection (passes exactly through the old
@@ -801,33 +804,50 @@ visible head/shoulders are ABOVE the surface).
   ever has to get smaller, drop SCALE — never re-tune the art.
   Its corner is RESERVED: chat.ts caps the log and the input with
   `--ml-chatw` (100vw - 112px) so they stop short of it.
-  THE MOTION, and why the hand-off machinery is GONE: the sun crosses
-  left->right and sets behind the hills on the right; the moon rises from
-  the left at that same instant and makes the same trip. Each body is
-  drawn THREE times, one pill-width apart, so the copy leaving the right
-  edge and the copy entering the left are ONE continuous belt — there is
-  no discontinuity to hide. Hills are painted LAST, so a body outside the
-  pill sits below the horizon and is hidden: it really sets. The art is a
-  PURE FUNCTION of the cycle position u = night ? 0.5+f/2 : f/2 (f/night
-  straight from handAngle), so a join, a phase skip and a per-frame tick
-  are all just "paint this u" — setClockTime(f, night) is the only
-  entry point besides clockStar(). It cannot drift and resumes correctly
-  from any state.
-  DELETED WITH IT (do not resurrect): the half-dial's two cross-fading
-  faces and its rotating hand, the +360 winding that kept the hand from
-  ever running backwards, the 1.25s glide — and the SERVER-side freeze
-  (WorldRoom.handoffHoldMs) that pinned phaseT at 0 for 1.25s of wall
-  time at each hand-off so the hand could catch up. A rendering artifact
-  had leaked into the authoritative sim; the belt made it unnecessary
-  (maintainer: "the transition is instant so we no longer need the
-  'freeze time when animating to night' hack"). Gate:
-  scripts/verify-clockflip.mjs reads the canvas BACKING STORE (art-pixel
-  coordinates, starvation-proof) and asserts the arc, the sunless
-  midnight, and above all CONTINUITY — parked a hair either side of
-  sunset and of sunrise the pill must draw the same frame (measured mean
-  pixel delta 0.00/0.01 vs 14.9 for a real quarter-phase step). Probe:
-  `__ml.timeOfDay(idx, instant, phaseT)` — the third arg parks the world
-  clock anywhere inside a phase (0/1 = exactly on a boundary).
+  THE MOTION — TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is
+  the design). The first cut alternated a SINGLE travelling orb on a belt
+  (each body drawn three times, one pill-width apart, so an exit right was
+  an entry left). It killed the hand-off, but the sun crossed on
+  morning+day+evening and the moon on night alone — so with any sane
+  phase lengths the moon RACED. The maintainer's insight: the sun and the
+  moon are two different objects and both can be in the sky at once.
+
+      tau (0 at sunrise, 1 a day later)
+      0        1/6                 1/2        2/3                    1
+      |morning |        day        | evening  |        night         |
+      sun  |------------ crossing ------------|            (below)
+      moon --- crossing |            (below)  |----- crossing --------
+
+  Each body crosses the pill in 2/3 of a day — the sun over
+  morning+day+evening, the moon over evening+night+morning — so they move
+  at THE SAME SPEED (measured: 10.00px each over the same slice of world
+  time), and they SHARE the sky at both ends: the moon rises the instant
+  the sun enters evening, and hangs in the morning sky while the sun
+  climbs, exactly as it does in the real one. The sun stays the main
+  actor — drawn last, carrying the glow; the daylit moon washes 15%
+  toward the sky and gains a rim so it reads pale but legible (washing
+  harder both hid it and drifted its colour out of the QA detector).
+  Hills are painted LAST, so each body enters and leaves BELOW the
+  horizon: it really sets, and nothing ever pops. Position is a pure,
+  continuous function of tau — including across the day's wrap — so a
+  join, a phase skip and a per-frame tick are all just "paint this tau".
+  `setClockTime(timeIdx + phaseT)` is the only entry point besides
+  clockStar(); the pill owns the mapping (clock.ts `dayFraction`).
+  DELETED ALONG THE WAY (do not resurrect): the half-dial's two
+  cross-fading faces and its rotating hand, the +360 winding that kept
+  the hand from ever running backwards, the 1.25s glide — and the
+  SERVER-side freeze (WorldRoom.handoffHoldMs) that pinned phaseT at 0
+  for 1.25s of wall time at each hand-off so the hand could catch up. A
+  rendering artifact had leaked into the authoritative sim (maintainer:
+  "the transition is instant so we no longer need the 'freeze time when
+  animating to night' hack"). Gate: scripts/verify-clockflip.mjs reads
+  the canvas BACKING STORE (art-pixel coordinates, starvation-proof) and
+  asserts the whole model — sun alone at noon, moon alone at midnight,
+  BOTH at opposite ends during morning and evening, moonrise starting
+  with evening, EQUAL SPEED, and continuity at the sunset boundary and at
+  the day's wrap (mean pixel delta 0.01/0.05 vs 14.3 for a real
+  quarter-phase step). Probe: `__ml.timeOfDay(idx, instant, phaseT)` —
+  the third arg parks the world clock anywhere inside a phase.
   The version badge sits bottom-centre (main.ts), clear of the pill.
 
 - AURORA NIGHTS: WorldState.aurora (server-rolled in advanceTime — 45%

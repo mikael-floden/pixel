@@ -137,8 +137,8 @@ export class WorldRoom extends Room<WorldState> {
   private scheduleWildStar() {
     if (this.starTimer) clearTimeout(this.starTimer);
     // Free-running timer that only fires a star when it lands in NIGHT.
-    // Interval scaled with the 3x-faster night (40s, was 120s) so a night
-    // still sees the same ~2-3 wild stars it always did.
+    // The 8-25s interval is sized against night's own length (50s, a third
+    // of the cycle) so a night still sees the same ~2-3 wild stars.
     this.starTimer = setTimeout(() => {
       if (this.state.timeIdx === 0) this.broadcast("star", {});
       this.scheduleWildStar();

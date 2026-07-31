@@ -3,28 +3,41 @@
  * long design round: papercut family, Fern's palette, Sea glass's plain disc
  * sun, Storm's starfield + falling star).
  *
- * REAL PIXEL ART, not CSS: a 40×12 art-pixel scene painted into an ImageData
+ * REAL PIXEL ART, not CSS: a 40×16 art-pixel scene painted into an ImageData
  * buffer and shown at ×2 (80×32 css px) with nearest-neighbour scaling, so the
  * pixel grid is exact. Flat cut-paper layers, hard edges, no dithering and no
  * gradients anywhere.
  *
- * THE MOTION — and why the old hand-off machinery is GONE. The sun crosses
- * left→right and sets behind the hills on the right; the moon rises from the
- * left at that same instant and makes the same trip. Each body is drawn THREE
- * times, one pill-width apart, so the copy leaving the right edge and the copy
- * entering the left are one continuous belt: there is no discontinuity to hide.
- * The old dial had to jump the hand 180° at each boundary and the SERVER froze
- * the world clock for 1.25s while it glided (WorldRoom.handoffHoldMs) — all of
- * that is deleted. This pill is a pure function of the cycle position, so it
- * cannot drift, cannot need a freeze, and resumes correctly from any state.
+ * THE SKY HAS TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is the
+ * whole design). The first cut alternated a single travelling orb: the sun
+ * crossed on morning+day+evening, the moon crossed on night, and since those
+ * spans differ the moon visibly RACED. The fix is the real world's: the sun
+ * and the moon are two different objects, and both can be in the sky at once.
  *
- * Input is (f, night) straight from WorldScene's handAngle(): f is the
- * fraction through the current sweep, night says which body leads. The pill's
- * own cycle position is u = night ? 0.5 + f/2 : f/2 — which puts the sun's
- * apex at the middle of the sunlit span (= Day's midpoint), the moon's apex at
- * Night's midpoint, and the horizon crossings exactly at the game's sunrise and
- * sunset, where the directional sun's strength ramps through zero.
+ *   tau (0 at sunrise, 1 a full day later)
+ *   0        1/6                 1/2        2/3                      1
+ *   |morning |        day        | evening  |         night          |
+ *   sun  ├──────────── crossing ────────────┤              (below)
+ *   moon ─── crossing ┤              (below)├──── crossing ──────────
+ *
+ * Each body crosses the pill in exactly 2/3 of a day — the sun over
+ * morning+day+evening, the moon over evening+night+morning — so they move at
+ * THE SAME SPEED, and they overlap at both ends: the moon rises the moment the
+ * sun enters evening ("preparing for night") and lingers through the morning
+ * while the sun climbs ("preparing for day"). The sun stays the main actor: it
+ * is drawn last, it carries the glow, and the daylit moon is pale with a rim,
+ * the way you actually see it at dawn. Equal spans require DAY == NIGHT in
+ * TIME_PHASE_SECONDS — see the note there before touching the durations.
+ *
+ * Nothing ever teleports: each body enters and leaves at the horizon, BEHIND
+ * the hills (they are painted last), and its position is a continuous function
+ * of tau across the whole cycle including the wrap. There is no hand-off to
+ * animate, which is why the SERVER's old freeze (WorldRoom.handoffHoldMs, a
+ * 1.25s stop of the world clock at each day/night boundary) could be deleted.
+ *
+ * Input is the world clock's own continuous position, timeIdx + phaseT.
  */
+import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 
 // GEOMETRY IS THE APPROVED MOCK'S, VERBATIM (papercut variant 21). Every
 // number here was signed off by eye at x2 — a first cut squeezed the scene
@@ -50,7 +63,22 @@ const mix = (a: RGB, b: RGB, t: number): RGB =>
   [0, 1, 2].map((i) => Math.round(a[i] + (b[i] - a[i]) * t)) as RGB;
 const shade = (c: RGB, t: number): RGB => mix(c, [0, 0, 0], t);
 
-// Palette keys at sunrise (u 0) · noon (.25) · sunset (.5) · midnight (.75).
+// ── the day, in fractions of the whole cycle ─────────────────────────────
+// tau runs 0..1 from SUNRISE (the start of morning). Everything below is
+// derived from TIME_PHASE_SECONDS, so changing the durations moves the whole
+// scene consistently — but see the equal-speed note there.
+const SECS = TIME_PHASE_SECONDS; // [night, morning, day, evening]
+const TOTAL = SECS[0] + SECS[1] + SECS[2] + SECS[3];
+const T_EVENING = (SECS[1] + SECS[2]) / TOTAL; // day ends / evening begins
+const T_NIGHT = (SECS[1] + SECS[2] + SECS[3]) / TOTAL; // sunset
+const SUN_START = 0;
+const SUN_SPAN = T_NIGHT; // morning + day + evening
+const MOON_START = T_EVENING;
+const MOON_SPAN = (SECS[3] + SECS[0] + SECS[1]) / TOTAL; // evening + night + morning
+// Palette anchors in tau: sunrise, noon (mid-day), sunset, midnight (mid-night).
+const ANCHORS = [0, (SECS[1] + SECS[2] / 2) / TOTAL, T_NIGHT, T_NIGHT + SECS[0] / 2 / TOTAL];
+
+// Palette keys at sunrise · noon · sunset · midnight.
 // Each row is [sky, hill 1, hill 2, hill 3] — Fern's greens.
 const KEYS: RGB[][] = [
   ["#f2e2c8", "#c8d8a0", "#8aa878", "#4a6a52"].map(hx),
@@ -77,19 +105,25 @@ const LAYERS = [
 let root: HTMLDivElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let img: ImageData | null = null;
-let lastU = 0;
+let lastTau = 0;
 let starUntil = 0; // clockStar(): a transient extra streak
 
-function palAt(u: number): RGB[] {
-  const i = Math.floor(u / 0.25) % 4;
-  const t = (u - i * 0.25) / 0.25;
-  const A = KEYS[i];
-  const B = KEYS[(i + 1) % 4];
-  return A.map((c, k) => mix(c, B[k], t));
+/** The sky between its four anchors. They are NOT evenly spaced any more
+ * (sunset and midnight are only half a night apart), so this walks the real
+ * anchor list instead of assuming quarters. */
+function palAt(tau: number): RGB[] {
+  let i = 3;
+  for (let k = 3; k >= 0; k--) if (tau >= ANCHORS[k]) { i = k; break; }
+  const a = ANCHORS[i];
+  const b = i === 3 ? ANCHORS[0] + 1 : ANCHORS[i + 1];
+  const t = (tau - a) / (b - a);
+  return KEYS[i].map((c, k) => mix(c, KEYS[(i + 1) % 4][k], t));
 }
-/** 0 at full day, 1 at midnight — drives the stars' presence. */
-const nightness = (u: number) =>
-  Math.max(0, Math.min(1, (Math.cos((u - 0.75) * 2 * Math.PI) + 0.25) / 1.25));
+/** 0 through the day, 1 at midnight — drives the stars and the moon's
+ * daylight paleness. Zero at both ends of the sunlit span (day starts and
+ * evening starts), so stars only ever belong to dusk, night and dawn. */
+const nightness = (tau: number) =>
+  Math.max(0, Math.min(1, (Math.cos((tau - ANCHORS[3]) * 2 * Math.PI) + 0.25) / 1.25));
 
 function px(x: number, y: number, c: RGB, a = 255) {
   x |= 0;
@@ -118,11 +152,11 @@ function disc(cx: number, cy: number, r: number, c: RGB) {
       if (dx * dx + dy * dy <= r * r + r * 0.4) px(x, y, c);
     }
 }
-function ring(cx: number, cy: number, r: number, c: RGB) {
+function ring(cx: number, cy: number, r: number, c: RGB, a = 255) {
   for (let y = Math.floor(cy - r - 1); y <= cy + r + 1; y++)
     for (let x = Math.floor(cx - r - 1); x <= cx + r + 1; x++) {
       const q = (x - cx) ** 2 + (y - cy) ** 2;
-      if (q > r * r + r * 0.4 && q <= (r + 1) * (r + 1) + r * 0.4) px(x, y, c);
+      if (q > r * r + r * 0.4 && q <= (r + 1) * (r + 1) + r * 0.4) px(x, y, c, a);
     }
 }
 /** A soft radial halo, quadratic falloff — this is what keeps the sun from
@@ -143,37 +177,50 @@ function sun(cx: number, cy: number, day: number) {
   disc(cx, cy, R, SUN_C);
   ring(cx, cy, R, SUN_A);
 }
-function moon(cx: number, cy: number) {
-  disc(cx, cy, R, MOON_C);
+/** In daylight the moon washes toward the sky and picks up a rim — pale, but
+ * still legible, which is exactly how a morning moon looks. At night `day` is
+ * 0 and this is the approved mock's flat cream disc, untouched. */
+function moon(cx: number, cy: number, day: number, sky: RGB) {
+  // A light wash only: the RIM is what makes it read as a daytime moon, and
+  // washing harder both hid it against a bright sky and drifted its colour far
+  // enough from MOON_C to lose the QA detector.
+  disc(cx, cy, R, mix(MOON_C, sky, 0.15 * day));
+  ring(cx, cy, R, MOON_A, (255 * day) | 0);
   px(cx - 1, cy - 1, MOON_A);
   px(cx + 1, cy + 1, MOON_A);
   px(cx + 1, cy - 2, MOON_A);
   px(cx - 2, cy + 1, MOON_A);
 }
 
-/** The belt: the leading body plus the other one a width behind AND ahead, so
- * an exit on the right is always the same motion as an entry on the left. */
-function bodies(u: number): [number, boolean][] {
-  const half = Math.floor(u * 2) % 2; // 0 = sun leads, 1 = moon leads
-  const cx = ((u * 2) % 1) * AW;
-  const leadSun = half === 0;
-  return [
-    [cx, leadSun],
-    [cx - AW, !leadSun],
-    [cx + AW, !leadSun],
-  ];
+/** Where a body sits on ITS OWN crossing: 0 = rising at the left edge, 1 =
+ * setting at the right. Values a little outside [0,1] are deliberately kept —
+ * that is the body still sliding down behind the hills, or not yet up. The
+ * far side of the cycle is folded to NEGATIVE so the approach is continuous
+ * too; the fold happens while the body is far off-canvas, so it can never
+ * pop. */
+function crossing(tau: number, start: number, span: number): number {
+  let d = (((tau - start) % 1) + 1) % 1;
+  if (d > (span + 1) / 2) d -= 1;
+  return d / span;
+}
+/** The pill's only motion rule: place a body on the arc at its crossing
+ * position. Off-pill positions are skipped once even the glow can't reach. */
+function place(pos: number, draw: (x: number, y: number) => void) {
+  if (pos < -0.3 || pos > 1.3) return;
+  draw(Math.round(pos * AW), Math.round(HOR - Math.sin(Math.PI * pos) * AMP));
 }
 
-function paint(u: number) {
+function paint(tau: number) {
   if (!img || !ctx) return;
-  const pal = palAt(u);
-  const n = nightness(u);
+  const pal = palAt(tau);
+  const n = nightness(tau);
+  const day = 1 - n;
   for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) px(x, y, pal[0]);
 
-  // stars + Storm's falling star (deterministic in u — no per-frame randomness)
+  // stars + Storm's falling star (deterministic in tau — no per-frame noise)
   if (n > 0.05) {
     for (const [x, y] of SPOTS) px(x, y, STAR_C, (n * 200) | 0);
-    const ph = (u * 4) % 1;
+    const ph = (tau * 4) % 1;
     if (n > 0.5 && ph < 0.22) streak(6 + ph * 90, 1 + ph * 22, n);
   }
   if (performance.now() < starUntil) {
@@ -182,14 +229,12 @@ function paint(u: number) {
     streak(4 + k * 34, 1 + k * 7, 1);
   }
 
-  // sun and moon arc over the horizon; the hills are drawn after, so a body
-  // outside the pill sits BELOW the horizon and is hidden — it really sets
-  for (const [x, isSun] of bodies(u)) {
-    const X = Math.round(x);
-    const Y = Math.round(HOR - Math.sin(Math.PI * (x / AW)) * AMP);
-    if (isSun) sun(X, Y, 1 - n);
-    else moon(X, Y);
-  }
+  // Both bodies arc over the horizon on their own crossings; the hills are
+  // painted after, so whatever is past an edge sits BELOW the horizon and is
+  // hidden — it really sets. The MOON goes down first: the sun is the main
+  // actor and draws over it if they ever meet.
+  place(crossing(tau, MOON_START, MOON_SPAN), (x, y) => moon(x, y, day, pal[0]));
+  place(crossing(tau, SUN_START, SUN_SPAN), (x, y) => sun(x, y, day));
 
   // three cut-paper planes with a hard darker edge along every cut
   LAYERS.forEach((L, i) => {
@@ -236,7 +281,7 @@ function mount() {
   document.body.appendChild(root);
   ctx = cv.getContext("2d");
   img = ctx?.createImageData(AW, AH) ?? null;
-  paint(lastU);
+  paint(lastTau);
 }
 
 /** A tiny star falls across the pill — the HUD echo of a shooting star in the
@@ -244,18 +289,33 @@ function mount() {
 export function clockStar() {
   mount();
   starUntil = performance.now() + 900;
-  paint(lastU);
+  paint(lastTau);
 }
 
-/** Drive the pill from the world clock. `f` is the fraction through the
- * current sweep and `night` says which body leads — both straight from
- * WorldScene's handAngle(), so the pill, the directional sun and the ambient
- * can never disagree. There is no instant/animated distinction any more: the
- * art is a pure function of the cycle position, so a join, a phase skip and a
- * per-frame tick are all just "paint this u". */
-export function setClockTime(f: number, night: boolean) {
+/** (timeIdx + phaseT) → tau, the fraction of the whole day elapsed since
+ * SUNRISE. The world clock counts phases from Night; the sky counts from the
+ * moment the sun comes up, so this walks the phase ring starting at Morning
+ * and weights each phase by its real duration. */
+export function dayFraction(u: number): number {
+  const N = SECS.length;
+  const idx = ((Math.floor(u) % N) + N) % N;
+  const t = u - Math.floor(u);
+  let acc = 0;
+  for (let k = 1; k <= N; k++) {
+    const i = k % N; // morning, day, evening, night
+    if (i === idx) break;
+    acc += SECS[i];
+  }
+  return ((acc + t * SECS[idx]) / TOTAL) % 1;
+}
+
+/** Drive the pill from the world clock: `u` is timeIdx + phaseT, exactly the
+ * value the ambient and the directional sun are derived from, so the three can
+ * never disagree. There is no instant/animated distinction: the art is a pure
+ * function of the cycle position, so a join, a phase skip and a per-frame tick
+ * are all just "paint this tau". */
+export function setClockTime(u: number) {
   mount();
-  const u = night ? 0.5 + f * 0.5 : f * 0.5;
-  lastU = ((u % 1) + 1) % 1;
-  paint(lastU);
+  lastTau = dayFraction(u);
+  paint(lastTau);
 }

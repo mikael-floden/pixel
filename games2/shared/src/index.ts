@@ -55,15 +55,19 @@ export const TIME_PHASE_COUNT = 4; // Night, Morning, Day, Evening
 export const DEFAULT_TIME_IDX = 2; // Day
 // The world clock: time advances on its own (the day/night cycle is a core
 // rhythm of the game, not a debug toggle). Per-phase duration in seconds,
-// indexed like timeIdx. The half-dial clock hand crosses the 12-hour face
-// once per half — sunlit (morning+day+evening) and night — and each sweep
-// spans ITS phase set's real duration. NIGHT TICKS 3x AS FAST (maintainer
-// 2026-07-22): night's wall time is a third of the sunlit sum (40s vs 120s)
-// so darkness doesn't dominate real play time, but the hand still sweeps
-// the FULL night half-circle — just at 3x the sunlit sweep's angular speed
-// (~4.5 vs 1.5 deg/s). Morning and evening are short, day is long. Full
-// cycle 160s.
-export const TIME_PHASE_SECONDS = [40, 25, 70, 25];
+// indexed like timeIdx.
+//
+// THE RATIOS ARE THE MAINTAINER'S (2026-07-31): night 1/3, morning 1/6,
+// day 1/3, evening 1/6 of the cycle. NIGHT == DAY is not a coincidence and
+// is not free to change — the clock pill (client/src/clock.ts) sends the sun
+// across on morning+day+evening and the moon across on evening+night+morning,
+// and those two spans are equal ONLY while day and night are. That equality
+// is what makes both bodies travel at the SAME speed, which is the whole
+// point of the design: one shared pace, and the moon simply hangs in the sky
+// at dawn and dusk the way it does in the real one. (Before this, night ran
+// 3x as fast as the sunlit span to keep darkness short, and the moon visibly
+// raced.) Full cycle 150s.
+export const TIME_PHASE_SECONDS = [50, 25, 50, 25];
 
 // Time-speed steps the settings button cycles through (maintainer):
 // x0 freeze, x0.5 twice as slow, x1 normal, x2/x5/x10 faster.

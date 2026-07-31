@@ -2876,7 +2876,9 @@ export class WorldScene extends Phaser.Scene {
       for (let ch = 0; ch < 4; ch++)
         this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
       this.curTorchF = this.timeFromTorchF + (blend.torchF - this.timeFromTorchF) * e;
-      setClockTime(ha.f, ha.night);
+      // The pill reads the SAME continuous world-clock position the ambient and
+      // the directional sun do — it maps it to its own sky (clock.ts).
+      setClockTime(this.timeIdx + this.phaseT);
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
@@ -3077,7 +3079,7 @@ export class WorldScene extends Phaser.Scene {
       this.curAmbient = [...blend.ambient];
       this.curSun = sunFromHand(ha.deg, ha.night, ha.f);
       this.curTorchF = blend.torchF;
-      setClockTime(ha.f, ha.night);
+      setClockTime(idx + this.phaseT);
     }
   }
 

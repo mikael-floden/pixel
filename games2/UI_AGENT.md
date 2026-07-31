@@ -38,10 +38,12 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, a
   40x16 art-pixel landscape painted into a canvas and shown at x2, parked at
   the game view's bottom-right corner (chat.ts reserves its lane). The sun
-  and moon ride a continuous belt (exit right == enter left), so it needs no
+  and the moon are two independent bodies, each crossing in 2/3 of a day at
+  the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
-  `setClockTime(f, night)` + `clockStar()`. See the CLOCK PILL section of
-  `games2/CLAUDE.md` before changing the art or the motion.
+  `setClockTime(timeIdx + phaseT)` + `clockStar()`. See the CLOCK PILL
+  section of `games2/CLAUDE.md` before changing the art, the motion, or
+  TIME_PHASE_SECONDS (day and night must stay equal).
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
