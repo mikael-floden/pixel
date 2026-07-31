@@ -31,11 +31,23 @@ DATA = os.path.join(ROOT, "wiki", "site", "data.json")
 ALPHA = 8  # a pixel counts as content above this alpha
 
 
+# Art the tool was TOLD about but could not read. Never silent: a clip that
+# measures nothing drops out of art_bounds.json, and the viewer then falls back
+# to scaling by frame size — which is scaling by transparent padding, the exact
+# bug artScale exists to fix. A format the decoder doesn't know (the fleet's
+# PNG → WebP migration, 2026-07-31) would look exactly like "no art here".
+unreadable: list[tuple[str, str]] = []
+
+
 def frames_mask(path: str, fw: int, n: int) -> np.ndarray | None:
     """OR of every frame's opaque mask, in frame-local coords."""
     try:
         a = np.asarray(Image.open(path).convert("RGBA"))
-    except Exception:
+    except FileNotFoundError:
+        unreadable.append((os.path.relpath(path, ROOT), "missing"))
+        return None
+    except Exception as e:
+        unreadable.append((os.path.relpath(path, ROOT), f"{type(e).__name__}: {e}"))
         return None
     h, w = a.shape[:2]
     if n <= 0 or fw <= 0 or w < fw:
@@ -62,7 +74,8 @@ def clip_bounds(entity: dict, clip: dict) -> list[int] | None:
         m = frames_mask(os.path.join(ROOT, clip["strip"]), cw, clip.get("frames") or 1)
     elif clip.get("framesDir"):
         for i in range(clip.get("frames") or 0):
-            one = frames_mask(os.path.join(ROOT, clip["framesDir"], f"{i}.png"), cw, 1)
+            ext = clip.get("frameExt") or "png"
+            one = frames_mask(os.path.join(ROOT, clip["framesDir"], f"{i}.{ext}"), cw, 1)
             if one is None:
                 continue
             m = one if m is None else (m | one if m.shape == one.shape else m)
@@ -141,3 +154,19 @@ for dom in ("monsters", "characters", "objects"):
 sal = [o for o in opens if "salamander" in o[0]]
 if sal:
     print("  salamander check (opening view): " + ", ".join(f"{i} {w}x{h} -> {w*scale}x{h*scale}" for i, w, h in sal))
+
+# LOUD, and non-zero: art this tool cannot read measures as "no creature here",
+# and the viewer's fallback (scale by frame size) is wrong in a way that looks
+# plausible on screen. Better to stop the run than to ship silent bad numbers.
+if unreadable:
+    kinds = sorted({r for _, r in unreadable})
+    print(f"\n{len(unreadable)} declared frames could not be read — art_bounds.json is INCOMPLETE:", file=sys.stderr)
+    for path, why in unreadable[:10]:
+        print(f"  {path}: {why}", file=sys.stderr)
+    if len(unreadable) > 10:
+        print(f"  … and {len(unreadable) - 10} more", file=sys.stderr)
+    if any("cannot identify" in k or "Error" in k for k in kinds):
+        print("  A decode error usually means the art changed format. Pillow reads WebP\n"
+              "  when built with libwebp — check `python3 -c \"from PIL import features;"
+              " print(features.check('webp'))\"`.", file=sys.stderr)
+    sys.exit(1)

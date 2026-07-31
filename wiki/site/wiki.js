@@ -15,6 +15,12 @@
 // vite dev), the repo root when served locally — always two levels up.
 const ROOT = new URL("../../", location.href);
 const assetUrl = (rel) => new URL(rel, ROOT).href;
+/** A feedback id is a repo path WITHOUT the extension, which is what lets the
+ *  maintainer's verdicts survive the art changing format underneath them (the
+ *  fleet's PNG → lossless WebP migration, 2026-07-31). Strip every image
+ *  extension, not just .png: the day tiles2 converts, `.png`-only stripping
+ *  would rename every id and orphan every star, note and rejection on file. */
+const stripExt = (rel) => rel.replace(/\.(png|webp)$/i, "");
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
@@ -276,7 +282,7 @@ function makePlayer(entity, kind) {
       frameImgs = Array.from({ length: clip.frames }, (_, i) => {
         const im = new Image();
         im.onload = () => { if (i === 0) draw(); };
-        im.src = assetUrl(`${clip.framesDir}/${i}.png`);
+        im.src = assetUrl(`${clip.framesDir}/${i}.${clip.frameExt ?? "png"}`);
         return im;
       });
     }
@@ -473,7 +479,7 @@ const label = (slug) => SECTIONS[slug]?.label ?? slug;
 function sectionIcon(slug, size = 48) {
   const icon = SECTIONS[slug]?.icon;
   if (!icon) return null;
-  return h("img", { class: "sect-icon", src: `icons/${icon}.png`, alt: "", width: String(size), height: String(size), loading: "lazy" });
+  return h("img", { class: "sect-icon", src: `icons/${icon}.webp`, alt: "", width: String(size), height: String(size), loading: "lazy" });
 }
 /** Page heading with its icon beside it. */
 function sectionHead(slug) {
@@ -937,7 +943,7 @@ const TYPE_ICONS = { MISC: "type-misc", SOUL: "type-soul" };
 function typeIcon(t, size = 32) {
   const icon = TYPE_ICONS[t];
   return icon
-    ? h("img", { class: "type-icon", src: `icons/${icon}.png`, alt: "", width: String(size), height: String(size), loading: "lazy" })
+    ? h("img", { class: "type-icon", src: `icons/${icon}.webp`, alt: "", width: String(size), height: String(size), loading: "lazy" })
     : null;
 }
 /** The chip under an item's picture. For a 1-to-1 type it names the creature —
@@ -979,7 +985,7 @@ function goldTag(it) {
   const v = Number(it?.value);
   if (!Number.isFinite(v) || v <= 0) return null;
   return h("span", { class: "gold-tag", title: `Sells for ${v} gold` },
-    h("img", { class: "gold-coin", src: "icons/gold.png", alt: "gold", width: "32", height: "32" }),
+    h("img", { class: "gold-coin", src: "icons/gold.webp", alt: "gold", width: "32", height: "32" }),
     h("b", {}, String(v)));
 }
 /** An item's sprite at a WHOLE multiple of its authored 48px (never resampled). */
@@ -1337,7 +1343,7 @@ function cleanBaseRank(type, relPath) {
 }
 function tileCell(type, group, file) {
   const rel = `${group.dir}/${file}`;
-  const id = rel.replace(/\.png$/, "");
+  const id = stripExt(rel);
   const cell = h("div", { class: "tile-cell" });
   const sync = () => {
     const e = fb("tiles", id);
@@ -1461,7 +1467,7 @@ function viewTileInstance(typeId, rel) {
   const all = t.groups.flatMap((g) => g.tiles.map((f) => ({ id: encodeURIComponent(`${g.dir}/${f}`), name: f, rel: `${g.dir}/${f}`, group: g })));
   const cur = all.find((x) => x.rel === rel);
   if (!cur) return h("p", {}, "Unknown tile.");
-  const id = rel.replace(/\.png$/, "");
+  const id = stripExt(rel);
   const plain = t.cleanBase?.plain ?? rel; // no classification → self-surround
   const rank = cleanBaseRank(t, rel);
 
@@ -1521,7 +1527,7 @@ function viewTileInstance(typeId, rel) {
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker tile-portrait" }, h("img", { src: assetUrl(rel), alt: cur.name })),
       h("div", { class: "meta" },
-        h("h1", {}, cur.name.replace(/\.png$/, "")),
+        h("h1", {}, stripExt(cur.name)),
         // ONE row of pills, not two stacked lines: a clean-base tile carries
         // an extra pill, and stacking made its header taller than an
         // ordinary tile's — so paging shifted the page (maintainer
@@ -1704,7 +1710,7 @@ function viewItems() {
     ["name", "A–Z", "Sort by name"],
   ]) {
     const b = h("button", { title }, s === "value"
-      ? h("img", { class: "gold-coin", src: "icons/gold.png", alt: "price", width: "32", height: "32" })
+      ? h("img", { class: "gold-coin", src: "icons/gold.webp", alt: "price", width: "32", height: "32" })
       : glyph);
     if (s === itemView.sort) b.classList.add("on");
     b.addEventListener("click", () => { itemView.sort = s; route(); });
@@ -2145,7 +2151,7 @@ function buildKnownIds() {
   d.music.forEach((t) => { add(t.path); add(`${t.path}/${t.id}`); });
   d.items.forEach((it) => add(it.path));
   (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
-  d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(`${g.dir}/${f}`.replace(/\.png$/, "")))); });
+  d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(stripExt(`${g.dir}/${f}`)))); });
   d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
 }
 

@@ -59,6 +59,45 @@ matches the source composited over the page background exactly (delta 0).
 Re-run that check if the icon sizes ever change — resampled pixel art is the
 one thing this project never ships.
 
+## Image format: PNG or WebP, whichever is on disk
+
+The fleet is migrating art to **lossless WebP** (2026-07-31: ~50% off 128 MB,
+~6.5 MB off a cold load, nothing got bigger). Domains convert one at a time, so
+the repo holds both formats for a while and the wiki must not care which.
+
+**The builder looks; the browser never guesses.** `art("monsters/x/sprite")` in
+`build.mjs` resolves the extension against the disk (WebP wins when both exist)
+and `data.json` carries the real path. That is why there are no `<picture>`
+fallbacks, no probing and no 404s mid-migration — and it means an art domain can
+convert with **no wiki change at all**, just a rebuild.
+
+Three things had to move, and they are the ones to remember:
+
+- **`imageSize()` reads PNG *and* all three WebP variants** (VP8X / VP8L / VP8),
+  still zero-dependency because it runs in the Docker build. The minimum byte
+  count differs per variant: a fully transparent 48×48 frame is a **28-byte**
+  VP8L file, and a blanket "≥ 30 bytes" guard silently called it "not an image".
+  Death and fade-out animations end in exactly such frames.
+  `node wiki/tools/check-imagesize.mjs` cross-checks the parser against Pillow
+  over every image in the repo — 25,044 files, zero disagreements.
+- **Feedback ids stay extension-free.** `stripExt()` removes `.png` *or*
+  `.webp`. A `.png`-only strip would rename every tile id the day tiles2
+  converts and orphan every star, note and rejection the maintainer has filed.
+- **`art-bounds.py` exits non-zero on art it cannot read.** A clip it fails to
+  measure drops out of `art_bounds.json`, and the viewer's fallback — scale by
+  frame size — is scaling by transparent padding, the exact bug artScale exists
+  to fix. Silent wrong numbers are worse than a stopped build.
+
+`wiki/tools/to-webp.py` converts and **proves each file bit-exact** (decodes the
+result back and compares every pixel, fully transparent ones included) before
+writing, skipping anything that would grow. Other agents are welcome to copy it
+into their domain. Do not make it a Dockerfile step: convert once at the source,
+commit the result, and every later deploy moves less through the image layers.
+
+Nothing in the deploy plumbing filters by extension — `.dockerignore`, the
+Dockerfile `COPY`s and the workflow paths all take whole directories — so
+converted art ships with no change to the five-place checklist below.
+
 ## Shipping a NEW domain to prod — the five-place checklist
 
 The wiki discovers a new sibling domain automatically, but **prod only shows

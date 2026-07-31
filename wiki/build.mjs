@@ -43,15 +43,55 @@ const isFile = (p) => { try { return statSync(p).isFile(); } catch { return fals
 const listDirs = (p) => { try { return readdirSync(p).filter((n) => !n.startsWith(".") && !n.startsWith("_") && isDir(join(p, n))).sort(); } catch { return []; } };
 const listFiles = (p, re) => { try { return readdirSync(p).filter((n) => re.test(n)).sort(); } catch { return []; } };
 
-// PNG dimensions from the IHDR chunk — bytes 16..24 of every valid PNG.
-function pngSize(path) {
+/* --- image format: PNG or WebP, decided by what is ON DISK ------------------
+   The art domains are converting to lossless WebP one at a time (~50% off the
+   bytes; fleet decision 2026-07-31), so for a while the repo holds both. The
+   wiki never guesses: the builder looks, and data.json carries the real path.
+   That keeps the browser out of the guessing business entirely — no probing,
+   no <picture> fallbacks, no 404s while a domain is halfway converted. */
+const ART_EXTS = ["webp", "png"];                 // preference order
+/** The rel path of an image given WITHOUT its extension, or null if neither
+ *  exists. WebP wins when a domain has both, so a half-finished conversion
+ *  shows the new file and never a stale twin. */
+function art(relNoExt) {
+  for (const ext of ART_EXTS) if (isFile(join(ROOT, `${relNoExt}.${ext}`))) return `${relNoExt}.${ext}`;
+  return null;
+}
+/** Matches one image of a set: art_re("\\d+") → /^\d+\.(webp|png)$/ */
+const artRe = (stem) => new RegExp(`^${stem}\\.(${ART_EXTS.join("|")})$`, "i");
+/** The extension actually used inside a directory of numbered frames, so the
+ *  viewer can build frame URLs without probing. Defaults to png for an empty
+ *  directory — nothing will be requested anyway. */
+const frameExt = (absDir) => (listFiles(absDir, artRe("\\d+"))[0]?.split(".").pop() ?? "png").toLowerCase();
+
+/** Pixel dimensions of a PNG or a WebP, read from the header. Zero
+ *  dependencies, and it must stay that way: this runs inside the Docker build.
+ *  WebP has three shapes and the animation viewer's frame maths depends on
+ *  getting the right one — a wrong width silently mis-slices every strip. */
+function imageSize(path) {
   try {
     const fd = openSync(path, "r");
-    const buf = Buffer.alloc(24);
-    readSync(fd, buf, 0, 24, 0);
+    const buf = Buffer.alloc(32);
+    const n = readSync(fd, buf, 0, 32, 0);
     closeSync(fd);
-    if (buf.readUInt32BE(12) !== 0x49484452) return null; // "IHDR"
-    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+    if (n >= 24 && buf.readUInt32BE(12) === 0x49484452)       // PNG "IHDR"
+      return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+    if (n >= 16 && buf.toString("ascii", 0, 4) === "RIFF" && buf.toString("ascii", 8, 12) === "WEBP") {
+      // The length each variant needs differs, and the check must be PER
+      // VARIANT: a fully transparent 48×48 frame is a 28-byte VP8L file, and a
+      // blanket ">= 30" silently called it "not an image". Death and fade-out
+      // animations end in exactly such frames.
+      const fourcc = buf.toString("ascii", 12, 16);
+      if (fourcc === "VP8X" && n >= 30)                        // extended: 24-bit, minus one
+        return { w: (buf.readUIntLE(24, 3) & 0xffffff) + 1, h: (buf.readUIntLE(27, 3) & 0xffffff) + 1 };
+      if (fourcc === "VP8L" && n >= 25) {                      // lossless: 14 bits each, packed
+        const bits = buf.readUInt32LE(21);
+        return { w: (bits & 0x3fff) + 1, h: ((bits >> 14) & 0x3fff) + 1 };
+      }
+      if (fourcc === "VP8 " && n >= 30)                        // lossy: 14 bits each, after the sync code
+        return { w: buf.readUInt16LE(26) & 0x3fff, h: buf.readUInt16LE(28) & 0x3fff };
+    }
+    return null;
   } catch { return null; }
 }
 
@@ -105,17 +145,17 @@ function buildMonsters() {
       const dirs = {};
       for (const dir of DIRS) {
         const frameDir = join(base, id, "animations", folder, dir);
-        const frames = listFiles(frameDir, /^\d+\.png$/).length;
+        const frames = listFiles(frameDir, artRe("\\d+")).length;
         if (!frames) continue;
-        const stripRel = `monsters/${id}/animations/${folder}__${dir}.png`;
-        const stripAbs = join(ROOT, stripRel);
-        const dims = isFile(stripAbs) ? pngSize(stripAbs) : null;
+        const strip = art(`monsters/${id}/animations/${folder}__${dir}`);
+        const dims = strip ? imageSize(join(ROOT, strip)) : null;
         dirs[dir] = {
           frames,
-          strip: isFile(stripAbs) ? stripRel : null,
+          strip,
           fw: dims ? Math.round(dims.w / frames) : frameW,
           fh: dims ? dims.h : frameH,
           framesDir: `monsters/${id}/animations/${folder}/${dir}`,
+          frameExt: frameExt(frameDir),
           gif: isFile(join(ROOT, `monsters/${id}/animations/${folder}__${dir}.gif`)) ? `monsters/${id}/animations/${folder}__${dir}.gif` : null,
         };
       }
@@ -130,7 +170,7 @@ function buildMonsters() {
       lore: mj.lore ?? null,
       kind: rosterById[id]?.kind ?? mj.source?.kind ?? "object",
       path: `monsters/${id}`,
-      preview: `monsters/${id}/sprite.png`,
+      preview: art(`monsters/${id}/sprite`),
       frameW, frameH,
       nativeW: mj.native_size?.width ?? frameW,
       nativeH: mj.native_size?.height ?? frameH,
@@ -183,8 +223,9 @@ function buildCharacters() {
       const folder = overrides[state] ?? dfltFolder;
       const dirs = {};
       for (const dir of DIRS) {
-        const frames = listFiles(join(base, id, "animations", folder, dir), /^\d+\.png$/).length;
-        if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}` };
+        const frameDir = join(base, id, "animations", folder, dir);
+        const frames = listFiles(frameDir, artRe("\\d+")).length;
+        if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}`, frameExt: frameExt(frameDir) };
       }
       if (Object.keys(dirs).length) anims[state] = { folder, dirs, gif: isFile(join(base, id, "animations", folder, "preview.gif")) ? `characters2/humans/${id}/animations/${folder}/preview.gif` : null };
     }
@@ -195,8 +236,8 @@ function buildCharacters() {
       sex: meta.sex ?? null,
       lore: meta.lore ?? null,
       path: `characters2/humans/${id}`,
-      preview: `characters2/humans/${id}/base/south.png`,
-      baseStrip: isFile(join(base, id, "base", "preview.png")) ? `characters2/humans/${id}/base/preview.png` : null,
+      preview: art(`characters2/humans/${id}/base/south`),
+      baseStrip: art(`characters2/humans/${id}/base/preview`),
       frameW, frameH,
       animations: anims,
     });
@@ -219,7 +260,7 @@ function buildTiles() {
     const groups = [];
     const addSheets = (kind, relDir, label) => {
       for (const sheet of listDirs(join(ROOT, relDir))) {
-        const tiles = listFiles(join(ROOT, relDir, sheet), /^tile_\d+\.png$/);
+        const tiles = listFiles(join(ROOT, relDir, sheet), artRe("tile_\\d+"));
         if (tiles.length) groups.push({ kind, label, sheet, dir: `${relDir}/${sheet}`, tiles });
       }
     };
@@ -283,10 +324,14 @@ function buildObjects() {
         const d = a.directions?.[dir];
         if (!d) continue;
         const stripRel = d.strip ?? `${id}/animations/${key}__${dir}.png`;
-        const strip = `objects/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
+        const declared = `objects/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
+        // object.json names the file, and it may still say ".png" for a while
+        // after the objects domain converts. Resolve against the DISK, so the
+        // wiki doesn't go blank waiting for another agent's metadata edit.
+        const strip = art(declared.replace(/\.(png|webp)$/i, ""));
         const frames = d.frames ?? a.frame_count ?? 0;
-        if (!frames || !isFile(join(ROOT, strip))) continue;
-        const dims = pngSize(join(ROOT, strip));
+        if (!frames || !strip) continue;
+        const dims = imageSize(join(ROOT, strip));
         dirs[dir] = { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size };
       }
       if (Object.keys(dirs).length) anims[key] = { description: a.description ?? "", dirs };
@@ -297,7 +342,7 @@ function buildObjects() {
       category: oj.category ?? "misc",
       description: oj.description ?? "",
       path: `objects/${id}`,
-      preview: `objects/${id}/sprite.png`,
+      preview: art(`objects/${id}/sprite`),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,
@@ -399,7 +444,7 @@ function buildItems() {
   for (const id of listDirs(base)) {
     if (["config", "pipeline"].includes(id)) continue;
     const ij = readJson(join(base, id, "item.json"));
-    if (ij) items.push({ id, name: ij.name ?? titleCase(id), description: ij.description ?? "", path: `items/${id}`, preview: isFile(join(base, id, "sprite.png")) ? `items/${id}/sprite.png` : null });
+    if (ij) items.push({ id, name: ij.name ?? titleCase(id), description: ij.description ?? "", path: `items/${id}`, preview: art(`items/${id}/sprite`) });
   }
   return items;
 }
