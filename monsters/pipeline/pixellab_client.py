@@ -156,17 +156,53 @@ class PixelLabClient:
 
     # -- discovery: the MONSTER tag is the ground truth ----------------------
 
-    def _list_all(self, store):
-        """Every record in a store, following limit/offset pagination."""
-        items, offset = [], 0
-        while True:
-            r = self._request("GET", f"{store}?limit=100&offset={offset}")
-            batch = r if isinstance(r, list) else r.get(store) or r.get("items") or []
-            items += batch
-            offset += len(batch)
-            total = r.get("total") if isinstance(r, dict) else None
-            if not batch or len(batch) < 100 or (total is not None and offset >= total):
-                return items
+    def _list_all(self, store, page=100):
+        """Every record in a store — COMPLETE, or it raises.
+
+        PixelLab's limit/offset paging is unstable: rows shift across page
+        boundaries between requests, so naive sequential paging serves some
+        records twice and MISSES others entirely. Measured 2026-07-31 on
+        /v2/objects: the API reports total=218 while three back-to-back
+        sequential sweeps each return 218 rows holding only 216 unique ids —
+        deterministic, not a network blip (bug reported by the items agent,
+        who lost two items to it).
+
+        That is a data-loss bug here, not a cosmetic one: sync.py treats "not
+        in this listing" as "untagged on PixelLab" and deletes the monster's
+        folder. So we sweep with OVERLAPPING strides (advance by page//2, then
+        retry at page//3), dedupe by id, and REFUSE to return a short list —
+        callers must never see a silently incomplete roster."""
+        seen, order, total = {}, [], None
+
+        def sweep(stride):
+            nonlocal total
+            offset = 0
+            while True:
+                r = self._request("GET", f"{store}?limit={page}&offset={offset}")
+                batch = r if isinstance(r, list) else r.get(store) or r.get("items") or []
+                if isinstance(r, dict) and r.get("total") is not None:
+                    total = int(r["total"])
+                for it in batch:
+                    i = it.get("id")
+                    if i and i not in seen:
+                        seen[i] = it
+                        order.append(i)
+                if not batch or len(batch) < page:
+                    return
+                offset += stride
+                if total is not None and offset >= total + page:
+                    return
+
+        sweep(page // 2)
+        if total is not None and len(seen) < total:
+            sweep(max(1, page // 3))
+        if total is not None and len(seen) < total:
+            raise PixelLabError(
+                f"{store}: listing incomplete after overlapping sweeps — got "
+                f"{len(seen)} unique of {total} reported. REFUSING to return a "
+                f"short list (sync would treat the missing ones as untagged and "
+                f"delete their art). Retry; if it persists the API is degraded.")
+        return [seen[i] for i in order]
 
     def tagged_monsters(self):
         """All MONSTER-tagged records across BOTH stores ->

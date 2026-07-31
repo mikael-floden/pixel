@@ -84,7 +84,10 @@ def _auto_folder_id(prompt, taken):
     return _unique_id("_".join(words[:3]) or "monster", taken)
 
 
-def discover_roster(client, verbose=True):
+MAX_AUTO_PRUNE = 5
+
+
+def discover_roster(client, verbose=True, allow_mass_prune=False):
     """Reconcile config/roster.json against the MONSTER tags on PixelLab.
     Returns (roster_entries, report)."""
     tagged = client.tagged_monsters()
@@ -121,6 +124,17 @@ def discover_roster(client, verbose=True):
     for pid, e in prev_by_pid.items():
         if pid not in tagged_ids:
             dropped.append(e["id"])
+    # Second line of defence behind the client's complete-or-raise paging: a
+    # dropped entry means "rmtree this monster's art", so a listing glitch must
+    # never be able to wipe the domain. Losing a handful of tags at once is a
+    # human action; losing many at once is a bug.
+    if len(dropped) > MAX_AUTO_PRUNE and not allow_mass_prune:
+        raise SystemExit(
+            f"REFUSING TO PRUNE: {len(dropped)} monsters lost their MONSTER tag in one "
+            f"run ({', '.join(sorted(dropped)[:8])}{'...' if len(dropped) > 8 else ''}).\n"
+            f"That is more than MAX_AUTO_PRUNE={MAX_AUTO_PRUNE} and would delete their "
+            f"art. If the API listing was incomplete this is data loss; if you really "
+            f"untagged them, re-run with --allow-mass-prune.")
 
     roster = kept + added
     if verbose:
@@ -200,8 +214,8 @@ def verify(metas):
 
 # --- orchestration -----------------------------------------------------------
 
-def sync(client, fresh=False, dry_run=False, only=None):
-    roster, report = discover_roster(client)
+def sync(client, fresh=False, dry_run=False, only=None, allow_mass_prune=False):
+    roster, report = discover_roster(client, allow_mass_prune=allow_mass_prune)
     if not roster:
         raise SystemExit("discovery returned NO tagged monsters — refusing to prune "
                          "everything (is the API reachable / the tag right?)")
@@ -263,9 +277,12 @@ def main():
     ap.add_argument("--fresh", action="store_true", help="wipe each folder before mirroring")
     ap.add_argument("--dry-run", action="store_true", help="print the plan; change nothing")
     ap.add_argument("--only", help="mirror just this monster id (others keep current files)")
+    ap.add_argument("--allow-mass-prune", action="store_true",
+                    help=f"permit deleting more than {MAX_AUTO_PRUNE} monsters in one run")
     args = ap.parse_args()
     client = PixelLabClient()
-    sync(client, fresh=args.fresh, dry_run=args.dry_run, only=args.only)
+    sync(client, fresh=args.fresh, dry_run=args.dry_run, only=args.only,
+         allow_mass_prune=args.allow_mass_prune)
 
 
 if __name__ == "__main__":
