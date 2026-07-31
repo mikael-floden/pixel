@@ -71,17 +71,29 @@ another agent to stop changing something, you have written it too tightly.
 Done: the red line, nine chapters, one people, four entity records, the build
 and canon check.
 
-Next, roughly in order:
-1. Cover the rest of the roster — the remaining 23 monsters, then the
+Next, in this order. **Item 1 outranks finishing the roster**, and the ordering
+is deliberate: this setting currently has a cosmology, a physics, a history, an
+economy and an antagonist, and not one inhabited place. Every NPC needs a
+*where*; every quest needs a *who else is there*; the §8 archetype about people
+"standing at the meeting-places" presupposes meeting-places that do not exist
+in canon yet.
+
+1. **A place with people in it.** Name the spawn house and the fire outside it,
+   say who keeps it, and give the world its first named settlement. Then the
+   onomastics: how are people named here, in a country that is everyone's
+   period stacked? And a calendar — the chapters say "a season" and "a year"
+   and nothing defines either.
+2. **The keeper of the spawn fire**, as the first worked NPC dossier, proving
+   the §8 rule end to end. §8 currently ships a template with no example.
+3. Cover the rest of the roster — the remaining 23 monsters, then the
    soulstones (one per creature, so each is a paired story), then junk items in
    category batches.
-2. Name and write the spawn house and the fire outside it — the first piece of
-   place-lore the game can actually show.
-3. NPC dossiers, once `games2` has a dialogue system. Use the §8 rule: name,
-   fall, what they are waiting on, what they have forgotten, one flaw. Dialogue
-   should then be a lookup, not an invention.
-4. Chapter set two: the Trollstigen, the bridge and its guard, the shore, the
-   crystal country, the black rock.
+4. Chapter set two: the Trollstigen, the gorge crossings and their guards, the
+   shore, the crystal country, the black rock.
+
+Known weak spot: `the_gold_agreement` is the least connected chapter in the set
+— nothing references it back. Either wire gold into entity records or accept it
+as an essay until a merchant exists.
 
 ## Don't
 

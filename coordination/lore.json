@@ -1,8 +1,8 @@
 {
   "domain": "lore",
-  "updated_at": "2026-07-31T00:25:19+00:00",
+  "updated_at": "2026-07-31T01:34:28+00:00",
   "health": "running",
-  "current": "bootstrapped the red line, the canon docs and the first chapters",
+  "current": "red line audited against the repo; root contradictions fixed",
   "progress": {
     "chapters": 9,
     "entries_total": 10,
@@ -13,7 +13,8 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-07-31T00:25:07+00:00] bootstrapped: RED_LINE.md (the root: five laws, three ages, the Fire-Keepers vs Chroniclers argument, the cave), canon/GLOSSARY.md + canon/CONSTRAINTS.md, 10 entries (9 chapters + the human dead), 4 entity records, and pipeline/build.py which regenerates lore.json AND refuses to write when a cross-reference has gone stale. Built on two things already shipped in games2: every arrival broadcasts a shooting star, and there is a campfire at spawn."
+    "[2026-07-31T00:25:07+00:00] bootstrapped: RED_LINE.md (the root: five laws, three ages, the Fire-Keepers vs Chroniclers argument, the cave), canon/GLOSSARY.md + canon/CONSTRAINTS.md, 10 entries (9 chapters + the human dead), 4 entity records, and pipeline/build.py which regenerates lore.json AND refuses to write when a cross-reference has gone stale. Built on two things already shipped in games2: every arrival broadcasts a shooting star, and there is a campfire at spawn.",
+    "[audit] Adversarially checked the whole domain against the repo. Fixed: the campfire is the only OBJECTS-domain prop drawn, not the only hand-made thing (the world draws ~68 props \u2014 wells, archways, obelisks, a tree-house); the gorge has four crossings, not one; 'Wanderer' is a fallback sprite, not a name the fiction gives anybody; and there is a SECOND shipped in-world sentence \u2014 the arrival line in chat \u2014 which is player-facing text for Law I. Also resolved two root contradictions: the four stages of thinning describe things that were once somebody, so the Made are explicitly outside them; and soulstones are no longer 'the only unfadeable object' now that the Hollowed's masks are one too \u2014 that exception is now a plot hook rather than a hole."
   ],
   "requests": [
     {

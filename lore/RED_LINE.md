@@ -60,13 +60,20 @@ explaining them away:
 - **Every arrival in Nangijala is announced by a shooting star** crossing the
   sky — the same streak on every player's screen, and stray unnamed stars fall
   on their own through the night. (`WorldRoom.ts`, shipped.)
-- **There is a campfire at the place where you arrive.** It is the only
-  hand-made object in the world that the game actually draws.
-  (`WorldScene.ts`, shipped.)
+- **The arrival is announced in words, too**, in every player's chat: *"<name>
+  has arrived in Nangijala — a star crosses the sky."* (`WorldScene.ts:2156`.)
+  Law I is therefore not a proposal; it is already player-facing text, and the
+  lore has to stay compatible with it rather than the other way round.
+- **There is a campfire burning at the place where you arrive** —
+  the only object from the `objects/` domain the game draws, and the only
+  *tended* hand-made thing in the world. (`WorldScene.ts:107`, `648`, shipped.)
+  Everything else hand-made that the world draws — wells, archways, obelisks,
+  a tree-house, a stone hut, a shrine, benches, gravestones — is standing
+  there unattended. One lit fire, and a whole country of ruins.
 
-A world where the dead fall as stars and land beside a fire. That is the whole
-setting in one image, and it was already on screen. The lore's job was to
-notice.
+A world where the dead fall as stars and land beside the one fire somebody is
+still tending. That is the whole setting in one image, and it was already on
+screen. The lore's job was to notice.
 
 ---
 
@@ -136,14 +143,32 @@ The stages are known and have names, and the names are old:
 4. **Quiet** — the shape lets go. Nothing violent. It simply stops being
    anywhere.
 
-**Monsters are stage 3.** Almost every creature roaming Nangijala is something
-running on habit with nobody home. This is why they are hostile in a way that
-isn't personal, why they don't negotiate, and why nothing in this world calls
-killing them murder. (It also calls for a certain restraint in the writing:
-they should be sad more often than they are evil.)
+**Most creatures you meet are stage 3** — something running on habit with
+nobody home. This is why they are hostile in a way that isn't personal, why
+they don't negotiate, and why nothing in this world calls killing them murder.
+(It also calls for a certain restraint in the writing: they should be sad more
+often than they are evil.)
 
-The Quiet, not death, is the fear that organises this world. Every institution,
-faith, faction and grudge in Nangijala is a different answer to it.
+*Most*, not all — and the exception matters, because roughly half the roster is
+it. The four stages describe what happens to a thing **that was once
+somebody**. The Made (§9) never were: there is no occupant to lose, so they do
+not fade through the stages at all. They simply hold together for as long as
+the remembering they condensed out of stays pooled, and come apart when it
+doesn't. A Made thing cannot be sad about itself. It is nevertheless doing
+exactly what a thing at stage 3 does, from the outside, which is why nobody
+sorts them at a glance and why the field-guides lump them together.
+
+**Being broken is not the Quiet.** A person here can be knocked apart — hurt
+past the point of holding a shape — and it is violent and unpleasant and it is
+not an ending. What is left goes where remembering is thickest, which in
+practice means the nearest tended fire, and pulls itself back together beside
+it over some hours. You lose nothing you were carrying and a little of what you
+were thinking. This is why a fire is worth keeping lit even in country nobody
+lives in, and it is the reason nobody in Nangijala treats a fight as final.
+
+The Quiet, not death and not being broken, is the fear that organises this
+world. Every institution, faith, faction and grudge in Nangijala is a different
+answer to it.
 
 ### Law IV — The Drift
 **Nangijala re-remembers itself. It does not stay put.**
@@ -172,8 +197,16 @@ shape and it falls out. This is a **soulstone**.
 
 A soulstone is not a soul. It is the last hard piece of one — one fact, one
 appetite, one habit of being, compressed until it is nearly a mineral. It is
-warm. It does not fade. It is the only object in Nangijala that is
-*guaranteed* not to.
+warm. It does not fade. Of everything that can be picked up in Nangijala, it is
+the only thing that is *guaranteed* not to.
+
+With one exception, and the exception is the reason anybody is worried. The
+masks the Hollowed leave behind (§9, §10) do not fade either, and nobody put
+them through a lifetime to get there. Something is producing unfadeable objects
+without the centuries of wear that are supposed to be the whole mechanism. Two
+readings are current: that a mask is a hard piece like any other, made the fast
+way; or that it is a hard piece of the *same* thing every time. Nobody likes
+the second one.
 
 Because it cannot be forgotten, it can be *used*. Carried against a blade or
 worked into armour, a soulstone lends its holder some of what it remembers:
@@ -434,8 +467,10 @@ repo is regenerated from rules and moves whenever it is rebuilt.)
   and where the cave's influence surfaces.
 - **The cave, under the east massif.** See §10. One mouth. Everyone knows where
   it is.
-- **The gorge**, splitting the massif, with one high bridge over it. The bridge
-  is guarded, in the way that a thing running on habit guards something.
+- **The gorge**, splitting the massif, crossed high in several places. The
+  crossings are guarded, in the way that a thing running on habit guards
+  something — which is to say the guard is still there and whatever posted it
+  is not.
 - **The Trollstigen**, the switchback stair down the mountain wall — the only
   honest way down, named by somebody who brought the name with them from a
   country that had one.

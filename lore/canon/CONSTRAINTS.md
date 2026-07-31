@@ -69,17 +69,28 @@ Shipped and canon — the lore must agree with these:
   (`games2/server/src/rooms/WorldRoom.ts:502`). Wild unnamed stars fall during
   night. Verified in code.
 - **A campfire burns at the spawn point** (`games2/client/src/scenes/WorldScene.ts:107`,
-  `648`). It is the only hand-made object the game draws. Verified in code.
+  `648`). It is the only object from the `objects/` domain the game draws — but
+  **not** the only hand-made thing in the world. The default world ships ~68
+  props, and among what is actually drawn are a stone well, mossy archways,
+  obelisks and menhirs, a runed gravestone, a wooden shrine, a stilted hut, a
+  tree-house, a signpost, boardwalks and benches. The campfire is the only one
+  anybody is *tending*. Verified by compositing the placed props.
 - **A one-room stone house stands on the meadow**, black roof, one door; the
   player spawns three cells in front of it. It is unnamed.
-- **The aurora is a world event**, announced in-world as *"Northern lights dance
-  over Nangijala."* This is the only in-world sentence a player currently reads.
+- **Two in-world sentences ship today.** *"Northern lights dance over
+  Nangijala."* (`WorldScene.ts:1756`) and, on every arrival, *"<name> has
+  arrived in Nangijala — a star crosses the sky."* (`WorldScene.ts:2156`).
+  The second is player-facing text for Law I and the lore must stay compatible
+  with it.
 - **The world is shared and multiplayer**; server owns time and weather, so
   everyone sees the same sky.
 - **Time has exactly four phases** — Night, Morning, Day, Evening.
 - **Weather is a closed set of nine** — Clear sky, Cloudy at times, Mist,
   Drizzle, Rain, Heavy rain, Storm, Snowing, Windy. Lore may not invent a tenth.
-- **The player's default name is "Wanderer."**
+- **"Wanderer" is the built-in fallback** used when a player supplies no name
+  and when the art-free placeholder sprite is drawn (`main.ts:167`,
+  `WorldScene.ts:5490`) — it is not a title the fiction gives anybody. Do not
+  build lore on it.
 - **Two playable heroes**, both human: `default_boy` ("Man") and `default_girl`
   ("Woman"). No classes, no factions. Their animation set — sword, bow, wand,
   channel, punch, kick, hurt, die — is the strongest existing statement of what
@@ -124,6 +135,11 @@ world, not the player's verbs.
   basin**, the **lagoons** and **tarn** — are code constants, not data. Their
   *names* have persisted; their *coordinates* have not. Use the names, never
   the positions.
+- **Counts are as unstable as coordinates.** The gorge is crossed in *four*
+  places (`GORGE_BRIDGE_FRACS`, plus river bridges), and the cave has exactly
+  one mouth today. Never write "the only" or "the one" about a map feature
+  without checking the generator — and prefer phrasing that survives the
+  number changing.
 - The props already drawable are the real visual canon and they say the world
   is **inhabited-then-abandoned**: aqueducts, triumphal arches, castle turrets,
   obelisks, standing stones, shrines, wells, windmills, telegraph poles,

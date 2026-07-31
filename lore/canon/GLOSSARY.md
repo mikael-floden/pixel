@@ -55,6 +55,11 @@ world is afraid of.**
 **to go Quiet** — to reach the end. Never "to die"; nobody in Nangijala dies,
 they are already dead.
 
+**to be broken**, or **to go down** — to be knocked past the point of holding a
+shape. Violent, unpleasant, and not an ending: what is left re-forms beside the
+nearest tended fire over some hours. Never call this dying, and never call it
+respawning.
+
 **Hollowed** — emptied all at once rather than thinned gradually. The fast way,
 the wrong way, the cave's work. The only condition this setting is comfortable
 calling *wrong*.
@@ -125,6 +130,16 @@ go.
 ---
 
 ## Words we do NOT use
+
+This list governs **lore-authored text only** — everything under `lore/`. It
+has no authority over the other domains, and several of them already ship words
+on it: `monsters/config/roster.json` says "Slay it" of Grinmask and "old
+earth-magic" of Mosscairn, and `items/config/roster.json` has "undead go
+blind". Under our own precedence rule their copy wins, and that is correct —
+being consistent with ourselves matters, overwriting another agent's work does
+not. Where a term keeps recurring in a domain, propose the swap on the board
+and let them decide.
+
 
 - **"the afterlife"** in player-facing prose — too clinical; the cast lives here
 - **"soul"** as a countable object — a soulstone is a *piece* of one, and the
