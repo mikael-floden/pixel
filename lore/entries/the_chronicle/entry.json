@@ -2,6 +2,7 @@
   "id": "the_chronicle",
   "name": "The Chronicle",
   "category": "chapter",
+  "icon": "triptych",
   "chapter": 9,
   "summary": "A note on the book you are holding: who writes it, why they write it, and what an empty page in it actually means.",
   "body": [
@@ -10,12 +11,22 @@
     "They are, it should be said, not universally loved for it. The tellers hold that a written thing stops growing, and they are not wrong. There is a stiffness to a page that there is not to an evening.",
     "But consider what the alternative has cost. There are districts of this world that were held up for centuries by three people who were good at talking, and when those three thinned, the district went, and there is now nothing there but good grazing and a name nobody can source. The Chronicle exists because somebody looked at that and decided they would rather have a stiff and complete account of a place than a warm and vanished one.",
     "So: read it, and treat what it says as true, because it was checked.",
-    "And when you find a page with nothing on it — a creature with no account, a place with no history, a name with no person attached — understand what you are looking at. It does not mean that nothing is known. It means no chronicler has got there yet. There are a great many more things in Nangijala than there are people willing to sit down and write about them, and the gap has been widening for some time.",
+    "And when you find a page with nothing on it \u2014 a creature with no account, a place with no history, a name with no person attached \u2014 understand what you are looking at. It does not mean that nothing is known. It means no chronicler has got there yet. There are a great many more things in Nangijala than there are people willing to sit down and write about them, and the gap has been widening for some time.",
     "If you know something that is not in here, the Chroniclers would like to hear it. That is not a formality. It is very nearly the entire method."
   ],
   "related": [
-    { "domain": "lore", "id": "the_age_of_fires" },
-    { "domain": "lore", "id": "the_quiet" }
+    {
+      "domain": "lore",
+      "id": "the_age_of_fires"
+    },
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
   ],
-  "tags": ["meta", "factions", "chroniclers"]
+  "tags": [
+    "meta",
+    "factions",
+    "chroniclers"
+  ]
 }

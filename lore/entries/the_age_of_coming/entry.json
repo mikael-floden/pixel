@@ -2,6 +2,7 @@
   "id": "the_age_of_coming",
   "name": "The Age of Coming",
   "category": "chapter",
+  "icon": "arch",
   "chapter": 2,
   "summary": "Why one afternoon's walk crosses an aqueduct, a windmill, a line of telegraph poles and a ring of standing stones.",
   "body": [
@@ -11,13 +12,23 @@
     "Neither of them was wrong. The world does not choose between them. It builds both, side by side, and lets the grass grow up through whichever one is being thought about less.",
     "The oldest of us call the first stretch of the world's history the Age of Coming, and everything good to look at dates from it. It was an age with no maintenance and no scarcity, because nobody had yet noticed that anything needed maintaining. People fell, and the country got larger and stranger and more beautiful, and the building was tremendous.",
     "You can still read what people brought. Somebody remembered a lighthouse hard enough that there is a lighthouse standing in the shallows, warning nothing, its lamp cold. Somebody brought a triumphal arch and set it in a field for a victory that happened in a country that is not here. Somebody brought a well, and a shrine of stacked stones, and a scarecrow, and a great oak with a house in it. There is a statue standing in the ice with a face nobody recognises, and everyone agrees it must have been important to whoever carried it here.",
-    "That is the second thing the ruins tell you, and it is less comfortable than the first. Everything built in the Age of Coming was built out of one person's certainty. When the certainty went, the building stayed — for a while.",
+    "That is the second thing the ruins tell you, and it is less comfortable than the first. Everything built in the Age of Coming was built out of one person's certainty. When the certainty went, the building stayed \u2014 for a while.",
     "The age ended without ceremony. Things began, here and there, to go soft. A wall that had stood since anyone could remember was suddenly not as tall as it had been, and then was a heap, and then was a green place where a heap used to be. Nobody understood it. There was a long stretch of the world's history during which the finest minds in Nangijala believed the answer had something to do with the sea.",
     "It did not. What was happening was much simpler, and once somebody finally said it out loud, everything changed."
   ],
   "related": [
-    { "domain": "lore", "id": "the_age_of_fires" },
-    { "domain": "lore", "id": "the_falling" }
+    {
+      "domain": "lore",
+      "id": "the_age_of_fires"
+    },
+    {
+      "domain": "lore",
+      "id": "the_falling"
+    }
   ],
-  "tags": ["history", "ruins", "world"]
+  "tags": [
+    "history",
+    "ruins",
+    "world"
+  ]
 }

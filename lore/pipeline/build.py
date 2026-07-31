@@ -49,6 +49,13 @@ MARKUP = re.compile(r"\[\[|\]\]|<[a-zA-Z/]|\*\*|^#{1,6}\s|^\s*[-*]\s", re.M)
 
 ID_RE = re.compile(r"^[a-z0-9_-]+$")
 
+# Every entry carries an icon. One that names none falls back to this.
+DEFAULT_ICON = "rune"
+
+
+def icon_path(icon_id: str) -> str:
+    return f"lore/icons/{icon_id}.png"
+
 
 def read_json(path: Path):
     try:
@@ -251,6 +258,14 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str]]:
                     problems.append(f"{where}: body[{n}] is not a string")
                 elif MARKUP.search(para):
                     problems.append(f"{where}: body[{n}] contains markup")
+        icon = e.get("icon", DEFAULT_ICON)
+        if not ID_RE.match(icon):
+            problems.append(f"{where}: icon {icon!r} must match [a-z0-9_-]+")
+        elif not (ROOT / icon_path(icon)).is_file():
+            problems.append(
+                f"{where}: icon {icon!r} has no art at {icon_path(icon)} — "
+                f"add the 48x48 png or drop the field to fall back to {DEFAULT_ICON!r}"
+            )
         check_related(where, e.get("related"))
 
     for rec in entities:
@@ -316,10 +331,13 @@ def build(entries, entities, budget) -> dict:
 
     published = []
     for e in sorted(entries, key=lambda x: (x.get("chapter") or 999, x.get("id", ""))):
+        icon = e.get("icon", DEFAULT_ICON)
         out = {
             "id": e["id"],
             "name": e["name"],
             "path": f"lore/entries/{e['id']}",
+            "icon": icon_path(icon),
+            "icon_id": icon,
             "category": e.get("category", "chapter"),
             "summary": e["summary"],
             "body": e["body"],
@@ -344,9 +362,13 @@ def build(entries, entities, budget) -> dict:
             "entities.<domain>.<id>.lore is the LONG read-more text, an array of "
             "paragraphs, shown only if the reader expands it; no length limit. "
             "'entries' are standalone articles (chapters, peoples, places). "
-            "Plain text only — no markup. Cross-references are {domain, id} pairs."
+            "Plain text only — no markup. Cross-references are {domain, id} pairs. "
+            "Every entry carries an 'icon' (repo-relative path to a 48x48 png) — "
+            "draw it at whole multiples of 48 with image-rendering: pixelated, "
+            "never at a fractional width. See lore/icons/icons.json."
         ),
         "layout_budget": budget,
+        "default_icon": icon_path(DEFAULT_ICON),
         "entities": by_domain,
         "entries": published,
     }

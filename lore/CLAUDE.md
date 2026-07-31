@@ -56,6 +56,12 @@ written true.
   integration rests on — do not weaken it.
 - **Do not answer the open questions** in RED_LINE.md §12 until the game can
   dramatise the answer. An answered mystery is a spent one.
+- **Icons are the maintainer's art — never re-encode, resize or resample one.**
+  Copy the file in as bytes. Assign one to a chapter only when it genuinely
+  represents that chapter better than the default `rune`; a weak match is worse
+  than the default. Unused icons stay in `lore/icons/` with a `held_for` note —
+  more arrive over time, so check `lore/icons/icons.json` before writing a
+  chapter and see whether something in the library suggests one.
 
 ## Ownership
 

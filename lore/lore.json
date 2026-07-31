@@ -1,7 +1,7 @@
 {
   "format": "pixel-lore@1",
-  "generated_at": "2026-07-31T11:30:51Z",
-  "note": "Authored by the lore agent, keyed by the owning domain's folder id. entities.<domain>.<id>.description is the SHORT line shown under the entity's name \u2014 it REPLACES the domain's own description, and is guaranteed never to be longer than the longest text that domain already ships, so substituting it cannot grow the layout. entities.<domain>.<id>.lore is the LONG read-more text, an array of paragraphs, shown only if the reader expands it; no length limit. 'entries' are standalone articles (chapters, peoples, places). Plain text only \u2014 no markup. Cross-references are {domain, id} pairs.",
+  "generated_at": "2026-07-31T11:54:31Z",
+  "note": "Authored by the lore agent, keyed by the owning domain's folder id. entities.<domain>.<id>.description is the SHORT line shown under the entity's name \u2014 it REPLACES the domain's own description, and is guaranteed never to be longer than the longest text that domain already ships, so substituting it cannot grow the layout. entities.<domain>.<id>.lore is the LONG read-more text, an array of paragraphs, shown only if the reader expands it; no length limit. 'entries' are standalone articles (chapters, peoples, places). Plain text only \u2014 no markup. Cross-references are {domain, id} pairs. Every entry carries an 'icon' (repo-relative path to a 48x48 png) \u2014 draw it at whole multiples of 48 with image-rendering: pixelated, never at a fractional width. See lore/icons/icons.json.",
   "layout_budget": {
     "monsters": 118,
     "items": 123,
@@ -9,6 +9,7 @@
     "objects": 84,
     "tiles": 51
   },
+  "default_icon": "lore/icons/rune.png",
   "entities": {
     "characters": {
       "default_boy": {
@@ -753,6 +754,8 @@
       "id": "the_falling",
       "name": "The Falling",
       "path": "lore/entries/the_falling",
+      "icon": "lore/icons/camp.png",
+      "icon_id": "camp",
       "category": "chapter",
       "summary": "Nobody walks into Nangijala. You fall into it, once, and the whole sky sees you do it.",
       "body": [
@@ -791,6 +794,8 @@
       "id": "the_age_of_coming",
       "name": "The Age of Coming",
       "path": "lore/entries/the_age_of_coming",
+      "icon": "lore/icons/arch.png",
+      "icon_id": "arch",
       "category": "chapter",
       "summary": "Why one afternoon's walk crosses an aqueduct, a windmill, a line of telegraph poles and a ring of standing stones.",
       "body": [
@@ -826,6 +831,8 @@
       "id": "the_age_of_fires",
       "name": "The Age of Fires",
       "path": "lore/entries/the_age_of_fires",
+      "icon": "lore/icons/bonfire.png",
+      "icon_id": "bonfire",
       "category": "chapter",
       "summary": "The discovery that held the world together, and the argument that came with it.",
       "body": [
@@ -869,6 +876,8 @@
       "id": "the_quiet",
       "name": "The Quiet",
       "path": "lore/entries/the_quiet",
+      "icon": "lore/icons/hourglass.png",
+      "icon_id": "hourglass",
       "category": "chapter",
       "summary": "You cannot die here. Something else can happen to you instead, and it is worse, and it is what most of the creatures in the world already are.",
       "body": [
@@ -911,6 +920,8 @@
       "id": "the_hard_pieces",
       "name": "The Hard Pieces",
       "path": "lore/entries/the_hard_pieces",
+      "icon": "lore/icons/gauntlet.png",
+      "icon_id": "gauntlet",
       "category": "chapter",
       "summary": "What a soulstone is, why it is warm, and why an entire economy grew up around breaking open things that cannot fight back properly.",
       "body": [
@@ -949,6 +960,8 @@
       "id": "the_gold_agreement",
       "name": "The Gold Agreement",
       "path": "lore/entries/the_gold_agreement",
+      "icon": "lore/icons/chest.png",
+      "icon_id": "chest",
       "category": "chapter",
       "summary": "Nangijala did not choose a currency. It discovered the one substance nobody has ever managed to misremember.",
       "body": [
@@ -982,6 +995,8 @@
       "id": "the_long_morning",
       "name": "The Long Morning",
       "path": "lore/entries/the_long_morning",
+      "icon": "lore/icons/sun_and_moon.png",
+      "icon_id": "sun_and_moon",
       "category": "chapter",
       "summary": "There is a further shore, and the way to it is open to anybody, and almost nobody goes.",
       "body": [
@@ -1023,6 +1038,8 @@
       "id": "the_hole_under_the_mountain",
       "name": "The Hole Under the Mountain",
       "path": "lore/entries/the_hole_under_the_mountain",
+      "icon": "lore/icons/rune.png",
+      "icon_id": "rune",
       "category": "chapter",
       "summary": "There is one mouth in the east massif, everybody knows where it is, and the ground around it forgets on a clock you can time with a candle.",
       "body": [
@@ -1061,6 +1078,8 @@
       "id": "the_chronicle",
       "name": "The Chronicle",
       "path": "lore/entries/the_chronicle",
+      "icon": "lore/icons/triptych.png",
+      "icon_id": "triptych",
       "category": "chapter",
       "summary": "A note on the book you are holding: who writes it, why they write it, and what an empty page in it actually means.",
       "body": [
@@ -1094,6 +1113,8 @@
       "id": "the_human_dead",
       "name": "The Human Dead",
       "path": "lore/entries/the_human_dead",
+      "icon": "lore/icons/house.png",
+      "icon_id": "house",
       "category": "people",
       "summary": "No claws, no scales, nothing in the blood. What humans brought to Nangijala instead was a habit of telling each other things, and it turned out to be the only thing that mattered.",
       "body": [

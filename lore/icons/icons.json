@@ -1,0 +1,81 @@
+{
+  "format": "pixel-lore-icons@1",
+  "note": "The maintainer's own 48x48 pixel art, stored byte-for-byte as delivered. NEVER re-encode, resize or resample one — this project does not ship softened pixel art. Draw them at whole multiples of 48 only, with image-rendering: pixelated. 'rune' is the DEFAULT for any chapter that does not name an icon. Icons marked used_by: null are unassigned and available for future writing — keep them.",
+  "default": "rune",
+  "icons": [
+    {
+      "id": "rune",
+      "file": "lore/icons/rune.png",
+      "art": "a weathered standing stone carved with rows of runes",
+      "used_by": "DEFAULT — every entry with no icon of its own"
+    },
+    {
+      "id": "camp",
+      "file": "lore/icons/camp.png",
+      "art": "a pitched tent with a small fire burning outside it",
+      "used_by": "the_falling"
+    },
+    {
+      "id": "arch",
+      "file": "lore/icons/arch.png",
+      "art": "a freestanding stone archway, weathered, leading nowhere",
+      "used_by": "the_age_of_coming"
+    },
+    {
+      "id": "bonfire",
+      "file": "lore/icons/bonfire.png",
+      "art": "a full bonfire burning on stacked logs",
+      "used_by": "the_age_of_fires"
+    },
+    {
+      "id": "hourglass",
+      "file": "lore/icons/hourglass.png",
+      "art": "a wooden-framed hourglass, sand part run through",
+      "used_by": "the_quiet"
+    },
+    {
+      "id": "gauntlet",
+      "file": "lore/icons/gauntlet.png",
+      "art": "a heavy armoured gauntlet, fingers closed",
+      "used_by": "the_hard_pieces"
+    },
+    {
+      "id": "chest",
+      "file": "lore/icons/chest.png",
+      "art": "a banded treasure chest, closed",
+      "used_by": "the_gold_agreement"
+    },
+    {
+      "id": "sun_and_moon",
+      "file": "lore/icons/sun_and_moon.png",
+      "art": "a sun and a crescent moon overlapping as one disc",
+      "used_by": "the_long_morning"
+    },
+    {
+      "id": "triptych",
+      "file": "lore/icons/triptych.png",
+      "art": "three carved stone panels standing side by side, like a written record",
+      "used_by": "the_chronicle"
+    },
+    {
+      "id": "house",
+      "file": "lore/icons/house.png",
+      "art": "a small timber house with a peaked red-brown roof",
+      "used_by": "the_human_dead"
+    },
+    {
+      "id": "map",
+      "file": "lore/icons/map.png",
+      "art": "an unrolled parchment map of a coastline",
+      "used_by": null,
+      "held_for": "a geography chapter — the shore, the Trollstigen, the crystal country, or the first named settlement"
+    },
+    {
+      "id": "telephone",
+      "file": "lore/icons/telephone.png",
+      "art": "an antique candlestick telephone in brass",
+      "used_by": null,
+      "held_for": "the strongest icon in the set for the Age of Coming's real joke — that a line of telegraph poles, a windmill and a Roman aqueduct stand in one field because every era's dead are here at once. Held back only because a telephone at icon size reads as a UI affordance rather than a chapter. Use it the day there is a chapter specifically about the anachronisms."
+    }
+  ]
+}

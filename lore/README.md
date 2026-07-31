@@ -102,7 +102,26 @@ texts per entity** that must not be confused:
   Nothing else in the repo produces this.
 - `entries[]` — standalone articles, shaped exactly like every other domain's
   entity list (`{id, name, path, preview, summary, ...}`) so the wiki can adopt
-  them as a section with no new plumbing.
+  them as a section with no new plumbing. Each carries an `icon` (repo-relative
+  path to a 48×48 png) and the `icon_id` it came from.
+
+## Icons
+
+Chapters have icons. The art is the **maintainer's own pixel art**, stored
+byte-for-byte as delivered in `lore/icons/`, catalogued in
+`lore/icons/icons.json`.
+
+- **`rune` is the default.** An entry that names no icon gets the carved
+  standing stone, and `lore.json` publishes that path as `default_icon`.
+- An entry opts in with `"icon": "<id>"`, and the build **fails** if that id has
+  no art — a chapter can never ship pointing at a missing icon.
+- **Never re-encode, resize or resample one.** They are 48×48, hard alpha (zero
+  semi-transparent pixels, verified), 29–63 colours. Draw them at whole
+  multiples of 48 with `image-rendering: pixelated` and no `max-width` — a
+  fractional width softens every edge, and resampled pixel art is the one thing
+  this project never ships.
+- Unassigned icons stay in the library with a `held_for` note saying what they
+  are being kept for. Do not delete one for being unused.
 
 **The layout guarantee.** The wiki reserves the height of the longest
 description in a domain, so a long one makes every page in that domain taller.
