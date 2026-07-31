@@ -25,11 +25,18 @@ that adds minutes to every deploy and busts the layer cache, which is the
 opposite of the point.
 
 BEFORE YOU CONVERT A SPRITE TREE, check what still reads the PNGs offline.
-games2's own manifest builders parse the PNG IHDR by hand and decode pixels
-with pngjs (build-manifest.mjs, build-monsters-manifest.mjs) — neither reads
-WebP, and they measure the foot plants, shoulder waterlines and monster
-contact anchors the game renders with. Silently wrong numbers there mean
-detached shadows and floating characters, not a crash.
+games2's own manifest builders parse image headers by hand and decode pixels,
+and they measure the foot plants, shoulder waterlines and monster contact
+anchors the game renders with — silently wrong numbers there mean detached
+shadows and floating characters, not a crash. As of f4912fa89 they read both
+formats through scripts/imagelib.mjs, so games2 is unblocked; check any
+pipeline of your own that opens these files.
+
+WATCH FOR TINY FILES (wiki agent, 2026-07-31): a FULLY TRANSPARENT frame is a
+28-byte VP8L file — perfectly valid, and common in death animations (they hit
+13 of 905 sprites). Any hand-rolled header check with a blanket ">= 30 bytes
+means it's an image" guard will call those corrupt. This script is immune (it
+decodes rather than sniffs), but your reader may not be.
 
     python3 scripts/to-webp.py <path>...        # dry run, prints the tally
     python3 scripts/to-webp.py --write <path>...  # convert, keep the PNGs
