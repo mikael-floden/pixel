@@ -9,6 +9,8 @@
  *  night.mp3  the mystical night overworld bed (cross-faded in at night)
  */
 
+import { withAudioV } from "./assetver";
+
 // music/*.mp3 → hashed bundle URLs.
 const files = import.meta.glob("../music/*.mp3", {
   query: "?url",
@@ -29,12 +31,13 @@ function byName(...needles: string[]): string | null {
 export function titleThemeUrl(): string | null {
   // A file named title/theme; else the first mp3 that isn't the night bed.
   const named = byName("title", "theme");
-  if (named) return named;
+  if (named) return withAudioV(named);
   const keys = Object.keys(files).sort().filter((k) => !/night/i.test(k));
-  return keys[0] ? files[keys[0]] : null;
+  return keys[0] ? withAudioV(files[keys[0]]) : null;
 }
 
 /** The mystical night-bed URL, or null if not generated yet. */
 export function nightMusicUrl(): string | null {
-  return byName("night", "mystic", "nocturne");
+  const url = byName("night", "mystic", "nocturne");
+  return url ? withAudioV(url) : null;
 }

@@ -7,6 +7,8 @@
  * regenerates its own, see foley/pipeline/generate.py).
  */
 
+import { withAudioV } from "./assetver";
+
 // foley/<surface>/<surface>__takeNN.wav → hashed bundle URLs.
 const files = import.meta.glob("../foley/*/*.wav", {
   query: "?url",
@@ -27,7 +29,10 @@ for (const path of Object.keys(files).sort()) {
  * not generated this surface yet (→ fall back to the catalog). */
 export function composerFoley(surface: string): string[] | null {
   const takes = bySurface.get(surface);
-  return takes && takes.length > 0 ? takes : null;
+  // Vite already content-hashes these bundle urls; the ?v=<sha> stamp is what
+  // flips the server from no-cache to immutable for a .wav (its hashed-asset
+  // rule only covers .js/.css), so a footstep set downloads once per deploy.
+  return takes && takes.length > 0 ? takes.map(withAudioV) : null;
 }
 
 export function composerFoleySurfaces(): string[] {

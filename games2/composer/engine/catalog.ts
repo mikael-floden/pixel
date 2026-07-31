@@ -5,6 +5,8 @@
  * (served by both the vite dev middleware and the prod server).
  */
 
+import { withAudioV } from "./assetver";
+
 // ---- sounds/viewer_data.json ----
 
 export interface SoundVariation {
@@ -134,7 +136,7 @@ export async function loadCatalog(): Promise<Catalog> {
 }
 
 export function soundUrl(repoRelative: string): string {
-  return SOUNDS_BASE + repoRelative;
+  return withAudioV(SOUNDS_BASE + repoRelative);
 }
 
 export function musicUrl(repoRelative: string): string {
@@ -150,10 +152,10 @@ export function musicStreamUrl(track: MusicTrackRef): string {
   const s = track.stream;
   if (s && typeof document !== "undefined") {
     const probe = document.createElement("audio");
-    if (s.ogg && probe.canPlayType(s.ogg.mime)) return MUSIC_BASE + s.ogg.file;
-    if (s.m4a && probe.canPlayType(s.m4a.mime)) return MUSIC_BASE + s.m4a.file;
+    if (s.ogg && probe.canPlayType(s.ogg.mime)) return withAudioV(MUSIC_BASE + s.ogg.file);
+    if (s.m4a && probe.canPlayType(s.m4a.mime)) return withAudioV(MUSIC_BASE + s.m4a.file);
   }
-  return MUSIC_BASE + track.file; // no stream info / unknown support → master
+  return withAudioV(MUSIC_BASE + track.file); // no stream info / unknown support → master
 }
 
 export async function loadMusicMetadata(track: MusicTrackRef): Promise<MusicMetadata | null> {
