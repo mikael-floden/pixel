@@ -108,17 +108,11 @@ const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
 const CAMPFIRE_KEY = "campfire-burn";
-// The ONE art asset the game names directly instead of reading from a manifest
-// (objects/ ships no manifest). Because of that it cannot follow the PNG->WebP
-// migration automatically the way character frames, monster strips and world
-// tiles do — so preload queues BOTH stems and takes whichever arrives, and the
-// loser's 404 costs one cheap request during the migration window only. If
-// objects/ ever gains a manifest, delete this and read the url from it.
-const CAMPFIRE_STEM = "/assets/objects/campfire/animations/burn__south";
-// objects/ is lossless WebP as of 2026-07-31 (the whole domain is this one
-// asset). The retry below still covers the other extension, but name the real
-// one so the common path never spends a request discovering it.
-const CAMPFIRE_URL = `${CAMPFIRE_STEM}.webp`;
+// The ONE art asset the game names directly instead of reading it from a
+// manifest — objects/ ships none, and that whole domain is now this single
+// file. If objects/ ever gains a manifest, read the url from it instead of
+// hardcoding the extension here.
+const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.webp";
 const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
@@ -795,10 +789,10 @@ export class WorldScene extends Phaser.Scene {
         // maps2 world bakes an explicit tile PNG per cell + per-material face
         // tiles + placed props — load that unique set.
         for (const path of distinctTilePaths(this.world)) {
-          this.loadImageEitherExt(pathTileKey(path), assetUrl(path));
+          this.load.image(pathTileKey(path), withV(assetUrl(path)));
         }
         for (const path of distinctPropPaths(this.world)) {
-          this.loadImageEitherExt(pathTileKey(path), assetUrl(path));
+          this.load.image(pathTileKey(path), withV(assetUrl(path)));
         }
       } else {
         for (const { t, v } of distinctTiles(this.world)) {
@@ -808,72 +802,13 @@ export class WorldScene extends Phaser.Scene {
       // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
-      // The campfire is a spritesheet, so its retry has to carry the frame size.
-      // placeCampfire already guards on textures.exists, so a total miss just
-      // means no bonfire rather than a broken scene.
-      const fire = { frameWidth: CAMPFIRE_FRAME, frameHeight: CAMPFIRE_FRAME };
-      this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), fire);
-      this.onLoadMiss(CAMPFIRE_KEY, () =>
-        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.png`), fire),
-      );
+      // placeCampfire guards on textures.exists, so a miss means no bonfire
+      // rather than a broken scene.
+      this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
+        frameWidth: CAMPFIRE_FRAME,
+        frameHeight: CAMPFIRE_FRAME,
+      });
     }
-  }
-
-  /**
-   * PNG<->WebP RETRY for art the game addresses by a LITERAL PATH rather than
-   * through a manifest (tiles2 agent, 2026-07-31).
-   *
-   * Sprite domains were easy: their manifests carry the real extension, and the
-   * BUILD-time `resolveImg` follows a stale one, so characters2 and monsters
-   * converted with no ordering at all. Ground tiles are the opposite case and my
-   * "convert whenever you like" advice did not cover them: a world's tile paths
-   * are baked into maps2's `world.json` (4,693 of them across 10 worlds) and
-   * reach the loader verbatim via `assetUrl`. tiles2 renaming a tile to .webp
-   * while world.json still says .png is a plain 404 — the tile silently does not
-   * render, and there is no build step in between to fix it up.
-   *
-   * So the fallback has to be at RUNTIME, here. This unblocks tiles2 permanently
-   * AND survives every future maps2 re-export: a stale .png path in an old
-   * world.json keeps working forever.
-   *
-   * WHY A MAP AND A PERSISTENT LISTENER, not `load.once`: the campfire and the
-   * minimap both used `this.load.once("loaderror", f => { if (f.key !== MINE)
-   * return; ... })`. With one file in flight that is fine — MapPreviewScene gets
-   * away with it. Here ~1,400 files load at once, and `once` fires on the FIRST
-   * error of ANY key, checks, returns, and is GONE — so an unrelated 404 would
-   * eat the campfire's only retry. Keyed lookups on a persistent listener cannot
-   * be starved that way, and deleting the entry as it fires bounds every asset
-   * to exactly one retry (a .webp that is also missing must not re-queue .png
-   * forever).
-   *
-   * This CANNOT mask a real problem: the retry only succeeds if the sibling file
-   * genuinely exists, which means the art is there and only the extension was
-   * stale. A truly missing asset still ends up missing, one wasted request later.
-   */
-  private extRetry = new Map<string, () => void>();
-  private extRetryArmed = false;
-
-  private onLoadMiss(key: string, retry: () => void) {
-    this.extRetry.set(key, retry);
-    if (this.extRetryArmed) return;
-    this.extRetryArmed = true;
-    this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (f: Phaser.Loader.File) => {
-      const again = this.extRetry.get(f.key);
-      if (!again) return;
-      this.extRetry.delete(f.key); // once per key — never a retry loop
-      again();
-    });
-  }
-
-  /** Queue an image and, if it 404s, retry ONCE with the sibling extension. */
-  private loadImageEitherExt(key: string, url: string) {
-    this.load.image(key, withV(url));
-    const alt = url.endsWith(".png")
-      ? `${url.slice(0, -4)}.webp`
-      : url.endsWith(".webp")
-        ? `${url.slice(0, -5)}.png`
-        : null;
-    if (alt) this.onLoadMiss(key, () => this.load.image(key, withV(alt)));
   }
 
   async create() {

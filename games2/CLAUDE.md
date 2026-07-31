@@ -53,24 +53,23 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   3. `server/test/fixtures/*.png` — the WebP gate's comparison pair. The whole
      point is decoding a PNG and its WebP twin and asserting they match.
   4. `tiles2/docs/`, `lore/icons/` — documentation art, not game art.
-- ⚠️ **THE MIGRATION IS NOT FINISHED, AND THE FALLBACKS ARE LOAD-BEARING UNTIL
-  IT IS.** `maps2` has converted its tile ART but has NOT re-exported its
-  `world.json` files: all **4,693** tile/prop paths across the 10 worlds still
-  name `.png`, and 0 name `.webp`. Measured on a real load, the server's
-  extension fallback fires **554 times on the_island2** and **218 on
-  ring_test** — every single ground tile. So do NOT "clean up" any of the
-  following as dead transitional code; deleting them today blanks the ground in
-  every world:
-  - the `.png`↔`.webp` sibling fallback in `server/src/index.ts` (the primary
-    path — it costs one stat on a miss and no extra round-trip);
-  - `WorldScene.loadImageEitherExt` / `onLoadMiss` (the secondary path — it
-    covers `npm run dev`, where Vite serves `/assets` and the server code never
-    runs, so dev needs it for exactly the same reason);
-  - `imagelib.mjs`'s PNG branches and `resolveImg`.
-  ONCE maps2 re-exports (`world.json` naming `.webp`), re-measure the fallback
-  hit count; when it is 0 across every world, the two runtime fallbacks become
-  genuinely dead and can go. `imagelib`'s PNG support should stay regardless —
-  it is what the gate tests, and it costs nothing.
+- **THE MIGRATION IS COMPLETE, and the transitional fallbacks are GONE**
+  (2026-07-31). maps2 re-exported all 10 `world.json` files, so the last
+  literal `.png` paths in the project are retired: 4,693 tile/prop paths are
+  now `.webp`, all resolving on disk. Verified by loading **every world** in a
+  real built client — 0 `.png` requested, 0 fallbacks fired, 0 4xx, across
+  15,856 asset requests.
+  Removed once that measured clean: the server's `.png`<->`.webp` sibling
+  middleware, `WorldScene.loadImageEitherExt`/`onLoadMiss`, the campfire retry,
+  and `MapPreviewScene`'s minimap fallback. **Do not reintroduce them.** They
+  were migration scaffolding, and keeping them has a real cost beyond the code:
+  a server-side fallback MASKS a stale path, which is exactly why maps2's
+  un-re-exported worlds went unnoticed for a day — every tile was silently
+  rescued. A stale extension now 404s loudly and visibly, which is what you
+  want, because the fix belongs in the domain's exporter and not in a permanent
+  mask in the game server. (`imagelib.resolveImg` still follows a stale
+  extension at BUILD time for manifest-driven domains; that one is free, tested
+  and stays.)
 - **PNG *and* lossless WebP — art domains may convert freely** (games agent
   2026-07-31, unblocking the ui-agent's WebP migration: ~128 MB of art → ~69 MB,
   a cold load's art 12.8 MB → ~6.3 MB). The builders used to hand-parse the PNG

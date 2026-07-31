@@ -21,21 +21,14 @@ export class MapPreviewScene extends Phaser.Scene {
   }
 
   preload() {
-    // maps2 may ship the minimap as PNG or lossless WebP (the art domains are
-    // migrating). Queue the png stem and, only if it 404s, the webp one — the
-    // same pattern the campfire strip uses in WorldScene. `create` already
-    // guards on textures.exists, so a total miss just shows the hint text.
-    const stem = "/assets/maps2/worlds/ring_test/minimap";
-    this.load.image(MINIMAP_KEY, `${stem}.png`);
-    this.load.once("loaderror", (f: Phaser.Loader.File) => {
-      if (f.key !== MINIMAP_KEY) return;
-      this.load.image(MINIMAP_KEY, `${stem}.webp`);
-    });
+    // maps2 minimaps are lossless WebP (project format since 2026-07-31).
+    // `create` guards on textures.exists, so a miss just shows the hint text.
+    this.load.image(MINIMAP_KEY, "/assets/maps2/worlds/ring_test/minimap.webp");
   }
 
   create() {
     if (!this.textures.exists(MINIMAP_KEY)) {
-      this.add.text(20, 20, "No minimap available (maps2/worlds/<name>/minimap.{png,webp}).", {
+      this.add.text(20, 20, "No minimap available (maps2/worlds/<name>/minimap.webp).", {
         fontFamily: "monospace",
         fontSize: "14px",
         color: "#eef",
