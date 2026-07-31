@@ -49,9 +49,15 @@ test("aurora nights are rolled as night falls and end by morning", async () => {
       auroraChance: 1,
     });
     await waitFor(() => r1.state.players?.size === 1);
-    assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
+    // The clock RUNS at x1 by default (2026-07-31) and this room's phases are
+    // 0.15s, so it can leave Day before the first assertion even lands (it
+    // did, on CI: timeIdx 0 !== 2). Freeze, pin a known phase, then let it go.
+    r1.send("timespeed", { v: 0 });
+    await waitFor(() => r1.state.frozen === true);
+    r1.send("timeofday", { v: DEFAULT_TIME_IDX });
+    await waitFor(() => r1.state.timeIdx === DEFAULT_TIME_IDX);
     assert.equal(!!r1.state.aurora, false); // day: no aurora
-    r1.send("timespeed", { v: 1 }); // time starts frozen by default — let it flow
+    r1.send("timespeed", { v: 1 }); // let time flow
 
     // Night falls -> the lights come out (chance forced to 1).
     await waitFor(() => r1.state.timeIdx === 0 && r1.state.aurora === true);

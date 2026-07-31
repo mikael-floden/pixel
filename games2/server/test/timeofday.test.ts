@@ -83,7 +83,9 @@ test("the world clock advances time on its own", async () => {
       phaseSeconds: [0.15, 0.15, 0.15, 0.15],
     });
     await waitFor(() => r1.state.players?.size === 1);
-    assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
+    // NB: no assertion on the STARTING phase here — this room's phases are
+    // 0.15s and the clock runs by default, so it may legitimately have moved
+    // on already. `heldAt` below reads whatever phase we actually froze at.
 
     // Time RUNS BY DEFAULT at x1 (maintainer 2026-07-31). Freezing must still
     // hold the clock still — that is the half of the contract a default flip
