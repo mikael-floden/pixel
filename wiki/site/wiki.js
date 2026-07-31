@@ -648,7 +648,14 @@ const itemSources = (it) => it?.droppedBy ?? [];
  *  pipeline's "Junk") — asked of the tag, so a retitle upstream can't
  *  silently change what players read. */
 const TYPE_NAMES = { MISC: "Miscellaneous" };
-const typeLabel = (t) => TYPE_NAMES[t] ?? state.data.itemTypes?.[t]?.label ?? t ?? "Item";
+/** Order: the maintainer's word, then the type's own SHARED NAME when it has
+ *  one — a type where every item carries the same name ("Soulstone") is
+ *  called that, not the pipeline's prettier label ("Soul Stone") — then the
+ *  label, then the raw tag. */
+const typeLabel = (t) => {
+  const ty = state.data.itemTypes?.[t];
+  return TYPE_NAMES[t] ?? ty?.shared_name ?? ty?.label ?? t ?? "Item";
+};
 /** The maintainer's generic emblem for a whole item TYPE (a pearl for the
  *  junk, a stone for the souls) — the at-a-glance "what kind of thing is
  *  this" that rides on the chip. Authored 32×32 at 1×, drawn at 32 and never
