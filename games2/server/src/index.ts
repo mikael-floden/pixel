@@ -3,6 +3,8 @@ import { existsSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
+import compression from "compression";
+import { constants as zlibConstants } from "zlib";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { ROOM_NAME } from "@nangijala/shared";
@@ -21,6 +23,54 @@ const ASSET_DOMAINS = [
 ];
 
 const app = express();
+// RESPONSE COMPRESSION (perf 2026-07-31). Nothing was compressed before this:
+// a request with `Accept-Encoding: gzip, br` came back with no content-encoding
+// at all, so every player downloaded the raw bytes. Cloud Run does NOT compress
+// for you — the container has to. Measured on the real files:
+//   index-*.js     1,972,119 →   507,126  (3.89x)
+//   world.json       736,812 →    34,288  (21.5x)   the_island2
+//   monsters.json    382,856 →    18,510  (20.7x)
+//   characters.json   20,834 →     1,956  (10.7x)
+// ≈2.4 MB off a cold load, and it is INVISIBLE: identical bytes reach the
+// client, so not a pixel changes and nothing loads later than it used to.
+//
+// THE QUALITY KNOBS ARE PINNED, and the brotli one is the important pin.
+// Measured cost of compressing this bundle (isolated, sync zlib):
+//   gzip-1  28ms/3.40x   gzip-6  47ms/3.89x   gzip-9    75ms/3.91x
+//   brotli-q4 51ms/3.86x brotli-q5 81ms/4.26x brotli-q11 5,252ms/4.82x
+// End to end over localhost (so time ≈ pure CPU): identity 8ms, gzip 65ms,
+// brotli-q4 67ms. q4/level-6 are the knee — ~60ms to drop 1.47MB, which pays
+// for itself on anything slower than a LAN. **NEVER let brotli quality rise**:
+// q11 stalls a single request for FIVE SECONDS on this one core. compression
+// 1.8.1 happens to default it to 4 (node_modules/compression/index.js:65), but
+// that is their default, not a promise — pinning it here means a routine
+// dependency bump cannot silently turn every bundle fetch into a 5s stall.
+// If the bundle ever needs to be smaller than q4 gets it, PRE-compress at build
+// time and serve the .br file; do not raise the dynamic quality.
+//
+// This does NOT threaten the 20Hz sim, which shares this single Cloud Run core:
+// node's zlib STREAM api (what compression() uses) runs on the libuv
+// threadpool, not the event loop, so a response being compressed never blocks a
+// tick — it only competes for CPU, and ~60ms against the ~6s asset storm a join
+// already costs is noise. There is no server-side cache of compressed output,
+// so each JOIN pays it once per compressible file; that is the accepted trade
+// for not adding a cache layer, and pre-compression is the escape hatch if the
+// core ever gets tight.
+//
+// PNGs ARE NOT COMPRESSED, which matters more than it sounds: a boot loads 554
+// tile PNGs + 384 monster strips, and PNG is already DEFLATE. The default
+// filter consults the `compressible` module against Content-Type, so image/*
+// is skipped — re-gzipping that lot would have burned CPU for ~zero bytes.
+// Registered FIRST so it wraps every route below, including express.static.
+// Adds `Vary: Accept-Encoding`, which composes correctly with the ?v immutable
+// grant below (browsers key the cache entry per encoding).
+app.use(
+  compression({
+    level: 6, // gzip/deflate
+    brotli: { params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 4 } }, // see the pin note above
+    threshold: 1024, // below this the framing costs more than it saves
+  }),
+);
 app.get("/health", (_req, res) => res.json({ ok: true }));
 // Live-update channel + wiki admin API (see live.ts / live/README.md).
 app.use("/api", express.json({ limit: "1mb" }));
