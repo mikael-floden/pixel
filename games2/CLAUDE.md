@@ -1371,6 +1371,21 @@ visible head/shoulders are ABOVE the surface).
   cache with ~zero art requests; a new deploy = new sha = new URLs = fresh
   downloads — stale-cache-proof by construction, sw.js still caches nothing.
   Unversioned requests (dev, old clients) behave exactly as before.
+  (3) THE TWO LOGOS (`public/logo-load.png`, `public/logo.png`) are the
+  heaviest bytes on the critical path and were the last unstamped ones — they
+  now go through `withV()` too (select.ts / loading.ts), so a repeat visit
+  inside a deploy costs ZERO requests instead of two blocking revalidation
+  round-trips before the loading screen can paint. They were also RECOMPRESSED
+  LOSSLESSLY, 1.26 MB → 1.08 MB (−12.4%): the art has strictly BINARY alpha
+  (measured: not one partially-transparent pixel) and every transparent pixel
+  is (0,0,0), a colour no opaque pixel uses — so the entire alpha plane is
+  replaced by a `tRNS` chunk on an RGB PNG. Verified pixel-identical by
+  decoding both and comparing, and verified in Chrome (the forest shows
+  through). What did NOT work, so nobody re-tries it: the art LOOKS like ~6x
+  pixel art but was upscaled SMOOTHLY, so re-baking it at its native 181x105
+  grid (29 KB!) costs a mean error of 22/255 — it is a soft render, not a
+  clean pixel grid, and 151k distinct colours confirm it. Lossless WebP would
+  save a further 15% (922 KB) if the maintainer ever wants the format change.
 - **PWA**: `public/manifest.webmanifest` (display: fullscreen — installed app
   has no address bar; orientation: portrait-primary), `public/sw.js`
   (passthrough only, caches NOTHING — this repo fought stale-deploy bugs; the

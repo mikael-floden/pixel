@@ -23,6 +23,7 @@
  */
 
 import { applyUiZoom } from "./uiscale";
+import { withV } from "./assetver";
 
 let overlay: HTMLElement | null = null;
 let bar: HTMLElement | null = null;
@@ -72,7 +73,7 @@ export function showLoading(text = "Entering Nangijala…") {
     <div class="ml-load-box">
       <div class="ml-load-logoWrap">
         <div class="ml-load-track"><div class="ml-load-bar" id="ml-load-bar"></div></div>
-        <img class="ml-load-logo" src="/logo-load.png" alt="Nangijala Online — loading" />
+        <img class="ml-load-logo" src="${withV("/logo-load.png")}" alt="Nangijala Online — loading" />
       </div>
     </div>`;
   document.body.appendChild(overlay);
