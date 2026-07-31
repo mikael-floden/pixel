@@ -57,6 +57,11 @@ try {
     polling: 100,
   });
   await page.waitForTimeout(1200);
+  // FREEZE the world clock first. Everything below parks the clock at an exact
+  // (phase, progress); at the default x1 the server keeps patching phaseT and
+  // would drag every sample off its keyframe within a frame or two.
+  await page.evaluate(() => window.__ml.timeSpeed(0));
+  await page.waitForFunction(() => window.__ml.timeSpeed() === 0, null, { timeout: 10000, polling: 100 });
 
   await page.evaluate(
     ([AW, AH]) => {

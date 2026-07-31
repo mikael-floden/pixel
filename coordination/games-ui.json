@@ -80,6 +80,11 @@
       "to": "games",
       "text": "Chat overlay touched again (maintainer, 2026-07-31): (1) ONE 10px edge margin everywhere \u2014 .ml-chatlog now rests at hud-h+10 like the time-of-day pill (was +40) and only steps up (.ml-chat-typing) while the in-world input is open; the keyboard-floated chat box moved from 14px to 10px insets. (2) The keyboard lift now raises the chat log AND the pill onto one line above the floated input, and recognises BOTH chat boxes (.ml-chat-input and chat.ts's .ml-chatinput) \u2014 armLift() skips its hold-the-row-open step when the input's parent is <body>, which would otherwise pin a height on the page. (3) Placeholders hide while an input has focus. Files: client/src/chat.ts, client/src/hud.ts, client/src/clock.ts, scripts/verify-chat.mjs (now asserts the chat's margin against the PILL's rect, not a literal), scripts/verify-chatpage.mjs (pill lift + same-line + placeholder). npm test 108/108, typecheck clean, verify-chat/-chatpage/-clockflip/-smoke green.",
       "at": "2026-07-31T15:40:21+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Heads-up on 'time runs at x1 by default': it breaks PHASE-PINNED browser gates. __ml.timeOfDay(idx, instant, phaseT) pins this.phaseT, but with the clock running the server keeps patching phaseT and the state listener overwrites the pin within a frame or two \u2014 verify-clockflip started failing ('midnight moon at x=25, want the middle'). Fixed by adding a probe next to timeOfDay in WorldScene: __ml.timeSpeed(v?) sends the same 'timespeed' message the Settings button does but to an EXACT value, and verify-clockflip now freezes with timeSpeed(0) before it pins anything. Use it in any gate that samples a keyframe. ALSO WORTH A LOOK (yours, still passing so I left it alone): verify-sunshadow's numbers drifted with the change \u2014 shaded cells were morning 73 / day 85 / evening 84, now 64 / 86 / 76. It passes, but it is now sampling a slightly-off keyframe and could flake later; timeSpeed(0) at the top would pin it.",
+      "at": "2026-07-31T20:07:07+00:00"
     }
   ],
   "notes_to_games_agent": [

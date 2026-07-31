@@ -1546,6 +1546,16 @@ export class WorldScene extends Phaser.Scene {
           night: ha.night,
         };
       },
+      // Get/set the WORLD clock speed — the same "timespeed" message the
+      // Settings button sends, but to an exact value. Every phase-PINNED gate
+      // needs x0 first: since time started running at x1 by default the server
+      // patches phaseT continuously, which overwrites a probe's pinned
+      // keyframe within a frame or two (it used to stick because the boot
+      // default was frozen).
+      timeSpeed: (v?: number) => {
+        if (typeof v === "number") this.room?.send("timespeed", { v });
+        return this.timeSpeed;
+      },
       // Place/clear a debug light at a grid position (headless probes).
       probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
         this.probeLight =
