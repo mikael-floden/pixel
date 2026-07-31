@@ -1415,6 +1415,32 @@ visible head/shoulders are ABOVE the surface).
   cache with ~zero art requests; a new deploy = new sha = new URLs = fresh
   downloads — stale-cache-proof by construction, sw.js still caches nothing.
   Unversioned requests (dev, old clients) behave exactly as before.
+  **DO NOT replace the global build sha with per-file or per-domain content
+  hashes.** It looks obviously better (a tiles2 push stops invalidating monster
+  strips; ~75% of deploys change no boot art at all, so the average reload
+  would go ~11.2 MB → ~0.7 MB) and it was proposed and REJECTED 2026-07-31.
+  The global sha is what makes the immutable grant *verifiable*: the server
+  compares `?v` against its OWN GIT_SHA, so it can only ever freeze bytes it
+  actually shipped. With per-file hashes it cannot verify anything cheaply, so
+  it must trust any `?v` — which converts today's worst case (a 1-year cache
+  entry that no deploy can heal). It also breaks the audio agent's `?v`
+  stamping, leaves the ~2 MB of `client/public` art unstamped, and breaks the
+  CI gate. If deploy churn ever has to be addressed, do it somewhere that
+  cannot freeze a client for a year.
+  (2b) **RESPONSES ARE COMPRESSED** (`server/src/index.ts`, brotli q4 / gzip 6,
+  threshold 1 KB): ~2.5 MB off a cold load — the bundle 1.97 MB → 0.50 MB,
+  `world.json` 737 KB → 37 KB, `monsters.json` 383 KB → 21 KB. Identical bytes
+  reach the client, so nothing renders differently and nothing loads later.
+  Images are NOT compressed (`compressible` returns false for `image/*`), which
+  matters because a boot fetches ~940 already-compressed sprites.
+  **THE BROTLI QUALITY PIN IS LOAD-BEARING — never raise it.** Measured on this
+  bundle: q4 51 ms, q5 81 ms, **q11 5,252 ms**. q11 would stall a single request
+  for FIVE SECONDS on this one Cloud Run core. `compression` 1.8.1 happens to
+  default brotli to 4, but that is their default and not a promise, which is why
+  it is pinned explicitly at the call site. If that middleware is ever swapped
+  or rewritten, re-pin it. Safe for the 20 Hz sim: node's zlib STREAM api runs
+  on the libuv threadpool, not the event loop — measured zero dropped ticks
+  across 12 runs, including ten simultaneous cold joins (26-29% of a core).
   (3) **UI ART IS LOSSLESS WebP** (maintainer 2026-07-31, project default)
   and every piece of it is `withV()`-stamped. VP8L is bit-exact, so this is
   the same art — each conversion was verified by decoding back to RGBA and
