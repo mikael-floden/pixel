@@ -90,23 +90,17 @@ jobs:
       id-token: write          # required for Workload Identity Federation
       actions: read            # poll the sibling test job's status
     steps:
-      # Sparse checkout of exactly the build context (games2 + the art domains
-      # the Dockerfile bakes in) — skips the old game tree, sounds, docs, etc.
+      # PLAIN checkout, deliberately. This used to list 12 of the 13 top-level
+      # domains as a sparse-checkout, which sounds cheaper but is not: passing
+      # `sparse-checkout` makes actions/checkout use a BLOBLESS PARTIAL CLONE
+      # (--filter=blob:none), so every file it does materialise costs an extra
+      # lazy fetch round-trip. Selecting ~83% of the tree that way was pure
+      # overhead — measured 48s mean (21-99s), the largest and most variable
+      # step in this job, versus 6.5s for the `test` job's genuinely narrow
+      # 3-path sparse checkout. The one thing the list actually excluded was
+      # the retired games/ tree, and that is now deleted from the repo
+      # (9a73cc25c), so there is nothing left to exclude.
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            games2
-            objects
-            characters2
-            tiles2
-            maps2
-            sounds
-            music
-            monsters
-            items
-            lore
-            wiki
-            live
 
       - id: auth
         uses: google-github-actions/auth@v2
@@ -114,8 +108,13 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SA }}
 
-      - uses: google-github-actions/setup-gcloud@v2
-
+      # NB: no `setup-gcloud` step — the Google Cloud SDK is preinstalled on
+      # ubuntu-latest, and the auth step above exports the credentials the CLI
+      # picks up on its own. The action was costing 19s per deploy to install a
+      # CLI that was already there. If a future runner image drops the SDK this
+      # job fails at `gcloud auth configure-docker` with "gcloud: not found" —
+      # prod keeps serving the previous revision, and the fix is to put
+      # `- uses: google-github-actions/setup-gcloud@v2` back here.
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
 
