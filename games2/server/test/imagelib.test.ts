@@ -109,6 +109,33 @@ test("imagelib: discovery accepts both extensions", () => {
   assert.equal(countFrames(FIX), 2, "0.{png,webp} + 1.webp == 2 distinct frames, not 3");
 });
 
+test("imagelib: a 28-byte FULLY TRANSPARENT WebP is readable, not 'too small to be real'", () => {
+  // REGRESSION. A fully transparent frame encodes to a valid 28-byte VP8L file
+  // (48x48, 64x64 and 112x112 all land on exactly 28 bytes), and such frames are
+  // common at the end of die/fade animations — another agent found 13 in 905
+  // sprites. The first cut of webpDims had a blanket `b.length < 30` guard and
+  // threw "not a WebP file" on every one of them. imgDims is called with NO
+  // try/catch by both builders (build-manifest for frame size,
+  // build-monsters-manifest per strip for stripDims), so that would have CRASHED
+  // the manifest build the moment an art domain converted such a frame.
+  // Never re-introduce a blanket minimum size: "too small to be real" is false
+  // for WebP.
+  const blank = join(FIX, "blank.webp");
+  assert.ok(readFileSync(blank).length < 30, "fixture really is under the old 30-byte guard");
+  assert.deepEqual(imgDims(blank), [112, 112], "dims still read correctly");
+  const a = imgAlpha(blank);
+  assert.ok(a, "decodes to an alpha tester");
+  assert.equal(a.w, 112);
+  assert.equal(a.h, 112);
+  assert.equal(a.opaque(56, 56), false, "and it is genuinely transparent");
+  // The PNG twin must agree — a blank frame measures the same either way.
+  const p = imgAlpha(join(FIX, "blank.png"));
+  assert.ok(p, "png twin decodes");
+  let mismatches = 0;
+  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (p.opaque(x, y) !== a.opaque(x, y)) mismatches++;
+  assert.equal(mismatches, 0, "blank png and blank webp are indistinguishable");
+});
+
 test("imagelib: a WebP really is smaller (the point of the migration)", () => {
   const png = readFileSync(PNG_FILE).length;
   const webp = readFileSync(WEBP_FILE).length;

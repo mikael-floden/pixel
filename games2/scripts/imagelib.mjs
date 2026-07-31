@@ -106,31 +106,53 @@ function pngDims(b) {
  * is asserted rather than trusted.
  */
 function webpDims(b) {
-  if (b.length < 30 || b.toString("ascii", 0, 4) !== "RIFF" || b.toString("ascii", 8, 12) !== "WEBP")
+  // MINIMUM LENGTHS ARE PER-BRANCH, not one blanket number. A FULLY TRANSPARENT
+  // frame encodes to a 28-BYTE VP8L file (measured: 48x48, 64x64 and 112x112 all
+  // land on 28 bytes) — perfectly valid, and common in die/fade animations; the
+  // wiki agent found 13 such frames in 905 sprites. This function originally
+  // required 30 bytes up front and threw "not a WebP file" on every one of them,
+  // which would have crashed the monster manifest build outright
+  // (build-monsters-manifest.mjs calls imgDims per strip with no try/catch).
+  // Never re-introduce a blanket size guard: "too small to be real" is false for
+  // WebP.
+  if (b.length < 16 || b.toString("ascii", 0, 4) !== "RIFF" || b.toString("ascii", 8, 12) !== "WEBP")
     throw new Error("not a WebP file");
   const fourcc = b.toString("ascii", 12, 16);
-  if (fourcc === "VP8L") {
+  if (fourcc === "VP8L" && b.length >= 25) {
     if (b[20] !== 0x2f) throw new Error("bad VP8L signature");
     const bits = b.readUInt32LE(21);
     return [(bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1];
   }
-  if (fourcc === "VP8X") {
+  if (fourcc === "VP8X" && b.length >= 30) {
     const w = b[24] | (b[25] << 8) | (b[26] << 16);
     const h = b[27] | (b[28] << 8) | (b[29] << 16);
     return [w + 1, h + 1];
   }
-  if (fourcc === "VP8 ") {
+  if (fourcc === "VP8 " && b.length >= 30) {
     if (b[23] !== 0x9d || b[24] !== 0x01 || b[25] !== 0x2a) throw new Error("bad VP8 start code");
     return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
   }
-  throw new Error(`unknown WebP chunk ${fourcc}`);
+  throw new Error(`unreadable WebP header (chunk ${fourcc}, ${b.length}B)`);
 }
 
-/** [width, height] of a PNG or WebP, from its header only. */
+/**
+ * [width, height] of a PNG or WebP.
+ *
+ * The header parse is a FAST PATH, never the only path: any WebP shape it does
+ * not recognise falls back to a full decode, which is slower but cannot be
+ * wrong. Callers (build-manifest for frame size, build-monsters-manifest for
+ * per-strip stripDims) have no try/catch, so a throw here fails the whole
+ * manifest build — correctness outranks the microseconds.
+ */
 export function imgDims(p) {
   const b = readFileSync(p);
   if (b.length >= 8 && b[0] === 0x89 && b.toString("ascii", 1, 4) === "PNG") return pngDims(b);
-  return webpDims(b);
+  try {
+    return webpDims(b);
+  } catch {
+    const d = cwebp.decode(b); // authoritative; throws only on genuinely bad data
+    return [d.width, d.height];
+  }
 }
 
 // --- pixel access ----------------------------------------------------------
