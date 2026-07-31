@@ -344,6 +344,34 @@ lie — so `hasStory(ref)` drops those refs (maintainer 2026-07-31). The rules:
 `check-deadend.mjs` walks every page that offers *Read next*, follows every link
 and asserts the destination has prose. Run it after any lore-shaped change.
 
+## Back returns you to your place
+
+Following *Read next* out of a story and pressing Back used to land you at the
+top of the page you came from, with the story three screens down and its page
+reset to 1 (maintainer 2026-07-31). `rememberSpot()` stamps where the reader
+stood onto the history entry they are **leaving**; `restoreSpot()` reads it back
+on the way in. The browser carries the state, so every entry in a trail
+remembers its own spot however deep it goes.
+
+- **Stamp on the way out, not on the way in.** A capture-phase click listener on
+  every `a[href^="#/"]` runs while the old view is still measurable. By
+  `hashchange` the entry has already switched and the position is gone.
+- **Anchor to the story card, not to a pixel.** The art above a card loads
+  lazily and the animation stage sizes itself late, so a bare `scrollY` points
+  at different content by the time the reader returns. The stamp records the
+  card's viewport offset and the restore re-derives the scroll from wherever the
+  card ended up.
+- **Restore the story's page before measuring.** `goToPage()` changes the card's
+  height, `fitStoryTail()` measures that height to size the tail, and the tail
+  decides whether the scroll is reachable at all. That order is load-bearing.
+- **`history.scrollRestoration = "manual"`.** Otherwise the browser restores its
+  own idea of the scroll after we set ours and races us for the last word.
+- Only entries we stamped carry a `spot`, so a forward navigation (state `null`)
+  still starts at the top — that rule is untouched.
+
+`check-back.mjs` walks Stumpling → Sprigling → Back, a three-deep
+trail, and list → creature → Back.
+
 ## Don't
 
 - Don't edit other domains' files from here. The wiki READS every domain but

@@ -698,6 +698,40 @@ function fitStoryTail() {
   const need = window.innerHeight - card.getBoundingClientRect().height - bar - 8;
   content.style.paddingBottom = `${Math.max(120, Math.round(need))}px`;
 }
+/* --- Back returns you to your place ---------------------------------------
+   You read half of Stumpling's story, follow "Read next" to Sprigling, then
+   press Back — and the wiki used to drop you at the top of Stumpling, with the
+   story you were reading three screens down and its page reset (maintainer
+   2026-07-31). Where the reader stood is stamped onto the history entry they
+   LEAVE, so the browser carries it for us and every entry remembers its own
+   spot, however deep the trail goes. */
+/** Stamp the outgoing entry. Anchored to the story card rather than to a raw
+ *  pixel offset whenever there is one: the art above it loads lazily and the
+ *  animation stage sizes itself late, so a bare scrollY would point at
+ *  different content by the time the reader comes back. */
+function rememberSpot() {
+  const card = $(".story-card");
+  history.replaceState({ ...history.state, spot: {
+    hash: location.hash,
+    y: Math.round(window.scrollY),
+    cardOff: card ? Math.round(card.getBoundingClientRect().top) : null,
+    page: card?.pageIndex?.() ?? null,          // which page of the story
+  } }, "");
+}
+/** Put the reader back. False if the stamp isn't for this page, so the caller
+ *  can fall back to the top. */
+function restoreSpot(spot) {
+  if (!spot || spot.hash !== location.hash) return false;
+  const card = $(".story-card");
+  // The page FIRST: it changes the card's height, which fitStoryTail measures,
+  // which decides whether the scroll below is even reachable.
+  if (card && spot.page != null) card.goToPage(spot.page);
+  fitStoryTail();
+  if (card && spot.cardOff != null)
+    window.scrollTo(0, Math.max(0, card.getBoundingClientRect().top + window.scrollY - spot.cardOff));
+  else window.scrollTo(0, spot.y);
+  return true;
+}
 /** @param pages array of THUNKS returning Node[] — only the visible page exists.
  *  @param title a string or a Node (the story card heads with its entity). */
 function pagedPanel({ title, pages, aside = null, klass = "" }) {
@@ -746,6 +780,7 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
     pages.length > 1 ? h("div", { class: "page-rail" }, count, prev, next) : null,
     aside);
   panel.goToPage = (n) => { if (n >= 0 && n < pages.length) { i = n; draw(); } };
+  panel.pageIndex = () => i;                     // for Back — see rememberSpot()
   return panel;
 }
 
@@ -2187,8 +2222,21 @@ function initChrome() {
   // end of a chapter and tapping the next one must not drop you at that one's
   // end. Bound to the NAVIGATION event, not to route() itself, so in-place
   // re-renders — the item filter and sort — leave the reader where they are.
+  // Stamp the page the reader is leaving. Capture phase, so it runs before the
+  // hash changes and while the old view is still measurable. Every in-app link
+  // counts, not just the story card's: Back out of a creature should land you
+  // where you were in the creature list too.
+  document.addEventListener("click", (e) => {
+    if (e.target?.closest?.("a[href^='#/']")) rememberSpot();
+  }, true);
+  // Ours to place, not the browser's — it would restore its own idea of the
+  // scroll after we set ours, and race us for the last word.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   window.addEventListener("hashchange", () => {
     const want = pendingScroll; pendingScroll = null;
+    // Only an entry we stamped on the way out carries a spot, so this is a
+    // Back or a Forward to a page the reader has already stood on.
+    const spot = history.state?.spot;
     route();
     // A "Read next" link that points at another ENTITY lands on that entity's
     // story card — the reader asked for a story, not for a stat block. Clear
@@ -2202,6 +2250,7 @@ function initChrome() {
         return;
       }
     }
+    if (restoreSpot(spot)) return;
     window.scrollTo(0, 0);
   });
   window.addEventListener("resize", fitStoryTail);
