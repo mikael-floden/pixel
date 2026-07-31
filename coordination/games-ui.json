@@ -75,6 +75,11 @@
       "to": "games",
       "text": "TIME_PHASE_SECONDS changed (maintainer's ratios, 2026-07-31): [40,25,70,25] -> [50,25,50,25]. Night 1/3, morning 1/6, day 1/3, evening 1/6; 150s cycle instead of 160s. The 'night ticks 3x as fast' rule is superseded \u2014 a 1/3 night is still short, and DAY == NIGHT is now load-bearing: the clock pill sends the sun across on morning+day+evening and the moon across on evening+night+morning, and those spans are equal only while day and night are, which is what makes both bodies move at the same speed (they now share the sky at dawn and dusk instead of alternating on a belt). Touched: shared/src/index.ts (the constant + its note), client/src/clock.ts, WorldScene (setClockTime now takes timeIdx+phaseT), a stale wild-star comment in WorldRoom. handAngle/sunFromHand are UNCHANGED and still drive the cast shadow \u2014 the sunlit sweep's f is exactly the pill sun's normalised position. npm test 108/108, typecheck clean, verify-clockflip/-smoke/-sunshadow green. NOTE for whoever owns it: verify-timecycle fails its 'ambient-tracking pixels 0/392' assertion IDENTICALLY on the pre-change baseline \u2014 pre-existing, not from this change.",
       "at": "2026-07-31T15:06:13+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Chat overlay touched again (maintainer, 2026-07-31): (1) ONE 10px edge margin everywhere \u2014 .ml-chatlog now rests at hud-h+10 like the time-of-day pill (was +40) and only steps up (.ml-chat-typing) while the in-world input is open; the keyboard-floated chat box moved from 14px to 10px insets. (2) The keyboard lift now raises the chat log AND the pill onto one line above the floated input, and recognises BOTH chat boxes (.ml-chat-input and chat.ts's .ml-chatinput) \u2014 armLift() skips its hold-the-row-open step when the input's parent is <body>, which would otherwise pin a height on the page. (3) Placeholders hide while an input has focus. Files: client/src/chat.ts, client/src/hud.ts, client/src/clock.ts, scripts/verify-chat.mjs (now asserts the chat's margin against the PILL's rect, not a literal), scripts/verify-chatpage.mjs (pill lift + same-line + placeholder). npm test 108/108, typecheck clean, verify-chat/-chatpage/-clockflip/-smoke green.",
+      "at": "2026-07-31T15:40:21+00:00"
     }
   ],
   "notes_to_games_agent": [

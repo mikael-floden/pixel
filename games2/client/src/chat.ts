@@ -52,6 +52,9 @@ export class ChatUI {
     this.open = true;
     this.input.value = "";
     this.input.style.display = "block";
+    // The log rests on the same 10px margin as the pill; it only steps up
+    // while there is an input box under it.
+    this.log.classList.add("ml-chat-typing");
     this.input.focus();
   }
 
@@ -59,6 +62,7 @@ export class ChatUI {
     this.open = false;
     this.input.value = "";
     this.input.style.display = "none";
+    this.log.classList.remove("ml-chat-typing");
     this.input.blur();
     this.onClose();
   }
@@ -90,16 +94,21 @@ function injectStyles() {
   if (injected) return;
   injected = true;
   const css = `
-  /* Bottom-left, floating just above the HUD (--hud-h is real px, set by
-     hud.ts applyLayout). Lines are translucent theme chips so they stay
-     readable over any world art in either theme. */
+  /* Bottom-left of the GAME VIEW, on the same 10px margin as everything else
+     that hugs an edge — the stat chips at the top, the time-of-day pill at
+     the bottom-right (maintainer 2026-07-31: "the same edge-margin as the
+     pill"). --hud-h is real px, set by hud.ts applyLayout. Lines are
+     translucent theme chips so they stay readable over any world art. */
   /* --ml-chatw: the width left over once the time-of-day pill has taken the
      bottom-right corner (clock.ts: 82px wide, 10px from the edge) — the log
      and the input both stop short of it instead of being drawn over. */
   .ml-chatlog,.ml-chatinput{--ml-chatw:calc(100vw - 112px)}
-  .ml-chatlog{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 40px);z-index:5;
+  .ml-chatlog{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:5;
     max-width:min(78vw,460px,var(--ml-chatw));display:flex;flex-direction:column;align-items:flex-start;gap:3px;
-    font:13px/1.4 var(--sans);color:var(--ink);pointer-events:none}
+    font:13px/1.4 var(--sans);color:var(--ink);pointer-events:none;
+    transition:bottom .15s ease-out}
+  /* …except while the in-world input is open, when the log steps up over it. */
+  .ml-chatlog.ml-chat-typing{bottom:calc(var(--hud-h, 38.2dvh) + 52px)}
   .ml-chatline{padding:3px 9px;border-radius:9px;max-width:100%;overflow-wrap:anywhere;
     background:color-mix(in srgb, var(--bg) 78%, transparent);
     border:1px solid color-mix(in srgb, var(--border) 55%, transparent);
@@ -113,7 +122,16 @@ function injectStyles() {
     border:1px solid var(--border);border-radius:10px;padding:8px 11px;
     font:14px/1.3 var(--sans);outline:none;box-shadow:var(--shadow)}
   .ml-chatinput:focus{border-color:var(--accent)}
-  .ml-chatinput::placeholder{color:var(--muted)}`;
+  .ml-chatinput::placeholder{color:var(--muted)}
+  /* The prompt is an invitation, not a label: once you are actually typing
+     (keyboard up) it just gets in the way, so it goes (maintainer). */
+  .ml-chatinput:focus::placeholder{color:transparent}
+  /* Phone keyboard: float above it, exactly like the HUD Chat page's input.
+     --ml-inputlift is published by hud.ts's keyboard lift, which recognises
+     this box too. The :root prefix outranks the .ml-chat-typing rule above
+     whichever order the two stylesheets happen to be injected in. */
+  :root.ml-kb-up .ml-chatinput:focus{left:10px;right:10px;width:auto;z-index:50;
+    bottom:var(--ml-inputlift, 10px);transition:bottom .15s ease-out}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

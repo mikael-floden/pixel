@@ -1,10 +1,12 @@
 // Verify chat: one client sends a message, another receives it as a bubble.
 // WIKI-STYLE UI (2026-07-30): the ChatUI overlay (.ml-chatlog/.ml-chatinput)
 // is plain CSS anchored in real px above --hud-h (published by hud.ts
-// applyLayout as round(innerHeight*0.382)): log bottom = hud-h + 40,
-// input bottom = hud-h + 10, both left 10px. There is NO zoom compensation
-// any more (--ml-uizoom is never written) — the old kit-frame geometry
-// assertions are replaced by these wiki-style equivalents.
+// applyLayout as round(innerHeight*0.382)). ONE MARGIN FOR EVERYTHING that
+// hugs an edge (maintainer 2026-07-31): 10px, the same as the stat chips at
+// the top and the time-of-day pill in the opposite bottom corner — which
+// this gate checks by comparing against the pill itself, not a literal. The
+// log only steps up (ml-chat-typing) while the input box is open under it.
+// There is NO zoom compensation any more (--ml-uizoom is never written).
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const OUT = process.env.OUT || "/tmp";
@@ -52,6 +54,7 @@ try {
     const hudH = Math.round(parseFloat(hudRaw));
     const log = document.querySelector(".ml-chatlog");
     const input = document.querySelector(".ml-chatinput");
+    const clock = document.querySelector(".ml-clock");
     const rectOf = (el) => {
       const r = el.getBoundingClientRect();
       return { left: r.left, bottomGap: window.innerHeight - r.bottom };
@@ -73,6 +76,11 @@ try {
       uizoom: getComputedStyle(root).getPropertyValue("--ml-uizoom").trim(),
       logPos: log ? getComputedStyle(log).position : null,
       logRect: log ? rectOf(log) : null,
+      // the pill in the opposite corner — the shared margin's reference
+      clockRect: clock
+        ? { rightGap: window.innerWidth - clock.getBoundingClientRect().right,
+            bottomGap: window.innerHeight - clock.getBoundingClientRect().bottom }
+        : null,
       inputPos: input ? getComputedStyle(input).position : null,
       inputRect,
       lineCount: lines.length,
@@ -96,11 +104,18 @@ try {
   if (geo.logPos !== "fixed" || geo.inputPos !== "fixed")
     throw new Error(`overlay not fixed-positioned (log=${geo.logPos}, input=${geo.inputPos})`);
   if (!near(geo.logRect.left, 10)) throw new Error(`chatlog left ${geo.logRect.left} != 10px`);
-  if (!near(geo.logRect.bottomGap, geo.hudH + 40))
-    throw new Error(`chatlog bottom gap ${geo.logRect.bottomGap} != hud-h+40 (${geo.hudH + 40})`);
+  if (!near(geo.logRect.bottomGap, geo.hudH + 10))
+    throw new Error(`chatlog bottom gap ${geo.logRect.bottomGap} != hud-h+10 (${geo.hudH + 10})`);
   if (!near(geo.inputRect.left, 10)) throw new Error(`chatinput left ${geo.inputRect.left} != 10px`);
   if (!near(geo.inputRect.bottomGap, geo.hudH + 10))
     throw new Error(`chatinput bottom gap ${geo.inputRect.bottomGap} != hud-h+10 (${geo.hudH + 10})`);
+  // The point of that number: the chat and the pill sit on ONE margin.
+  if (!geo.clockRect) throw new Error("no .ml-clock to compare the chat's margin against");
+  if (!near(geo.clockRect.rightGap, geo.logRect.left))
+    throw new Error(`chat left ${geo.logRect.left} != pill right ${geo.clockRect.rightGap}`);
+  if (!near(geo.clockRect.bottomGap, geo.logRect.bottomGap))
+    throw new Error(`chat bottom ${geo.logRect.bottomGap} != pill bottom ${geo.clockRect.bottomGap}`);
+  console.log(`MARGIN OK — chat and pill share ${geo.clockRect.rightGap}px to the edge`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");

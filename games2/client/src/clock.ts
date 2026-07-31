@@ -263,12 +263,15 @@ function mount() {
   const style = document.createElement("style");
   style.textContent = `
   /* BOTTOM-RIGHT of the GAME VIEW (maintainer 2026-07-31), 10px from the
-     right edge — the same margin the XP chip keeps at the top — and 10px
-     above the HUD rail. --hud-h is real px, published by hud.ts applyLayout;
-     the fallback is the golden-ratio split it computes. */
+     right edge — the same margin the XP chip keeps at the top, and the same
+     one the chat keeps on the left — and 10px above the HUD rail. --hud-h is
+     real px, published by hud.ts applyLayout; the fallback is the
+     golden-ratio split it computes. When a chat box is focused the phone
+     keyboard covers this corner, so hud.ts lifts the pill (and the chat log)
+     above the floated input via :root.ml-kb-up — hence the transition. */
   .ml-clock{position:fixed;right:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
-    pointer-events:none;box-sizing:content-box;
+    pointer-events:none;box-sizing:content-box;transition:bottom .15s ease-out;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);

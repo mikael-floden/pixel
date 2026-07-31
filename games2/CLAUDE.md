@@ -804,6 +804,24 @@ visible head/shoulders are ABOVE the surface).
   ever has to get smaller, drop SCALE — never re-tune the art.
   Its corner is RESERVED: chat.ts caps the log and the input with
   `--ml-chatw` (100vw - 112px) so they stop short of it.
+  ONE EDGE MARGIN, 10px, for everything that hugs one (maintainer
+  2026-07-31: "the same edge-margin as the pill… this will make
+  everything equal"): the stat chips at the top, the chat log and its
+  in-world input at the bottom-left, the pill at the bottom-right, and
+  the keyboard-floated chat box (which was on 14px). verify-chat asserts
+  the chat's margin against the PILL's own rect, not a literal, so the
+  two can't drift apart.
+  KEYBOARD: the phone keyboard covers both bottom corners, so when a
+  chat box takes focus hud.ts's lift raises the log AND the pill onto one
+  line above the floated input (`:root.ml-kb-up`, `--ml-inputlift + 56`,
+  both with a .15s bottom transition so they glide together). The lift
+  recognises BOTH chat boxes now — the Chat page's `.ml-chat-input` and
+  the in-world `.ml-chatinput`; the in-world one is a direct child of
+  <body>, so armLift() skips its "hold the row open" step (pinning a
+  height on body would freeze the page). Placeholders hide on focus
+  (`:focus::placeholder{color:transparent}`) — the prompt is an
+  invitation, not a label. Gate: verify-chatpage (margins, both lifts,
+  same line, placeholder).
   THE MOTION — TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is
   the design). The first cut alternated a SINGLE travelling orb on a belt
   (each body drawn three times, one pill-width apart, so an exit right was

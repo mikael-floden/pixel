@@ -151,6 +151,7 @@ try {
     return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY,
              barH: h(".ml-chat-inputbar"), logH: h(".ml-chat-log"),
              chatlogBottom: cssBottom(".ml-chatlog"), // the on-screen "game-view" chat overlay
+             clockBottom: cssBottom(".ml-clock"), // the time-of-day pill, opposite corner
              firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
   });
 
@@ -198,6 +199,8 @@ try {
       barH: (() => { const e = document.querySelector(".ml-chat-inputbar"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
       logH: (() => { const e = document.querySelector(".ml-chat-log"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
       chatlogBottom: (() => { const e = document.querySelector(".ml-chatlog"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
+      clockBottom: (() => { const e = document.querySelector(".ml-clock"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
+      placeholder: getComputedStyle(document.querySelector(".ml-chat-input"), "::placeholder").color,
       firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
     };
   });
@@ -213,10 +216,11 @@ try {
   lifted.rectTop >= 0 && lifted.rectBottom <= lifted.vh
     ? ok(`input is fully ON SCREEN (top=${lifted.rectTop} bottom=${lifted.rectBottom} of ${lifted.vh})`)
     : fail(`input off screen: top=${lifted.rectTop} bottom=${lifted.rectBottom} vh=${lifted.vh}`);
-  // wiki remake: the floated box pins at left:14px / right:14px of the viewport
-  Math.abs(lifted.rectLeft - 14) <= 2 && Math.abs(lifted.rightGap - 14) <= 2
-    ? ok(`floated box pinned at the wiki insets (left=${lifted.rectLeft} right=${lifted.rightGap})`)
-    : fail(`floated box not at left/right 14: left=${lifted.rectLeft} rightGap=${lifted.rightGap}`);
+  // ONE margin for everything that hugs an edge: 10px, the same as the stat
+  // chips and the time-of-day pill (maintainer 2026-07-31 — it was 14 here).
+  Math.abs(lifted.rectLeft - 10) <= 2 && Math.abs(lifted.rightGap - 10) <= 2
+    ? ok(`floated box on the shared 10px margin (left=${lifted.rectLeft} right=${lifted.rightGap})`)
+    : fail(`floated box not at left/right 10: left=${lifted.rectLeft} rightGap=${lifted.rightGap}`);
   // (3) the box CLEARS the HUD's top edge (the frame's bottom-rail art is gone;
   //     --hud-h is the equivalent line now — kbHeight() floors --ml-kb at
   //     hud-h + 2 so the box never sinks into the HUD). Its bottom edge is at
@@ -230,6 +234,19 @@ try {
   frameBefore.chatlogBottom != null && lifted.chatlogBottom != null && lifted.chatlogBottom > frameBefore.chatlogBottom + 20
     ? ok(`game-view chat log lifted to make room (bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom})`)
     : fail(`game-view chat log not lifted: bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom}`);
+  // …and so does the time-of-day pill in the opposite corner — the keyboard
+  // covers both bottom corners, so both step up, and onto the SAME line
+  // (maintainer 2026-07-31).
+  frameBefore.clockBottom != null && lifted.clockBottom != null && lifted.clockBottom > frameBefore.clockBottom + 20
+    ? ok(`time-of-day pill lifted too (bottom ${frameBefore.clockBottom} -> ${lifted.clockBottom})`)
+    : fail(`pill not lifted: bottom ${frameBefore.clockBottom} -> ${lifted.clockBottom}`);
+  Math.abs(lifted.clockBottom - lifted.chatlogBottom) <= 1
+    ? ok(`chat log and pill lifted onto the same line (${lifted.clockBottom}px)`)
+    : fail(`log ${lifted.chatlogBottom} and pill ${lifted.clockBottom} lifted to different heights`);
+  // The prompt gets out of the way once you are actually typing.
+  lifted.placeholder === "rgba(0, 0, 0, 0)"
+    ? ok("placeholder hidden while the input has focus")
+    : fail(`placeholder still painted while focused: ${lifted.placeholder}`);
   lifted.width > 200 ? ok(`input keeps its width while floated (${lifted.width}px)`) : fail(`floated input too narrow (${lifted.width}px)`);
   /bottom|all/.test(lifted.tprop) && parseFloat(lifted.tdur) > 0
     ? ok(`lift is animated, not snapped (transition ${lifted.tprop} ${lifted.tdur})`) : fail(`no bottom transition (${lifted.tprop} ${lifted.tdur})`);

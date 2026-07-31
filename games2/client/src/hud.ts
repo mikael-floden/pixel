@@ -933,9 +933,13 @@ function mountChatKeyboardLift() {
     setKb(Math.max(0, gap - 10));
     // …and hold its HUD row open at the height it has NOW: going position:fixed
     // takes the box out of flow, which would otherwise collapse the row and slide
-    // the chat log's lines down. ONLY the input may move (maintainer).
+    // the chat log's lines down. ONLY the input may move (maintainer). The
+    // in-world box is a direct child of <body> and was never in flow — pinning
+    // a height there would freeze the PAGE's height, so it is skipped.
     barEl = input.parentElement;
-    if (barEl) barEl.style.height = `${Math.round(barEl.getBoundingClientRect().height)}px`;
+    if (barEl && barEl !== document.body)
+      barEl.style.height = `${Math.round(barEl.getBoundingClientRect().height)}px`;
+    else barEl = null;
     root.classList.add("ml-kb-up");
     lifted = true;
     // …then next frame raise it to the keyboard top so the transition rides up.
@@ -972,8 +976,12 @@ function mountChatKeyboardLift() {
     screen: [screen.width, screen.height], sawReport,
     sinceFocus: focusedAt ? Date.now() - focusedAt : null, polling: poll !== 0,
   });
+  // BOTH chat boxes: the Chat page's (.ml-chat-input) and the in-world
+  // overlay's (.ml-chatinput, chat.ts). Either one focused means a keyboard is
+  // coming, and everything anchored to the bottom has to get out of its way.
   const isChatInput = (t: EventTarget | null) =>
-    t instanceof HTMLElement && t.classList.contains("ml-chat-input");
+    t instanceof HTMLElement &&
+    (t.classList.contains("ml-chat-input") || t.classList.contains("ml-chatinput"));
   document.addEventListener("focusin", (e) => {
     if (!isChatInput(e.target)) return;
     input = e.target as HTMLElement;
@@ -1138,6 +1146,9 @@ function injectStyles() {
     font:14px/1.3 var(--sans);outline:none}
   .ml-chat-input:focus{border-color:var(--accent)}
   .ml-chat-input::placeholder{color:var(--muted)}
+  /* The prompt is an invitation, not a label: once the keyboard is up and you
+     are actually typing it just gets in the way, so it goes (maintainer). */
+  .ml-chat-input:focus::placeholder{color:transparent}
   /* Phone keyboard: the world + HUD stay put (virtualKeyboard.overlaysContent —
      the keyboard is drawn on top, the browser doesn't scroll/reflow the game).
      While a chat input is focused and the keyboard is up (.ml-kb-up, driven by
@@ -1148,10 +1159,16 @@ function injectStyles() {
      sets). */
   :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
-    left:14px;right:14px;bottom:var(--ml-inputlift);
+    left:10px;right:10px;bottom:var(--ml-inputlift);
     box-shadow:var(--shadow);transition:bottom .15s ease-out}
-  /* the on-screen game-view chat log (chat.ts) rises above the floated box */
-  .ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
+  /* The floated box takes the full width just above the keys, so EVERYTHING
+     else that lives on the bottom edge steps up over it: the on-screen chat
+     log (chat.ts) on the left and the time-of-day pill on the right. Both
+     land on the same line — the log's max-width already reserves the pill's
+     lane. :root outranks their own bottom rules whatever order the
+     stylesheets were injected in. */
+  :root.ml-kb-up .ml-chatlog,
+  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px)}
   /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){
     .ml-btnrow{gap:6px}
