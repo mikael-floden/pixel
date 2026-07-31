@@ -89,16 +89,29 @@ The lore agent writes `lore/**` and `coordination/lore.json`, and **nothing
 else** — not `monsters/config/roster.json`, not `items/config/roster.json`, not
 `characters2/metadata.json`, not `wiki/**`.
 
-Text reaches the game through `lore/lore.json`:
+Text reaches the game through `lore/lore.json`, and there are **two different
+texts per entity** that must not be confused:
 
-- `entities.<domain>.<id>.lore` — a blurb for an entity another agent owns.
-  **Precedence is: the owning domain's own text always wins; lore fills the
-  gaps.** No agent's work is ever overwritten by this domain.
-- `entities.<domain>.<id>.story` — long-form text for an entity page. Nothing
-  else in the repo produces this.
+- `entities.<domain>.<id>.description` — the **short line under the entity's
+  name**, always visible at the top of its page. **This replaces the owning
+  domain's own description** (maintainer, 2026-07-31: the lore agent has full
+  control over text). Where we publish nothing, the domain's own text stands,
+  so partial coverage degrades gracefully.
+- `entities.<domain>.<id>.lore` — the **long read-more text**, an array of
+  paragraphs, shown only when a reader chooses to expand it. No length limit.
+  Nothing else in the repo produces this.
 - `entries[]` — standalone articles, shaped exactly like every other domain's
   entity list (`{id, name, path, preview, summary, ...}`) so the wiki can adopt
   them as a section with no new plumbing.
+
+**The layout guarantee.** The wiki reserves the height of the longest
+description in a domain, so a long one makes every page in that domain taller.
+Because ours *replace* rather than add, the rule that makes substitution
+provably free is: never be longer than the longest description that domain
+already ships. `build.py` measures that budget per domain from the live repo
+and **refuses to write** when it is exceeded — so it stays correct as other
+agents rewrite their own copy. `lore.json` publishes the measured budget it was
+built against as `layout_budget`.
 
 If you own a domain and want lore for your entities, you do not need to do
 anything: say so on the board and it will appear in `lore.json` keyed by your

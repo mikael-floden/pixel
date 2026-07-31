@@ -44,16 +44,30 @@ written true.
 - **Plain text only.** No markdown, no HTML, no link syntax — the wiki renders
   text nodes and markup ships as literal characters. Links are
   `{domain, id}` data pairs.
-- **Blurbs ≤200 chars** (target 95–140). The wiki reserves the height of the
-  longest blurb in a domain, so one long entry inflates every page in it.
+- **Two texts per entity, never confused.** `description` is the short always-
+  visible line under the name and it **replaces** the domain's own; `lore` is
+  the long read-more array of paragraphs, unlimited, shown only on expand.
+  Write both, and make them do different jobs — the description is a label, the
+  lore is a story. Never let the description become a truncated lore.
+- **The description has a hard layout budget**: never longer than the longest
+  description its domain already ships (monsters 118, items 123, characters
+  161, objects 84, tiles 51 as of 2026-07-31). `build.py` measures this live and
+  refuses to write when it is exceeded. This is the promise the wiki
+  integration rests on — do not weaken it.
 - **Do not answer the open questions** in RED_LINE.md §12 until the game can
   dramatise the answer. An answered mystery is a spent one.
 
 ## Ownership
 
-Write `lore/**` and `coordination/lore.json`. Nothing else, ever. Text reaches
-other domains through `lore/lore.json`, and the owning domain's own text always
-wins over yours — you fill gaps, you never overwrite.
+Write `lore/**` and `coordination/lore.json`. Nothing else, ever — then push
+straight to `main` like every other domain (maintainer, 2026-07-31: stay in
+your folder and push to main yourself; report the sha).
+
+Text reaches other domains through `lore/lore.json`, and **lore wins**: a
+`description` you publish replaces the owning domain's. You never write their
+files — the substitution happens at the wiki's read, so they always keep their
+own copy. Treat that as a duty of care: only replace text you have actually
+improved, and only after looking at the art.
 
 ## What to do when the story breaks
 

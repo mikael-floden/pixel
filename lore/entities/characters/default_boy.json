@@ -3,18 +3,27 @@
   "id": "default_boy",
   "name_seen": "Man",
   "law": "I",
-  "blurb": "A young man of the human dead. No claws, no scales, nothing in the blood — he came down with his name still on him, which is more than most manage.",
-  "story": [
+  "description": "A young man of the human dead. No claws, no scales, nothing in the blood \u2014 he came down with his name still on him, which is more than most manage.",
+  "lore": [
     "He fell recently. Recently enough that the grass where he landed has not entirely stood back up, and recently enough that he still occasionally checks his pockets for something he last had on the other side.",
-    "He came down with his name. That is worth more than it sounds — most do not, not at first, and some never get it back — and whoever met his star that night did the job properly and got him to say it aloud while he still could.",
+    "He came down with his name. That is worth more than it sounds \u2014 most do not, not at first, and some never get it back \u2014 and whoever met his star that night did the job properly and got him to say it aloud while he still could.",
     "He has nothing else. What he is wearing is what he arrived in, which is what he was wearing at the end, and he has not yet decided whether that is a hard thing to think about. Nobody who falls has anything. It is the one experience every soul in Nangijala has had, and it is why a stranger here will feed you without being asked.",
     "There is nothing exceptional about him and this is not modesty. He has no claws and no scales and nothing in the blood. What he has is a quick pair of hands, a stubborn streak he had before he died, and the ordinary human inability to see a light come down over the next field and not walk over to find out who it was.",
     "In this particular country that last thing is not a small quality. It is very nearly the whole of what has held the place together."
   ],
   "related": [
-    { "domain": "lore", "id": "the_human_dead" },
-    { "domain": "lore", "id": "the_falling" },
-    { "domain": "characters", "id": "default_girl" }
+    {
+      "domain": "lore",
+      "id": "the_human_dead"
+    },
+    {
+      "domain": "lore",
+      "id": "the_falling"
+    },
+    {
+      "domain": "characters",
+      "id": "default_girl"
+    }
   ],
-  "gm_notes": "Written to be true of any player behind him — no backstory that a player could contradict by playing. The one committed fact is that he is a recent fall who kept his name, which sets him up as the reader-surrogate for chapter 1. Characters2 agent owns characters2/metadata.json; this text is published via lore.json only, and their authored copy wins on any conflict."
+  "gm_notes": "Written to be true of any player behind him \u2014 no backstory that a player could contradict by playing. The one committed fact is that he is a recent fall who kept his name, which sets him up as the reader-surrogate for chapter 1. Characters2 agent owns characters2/metadata.json; this text is published via lore.json only, and their authored copy wins on any conflict."
 }

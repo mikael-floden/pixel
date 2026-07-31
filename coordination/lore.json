@@ -1,20 +1,21 @@
 {
   "domain": "lore",
-  "updated_at": "2026-07-31T01:34:28+00:00",
+  "updated_at": "2026-07-31T11:31:33+00:00",
   "health": "running",
-  "current": "red line audited against the repo; root contradictions fixed",
+  "current": "full monster roster covered: short description + long read-more lore for all 24",
   "progress": {
     "chapters": 9,
     "entries_total": 10,
-    "entity_records": 4,
-    "monsters_covered": 1,
-    "items_covered": 1,
-    "characters_covered": 2
+    "entity_records": 27,
+    "monsters_covered": "24/24",
+    "items_covered": "1/105",
+    "characters_covered": "2/2"
   },
   "budget_remaining": null,
   "notes": [
     "[2026-07-31T00:25:07+00:00] bootstrapped: RED_LINE.md (the root: five laws, three ages, the Fire-Keepers vs Chroniclers argument, the cave), canon/GLOSSARY.md + canon/CONSTRAINTS.md, 10 entries (9 chapters + the human dead), 4 entity records, and pipeline/build.py which regenerates lore.json AND refuses to write when a cross-reference has gone stale. Built on two things already shipped in games2: every arrival broadcasts a shooting star, and there is a campfire at spawn.",
-    "[audit] Adversarially checked the whole domain against the repo. Fixed: the campfire is the only OBJECTS-domain prop drawn, not the only hand-made thing (the world draws ~68 props \u2014 wells, archways, obelisks, a tree-house); the gorge has four crossings, not one; 'Wanderer' is a fallback sprite, not a name the fiction gives anybody; and there is a SECOND shipped in-world sentence \u2014 the arrival line in chat \u2014 which is player-facing text for Law I. Also resolved two root contradictions: the four stages of thinning describe things that were once somebody, so the Made are explicitly outside them; and soulstones are no longer 'the only unfadeable object' now that the Hollowed's masks are one too \u2014 that exception is now a plot hook rather than a hole."
+    "[audit] Adversarially checked the whole domain against the repo. Fixed: the campfire is the only OBJECTS-domain prop drawn, not the only hand-made thing (the world draws ~68 props \u2014 wells, archways, obelisks, a tree-house); the gorge has four crossings, not one; 'Wanderer' is a fallback sprite, not a name the fiction gives anybody; and there is a SECOND shipped in-world sentence \u2014 the arrival line in chat \u2014 which is player-facing text for Law I. Also resolved two root contradictions: the four stages of thinning describe things that were once somebody, so the Made are explicitly outside them; and soulstones are no longer 'the only unfadeable object' now that the Hollowed's masks are one too \u2014 that exception is now a plot hook rather than a hole.",
+    "[coverage] All 24 monsters now carry BOTH a short description (replaces the domain's, within its layout budget) and a long read-more lore array. Written against the sprites and the real drop data, then reviewed and revised: fixed a false gold drop, a slime-sharing claim contradicted by the drop table, horns contradicting the item copy, and several soulstone powers the prose ignored. Also broke the structural monotony \u2014 paragraph counts now vary 3-6, zero shared 8-grams across all 24 records, 'nobody' down from 55 uses to 3."
   ],
   "requests": [
     {
@@ -31,6 +32,11 @@
       "to": "items",
       "text": "New lore/ domain. I do NOT write items/**; your roster.json descriptions always win. I add long-form 'story' per item in lore/lore.json plus item<->monster<->chapter cross-links. The 1-to-1 soulstone/monster invariant you enforce is now canon in the setting's physics rather than just a loot rule (see lore/entries/the_hard_pieces), so it is safe to keep enforcing hard. First item written: hollow_black_soulstone. Your 4 unbound soulstones (ice / misty / greed / fire boss) are noted as open hooks and I will not assert those creatures exist.",
       "at": "2026-07-31T00:25:07+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "UPDATE \u2014 precedence changed by the maintainer (2026-07-31): LORE WINS. Where lore/lore.json publishes entities.<domain>.<id>.description, use it INSTEAD of the domain's own description; where it publishes nothing, keep the domain's. Schema is now two clearly separated fields: .description = the SHORT line under the entity name (always visible), and .lore = an ARRAY of paragraphs for a 'read more'/expand section (no length limit, only shown if the reader opens it). LAYOUT GUARANTEE, which was the maintainer's gate: every description we publish is measured against the longest description that domain already ships, and lore/pipeline/build.py REFUSES to write lore.json if any exceeds it \u2014 so substituting ours can never make a page taller. lore.json ships the measured budget it was built against as 'layout_budget'. Current: monsters 24/24 covered, longest 116 vs budget 118; items 1/105, longest 111 vs 123; characters 2/2, longest 147 vs 161. Ready for you to integrate.",
+      "at": "2026-07-31T11:31:33+00:00"
     }
   ]
 }

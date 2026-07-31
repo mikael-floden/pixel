@@ -151,9 +151,19 @@ world, not the player's verbs.
 - **All wiki text renders as plain text nodes.** No markdown, no HTML, no
   wiki-link syntax — any markup ships as literal characters. Cross-references
   must be **data** (`{domain, id}` pairs), never inline syntax.
-- **`loreSlot()` reserves the height of the longest blurb in a domain**, so one
-  long entry inflates every page in that domain. House limit: **entity blurbs
-  ≤200 characters, target 95–140.** Chapter summaries ≤200.
+- **Two different texts per entity, and they must not be confused.**
+  - `description` — the short line under the entity's name at the top of its
+    page. Always visible, so it is a **layout budget**, not a style preference.
+  - `lore` — the long read-more text, an array of paragraphs, shown only if the
+    reader expands it. No length limit; this is where the story goes.
+- **`loreSlot()` reserves the height of the longest description in a domain**,
+  so one long entry makes *every* page in that domain taller. Since our
+  `description` now **replaces** the domain's own, the rule that makes this
+  provably safe is: **never exceed the longest description that domain already
+  ships.** `build.py` measures that per domain from the live repo and refuses
+  to write when it is exceeded — so the cap stays correct when other agents
+  rewrite their copy. Budgets as of 2026-07-31: monsters 118, items 123,
+  characters 161, objects 84, tiles 51. Chapter summaries ≤200.
 - **`wiki/site/data.json` is fully public and served statically.** Admin gating
   is client-side rendering only. **Nothing in `lore.json` is secret.** The red
   line is deliberately kept out of it — not because that hides it (the repo is
@@ -167,6 +177,14 @@ Per `coordination/PROTOCOL.md`, one writer per file. The lore agent writes
 We do **not** edit `monsters/config/roster.json`, `items/config/roster.json`,
 `characters2/metadata.json`, `wiki/**` or `live/**`, even though those are where
 per-entity text lives today. Instead `lore/lore.json` publishes the text and the
-owning agent or the wiki picks it up. Precedence is theirs to choose; we propose
-**domain-authored wins, lore fills gaps** so no agent's work is ever overwritten
-by ours.
+wiki picks it up.
+
+**Precedence: lore wins** (maintainer, 2026-07-31). Where this domain publishes
+a `description` for an entity, it **replaces** the owning domain's — the lore
+agent has full control over text. Where it does not, the domain's own text
+stands, so partial coverage degrades gracefully and nothing ever goes blank.
+
+That control is a responsibility, not a licence: a replacement must be at least
+as good as what it replaces, must match the art, and must fit the layout budget
+above. We still never *write* another domain's files — the substitution happens
+at the wiki's read, so any agent can always see and keep its own copy.

@@ -31,10 +31,16 @@ from pathlib import Path
 LORE = Path(__file__).resolve().parent.parent
 ROOT = LORE.parent
 
-# House limits from lore/canon/CONSTRAINTS.md section 6. The wiki reserves the
-# height of the longest blurb in a domain, so one long entry inflates every
-# page in that domain.
-MAX_BLURB = 200
+# The wiki reserves the height of the LONGEST short description in a domain, so
+# one long entry makes every page in that domain that tall. Our descriptions
+# now REPLACE the owning domain's, so the guarantee we need is simply: never be
+# longer than the longest text that domain already ships. Then substituting
+# ours can never grow the layout by a single pixel.
+#
+# The cap is therefore measured from the live repo per domain (see
+# domain_caps()), not hardcoded — it stays correct when other agents rewrite
+# their own copy. FALLBACK_CAP applies only to a domain with no text at all.
+FALLBACK_CAP = 120
 MAX_SUMMARY = 200
 
 # The wiki inserts every string as a text node: markup ships as literal
@@ -64,6 +70,50 @@ def as_list(doc, key: str) -> list:
 
 
 # ---------------------------------------------------------------- live repo
+
+def live_descriptions() -> dict[str, list[str]]:
+    """The short descriptions each domain ships today, per wiki domain.
+
+    Used to derive the layout budget: our replacement text must never be longer
+    than the longest string the domain already renders in that slot.
+    """
+    out: dict[str, list[str]] = {}
+
+    monsters = read_json(ROOT / "monsters" / "config" / "roster.json")
+    out["monsters"] = [m["lore"] for m in as_list(monsters, "monsters") if m.get("lore")]
+
+    items = read_json(ROOT / "items" / "config" / "roster.json")
+    out["items"] = [i["description"] for i in as_list(items, "items") if i.get("description")]
+
+    chars = read_json(ROOT / "characters2" / "metadata.json") or {}
+    record = chars.get("characters", chars) if isinstance(chars, dict) else {}
+    out["characters"] = [
+        r["lore"] for r in record.values() if isinstance(r, dict) and r.get("lore")
+    ]
+
+    objects_dir = ROOT / "objects"
+    out["objects"] = []
+    if objects_dir.is_dir():
+        for child in sorted(p for p in objects_dir.iterdir() if p.is_dir()):
+            meta = read_json(child / "object.json") or {}
+            if meta.get("description"):
+                out["objects"].append(meta["description"])
+
+    tiles = read_json(ROOT / "tiles2" / "config" / "tiles2.json")
+    out["tiles"] = [
+        t["description"] for t in as_list(tiles, "ground_types") if t.get("description")
+    ]
+
+    return out
+
+
+def domain_caps() -> dict[str, int]:
+    """Per-domain character budget for our short description."""
+    return {
+        domain: (max(len(t) for t in texts) if texts else FALLBACK_CAP)
+        for domain, texts in live_descriptions().items()
+    }
+
 
 def live_ids() -> dict[str, dict[str, str]]:
     """The ids that actually exist right now, per wiki domain -> {id: name}.
@@ -155,7 +205,7 @@ def check_text(where: str, label: str, text: str, limit: int, problems: list[str
         )
 
 
-def validate(entries, entities, live) -> tuple[list[str], list[str]]:
+def validate(entries, entities, live, caps) -> tuple[list[str], list[str]]:
     problems: list[str] = []
     drift: list[str] = []
 
@@ -226,16 +276,27 @@ def validate(entries, entities, live) -> tuple[list[str], list[str]]:
                     f"{where}: name drifted {seen!r} -> {actual!r} "
                     f"(check any prose that quotes the old name)"
                 )
-        blurb = rec.get("blurb", "")
-        if not blurb:
-            problems.append(f"{where}: missing blurb")
+        desc = rec.get("description", "")
+        if not desc:
+            problems.append(f"{where}: missing description (the short line under the name)")
         else:
-            check_text(where, "blurb", blurb, MAX_BLURB, problems)
-        for n, para in enumerate(rec.get("story") or []):
+            cap = caps.get(domain, FALLBACK_CAP)
+            if len(desc) > cap:
+                problems.append(
+                    f"{where}: description is {len(desc)} chars but the {domain} layout "
+                    f"budget is {cap} (the longest that domain ships today) — "
+                    f"a longer one makes EVERY {domain} page taller"
+                )
+            if MARKUP.search(desc):
+                problems.append(f"{where}: description contains markup")
+        lore = rec.get("lore")
+        if lore is not None and (not isinstance(lore, list) or not lore):
+            problems.append(f"{where}: lore must be a non-empty array of paragraphs")
+        for n, para in enumerate(lore or []):
             if not isinstance(para, str):
-                problems.append(f"{where}: story[{n}] is not a string")
+                problems.append(f"{where}: lore[{n}] is not a string")
             elif MARKUP.search(para):
-                problems.append(f"{where}: story[{n}] contains markup")
+                problems.append(f"{where}: lore[{n}] contains markup")
         check_related(where, rec.get("related"))
 
     return problems, drift
@@ -243,12 +304,12 @@ def validate(entries, entities, live) -> tuple[list[str], list[str]]:
 
 # ---------------------------------------------------------------- rollup
 
-def build(entries, entities) -> dict:
+def build(entries, entities, budget) -> dict:
     by_domain: dict[str, dict[str, dict]] = {}
     for rec in entities:
-        payload = {"lore": rec["blurb"]}
-        if rec.get("story"):
-            payload["story"] = rec["story"]
+        payload = {"description": rec["description"]}
+        if rec.get("lore"):
+            payload["lore"] = rec["lore"]
         if rec.get("related"):
             payload["related"] = rec["related"]
         by_domain.setdefault(rec["domain"], {})[rec["id"]] = payload
@@ -275,12 +336,17 @@ def build(entries, entities) -> dict:
         "format": "pixel-lore@1",
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "note": (
-            "Authored by the lore agent. 'entities' are per-entity blurbs keyed by "
-            "the owning domain's folder id — merge them where a domain has no text "
-            "of its own; the domain's own copy always wins. 'entries' are "
-            "standalone lore articles (chapters, peoples, places). Plain text "
-            "only. Cross-references are {domain, id} pairs."
+            "Authored by the lore agent, keyed by the owning domain's folder id. "
+            "entities.<domain>.<id>.description is the SHORT line shown under the "
+            "entity's name — it REPLACES the domain's own description, and is "
+            "guaranteed never to be longer than the longest text that domain "
+            "already ships, so substituting it cannot grow the layout. "
+            "entities.<domain>.<id>.lore is the LONG read-more text, an array of "
+            "paragraphs, shown only if the reader expands it; no length limit. "
+            "'entries' are standalone articles (chapters, peoples, places). "
+            "Plain text only — no markup. Cross-references are {domain, id} pairs."
         ),
+        "layout_budget": budget,
         "entities": by_domain,
         "entries": published,
     }
@@ -292,8 +358,8 @@ def main() -> int:
     args = ap.parse_args()
 
     entries, entities = load_entries(), load_entities()
-    live = live_ids()
-    problems, drift = validate(entries, entities, live)
+    live, caps = live_ids(), domain_caps()
+    problems, drift = validate(entries, entities, live, caps)
 
     for line in drift:
         print(f"DRIFT   {line}")
@@ -301,10 +367,21 @@ def main() -> int:
         print(f"BROKEN  {line}")
 
     counts = " · ".join(f"{d} {len(v)}" for d, v in sorted(live.items()))
+    covered: dict[str, int] = {}
+    longest: dict[str, int] = {}
+    for rec in entities:
+        d = rec.get("domain", "?")
+        covered[d] = covered.get(d, 0) + 1
+        longest[d] = max(longest.get(d, 0), len(rec.get("description", "")))
     print(
         f"\nlore: {len(entries)} entries, {len(entities)} entity records\n"
         f"repo: {counts}"
     )
+    for d in sorted(covered):
+        print(
+            f"  {d}: {covered[d]}/{len(live.get(d, {}))} covered · "
+            f"longest description {longest[d]} / budget {caps.get(d, FALLBACK_CAP)}"
+        )
 
     if problems:
         print(f"\nCANON BROKEN — {len(problems)} problem(s). Nothing written.")
@@ -315,7 +392,9 @@ def main() -> int:
         return 0
 
     out = LORE / "lore.json"
-    out.write_text(json.dumps(build(entries, entities), indent=2) + "\n", encoding="utf-8")
+    out.write_text(
+        json.dumps(build(entries, entities, caps), indent=2) + "\n", encoding="utf-8"
+    )
     print(f"\nCanon whole. Wrote {out.relative_to(ROOT)}")
     return 0
 

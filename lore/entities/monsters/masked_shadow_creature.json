@@ -4,19 +4,28 @@
   "name_seen": "Grinmask",
   "kind": "hollowed",
   "law": "III",
-  "blurb": "Not a thing that thinned. A thing that was emptied, all at once, and the dark that moved in kept the face because a face is the last part to go.",
-  "story": [
-    "Everything else in the wild is running on habit — a shape that outlasted whoever was inside it, going patiently through the last motions it ever learned. Grinmask is not that, and anyone who has met both can tell within a heartbeat.",
+  "description": "Not a thing that thinned \u2014 a thing that was emptied. Whatever moved in kept the face, and the mask is all it leaves.",
+  "lore": [
+    "Everything else in the wild is running on habit \u2014 a shape that outlasted whoever was inside it, going patiently through the last motions it ever learned. Grinmask is not that, and anyone who has met both can tell within a heartbeat.",
     "It was emptied. Not over centuries, the ordinary way, with the details going gently and nobody at any point in distress. All at once, the way a room is emptied, and something else moved into the space that was left.",
     "What is in there now is a sliver of moving dark, and it is not the creature's own. It is wearing the outside. This is why it does not behave like anything else out there: a thing at the stage of Habit is uninterested in you and will only hurt you because you walked into its round, but Grinmask skips. It plays. It has a preference about being watched. There is somebody's intention operating in that shape and it did not come from the shape.",
-    "Break it and the dark simply stops being there — no struggle, no leaving, it is present and then it is not. What falls is the mask, which lands in the dirt and does not thin. It sits there being exactly a face for as long as anybody leaves it, long after everything else about the creature has stopped being anywhere at all.",
+    "Break it and the dark simply stops being there \u2014 no struggle, no leaving, it is present and then it is not. What falls is the mask, which lands in the dirt and does not thin. It sits there being exactly a face for as long as anybody leaves it, long after everything else about the creature has stopped being anywhere at all.",
     "It is still smiling. It was always going to be smiling. A face is the easiest part of a person to remember and the last part to let go, and the mask is not a disguise the creature put on. It is the only piece of the original that the emptying did not take.",
     "This is the observation that started the whole investigation into the eastern mountain, and the masks are still the best evidence anyone has of what is down there. Nobody has yet explained why a hungry thing should bother leaving the faces behind."
   ],
   "related": [
-    { "domain": "lore", "id": "the_hole_under_the_mountain" },
-    { "domain": "lore", "id": "the_quiet" },
-    { "domain": "items", "id": "hollow_black_soulstone" }
+    {
+      "domain": "lore",
+      "id": "the_hole_under_the_mountain"
+    },
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    },
+    {
+      "domain": "items",
+      "id": "hollow_black_soulstone"
+    }
   ],
-  "gm_notes": "Anchor creature for the Hollowed category and the cave antagonist. The art carries this: the shipped die animation is literally 'the character disappears and the mask falls down'. Do not soften this one into sad — the Hollowed are the setting's only permitted 'wrong'. Its scarcity is what makes it land. See RED_LINE.md sections 9 and 10."
+  "gm_notes": "Anchor creature for the Hollowed category and the cave antagonist. The art carries this: the shipped die animation is literally 'the character disappears and the mask falls down'. Do not soften this one into sad \u2014 the Hollowed are the setting's only permitted 'wrong'. Its scarcity is what makes it land. See RED_LINE.md sections 9 and 10."
 }
