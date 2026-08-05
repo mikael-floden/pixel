@@ -77,7 +77,7 @@ export function idSalt(id: string): number {
 /** Melee reach between two bodies is RADIUS-AWARE, exactly like separation:
  * a mammoth's face is ~2 cells from its centre, so a fixed range either lets
  * players hit it from another postcode or forces them inside its footprint. */
-export const ATTACK_REACH_PAD_WU = 12;
+export const ATTACK_REACH_PAD_WU = 16; // round 6: the pair fights a bit farther apart
 export function attackRange(rA: number, rB: number): number {
   return rA + rB + ATTACK_REACH_PAD_WU;
 }
@@ -148,7 +148,7 @@ export const MONSTER_DIE_MS = 1_100; // corpse lingers (die clip) before removal
 // attack/angry directions sweep. Handedness starts per-monster (id hash) and
 // RARELY reverses — ~once a minute on average (an exponential dt/60 flip
 // while circling), per the maintainer.
-export const ORBIT_SPEED_WU = 15;
+export const ORBIT_SPEED_WU = 6; // round 6: "slower, more than half the current speed" (was 15)
 export const ORBIT_FLIP_MEAN_S = 60;
 
 // --- death / respawn / regen ------------------------------------------------

@@ -942,7 +942,7 @@ export class WorldRoom extends Room<WorldState> {
           const inv = 1 / (dist || 1);
           const ux = dxp * inv;
           const uy = dyp * inv;
-          const radial = (dist - range * 0.8) * 1.4; // hold just inside reach
+          const radial = (dist - range * 0.88) * 1.4; // hold just inside reach (round 6: a bit farther out)
           const mx2 = clamp(m.x + (-uy * m.orbitSign * ORBIT_SPEED_WU + ux * radial) * dt, 1, this.worldW - 1);
           const my2 = clamp(m.y + (ux * m.orbitSign * ORBIT_SPEED_WU + uy * radial) * dt, 1, this.worldH - 1);
           if (contained(mx2, m.y) && canEnterElev(grid, m.elev, m.x, m.y, mx2, m.y, ctx).ok) m.x = mx2;

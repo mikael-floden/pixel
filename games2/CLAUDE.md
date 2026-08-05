@@ -790,10 +790,13 @@ visible head/shoulders are ABOVE the surface).
   RUN-AWAY LINE: ESCAPE_RADIUS_WU 780 ≈ 1.5 screens (camera frames ~520wu,
   zoomFor) beyond the home ZONE bbox — crossing it makes the hunter give up,
   walk home (m.returning, aggro-scan suppressed), and the flee slow lifts.
-  IN-FIGHT CIRCLING, round 4 ("more like a boxing fight"): BOTH bodies strafe
-  tangentially with the same rotational sense (ORBIT_SPEED 15) — the monster
-  holds ~0.8 reach radially, the standing engaged player is drifted by the
-  SERVER around its opponent (stepCombat; ground-validated, never into water,
+  IN-FIGHT CIRCLING, rounds 4-6 ("more like a boxing fight"): BOTH bodies
+  strafe tangentially with the same rotational sense (ORBIT_SPEED 6 — the
+  maintainer slowed it twice) — the monster holds ~0.88 reach radially (pad
+  16: the pair fights a bit farther apart), the standing engaged player is
+  drifted by the SERVER around its opponent — with the OPPOSITE tangential
+  formula: same-formula-on-mirrored-radius made them strafe in parallel
+  (round-5 bug) (stepCombat; ground-validated, never into water,
   moving stays false so the stance is the fight idle — and the client needs
   NO prediction: with no input pending its predicted position IS the synced
   one, the render ease glides the 20Hz steps). Handedness starts id-hashed

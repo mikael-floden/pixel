@@ -138,7 +138,7 @@ test("sword-marking provokes on approach; escaping lifts the flee slow", async (
     await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "combat", 8000, "fight reaches melee");
     const bx0 = me().x;
     const by0 = me().y;
-    await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, 2000)); // ~12wu of arc at the round-6 orbit speed
     if (!me().dead) {
       const moved = Math.hypot(me().x - bx0, me().y - by0);
       assert.ok(moved > 3, `standing fighter circles its opponent (moved ${moved.toFixed(1)}wu)`);

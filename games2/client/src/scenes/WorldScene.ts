@@ -2388,7 +2388,7 @@ export class WorldScene extends Phaser.Scene {
         if (!this.attackIcon && this.textures.exists("ui:attack-target")) {
           this.attackIcon = this.add
             .image(0, 0, "ui:attack-target")
-            .setOrigin(0.5, 1)
+            .setOrigin(0.5, 0.5)
             .setDepth(900_001.9); // above darkness + lit copies — lighting never dims it
         } else if (!this.attackIcon && !this.attackIconQueued) {
           this.attackIconQueued = true; // appending to a busy loader is fine
@@ -2396,11 +2396,11 @@ export class WorldScene extends Phaser.Scene {
           this.load.start();
         }
         if (this.attackIcon) {
-          // ON the monster, not over it (maintainer round 5: "you attack the
-          // monster"): the icon's bottom rides at the body's upper half.
+          // CENTERED on the monster (maintainer round 6): the icon's centre
+          // sits at the body's visual centre, with the gentle bob on top.
           const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
           const bob = Math.sin(this.time.now / 260) * 2;
-          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.55 + bob).setVisible(true);
+          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.5 + bob).setVisible(true);
         }
       }
     }

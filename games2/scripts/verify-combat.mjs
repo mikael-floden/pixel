@@ -66,9 +66,18 @@ try {
   });
   if (!frogPick) fail("no mystical_frog in monster_demo");
 
-  // ROUND 2 overlays: engage from SPAWN DISTANCE (no teleport) — the sword
-  // marker must hang over the walk-to target, and once the fight is on the
-  // monster's own slim bar shows "Lv N · hp/max" (player-bar style, no name).
+  // ROUND 2 overlays: park at a FIXED offset from the frog — on-screen (the
+  // icon and bar hide for culled monsters) but outside battle range (the
+  // icon hides once the fight begins). Engaging from wherever the frog
+  // happened to roam flaked both ways. The sword marker must hang over the
+  // walk-to target; the slim bar shows "Lv N" + "hp/max" for the engaged
+  // target.
+  await page.evaluate((fid) => {
+    const st = window.__ml;
+    const f = st.monsterInfo().find((m) => m.id === fid);
+    st.teleport(Math.round((f.x + 150) / 32), Math.round((f.y + 60) / 32));
+  }, frogPick.id);
+  await page.waitForTimeout(250);
   await page.evaluate((fid) => window.__ml.engage(fid), frogPick.id);
   await page.waitForFunction(
     () => window.__ml.targetOverlay().icon === true,
