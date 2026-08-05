@@ -48,42 +48,61 @@ try {
   if (!before.available.length) fail("no music beds bundled at all");
   ok(`beds available: ${before.available.join(", ")}`);
 
-  // ---- 3. An available bed loads, plays, and ADVANCES --------------------
+  // ---- 3+4. EVERY available bed loads, plays, ADVANCES, and owns the clock
   // Position advancing is the real test: a bed can be "active" while its
-  // scheduler is dead, and that sounds exactly like silence.
-  const pick = before.available[0];
-  const played = await page.evaluate(async (name) => {
-    window.__ml.audioBed(name);
-    await new Promise((r) => setTimeout(r, 3500));
-    const a = window.__ml.audio().beds;
-    const clock = window.__ml.audioClock();
-    await new Promise((r) => setTimeout(r, 1500));
-    return { a, b: window.__ml.audio().beds, clock };
-  }, pick);
-  if (played.a.active !== pick) fail(`audition ${pick}: active=${played.a.active}`);
-  if (!(played.b.position > played.a.position))
-    fail(`bed ${pick} is not advancing (${played.a.position} → ${played.b.position})`);
-  ok(`bed "${pick}" plays and advances (${played.a.position}s → ${played.b.position}s)`);
-
-  // ---- 4. The playing bed owns the musical clock -------------------------
-  // Tonal SFX scale-snap and beat-quantize read this; when the context score
-  // replaced the catalog bed it would have gone dark without the delegation.
-  const c = played.clock;
-  if (!c.playing) fail("musical clock idle while a bed is playing");
-  if (!(c.bpm > 20)) fail(`clock has no tempo (bpm=${c.bpm})`);
-  if (!Array.isArray(c.scale) || !c.scale.length)
-    fail(`clock publishes no scale (tonal SFX would stop snapping): ${JSON.stringify(c.scale)}`);
-  ok(`clock OK (bpm=${c.bpm}, section=${c.section}, scale=[${c.scale}])`);
+  // scheduler is dead, and that sounds exactly like silence. The clock matters
+  // because tonal SFX scale-snap and beat-quantize read it — when the context
+  // score replaced the catalog bed it would have gone dark without delegation.
+  // Every bed is exercised, not just one: a single broken track (the 0.07 s
+  // battle take) is exactly the kind of thing a one-bed spot check misses.
+  for (const name of before.available) {
+    const played = await page.evaluate(async (n) => {
+      window.__ml.audioBed(n);
+      // WAIT for readiness rather than assuming it: a bed is a ~1.7 MB fetch
+      // plus a decode of up to two minutes of audio, and the largest bed
+      // (adventure) does not make a fixed 3.5 s window on a cold cache. In the
+      // game the catalog bed covers exactly this gap, by design.
+      const deadline = Date.now() + 20000;
+      while (Date.now() < deadline && window.__ml.audio().beds.active !== n)
+        await new Promise((r) => setTimeout(r, 250));
+      const a = window.__ml.audio().beds;
+      const clock = window.__ml.audioClock();
+      await new Promise((r) => setTimeout(r, 1500));
+      return { a, b: window.__ml.audio().beds, clock };
+    }, name);
+    if (played.a.active !== name)
+      fail(`bed ${name} never became audible within 20 s (active=${played.a.active})`);
+    if (!(played.b.position > played.a.position))
+      fail(`bed ${name} is not advancing (${played.a.position} → ${played.b.position}) — silent track?`);
+    const c = played.clock;
+    if (!c.playing) fail(`musical clock idle while ${name} plays`);
+    if (!(c.bpm > 20)) fail(`bed ${name} has no tempo (bpm=${c.bpm})`);
+    if (!Array.isArray(c.scale) || !c.scale.length)
+      fail(`bed ${name} publishes no scale (tonal SFX would stop snapping)`);
+    ok(`"${name}": advances ${played.a.position}s→${played.b.position}s, ` +
+      `bpm ${c.bpm}, scale [${c.scale}]`);
+  }
 
   // ---- 5. Releasing hands control back to the situation ------------------
-  const after = await page.evaluate(async () => {
+  // Force a bed the situation does NOT want, then release and require it to
+  // swing back. Auditioning whatever the situation already wanted would pass
+  // whether the override cleared or stuck — the assertion has to be able to
+  // tell those apart.
+  const situation = before.wanted;
+  const other = before.available.find((n) => n !== situation);
+  if (!other) fail("need two beds to test the audition release");
+  const after = await page.evaluate(async (n) => {
+    window.__ml.audioBed(n);
+    await new Promise((r) => setTimeout(r, 1200));
+    const forced = window.__ml.audio().beds.wanted;
     window.__ml.audioBed();
     await new Promise((r) => setTimeout(r, 1500));
-    return window.__ml.audio().beds;
-  });
-  if (after.wanted === pick && before.wanted !== pick)
-    fail(`release left the audition override in place (wanted=${after.wanted})`);
-  ok(`release OK (wanted=${after.wanted ?? "situation"})`);
+    return { forced, released: window.__ml.audio().beds.wanted };
+  }, other);
+  if (after.forced !== other) fail(`audition did not take (wanted=${after.forced}, asked ${other})`);
+  if (after.released === other && situation !== other)
+    fail(`release left the override in place (still ${after.released})`);
+  ok(`release OK (forced "${other}" → back to "${after.released ?? "none"}", situation wanted "${situation}")`);
 
   console.log("verify-beds: ALL OK");
 } finally {

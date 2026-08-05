@@ -68,16 +68,6 @@ TRACKS_JSON = MUSIC_DIR / "tracks.json"
 # Leave this many credits for the sound/music agents (shared account).
 CREDIT_FLOOR = 20_000
 
-# Every bed shares this so the whole score is ONE instrument, tonally.
-HOUSE_STYLE = (
-    "Orchestral fantasy game score with folk instruments, recorded warm and "
-    "natural with real room depth. Melody-first and memorable. Clean mid-range "
-    "so game sound effects sit on top; soft, unfatiguing highs. It BEGINS "
-    "PLAYING IMMEDIATELY — the first bar is already music, no silent or ambient "
-    "lead-in, no fade-in. It ends where it began so it can loop forever. "
-    "Instrumental only: no words, no lyrics, no singing of text, no sound effects."
-)
-
 TRACKS: dict[str, dict] = {
     # ---- the character-select login theme (APPROVED — do not re-roll casually)
     "title": {

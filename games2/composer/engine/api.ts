@@ -362,7 +362,10 @@ export class GameAudio {
       resolveBed(desiredBed({ ...field, sun }, this.bedNow), (n) => hasBed(n));
     const now = this.graph ? this.graph.now : 0;
     const held = now - this.bedSince;
-    const urgent = want === "battle" || this.bedNow === null;
+    // An explicit audition must not wait out the minimum hold — the maintainer
+    // types __ml.audioBed("cave") and expects to hear cave, not silence for six
+    // seconds followed by a switch they have stopped listening for.
+    const urgent = want === "battle" || this.bedNow === null || this.bedOverride !== null;
     if (want !== this.bedNow && (urgent || held >= BED_MIN_HOLD_S)) {
       this.bedNow = want;
       this.bedSince = now;
