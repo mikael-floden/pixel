@@ -42,6 +42,27 @@ decides what sounds.
 | footsteps, final directive | **"Only use the stone footsteps for now (regardless of tile-type). Water can be different."** (2026-07-18) | playback routes EVERY dry surface to the stone set (`FOOTSTEP_SET` in engine/api.ts); water keeps splash/swim. The per-surface sets stay generated + auditionable at /#foley but are NOT played until something earns approval. Re-enabling per-surface = change one constant back to `f.surface` routing. |
 | jump/fall VOICE grunts | **girl + boy each APPROVED at rate 2.0** — "2.0 sounds like a normal man … put the girl at 2.0 also, I want her real voice" (2026-07-25) | per-character `JUMP_VOICE` sets in engine/api.ts (`jump_voice` = girl, `jump_voice_boy` = boy), routed by character uid (`opts.voice` from WorldScene), each on the SFX bus, round-robin, −12 dB, on both jump AND fall-start (0.28 s debounce). **⭐ LESSON — ElevenLabs vocal takes are authored at HALF speed: play them at RATE 2.0 to hear the true, normal voice.** We wasted a long tuning loop pitching the girl up by ear (1.12→…→1.75) chasing "normal" before realizing 2× is the honest baseline — start any new character voice at 2.0, then nudge. Male-brief lessons: lean YOUNG/LIGHT/BRIGHT/HUMAN (round-1 male read as an "orc") and say "young MAN/youthful" not "boy/young boy" (child-voice wording gets moderation-blocked, same as "girl"). |
 
+### Music-generation lessons (ElevenLabs Music, `music_v1`)
+
+- **Never name real IP or artists.** "Ragnarök Online / Studio Ghibli / Joe
+  Hisaishi" in a prompt is a 400 `bad_prompt` ToS block, not a style hint.
+  Describe the style and the *feeling*; the maintainer's references translate
+  fine as adjectives.
+- **Negative prompts backfire** (same as foley): the generator weights the words
+  you forbid. Say what you want.
+- **Say "it starts immediately".** A bed that fades in from ambience reads as
+  broken audio — the maintainer rejected a theme for exactly this ("the start is
+  important because you might click away fast"). Every brief says the first bar
+  is already music, and `lead_in_s` is a scored gate on top.
+- **Ask for a tempo, then measure it — and expect the measurement to lie.**
+  Autocorrelation cannot tell a tempo from its multiples: it came back at 2× for
+  the night bed (123 for 62) and 3/2× for the title theme (140 for 92). The
+  brief's BPM is used as a prior to snap the raw peak onto the right member of
+  the simple-ratio family.
+- **Generate lossless, master once.** Asking for `pcm_44100` and encoding at the
+  end avoids mastering a lossy file (decode + re-encode = two generations of
+  artefacts on a track the player hears for hours).
+
 ### ENFORCE UNMODIFIED AUDIO (Settings switch)
 
 The maintainer's A/B test switch (requested 2026-07-18, exactly for cases
@@ -115,6 +136,97 @@ is a whisper.**
   scaled ×0.35 at playback — the composer overrides the producer's ranges.
 - When tuning any future effect: start from imperceptible and increase only
   with explicit approval, never the reverse.
+
+## The CONTEXT SCORE — six beds, one per situation
+
+The score is not one track any more. `engine/contextMusic.ts` owns six looping
+beds and cross-fades whichever the player's situation calls for:
+
+| bed | when | what triggers it |
+|---|---|---|
+| `battle` | monsters are fighting you | a monster in `mstate` `chase`/`combat` within ~7 cells (the combat brain's own state — a *roaming* monster is scenery however close) |
+| `cave` | underground | world@2 deck slabs overhead (≥1.5 levels above your surface, so a bridge you stand ON never counts) |
+| `home` | at the spawn bonfire | the campfire proximity the ambience bed already measures — the "you are home" landmark |
+| `town` | village / market / farmland | fraction of `road_*`/`farm`/`vineyard`/`mosaic_floor` tiles in earshot |
+| `night` | the overworld after dark | sun strength |
+| `adventure` | anywhere else | the default, and by far the most-heard track |
+
+Selection lives in **`engine/bedSelect.ts` as pure functions**, tested in
+`test/bedSelect.test.ts` (`npx tsx composer/test/bedSelect.test.ts`), because a
+wrong answer is only audible if you stand in the right place on the right map at
+the right time of day. Three rules the tests pin:
+
+- **PLACE BEATS TIME.** A town at night is still a town. Night only decides when
+  nowhere in particular has a claim — otherwise half the day/night cycle would
+  erase every other bed.
+- **HYSTERESIS EVERYWHERE.** Every trigger is a Schmitt trigger (`BED_ON` /
+  `BED_OFF`) plus a 6 s minimum hold, so standing on a boundary can never make
+  the music dither. Battle is the one thing allowed to interrupt instantly.
+- **NEVER SILENT.** A bed that has not been generated falls back down a
+  documented chain (`BED_FALLBACK`), and an empty chain hands back to the
+  sound-domain catalog track — which is exactly the behaviour that shipped
+  before the context score existed.
+
+Audition any bed in-game without hunting for its trigger:
+`__ml.audioBed("cave")`, and `__ml.audioBed()` to release. `__ml.audioField()`
+shows what the score is reading from the world; `__ml.audio().beds` shows what
+is loaded, wanted and playing.
+
+### Why these tracks sound like a score and not six mp3s on repeat
+
+All three come out of `music/pipeline/master.py`, and all three are *measured*,
+never eyeballed — the numbers land in `music/tracks.json`, which the engine reads.
+
+1. **Loudness matching.** Beds cross-fade into each other, and two takes from the
+   same model routinely land 4–6 LU apart; un-matched, every context switch is a
+   volume jump. Every bed is normalised to the same ITU-R BS.1770 loudness
+   (−18 LUFS) with a true-peak ceiling. **The meter is validated against the
+   standard's own calibration tone** — and note that deriving K-weighting from
+   the usual RBJ cookbook formulas does *not* reproduce the standard: the shelf
+   lands 0.2577 dB low at 997 Hz, which is exactly how far the calibration tone
+   then misses −3.01 LKFS. The tabulated 48 kHz coefficients are round-tripped
+   through their analog prototype instead.
+2. **Measured loop points.** Generated music is never sample-loop-perfect, so
+   the seam is *searched for*: the (start, end) pair whose surrounding audio best
+   matches in timbre and level, beat-snapped when a tempo is known. The engine
+   crossfades exactly there instead of hard-wrapping at end of file.
+3. **Position memory.** A bed that fades out remembers where it was and resumes
+   there — the maintainer's rule for the night bed ("we only get to listen to the
+   start of the song if it restarts each cycle"), now true of all six. Walking in
+   and out of town does not restart the town tune.
+
+Key and tempo are measured too, so `gameAudio.clock()` and the tonal-SFX
+scale-snap keep working once these beds are the score rather than the catalog
+track. Delivery is **opus + AAC**, not mp3: better quality per byte, every
+browser covered, one format downloaded per player.
+
+**`title` and `night` are approved takes and are never regenerated.** They are
+*adopted* into the same system (`generate.py adopt`) — measured as they stand,
+carrying a `trim_db` instead of being re-mastered, so the approved bytes keep
+playing. The night bed's shipped loudness is in fact where the shared bed level
+comes from: it measures −16.79 LUFS and played at −5 dB, so −18 LUFS at −3.8 dB
+reproduces it exactly.
+
+### Regenerating
+
+`composer-theme` workflow (dispatch) with `track` = a name, `new` (the five
+context beds) or `all`; or locally with `ELEVENLABS_API_KEY`:
+
+```
+python games2/composer/music/pipeline/generate.py new
+python games2/composer/music/pipeline/generate.py adopt   # no API key needed
+python games2/composer/music/pipeline/test_master.py      # DSP self-test
+```
+
+Each track composes from a `/v1/music/plan` **composition plan** (structured
+sections) rather than a flat prompt, generates several candidates, and keeps the
+best by measured quality — lead-in, loop seam, dead air, dynamics, brightness,
+stereo phase. Every candidate's card is kept in `tracks.json` so the choice is
+auditable. Budget: the run checks remaining credits and scales candidates down,
+never below a floor that would starve the sound/music agents.
+
+To nudge a bed's level **by ear** without regenerating anything, edit its
+`trim_db` in `music/tracks.json` and redeploy.
 
 ## Mixing decisions (composer authority)
 
