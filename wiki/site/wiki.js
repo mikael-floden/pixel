@@ -682,18 +682,39 @@ const STORY_ORPHAN_CHARS = 140;
  *  becomes its own page. Never paginate by paragraph COUNT: they run 30 to
  *  1262 characters. A last page that is one short paragraph joins the one
  *  before it rather than dangling. */
+/* Lore v2 (2026-08-05): a paragraph is a STRING, or an array of segments
+   {t, ref?} — the lore agent's inline links, so a name in running prose can
+   point straight at the entity it names. paraText() is the ONE flattener
+   (search, budgets, dedupe all use it); paraNode() is the ONE renderer, and
+   its links follow the established landing rules EXACTLY: a chapter ref
+   starts the reader at the top, an entity ref lands on that page's story
+   card (maintainer 2026-08-05: "maintain the logic we have"). Segment text
+   stays a TEXT NODE — no markup path, same rule as before. */
+const paraText = (p) => (typeof p === "string" ? p : (p ?? []).map((s) => s?.t ?? "").join(""));
+function paraNode(p) {
+  if (typeof p === "string") return h("p", {}, p);
+  return h("p", {}, ...(p ?? []).map((seg) => {
+    const t = seg?.t ?? "";
+    if (!seg?.ref) return t;
+    const r = resolveRef(seg.ref);
+    if (!r) return t;                            // a stale ref reads as prose, never as a broken link
+    const a = h("a", { class: "lore-inline", href: r.href }, t);
+    a.addEventListener("click", () => { pendingScroll = seg.ref.domain === "lore" ? "top" : "story"; });
+    return a;
+  }));
+}
 function paginate(paras, budget = STORY_PAGE_CHARS) {
   const pages = [];
   let cur = [], n = 0;
   for (const raw of paras ?? []) {
-    const p = String(raw ?? "").trim();
-    if (!p) continue;
-    if (cur.length && n + p.length > budget) { pages.push(cur); cur = []; n = 0; }
-    cur.push(p); n += p.length;
+    const len = paraText(raw).trim().length;     // budget by VISIBLE text, rich or plain
+    if (!len) continue;
+    if (cur.length && n + len > budget) { pages.push(cur); cur = []; n = 0; }
+    cur.push(raw); n += len;
   }
   if (cur.length) pages.push(cur);
   const last = pages[pages.length - 1];
-  if (pages.length > 1 && last.length === 1 && last[0].length < STORY_ORPHAN_CHARS) {
+  if (pages.length > 1 && last.length === 1 && paraText(last[0]).length < STORY_ORPHAN_CHARS) {
     pages[pages.length - 2] = pages[pages.length - 2].concat(pages.pop());
   }
   return pages;
@@ -829,7 +850,7 @@ function resolveRef(ref) {
  *  verbatim; exact match only, so a rewritten summary can never silently
  *  swallow a paragraph. Shared with hasStory() so the page and the "Read next"
  *  filter can never disagree about whether a chapter has anything in it. */
-const chapterParas = (e) => (e?.body ?? []).filter((p, n) => !(n === 0 && p === e.summary));
+const chapterParas = (e) => (e?.body ?? []).filter((p, n) => !(n === 0 && paraText(p) === e.summary));
 /** The entity behind a reference, for the four domains that render a story
  *  card. Tiles, sounds and music are absent ON PURPOSE: their pages have no
  *  card, so no amount of loreStory in the record would give a reader anything
@@ -900,7 +921,7 @@ function storyCard({ label: what, art, name, paras, related }) {
   return pagedPanel({
     title: head, klass: "story-card",
     aside: loreLinks(related),                       // last in the card
-    pages: chunks.map((ps) => () => ps.map((p) => h("p", {}, p))),
+    pages: chunks.map((ps) => () => ps.map(paraNode)),
   });
 }
 const heroStoryTitle = (c) => (c.sex === "Female" ? "Her story" : c.sex === "Male" ? "His story" : "Their story");
@@ -2166,14 +2187,14 @@ function viewLoreEntry(e) {
       h("div", { class: "meta" },
         h("h1", {}, e.name),
         state.admin ? h("p", { class: "muted" },
-          `${e.id} · ${e.path} · ${e.category}${Number.isInteger(e.chapter) ? ` · chapter ${e.chapter}` : ""} · icon ${e.icon_id ?? "—"}${e.tags?.length ? ` · ${e.tags.join(", ")}` : ""} · ${(e.body ?? []).reduce((n, p) => n + p.split(/\s+/).length, 0).toLocaleString()} words in ${(e.body ?? []).length} paragraphs`) : null,
+          `${e.id} · ${e.path} · ${e.category}${Number.isInteger(e.chapter) ? ` · chapter ${e.chapter}` : ""} · icon ${e.icon_id ?? "—"}${e.tags?.length ? ` · ${e.tags.join(", ")}` : ""} · ${(e.body ?? []).reduce((n, p) => n + paraText(p).split(/\s+/).length, 0).toLocaleString()} words in ${(e.body ?? []).length} paragraphs`) : null,
         loreSlot(e.summary ?? "", list.map((x) => x.summary ?? "")),
         feedbackRow("lore", e.path))),
     // Every paragraph is a TEXT NODE. No innerHTML, no markdown path for
     // lore.json content — "plain text only" is an authoring convention backed
     // by a partial checker, so markup that slips through must show up as
     // literal characters: obvious, and unmistakably the lore agent's bug.
-    h("div", { class: "chapter-body" }, ...bodyParas.map((p) => h("p", {}, p))),
+    h("div", { class: "chapter-body" }, ...bodyParas.map(paraNode)),
     loreLinks(e.related) ? h("div", { class: "panel" }, loreLinks(e.related)) : null,
     // After three screens of prose the crumbRow is far off-screen; the rail
     // names the destination where the reader actually is.
@@ -2255,6 +2276,22 @@ function mdBlocks(lines) {
   }
   return out;
 }
+/** How much of the backbone the published texts actually tell (lore v2,
+ *  2026-08-05): the lore build maps every beat of the root as revealed,
+ *  hinted or hidden and ships the COUNTS. Drawn as one segmented bar — the
+ *  GM's one-glance answer to "how much has the story given away?". */
+function redLineMeter() {
+  const p = state.data.loreMeta?.redLineProgress;
+  if (!p) return null;
+  const total = (p.revealed ?? 0) + (p.hinted ?? 0) + (p.hidden ?? 0);
+  if (!total) return null;
+  const seg = (n, cls, label) => (n ? h("span", { class: `rl-seg ${cls}`, style: `flex:${n}`, title: `${n} ${label}` }) : null);
+  return h("div", { class: "rl-meter-box" },
+    h("div", { class: "rl-meter", role: "img", "aria-label": `${p.revealed} of ${total} beats revealed` },
+      seg(p.revealed, "rl-revealed", "revealed"), seg(p.hinted, "rl-hinted", "hinted"), seg(p.hidden, "rl-hidden", "still hidden")),
+    h("div", { class: "muted rl-meter-legend" },
+      `${p.revealed} of ${total} beats revealed in the published texts · ${p.hinted} hinted · ${p.hidden} still hidden`));
+}
 function viewRedLine() {
   const box = h("div", {}, h("p", { class: "loading" }, "Opening the red line…"));
   const render = (md) => {
@@ -2293,6 +2330,7 @@ function viewRedLine() {
       h("span", { class: "pill warn" }, "not in the game yet")),
     h("p", { class: "muted" }, "Written for you, not for players — they are meant to find this out by reading the chapters and playing."),
     h("p", { class: "muted" }, RED_LINE_HONESTY),
+    redLineMeter(),
     box);
 }
 
@@ -2359,7 +2397,7 @@ function viewSearch() {
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
   // Entry ids and tags are pipeline slugs — admin only, so a player cannot
   // surface an entry by typing a folder id.
-  (d.lore ?? []).forEach((e) => matches(q, e.name, e.summary, ...(e.body ?? []), ...(state.admin ? [e.id, ...(e.tags ?? [])] : []))
+  (d.lore ?? []).forEach((e) => matches(q, e.name, e.summary, ...(e.body ?? []).map(paraText), ...(state.admin ? [e.id, ...(e.tags ?? [])] : []))
     && hits.push(["lore", e.name, `#/lore/${e.id}`, loreIcon(e, 96)]));
   // A soul stone's name is shared by all of them — search its creature too,
   // and label the hit with the creature so 28 identical rows never appear.

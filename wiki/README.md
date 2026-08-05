@@ -465,6 +465,24 @@ lie — so `hasStory(ref)` drops those refs (maintainer 2026-07-31). The rules:
 `check-deadend.mjs` walks every page that offers *Read next*, follows every link
 and asserts the destination has prose. Run it after any lore-shaped change.
 
+## Lore v2: inline links and the reveal meter
+
+The lore agent's v2 (2026-08-05) made two things the wiki renders:
+
+- **Rich paragraphs.** A paragraph is a string OR an array of `{t, ref?}`
+  segments — inline links where a name in running prose points at the entity
+  it names. `paraText()` is the one flattener (pagination budgets, search,
+  the summary-dedupe all use it) and `paraNode()` the one renderer; segment
+  text stays a TEXT NODE, so the no-markup rule holds. Inline links follow
+  the SAME landing rules as "Read next": a chapter ref starts the reader at
+  the top, an entity ref lands on that page's story card, and Back returns
+  to the prose you left. Never render a paragraph with `h("p", {}, p)`
+  directly — a rich one prints "[object Object]".
+- **The reveal meter.** lore.json ships `red_line_progress` counts
+  ({revealed, hinted, hidden} beats); the Game-Master-only red-line page
+  draws them as one segmented bar. Counts only — the beat-by-beat map stays
+  in lore/canon/revelations.json, which never reaches a player.
+
 ## Back returns you to your place
 
 Following *Read next* out of a story and pressing Back used to land you at the

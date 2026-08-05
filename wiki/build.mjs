@@ -634,6 +634,10 @@ function buildLore() {
     // A MARKER ONLY, never the contents: 26 KB of Game-Master markdown must not
     // ride in a file every player fetches on every load. The page fetches it.
     redLine: isFile(rl) ? { path: "lore/RED_LINE.md", bytes: statSync(rl).size } : null,
+    // v2: how much of the backbone the published texts actually tell — counts
+    // only ({revealed, hinted, hidden}); the beat-by-beat map stays in
+    // lore/canon/revelations.json, which is the GM's file, not the player's.
+    redLineProgress: doc.red_line_progress ?? null,
   };
   return (doc.entries ?? [])
     // Normalise ONCE so no view can reach an undefined chapter or an unnamed

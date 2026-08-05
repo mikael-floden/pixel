@@ -677,3 +677,17 @@ button.drop-row {
 .sfx-lib-ctl input[type="range"] { width: 96px; }
 .sfx-val { min-width: 46px; text-align: right; font-size: 12px; }
 .muted-pill { opacity: 0.75; }
+
+/* The red line's reveal meter — how much of the backbone the published
+   chapters and entity texts actually tell. Segments share one bar so the
+   proportions read at a glance. */
+.rl-meter-box { margin: 4px 0 10px; }
+.rl-meter { display: flex; height: 10px; border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+.rl-seg.rl-revealed { background: var(--ok, #4a8f5c); }
+.rl-seg.rl-hinted { background: color-mix(in srgb, var(--ok, #4a8f5c) 45%, var(--surface)); }
+.rl-seg.rl-hidden { background: var(--border); }
+.rl-meter-legend { font-size: 12px; margin-top: 3px; }
+
+/* Inline lore links — a name in running prose that IS the entity. Underlined
+   subtly so the prose stays prose; same landing rules as "Read next". */
+.lore-inline { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); }
