@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "sounds",
-  "updated_at": "2026-08-05T23:50:30.323Z",
+  "updated_at": "2026-08-05T23:53:39.917Z",
   "entries": {
     "sounds/ui/coin_pickup/coin_pickup__take01": {
       "status": "rejected",
@@ -13,11 +13,13 @@
     },
     "sounds/ui/gem_pickup/gem_pickup__take02": {
       "status": "rejected",
-      "updated_at": "2026-08-05T23:47:38.694Z"
+      "updated_at": "2026-08-05T23:53:12.989Z",
+      "rating": 5
     },
     "sounds/ui/gem_pickup/gem_pickup__take01": {
       "status": "rejected",
-      "updated_at": "2026-08-05T23:47:41.433Z"
+      "updated_at": "2026-08-05T23:53:07.706Z",
+      "rating": 2
     },
     "sounds/tool/pickaxe_hit/pickaxe_hit__take01": {
       "status": "rejected",
@@ -58,6 +60,38 @@
     "sounds/combat/enemy_defeat/enemy_defeat__take02": {
       "status": "rejected",
       "updated_at": "2026-08-05T23:50:28.753Z"
+    },
+    "sounds/combat/explosion/explosion__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:50:38.458Z"
+    },
+    "sounds/combat/explosion/explosion__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:50:40.595Z"
+    },
+    "sounds/combat/hit_hurt/hit_hurt__take01": {
+      "rating": 3,
+      "updated_at": "2026-08-05T23:51:49.614Z"
+    },
+    "sounds/combat/hit_hurt/hit_hurt__take02": {
+      "rating": 4,
+      "updated_at": "2026-08-05T23:51:50.549Z"
+    },
+    "sounds/combat/magic_cast/magic_cast__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:52:11.128Z"
+    },
+    "sounds/combat/magic_cast/magic_cast__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:52:13.649Z"
+    },
+    "sounds/feedback/quest_complete/quest_complete__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:52:33.918Z"
+    },
+    "sounds/feedback/quest_complete/quest_complete__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-05T23:52:35.219Z"
     }
   }
 }
