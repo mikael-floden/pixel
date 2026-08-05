@@ -1880,60 +1880,41 @@ visible head/shoulders are ABOVE the surface).
   animation feels laggy when switching orientation" — a glide that runs
   DURING the rotation fights the canvas resize and the OS's own
   rotation animation).
-  ROTATION IS A TWO-PHASE FLIP (maintainer, rounds 3-4 the same day —
-  the plain snap still "felt laggy", and round 1 of the flip "animates
-  the UI for a location the UI was never at"; his ask: "wait for the
-  frame buffer to re-initialize at the old position and make the
-  animation smooth once the laggy stuff has finished reloading").
-  hud.ts beginFlip(), a per-frame controller:
-  (1) PIN — the classes/vars snap immediately (the canvas MUST resize
-  right away; that IS the heavy part) under :root.ml-noanim, while every
-  corner-chrome element (bars chips, clock pill, chat overlay, ghost
-  stick + blur disc — FLIP_CHROME) holds its OLD on-screen spot via
-  translate(). RE-COMPUTED EVERY FRAME, not once: a REAL phone rotation
-  resizes the viewport in SEVERAL STAGES (his mid-rotation screenshots
-  show a landscape layout crammed into a portrait-shaped surface with
-  black around it), and a delta computed against stage 1 strands the
-  chrome at a spot it never occupied — the filmed bug. Each frame
-  recovers every element's true anchor (rect − the translate applied,
-  no style-clearing round trip) and re-aims the pin, pre-paint, so the
-  chrome visually never moves while the browser thrashes; any further
-  resize just refreshes the controller's quiet-timer.
-  (1b) THE CANVAS DOES NOT RESIZE DURING THE STAGES (round 4 — his
-  screenshots showed multi-second stale letterboxed frames: a full
-  scale.resize per stage, framebuffer realloc + whole-world redraw,
-  back to back, blocks the main thread so long the OS composites
-  garbage; traced live at ~2s PER resize in the harness). main.ts
-  fitCanvas holds fire while :root.ml-flip is up — AND, because the
-  #game ResizeObserver delivers BEFORE the resize event that starts
-  the flip (traced: it beat beginFlip by 3ms), also whenever in-game
-  + touch + the aspect disagrees with ml-land (the same chimera test
-  as the snapshot guard). Meanwhile a THEME-SURFACE VEIL
+  ROTATION SNAPS UNDER A VEIL (maintainer 2026-08-05, FIVE rounds —
+  keep the arc, do not relearn it): anchor-transition glides, an
+  outright snap and a FLIP pin-then-glide were ALL tried and rejected.
+  The closing insight (round 5): Chrome/the OS already play their own
+  rotation animation over the app's surface, so ANY chrome animation on
+  top reads as a broken DOUBLE animation — "the menu shows up on the
+  correct spot immediately and looks good", and the corner chrome must
+  do the same. So on an orientation flip every anchor jumps straight to
+  its final value (:root.ml-noanim pins the anchor transitions off for
+  the whole flip); the HANDEDNESS glide stays (anchor transitions + the
+  gamepad's .anim) — nothing else moves during a hand switch.
+  What the flip machinery (hud.ts beginFlip) DOES own is the HEAVY part
+  (rounds 3-4, from his frozen mid-rotation screenshots): a real
+  rotation restages the viewport several times, and a full scale.resize
+  per stage — framebuffer realloc + whole-world redraw, back to back,
+  traced at ~2s PER resize — stalls the main thread so long the OS
+  composites stale letterboxed frames. main.ts fitCanvas therefore
+  holds fire while :root.ml-flip is up — AND, because the #game
+  ResizeObserver delivers BEFORE the resize event that starts the flip
+  (traced: it beat beginFlip by 3ms), also whenever in-game + touch +
+  the viewport aspect disagrees with ml-land. A THEME-SURFACE VEIL
   (.ml-flip-veil, z 3 — over the canvas, under stick/HUD/chat/chips)
-  hides the stale-sized world; the chrome pins and glides ON TOP of
-  it. At quiet (~300ms without a resize) the controller emits ONE
-  "ml-flip-flush" and the canvas takes its final size in a single
-  resize, under the veil.
-  (2) GLIDE — after the flush, once two consecutive frames come in
-  under ~34ms (hard cap 2.5s), the transforms clear under a
-  transform-ONLY transition (.ml-glide, 320ms) and the veil fades
-  .35s, revealing the freshly-sized world — compositor work only,
-  no layout/paint, smooth right after the resize.
-  TRAPS, all hit live: the OLD positions CANNOT be measured at
-  resize-event time (the browser applies the new viewport BEFORE the
-  event fires, so right/bottom-anchored fixed elements have already
-  been dragged along with their edges — the pill measured at left
-  −24px); they come from a ROLLING SNAPSHOT (flipRects, 400ms interval
-  + post-glide refresh) — which itself must SKIP any tick landing in
-  the viewport-resized-but-vars-not-yet gap (the same chimera from the
-  other side). The gate's settle() treats any live pin transform as
-  "not settled": pinned frames are perfectly stable, so geometry
-  equality alone returns mid-pin. And the mid-rotation "buggy black" is
-  softened by painting html/body with the THEME background while
-  in-game (index.html ships #000 for the pre-game screens). Gate
-  sections 4b + 4c (verify-landscape) watch a clean and a STAGED
-  rotation frame-by-frame — pinned at the old spot through every stage
-  (drift 0px), one transform-only glide, landing on the true anchor.
+  hides the stale-sized world; at quiet (~300ms without a resize) the
+  controller emits ONE "ml-flip-flush" and the canvas re-fits in a
+  single resize under the veil; after two calm frames (hard cap 2.5s)
+  the veil fades, revealing the world with every piece of chrome
+  already exactly where it belongs. The in-game html/body also wear the
+  THEME background (index.html ships #000 for the pre-game screens), so
+  any page the browser exposes mid-rotation reads as surface, not a
+  black hole. Gate sections 4b + 4c (verify-landscape) watch a clean
+  and a STAGED rotation frame-by-frame from inside the page: zero
+  transforms and zero glide classes on the chrome, the veil up during
+  and gone after, ZERO canvas resizes before the flush, the single
+  re-fit after, and the pill on its true final anchor. The gate's
+  settle() treats a live veil as "not settled".
   LANDSCAPE COLUMN SIZING (same round, from device screenshots): tabs
   keep their full 56px in landscape — the global ≤640px-HEIGHT rule was
   written for short PORTRAIT phones but every landscape phone is under

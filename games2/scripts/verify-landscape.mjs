@@ -70,13 +70,10 @@ try {
     for (let i = 0; i < 40; i++) {
       await page.waitForTimeout(150);
       const now = await page.evaluate(() => {
-        // A rotation FLIP pins the chrome at its OLD spot for up to ~1.3s
-        // (armFlipGlide) — pinned frames are perfectly stable, so geometry
-        // equality alone would return mid-pin. Any live pin transform keeps
-        // the poll going until the glide has cleared it.
-        const pinned = [...document.querySelectorAll(".ml-bars-l,.ml-bars-r,.ml-clock,.ml-chatlog,.ml-pad-stick,.ml-pad-blur")]
-          .some((e) => e.style.transform);
-        if (pinned) return `pinned-${Math.random()}`;
+        // A rotation flip keeps the veil up until the canvas has re-fitted
+        // (beginFlip) — geometry can look stable under it, so the poll also
+        // waits for the transition itself to finish.
+        if (document.querySelector(".ml-flip-veil")) return `flipping-${Math.random()}`;
         return ["ml-bars-l", "ml-bars-r", "ml-clock", "ml-pad-stick"]
           .map((c) => {
             const e = document.querySelector("." + c);
@@ -477,39 +474,29 @@ try {
     ? ok("right-handed portrait: stick right / jump left (the original spots)")
     : fail(`stick ${JSON.stringify(g.stick)} jump ${JSON.stringify(g.jump)}`);
 
-  // ---- 4b. the TWO-PHASE rotation FLIP (maintainer 2026-08-05 round 2:
-  //          "wait for the frame buffer to re-initialize at the old position
-  //          and make the animation smooth once the laggy stuff has finished
-  //          reloading"). Rotating portrait -> landscape, the clock pill must
-  //          (a) PIN: hold its OLD on-screen spot via a transform while the
-  //          canvas takes its new size, then (b) GLIDE: clear the transform
-  //          under a transform-only transition into the new anchor. A rAF
-  //          observer armed BEFORE the rotation watches every frame. ----
+  // ---- 4b. ROTATION SNAPS under the veil (maintainer 2026-08-05 round 5:
+  //          Chrome/the OS already animate the rotation itself, so any
+  //          chrome animation on top reads as a broken DOUBLE animation).
+  //          Rotating portrait -> landscape, the pill must jump STRAIGHT to
+  //          its landscape anchor — no pin transform, no glide class, no
+  //          intermediate positions — while the theme veil covers the canvas
+  //          re-fit and lifts after. ----
   await page.evaluate(() => {
     const el = document.querySelector(".ml-clock");
-    const oldLeft = el.getBoundingClientRect().left;
     window.__flip = new Promise((res) => {
-      const out = { oldLeft: Math.round(oldLeft), pinSeen: false, pinHeld: null,
-        glideSeen: false, glideProp: "", finalLeft: null, w: 0, timedOut: false };
+      const out = { transforms: 0, glides: 0, lefts: [], veilSeen: false, veilGone: false, timedOut: false };
       const t0 = performance.now();
-      let clearAt = 0;
       const tick = () => {
-        const tf = el.style.transform;
-        const r = el.getBoundingClientRect();
-        if (tf) {
-          out.pinSeen = true;
-          if (out.pinHeld === null) out.pinHeld = Math.abs(r.left - oldLeft) <= 3;
-          clearAt = 0;
-        } else if (out.pinSeen && !clearAt) clearAt = performance.now();
-        if (el.classList.contains("ml-glide")) {
-          out.glideSeen = true;
-          out.glideProp = getComputedStyle(el).transitionProperty;
-        }
+        if (el.style.transform) out.transforms++;
+        if (el.classList.contains("ml-glide")) out.glides++;
+        const l = Math.round(el.getBoundingClientRect().left);
+        if (!out.lefts.includes(l)) out.lefts.push(l);
+        const veil = document.querySelector(".ml-flip-veil");
+        if (veil) out.veilSeen = true;
+        out.veilGone = out.veilSeen && !veil;
         const now = performance.now();
-        if ((clearAt && now - clearAt > 600) || now - t0 > 6000) {
-          out.timedOut = now - t0 > 6000 && !clearAt;
-          out.finalLeft = Math.round(r.left);
-          out.w = Math.round(r.width);
+        if ((out.veilGone && now - t0 > 400) || now - t0 > 12000) {
+          out.timedOut = now - t0 > 12000 && !out.veilGone;
           res(out);
         } else requestAnimationFrame(tick);
       };
@@ -518,42 +505,40 @@ try {
   });
   await page.setViewportSize({ width: 851, height: 393 });
   const flip = await page.evaluate(() => window.__flip);
-  flip.pinSeen && flip.pinHeld === true
-    ? ok(`rotation pins the pill at its old spot while the canvas re-initializes (left ${flip.oldLeft})`)
-    : fail(`no pin phase on rotation: ${JSON.stringify(flip)}`);
-  flip.glideSeen && /transform/.test(flip.glideProp)
-    ? ok(`…then glides in on a transform-only transition (${flip.glideProp})`)
-    : fail(`no transform glide after the pin: ${JSON.stringify(flip)}`);
-  !flip.timedOut && Math.abs(flip.finalLeft + flip.w - (851 - 10)) <= 2
-    ? ok(`…and lands on the landscape anchor (right edge ${flip.finalLeft + flip.w})`)
-    : fail(`flip never settled on the anchor: ${JSON.stringify(flip)}`);
+  const pillFinal = await page.evaluate(() => {
+    const r = document.querySelector(".ml-clock").getBoundingClientRect();
+    return { l: Math.round(r.left), r: Math.round(r.right) };
+  });
+  flip.transforms === 0 && flip.glides === 0
+    ? ok("rotation snaps — no pin transform, no glide class on the chrome")
+    : fail(`chrome animated on rotation: ${JSON.stringify(flip)}`);
+  flip.lefts.length <= 2
+    ? ok(`pill went straight from old to new (positions seen: ${flip.lefts.join(" -> ")})`)
+    : fail(`pill wandered through ${flip.lefts.length} positions: ${flip.lefts.join(" -> ")}`);
+  flip.veilSeen && flip.veilGone && !flip.timedOut
+    ? ok("theme veil covered the flip and lifted after")
+    : fail(`veil lifecycle wrong: ${JSON.stringify(flip)}`);
+  Math.abs(pillFinal.r - (851 - 10)) <= 2
+    ? ok(`…and the pill sits on the landscape anchor (right edge ${pillFinal.r})`)
+    : fail(`pill landed wrong: ${JSON.stringify(pillFinal)}`);
   // back to portrait for the next section (and let ITS flip finish too)
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
-  await page.waitForFunction(
-    () => document.querySelector(".ml-clock").style.transform === "",
-    null, { timeout: 8000, polling: 100 },
-  );
 
-  // ---- 4c. STAGED rotation (the real-device shape, maintainer's mid-flip
-  //          screenshots 2026-08-05: a phone rotation resizes the viewport in
-  //          SEVERAL steps, and a pin computed once against the first stage
-  //          strands the chrome at a spot it never occupied — "animates the
-  //          UI for a location the UI was never at"). Two resizes 150ms
-  //          apart: the controller must RE-PIN through the second stage and
-  //          still land on the true final anchor. ----
+  // ---- 4c. STAGED rotation (the real-device shape: a phone rotation
+  //          resizes the viewport in SEVERAL steps). The chrome must still
+  //          never animate, the CANVAS must hold its buffer until the flip's
+  //          single flush (the per-stage scale.resize storm is what froze
+  //          real rotations into stale letterboxed frames), and everything
+  //          lands on the TRUE final anchors. ----
   await page.evaluate(() => {
     const el = document.querySelector(".ml-clock");
-    const oldLeft = el.getBoundingClientRect().left;
-    const oldTop = el.getBoundingClientRect().top;
     window.__flip2 = new Promise((res) => {
-      const out = { oldLeft: Math.round(oldLeft), pinSeen: false, maxDrift: 0,
-        glideSeen: false, finalLeft: null, w: 0, timedOut: false,
-        veil: null, cvEvents: [] };
-      // CANVAS DEFERRAL (the stall that froze real rotations): every buffer
-      // resize is recorded with whether the flip's single flush had happened
-      // yet. All of this observes from INSIDE the page — wall-clock checks
-      // from the driver race the starved harness.
+      const out = { transforms: 0, glides: 0, veil: null, veilGone: false,
+        cvEvents: [], timedOut: false };
+      // Every canvas buffer resize is recorded with whether the flip's
+      // single flush had happened yet. All of this observes from INSIDE the
+      // page — wall-clock checks from the driver race the starved harness.
       const cv = document.querySelector("#game canvas");
       let flushed = false;
       window.addEventListener("ml-flip-flush", () => (flushed = true), { once: true });
@@ -561,29 +546,19 @@ try {
         out.cvEvents.push({ w: cv.width, h: cv.height, beforeFlush: !flushed }),
       ).observe(cv, { attributes: true, attributeFilter: ["width", "height"] });
       const t0 = performance.now();
-      let clearAt = 0;
+      let veilSeen = false;
       const tick = () => {
-        const tf = el.style.transform;
-        const r = el.getBoundingClientRect();
-        if (tf) {
-          out.pinSeen = true;
-          // While pinned the pill must SIT at the old spot — through EVERY
-          // resize stage (the observer may read one rAF before the
-          // controller's same-frame correction, so allow slack far below
-          // the whole-stage 300px+ error this guards against).
-          out.maxDrift = Math.max(out.maxDrift, Math.abs(r.left - oldLeft), Math.abs(r.top - oldTop));
-          clearAt = 0;
-          if (!out.veil) {
-            const v = document.querySelector(".ml-flip-veil");
-            if (v) out.veil = { op: getComputedStyle(v).opacity, z: getComputedStyle(v).zIndex };
-          }
-        } else if (out.pinSeen && !clearAt) clearAt = performance.now();
-        if (el.classList.contains("ml-glide")) out.glideSeen = true;
+        if (el.style.transform) out.transforms++;
+        if (el.classList.contains("ml-glide")) out.glides++;
+        const v = document.querySelector(".ml-flip-veil");
+        if (v) {
+          veilSeen = true;
+          if (!out.veil) out.veil = { op: getComputedStyle(v).opacity, z: getComputedStyle(v).zIndex };
+        }
+        out.veilGone = veilSeen && !v;
         const now = performance.now();
-        if ((clearAt && now - clearAt > 600) || now - t0 > 12000) {
-          out.timedOut = now - t0 > 12000 && !clearAt;
-          out.finalLeft = Math.round(r.left);
-          out.w = Math.round(r.width);
+        if ((out.veilGone && now - t0 > 400) || now - t0 > 12000) {
+          out.timedOut = now - t0 > 12000 && !out.veilGone;
           res(out);
         } else requestAnimationFrame(tick);
       };
@@ -600,12 +575,16 @@ try {
   flip2.veil && flip2.veil.op === "1" && +flip2.veil.z === 3
     ? ok("theme veil covers the world while it re-fits (z 3, under the chrome)")
     : fail(`veil wrong mid-flip: ${JSON.stringify(flip2.veil)}`);
-  flip2.pinSeen && flip2.maxDrift <= 60
-    ? ok(`staged rotation keeps the pill pinned through both stages (max drift ${Math.round(flip2.maxDrift)}px)`)
-    : fail(`pill drifted mid-rotation: ${JSON.stringify(flip2)}`);
-  flip2.glideSeen && !flip2.timedOut && Math.abs(flip2.finalLeft + flip2.w - (851 - 10)) <= 2
-    ? ok(`…then glides once onto the TRUE final anchor (right edge ${flip2.finalLeft + flip2.w})`)
-    : fail(`staged rotation landed wrong: ${JSON.stringify(flip2)}`);
+  flip2.transforms === 0 && flip2.glides === 0 && !flip2.timedOut
+    ? ok("staged rotation never animates the chrome either")
+    : fail(`chrome animated across the stages: ${JSON.stringify(flip2)}`);
+  const pillStaged = await page.evaluate(() => {
+    const r = document.querySelector(".ml-clock").getBoundingClientRect();
+    return Math.round(r.right);
+  });
+  Math.abs(pillStaged - (851 - 10)) <= 2
+    ? ok(`…and the pill sits on the TRUE final anchor (right edge ${pillStaged})`)
+    : fail(`staged rotation landed wrong: right edge ${pillStaged}`);
   const after = await page.evaluate(() => ({
     cv: document.querySelector("#game canvas").width,
     gameW: document.getElementById("game").clientWidth,
@@ -621,10 +600,6 @@ try {
   // back to portrait for the help-chip section
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
-  await page.waitForFunction(
-    () => document.querySelector(".ml-clock").style.transform === "",
-    null, { timeout: 8000, polling: 100 },
-  );
 
   // ---- 5. help chip: dismiss is forever ----
   const before = await page.evaluate(() => {

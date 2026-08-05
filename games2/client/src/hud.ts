@@ -164,65 +164,17 @@ export function mountPageFrame() {
     layoutHooked = true;
     window.addEventListener("resize", applyLayout);
     window.addEventListener("ml-hand", applyLayout);
-    // The rotation flip's "where was everything" snapshot (see flipRects):
-    // cheap — seven getBoundingClientRects against a clean layout — and only
-    // while the world is mounted.
-    window.setInterval(snapshotFlipRects, 400);
-    window.setTimeout(snapshotFlipRects, 50); // first baseline once mounted
   }
 }
 
 let layoutHooked = false;
 let lastLandState: boolean | null = null;
-/** Cancels any orientation FLIP glide in flight (bumped per flip). */
+/** Cancels any orientation flip's veil cleanup in flight (bumped per flip). */
 let flipToken = 0;
-/** True from the moment a flip pins until its glide finishes — the rect
- * snapshots pause (a pinned rect is not an anchor position). */
-let flipBusy = false;
 
-/** The corner chrome that glides between its portrait and landscape homes:
- * the stat chips, the clock pill, the chat overlay, and the landscape ghost
- * stick with its blur disc. (The menu column itself is a display-level
- * reshape and always snaps.) */
-const FLIP_CHROME =
-  ".ml-bars-l,.ml-bars-r,.ml-clock,.ml-chatlog,.ml-chatinput,.ml-pad-stick,.ml-pad-blur";
-
-/** Where the chrome REALLY was before a rotation. This cannot be measured at
- * resize-event time: the browser applies the new viewport size BEFORE firing
- * the event, so every right/bottom-anchored fixed element has already been
- * dragged along with its edge by then (measured live: the clock pill read
- * left = −24 "before" a landscape→portrait flip — its landscape anchors
- * resolved against the already-portrait viewport). So a rolling snapshot,
- * refreshed on a cheap interval while the world is mounted and after every
- * layout pass, is the flip's source of truth for the OLD spots. */
-let flipRects = new Map<HTMLElement, DOMRect>();
-function snapshotFlipRects() {
-  if (flipBusy) return; // mid-flip rects include the pin transforms
-  // The OTHER side of the same trap: in the gap between the viewport
-  // resizing and the resize event running applyLayout, the layout vars still
-  // describe the previous orientation — anchors resolve to a chimera
-  // (measured: the pill at −24 px). A snapshot that fires in that gap must
-  // be skipped, or the next flip pins everything to the chimera.
-  const root = document.documentElement;
-  if (
-    root.classList.contains("ml-ingame") &&
-    touchDevice() &&
-    window.innerWidth > window.innerHeight !== root.classList.contains("ml-land")
-  )
-    return;
-  const m = new Map<HTMLElement, DOMRect>();
-  for (const el of document.querySelectorAll<HTMLElement>(FLIP_CHROME))
-    m.set(el, el.getBoundingClientRect());
-  flipRects = m;
-}
-
-/** The live flip transition, if one is running. `applied` remembers the
- * translate() currently on each element so its true anchor can be recovered
- * from a rect without touching styles (anchor = rect − applied). */
+/** The live flip transition, if one is running. */
 let flipCtl: {
   token: number;
-  old: Map<HTMLElement, DOMRect>;
-  applied: Map<HTMLElement, { dx: number; dy: number }>;
   started: number;
   lastResize: number;
   lastFrame: number;
@@ -237,57 +189,38 @@ let flipCtl: {
  * canvas, below the stick (4) / HUD column (4) / chat (5) / chips (8). */
 let flipVeil: HTMLElement | null = null;
 
-/** The orientation glide, FLIP-style (maintainer 2026-08-05, rounds 2-4 —
- * a plain anchor transition "feels laggy", an outright snap "still feels
- * laggy", and mid-rotation screenshots showed stale letterboxed frames with
- * chrome "at a location the UI was never at". His ask: "wait for the frame
- * buffer to re-initialize at the old position and make the animation smooth
- * once the laggy stuff has finished reloading."
- *
- * Driven by a per-frame controller:
- *  1. PIN + VEIL — the classes and layout vars snap immediately, the game
- *     view goes behind a theme-surface veil, and every chrome element holds
- *     its OLD on-screen spot via translate(). RE-COMPUTED EVERY FRAME, not
- *     once: a real phone rotation resizes the viewport in SEVERAL stages,
- *     and a delta computed against the first stage strands the chrome at a
- *     spot it never occupied — the filmed bug. Each frame recovers every
- *     element's true anchor (rect − the translate we applied) and re-aims
- *     the pin, pre-paint, so the chrome visually NEVER moves while the
- *     browser is thrashing.
- *     Crucially the CANVAS DOES NOT RESIZE during this phase: :root.ml-flip
- *     suspends main.ts's fitCanvas, because a full scale.resize per stage —
- *     framebuffer realloc + whole-world redraw, several times over — is the
- *     very stall that froze the OS rotation into stale letterboxed frames.
- *  2. FLUSH — once resize events have been quiet ~300ms, ONE "ml-flip-flush"
- *     re-fits the canvas at the final size (the single heavy redraw, hidden
- *     by the veil).
- *  3. GLIDE — after the flush, once two consecutive frames come in under
- *     ~34ms (hard cap 2.5s), the transforms clear under a transform-only
- *     transition and the veil fades, revealing the freshly-sized world.
- *     translate()/opacity animate on the compositor — no layout, no paint —
- *     so the reveal stays smooth. */
+/** The orientation flip (maintainer 2026-08-05, five rounds — the arc
+ * matters, do not relearn it):
+ *  - Anchor-transition glides and a FLIP pin-then-glide were BOTH tried and
+ *    both rejected. The final insight (round 5): Chrome/the OS already play
+ *    their own rotation animation over the app's surface, so ANY chrome
+ *    animation on top reads as a broken DOUBLE animation — "the menu shows
+ *    up on the correct spot immediately and looks good", and the corner
+ *    chrome must do the same. ORIENTATION SNAPS. The handedness glide
+ *    (anchor transitions + the gamepad's .anim) is untouched — nothing else
+ *    is moving during a hand switch, so it stays smooth and wanted.
+ *  - What the flip DOES own is the heavy part (rounds 3-4): a real rotation
+ *    restages the viewport several times, and a full scale.resize per stage
+ *    — framebuffer realloc + whole-world redraw, back to back — stalls the
+ *    main thread for seconds (the filmed stale letterboxed frames). So
+ *    while the flip is live, :root.ml-flip suspends main.ts's fitCanvas and
+ *    :root.ml-noanim freezes the anchor transitions (that is what makes the
+ *    snap a SNAP); the game view sits behind a theme-surface veil; once
+ *    resize events have been quiet ~300ms, ONE "ml-flip-flush" re-fits the
+ *    canvas at its final size under the veil; and after two calm frames
+ *    (hard cap 2.5s) the veil fades, revealing the freshly-sized world with
+ *    every piece of chrome ALREADY at its final anchor. */
 function beginFlip() {
   const now = performance.now();
   if (flipCtl) {
-    // Rotation staged again (or rotated back) mid-transition: keep the SAME
-    // old spots — the controller re-aims at them against the new anchors,
-    // and a rotate-back simply finds deltas near zero.
+    // Rotation staged again (or rotated back) mid-transition: just keep the
+    // transition open until the viewport truly settles.
     flipCtl.lastResize = now;
     flipCtl.flushed = false; // the final size changed again — re-flush at quiet
     return;
   }
   const token = ++flipToken;
-  flipCtl = {
-    token,
-    old: flipRects,
-    applied: new Map(),
-    started: now,
-    lastResize: now,
-    lastFrame: now,
-    calm: 0,
-    flushed: false,
-  };
-  flipBusy = true;
+  flipCtl = { token, started: now, lastResize: now, lastFrame: now, calm: 0, flushed: false };
   const root = document.documentElement;
   root.classList.add("ml-noanim");
   root.classList.add("ml-flip"); // suspends main.ts fitCanvas until the flush
@@ -296,36 +229,9 @@ function beginFlip() {
     document.body.appendChild(flipVeil);
   }
   flipVeil.style.opacity = "1";
-  for (const el of document.querySelectorAll<HTMLElement>(FLIP_CHROME))
-    el.classList.remove("ml-glide"); // a still-decaying previous glide must not animate the pins
   const step = (t: number) => {
     const c = flipCtl;
     if (!c || c.token !== token) return;
-    // PIN (pre-paint: resize listeners have run this frame, so rects reflect
-    // the CURRENT stage's anchors).
-    for (const [el, old] of c.old) {
-      if (!el.isConnected) continue;
-      const ap = c.applied.get(el);
-      const r = el.getBoundingClientRect();
-      if (!r.width || !old.width) {
-        // hidden on either side: never glide it in from nowhere
-        if (ap) {
-          el.style.transform = "";
-          c.applied.delete(el);
-        }
-        continue;
-      }
-      const dx = Math.round(old.left - (r.left - (ap?.dx ?? 0)));
-      const dy = Math.round(old.top - (r.top - (ap?.dy ?? 0)));
-      if (ap && ap.dx === dx && ap.dy === dy) continue;
-      if (dx || dy) {
-        el.style.transform = `translate(${dx}px, ${dy}px)`;
-        c.applied.set(el, { dx, dy });
-      } else if (ap) {
-        el.style.transform = "";
-        c.applied.delete(el);
-      }
-    }
     // SETTLE — quiet resizes first, then ONE canvas flush, then calm frames.
     const dt = t - c.lastFrame;
     c.lastFrame = t;
@@ -336,35 +242,29 @@ function beginFlip() {
       // The viewport has stopped restaging: let the canvas take its final
       // size NOW, in one go, under the veil. This is the heavy frame —
       // framebuffer realloc + world redraw — so the calm counter resets and
-      // the glide waits for the frames after it.
+      // the reveal waits for the frames after it.
       c.flushed = true;
       root.classList.remove("ml-flip");
       window.dispatchEvent(new Event("ml-flip-flush"));
       c.calm = 0;
     }
-    if (c.flushed && ((c.calm >= 2 && t - c.started >= 120) || capped)) glide();
+    if (c.flushed && ((c.calm >= 2 && t - c.started >= 120) || capped)) reveal();
     else requestAnimationFrame(step);
   };
-  const glide = () => {
-    const pinned = [...flipCtl!.applied.keys()];
+  const reveal = () => {
     flipCtl = null;
     root.classList.remove("ml-noanim");
     root.classList.remove("ml-flip"); // belt — the flush path already did
-    // the veil fades as the chrome glides, revealing the re-fitted world
+    // the veil fades out, revealing the re-fitted world under chrome that is
+    // already exactly where it belongs
     if (flipVeil) flipVeil.style.opacity = "0";
     const doneVeil = flipVeil;
-    for (const el of pinned) el.classList.add("ml-glide");
-    void document.body.offsetWidth; // flush, so the transition starts FROM the pin
-    for (const el of pinned) el.style.transform = "";
     window.setTimeout(() => {
-      if (token !== flipToken) return; // a newer flip owns these elements now
-      for (const el of pinned) el.classList.remove("ml-glide");
+      if (token !== flipToken) return; // a newer flip owns the veil now
       if (doneVeil && doneVeil === flipVeil) {
         doneVeil.remove();
         flipVeil = null;
       }
-      flipBusy = false;
-      snapshotFlipRects(); // the new anchors become the next flip's "old"
     }, 450);
   };
   requestAnimationFrame(step);
@@ -1625,19 +1525,17 @@ function injectStyles() {
      grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
      hand-drawn art; a fixed square box distorted + fractionally scaled them) */
   .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
-  /* rotation = the two-phase FLIP (applyLayout + armFlipGlide): ml-noanim
-     freezes the ANCHOR transitions through the pin phase (the vars snap, a
-     translate() holds each element at its old spot), then .ml-glide runs the
-     transform back to zero once the rotation's heavy frames have settled.
-     transform animates on the compositor — no layout, no paint — which is
-     what keeps the glide smooth right after a canvas resize. Handedness
-     changes still use the plain anchor transitions. !important — these
-     transitions live in four different injected sheets. */
+  /* rotation = SNAP (beginFlip holds ml-noanim through the whole flip):
+     Chrome/the OS already animate the rotation itself, so any chrome
+     animation on top reads as a broken double animation (maintainer round
+     5). Every anchor jumps straight to its final value; only the veil
+     fades. Handedness changes keep the plain anchor transitions — nothing
+     else moves during a hand switch. !important — these transitions live
+     in four different injected sheets. */
   :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
-  .ml-glide{transition:transform .32s ease!important}
   /* the rotation veil: theme surface over the game view while the canvas
-     re-fits (beginFlip). Fades on the compositor with the chrome glide. */
+     re-fits (beginFlip). Fades on the compositor once the world is ready. */
   .ml-flip-veil{position:fixed;inset:0;z-index:3;background:var(--bg);
     pointer-events:none;opacity:1;transition:opacity .35s ease}
   /* Rotation exposes raw page behind the canvas for a few frames while the
