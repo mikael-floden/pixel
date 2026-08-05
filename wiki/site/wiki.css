@@ -170,10 +170,21 @@ button { font: inherit; cursor: pointer; }
   border: 1px solid var(--border); border-radius: 9px; padding: 6px 12px;
 }
 .ghost-btn:hover { background: var(--surface-2); }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); }
+/* A hero now has more animation states than fit one drawer-width row
+   (maintainer 2026-08-05: keep this layout, let the finger scroll). The seg
+   LOOKS identical — no scrollbar, same border, same pills — but pans
+   horizontally when it overflows; the half-cut button at the edge is the
+   affordance. max-width pins it to its column so the PAGE never scrolls. */
+.seg {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 9px;
+  overflow-x: auto; overflow-y: hidden; background: var(--surface);
+  max-width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.seg::-webkit-scrollbar { display: none; }
 .seg button {
   background: transparent; border: none; padding: 5px 10px; color: var(--muted);
   border-right: 1px solid var(--border); font-size: 13px;
+  flex: 0 0 auto; white-space: nowrap;   /* buttons keep their size; the ROW pans */
 }
 .seg button:last-child { border-right: none; }
 .seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }

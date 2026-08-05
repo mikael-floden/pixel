@@ -352,6 +352,16 @@ function makePlayer(entity, kind) {
   rafTimer = requestAnimationFrame(tick);
 
   const stateSeg = h("span", { class: "seg" });
+  // Keep the ACTIVE state visible inside the pannable row — scrollLeft only,
+  // never scrollIntoView: that can drag the whole page along with it.
+  function revealActiveState() {
+    const on = stateSeg.querySelector("button.on");
+    if (!on) return;
+    const pad = 14;
+    if (on.offsetLeft < stateSeg.scrollLeft + pad) stateSeg.scrollLeft = Math.max(0, on.offsetLeft - pad);
+    else if (on.offsetLeft + on.offsetWidth > stateSeg.scrollLeft + stateSeg.clientWidth - pad)
+      stateSeg.scrollLeft = on.offsetLeft + on.offsetWidth - stateSeg.clientWidth + pad;
+  }
   function renderStateSeg() {
     stateSeg.replaceChildren(...stateNames.map((s) =>
       h("button", {
@@ -364,7 +374,7 @@ function makePlayer(entity, kind) {
           if (!anims[s]?.dirs?.[cur.dir]) {
             cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           }
-          loadClip(); renderStateSeg(); renderDirPad(); onStateChange?.(s);
+          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onStateChange?.(s);
         },
       }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""))));
   }
@@ -380,6 +390,7 @@ function makePlayer(entity, kind) {
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
   renderStateSeg();
+  requestAnimationFrame(revealActiveState);
   renderDirPad();
 
   const playBtn = h("button", { class: "ghost-btn", onclick: () => { cur.playing = !cur.playing; playBtn.textContent = cur.playing ? "⏸" : "▶"; } }, "⏸");
