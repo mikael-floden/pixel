@@ -1,4 +1,5 @@
-"""Verify the repo mirror EXACTLY matches PixelLab truth for the pinned heroes.
+"""Verify the repo mirror EXACTLY matches PixelLab truth: the two pinned heroes
+AND the tag-driven NPC set (every character tagged NPC on PixelLab).
 
 PixelLab is the source of truth. This re-fetches each pinned character and checks
 that humans/<name>/ is an exact, complete mirror — nothing missing, nothing stale:
@@ -25,7 +26,7 @@ import sys
 from PIL import Image
 
 from pixellab_client import DIRECTIONS_8, PixelLabClient
-from sync import HUMANS, load_config, frame_ext, _assign_slugs, _slug
+from sync import HUMANS, NPCS, load_config, frame_ext, list_npcs, npc_folder, _assign_slugs, _slug
 
 
 EXT = frame_ext()   # ".png" today, ".webp" after the migration (config.json)
@@ -67,9 +68,9 @@ def _valid_png(path, require_opaque_pixels=False):
     return None
 
 
-def verify_character(client, name, cid):
+def verify_character(client, name, cid, dest=None):
     problems = []
-    root = os.path.join(HUMANS, name)
+    root = os.path.join(dest or HUMANS, name)
     if not os.path.isdir(root):
         return [f"{name}: directory missing entirely"]
 
@@ -165,7 +166,7 @@ def verify_animation_map(name):
         return [f"{name}: animation_map.json missing (game state->folder mapping)"]
     m = json.load(open(mpath))
     resolved = {**(m.get("states") or {}), **((m.get("overrides") or {}).get(name) or {})}
-    adir_root = os.path.join(HUMANS, name, "animations")
+    adir_root = os.path.join(HUMANS, name, "animations")  # heroes only — NPCs have no game-state map
     for state, folder in resolved.items():
         south = os.path.join(adir_root, folder, "south")
         if not (os.path.isdir(os.path.join(adir_root, folder)) and os.path.isdir(south)
@@ -175,14 +176,59 @@ def verify_animation_map(name):
     return problems
 
 
+def verify_npcs(client):
+    """Verify the tag-driven NPC mirror both ways: every NPC-tagged PixelLab
+    character has a complete, valid npcs/<folder>/ (rotations + animations +
+    manifest, via verify_character), no folder exists without a tagged
+    character behind it, and index.json lists exactly the folder set."""
+    problems = []
+    npcs = list_npcs(client)
+    folders = {}
+    for c in sorted(npcs, key=lambda c: c["id"]):
+        folders[c["id"]] = npc_folder(c["id"], set(folders.values()))
+    expected = set(folders.values())
+
+    on_disk = {f for f in (os.listdir(NPCS) if os.path.isdir(NPCS) else [])
+               if os.path.isdir(os.path.join(NPCS, f))}
+    for f in sorted(expected - on_disk):
+        problems.append(f"npcs: MISSING folder '{f}' (tagged on PixelLab, not mirrored)")
+    for f in sorted(on_disk - expected):
+        problems.append(f"npcs: STALE folder '{f}' (no NPC-tagged character behind it)")
+
+    frames = 0
+    for cid, folder in sorted(folders.items(), key=lambda kv: kv[1]):
+        if folder not in on_disk:
+            continue
+        probs = verify_character(client, folder, cid, dest=NPCS)
+        problems += [f"npcs/{p}" for p in probs]
+        man = json.load(open(os.path.join(NPCS, folder, "character.json")))
+        frames += sum(d.get("frame_count", 0)
+                      for a in (man.get("animations") or {}).values()
+                      for d in (a.get("directions") or {}).values())
+
+    idx = json.load(open(os.path.join(NPCS, "index.json"))) if os.path.exists(
+        os.path.join(NPCS, "index.json")) else {}
+    if set((idx.get("npcs") or {}).keys()) != expected:
+        problems.append("npcs: index.json folder set != tagged set")
+    return problems, len(npcs), frames
+
+
 def main():
     cfg = load_config()
     pins = cfg.get("pixellab_characters") or {}
-    targets = sys.argv[1:] or list(pins.keys())
+    targets = sys.argv[1:] or (list(pins.keys()) + ["npcs"])
     client = PixelLabClient()
 
     all_problems = {}
     for name in targets:
+        if name == "npcs":
+            probs, n, frames = verify_npcs(client)
+            all_problems["npcs"] = probs
+            status = "PASS" if not probs else f"FAIL ({len(probs)} problems)"
+            print(f"[{status}] npcs: {n} NPC-tagged characters, {frames} animation frames on disk")
+            for p in probs[:20]:
+                print(f"    - {p}")
+            continue
         cid = pins.get(name)
         if not cid:
             all_problems[name] = [f"{name}: not pinned in config"]

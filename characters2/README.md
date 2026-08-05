@@ -30,6 +30,34 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
+## NPCs (`npcs/`) — tag-driven mirror
+
+Beyond the two heroes, this domain mirrors **every PixelLab character tagged
+`NPC`** — the tag is the ground truth, exactly like the monsters domain's
+`MONSTER` tag. `sync.py` discovers the set by listing the account's characters,
+mirrors each into `npcs/<folder>/` (same shape as a hero: `base/` 8 rotations +
+`animations/<slug>/<dir>/N.webp` + `character.json`), and **prunes** any folder
+whose character lost the tag or was deleted. Tag a character `NPC` in the
+PixelLab UI and the next sync brings it in; untag it and the next sync removes
+it.
+
+- **Folders are keyed by the PixelLab id's first 8 hex chars** (`npcs/3749cceb/`),
+  NOT the name: NPC names are duplicate prompt junk ("light armor with sho
+  (copy 4)" ×7), and the id prefix is stable across renames. On a prefix
+  collision the folder simply takes more of the id.
+- **`npcs/index.json`** (`characters2-npcs@1`) is the roll-up consumers should
+  read: every folder with its full PixelLab id, raw name, and animation slugs —
+  no tree-walking needed.
+- Authored facts (display names, lore, roles) belong in `metadata.json` under
+  the same folder key, and merge onto the NPC's `character.json` like a hero's.
+- `verify_sync.py` checks the set BOTH ways (nothing tagged is missing, nothing
+  untagged survives) plus full per-NPC integrity.
+
+```bash
+python characters2/pipeline/sync.py npcs        # just the NPC set
+python characters2/pipeline/sync.py             # heroes + NPCs (default)
+```
+
 ## WebP — MIGRATED (2026-07-31)
 
 All art in this domain is **lossless WebP**; there are zero PNGs left under

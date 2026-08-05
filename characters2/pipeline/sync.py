@@ -53,7 +53,9 @@ from pixellab_client import DIRECTIONS_8, PixelLabClient
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # characters2/
 REPO_ROOT = os.path.dirname(ROOT)
 HUMANS = os.path.join(ROOT, "humans")
+NPCS = os.path.join(ROOT, "npcs")
 CONFIG = os.path.join(ROOT, "config.json")
+NPC_TAG = "NPC"          # the PixelLab tag that makes a character an NPC (ground truth)
 
 
 def load_config():
@@ -145,15 +147,18 @@ def _dir_key(order, d):
 
 # --- mirroring one character ------------------------------------------------
 
-def sync_character(client, name, cid, force=False):
+def sync_character(client, name, cid, force=False, dest=None):
     """Mirror one PixelLab character (base rotations + all animations) into
     humans/<name>/. Returns a short summary dict.
 
     force=True re-downloads every frame even when the group-id / URL looks
     unchanged. PixelLab can update an animation IN PLACE (same animation_group_id
     and same frame URLs, new pixels), which the normal fast-skip cannot see, so a
-    forced pass is how you pull such edits."""
-    root = os.path.join(HUMANS, name)
+    forced pass is how you pull such edits.
+
+    dest picks the tree: HUMANS (default, the two heroes) or NPCS (the
+    tag-driven NPC mirror) — the on-disk shape is identical either way."""
+    root = os.path.join(dest or HUMANS, name)
     os.makedirs(root, exist_ok=True)
     prev = _read_json(os.path.join(root, "character.json"), {}) or {}
     prev_rot = (prev.get("rotations") or {})
@@ -387,6 +392,86 @@ def commit_push(message, push=True):
     return True
 
 
+# --- NPCs (tag-driven mirror) -------------------------------------------------
+
+def npc_folder(cid, taken):
+    """Folder name for an NPC: the first 8 hex chars of its PixelLab id.
+
+    PixelLab NPC names are duplicate prompt junk ('light armor with sho (copy
+    4)' x7), so names cannot key folders; the id prefix is stable across renames
+    and today collision-free across all 191. If a prefix ever collides, extend
+    with more of the id until unique."""
+    n = 8
+    while cid[:n] in taken and n < len(cid):
+        n += 1
+    return cid[:n]
+
+
+def list_npcs(client):
+    """Every character on PixelLab carrying the NPC tag (case-insensitive).
+    The tag is the ground truth for what an NPC is — same model as the
+    monsters domain's MONSTER tag."""
+    return [c for c in client.list_characters()
+            if any((t or "").upper() == NPC_TAG for t in (c.get("tags") or []))]
+
+
+def sync_npcs(client, force=False):
+    """Mirror ALL NPC-tagged PixelLab characters into npcs/<id8>/ and PRUNE any
+    folder whose character lost the tag or was deleted (true mirror). Also
+    writes npcs/index.json (characters2-npcs@1) so consumers can enumerate NPCs
+    without walking the tree."""
+    os.makedirs(NPCS, exist_ok=True)
+    npcs = list_npcs(client)
+
+    # id-prefix folder per NPC, resolved against the whole set at once
+    folders = {}
+    for c in sorted(npcs, key=lambda c: c["id"]):
+        folders[c["id"]] = npc_folder(c["id"], set(folders.values()))
+
+    totals = {"npcs": len(npcs), "rot_new": 0, "anim_new": 0, "frames": 0, "skipped": 0}
+    index = {}
+    for i, c in enumerate(sorted(npcs, key=lambda c: c["id"]), 1):
+        cid = c["id"]; folder = folders[cid]
+        s = sync_character(client, folder, cid, force=force, dest=NPCS)
+        totals["rot_new"] += s["rot_new"]; totals["anim_new"] += s["anim_new"]
+        totals["frames"] += s["frames"]
+        if not (s["rot_new"] or s["anim_new"]):
+            totals["skipped"] += 1
+        man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
+        index[folder] = {
+            "pixellab_character_id": cid,
+            "name": c.get("name"),
+            "animations": sorted((man.get("animations") or {}).keys()),
+        }
+        if i % 25 == 0 or i == len(npcs):
+            print(f"  npcs: {i}/{len(npcs)} mirrored "
+                  f"(+{totals['frames']} frames so far)", flush=True)
+
+    # prune folders whose character is no longer NPC-tagged on PixelLab
+    keep = set(folders.values())
+    pruned = []
+    for fn in sorted(os.listdir(NPCS)):
+        p = os.path.join(NPCS, fn)
+        if os.path.isdir(p) and fn not in keep:
+            shutil.rmtree(p); pruned.append(fn)
+    if pruned:
+        print(f"  npcs: pruned {len(pruned)} no-longer-tagged: {pruned[:8]}"
+              f"{'…' if len(pruned) > 8 else ''}")
+
+    _write_json(os.path.join(NPCS, "index.json"), {
+        "format": "characters2-npcs@1",
+        "_comment": "Roll-up of the tag-driven NPC mirror: every PixelLab "
+                    "character tagged NPC, keyed by its npcs/<folder>. The tag "
+                    "is the ground truth — sync.py prunes untagged folders. "
+                    "`name` is PixelLab prompt junk; authored facts belong in "
+                    "characters2/metadata.json under the same folder key.",
+        "count": len(index),
+        "npcs": index,
+    })
+    totals["pruned"] = len(pruned)
+    return totals
+
+
 # --- main -------------------------------------------------------------------
 
 def main():
@@ -402,10 +487,22 @@ def main():
     pins = cfg.get("pixellab_characters") or {}
     if not pins:
         raise SystemExit("config.json:pixellab_characters is empty — nothing to sync.")
-    targets = args.names or list(pins.keys())
+    # Default pass = the two pinned heroes, then the tag-driven NPC set.
+    # `sync.py npcs` runs just the NPCs; `sync.py default_girl` just one hero.
+    targets = args.names or (list(pins.keys()) + ["npcs"])
 
     client = PixelLabClient()
     for name in targets:
+        if name == "npcs":
+            print(f"+ syncing NPCs (every PixelLab character tagged {NPC_TAG})"
+                  f"{' (FORCE)' if args.force else ''}")
+            t = sync_npcs(client, force=args.force)
+            print(f"  npcs: {t['npcs']} mirrored | +{t['frames']} frames | "
+                  f"{t['skipped']} unchanged | {t['pruned']} pruned")
+            commit_push(f"characters2: sync {t['npcs']} NPCs from PixelLab "
+                        f"(+{t['frames']} frames, {t['pruned']} pruned)",
+                        push=not args.no_push)
+            continue
         cid = pins.get(name)
         if not cid:
             print(f"! {name}: not pinned in config, skipping")

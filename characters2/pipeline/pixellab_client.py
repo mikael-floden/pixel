@@ -149,6 +149,20 @@ class PixelLabClient:
         """Full character record: rotation_urls + animations (frame URLs) + meta."""
         return self._request("GET", f"{V2}/characters/{character_id}")
 
+    def list_characters(self):
+        """Every character on the account (paginated). Shallow records —
+        id/name/tags/group_id — use get_character for rotations/animations.
+        This is how tag-driven mirrors (the NPC set) discover their members."""
+        out, offset = [], 0
+        while True:
+            r = self._request("GET", f"{V2}/characters?limit=100&offset={offset}")
+            chars = r.get("characters") or []
+            out.extend(chars)
+            total = r.get("total") or 0
+            if not chars or len(out) >= total:
+                return out
+            offset += len(chars)
+
     def last_modified(self, url):
         """Last-Modified datetime for a CDN asset (None if unavailable). Used to
         pick the newest frames when PixelLab returns duplicate direction entries
