@@ -359,10 +359,10 @@ const OCC_CULL_PAD = OCC_STEP + 64 + 200;
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
-// Battle music (composer): a monster inside this radius (world units, 32/cell
-// — so ~5 cells) counts as "on me". Deliberately close: monsters roam freely
-// and the score must not go to battle for a donkey wandering past.
-const THREAT_NEAR_WU = 170;
+// Battle music (composer): how close a HUNTING monster (mstate chase/combat)
+// has to be for the fight to count as mine — world units, 32/cell, so ~7
+// cells. Roaming monsters score zero at any distance.
+const THREAT_NEAR_WU = 220;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
@@ -2558,24 +2558,24 @@ export class WorldScene extends Phaser.Scene {
       const d = Math.hypot(me.fx / CELL_WU - this.campfire.col, me.fy / CELL_WU - this.campfire.row);
       fire = Math.max(0, 1 - d / 7);
     }
-    // THREAT — how surrounded am I, for the battle bed. Distance to the nearest
-    // monster, softened by how many others are also close, so one grazing
-    // donkey is not a battle but three closing monsters are. Monsters roam
-    // freely today (no combat brain yet), so this is deliberately CLOSE-range:
-    // the music should mean "they are on me", not "one exists on this map".
+    // THREAT — am I in a FIGHT, for the battle bed. The monster brain's own
+    // `mstate` is the honest signal: a monster that is merely roaming past is
+    // scenery however close it gets, while one in `chase`/`combat` is hunting.
+    // Proximity then decides whether the fight is MINE (a monster chasing
+    // someone else across the valley must not score my music). Summed over
+    // attackers so a pack reads hotter than a single donkey, and a dying
+    // monster stops counting immediately so the music can let go.
     let threat = 0;
     if (this.monsters.size) {
       const mx = me.fx;
       const my = me.fy;
-      let nearest = Infinity;
-      let close = 0;
       this.monsters.forEach((mv) => {
+        const w = mv.mstate === "combat" ? 1 : mv.mstate === "chase" ? 0.75 : 0;
+        if (!w) return;
         const d = Math.hypot(mv.fx - mx, mv.fy - my);
-        if (d < nearest) nearest = d;
-        if (d < THREAT_NEAR_WU) close++;
+        threat += w * Math.max(0, 1 - d / THREAT_NEAR_WU);
       });
-      const near = Math.max(0, 1 - nearest / THREAT_NEAR_WU);
-      threat = Math.min(1, near * (1 + 0.35 * Math.max(0, close - 1)));
+      threat = Math.min(1, threat);
     }
     return {
       forest: frac(forest), water: frac(water), town: frac(town), fire,
