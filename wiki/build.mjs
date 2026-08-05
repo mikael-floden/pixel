@@ -73,6 +73,28 @@ function frameNaming(absDir) {
   return { frameExt: ext.toLowerCase(), framePad: stem.length };
 }
 
+/* --- committed SIDECARS (wiki/clean_base.json, wiki/world_map.json) --------
+   Both are snapshots this domain took of another domain's art, so both go
+   stale the moment that domain renames anything — and both did, on the WebP
+   flip: 226 clean-base paths and the minimap still said .png while the art had
+   become .webp. Nothing looked broken for a day because the game server was
+   quietly rescuing .png → .webp; the hour that middleware was deleted
+   (af9153638) the rot became visible as a blank clean-base ring on every tile
+   page and a missing clean-base pill.
+   So every path out of a sidecar is re-resolved against the disk HERE — and
+   the run says out loud how many needed it, because a silent rescue is exactly
+   what let this rot unnoticed. Resolving keeps the pages working; the warning
+   is what gets the sidecar regenerated at its source. */
+const staleSidecar = [];
+const reArt = (p) => {
+  if (typeof p !== "string") return null;
+  const fixed = art(p.replace(/\.(png|webp)$/i, ""));
+  if (!fixed) staleSidecar.push(`${p} → GONE`);
+  else if (fixed !== p) staleSidecar.push(`${p} → ${fixed}`);
+  return fixed;
+};
+const reArtAll = (a) => (a ?? []).map(reArt).filter(Boolean);
+
 /** Pixel dimensions of a PNG or a WebP, read from the header. Zero
  *  dependencies, and it must stay that way: this runs inside the Docker build.
  *  WebP has three shapes and the animation viewer's frame maths depends on
@@ -301,7 +323,7 @@ function buildTiles() {
   const cleanBase = readJson(join(ROOT, "wiki", "clean_base.json"))?.types ?? {};
   for (const t of types) {
     const cb = cleanBase[t.id];
-    if (cb) t.cleanBase = { plain: cb.plain, solid: cb.solid ?? [], clean: cb.clean ?? [] };
+    if (cb) t.cleanBase = { plain: reArt(cb.plain), solid: reArtAll(cb.solid), clean: reArtAll(cb.clean) };
   }
   // INCOMING transitions (maintainer 2026-07-30): a type's page must also list
   // the transitions OTHER types generated toward it, rendered exactly like its
@@ -602,7 +624,7 @@ function buildWorldUsage() {
   // lives" map. Only used when it describes THIS world.
   const wm = readJson(join(ROOT, "wiki", "world_map.json"));
   const map = wm?.world === name
-    ? { minimap: wm.minimap, mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj, monsters: wm.monsters ?? {} }
+    ? { minimap: reArt(wm.minimap), mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj, monsters: wm.monsters ?? {} }
     : null;
 
   return {
@@ -853,3 +875,14 @@ const data = {
 writeFileSync(OUT, JSON.stringify(data));
 console.log(`[wiki] wrote ${OUT}`);
 console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}${levelled ? ` — backfilled ${levelled} monster level(s)` : ""}`);
+// The build carries on regardless — resolving keeps every page correct — but a
+// stale sidecar is a real fault at its SOURCE, and silence is what let the last
+// one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
+if (staleSidecar.length) {
+  const gone = staleSidecar.filter((x) => x.endsWith("GONE"));
+  console.warn(`[wiki] WARNING: ${staleSidecar.length} stale path(s) in the committed sidecars, resolved on the fly:`);
+  for (const x of staleSidecar.slice(0, 5)) console.warn(`         ${x}`);
+  if (staleSidecar.length > 5) console.warn(`         … and ${staleSidecar.length - 5} more`);
+  console.warn("       Re-run wiki/tools/clean-base.py and wiki/tools/world-map.py to refresh them.");
+  if (gone.length) console.warn(`       ${gone.length} name art that no longer exists at all — those cannot be resolved.`);
+}

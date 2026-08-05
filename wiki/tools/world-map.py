@@ -43,9 +43,14 @@ def default_world() -> str:
 
 def build(name: str) -> dict | None:
     wdir = os.path.join(ROOT, "maps2", "worlds", name)
-    wpath, mpath, spath = (os.path.join(wdir, f) for f in ("world.json", "minimap.png", "spawns.json"))
-    if not all(os.path.isfile(p) for p in (wpath, mpath, spath)):
-        print(f"  {name}: missing world.json / minimap.png / spawns.json — skipped")
+    wpath, spath = (os.path.join(wdir, f) for f in ("world.json", "spawns.json"))
+    # The minimap's FORMAT is maps2's business, not ours (it became .webp on the
+    # 2026-07-31 flip). Find it rather than naming it: this file is a snapshot
+    # of their art, and a snapshot that hardcodes an extension rots silently.
+    mpath = next((p for p in (os.path.join(wdir, f"minimap.{e}") for e in ("webp", "png"))
+                  if os.path.isfile(p)), None)
+    if not (mpath and all(os.path.isfile(p) for p in (wpath, spath))):
+        print(f"  {name}: missing world.json / minimap.(webp|png) / spawns.json — skipped")
         return None
     world = json.load(open(wpath))
     W, H = world["size"]["w"], world["size"]["h"]
@@ -192,7 +197,7 @@ def build(name: str) -> dict | None:
         return None
     return {
         "world": name,
-        "minimap": f"maps2/worlds/{name}/minimap.png",
+        "minimap": os.path.relpath(mpath, ROOT).replace(os.sep, "/"),
         "mapW": img.width, "mapH": img.height,
         "cells": {"w": W, "h": H},
         # Cell → minimap px, applied client-side (an AFFINE map, so it can
@@ -210,7 +215,7 @@ if not data:
 out = {
     "format": "pixel-wiki-world-map@1",
     "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    "source": "maps2 world.json + spawns.json + minimap.png, projected per render2.py",
+    "source": "maps2 world.json + spawns.json + minimap image, projected per render2.py",
     **data,
 }
 dst = os.path.join(ROOT, "wiki", "world_map.json")
