@@ -186,30 +186,35 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(doc, f, separators=(",", ":"))
-    _refresh_spawns(name, path)
+    _refresh_sidecars(name, path)
     return doc
 
 
-def _refresh_spawns(name, path):
-    """Re-derive the world's monster spawn zones from the world.json just written.
+def _refresh_sidecars(name, path):
+    """Re-derive the world's monster spawn zones and NPC placements from the
+    world.json just written.
 
-    Spawn zones are DERIVED data (habitat rules over the terrain), so the moment
-    the terrain changes they are stale — and a stale zone is not merely wrong,
-    it can now be sitting on WATER, which the water law forbids outright
-    (spawns.py). Deriving them here rather than in each builder is what makes
-    that a RULE: every world goes through save_world, by `build.py <name>` or by
-    running the builder directly, so no route can ship a world whose zones were
-    never re-checked. Builders that own their own spawns.json (monster_demo) are
-    skipped by refresh() itself.
+    Both are DERIVED data — habitat rules and landmark rules over the terrain —
+    so the moment the terrain changes they are stale, and stale is not merely
+    wrong: a zone can end up on WATER (which the water law forbids outright) and
+    an NPC can end up in the sea, sealed inside a wall, or stranded somewhere no
+    player can walk to. Deriving them HERE rather than in each builder is what
+    makes that a RULE: every world goes through save_world, whether by
+    `build.py <name>` or by running a builder directly, so no route can ship a
+    world whose sidecars were never re-checked. Builders that own their own
+    file (monster_demo's spawns.json) are skipped by refresh() itself.
 
-    Deliberately NOT guarded by try/except: if the zones cannot be re-derived —
-    a habitat wiped out by a terrain edit, a monster with nowhere dry to stand —
-    the build must FAIL rather than quietly keep the old file."""
-    import spawns                       # local: spawns reads world.json, not worldio
+    Deliberately NOT guarded by try/except: if they cannot be re-derived — a
+    habitat wiped out by a terrain edit, a monster with nowhere dry to stand, a
+    shop with no reachable ground — the build must FAIL rather than quietly keep
+    the old file."""
+    import spawns                       # local: both read world.json, not worldio
+    import npcs
     shipped = os.path.join(spawns.WORLDS, name, "world.json")
     if os.path.abspath(path) != os.path.abspath(shipped):
         return                          # scratch/experiment render, not a shipped world
     spawns.refresh(name)
+    npcs.refresh(name)
 
 
 class World:

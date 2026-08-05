@@ -253,6 +253,37 @@ stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
 
+## NPCs — `worlds/<name>/npcs.json` (`pixel-maps2/npcs@1`)
+
+maps2 owns WHERE people stand, exactly as it owns where monsters spawn;
+**characters2 owns WHO they are** and this data references it by folder id
+(`characters2/npcs/`) without restating art, role or lore. Two types, the
+maintainer's: **AMBIENT** (the world is more alive for them) and **MERCHANT**
+(has something to sell). Full spec: `spec/NPCS.md`.
+
+A MERCHANT **must look like one**. `MERCHANT_LOOK` in `pipeline/npcs.py` is the
+single hand-curated table in the placement system, deliberately so — "looks like
+a merchant" is a judgement about ART that no terrain rule can make. The `trader`
+ROLE is not sufficient: of characters2' two traders, Joss holds up four filled
+vials and is in; Halvard has a fur collar and a waterskin and is out. The seven
+eligible characters (vendor's tray, breastplate, sword, wand-quiver, potions,
+glowing stone, vials) cover all seven `items/` TYPE tags, and `wares` is
+validated against `items/viewer_data.json`.
+
+Placement is DERIVED from landmarks in world.json — arrival point, a building's
+doorway (`kind:"roof"`), the cave mouth, bridge ends, road junctions, the shore
+— and re-derived automatically whenever a world is written, so a terrain edit
+cannot strand anybody. Eight laws are asserted before the file is written: dry
+standable ground (never water), **walk-reachable from the spawn** using the
+game's own step rule (a shop you can't reach is not a shop), never in a
+chokepoint (doorway, bridge end, cave mouth), never hidden from the camera
+(derived from the painter order `(x+y, y)`, which catches standing round the
+back of a building), never overlapping another sprite **in screen space** (iso
+puts `(x+2,y+2)` directly below `(x,y)`), never crowding the arrival point,
+never indoors, and every reference resolving — including `name` still matching
+characters2, so an upstream rename fails loudly instead of rotting.
+Gate: `python maps2/pipeline/npcs.py --check`.
+
 ## Image format — lossless WebP (project default, 2026-07-31)
 
 Every image maps2 ships is **lossless WebP**: the per-world `minimap.webp` the
