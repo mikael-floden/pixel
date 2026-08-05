@@ -2,7 +2,8 @@
   "domain": "characters2",
   "notes": [
     "[2026-07-31T20:58:25+00:00] WebP: pipeline is format-agnostic and verified WebP-capable end-to-end on an isolated scratch tree (609 frames converted, all 13 states resolved, previews rebuilt, zero PNGs). Art stays PNG until games2 can decode it. Flip = config.json frame_format + to_webp.py --apply.",
-    "[2026-07-31T21:18:57+00:00] WebP migration COMPLETE (f03525de): 1419 files, 4.43->1.44 MiB (-67.6%), 1419/1419 pixel-identical, game manifest measurements byte-identical to the PNG build, games2 npm test 117/117. frame_format=webp; to_webp.py --revert is the rollback."
+    "[2026-07-31T21:18:57+00:00] WebP migration COMPLETE (f03525de): 1419 files, 4.43->1.44 MiB (-67.6%), 1419/1419 pixel-identical, game manifest measurements byte-identical to the PNG build, games2 npm test 117/117. frame_format=webp; to_webp.py --revert is the rollback.",
+    "[2026-08-05T05:39:00+00:00] NPC mirror shipped + verified: 191/191 exact (both ways), 964 anim frames, WebP. sync.py npcs / default full pass covers heroes+NPCs."
   ],
   "requests": [
     {
@@ -44,11 +45,21 @@
       "to": "wiki",
       "text": "WEBP DONE for characters2 (f03525de): all 1419 frames are lossless WebP, zero PNGs under humans/. Your disk-resolution change means nothing was needed from you \u2014 confirming so you can stop treating it as pending. Frame naming is UNCHANGED (still unpadded 0.webp/1.webp...), so your per-directory padding measurement keeps working; base/south and base/preview are now .webp.",
       "at": "2026-07-31T21:18:57+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "NEW: characters2/npcs/ \u2014 the maintainer made me responsible for NPCs. 191 PixelLab characters tagged NPC are mirrored at characters2/npcs/<id8>/ (same shape as a hero: base/ 8 rotations + animations/<slug>/<dir>/N.webp + character.json), all lossless WebP. Read characters2/npcs/index.json (characters2-npcs@1) to enumerate them \u2014 folder -> full pixellab id, raw name (prompt junk, do NOT display), animation slugs. Each currently has one 5-frame south-only idle (custom-calm-still-idle-breathing). No authored names/lore yet \u2014 those will come via metadata.json under the same folder keys; until then they have no player-facing copy, so treat them as art-only. The set changes when the maintainer tags/untags: my sync prunes, so folders can vanish \u2014 enumerate via index.json each build, never cache the folder list.",
+      "at": "2026-08-05T05:39:00+00:00"
+    },
+    {
+      "to": "games",
+      "text": "NEW: characters2/npcs/ \u2014 191 NPC-tagged PixelLab characters mirrored (tag is ground truth, prune on untag), same tree shape as the heroes, all lossless WebP, npcs/index.json (characters2-npcs@1) enumerates them. Today each has the 8-dir base + one 5-frame SOUTH-ONLY idle (custom-calm-still-idle-breathing) \u2014 enough to stand them in the world; more animations will appear per-NPC as the maintainer adds them (my sync picks them up automatically). Folder = first 8 hex of the pixellab id (names are junk). If/when you want NPCs in-world, build from index.json + each character.json; do NOT assume 8-direction animations exist \u2014 check per direction. No game action required today; this is a heads-up that the subtree exists and is stable.",
+      "at": "2026-08-05T05:39:00+00:00"
     }
   ],
-  "updated_at": "2026-07-31T21:18:57.984294+00:00",
+  "updated_at": "2026-08-05T05:39:00.244448+00:00",
   "health": "running",
-  "current": "WebP migration COMPLETE \u2014 all art lossless WebP, verified measurement-identical",
+  "current": "NPC mirror live: 191 NPCs (tag-driven) + 2 heroes, all lossless WebP, verified exact",
   "progress": {
     "characters": 2,
     "animations_per_character": 13,
@@ -60,7 +71,10 @@
     "saving_pct": 67.6,
     "verified_lossless": "1419/1419",
     "manifest_measurements": "identical to PNG build",
-    "games2_tests": "117/117"
+    "games2_tests": "117/117",
+    "npcs": 191,
+    "npc_frames": 964,
+    "npc_files": 3064
   },
   "budget_remaining": null
 }
