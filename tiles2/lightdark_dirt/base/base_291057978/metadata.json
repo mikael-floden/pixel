@@ -1,0 +1,1278 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_291057978",
+  "ground_type": "lightdark_dirt",
+  "kind": "base",
+  "transition_to": null,
+  "tile_id": "d453c9d2-6f4d-40b5-8b54-42c96ed79a41",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.5,
+    "tile_flat_top_px": 2
+  },
+  "count": 16,
+  "metadata_complete": true,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain dirt"
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain dirt"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "dirt with pebbles, a small detail"
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain dirt"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers"
+      ],
+      "description": "dirt with small flowers"
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers"
+      ],
+      "description": "dirt with small flowers"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "flowers"
+      ],
+      "description": "dirt with a small detail, small flowers"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain dirt"
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "dirt with a shiny speck, a small detail"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "flowers",
+        "pebbles"
+      ],
+      "description": "dirt with a small detail, small flowers, pebbles"
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers"
+      ],
+      "description": "dirt with small flowers"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "flowers"
+      ],
+      "description": "dirt with a small detail, small flowers"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers"
+      ],
+      "description": "dirt with small flowers"
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "flowers",
+        "water"
+      ],
+      "description": "dirt with a small detail, small flowers, a small puddle"
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "shiny",
+        "pebbles",
+        "flowers"
+      ],
+      "description": "dirt with a small detail, a shiny speck, pebbles, small flowers"
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        }
+      },
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "dirt with pebbles, a small detail"
+    }
+  ],
+  "generated_at": "2026-07-05T09:21:41+00:00",
+  "processing": {
+    "source_raw": "raw/base_291057978",
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonized_from": true,
+    "harmonized_to": false,
+    "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true,
+      "edge_margin": 22
+    },
+    "gap_close": {
+      "enabled": true,
+      "alpha_thresh": 16,
+      "grow": 2
+    },
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

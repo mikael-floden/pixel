@@ -1,0 +1,171 @@
+name: nangijala deploy
+
+# Build the single Nangijala image (client + art + Colyseus WS) and deploy it
+# to Cloud Run. Keyless auth via Workload Identity Federation — no stored
+# secrets. One-time setup: games2/deploy/gcp-bootstrap.sh, then set the repo
+# Variables it prints. See games2/deploy/DEPLOY.md.
+#
+# Speed design (same quality, faster):
+# - `test` runs typecheck + the FULL unit/sim suite IN PARALLEL with the image
+#   build; `deploy` needs both. The gate costs ~0 wall time (build is longer)
+#   and CI now enforces what agents already run locally.
+# - BuildKit layer cache (GHA cache backend): npm ci and untouched art-domain
+#   layers are reused, not rebuilt — and unchanged layers are already in the
+#   registry, so a code-only deploy uploads megabytes, not ~500MB. (Classic
+#   `docker build` re-churned every layer digest via file mtimes.)
+# - Dockerfile layers are ordered by change frequency (deps → art per domain →
+#   game source last); .dockerignore is an allowlist.
+
+on:
+  push:
+    branches: [main]
+    # Game code AND every art domain the game bakes into its image auto-deploy
+    # (maintainer 2026-07-17: "if graphics or map data that effects the game
+    # changed, it should be baked into a deploy and released automatically").
+    # The art loops push frequently, but the concurrency group below collapses
+    # rapid pushes into the newest run, and BuildKit's layer cache keeps
+    # art-only rebuilds cheap. Manifests (characters.json / worlds.json)
+    # regenerate inside the image build, so art-only deploys are complete.
+    paths:
+      - "games2/**"
+      - "characters2/**"
+      - "tiles2/**"
+      - "maps2/**"
+      - "objects/**"
+      - "sounds/**"
+      - "music/**"
+      - "monsters/**"
+      - "items/**"
+      - "lore/**"
+      # Wiki SITE changes deploy; data.json refreshes must NOT restart prod
+      # (prod rebuilds data.json inside the image anyway). live/** is the
+      # runtime channel — NEVER a deploy trigger (live-notify.yml handles it).
+      - "wiki/**"
+      - "!wiki/site/data.json"
+      - ".github/workflows/nangijala-deploy.yml"
+  workflow_dispatch: {}       # manual: force a roll without any commit
+
+# Only the newest deploy matters; cancel superseded runs.
+concurrency:
+  group: nangijala-deploy
+  cancel-in-progress: true
+
+jobs:
+  # Quality gate — runs in parallel with the image build, so it adds ~no wall
+  # time. Sparse checkout: only what typecheck + npm test actually read
+  # (games2, characters2 for the manifest, maps2/worlds for the navigation
+  # sim and the surface gate).
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /games2/
+            /characters2/
+            /maps2/worlds/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+      - run: npm ci
+        working-directory: games2
+      - run: npm run typecheck
+        working-directory: games2
+      - run: npm test
+        working-directory: games2
+
+  # Build, push AND roll out in ONE job — a separate deploy job costs a whole
+  # extra runner spinup + auth (~45s measured). The test gate stays real: the
+  # deploy step polls the parallel `test` job and aborts on failure (tests
+  # normally finish before the image push does, so the wait is ~zero).
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # required for Workload Identity Federation
+      actions: read            # poll the sibling test job's status
+    steps:
+      # PLAIN checkout, deliberately. This used to list 12 of the 13 top-level
+      # domains as a sparse-checkout, which sounds cheaper but is not: passing
+      # `sparse-checkout` makes actions/checkout use a BLOBLESS PARTIAL CLONE
+      # (--filter=blob:none), so every file it does materialise costs an extra
+      # lazy fetch round-trip. Selecting ~83% of the tree that way was pure
+      # overhead — measured 48s mean (21-99s), the largest and most variable
+      # step in this job, versus 6.5s for the `test` job's genuinely narrow
+      # 3-path sparse checkout. The one thing the list actually excluded was
+      # the retired games/ tree, and that is now deleted from the repo
+      # (9a73cc25c), so there is nothing left to exclude.
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      # NB: no `setup-gcloud` step — the Google Cloud SDK is preinstalled on
+      # ubuntu-latest, and the auth step above exports the credentials the CLI
+      # picks up on its own. The action was costing 19s per deploy to install a
+      # CLI that was already there. If a future runner image drops the SDK this
+      # job fails at `gcloud auth configure-docker` with "gcloud: not found" —
+      # prod keeps serving the previous revision, and the fix is to put
+      # `- uses: google-github-actions/setup-gcloud@v2` back here.
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build & push image (layer-cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: games2/Dockerfile
+          push: true
+          provenance: false
+          tags: |
+            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:${{ github.sha }}
+            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:latest
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Wait for the test gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 90); do
+            st=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+              --jq '.jobs[] | select(.name=="test") | .conclusion // "pending"')
+            if [ "$st" = "success" ]; then echo "test gate green"; exit 0; fi
+            case "$st" in failure|cancelled|timed_out) echo "test job: $st — NOT deploying"; exit 1;; esac
+            sleep 5
+          done
+          echo "timed out waiting for the test job" && exit 1
+
+      - name: Deploy to Cloud Run
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
+        run: |
+          gcloud run deploy "${{ vars.GCP_SERVICE }}" \
+            --image "$IMAGE:${{ github.sha }}" \
+            --region "${{ vars.GCP_REGION }}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --cpu 1 --memory 512Mi \
+            --min-instances 0 \
+            --max-instances 1 \
+            --no-cpu-throttling \
+            --no-session-affinity \
+            --timeout 3600
+
+      - name: Show URL
+        run: |
+          gcloud run services describe "${{ vars.GCP_SERVICE }}" \
+            --region "${{ vars.GCP_REGION }}" --format='value(status.url)'

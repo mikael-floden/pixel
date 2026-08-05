@@ -1,0 +1,71 @@
+name: Pixel sound-effects loop
+
+# Autonomous generation loop for the sounds/ domain. Runs on a schedule (and on
+# demand), advances the factory by a bounded chunk, and the loop itself commits +
+# pushes each unit. The AAA engine (ElevenLabs SFX v2) REQUIRES the
+# ELEVENLABS_API_KEY secret (Pro tier for lossless 48 kHz). Without it the loop
+# records a `blocked` heartbeat and generates nothing — it will NOT ship the
+# rejected low-fi placeholder audio.
+
+on:
+  # Scheduled runs DISABLED at the user's request (failing runs were emailing the
+  # repo owner). Re-enable by uncommenting the schedule below.
+  # schedule:
+  #   - cron: "40 * * * *"        # hourly, offset from the other domains
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: "Minutes to run this pass"
+        default: "50"
+      max_units:
+        description: "Max sounds this pass (0 = unlimited; use a small number for a validation batch)"
+        default: "0"
+      engine:
+        description: "auto | ai | placeholder (placeholder = rejected low-fi, test only)"
+        default: "auto"
+
+# Allow the job (and the loop's git push) to write to the repo.
+permissions:
+  contents: write
+
+# Never let two sound passes run at once (scheduled + manual). Distinct group
+# from the other domains, so everything runs in parallel (disjoint paths).
+concurrency:
+  group: sounds-loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push (rebase-on-reject fetches what it
+          # needs). Full history cost ~minutes per run for nothing.
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the sounds loop
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          git config user.name "pixel-sounds-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python sounds/pipeline/loop.py \
+            --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
+            --max-units "${{ github.event.inputs.max_units || '0' }}" \
+            --engine "${{ github.event.inputs.engine || 'auto' }}"

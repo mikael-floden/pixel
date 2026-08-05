@@ -1,0 +1,1135 @@
+{
+  "id": "lava_salamander",
+  "name": "Emberjaw",
+  "lore": "Basks in cooling magma and bites with a mouthful of flame. Its hide stays warm for hours after it falls.",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "4585539d-d732-4734-8139-3eb545f50144",
+    "url": "https://www.pixellab.ai/create-object/4585539d-d732-4734-8139-3eb545f50144",
+    "prompt": "A lava salamander",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 78,
+    "height": 48
+  },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 15,
+    "y": 0
+  },
+  "sprite": "lava_salamander/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "lava_salamander/rotations/south.webp",
+    "west": "lava_salamander/rotations/west.webp",
+    "east": "lava_salamander/rotations/east.webp",
+    "north": "lava_salamander/rotations/north.webp",
+    "south-east": "lava_salamander/rotations/south-east.webp",
+    "south-west": "lava_salamander/rotations/south-west.webp",
+    "north-east": "lava_salamander/rotations/north-east.webp",
+    "north-west": "lava_salamander/rotations/north-west.webp"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "4e4343da-0f17-49c5-bef3-668a81197631",
+      "source_name": "Fire bite attack. Attacks by biting with flames.",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/east/00.webp",
+            "lava_salamander/animations/attack/east/01.webp",
+            "lava_salamander/animations/attack/east/02.webp",
+            "lava_salamander/animations/attack/east/03.webp",
+            "lava_salamander/animations/attack/east/04.webp",
+            "lava_salamander/animations/attack/east/05.webp",
+            "lava_salamander/animations/attack/east/06.webp",
+            "lava_salamander/animations/attack/east/07.webp",
+            "lava_salamander/animations/attack/east/08.webp",
+            "lava_salamander/animations/attack/east/09.webp",
+            "lava_salamander/animations/attack/east/10.webp",
+            "lava_salamander/animations/attack/east/11.webp",
+            "lava_salamander/animations/attack/east/12.webp",
+            "lava_salamander/animations/attack/east/13.webp",
+            "lava_salamander/animations/attack/east/14.webp",
+            "lava_salamander/animations/attack/east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:23 GMT",
+          "src_frames": 16,
+          "sub": "59272ebb-990d-4e85-b34a-2eb342253ebc"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__north.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/north/00.webp",
+            "lava_salamander/animations/attack/north/01.webp",
+            "lava_salamander/animations/attack/north/02.webp",
+            "lava_salamander/animations/attack/north/03.webp",
+            "lava_salamander/animations/attack/north/04.webp",
+            "lava_salamander/animations/attack/north/05.webp",
+            "lava_salamander/animations/attack/north/06.webp",
+            "lava_salamander/animations/attack/north/07.webp",
+            "lava_salamander/animations/attack/north/08.webp",
+            "lava_salamander/animations/attack/north/09.webp",
+            "lava_salamander/animations/attack/north/10.webp",
+            "lava_salamander/animations/attack/north/11.webp",
+            "lava_salamander/animations/attack/north/12.webp",
+            "lava_salamander/animations/attack/north/13.webp",
+            "lava_salamander/animations/attack/north/14.webp",
+            "lava_salamander/animations/attack/north/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:25 GMT",
+          "src_frames": 16,
+          "sub": "ec20314d-d889-46a4-a554-d8c722f65a31"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__north-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/north-east/00.webp",
+            "lava_salamander/animations/attack/north-east/01.webp",
+            "lava_salamander/animations/attack/north-east/02.webp",
+            "lava_salamander/animations/attack/north-east/03.webp",
+            "lava_salamander/animations/attack/north-east/04.webp",
+            "lava_salamander/animations/attack/north-east/05.webp",
+            "lava_salamander/animations/attack/north-east/06.webp",
+            "lava_salamander/animations/attack/north-east/07.webp",
+            "lava_salamander/animations/attack/north-east/08.webp",
+            "lava_salamander/animations/attack/north-east/09.webp",
+            "lava_salamander/animations/attack/north-east/10.webp",
+            "lava_salamander/animations/attack/north-east/11.webp",
+            "lava_salamander/animations/attack/north-east/12.webp",
+            "lava_salamander/animations/attack/north-east/13.webp",
+            "lava_salamander/animations/attack/north-east/14.webp",
+            "lava_salamander/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:32 GMT",
+          "src_frames": 16,
+          "sub": "4358aced-1dc7-4daf-a6cc-8211e0ced264"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__north-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/north-west/00.webp",
+            "lava_salamander/animations/attack/north-west/01.webp",
+            "lava_salamander/animations/attack/north-west/02.webp",
+            "lava_salamander/animations/attack/north-west/03.webp",
+            "lava_salamander/animations/attack/north-west/04.webp",
+            "lava_salamander/animations/attack/north-west/05.webp",
+            "lava_salamander/animations/attack/north-west/06.webp",
+            "lava_salamander/animations/attack/north-west/07.webp",
+            "lava_salamander/animations/attack/north-west/08.webp",
+            "lava_salamander/animations/attack/north-west/09.webp",
+            "lava_salamander/animations/attack/north-west/10.webp",
+            "lava_salamander/animations/attack/north-west/11.webp",
+            "lava_salamander/animations/attack/north-west/12.webp",
+            "lava_salamander/animations/attack/north-west/13.webp",
+            "lava_salamander/animations/attack/north-west/14.webp",
+            "lava_salamander/animations/attack/north-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:33 GMT",
+          "src_frames": 16,
+          "sub": "22406dc1-9295-4465-821e-f5a34dc8cf7f"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__south.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/south/00.webp",
+            "lava_salamander/animations/attack/south/01.webp",
+            "lava_salamander/animations/attack/south/02.webp",
+            "lava_salamander/animations/attack/south/03.webp",
+            "lava_salamander/animations/attack/south/04.webp",
+            "lava_salamander/animations/attack/south/05.webp",
+            "lava_salamander/animations/attack/south/06.webp",
+            "lava_salamander/animations/attack/south/07.webp",
+            "lava_salamander/animations/attack/south/08.webp",
+            "lava_salamander/animations/attack/south/09.webp",
+            "lava_salamander/animations/attack/south/10.webp",
+            "lava_salamander/animations/attack/south/11.webp",
+            "lava_salamander/animations/attack/south/12.webp",
+            "lava_salamander/animations/attack/south/13.webp",
+            "lava_salamander/animations/attack/south/14.webp",
+            "lava_salamander/animations/attack/south/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:35 GMT",
+          "src_frames": 16,
+          "sub": "98fe4910-4fcd-432e-ad4d-d521b1280d3c"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__south-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/south-east/00.webp",
+            "lava_salamander/animations/attack/south-east/01.webp",
+            "lava_salamander/animations/attack/south-east/02.webp",
+            "lava_salamander/animations/attack/south-east/03.webp",
+            "lava_salamander/animations/attack/south-east/04.webp",
+            "lava_salamander/animations/attack/south-east/05.webp",
+            "lava_salamander/animations/attack/south-east/06.webp",
+            "lava_salamander/animations/attack/south-east/07.webp",
+            "lava_salamander/animations/attack/south-east/08.webp",
+            "lava_salamander/animations/attack/south-east/09.webp",
+            "lava_salamander/animations/attack/south-east/10.webp",
+            "lava_salamander/animations/attack/south-east/11.webp",
+            "lava_salamander/animations/attack/south-east/12.webp",
+            "lava_salamander/animations/attack/south-east/13.webp",
+            "lava_salamander/animations/attack/south-east/14.webp",
+            "lava_salamander/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:37 GMT",
+          "src_frames": 16,
+          "sub": "a3c09864-b61c-4b6a-b5ed-1dbc1b23b56a"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__south-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/south-west/00.webp",
+            "lava_salamander/animations/attack/south-west/01.webp",
+            "lava_salamander/animations/attack/south-west/02.webp",
+            "lava_salamander/animations/attack/south-west/03.webp",
+            "lava_salamander/animations/attack/south-west/04.webp",
+            "lava_salamander/animations/attack/south-west/05.webp",
+            "lava_salamander/animations/attack/south-west/06.webp",
+            "lava_salamander/animations/attack/south-west/07.webp",
+            "lava_salamander/animations/attack/south-west/08.webp",
+            "lava_salamander/animations/attack/south-west/09.webp",
+            "lava_salamander/animations/attack/south-west/10.webp",
+            "lava_salamander/animations/attack/south-west/11.webp",
+            "lava_salamander/animations/attack/south-west/12.webp",
+            "lava_salamander/animations/attack/south-west/13.webp",
+            "lava_salamander/animations/attack/south-west/14.webp",
+            "lava_salamander/animations/attack/south-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:38 GMT",
+          "src_frames": 16,
+          "sub": "87692af7-878c-4327-b02e-1ba26928ca49"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/attack__west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/attack/west/00.webp",
+            "lava_salamander/animations/attack/west/01.webp",
+            "lava_salamander/animations/attack/west/02.webp",
+            "lava_salamander/animations/attack/west/03.webp",
+            "lava_salamander/animations/attack/west/04.webp",
+            "lava_salamander/animations/attack/west/05.webp",
+            "lava_salamander/animations/attack/west/06.webp",
+            "lava_salamander/animations/attack/west/07.webp",
+            "lava_salamander/animations/attack/west/08.webp",
+            "lava_salamander/animations/attack/west/09.webp",
+            "lava_salamander/animations/attack/west/10.webp",
+            "lava_salamander/animations/attack/west/11.webp",
+            "lava_salamander/animations/attack/west/12.webp",
+            "lava_salamander/animations/attack/west/13.webp",
+            "lava_salamander/animations/attack/west/14.webp",
+            "lava_salamander/animations/attack/west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:40 GMT",
+          "src_frames": 16,
+          "sub": "c84687ae-041b-452a-8873-84ab6aa81c4a"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "a6635133-626f-4c46-bff4-49a819688705",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/east/00.webp",
+            "lava_salamander/animations/idle/east/01.webp",
+            "lava_salamander/animations/idle/east/02.webp",
+            "lava_salamander/animations/idle/east/03.webp",
+            "lava_salamander/animations/idle/east/04.webp",
+            "lava_salamander/animations/idle/east/05.webp",
+            "lava_salamander/animations/idle/east/06.webp",
+            "lava_salamander/animations/idle/east/07.webp",
+            "lava_salamander/animations/idle/east/08.webp",
+            "lava_salamander/animations/idle/east/09.webp",
+            "lava_salamander/animations/idle/east/10.webp",
+            "lava_salamander/animations/idle/east/11.webp",
+            "lava_salamander/animations/idle/east/12.webp",
+            "lava_salamander/animations/idle/east/13.webp",
+            "lava_salamander/animations/idle/east/14.webp",
+            "lava_salamander/animations/idle/east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:37:56 GMT",
+          "src_frames": 16,
+          "sub": "1c328877-4604-4d10-a453-c5f06c434a41"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__north.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/north/00.webp",
+            "lava_salamander/animations/idle/north/01.webp",
+            "lava_salamander/animations/idle/north/02.webp",
+            "lava_salamander/animations/idle/north/03.webp",
+            "lava_salamander/animations/idle/north/04.webp",
+            "lava_salamander/animations/idle/north/05.webp",
+            "lava_salamander/animations/idle/north/06.webp",
+            "lava_salamander/animations/idle/north/07.webp",
+            "lava_salamander/animations/idle/north/08.webp",
+            "lava_salamander/animations/idle/north/09.webp",
+            "lava_salamander/animations/idle/north/10.webp",
+            "lava_salamander/animations/idle/north/11.webp",
+            "lava_salamander/animations/idle/north/12.webp",
+            "lava_salamander/animations/idle/north/13.webp",
+            "lava_salamander/animations/idle/north/14.webp",
+            "lava_salamander/animations/idle/north/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:37:57 GMT",
+          "src_frames": 16,
+          "sub": "78e72c86-50e8-47c7-b7a5-b1b8180886b9"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__north-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/north-east/00.webp",
+            "lava_salamander/animations/idle/north-east/01.webp",
+            "lava_salamander/animations/idle/north-east/02.webp",
+            "lava_salamander/animations/idle/north-east/03.webp",
+            "lava_salamander/animations/idle/north-east/04.webp",
+            "lava_salamander/animations/idle/north-east/05.webp",
+            "lava_salamander/animations/idle/north-east/06.webp",
+            "lava_salamander/animations/idle/north-east/07.webp",
+            "lava_salamander/animations/idle/north-east/08.webp",
+            "lava_salamander/animations/idle/north-east/09.webp",
+            "lava_salamander/animations/idle/north-east/10.webp",
+            "lava_salamander/animations/idle/north-east/11.webp",
+            "lava_salamander/animations/idle/north-east/12.webp",
+            "lava_salamander/animations/idle/north-east/13.webp",
+            "lava_salamander/animations/idle/north-east/14.webp",
+            "lava_salamander/animations/idle/north-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:37:59 GMT",
+          "src_frames": 16,
+          "sub": "7597186b-3077-4d79-82aa-334f5bd01989"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__north-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/north-west/00.webp",
+            "lava_salamander/animations/idle/north-west/01.webp",
+            "lava_salamander/animations/idle/north-west/02.webp",
+            "lava_salamander/animations/idle/north-west/03.webp",
+            "lava_salamander/animations/idle/north-west/04.webp",
+            "lava_salamander/animations/idle/north-west/05.webp",
+            "lava_salamander/animations/idle/north-west/06.webp",
+            "lava_salamander/animations/idle/north-west/07.webp",
+            "lava_salamander/animations/idle/north-west/08.webp",
+            "lava_salamander/animations/idle/north-west/09.webp",
+            "lava_salamander/animations/idle/north-west/10.webp",
+            "lava_salamander/animations/idle/north-west/11.webp",
+            "lava_salamander/animations/idle/north-west/12.webp",
+            "lava_salamander/animations/idle/north-west/13.webp",
+            "lava_salamander/animations/idle/north-west/14.webp",
+            "lava_salamander/animations/idle/north-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:42 GMT",
+          "src_frames": 16,
+          "sub": "3af36fd5-d94c-4425-acb1-75dd0dc9efc9"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__south.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/south/00.webp",
+            "lava_salamander/animations/idle/south/01.webp",
+            "lava_salamander/animations/idle/south/02.webp",
+            "lava_salamander/animations/idle/south/03.webp",
+            "lava_salamander/animations/idle/south/04.webp",
+            "lava_salamander/animations/idle/south/05.webp",
+            "lava_salamander/animations/idle/south/06.webp",
+            "lava_salamander/animations/idle/south/07.webp",
+            "lava_salamander/animations/idle/south/08.webp",
+            "lava_salamander/animations/idle/south/09.webp",
+            "lava_salamander/animations/idle/south/10.webp",
+            "lava_salamander/animations/idle/south/11.webp",
+            "lava_salamander/animations/idle/south/12.webp",
+            "lava_salamander/animations/idle/south/13.webp",
+            "lava_salamander/animations/idle/south/14.webp",
+            "lava_salamander/animations/idle/south/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:03 GMT",
+          "src_frames": 16,
+          "sub": "3c31956c-e922-477e-a72c-df2c60884e66"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__south-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/south-east/00.webp",
+            "lava_salamander/animations/idle/south-east/01.webp",
+            "lava_salamander/animations/idle/south-east/02.webp",
+            "lava_salamander/animations/idle/south-east/03.webp",
+            "lava_salamander/animations/idle/south-east/04.webp",
+            "lava_salamander/animations/idle/south-east/05.webp",
+            "lava_salamander/animations/idle/south-east/06.webp",
+            "lava_salamander/animations/idle/south-east/07.webp",
+            "lava_salamander/animations/idle/south-east/08.webp",
+            "lava_salamander/animations/idle/south-east/09.webp",
+            "lava_salamander/animations/idle/south-east/10.webp",
+            "lava_salamander/animations/idle/south-east/11.webp",
+            "lava_salamander/animations/idle/south-east/12.webp",
+            "lava_salamander/animations/idle/south-east/13.webp",
+            "lava_salamander/animations/idle/south-east/14.webp",
+            "lava_salamander/animations/idle/south-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:06 GMT",
+          "src_frames": 16,
+          "sub": "bb754476-eb6a-4ffa-a657-e6a335389cd0"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__south-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/south-west/00.webp",
+            "lava_salamander/animations/idle/south-west/01.webp",
+            "lava_salamander/animations/idle/south-west/02.webp",
+            "lava_salamander/animations/idle/south-west/03.webp",
+            "lava_salamander/animations/idle/south-west/04.webp",
+            "lava_salamander/animations/idle/south-west/05.webp",
+            "lava_salamander/animations/idle/south-west/06.webp",
+            "lava_salamander/animations/idle/south-west/07.webp",
+            "lava_salamander/animations/idle/south-west/08.webp",
+            "lava_salamander/animations/idle/south-west/09.webp",
+            "lava_salamander/animations/idle/south-west/10.webp",
+            "lava_salamander/animations/idle/south-west/11.webp",
+            "lava_salamander/animations/idle/south-west/12.webp",
+            "lava_salamander/animations/idle/south-west/13.webp",
+            "lava_salamander/animations/idle/south-west/14.webp",
+            "lava_salamander/animations/idle/south-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:09 GMT",
+          "src_frames": 16,
+          "sub": "ed4643f8-2623-4e54-ab85-7fc19d5ed505"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/idle__west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/idle/west/00.webp",
+            "lava_salamander/animations/idle/west/01.webp",
+            "lava_salamander/animations/idle/west/02.webp",
+            "lava_salamander/animations/idle/west/03.webp",
+            "lava_salamander/animations/idle/west/04.webp",
+            "lava_salamander/animations/idle/west/05.webp",
+            "lava_salamander/animations/idle/west/06.webp",
+            "lava_salamander/animations/idle/west/07.webp",
+            "lava_salamander/animations/idle/west/08.webp",
+            "lava_salamander/animations/idle/west/09.webp",
+            "lava_salamander/animations/idle/west/10.webp",
+            "lava_salamander/animations/idle/west/11.webp",
+            "lava_salamander/animations/idle/west/12.webp",
+            "lava_salamander/animations/idle/west/13.webp",
+            "lava_salamander/animations/idle/west/14.webp",
+            "lava_salamander/animations/idle/west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:11 GMT",
+          "src_frames": 16,
+          "sub": "758e7912-65df-43d5-9dfe-9d8388cc7e1a"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "3ffe33ab-402a-4652-aff0-e24fce38e162",
+      "source_name": "Angry idle",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/east/00.webp",
+            "lava_salamander/animations/angry/east/01.webp",
+            "lava_salamander/animations/angry/east/02.webp",
+            "lava_salamander/animations/angry/east/03.webp",
+            "lava_salamander/animations/angry/east/04.webp",
+            "lava_salamander/animations/angry/east/05.webp",
+            "lava_salamander/animations/angry/east/06.webp",
+            "lava_salamander/animations/angry/east/07.webp",
+            "lava_salamander/animations/angry/east/08.webp",
+            "lava_salamander/animations/angry/east/09.webp",
+            "lava_salamander/animations/angry/east/10.webp",
+            "lava_salamander/animations/angry/east/11.webp",
+            "lava_salamander/animations/angry/east/12.webp",
+            "lava_salamander/animations/angry/east/13.webp",
+            "lava_salamander/animations/angry/east/14.webp",
+            "lava_salamander/animations/angry/east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:13 GMT",
+          "src_frames": 16,
+          "sub": "8d7b9f2c-983c-4863-a078-0784c71374d0"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__north.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/north/00.webp",
+            "lava_salamander/animations/angry/north/01.webp",
+            "lava_salamander/animations/angry/north/02.webp",
+            "lava_salamander/animations/angry/north/03.webp",
+            "lava_salamander/animations/angry/north/04.webp",
+            "lava_salamander/animations/angry/north/05.webp",
+            "lava_salamander/animations/angry/north/06.webp",
+            "lava_salamander/animations/angry/north/07.webp",
+            "lava_salamander/animations/angry/north/08.webp",
+            "lava_salamander/animations/angry/north/09.webp",
+            "lava_salamander/animations/angry/north/10.webp",
+            "lava_salamander/animations/angry/north/11.webp",
+            "lava_salamander/animations/angry/north/12.webp",
+            "lava_salamander/animations/angry/north/13.webp",
+            "lava_salamander/animations/angry/north/14.webp",
+            "lava_salamander/animations/angry/north/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:16 GMT",
+          "src_frames": 16,
+          "sub": "dd52acb3-93c8-4b9f-a2db-b9e4c24ab3db"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__north-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/north-east/00.webp",
+            "lava_salamander/animations/angry/north-east/01.webp",
+            "lava_salamander/animations/angry/north-east/02.webp",
+            "lava_salamander/animations/angry/north-east/03.webp",
+            "lava_salamander/animations/angry/north-east/04.webp",
+            "lava_salamander/animations/angry/north-east/05.webp",
+            "lava_salamander/animations/angry/north-east/06.webp",
+            "lava_salamander/animations/angry/north-east/07.webp",
+            "lava_salamander/animations/angry/north-east/08.webp",
+            "lava_salamander/animations/angry/north-east/09.webp",
+            "lava_salamander/animations/angry/north-east/10.webp",
+            "lava_salamander/animations/angry/north-east/11.webp",
+            "lava_salamander/animations/angry/north-east/12.webp",
+            "lava_salamander/animations/angry/north-east/13.webp",
+            "lava_salamander/animations/angry/north-east/14.webp",
+            "lava_salamander/animations/angry/north-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:19 GMT",
+          "src_frames": 16,
+          "sub": "d0a959a5-53b6-4a71-a27c-360a13512b62"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__north-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/north-west/00.webp",
+            "lava_salamander/animations/angry/north-west/01.webp",
+            "lava_salamander/animations/angry/north-west/02.webp",
+            "lava_salamander/animations/angry/north-west/03.webp",
+            "lava_salamander/animations/angry/north-west/04.webp",
+            "lava_salamander/animations/angry/north-west/05.webp",
+            "lava_salamander/animations/angry/north-west/06.webp",
+            "lava_salamander/animations/angry/north-west/07.webp",
+            "lava_salamander/animations/angry/north-west/08.webp",
+            "lava_salamander/animations/angry/north-west/09.webp",
+            "lava_salamander/animations/angry/north-west/10.webp",
+            "lava_salamander/animations/angry/north-west/11.webp",
+            "lava_salamander/animations/angry/north-west/12.webp",
+            "lava_salamander/animations/angry/north-west/13.webp",
+            "lava_salamander/animations/angry/north-west/14.webp",
+            "lava_salamander/animations/angry/north-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:22 GMT",
+          "src_frames": 16,
+          "sub": "277927b2-f6d9-41a7-9836-5809e1761ec7"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__south.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/south/00.webp",
+            "lava_salamander/animations/angry/south/01.webp",
+            "lava_salamander/animations/angry/south/02.webp",
+            "lava_salamander/animations/angry/south/03.webp",
+            "lava_salamander/animations/angry/south/04.webp",
+            "lava_salamander/animations/angry/south/05.webp",
+            "lava_salamander/animations/angry/south/06.webp",
+            "lava_salamander/animations/angry/south/07.webp",
+            "lava_salamander/animations/angry/south/08.webp",
+            "lava_salamander/animations/angry/south/09.webp",
+            "lava_salamander/animations/angry/south/10.webp",
+            "lava_salamander/animations/angry/south/11.webp",
+            "lava_salamander/animations/angry/south/12.webp",
+            "lava_salamander/animations/angry/south/13.webp",
+            "lava_salamander/animations/angry/south/14.webp",
+            "lava_salamander/animations/angry/south/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:24 GMT",
+          "src_frames": 16,
+          "sub": "d3d2cc54-936d-4515-9cb9-a4f266c9d14b"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__south-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/south-east/00.webp",
+            "lava_salamander/animations/angry/south-east/01.webp",
+            "lava_salamander/animations/angry/south-east/02.webp",
+            "lava_salamander/animations/angry/south-east/03.webp",
+            "lava_salamander/animations/angry/south-east/04.webp",
+            "lava_salamander/animations/angry/south-east/05.webp",
+            "lava_salamander/animations/angry/south-east/06.webp",
+            "lava_salamander/animations/angry/south-east/07.webp",
+            "lava_salamander/animations/angry/south-east/08.webp",
+            "lava_salamander/animations/angry/south-east/09.webp",
+            "lava_salamander/animations/angry/south-east/10.webp",
+            "lava_salamander/animations/angry/south-east/11.webp",
+            "lava_salamander/animations/angry/south-east/12.webp",
+            "lava_salamander/animations/angry/south-east/13.webp",
+            "lava_salamander/animations/angry/south-east/14.webp",
+            "lava_salamander/animations/angry/south-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:26 GMT",
+          "src_frames": 16,
+          "sub": "76a7b236-43b6-4417-b2dc-1cf195f108cb"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__south-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/south-west/00.webp",
+            "lava_salamander/animations/angry/south-west/01.webp",
+            "lava_salamander/animations/angry/south-west/02.webp",
+            "lava_salamander/animations/angry/south-west/03.webp",
+            "lava_salamander/animations/angry/south-west/04.webp",
+            "lava_salamander/animations/angry/south-west/05.webp",
+            "lava_salamander/animations/angry/south-west/06.webp",
+            "lava_salamander/animations/angry/south-west/07.webp",
+            "lava_salamander/animations/angry/south-west/08.webp",
+            "lava_salamander/animations/angry/south-west/09.webp",
+            "lava_salamander/animations/angry/south-west/10.webp",
+            "lava_salamander/animations/angry/south-west/11.webp",
+            "lava_salamander/animations/angry/south-west/12.webp",
+            "lava_salamander/animations/angry/south-west/13.webp",
+            "lava_salamander/animations/angry/south-west/14.webp",
+            "lava_salamander/animations/angry/south-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:28 GMT",
+          "src_frames": 16,
+          "sub": "d579dc25-7ae9-4d01-af24-fc4ae52c6494"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/angry__west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/angry/west/00.webp",
+            "lava_salamander/animations/angry/west/01.webp",
+            "lava_salamander/animations/angry/west/02.webp",
+            "lava_salamander/animations/angry/west/03.webp",
+            "lava_salamander/animations/angry/west/04.webp",
+            "lava_salamander/animations/angry/west/05.webp",
+            "lava_salamander/animations/angry/west/06.webp",
+            "lava_salamander/animations/angry/west/07.webp",
+            "lava_salamander/animations/angry/west/08.webp",
+            "lava_salamander/animations/angry/west/09.webp",
+            "lava_salamander/animations/angry/west/10.webp",
+            "lava_salamander/animations/angry/west/11.webp",
+            "lava_salamander/animations/angry/west/12.webp",
+            "lava_salamander/animations/angry/west/13.webp",
+            "lava_salamander/animations/angry/west/14.webp",
+            "lava_salamander/animations/angry/west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:30 GMT",
+          "src_frames": 16,
+          "sub": "f1104154-0b02-45cb-8e4a-13061040331c"
+        }
+      }
+    },
+    "die": {
+      "group_id": "307db06e-216f-4b1f-bdbc-4f3a1ec8fe3b",
+      "source_name": "Fades unconscious into the ground and dissapers",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/east/00.webp",
+            "lava_salamander/animations/die/east/01.webp",
+            "lava_salamander/animations/die/east/02.webp",
+            "lava_salamander/animations/die/east/03.webp",
+            "lava_salamander/animations/die/east/04.webp",
+            "lava_salamander/animations/die/east/05.webp",
+            "lava_salamander/animations/die/east/06.webp",
+            "lava_salamander/animations/die/east/07.webp",
+            "lava_salamander/animations/die/east/08.webp",
+            "lava_salamander/animations/die/east/09.webp",
+            "lava_salamander/animations/die/east/10.webp",
+            "lava_salamander/animations/die/east/11.webp",
+            "lava_salamander/animations/die/east/12.webp",
+            "lava_salamander/animations/die/east/13.webp",
+            "lava_salamander/animations/die/east/14.webp",
+            "lava_salamander/animations/die/east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:32 GMT",
+          "src_frames": 16,
+          "sub": "3b881230-6995-452a-8166-4c34918b9b26"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__north.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/north/00.webp",
+            "lava_salamander/animations/die/north/01.webp",
+            "lava_salamander/animations/die/north/02.webp",
+            "lava_salamander/animations/die/north/03.webp",
+            "lava_salamander/animations/die/north/04.webp",
+            "lava_salamander/animations/die/north/05.webp",
+            "lava_salamander/animations/die/north/06.webp",
+            "lava_salamander/animations/die/north/07.webp",
+            "lava_salamander/animations/die/north/08.webp",
+            "lava_salamander/animations/die/north/09.webp",
+            "lava_salamander/animations/die/north/10.webp",
+            "lava_salamander/animations/die/north/11.webp",
+            "lava_salamander/animations/die/north/12.webp",
+            "lava_salamander/animations/die/north/13.webp",
+            "lava_salamander/animations/die/north/14.webp",
+            "lava_salamander/animations/die/north/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:35 GMT",
+          "src_frames": 16,
+          "sub": "aea2d422-99c3-4cee-888b-89c1077c42f8"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__north-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/north-east/00.webp",
+            "lava_salamander/animations/die/north-east/01.webp",
+            "lava_salamander/animations/die/north-east/02.webp",
+            "lava_salamander/animations/die/north-east/03.webp",
+            "lava_salamander/animations/die/north-east/04.webp",
+            "lava_salamander/animations/die/north-east/05.webp",
+            "lava_salamander/animations/die/north-east/06.webp",
+            "lava_salamander/animations/die/north-east/07.webp",
+            "lava_salamander/animations/die/north-east/08.webp",
+            "lava_salamander/animations/die/north-east/09.webp",
+            "lava_salamander/animations/die/north-east/10.webp",
+            "lava_salamander/animations/die/north-east/11.webp",
+            "lava_salamander/animations/die/north-east/12.webp",
+            "lava_salamander/animations/die/north-east/13.webp",
+            "lava_salamander/animations/die/north-east/14.webp",
+            "lava_salamander/animations/die/north-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:37 GMT",
+          "src_frames": 16,
+          "sub": "40dfda28-24a1-4112-903e-0347ff536aa4"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__north-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/north-west/00.webp",
+            "lava_salamander/animations/die/north-west/01.webp",
+            "lava_salamander/animations/die/north-west/02.webp",
+            "lava_salamander/animations/die/north-west/03.webp",
+            "lava_salamander/animations/die/north-west/04.webp",
+            "lava_salamander/animations/die/north-west/05.webp",
+            "lava_salamander/animations/die/north-west/06.webp",
+            "lava_salamander/animations/die/north-west/07.webp",
+            "lava_salamander/animations/die/north-west/08.webp",
+            "lava_salamander/animations/die/north-west/09.webp",
+            "lava_salamander/animations/die/north-west/10.webp",
+            "lava_salamander/animations/die/north-west/11.webp",
+            "lava_salamander/animations/die/north-west/12.webp",
+            "lava_salamander/animations/die/north-west/13.webp",
+            "lava_salamander/animations/die/north-west/14.webp",
+            "lava_salamander/animations/die/north-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:39 GMT",
+          "src_frames": 16,
+          "sub": "5c02b380-8f6f-4b71-a2f4-b5b3cee208fc"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__south.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/south/00.webp",
+            "lava_salamander/animations/die/south/01.webp",
+            "lava_salamander/animations/die/south/02.webp",
+            "lava_salamander/animations/die/south/03.webp",
+            "lava_salamander/animations/die/south/04.webp",
+            "lava_salamander/animations/die/south/05.webp",
+            "lava_salamander/animations/die/south/06.webp",
+            "lava_salamander/animations/die/south/07.webp",
+            "lava_salamander/animations/die/south/08.webp",
+            "lava_salamander/animations/die/south/09.webp",
+            "lava_salamander/animations/die/south/10.webp",
+            "lava_salamander/animations/die/south/11.webp",
+            "lava_salamander/animations/die/south/12.webp",
+            "lava_salamander/animations/die/south/13.webp",
+            "lava_salamander/animations/die/south/14.webp",
+            "lava_salamander/animations/die/south/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:41 GMT",
+          "src_frames": 16,
+          "sub": "89f8796e-cb57-4e74-abd1-88cc49a420c3"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__south-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/south-east/00.webp",
+            "lava_salamander/animations/die/south-east/01.webp",
+            "lava_salamander/animations/die/south-east/02.webp",
+            "lava_salamander/animations/die/south-east/03.webp",
+            "lava_salamander/animations/die/south-east/04.webp",
+            "lava_salamander/animations/die/south-east/05.webp",
+            "lava_salamander/animations/die/south-east/06.webp",
+            "lava_salamander/animations/die/south-east/07.webp",
+            "lava_salamander/animations/die/south-east/08.webp",
+            "lava_salamander/animations/die/south-east/09.webp",
+            "lava_salamander/animations/die/south-east/10.webp",
+            "lava_salamander/animations/die/south-east/11.webp",
+            "lava_salamander/animations/die/south-east/12.webp",
+            "lava_salamander/animations/die/south-east/13.webp",
+            "lava_salamander/animations/die/south-east/14.webp",
+            "lava_salamander/animations/die/south-east/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:43 GMT",
+          "src_frames": 16,
+          "sub": "af51ac3c-22c2-4c95-8b76-8eee6bfdc7da"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__south-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/south-west/00.webp",
+            "lava_salamander/animations/die/south-west/01.webp",
+            "lava_salamander/animations/die/south-west/02.webp",
+            "lava_salamander/animations/die/south-west/03.webp",
+            "lava_salamander/animations/die/south-west/04.webp",
+            "lava_salamander/animations/die/south-west/05.webp",
+            "lava_salamander/animations/die/south-west/06.webp",
+            "lava_salamander/animations/die/south-west/07.webp",
+            "lava_salamander/animations/die/south-west/08.webp",
+            "lava_salamander/animations/die/south-west/09.webp",
+            "lava_salamander/animations/die/south-west/10.webp",
+            "lava_salamander/animations/die/south-west/11.webp",
+            "lava_salamander/animations/die/south-west/12.webp",
+            "lava_salamander/animations/die/south-west/13.webp",
+            "lava_salamander/animations/die/south-west/14.webp",
+            "lava_salamander/animations/die/south-west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:45 GMT",
+          "src_frames": 16,
+          "sub": "bfd879dd-d88b-4728-a26b-2e75d237a9ee"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "lava_salamander/animations/die__west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/die/west/00.webp",
+            "lava_salamander/animations/die/west/01.webp",
+            "lava_salamander/animations/die/west/02.webp",
+            "lava_salamander/animations/die/west/03.webp",
+            "lava_salamander/animations/die/west/04.webp",
+            "lava_salamander/animations/die/west/05.webp",
+            "lava_salamander/animations/die/west/06.webp",
+            "lava_salamander/animations/die/west/07.webp",
+            "lava_salamander/animations/die/west/08.webp",
+            "lava_salamander/animations/die/west/09.webp",
+            "lava_salamander/animations/die/west/10.webp",
+            "lava_salamander/animations/die/west/11.webp",
+            "lava_salamander/animations/die/west/12.webp",
+            "lava_salamander/animations/die/west/13.webp",
+            "lava_salamander/animations/die/west/14.webp",
+            "lava_salamander/animations/die/west/15.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:47 GMT",
+          "src_frames": 16,
+          "sub": "c31955ea-8d6e-4cc7-9f4b-4c30755db2ad"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "6ee0bc41-d146-4841-b480-b417541a5a02",
+      "source_name": "Walk with all 4 legs in an animation that is easy to loop",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/east/00.webp",
+            "lava_salamander/animations/walk/east/01.webp",
+            "lava_salamander/animations/walk/east/02.webp",
+            "lava_salamander/animations/walk/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:49 GMT",
+          "src_frames": 4,
+          "sub": "fe39305a-0c9e-4b00-80e5-b9dd229c0a99"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__north.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/north/00.webp",
+            "lava_salamander/animations/walk/north/01.webp",
+            "lava_salamander/animations/walk/north/02.webp",
+            "lava_salamander/animations/walk/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:50 GMT",
+          "src_frames": 4,
+          "sub": "32821f49-acb9-4df2-94d3-3c2db12940a1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__north-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/north-east/00.webp",
+            "lava_salamander/animations/walk/north-east/01.webp",
+            "lava_salamander/animations/walk/north-east/02.webp",
+            "lava_salamander/animations/walk/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:51 GMT",
+          "src_frames": 4,
+          "sub": "1ca79a2b-6d3b-453c-bbb8-91229709a810"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__north-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/north-west/00.webp",
+            "lava_salamander/animations/walk/north-west/01.webp",
+            "lava_salamander/animations/walk/north-west/02.webp",
+            "lava_salamander/animations/walk/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:52 GMT",
+          "src_frames": 4,
+          "sub": "476ca579-010b-4591-ab29-f8e61490cfd6"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__south.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/south/00.webp",
+            "lava_salamander/animations/walk/south/01.webp",
+            "lava_salamander/animations/walk/south/02.webp",
+            "lava_salamander/animations/walk/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:54 GMT",
+          "src_frames": 4,
+          "sub": "04a6000d-4de1-4b78-a9bf-6d5dcdfcc156"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__south-east.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/south-east/00.webp",
+            "lava_salamander/animations/walk/south-east/01.webp",
+            "lava_salamander/animations/walk/south-east/02.webp",
+            "lava_salamander/animations/walk/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:55 GMT",
+          "src_frames": 4,
+          "sub": "02424e30-d960-4f14-b3af-d31d2eca9fff"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__south-west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/south-west/00.webp",
+            "lava_salamander/animations/walk/south-west/01.webp",
+            "lava_salamander/animations/walk/south-west/02.webp",
+            "lava_salamander/animations/walk/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:57 GMT",
+          "src_frames": 4,
+          "sub": "dd804bf3-7c6b-4bb8-9c3e-8e0094fa3a4b"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "lava_salamander/animations/walk__west.webp",
+          "frame_paths": [
+            "lava_salamander/animations/walk/west/00.webp",
+            "lava_salamander/animations/walk/west/01.webp",
+            "lava_salamander/animations/walk/west/02.webp",
+            "lava_salamander/animations/walk/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:38:58 GMT",
+          "src_frames": 4,
+          "sub": "c0ec2752-afe8-40ba-be49-6fbc0e6825f0"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      48,
+      48
+    ],
+    "pad": [
+      15,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 5,
+        "side": "left",
+        "target": 4,
+        "overlap": 1.0,
+        "strip_px": 68,
+        "ext": 7
+      },
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 6,
+        "side": "left",
+        "target": 5,
+        "overlap": 0.944,
+        "strip_px": 118,
+        "ext": 8
+      },
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 9,
+        "side": "left",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 8,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 5,
+        "side": "left",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 68,
+        "ext": 7
+      },
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 6,
+        "side": "left",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 45,
+        "ext": 4
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 5,
+        "side": "left",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 13,
+        "side": "left",
+        "target": 12,
+        "overlap": 1.0,
+        "strip_px": 218,
+        "ext": 13
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 14,
+        "side": "left",
+        "target": 13,
+        "overlap": 0.75,
+        "strip_px": 89,
+        "ext": 8
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 13,
+        "side": "right",
+        "target": 12,
+        "overlap": 1.0,
+        "strip_px": 218,
+        "ext": 13
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 14,
+        "side": "right",
+        "target": 13,
+        "overlap": 0.75,
+        "strip_px": 89,
+        "ext": 8
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 5,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 5,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 68,
+        "ext": 7
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 6,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 45,
+        "ext": 4
+      }
+    ]
+  }
+}

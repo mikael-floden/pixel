@@ -1,0 +1,289 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_4_348363959",
+  "ground_type": "clear_water",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "face_px": 64,
+  "slot": 2,
+  "objects": [
+    "a tall rock islet with a windswept tree",
+    "a tall driftwood totem",
+    "a ruined stone pillar rising from water",
+    "a tall willow leaning over the water",
+    "a tall bare dead tree in the water",
+    "a tall papyrus stand",
+    "a tall stand of bamboo in the water",
+    "a weathered stone obelisk in the water",
+    "a lone lighthouse rock",
+    "a half-sunken ship's mast"
+  ],
+  "tile_id": "a1558955-e71f-4fbc-ad0d-66ce4da6dee8",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.2,
+            "y": 68.0,
+            "r": 2.0,
+            "color": [
+              0.46,
+              0.248,
+              0.16
+            ],
+            "s": 0.575,
+            "dir": "up"
+          },
+          {
+            "x": 45.4,
+            "y": 36.8,
+            "r": 2.0,
+            "color": [
+              0.409,
+              0.232,
+              0.151
+            ],
+            "s": 0.554,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 26.1,
+            "y": 52.7,
+            "r": 2.0,
+            "color": [
+              0.037,
+              0.449,
+              0.226
+            ],
+            "s": 0.533,
+            "dir": "up"
+          },
+          {
+            "x": 31.6,
+            "y": 54.0,
+            "r": 2.0,
+            "color": [
+              0.04,
+              0.447,
+              0.242
+            ],
+            "s": 0.536,
+            "dir": "up"
+          },
+          {
+            "x": 37.0,
+            "y": 51.0,
+            "r": 2.0,
+            "color": [
+              0.04,
+              0.504,
+              0.264
+            ],
+            "s": 0.562,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 23.3,
+            "y": 55.3,
+            "r": 2.0,
+            "color": [
+              0.374,
+              0.21,
+              0.129
+            ],
+            "s": 0.529,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "emissive_tiles": 3,
+  "generated_at": "2026-07-06T23:34:34+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonize_refs": [
+      "clear_water",
+      "saturated_grass"
+    ],
+    "harmonized": 2,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

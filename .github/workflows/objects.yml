@@ -6,16 +6,21 @@ name: Pixel object factory loop
 # GitHub repo settings, and trigger/disable from the Actions tab.
 
 on:
-  schedule:
-    - cron: "30 */2 * * *"      # every 2 hours (offset from the character loop)
+  # Scheduled loop is DISABLED (stopped on request). Re-enable by uncommenting the
+  # cron below; the loop still runs on demand via the Actions "Run workflow" button.
+  # schedule:
+  #   - cron: "25 * * * *"
   workflow_dispatch:
     inputs:
       max_minutes:
         description: "Minutes to run this pass"
-        default: "50"
+        default: "80"
       min_balance:
         description: "Stop when generations remaining drops below this"
         default: "2000"
+      restyle:
+        description: "Regenerate objects made under an older style_version (true/false)"
+        default: "false"
 
 # Allow the job (and the loop's git push) to write to the repo.
 permissions:
@@ -30,13 +35,20 @@ concurrency:
 jobs:
   loop:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    # Generous headroom over the loop's --max-minutes clean exit: a single
+    # 8-direction/16-frame animation unit can take ~8 min, so the last unit must
+    # be able to finish and COMMIT well before the job is killed. (A 55-min cap
+    # was cancelling passes mid-unit and losing that object.)
+    timeout-minutes: 120
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push (rebase-on-reject fetches what it
+          # needs). Full history cost ~minutes per run for nothing.
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,5 +70,6 @@ jobs:
           git config user.name "pixel-objects-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python objects/pipeline/loop.py \
-            --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
-            --min-balance "${{ github.event.inputs.min_balance || '20' }}"
+            --max-minutes "${{ github.event.inputs.max_minutes || '80' }}" \
+            --min-balance "${{ github.event.inputs.min_balance || '2000' }}" \
+            ${{ github.event.inputs.restyle == 'true' && '--restyle' || '' }}

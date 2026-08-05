@@ -1,0 +1,315 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_5_661454068",
+  "ground_type": "clear_water",
+  "kind": "elevation",
+  "height": "base_x_5",
+  "levels": 5,
+  "face_px": 80,
+  "slot": 1,
+  "objects": [
+    "a tall sunken ship's mast with a crow's nest",
+    "a colossal willow over the water",
+    "a towering mangrove tree",
+    "a tall ruined watchtower on a rock",
+    "a towering rock pillar carved by a waterfall",
+    "a towering reed-and-driftwood spire",
+    "a towering dead tree rising from the water",
+    "a tall stilted lighthouse",
+    "a giant standing stone in the lake",
+    "a colossal rock islet crowned with a tree"
+  ],
+  "tile_id": "d626a032-e1d4-48c2-a5e7-6ee1e8b05f33",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 5,
+    "face_px": 80
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.3,
+            "y": 32.3,
+            "r": 2.0,
+            "color": [
+              0.372,
+              0.215,
+              0.148
+            ],
+            "s": 0.535,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 23.5,
+            "y": 45.4,
+            "r": 2.0,
+            "color": [
+              0.056,
+              0.598,
+              0.323
+            ],
+            "s": 0.615,
+            "dir": "up"
+          },
+          {
+            "x": 25.7,
+            "y": 43.7,
+            "r": 2.0,
+            "color": [
+              0.053,
+              0.566,
+              0.309
+            ],
+            "s": 0.597,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 33.0,
+            "y": 36.5,
+            "r": 2.9,
+            "color": [
+              0.672,
+              0.149,
+              0.112
+            ],
+            "s": 0.541,
+            "dir": "up"
+          },
+          {
+            "x": 28.0,
+            "y": 45.8,
+            "r": 2.2,
+            "color": [
+              0.755,
+              0.131,
+              0.12
+            ],
+            "s": 0.541,
+            "dir": "up"
+          },
+          {
+            "x": 27.1,
+            "y": 36.1,
+            "r": 2.0,
+            "color": [
+              0.672,
+              0.147,
+              0.112
+            ],
+            "s": 0.539,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 24.3,
+            "y": 37.2,
+            "r": 2.0,
+            "color": [
+              0.502,
+              0.228,
+              0.146
+            ],
+            "s": 0.568,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    }
+  ],
+  "emissive_tiles": 4,
+  "generated_at": "2026-07-06T16:32:05+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonize_refs": [
+      "clear_water",
+      "saturated_grass"
+    ],
+    "harmonized": 2,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

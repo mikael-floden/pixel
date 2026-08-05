@@ -1,0 +1,38 @@
+{
+  "id": "blue_slate_ice_egg",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "frost",
+  "rarity": "rare",
+  "value": 115,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Blue slate cracked around a cold white star. Nobody has found what grows these, only that they frost a blade.",
+  "sprite": "items/blue_slate_ice_egg/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "48c60df5-b32a-4270-b91b-ac25b752fb28",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:26:27.069102+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:22+00:00",
+  "soul": {
+    "element": "frost",
+    "power": "+9 frost damage and slows struck targets by 25%",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

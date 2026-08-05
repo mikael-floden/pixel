@@ -1,0 +1,38 @@
+{
+  "id": "gold_seamed_teal_soulstone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "gilded",
+  "rarity": "rare",
+  "value": 116,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Sea-green stone mended in gold, prised from a Palemaw's jaw. Armor holds better, and more coin turns up.",
+  "sprite": "items/gold_seamed_teal_soulstone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "a094ea1c-f241-4e94-95bc-8afa60430739",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:28:10.536555+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:20+00:00",
+  "soul": {
+    "element": "gilded",
+    "power": "+15% gold found and +6 armor",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

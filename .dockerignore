@@ -1,0 +1,35 @@
+# Allowlist build context (build from repo root): ONLY what games2/Dockerfile
+# COPYs. New top-level domains stay out of the context (and off the deploy
+# critical path) until the Dockerfile actually bakes them in.
+*
+!games2
+games2/node_modules
+games2/client/dist
+games2/**/*.tsbuildinfo
+games2/.data
+!objects
+!characters2
+!tiles2
+# ...but NOT the tiles2 generator's source sheets. tiles2/<terrain>/raw/ is the
+# pre-postprocess output the tiles2 agent keeps so it can re-tune and re-run
+# (tiles2/config/tiles2.json: "Raw is always kept"). The GAME never reaches it:
+# zero references in any maps2 world.json, in games2 source, or in the wiki's
+# build/data. 4,648 files / 34 MB baked into every image for nothing.
+tiles2/*/raw
+!maps2
+!sounds
+!music
+# The music WAV masters (~61 MB) are the music domain's analysis source-of-truth,
+# never fetched by the game: the engine streams ogg/m4a (musicStreamUrl) and the
+# /#music viewer streams too. Keep them OUT of the deploy image so every roll is
+# ~61 MB lighter. Sounds stay wav (SFX are wav-only in the catalog). Revert this
+# line if a music consumer ever needs the master at runtime. — games-audio 2026-07-25
+music/**/*.wav
+!monsters
+!items
+!lore
+!wiki
+!live
+**/__pycache__
+**/.venv
+*.log

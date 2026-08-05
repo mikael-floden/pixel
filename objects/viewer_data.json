@@ -1,122 +1,72 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 6,
-  "target_count": 40,
+  "object_count": 1,
+  "target_count": 1,
+  "scale": {
+    "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "category_height_m": {
+      "container": 0.8,
+      "valuable": 0.25,
+      "tool": 1.0,
+      "nature": 1.0,
+      "light": 1.0,
+      "creature": 0.25,
+      "misc": 0.8,
+      "building": 4.0,
+      "structure": 1.0
+    }
+  },
   "categories": {
-    "container": 4,
-    "valuable": 2
+    "light": 1
   },
   "objects": [
     {
-      "id": "barrel",
-      "name": "Barrel",
-      "category": "container",
-      "description": "a sturdy wooden barrel bound with metal hoops",
+      "id": "campfire",
+      "name": "Campfire",
+      "category": "light",
+      "description": "a campfire of logs with dancing flames",
       "view": "low top-down",
-      "size": [
-        64,
-        64
-      ],
-      "status": "complete",
-      "sprite": "barrel/sprite.png",
-      "rotation_files": {
-        "east": "barrel/rotations/east.png",
-        "north": "barrel/rotations/north.png",
-        "south": "barrel/rotations/south.png",
-        "west": "barrel/rotations/west.png"
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.6,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "animations": []
-    },
-    {
-      "id": "clay_pot",
-      "name": "Clay Pot",
-      "category": "container",
-      "description": "a small round terracotta clay pot",
-      "view": "low top-down",
-      "size": [
-        32,
-        32
-      ],
-      "status": "complete",
-      "sprite": "clay_pot/sprite.png",
-      "rotation_files": {},
-      "animations": []
-    },
-    {
-      "id": "gem_ruby",
-      "name": "Ruby Gem",
-      "category": "valuable",
-      "description": "a faceted red ruby gemstone sparkling",
-      "view": "low top-down",
-      "size": [
-        64,
-        64
-      ],
       "status": "in_progress",
-      "sprite": "gem_ruby/sprite.png",
-      "rotation_files": {},
-      "animations": []
-    },
-    {
-      "id": "gold_coin",
-      "name": "Gold Coin",
-      "category": "valuable",
-      "description": "a single shiny round gold coin stamped with a crest",
-      "view": "low top-down",
-      "size": [
-        64,
-        64
-      ],
-      "status": "complete",
-      "sprite": "gold_coin/sprite.png",
-      "rotation_files": {},
+      "pixellab_object_id": "0295e9c7-0e97-4ef3-8510-41d49630b6b6",
+      "sprite": "campfire/sprite.webp",
+      "rotations": {
+        "east": "campfire/rotations/east.webp",
+        "north": "campfire/rotations/north.webp",
+        "north-east": "campfire/rotations/north-east.webp",
+        "north-west": "campfire/rotations/north-west.webp",
+        "south": "campfire/rotations/south.webp",
+        "south-east": "campfire/rotations/south-east.webp",
+        "south-west": "campfire/rotations/south-west.webp",
+        "west": "campfire/rotations/west.webp"
+      },
       "animations": [
         {
-          "key": "spin",
-          "gif": "gold_coin/animations/spin.gif",
-          "strip": "gold_coin/animations/spin.png",
-          "frames": 4,
-          "action": "spinning around"
+          "key": "burn",
+          "description": "the fire burning and dancing",
+          "frames": 17,
+          "preview_gif": "campfire/animations/burn__south.gif",
+          "directions": {
+            "east": "campfire/animations/burn__east.gif",
+            "north": "campfire/animations/burn__north.gif",
+            "north-east": "campfire/animations/burn__north-east.gif",
+            "north-west": "campfire/animations/burn__north-west.gif",
+            "south": "campfire/animations/burn__south.gif",
+            "south-east": "campfire/animations/burn__south-east.gif",
+            "south-west": "campfire/animations/burn__south-west.gif",
+            "west": "campfire/animations/burn__west.gif"
+          }
         }
       ]
-    },
-    {
-      "id": "wooden_chest",
-      "name": "Wooden Chest",
-      "category": "container",
-      "description": "a closed wooden treasure chest with iron bands and a rounded lid",
-      "view": "low top-down",
-      "size": [
-        64,
-        64
-      ],
-      "status": "complete",
-      "sprite": "wooden_chest/sprite.png",
-      "rotation_files": {},
-      "animations": [
-        {
-          "key": "open",
-          "gif": "wooden_chest/animations/open.gif",
-          "strip": "wooden_chest/animations/open.png",
-          "frames": 4,
-          "action": "opening"
-        }
-      ]
-    },
-    {
-      "id": "wooden_crate",
-      "name": "Wooden Crate",
-      "category": "container",
-      "description": "a wooden shipping crate with plank sides and nailed corners",
-      "view": "low top-down",
-      "size": [
-        48,
-        48
-      ],
-      "status": "complete",
-      "sprite": "wooden_crate/sprite.png",
-      "rotation_files": {},
-      "animations": []
     }
   ]
 }

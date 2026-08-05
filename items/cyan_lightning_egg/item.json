@@ -1,0 +1,38 @@
+{
+  "id": "cyan_lightning_egg",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "storm",
+  "rarity": "epic",
+  "value": 295,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Pebbled black stone veined in cyan, the storm inside a Frostwraith. Its lightning strikes, then jumps to the next body.",
+  "sprite": "items/cyan_lightning_egg/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "d103b69f-2a43-4549-a338-374440daffe5",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:26:27.069102+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:23+00:00",
+  "soul": {
+    "element": "storm",
+    "power": "+15 lightning damage with a 20% chance to chain to a second target",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

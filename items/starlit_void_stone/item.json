@@ -1,0 +1,38 @@
+{
+  "id": "starlit_void_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "void",
+  "rarity": "epic",
+  "value": 285,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Night-black and star-flecked, prised out of a Balefiend. Void-heavy hits, and now and then you blink in behind.",
+  "sprite": "items/starlit_void_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "d6eae77e-5e58-4248-8ade-b4d015ae0b7a",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:26:27.069102+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:23+00:00",
+  "soul": {
+    "element": "void",
+    "power": "+22 void damage on hit and 10% chance to blink behind the target",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

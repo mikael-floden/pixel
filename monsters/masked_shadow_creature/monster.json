@@ -1,0 +1,658 @@
+{
+  "id": "masked_shadow_creature",
+  "name": "Grinmask",
+  "lore": "A sliver of living dark behind a grinning mask. Slay it and the shadow is gone; the mask clatters down, still smiling.",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "bd869d98-0938-4a46-9fcf-22d9719a92ff",
+    "url": "https://www.pixellab.ai/create-object/bd869d98-0938-4a46-9fcf-22d9719a92ff",
+    "prompt": "A smal thin and detailed shadow creature wearing a mask similar to the one in majoras mask. The mask should draw inspiration from majoras mask, but this mask looks much different",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 68,
+    "height": 68
+  },
+  "native_size": {
+    "width": 68,
+    "height": 68
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "masked_shadow_creature/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "masked_shadow_creature/rotations/south.webp",
+    "west": "masked_shadow_creature/rotations/west.webp",
+    "east": "masked_shadow_creature/rotations/east.webp",
+    "north": "masked_shadow_creature/rotations/north.webp",
+    "south-east": "masked_shadow_creature/rotations/south-east.webp",
+    "south-west": "masked_shadow_creature/rotations/south-west.webp",
+    "north-east": "masked_shadow_creature/rotations/north-east.webp",
+    "north-west": "masked_shadow_creature/rotations/north-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "a18c5705-750d-4ea4-9c8e-091e84f1b1e1",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/east/00.webp",
+            "masked_shadow_creature/animations/idle/east/01.webp",
+            "masked_shadow_creature/animations/idle/east/02.webp",
+            "masked_shadow_creature/animations/idle/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:32 GMT",
+          "src_frames": 4,
+          "sub": "69171837-ac9e-4e81-bdb9-dbb9255e9ec7"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__north.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/north/00.webp",
+            "masked_shadow_creature/animations/idle/north/01.webp",
+            "masked_shadow_creature/animations/idle/north/02.webp",
+            "masked_shadow_creature/animations/idle/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:33 GMT",
+          "src_frames": 4,
+          "sub": "441bd950-14a8-4e61-9534-5940947834cf"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__north-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/north-east/00.webp",
+            "masked_shadow_creature/animations/idle/north-east/01.webp",
+            "masked_shadow_creature/animations/idle/north-east/02.webp",
+            "masked_shadow_creature/animations/idle/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:35 GMT",
+          "src_frames": 4,
+          "sub": "d7f8b7ef-8d63-4015-8180-2a0b4cc620ff"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__north-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/north-west/00.webp",
+            "masked_shadow_creature/animations/idle/north-west/01.webp",
+            "masked_shadow_creature/animations/idle/north-west/02.webp",
+            "masked_shadow_creature/animations/idle/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:36 GMT",
+          "src_frames": 4,
+          "sub": "890d0788-0e61-43e5-9a67-a9de27938525"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__south.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/south/00.webp",
+            "masked_shadow_creature/animations/idle/south/01.webp",
+            "masked_shadow_creature/animations/idle/south/02.webp",
+            "masked_shadow_creature/animations/idle/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:37 GMT",
+          "src_frames": 4,
+          "sub": "02f53379-44f8-43be-bcc6-c393e41fcea9"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__south-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/south-east/00.webp",
+            "masked_shadow_creature/animations/idle/south-east/01.webp",
+            "masked_shadow_creature/animations/idle/south-east/02.webp",
+            "masked_shadow_creature/animations/idle/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:38 GMT",
+          "src_frames": 4,
+          "sub": "5c94c89b-92ec-4961-a523-e1cdfa2d31f5"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__south-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/south-west/00.webp",
+            "masked_shadow_creature/animations/idle/south-west/01.webp",
+            "masked_shadow_creature/animations/idle/south-west/02.webp",
+            "masked_shadow_creature/animations/idle/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:40 GMT",
+          "src_frames": 4,
+          "sub": "d08c6184-c01d-4a13-aac4-e68b3d4d0418"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/idle__west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/idle/west/00.webp",
+            "masked_shadow_creature/animations/idle/west/01.webp",
+            "masked_shadow_creature/animations/idle/west/02.webp",
+            "masked_shadow_creature/animations/idle/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:41 GMT",
+          "src_frames": 4,
+          "sub": "dbd48e63-f480-4591-b5f5-caf4b1fa82d2"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "bb73d187-adaf-469d-9f8c-36f46e7869ab",
+      "source_name": "skips along",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/east/00.webp",
+            "masked_shadow_creature/animations/walk/east/01.webp",
+            "masked_shadow_creature/animations/walk/east/02.webp",
+            "masked_shadow_creature/animations/walk/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:43 GMT",
+          "src_frames": 4,
+          "sub": "837b227f-fef9-4327-b1da-edfcae656de8"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__north.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/north/00.webp",
+            "masked_shadow_creature/animations/walk/north/01.webp",
+            "masked_shadow_creature/animations/walk/north/02.webp",
+            "masked_shadow_creature/animations/walk/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:45 GMT",
+          "src_frames": 4,
+          "sub": "8a7a0c8e-f0de-4a7e-96e9-6c23478b6e68"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__north-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/north-east/00.webp",
+            "masked_shadow_creature/animations/walk/north-east/01.webp",
+            "masked_shadow_creature/animations/walk/north-east/02.webp",
+            "masked_shadow_creature/animations/walk/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:46 GMT",
+          "src_frames": 4,
+          "sub": "46ea7d3f-9e38-48ad-993d-0dfe780dbca1"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__north-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/north-west/00.webp",
+            "masked_shadow_creature/animations/walk/north-west/01.webp",
+            "masked_shadow_creature/animations/walk/north-west/02.webp",
+            "masked_shadow_creature/animations/walk/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:48 GMT",
+          "src_frames": 4,
+          "sub": "93f6b01f-7a0d-47a9-a397-0db576418014"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__south.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/south/00.webp",
+            "masked_shadow_creature/animations/walk/south/01.webp",
+            "masked_shadow_creature/animations/walk/south/02.webp",
+            "masked_shadow_creature/animations/walk/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:50 GMT",
+          "src_frames": 4,
+          "sub": "4c1131b2-d2ee-4fc6-9e49-bb9685219162"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__south-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/south-east/00.webp",
+            "masked_shadow_creature/animations/walk/south-east/01.webp",
+            "masked_shadow_creature/animations/walk/south-east/02.webp",
+            "masked_shadow_creature/animations/walk/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:51 GMT",
+          "src_frames": 4,
+          "sub": "2c61a195-5188-4218-96b6-844312c9e9f5"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__south-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/south-west/00.webp",
+            "masked_shadow_creature/animations/walk/south-west/01.webp",
+            "masked_shadow_creature/animations/walk/south-west/02.webp",
+            "masked_shadow_creature/animations/walk/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:52 GMT",
+          "src_frames": 4,
+          "sub": "297ef8d2-6f91-4da1-aecf-8a667a5f781a"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/walk__west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/walk/west/00.webp",
+            "masked_shadow_creature/animations/walk/west/01.webp",
+            "masked_shadow_creature/animations/walk/west/02.webp",
+            "masked_shadow_creature/animations/walk/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:53 GMT",
+          "src_frames": 4,
+          "sub": "921260cf-1b0a-4fd4-8399-4f96aa8423b0"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "f18f00a8-237f-4f36-95e8-d734fc863a61",
+      "source_name": "Angry idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/east/00.webp",
+            "masked_shadow_creature/animations/angry/east/01.webp",
+            "masked_shadow_creature/animations/angry/east/02.webp",
+            "masked_shadow_creature/animations/angry/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:55 GMT",
+          "src_frames": 4,
+          "sub": "6674833d-f368-49a1-8a20-769475afb7f8"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__north.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/north/00.webp",
+            "masked_shadow_creature/animations/angry/north/01.webp",
+            "masked_shadow_creature/animations/angry/north/02.webp",
+            "masked_shadow_creature/animations/angry/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:56 GMT",
+          "src_frames": 4,
+          "sub": "12f9bc3b-9e4a-4e0f-8cd7-ed8bb38d3dda"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__north-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/north-east/00.webp",
+            "masked_shadow_creature/animations/angry/north-east/01.webp",
+            "masked_shadow_creature/animations/angry/north-east/02.webp",
+            "masked_shadow_creature/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:58 GMT",
+          "src_frames": 4,
+          "sub": "0f1848ec-ade2-4a5b-a831-eeed869a23cd"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__north-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/north-west/00.webp",
+            "masked_shadow_creature/animations/angry/north-west/01.webp",
+            "masked_shadow_creature/animations/angry/north-west/02.webp",
+            "masked_shadow_creature/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:59 GMT",
+          "src_frames": 4,
+          "sub": "09e90446-3985-464b-8c37-afb1515cb0d7"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__south.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/south/00.webp",
+            "masked_shadow_creature/animations/angry/south/01.webp",
+            "masked_shadow_creature/animations/angry/south/02.webp",
+            "masked_shadow_creature/animations/angry/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:00 GMT",
+          "src_frames": 4,
+          "sub": "df72deef-d7fb-446d-b408-d0d52c37a8d0"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__south-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/south-east/00.webp",
+            "masked_shadow_creature/animations/angry/south-east/01.webp",
+            "masked_shadow_creature/animations/angry/south-east/02.webp",
+            "masked_shadow_creature/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:01 GMT",
+          "src_frames": 4,
+          "sub": "2a87400f-568d-427e-bff2-68f7d82b9d64"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__south-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/south-west/00.webp",
+            "masked_shadow_creature/animations/angry/south-west/01.webp",
+            "masked_shadow_creature/animations/angry/south-west/02.webp",
+            "masked_shadow_creature/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:03 GMT",
+          "src_frames": 4,
+          "sub": "147a22a0-2b4f-481b-ba09-2081121f59cb"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/angry__west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/angry/west/00.webp",
+            "masked_shadow_creature/animations/angry/west/01.webp",
+            "masked_shadow_creature/animations/angry/west/02.webp",
+            "masked_shadow_creature/animations/angry/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:05 GMT",
+          "src_frames": 4,
+          "sub": "2de9e663-b0a6-404b-993f-4960e94f1782"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "ee1bb1fd-f7cb-4bfd-a42c-518965e7907b",
+      "source_name": "Round kick",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/east/00.webp",
+            "masked_shadow_creature/animations/attack/east/01.webp",
+            "masked_shadow_creature/animations/attack/east/02.webp",
+            "masked_shadow_creature/animations/attack/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:06 GMT",
+          "src_frames": 4,
+          "sub": "4a5ce664-a111-49de-9910-73113d9621c8"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__north.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/north/00.webp",
+            "masked_shadow_creature/animations/attack/north/01.webp",
+            "masked_shadow_creature/animations/attack/north/02.webp",
+            "masked_shadow_creature/animations/attack/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:07 GMT",
+          "src_frames": 4,
+          "sub": "72b13e32-19b9-48d8-b7bc-89d580875132"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__north-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/north-east/00.webp",
+            "masked_shadow_creature/animations/attack/north-east/01.webp",
+            "masked_shadow_creature/animations/attack/north-east/02.webp",
+            "masked_shadow_creature/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:09 GMT",
+          "src_frames": 4,
+          "sub": "c860fa69-e14f-443e-b64c-bdac8c93db1d"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__north-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/north-west/00.webp",
+            "masked_shadow_creature/animations/attack/north-west/01.webp",
+            "masked_shadow_creature/animations/attack/north-west/02.webp",
+            "masked_shadow_creature/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:10 GMT",
+          "src_frames": 4,
+          "sub": "33bab392-c7f6-4c4e-b7ca-de12a7de0a46"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__south.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/south/00.webp",
+            "masked_shadow_creature/animations/attack/south/01.webp",
+            "masked_shadow_creature/animations/attack/south/02.webp",
+            "masked_shadow_creature/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:11 GMT",
+          "src_frames": 4,
+          "sub": "226de77e-ffff-4493-b602-2e17019c24a2"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__south-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/south-east/00.webp",
+            "masked_shadow_creature/animations/attack/south-east/01.webp",
+            "masked_shadow_creature/animations/attack/south-east/02.webp",
+            "masked_shadow_creature/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:12 GMT",
+          "src_frames": 4,
+          "sub": "3087cc9d-6960-4422-9436-34ed53d0cd3e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__south-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/south-west/00.webp",
+            "masked_shadow_creature/animations/attack/south-west/01.webp",
+            "masked_shadow_creature/animations/attack/south-west/02.webp",
+            "masked_shadow_creature/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:14 GMT",
+          "src_frames": 4,
+          "sub": "1d667c71-1407-463d-b19c-a6821a4b4863"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "masked_shadow_creature/animations/attack__west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/attack/west/00.webp",
+            "masked_shadow_creature/animations/attack/west/01.webp",
+            "masked_shadow_creature/animations/attack/west/02.webp",
+            "masked_shadow_creature/animations/attack/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:16 GMT",
+          "src_frames": 4,
+          "sub": "a1034649-4dd4-4cbe-b786-83814bb2170e"
+        }
+      }
+    },
+    "die": {
+      "group_id": "b9db97c6-d10c-417f-ac71-ec567eeae78c",
+      "source_name": "The character dissapers and the mask falls down on",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/east/00.webp",
+            "masked_shadow_creature/animations/die/east/01.webp",
+            "masked_shadow_creature/animations/die/east/02.webp",
+            "masked_shadow_creature/animations/die/east/03.webp",
+            "masked_shadow_creature/animations/die/east/04.webp",
+            "masked_shadow_creature/animations/die/east/05.webp",
+            "masked_shadow_creature/animations/die/east/06.webp",
+            "masked_shadow_creature/animations/die/east/07.webp",
+            "masked_shadow_creature/animations/die/east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:17 GMT",
+          "src_frames": 9,
+          "sub": "1cc88733-2de1-4938-b4aa-d4b0ce25000a"
+        },
+        "north": {
+          "frames": 8,
+          "strip": "masked_shadow_creature/animations/die__north.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/north/00.webp",
+            "masked_shadow_creature/animations/die/north/01.webp",
+            "masked_shadow_creature/animations/die/north/02.webp",
+            "masked_shadow_creature/animations/die/north/03.webp",
+            "masked_shadow_creature/animations/die/north/04.webp",
+            "masked_shadow_creature/animations/die/north/05.webp",
+            "masked_shadow_creature/animations/die/north/06.webp",
+            "masked_shadow_creature/animations/die/north/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:18 GMT",
+          "src_frames": 9,
+          "sub": "edf3e86c-bcdf-41b6-b389-435c23fee071"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__north-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/north-east/00.webp",
+            "masked_shadow_creature/animations/die/north-east/01.webp",
+            "masked_shadow_creature/animations/die/north-east/02.webp",
+            "masked_shadow_creature/animations/die/north-east/03.webp",
+            "masked_shadow_creature/animations/die/north-east/04.webp",
+            "masked_shadow_creature/animations/die/north-east/05.webp",
+            "masked_shadow_creature/animations/die/north-east/06.webp",
+            "masked_shadow_creature/animations/die/north-east/07.webp",
+            "masked_shadow_creature/animations/die/north-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:20 GMT",
+          "src_frames": 9,
+          "sub": "998121ca-4552-491c-a981-494ce8e86448"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__north-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/north-west/00.webp",
+            "masked_shadow_creature/animations/die/north-west/01.webp",
+            "masked_shadow_creature/animations/die/north-west/02.webp",
+            "masked_shadow_creature/animations/die/north-west/03.webp",
+            "masked_shadow_creature/animations/die/north-west/04.webp",
+            "masked_shadow_creature/animations/die/north-west/05.webp",
+            "masked_shadow_creature/animations/die/north-west/06.webp",
+            "masked_shadow_creature/animations/die/north-west/07.webp",
+            "masked_shadow_creature/animations/die/north-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:21 GMT",
+          "src_frames": 9,
+          "sub": "f9d08509-01c5-4675-8bff-39d1b309353c"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__south.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/south/00.webp",
+            "masked_shadow_creature/animations/die/south/01.webp",
+            "masked_shadow_creature/animations/die/south/02.webp",
+            "masked_shadow_creature/animations/die/south/03.webp",
+            "masked_shadow_creature/animations/die/south/04.webp",
+            "masked_shadow_creature/animations/die/south/05.webp",
+            "masked_shadow_creature/animations/die/south/06.webp",
+            "masked_shadow_creature/animations/die/south/07.webp",
+            "masked_shadow_creature/animations/die/south/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:23 GMT",
+          "src_frames": 9,
+          "sub": "923020e5-3760-4781-a605-482976b015e9"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__south-east.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/south-east/00.webp",
+            "masked_shadow_creature/animations/die/south-east/01.webp",
+            "masked_shadow_creature/animations/die/south-east/02.webp",
+            "masked_shadow_creature/animations/die/south-east/03.webp",
+            "masked_shadow_creature/animations/die/south-east/04.webp",
+            "masked_shadow_creature/animations/die/south-east/05.webp",
+            "masked_shadow_creature/animations/die/south-east/06.webp",
+            "masked_shadow_creature/animations/die/south-east/07.webp",
+            "masked_shadow_creature/animations/die/south-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:24 GMT",
+          "src_frames": 9,
+          "sub": "2b173a1e-2d4f-4b1c-bafb-af74f3846695"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__south-west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/south-west/00.webp",
+            "masked_shadow_creature/animations/die/south-west/01.webp",
+            "masked_shadow_creature/animations/die/south-west/02.webp",
+            "masked_shadow_creature/animations/die/south-west/03.webp",
+            "masked_shadow_creature/animations/die/south-west/04.webp",
+            "masked_shadow_creature/animations/die/south-west/05.webp",
+            "masked_shadow_creature/animations/die/south-west/06.webp",
+            "masked_shadow_creature/animations/die/south-west/07.webp",
+            "masked_shadow_creature/animations/die/south-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:26 GMT",
+          "src_frames": 9,
+          "sub": "460cb04c-45b0-4444-a8e7-6d2bfa84f059"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "masked_shadow_creature/animations/die__west.webp",
+          "frame_paths": [
+            "masked_shadow_creature/animations/die/west/00.webp",
+            "masked_shadow_creature/animations/die/west/01.webp",
+            "masked_shadow_creature/animations/die/west/02.webp",
+            "masked_shadow_creature/animations/die/west/03.webp",
+            "masked_shadow_creature/animations/die/west/04.webp",
+            "masked_shadow_creature/animations/die/west/05.webp",
+            "masked_shadow_creature/animations/die/west/06.webp",
+            "masked_shadow_creature/animations/die/west/07.webp",
+            "masked_shadow_creature/animations/die/west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:34:27 GMT",
+          "src_frames": 9,
+          "sub": "59796bb9-99bd-4ba7-aaeb-640c38d82547"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "north": {
+        "dropped": [
+          8
+        ],
+        "sub": "edf3e86c-bcdf-41b6-b389-435c23fee071"
+      }
+    }
+  }
+}

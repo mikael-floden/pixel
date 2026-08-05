@@ -1,0 +1,633 @@
+/* Nangijala wiki — the Claude-artifact look the maintainer asked for:
+   warm cream ground, serif display headings, coral accent, quiet borders.
+   Theme tokens on :root; dark redefines tokens only; the viewer's toggle
+   (data-theme) must win in both directions. */
+
+:root {
+  --bg: #faf9f5;
+  --surface: #ffffff;
+  --surface-2: #f4f2ec;
+  --ink: #1f1e1a;
+  --muted: #706b5f;
+  --border: #e6e2d7;
+  --border-strong: #d5d0c2;
+  --accent: #d97757;
+  --accent-soft: #f6e3db;
+  --accent-ink: #b45309;
+  --good: #4d7c4d;
+  --good-soft: #e4efe4;
+  --bad: #b3453a;
+  --bad-soft: #f6e1de;
+  --star: #d9a13b;
+  --checker-a: #efece3;
+  --checker-b: #e2ded2;
+  --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --surface: #30302e;
+    --surface-2: #3a3937;
+    --ink: #f0eee7;
+    --muted: #a6a195;
+    --border: #43423e;
+    --border-strong: #55534d;
+    --accent: #d97757;
+    --accent-soft: #4a352d;
+    --accent-ink: #e6a27f;
+    --good: #8fbc8f;
+    --good-soft: #32402f;
+    --bad: #e08d80;
+    --bad-soft: #4a2f2b;
+    --star: #e0b25e;
+    --checker-a: #3a3937;
+    --checker-b: #2f2e2c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+}
+:root[data-theme="light"] {
+  --bg: #faf9f5; --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1f1e1a;
+  --muted: #706b5f; --border: #e6e2d7; --border-strong: #d5d0c2;
+  --accent: #d97757; --accent-soft: #f6e3db; --accent-ink: #b45309;
+  --good: #4d7c4d; --good-soft: #e4efe4; --bad: #b3453a; --bad-soft: #f6e1de;
+  --star: #d9a13b; --checker-a: #efece3; --checker-b: #e2ded2;
+  --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
+}
+:root[data-theme="dark"] {
+  --bg: #262624; --surface: #30302e; --surface-2: #3a3937; --ink: #f0eee7;
+  --muted: #a6a195; --border: #43423e; --border-strong: #55534d;
+  --accent: #d97757; --accent-soft: #4a352d; --accent-ink: #e6a27f;
+  --good: #8fbc8f; --good-soft: #32402f; --bad: #e08d80; --bad-soft: #4a2f2b;
+  --star: #e0b25e; --checker-a: #3a3937; --checker-b: #2f2e2c;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+img, canvas { image-rendering: pixelated; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; }
+h1 { font-size: 30px; margin: 0 0 4px; }
+h2 { font-size: 21px; margin: 26px 0 10px; }
+h3 { font-size: 17px; margin: 0 0 6px; }
+a { color: var(--accent-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2); padding: 1px 5px; border-radius: 5px; }
+.muted { color: var(--muted); }
+.hidden { display: none !important; }
+
+/* ---- shell ---- */
+#app { display: flex; min-height: 100vh; }
+#sidebar {
+  width: 218px; flex: none;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  padding: 18px 12px;
+  display: flex; flex-direction: column; gap: 14px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.brand-title { font-family: var(--serif); font-size: 22px; font-weight: 700; }
+.brand-sub { color: var(--muted); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+#nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+#nav a {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); font-size: 14.5px;
+}
+#nav a:hover { background: var(--surface-2); text-decoration: none; }
+#nav a.active { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+#nav .count { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.side-foot { display: flex; flex-direction: column; gap: 4px; }
+
+#main { flex: 1; min-width: 0; }
+#topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 26px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--bg); z-index: 20;
+}
+#menu-btn { display: none; }
+#search {
+  flex: 1; max-width: 430px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 9px;
+  padding: 7px 12px; font: inherit; outline: none;
+}
+#search:focus { border-color: var(--accent); }
+#build-stamp { margin-left: auto; font-size: 12px; text-align: right; line-height: 1.35; }
+#build-stamp .stamp-date { white-space: nowrap; }
+#build-stamp .stamp-sha { font-family: var(--mono); font-size: 10.5px; opacity: 0.85; }
+.mute-game { display: inline-block; margin: 0 0 14px; }
+#content { padding: 24px 26px 120px; max-width: 1180px; }
+.loading { color: var(--muted); padding: 40px 0; }
+
+/* ---- cards & grids ---- */
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 8px;
+  transition: border-color 0.12s;
+}
+a.card { color: var(--ink); }
+a.card:hover { text-decoration: none; border-color: var(--border-strong); }
+.card .thumb {
+  height: 110px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; overflow: hidden;
+}
+.card .thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.card .card-name { font-weight: 600; font-size: 14.5px; }
+.card .card-sub { color: var(--muted); font-size: 12.5px; }
+.card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+.checker {
+  background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
+}
+
+.pill {
+  display: inline-block; font-size: 11.5px; padding: 1px 8px; border-radius: 999px;
+  background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+}
+.pill.ok { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.pill.warn { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
+.pill.err { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+
+/* ---- buttons ---- */
+button { font: inherit; cursor: pointer; }
+.primary-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: 9px;
+  padding: 7px 16px; font-weight: 600;
+}
+.primary-btn:hover { filter: brightness(1.06); }
+.primary-btn:disabled { opacity: 0.55; cursor: default; }
+.ghost-btn {
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--border); border-radius: 9px; padding: 6px 12px;
+}
+.ghost-btn:hover { background: var(--surface-2); }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); }
+.seg button {
+  background: transparent; border: none; padding: 5px 10px; color: var(--muted);
+  border-right: 1px solid var(--border); font-size: 13px;
+}
+.seg button:last-child { border-right: none; }
+.seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+
+/* ---- feedback controls ---- */
+.stars { display: inline-flex; gap: 1px; }
+.stars button {
+  background: none; border: none; padding: 0 1px; font-size: 17px; line-height: 1;
+  color: var(--border-strong);
+}
+.stars button.lit { color: var(--star); }
+.stars button:hover { transform: scale(1.15); }
+.verdict { display: inline-flex; gap: 4px; }
+.verdict button {
+  border: 1px solid var(--border); background: var(--surface); border-radius: 7px;
+  padding: 2px 9px; font-size: 12.5px; color: var(--muted);
+}
+.verdict button.approved { background: var(--good-soft); color: var(--good); border-color: transparent; font-weight: 600; }
+.verdict button.rejected { background: var(--bad-soft); color: var(--bad); border-color: transparent; font-weight: 600; }
+.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fb-note {
+  width: 100%; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
+  font: 13px/1.4 var(--sans); resize: vertical; min-height: 30px;
+}
+
+/* ---- detail pages ---- */
+.detail-head { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 14px; }
+.detail-head .portrait {
+  width: 132px; height: 132px; flex: none; border-radius: 12px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.detail-head .portrait img { max-width: 100%; max-height: 100%; }
+/* Monster head. The text column is unavoidably TALLER than the 132px
+   portrait (title + the longest blurb at a phone's ~248px column ≈ 156px),
+   and the blurb's reserved height has to live somewhere — so the level chip
+   goes back under the thumbnail and ABSORBS it into real content. The left
+   column then measures 167px, out-tops the text column, and the reserve
+   lands beside a taller neighbour where it cannot open a blank line
+   (maintainer 2026-07-30 — "a lot of extra unnecessary space"). Growing the
+   portrait instead backfires: it squeezes the text under its wrap threshold
+   and stacks the columns, which costs far more. */
+.detail-head .portrait-col { flex: none; display: flex; flex-direction: column; gap: 8px; width: 132px; }
+/* "N roaming the world", between the name and the description. Tight
+   margins: it sits between two blocks that already carry their own. */
+.spawn-line { margin: 8px 0 2px; }
+/* Every blurb in the domain stacked in ONE grid cell, only the real one
+   visible: the row is exactly as tall as the tallest at whatever width the
+   column happens to have, so the panel below never moves between pages. */
+.lore-slot { display: grid; }
+/* Tighter than a paragraph's default 1em top/bottom: reserving the tallest
+   blurb leaves slack on the shorter ones, and the maintainer allowed a few
+   px off the spacing under the name to pay for it (2026-07-30). */
+.lore-slot > * { grid-area: 1 / 1; margin: 10px 0 6px; }
+.lore-slot .ghost { visibility: hidden; pointer-events: none; user-select: none; }
+.detail-head .meta { flex: 1; min-width: 240px; }
+/* The chip under a picture: a creature's LEVEL ("how hard is this to
+   fight?") and a hero's species/sex. One look, one place — under the
+   thumbnail, on the cards and the detail pages alike (maintainer
+   2026-07-30). */
+.thumb-chip {
+  text-align: center; font-size: 13px; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 8px; line-height: 1.4;
+}
+.thumb-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+/* Tight against the artwork above it (maintainer 2026-07-31). */
+.card .thumb-chip { margin: 2px 0 4px; }
+
+/* ---- loot: what drops what ----
+   One row shape serves BOTH directions — a creature's drops and an item's
+   sources — so the two tables read as one idea seen from either end. Every
+   row is a LINK (maintainer 2026-07-31: the old list printed the folder id
+   and went nowhere). Item art is authored 48x48 at 1x, so it is drawn at 48
+   or 96 and never resampled. */
+.drop-list { display: flex; flex-direction: column; }
+.drop-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 4px; border-top: 1px solid var(--border);
+  color: var(--ink); border-radius: 8px;
+}
+.drop-list .drop-row:first-child { border-top: 0; }
+.drop-row:hover { background: var(--surface-2); text-decoration: none; }
+/* Size comes from the markup's width/height (48 or 96 — whole multiples of
+   the authored 48), NEVER from CSS: a max-width or a forced size resamples
+   the art. The generic `.card .thumb img { max-width:100% }` would do exactly
+   that inside a 110px-tall thumb, so item icons opt out of it. */
+.item-icon { flex: none; image-rendering: pixelated; }
+.card .thumb img.item-icon { max-width: none; max-height: none; object-fit: none; }
+.item-noart { display: inline-block; width: 48px; height: 48px; border: 1px dashed var(--border-strong); border-radius: 8px; }
+/* A creature's sprite is a big frame with a small creature in it — show it
+   whole, letterboxed into the same 48px slot the item icons use. */
+.mon-icon { object-fit: contain; }
+.drop-name { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.drop-worth { font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.drop-pct {
+  font-variant-numeric: tabular-nums; font-weight: 600;
+  min-width: 52px; text-align: right; white-space: nowrap;
+}
+.pill.soul { background: var(--accent-soft); color: var(--accent-ink); }
+/* What it sells for: the coin and the number, nothing else. The coin is
+   authored 32x32 at 1x, so it is drawn at 32 and never resampled. */
+.gold-tag { display: inline-flex; align-items: center; gap: 2px; }
+.gold-coin { flex: none; image-rendering: pixelated; }
+.card .thumb img.gold-coin, .gold-tag .gold-coin { max-width: none; max-height: none; }
+.gold-tag b { font-size: 14px; font-variant-numeric: tabular-nums; }
+/* The type emblem on a chip. Same rule as every other bit of pixel art:
+   the markup sets the size to a whole multiple of the authored 32, and CSS
+   must not squeeze it. */
+/* Emblem hard left, text centred in the WHOLE chip: a phantom third column
+   the emblem's own width balances the first, so the middle column's centre
+   is the chip's centre (maintainer 2026-07-31). */
+.thumb-chip.has-icon {
+  display: grid; grid-template-columns: 32px 1fr 32px;
+  align-items: center; padding: 2px 6px; gap: 4px;
+}
+.thumb-chip.has-icon .chip-text { grid-column: 2; text-align: center; min-width: 0; }
+.type-icon { flex: none; image-rendering: pixelated; }
+.card .thumb img.type-icon { max-width: none; max-height: none; }
+/* Browser controls: filter by type, sort by price or name, flip direction. */
+.item-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.item-tools .seg button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; }
+.item-tools .dir-btn { min-width: 38px; font-size: 15px; line-height: 1; }
+/* Not dropped by anything yet — the normal resting state, dimmed not warned. */
+.card.dim { opacity: 0.62; }
+.card.dim:hover { opacity: 1; }
+.crumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; display: inline-block; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; box-shadow: var(--shadow); margin: 14px 0;
+}
+.panel-title { font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* ---- animation player ---- */
+.player { display: flex; flex-direction: column; gap: 10px; }
+.player-stage {
+  align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px; max-width: 100%; overflow: auto;
+  /* fixed per-domain stage: the creature is centred in it, so paging
+     through monsters keeps the layout perfectly still */
+  display: flex; align-items: center; justify-content: center;
+}
+.player-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.player-controls .frame-no { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 52px; }
+.dirpad { display: inline-flex; flex-wrap: wrap; gap: 3px; }
+.dirpad button {
+  width: 37px; padding: 4px 0; border: 1px solid var(--border); background: var(--surface);
+  border-radius: 7px; font-size: 12px; color: var(--muted);
+}
+.dirpad button.on { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); font-weight: 700; }
+label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--muted); user-select: none; }
+
+/* ---- tiles ---- */
+.tile-group { margin: 10px 0; }
+.tile-group summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+.tile-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+.tile-cell {
+  position: relative; border: 1px solid var(--border); border-radius: 8px; padding: 4px;
+  display: flex; flex-direction: column; gap: 3px; align-items: center;
+}
+.tile-cell img { width: 64px; height: auto; display: block; }
+.tile-cell.rejected { outline: 2px solid var(--bad); opacity: 0.45; }
+.tile-cell.approved { outline: 2px solid var(--good); }
+.tile-cell .stars button { font-size: 12px; }
+.tile-cell .tile-x {
+  position: absolute; top: 2px; right: 2px; border: none; background: none;
+  color: var(--muted); font-size: 12px; padding: 2px 4px; border-radius: 5px;
+}
+.tile-cell .tile-x:hover { background: var(--bad-soft); color: var(--bad); }
+
+/* ---- audio ---- */
+.take-row {
+  display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.take-row:last-child { border-bottom: none; }
+.take-row.rejected { opacity: 0.45; }
+.play-btn {
+  width: 32px; height: 32px; flex: none; border-radius: 50%;
+  border: 1px solid var(--border-strong); background: var(--surface);
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
+}
+.play-btn.playing { background: var(--accent); color: #fff; border-color: var(--accent); }
+.take-name { font-family: var(--mono); font-size: 12.5px; min-width: 150px; }
+.take-row .spacer { flex: 1; }
+
+/* ---- tables (tuning) ---- */
+table.tune { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.tune th {
+  text-align: left; color: var(--muted); font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 6px 10px; border-bottom: 1px solid var(--border-strong);
+}
+table.tune td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.tune td.num, table.tune input[type="number"] { font-variant-numeric: tabular-nums; }
+table.tune input[type="number"], table.tune input[type="text"] {
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 7px; padding: 4px 8px;
+  font: inherit; width: 96px;
+}
+table.tune input.overridden { border-color: var(--accent); background: var(--accent-soft); }
+.table-scroll { overflow-x: auto; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.stat-grid label { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted); }
+.stat-grid input {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 9px; font: inherit; font-variant-numeric: tabular-nums;
+}
+.loot-row { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+.loot-row input[type="text"] { flex: 1; }
+.loot-row input {
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 9px; font: inherit;
+}
+.loot-row input.chance { width: 82px; }
+
+/* ---- savebar ---- */
+#savebar {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 10px 14px;
+  display: flex; gap: 10px; align-items: center; z-index: 60; max-width: 92vw;
+}
+#savebar-text { font-size: 13.5px; }
+
+/* ---- dialog ---- */
+dialog {
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border-strong); border-radius: 14px;
+  box-shadow: var(--shadow); padding: 20px; max-width: 460px;
+}
+dialog::backdrop { background: rgba(20, 18, 12, 0.45); }
+dialog input {
+  width: 100%; background: var(--bg); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+  font: inherit; margin: 10px 0;
+}
+.dialog-row { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ---- stat tiles (home) ---- */
+/* ---- section identity (the maintainer's 48x48 pixel-art icons) ----
+   NEVER resample these: they are authored 1x with hard alpha, so they are
+   drawn at 48 or 96 CSS px only (`width`/`height` come from the markup) and
+   `image-rendering: pixelated` — inherited from the global img rule — keeps
+   a phone's 2x/3x device pixels on clean boundaries. No max-width here: a
+   fractional width would soften every edge. */
+.sect-icon { flex: none; display: block; }
+.sect-head { display: flex; align-items: center; gap: 13px; margin: 0 0 4px; }
+.sect-head h1 { margin: 0; }
+
+.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; margin: 16px 0; }
+.stat-tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 14px 14px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px;
+}
+.stat-tile .sect-icon { margin-bottom: 8px; }
+.stat-tile .n { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.25; }
+.stat-tile .l { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+a.stat-tile { color: var(--ink); }
+a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
+
+.toast {
+  position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--bg); border-radius: 10px;
+  padding: 9px 16px; font-size: 13.5px; z-index: 70; box-shadow: var(--shadow);
+}
+
+/* ---- responsive ---- */
+/* Menu scrim (mobile): everything right of the open nav darkens; tapping it
+   closes the MENU. Embedded in the game drawer, the parent deepens its own
+   backdrop in sync, so the game strip reads double-dark and closes the menu
+   first, the wiki second (see games2/client/src/wikipanel.ts). */
+#menu-scrim {
+  position: fixed; inset: 0; z-index: 40; background: rgba(10, 8, 4, 0.55);
+  opacity: 0; pointer-events: none; transition: opacity 0.18s ease;
+}
+#menu-scrim.on { opacity: 1; pointer-events: auto; cursor: pointer; }
+@media (max-width: 760px) {
+  #sidebar {
+    position: fixed; z-index: 50; height: 100dvh; transform: translateX(-100%);
+    transition: transform 0.18s ease; box-shadow: var(--shadow); background: var(--bg);
+  }
+  #sidebar.open { transform: translateX(0); }
+  #menu-btn { display: inline-block; }
+  #content { padding: 16px 14px 130px; }
+  /* Match the content column: the desktop 26px left the menu button with a
+     26px gap to the edge against its own 13px top/bottom, while everything
+     below it — crumb, portrait, the prev/next buttons' right gap — sat at
+     14px (maintainer 2026-07-30). */
+  #topbar { padding: 12px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ---- public (read-only) faces + admin login ---- */
+.stars.ro { color: var(--star); font-size: 13px; letter-spacing: 1px; }
+.stat-grid.ro .stat-value {
+  font-size: 15px; font-weight: 600; color: var(--fg);
+  padding: 6px 0 2px; font-variant-numeric: tabular-nums;
+}
+.login-error { color: var(--err, #c0392b); font-size: 13px; min-height: 1.2em; margin: 2px 0 0; }
+#login-dialog input { width: 100%; margin-top: 8px; }
+
+/* ---- detail prev/next navigation ---- */
+.crumb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.detail-nav { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.detail-count { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.nav-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; height: 36px; border: 1px solid var(--border);
+  border-radius: 9px; background: transparent; color: var(--ink);
+  text-decoration: none; font-size: 20px; line-height: 1; padding-bottom: 2px;
+}
+.nav-btn:hover { background: var(--surface-2); }
+.mute-game { margin: 0 0 12px; }
+
+/* ---- tile instance view ---- */
+.tile-cell { position: relative; }
+.tile-link { display: block; line-height: 0; cursor: zoom-in; }
+.base-pill {
+  position: absolute; top: 4px; left: 4px; z-index: 1;
+  font-size: 9.5px; letter-spacing: 0.02em; padding: 2px 5px; border-radius: 6px;
+  background: var(--accent); color: #fff; pointer-events: none; opacity: 0.92;
+}
+.tile-portrait img { image-rendering: pixelated; width: 128px; height: 128px; }
+/* One line of pills under a title. Wrapping is allowed but must not be
+   needed at phone width — two pills stacked made a clean-base tile's header
+   taller than an ordinary tile's, which shifted the page while paging. */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+
+.iso-scenes { display: grid; gap: 14px; margin-top: 16px; }
+.iso-scene { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 12px 14px; }
+.iso-hint { margin: 2px 0 10px; font-size: 12.5px; }
+.iso-stage { min-height: 140px; border-radius: 8px; padding: 8px 0; }
+/* TWO scenes share one chessboard: a divider runs between them through both
+   the captions and the stage, so one row shows two examples and paging the
+   tiles costs half the scrolling (maintainer 2026-07-31).
+   The divider is its OWN 1px grid column, so the two halves are exactly
+   equal — a border on one cell would steal that pixel plus its padding from
+   the right half, and each half has to hold a 192px canvas with ~5px to
+   spare on a phone. */
+.pair-row { display: grid; grid-template-columns: 1fr; }
+.paired .pair-row { grid-template-columns: 1fr 1px 1fr; }
+.pair-div { background: var(--border); }
+.pair-cell { min-width: 0; display: flex; flex-direction: column; }
+.pair-row.iso-stage .pair-cell { align-items: center; justify-content: center; overflow-x: auto; }
+.paired .heads .pair-cell:first-child { padding-right: 12px; }
+.paired .heads .pair-cell:last-child { padding-left: 12px; }
+/* The shared chessboard spans the panel edge to edge — those 28px of panel
+   padding are exactly what two 3×3 fields need. */
+.paired .iso-stage { margin: 0 -14px; border-radius: 0; }
+.iso-scene .panel-title { font-size: 15px; }
+/* Pixel art: the canvas is drawn at the game's own size and must never be
+   squeezed to fit — a narrow cell scrolls instead. */
+.iso-canvas { image-rendering: pixelated; flex: none; }
+
+/* ---- usage in the default world ---- */
+.use-pill {
+  position: absolute; top: 4px; right: 4px; z-index: 1;
+  font-size: 9.5px; padding: 2px 5px; border-radius: 6px;
+  background: var(--surface-2); color: var(--muted);
+  border: 1px solid var(--border); pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.tile-cell.unused-tile img { opacity: 0.72; }
+
+/* ---- spawn-zone map (monster pages) ---- */
+.zone-map-wrap { overflow-x: auto; }
+.zone-map {
+  image-rendering: auto;   /* a downscaled world overview, not 1:1 pixel art */
+  max-width: 100%; height: auto; display: block;
+  border-radius: 8px; background: var(--surface-2);
+}
+
+/* ---- lore: the chronicle ----
+   A row list, not a card grid: every entry ships preview:null, so cards would
+   be ten empty thumb boxes — exactly the dead space the maintainer circles —
+   and ten rows are ~1000px of the drawer against ~2900px of cards. */
+.lore-list .drop-row { align-items: center; padding: 8px 4px; }
+.lore-no {
+  flex: none; width: 18px; text-align: right; color: var(--muted);
+  font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.drop-row .lore-row-text { flex-direction: column; align-items: flex-start; gap: 1px; flex-wrap: nowrap; }
+.lore-name { font-weight: 600; }
+.lore-sum {
+  color: var(--muted); font-size: 12.5px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* 48x48 authored 1x — drawn at 48 or 96, never resampled: the same opt-out the
+   item icons need from the generic `.card .thumb img { max-width:100% }`. */
+.lore-icon { flex: none; image-rendering: pixelated; }
+.card .thumb img.lore-icon,
+.detail-head .portrait img.lore-icon { max-width: none; max-height: none; object-fit: none; }
+
+/* A reading column with a real measure. In the ~426px drawer this never binds;
+   on a desktop it stops a 3000-character chapter running to 110 chars a line. */
+.lore-read { max-width: 640px; }
+.chapter-body { line-height: 1.68; }
+.chapter-body p { margin: 0 0 14px; }
+.chapter-body p:last-child { margin-bottom: 0; }
+/* End of a chapter: the next one, by name, where the reader actually is. */
+.read-rail { display: flex; gap: 10px; justify-content: space-between; margin: 18px 0 0; }
+.read-rail a {
+  flex: 1 1 0; min-width: 0; max-width: 50%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px;
+  color: var(--ink); font-size: 13.5px;
+}
+.read-rail a:hover { background: var(--surface-2); text-decoration: none; }
+.read-rail .to-next { text-align: right; }
+.read-rail .rail-label { display: block; color: var(--muted); font-size: 11.5px; }
+
+/* ---- the paged long text (the story card and the red line) ----
+   ONLY the current page is in the DOM. The pager lives in the panel TITLE row:
+   page heights legitimately run ~110..710px, so a control UNDER the text would
+   move ~600px between clicks, and ghost-stacking the pages (the loreSlot
+   trick) would leave that much dead space on the short ones. Above the text it
+   cannot move — and the panel is always the last element on its page. */
+.story-card { max-width: 640px; }
+.story-body p { margin: 0 0 12px; }
+.story-body p:last-child { margin-bottom: 0; }
+.nav-btn:disabled { opacity: 0.4; cursor: default; }
+.nav-btn:disabled:hover { background: transparent; }
+.see-also { margin: 0 0 12px; }
+.see-also-title { font-size: 12.5px; margin-bottom: 2px; }
+
+/* ---- the red line: the ONLY markdown surface in the wiki ----
+   lore.json is plain text by contract and must never reach that renderer. */
+button.drop-row {
+  border: 0; border-top: 1px solid var(--border); background: transparent;
+  font: inherit; width: 100%; text-align: left; cursor: pointer;
+}
+.story-body h2 { font-size: 19px; margin: 0 0 8px; }
+.story-body h3 { font-size: 16px; margin: 14px 0 6px; }
+.story-body ul, .story-body ol { margin: 0 0 12px; padding-left: 20px; }
+.story-body li { margin: 3px 0; }
+.story-body blockquote {
+  margin: 0 0 12px; padding: 2px 0 2px 12px;
+  border-left: 3px solid var(--accent); color: var(--muted);
+}
+.story-body hr { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
+/* The page control sits where the text ENDS, bottom-RIGHT, with the counter
+   still left of the buttons so ‹ › keep their spot as "9 / 16" widens. */
+.page-rail { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 12px 0 4px; }
+.page-rail .detail-count { margin: 0; }
+/* The story card re-introduces its entity: thumbnail left, name right, both
+   smaller than the page's own title — a reminder for a reader who was linked
+   straight here, not a second heading. */
+.story-head { display: flex; align-items: center; gap: 12px; }
+.story-who { min-width: 0; }
+.story-name { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.2; }
+.story-what { font-size: 12.5px; }

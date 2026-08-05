@@ -1,0 +1,31 @@
+{
+  "id": "curved_crab_pincer",
+  "name": "Crab Pincer",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "claw",
+  "rarity": "common",
+  "value": 14,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Brown, jointed and hooked at the tip. Whatever the swamp blobs swallowed to get it went down sideways.",
+  "sprite": "items/curved_crab_pincer/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "04489a96-c1fc-4101-a609-6db06e4ccd60",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:12:28.832801+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:24 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:24+00:00",
+  "waiting_for": "a crab"
+}

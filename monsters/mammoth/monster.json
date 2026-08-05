@@ -1,0 +1,619 @@
+{
+  "id": "mammoth",
+  "name": "Diretusk",
+  "lore": "A mountain of dark wool and ivory, calm until crowded. One sweep of those tusks clears a road.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "b87303fd-9a57-4a4c-821b-956f9cf46e41",
+    "url": "https://www.pixellab.ai/create-character/b87303fd-9a57-4a4c-821b-956f9cf46e41",
+    "prompt": "A gigantic nice looking mammoth with dark dark brown hair and dark eyes with a small white pupil",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 256,
+    "height": 256
+  },
+  "native_size": {
+    "width": 256,
+    "height": 256
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "mammoth/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "mammoth/rotations/south.webp",
+    "west": "mammoth/rotations/west.webp",
+    "east": "mammoth/rotations/east.webp",
+    "north": "mammoth/rotations/north.webp",
+    "south-east": "mammoth/rotations/south-east.webp",
+    "north-east": "mammoth/rotations/north-east.webp",
+    "north-west": "mammoth/rotations/north-west.webp",
+    "south-west": "mammoth/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "1c433e1e-82be-4931-be75-224dae75dc5f",
+      "source_name": "custom-Angry idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__east.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/east/00.webp",
+            "mammoth/animations/angry/east/01.webp",
+            "mammoth/animations/angry/east/02.webp",
+            "mammoth/animations/angry/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:33 GMT",
+          "src_frames": 4,
+          "sub": "8c638aa7-fbae-491d-a07c-2161fa9a09eb"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__north.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/north/00.webp",
+            "mammoth/animations/angry/north/01.webp",
+            "mammoth/animations/angry/north/02.webp",
+            "mammoth/animations/angry/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:33 GMT",
+          "src_frames": 4,
+          "sub": "802d8b58-859b-4bb1-a955-c03c795f4b46"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__north-east.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/north-east/00.webp",
+            "mammoth/animations/angry/north-east/01.webp",
+            "mammoth/animations/angry/north-east/02.webp",
+            "mammoth/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:30 GMT",
+          "src_frames": 4,
+          "sub": "fa612d66-5f90-4b9c-85d8-5650f9638834"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__north-west.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/north-west/00.webp",
+            "mammoth/animations/angry/north-west/01.webp",
+            "mammoth/animations/angry/north-west/02.webp",
+            "mammoth/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:38 GMT",
+          "src_frames": 4,
+          "sub": "1b39b0c3-7e23-482e-abe3-5962fc89b302"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__south.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/south/00.webp",
+            "mammoth/animations/angry/south/01.webp",
+            "mammoth/animations/angry/south/02.webp",
+            "mammoth/animations/angry/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:39 GMT",
+          "src_frames": 4,
+          "sub": "2fcbb1a4-e1d5-4287-8660-e5c00896b697"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__south-east.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/south-east/00.webp",
+            "mammoth/animations/angry/south-east/01.webp",
+            "mammoth/animations/angry/south-east/02.webp",
+            "mammoth/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:41 GMT",
+          "src_frames": 4,
+          "sub": "32a9a40d-5520-43e2-afff-3d6a8de7a4fc"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__south-west.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/south-west/00.webp",
+            "mammoth/animations/angry/south-west/01.webp",
+            "mammoth/animations/angry/south-west/02.webp",
+            "mammoth/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:42 GMT",
+          "src_frames": 4,
+          "sub": "27436678-6a53-4c8c-8bc9-e5e7ddb24972"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mammoth/animations/angry__west.webp",
+          "frame_paths": [
+            "mammoth/animations/angry/west/00.webp",
+            "mammoth/animations/angry/west/01.webp",
+            "mammoth/animations/angry/west/02.webp",
+            "mammoth/animations/angry/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:43 GMT",
+          "src_frames": 4,
+          "sub": "a96babb2-ce16-4c7c-b6b6-9965cbf30b97"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "bbf3b980-e1dc-4b92-8f28-c715f8225034",
+      "source_name": "custom-The mammoth swings its head, slashing with its tus",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__east.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/east/00.webp",
+            "mammoth/animations/attack/east/01.webp",
+            "mammoth/animations/attack/east/02.webp",
+            "mammoth/animations/attack/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:45 GMT",
+          "src_frames": 4,
+          "sub": "1138b8a4-3842-486e-b85e-c9477bcfefd6"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__north.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/north/00.webp",
+            "mammoth/animations/attack/north/01.webp",
+            "mammoth/animations/attack/north/02.webp",
+            "mammoth/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:31 GMT",
+          "src_frames": 4,
+          "sub": "01f9bd0a-9ece-4c9a-ba8f-0351606f8abc"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__north-east.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/north-east/00.webp",
+            "mammoth/animations/attack/north-east/01.webp",
+            "mammoth/animations/attack/north-east/02.webp",
+            "mammoth/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:33 GMT",
+          "src_frames": 4,
+          "sub": "7eb4d11e-d54d-4caf-b2e9-f651fdce1245"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__north-west.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/north-west/00.webp",
+            "mammoth/animations/attack/north-west/01.webp",
+            "mammoth/animations/attack/north-west/02.webp",
+            "mammoth/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:48 GMT",
+          "src_frames": 4,
+          "sub": "6b324936-cb4c-41a1-9edb-97eea2ec18a9"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__south.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/south/00.webp",
+            "mammoth/animations/attack/south/01.webp",
+            "mammoth/animations/attack/south/02.webp",
+            "mammoth/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:50 GMT",
+          "src_frames": 4,
+          "sub": "83b5f45a-ea82-4244-9dcb-fddd7f94972f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__south-east.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/south-east/00.webp",
+            "mammoth/animations/attack/south-east/01.webp",
+            "mammoth/animations/attack/south-east/02.webp",
+            "mammoth/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:52 GMT",
+          "src_frames": 4,
+          "sub": "bfdeb09c-578b-4359-a136-57631d7d0b1d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__south-west.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/south-west/00.webp",
+            "mammoth/animations/attack/south-west/01.webp",
+            "mammoth/animations/attack/south-west/02.webp",
+            "mammoth/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:35 GMT",
+          "src_frames": 4,
+          "sub": "b9aaaeff-eb46-4190-918f-e802d1e97dab"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mammoth/animations/attack__west.webp",
+          "frame_paths": [
+            "mammoth/animations/attack/west/00.webp",
+            "mammoth/animations/attack/west/01.webp",
+            "mammoth/animations/attack/west/02.webp",
+            "mammoth/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:36 GMT",
+          "src_frames": 4,
+          "sub": "0b21adc2-4077-43af-958c-ce8a350cdd4a"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "a9e3a19a-9998-4d58-a3e9-fe357a883f3c",
+      "source_name": "custom-Vary vary subtile idle. No big movement. Calm stil",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__east.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/east/00.webp",
+            "mammoth/animations/idle/east/01.webp",
+            "mammoth/animations/idle/east/02.webp",
+            "mammoth/animations/idle/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:56 GMT",
+          "src_frames": 4,
+          "sub": "8959fee2-f2fb-4f4d-ac04-3061108245a7"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__north.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/north/00.webp",
+            "mammoth/animations/idle/north/01.webp",
+            "mammoth/animations/idle/north/02.webp",
+            "mammoth/animations/idle/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:57 GMT",
+          "src_frames": 4,
+          "sub": "e5035079-a838-4299-90a7-b8a9f309f057"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__north-east.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/north-east/00.webp",
+            "mammoth/animations/idle/north-east/01.webp",
+            "mammoth/animations/idle/north-east/02.webp",
+            "mammoth/animations/idle/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:54:59 GMT",
+          "src_frames": 4,
+          "sub": "f3d1af42-83b7-4724-9c65-fe68a167e7f5"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__north-west.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/north-west/00.webp",
+            "mammoth/animations/idle/north-west/01.webp",
+            "mammoth/animations/idle/north-west/02.webp",
+            "mammoth/animations/idle/north-west/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:37 GMT",
+          "src_frames": 4,
+          "sub": "acfecc1e-e4ae-4826-b783-55cb41333bd5"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__south.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/south/00.webp",
+            "mammoth/animations/idle/south/01.webp",
+            "mammoth/animations/idle/south/02.webp",
+            "mammoth/animations/idle/south/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:38 GMT",
+          "src_frames": 4,
+          "sub": "b87ea89a-1584-42af-8e99-3829aa726a2a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__south-east.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/south-east/00.webp",
+            "mammoth/animations/idle/south-east/01.webp",
+            "mammoth/animations/idle/south-east/02.webp",
+            "mammoth/animations/idle/south-east/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:39 GMT",
+          "src_frames": 4,
+          "sub": "07ad2b73-cff4-4e7e-a849-8361f64068be"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__south-west.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/south-west/00.webp",
+            "mammoth/animations/idle/south-west/01.webp",
+            "mammoth/animations/idle/south-west/02.webp",
+            "mammoth/animations/idle/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:04 GMT",
+          "src_frames": 4,
+          "sub": "4e228fec-07e4-4e19-a523-562d8fda207b"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mammoth/animations/idle__west.webp",
+          "frame_paths": [
+            "mammoth/animations/idle/west/00.webp",
+            "mammoth/animations/idle/west/01.webp",
+            "mammoth/animations/idle/west/02.webp",
+            "mammoth/animations/idle/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:06 GMT",
+          "src_frames": 4,
+          "sub": "2575f079-e389-40e1-93fe-ba34846ce491"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "d908d31f-34f7-4cd9-9b9d-66b5275e854c",
+      "source_name": "custom-Walking both both legs. Move b",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__east.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/east/00.webp",
+            "mammoth/animations/walk/east/01.webp",
+            "mammoth/animations/walk/east/02.webp",
+            "mammoth/animations/walk/east/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:41 GMT",
+          "src_frames": 4,
+          "sub": "a3d64b4b-b426-4a48-81b3-254bdcfc32d6"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__north.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/north/00.webp",
+            "mammoth/animations/walk/north/01.webp",
+            "mammoth/animations/walk/north/02.webp",
+            "mammoth/animations/walk/north/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:43 GMT",
+          "src_frames": 4,
+          "sub": "ae42c12a-73dd-46d2-8071-18b31be9bd03"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__north-east.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/north-east/00.webp",
+            "mammoth/animations/walk/north-east/01.webp",
+            "mammoth/animations/walk/north-east/02.webp",
+            "mammoth/animations/walk/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:10 GMT",
+          "src_frames": 4,
+          "sub": "44a6d5b2-d1c3-49e2-b114-5096e000689a"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__north-west.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/north-west/00.webp",
+            "mammoth/animations/walk/north-west/01.webp",
+            "mammoth/animations/walk/north-west/02.webp",
+            "mammoth/animations/walk/north-west/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:44 GMT",
+          "src_frames": 4,
+          "sub": "ab28af0c-050c-43d7-a64a-11df34d835fd"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__south.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/south/00.webp",
+            "mammoth/animations/walk/south/01.webp",
+            "mammoth/animations/walk/south/02.webp",
+            "mammoth/animations/walk/south/03.webp"
+          ],
+          "lm": "Thu, 30 Jul 2026 11:09:45 GMT",
+          "src_frames": 4,
+          "sub": "e6a58ea2-e6af-49f9-95d6-73c844210a2c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__south-east.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/south-east/00.webp",
+            "mammoth/animations/walk/south-east/01.webp",
+            "mammoth/animations/walk/south-east/02.webp",
+            "mammoth/animations/walk/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:14 GMT",
+          "src_frames": 4,
+          "sub": "f6d16602-f7c5-42c8-9c1b-888c54fdb55c"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__south-west.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/south-west/00.webp",
+            "mammoth/animations/walk/south-west/01.webp",
+            "mammoth/animations/walk/south-west/02.webp",
+            "mammoth/animations/walk/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:15 GMT",
+          "src_frames": 4,
+          "sub": "bafb6048-a459-41df-874a-8345016f9d1c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mammoth/animations/walk__west.webp",
+          "frame_paths": [
+            "mammoth/animations/walk/west/00.webp",
+            "mammoth/animations/walk/west/01.webp",
+            "mammoth/animations/walk/west/02.webp",
+            "mammoth/animations/walk/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:17 GMT",
+          "src_frames": 4,
+          "sub": "0c130574-fda2-4a2c-b94a-6593de0e9e0c"
+        }
+      }
+    },
+    "die": {
+      "group_id": "31bf9a8f-2eae-4ab4-aaee-d55cbdcc413c",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__east.webp",
+          "frame_paths": [
+            "mammoth/animations/die/east/00.webp",
+            "mammoth/animations/die/east/01.webp",
+            "mammoth/animations/die/east/02.webp",
+            "mammoth/animations/die/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:18 GMT",
+          "src_frames": 4,
+          "sub": "0aaab4f0-33a0-4b2b-985a-5cdc741a68d9"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__north.webp",
+          "frame_paths": [
+            "mammoth/animations/die/north/00.webp",
+            "mammoth/animations/die/north/01.webp",
+            "mammoth/animations/die/north/02.webp",
+            "mammoth/animations/die/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:19 GMT",
+          "src_frames": 4,
+          "sub": "02493b4b-a9d4-4ab2-9dff-16be8ba16eb9"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__north-east.webp",
+          "frame_paths": [
+            "mammoth/animations/die/north-east/00.webp",
+            "mammoth/animations/die/north-east/01.webp",
+            "mammoth/animations/die/north-east/02.webp",
+            "mammoth/animations/die/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 12:21:19 GMT",
+          "src_frames": 4,
+          "sub": "13600750-c964-4212-aad1-a905b83e1300"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__north-west.webp",
+          "frame_paths": [
+            "mammoth/animations/die/north-west/00.webp",
+            "mammoth/animations/die/north-west/01.webp",
+            "mammoth/animations/die/north-west/02.webp",
+            "mammoth/animations/die/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:22 GMT",
+          "src_frames": 4,
+          "sub": "e52b0084-4f7c-49f4-bcf2-775af992064a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__south.webp",
+          "frame_paths": [
+            "mammoth/animations/die/south/00.webp",
+            "mammoth/animations/die/south/01.webp",
+            "mammoth/animations/die/south/02.webp",
+            "mammoth/animations/die/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:23 GMT",
+          "src_frames": 4,
+          "sub": "90a1b5ba-3377-4110-bb8d-4c9244a1fa6f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__south-east.webp",
+          "frame_paths": [
+            "mammoth/animations/die/south-east/00.webp",
+            "mammoth/animations/die/south-east/01.webp",
+            "mammoth/animations/die/south-east/02.webp",
+            "mammoth/animations/die/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:24 GMT",
+          "src_frames": 4,
+          "sub": "0f08f7e7-90d4-4327-9ce7-660312647c69"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__south-west.webp",
+          "frame_paths": [
+            "mammoth/animations/die/south-west/00.webp",
+            "mammoth/animations/die/south-west/01.webp",
+            "mammoth/animations/die/south-west/02.webp",
+            "mammoth/animations/die/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:26 GMT",
+          "src_frames": 4,
+          "sub": "d2895a97-9a18-4b9a-9a76-10dea4105b9a"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mammoth/animations/die__west.webp",
+          "frame_paths": [
+            "mammoth/animations/die/west/00.webp",
+            "mammoth/animations/die/west/01.webp",
+            "mammoth/animations/die/west/02.webp",
+            "mammoth/animations/die/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:55:28 GMT",
+          "src_frames": 4,
+          "sub": "1f11f9d8-6e6b-457b-91c1-44c4c9f08295"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Angry idle",
+      "key": "angry",
+      "direction": "north",
+      "takes": [
+        "2dd2bdc8-9757-4a49-8b0f-27bb79a25a02",
+        "802d8b58-859b-4bb1-a955-c03c795f4b46"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

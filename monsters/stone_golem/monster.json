@@ -1,0 +1,787 @@
+{
+  "id": "stone_golem",
+  "name": "Mosscairn",
+  "lore": "Moss-clad boulders bound by old earth-magic. It rips the ground open with one fist; the head topples first.",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "d45b26b4-b2a6-427e-aca0-00ab0cd35e9a",
+    "url": "https://www.pixellab.ai/create-object/d45b26b4-b2a6-427e-aca0-00ab0cd35e9a",
+    "prompt": "Stone golem with moss, uneven rough rocks",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 146,
+    "height": 136
+  },
+  "native_size": {
+    "width": 136,
+    "height": 136
+  },
+  "pad": {
+    "x": 5,
+    "y": 0
+  },
+  "sprite": "stone_golem/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "stone_golem/rotations/south.webp",
+    "west": "stone_golem/rotations/west.webp",
+    "east": "stone_golem/rotations/east.webp",
+    "north": "stone_golem/rotations/north.webp",
+    "south-east": "stone_golem/rotations/south-east.webp",
+    "south-west": "stone_golem/rotations/south-west.webp",
+    "north-east": "stone_golem/rotations/north-east.webp",
+    "north-west": "stone_golem/rotations/north-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "5e2e1c5f-cc37-4d2c-9814-8fb51fadba38",
+      "source_name": "Angry idle",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__east.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/east/00.webp",
+            "stone_golem/animations/angry/east/01.webp",
+            "stone_golem/animations/angry/east/02.webp",
+            "stone_golem/animations/angry/east/03.webp",
+            "stone_golem/animations/angry/east/04.webp",
+            "stone_golem/animations/angry/east/05.webp",
+            "stone_golem/animations/angry/east/06.webp",
+            "stone_golem/animations/angry/east/07.webp",
+            "stone_golem/animations/angry/east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:06 GMT",
+          "src_frames": 9,
+          "sub": "04d33377-f02c-4b7e-9f88-47051f9216ae"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__north.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/north/00.webp",
+            "stone_golem/animations/angry/north/01.webp",
+            "stone_golem/animations/angry/north/02.webp",
+            "stone_golem/animations/angry/north/03.webp",
+            "stone_golem/animations/angry/north/04.webp",
+            "stone_golem/animations/angry/north/05.webp",
+            "stone_golem/animations/angry/north/06.webp",
+            "stone_golem/animations/angry/north/07.webp",
+            "stone_golem/animations/angry/north/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:08 GMT",
+          "src_frames": 9,
+          "sub": "515a0d07-a205-48af-a1f3-63ec91c4b2fc"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__north-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/north-west/00.webp",
+            "stone_golem/animations/angry/north-west/01.webp",
+            "stone_golem/animations/angry/north-west/02.webp",
+            "stone_golem/animations/angry/north-west/03.webp",
+            "stone_golem/animations/angry/north-west/04.webp",
+            "stone_golem/animations/angry/north-west/05.webp",
+            "stone_golem/animations/angry/north-west/06.webp",
+            "stone_golem/animations/angry/north-west/07.webp",
+            "stone_golem/animations/angry/north-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:09 GMT",
+          "src_frames": 9,
+          "sub": "e1c339c7-2888-4ede-9f79-310799fffe30"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__south.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/south/00.webp",
+            "stone_golem/animations/angry/south/01.webp",
+            "stone_golem/animations/angry/south/02.webp",
+            "stone_golem/animations/angry/south/03.webp",
+            "stone_golem/animations/angry/south/04.webp",
+            "stone_golem/animations/angry/south/05.webp",
+            "stone_golem/animations/angry/south/06.webp",
+            "stone_golem/animations/angry/south/07.webp",
+            "stone_golem/animations/angry/south/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:11 GMT",
+          "src_frames": 9,
+          "sub": "c33f9c7b-82ca-4dc2-a2dd-e8a3c8fbc0d8"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__south-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/south-east/00.webp",
+            "stone_golem/animations/angry/south-east/01.webp",
+            "stone_golem/animations/angry/south-east/02.webp",
+            "stone_golem/animations/angry/south-east/03.webp",
+            "stone_golem/animations/angry/south-east/04.webp",
+            "stone_golem/animations/angry/south-east/05.webp",
+            "stone_golem/animations/angry/south-east/06.webp",
+            "stone_golem/animations/angry/south-east/07.webp",
+            "stone_golem/animations/angry/south-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:13 GMT",
+          "src_frames": 9,
+          "sub": "6f7d6540-ed9e-406a-8e0d-6c49b2a26756"
+        }
+      }
+    },
+    "die": {
+      "group_id": "6b87ce5f-435d-43e7-9239-7f018caadfb6",
+      "source_name": "Head falls off first, then the whole body falls in",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "stone_golem/animations/die__east.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/east/00.webp",
+            "stone_golem/animations/die/east/01.webp",
+            "stone_golem/animations/die/east/02.webp",
+            "stone_golem/animations/die/east/03.webp",
+            "stone_golem/animations/die/east/04.webp",
+            "stone_golem/animations/die/east/05.webp",
+            "stone_golem/animations/die/east/06.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:15 GMT",
+          "src_frames": 9,
+          "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
+        },
+        "north": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__north.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/north/00.webp",
+            "stone_golem/animations/die/north/01.webp",
+            "stone_golem/animations/die/north/02.webp",
+            "stone_golem/animations/die/north/03.webp",
+            "stone_golem/animations/die/north/04.webp",
+            "stone_golem/animations/die/north/05.webp",
+            "stone_golem/animations/die/north/06.webp",
+            "stone_golem/animations/die/north/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:16 GMT",
+          "src_frames": 9,
+          "sub": "26086215-254e-487e-b872-d1404fb7aab2"
+        },
+        "north-east": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__north-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/north-east/00.webp",
+            "stone_golem/animations/die/north-east/01.webp",
+            "stone_golem/animations/die/north-east/02.webp",
+            "stone_golem/animations/die/north-east/03.webp",
+            "stone_golem/animations/die/north-east/04.webp",
+            "stone_golem/animations/die/north-east/05.webp",
+            "stone_golem/animations/die/north-east/06.webp",
+            "stone_golem/animations/die/north-east/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:18 GMT",
+          "src_frames": 9,
+          "sub": "e9382763-18ee-4e6e-966d-063515b0ca4f"
+        },
+        "north-west": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__north-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/north-west/00.webp",
+            "stone_golem/animations/die/north-west/01.webp",
+            "stone_golem/animations/die/north-west/02.webp",
+            "stone_golem/animations/die/north-west/03.webp",
+            "stone_golem/animations/die/north-west/04.webp",
+            "stone_golem/animations/die/north-west/05.webp",
+            "stone_golem/animations/die/north-west/06.webp",
+            "stone_golem/animations/die/north-west/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:20 GMT",
+          "src_frames": 9,
+          "sub": "d5d2898f-14c3-44dd-be4b-3a0a4203d112"
+        },
+        "south": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__south.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/south/00.webp",
+            "stone_golem/animations/die/south/01.webp",
+            "stone_golem/animations/die/south/02.webp",
+            "stone_golem/animations/die/south/03.webp",
+            "stone_golem/animations/die/south/04.webp",
+            "stone_golem/animations/die/south/05.webp",
+            "stone_golem/animations/die/south/06.webp",
+            "stone_golem/animations/die/south/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:22 GMT",
+          "src_frames": 9,
+          "sub": "b1fcb1cd-c5c0-4f20-a2ee-e48bd0577d67"
+        },
+        "south-east": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__south-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/south-east/00.webp",
+            "stone_golem/animations/die/south-east/01.webp",
+            "stone_golem/animations/die/south-east/02.webp",
+            "stone_golem/animations/die/south-east/03.webp",
+            "stone_golem/animations/die/south-east/04.webp",
+            "stone_golem/animations/die/south-east/05.webp",
+            "stone_golem/animations/die/south-east/06.webp",
+            "stone_golem/animations/die/south-east/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:24 GMT",
+          "src_frames": 9,
+          "sub": "39666e07-9e26-48b9-8ead-f69b66a3c357"
+        },
+        "south-west": {
+          "frames": 8,
+          "strip": "stone_golem/animations/die__south-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/south-west/00.webp",
+            "stone_golem/animations/die/south-west/01.webp",
+            "stone_golem/animations/die/south-west/02.webp",
+            "stone_golem/animations/die/south-west/03.webp",
+            "stone_golem/animations/die/south-west/04.webp",
+            "stone_golem/animations/die/south-west/05.webp",
+            "stone_golem/animations/die/south-west/06.webp",
+            "stone_golem/animations/die/south-west/07.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:26 GMT",
+          "src_frames": 9,
+          "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "stone_golem/animations/die__west.webp",
+          "frame_paths": [
+            "stone_golem/animations/die/west/00.webp",
+            "stone_golem/animations/die/west/01.webp",
+            "stone_golem/animations/die/west/02.webp",
+            "stone_golem/animations/die/west/03.webp",
+            "stone_golem/animations/die/west/04.webp",
+            "stone_golem/animations/die/west/05.webp",
+            "stone_golem/animations/die/west/06.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:27 GMT",
+          "src_frames": 9,
+          "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "7316fe57-5414-4179-8461-a5b384bc2ce5",
+      "source_name": "Rip up the earth with one hand, stones and ground ",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__east.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/east/00.webp",
+            "stone_golem/animations/attack/east/01.webp",
+            "stone_golem/animations/attack/east/02.webp",
+            "stone_golem/animations/attack/east/03.webp",
+            "stone_golem/animations/attack/east/04.webp",
+            "stone_golem/animations/attack/east/05.webp",
+            "stone_golem/animations/attack/east/06.webp",
+            "stone_golem/animations/attack/east/07.webp",
+            "stone_golem/animations/attack/east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:29 GMT",
+          "src_frames": 9,
+          "sub": "063ee3d0-a40e-43a3-9f92-c985b08dc585"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__north.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/north/00.webp",
+            "stone_golem/animations/attack/north/01.webp",
+            "stone_golem/animations/attack/north/02.webp",
+            "stone_golem/animations/attack/north/03.webp",
+            "stone_golem/animations/attack/north/04.webp",
+            "stone_golem/animations/attack/north/05.webp",
+            "stone_golem/animations/attack/north/06.webp",
+            "stone_golem/animations/attack/north/07.webp",
+            "stone_golem/animations/attack/north/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:31 GMT",
+          "src_frames": 9,
+          "sub": "b7afdc39-c70f-4961-8cae-a7451bd780f7"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__north-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/north-east/00.webp",
+            "stone_golem/animations/attack/north-east/01.webp",
+            "stone_golem/animations/attack/north-east/02.webp",
+            "stone_golem/animations/attack/north-east/03.webp",
+            "stone_golem/animations/attack/north-east/04.webp",
+            "stone_golem/animations/attack/north-east/05.webp",
+            "stone_golem/animations/attack/north-east/06.webp",
+            "stone_golem/animations/attack/north-east/07.webp",
+            "stone_golem/animations/attack/north-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:33 GMT",
+          "src_frames": 9,
+          "sub": "517ee3e6-2ce9-4143-8793-9195d375579b"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__north-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/north-west/00.webp",
+            "stone_golem/animations/attack/north-west/01.webp",
+            "stone_golem/animations/attack/north-west/02.webp",
+            "stone_golem/animations/attack/north-west/03.webp",
+            "stone_golem/animations/attack/north-west/04.webp",
+            "stone_golem/animations/attack/north-west/05.webp",
+            "stone_golem/animations/attack/north-west/06.webp",
+            "stone_golem/animations/attack/north-west/07.webp",
+            "stone_golem/animations/attack/north-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:35 GMT",
+          "src_frames": 9,
+          "sub": "1401731e-a1c2-431a-9b66-5c4e60ec039d"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__south.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/south/00.webp",
+            "stone_golem/animations/attack/south/01.webp",
+            "stone_golem/animations/attack/south/02.webp",
+            "stone_golem/animations/attack/south/03.webp",
+            "stone_golem/animations/attack/south/04.webp",
+            "stone_golem/animations/attack/south/05.webp",
+            "stone_golem/animations/attack/south/06.webp",
+            "stone_golem/animations/attack/south/07.webp",
+            "stone_golem/animations/attack/south/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:38 GMT",
+          "src_frames": 9,
+          "sub": "1cd7e08a-a764-4498-8bee-28e9ee1a8af4"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__south-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/south-east/00.webp",
+            "stone_golem/animations/attack/south-east/01.webp",
+            "stone_golem/animations/attack/south-east/02.webp",
+            "stone_golem/animations/attack/south-east/03.webp",
+            "stone_golem/animations/attack/south-east/04.webp",
+            "stone_golem/animations/attack/south-east/05.webp",
+            "stone_golem/animations/attack/south-east/06.webp",
+            "stone_golem/animations/attack/south-east/07.webp",
+            "stone_golem/animations/attack/south-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:40 GMT",
+          "src_frames": 9,
+          "sub": "b5515408-db19-4f6e-846c-431ea237f885"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__south-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/south-west/00.webp",
+            "stone_golem/animations/attack/south-west/01.webp",
+            "stone_golem/animations/attack/south-west/02.webp",
+            "stone_golem/animations/attack/south-west/03.webp",
+            "stone_golem/animations/attack/south-west/04.webp",
+            "stone_golem/animations/attack/south-west/05.webp",
+            "stone_golem/animations/attack/south-west/06.webp",
+            "stone_golem/animations/attack/south-west/07.webp",
+            "stone_golem/animations/attack/south-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:42 GMT",
+          "src_frames": 9,
+          "sub": "6d7add88-f902-40ab-99b3-7f1f954fbedf"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/attack__west.webp",
+          "frame_paths": [
+            "stone_golem/animations/attack/west/00.webp",
+            "stone_golem/animations/attack/west/01.webp",
+            "stone_golem/animations/attack/west/02.webp",
+            "stone_golem/animations/attack/west/03.webp",
+            "stone_golem/animations/attack/west/04.webp",
+            "stone_golem/animations/attack/west/05.webp",
+            "stone_golem/animations/attack/west/06.webp",
+            "stone_golem/animations/attack/west/07.webp",
+            "stone_golem/animations/attack/west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:44 GMT",
+          "src_frames": 9,
+          "sub": "22336e4b-83d2-4886-a53b-b2b55d3eadc6"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "2fefba23-5dba-41b9-9334-af2e14bfe7e1",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__east.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/east/00.webp",
+            "stone_golem/animations/idle/east/01.webp",
+            "stone_golem/animations/idle/east/02.webp",
+            "stone_golem/animations/idle/east/03.webp",
+            "stone_golem/animations/idle/east/04.webp",
+            "stone_golem/animations/idle/east/05.webp",
+            "stone_golem/animations/idle/east/06.webp",
+            "stone_golem/animations/idle/east/07.webp",
+            "stone_golem/animations/idle/east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:46 GMT",
+          "src_frames": 9,
+          "sub": "67180f55-5fbf-499e-a405-0af370876588"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__north.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/north/00.webp",
+            "stone_golem/animations/idle/north/01.webp",
+            "stone_golem/animations/idle/north/02.webp",
+            "stone_golem/animations/idle/north/03.webp",
+            "stone_golem/animations/idle/north/04.webp",
+            "stone_golem/animations/idle/north/05.webp",
+            "stone_golem/animations/idle/north/06.webp",
+            "stone_golem/animations/idle/north/07.webp",
+            "stone_golem/animations/idle/north/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:48 GMT",
+          "src_frames": 9,
+          "sub": "4ab289bc-55fc-498f-8efd-983b0097b5e5"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__north-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/north-east/00.webp",
+            "stone_golem/animations/idle/north-east/01.webp",
+            "stone_golem/animations/idle/north-east/02.webp",
+            "stone_golem/animations/idle/north-east/03.webp",
+            "stone_golem/animations/idle/north-east/04.webp",
+            "stone_golem/animations/idle/north-east/05.webp",
+            "stone_golem/animations/idle/north-east/06.webp",
+            "stone_golem/animations/idle/north-east/07.webp",
+            "stone_golem/animations/idle/north-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:49 GMT",
+          "src_frames": 9,
+          "sub": "9c5d0f98-d9b7-406f-b4f4-a84b9677c2ac"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__north-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/north-west/00.webp",
+            "stone_golem/animations/idle/north-west/01.webp",
+            "stone_golem/animations/idle/north-west/02.webp",
+            "stone_golem/animations/idle/north-west/03.webp",
+            "stone_golem/animations/idle/north-west/04.webp",
+            "stone_golem/animations/idle/north-west/05.webp",
+            "stone_golem/animations/idle/north-west/06.webp",
+            "stone_golem/animations/idle/north-west/07.webp",
+            "stone_golem/animations/idle/north-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:51 GMT",
+          "src_frames": 9,
+          "sub": "a5bbc467-b7b1-42cb-bc4f-1f678a8f5567"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__south.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/south/00.webp",
+            "stone_golem/animations/idle/south/01.webp",
+            "stone_golem/animations/idle/south/02.webp",
+            "stone_golem/animations/idle/south/03.webp",
+            "stone_golem/animations/idle/south/04.webp",
+            "stone_golem/animations/idle/south/05.webp",
+            "stone_golem/animations/idle/south/06.webp",
+            "stone_golem/animations/idle/south/07.webp",
+            "stone_golem/animations/idle/south/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:53 GMT",
+          "src_frames": 9,
+          "sub": "18366453-a031-4097-8381-0b930ca5f1e6"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__south-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/south-east/00.webp",
+            "stone_golem/animations/idle/south-east/01.webp",
+            "stone_golem/animations/idle/south-east/02.webp",
+            "stone_golem/animations/idle/south-east/03.webp",
+            "stone_golem/animations/idle/south-east/04.webp",
+            "stone_golem/animations/idle/south-east/05.webp",
+            "stone_golem/animations/idle/south-east/06.webp",
+            "stone_golem/animations/idle/south-east/07.webp",
+            "stone_golem/animations/idle/south-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:55 GMT",
+          "src_frames": 9,
+          "sub": "8b7dc41d-cdbe-4b3f-9ee2-9ce5f39bc08d"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__south-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/south-west/00.webp",
+            "stone_golem/animations/idle/south-west/01.webp",
+            "stone_golem/animations/idle/south-west/02.webp",
+            "stone_golem/animations/idle/south-west/03.webp",
+            "stone_golem/animations/idle/south-west/04.webp",
+            "stone_golem/animations/idle/south-west/05.webp",
+            "stone_golem/animations/idle/south-west/06.webp",
+            "stone_golem/animations/idle/south-west/07.webp",
+            "stone_golem/animations/idle/south-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:57 GMT",
+          "src_frames": 9,
+          "sub": "2abd2fc6-0e9b-40b8-8a71-6e2cc6edeaa9"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/idle__west.webp",
+          "frame_paths": [
+            "stone_golem/animations/idle/west/00.webp",
+            "stone_golem/animations/idle/west/01.webp",
+            "stone_golem/animations/idle/west/02.webp",
+            "stone_golem/animations/idle/west/03.webp",
+            "stone_golem/animations/idle/west/04.webp",
+            "stone_golem/animations/idle/west/05.webp",
+            "stone_golem/animations/idle/west/06.webp",
+            "stone_golem/animations/idle/west/07.webp",
+            "stone_golem/animations/idle/west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:46:59 GMT",
+          "src_frames": 9,
+          "sub": "ab719262-3ebc-4e75-b936-2f5a698e856c"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "db72711d-b402-4444-9c78-e7e2c6966936",
+      "source_name": "Walk with the legs, full cycle, should look good i",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__east.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/east/00.webp",
+            "stone_golem/animations/walk/east/01.webp",
+            "stone_golem/animations/walk/east/02.webp",
+            "stone_golem/animations/walk/east/03.webp",
+            "stone_golem/animations/walk/east/04.webp",
+            "stone_golem/animations/walk/east/05.webp",
+            "stone_golem/animations/walk/east/06.webp",
+            "stone_golem/animations/walk/east/07.webp",
+            "stone_golem/animations/walk/east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:01 GMT",
+          "src_frames": 9,
+          "sub": "c3ac7c00-cc80-4bf1-8ab3-1046850b1cf7"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__north.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/north/00.webp",
+            "stone_golem/animations/walk/north/01.webp",
+            "stone_golem/animations/walk/north/02.webp",
+            "stone_golem/animations/walk/north/03.webp",
+            "stone_golem/animations/walk/north/04.webp",
+            "stone_golem/animations/walk/north/05.webp",
+            "stone_golem/animations/walk/north/06.webp",
+            "stone_golem/animations/walk/north/07.webp",
+            "stone_golem/animations/walk/north/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:02 GMT",
+          "src_frames": 9,
+          "sub": "574a2918-b636-46c7-ae92-bca0feb2207c"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__north-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/north-east/00.webp",
+            "stone_golem/animations/walk/north-east/01.webp",
+            "stone_golem/animations/walk/north-east/02.webp",
+            "stone_golem/animations/walk/north-east/03.webp",
+            "stone_golem/animations/walk/north-east/04.webp",
+            "stone_golem/animations/walk/north-east/05.webp",
+            "stone_golem/animations/walk/north-east/06.webp",
+            "stone_golem/animations/walk/north-east/07.webp",
+            "stone_golem/animations/walk/north-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:04 GMT",
+          "src_frames": 9,
+          "sub": "efa5fdb0-0b13-43ed-813a-0506a6355aed"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__north-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/north-west/00.webp",
+            "stone_golem/animations/walk/north-west/01.webp",
+            "stone_golem/animations/walk/north-west/02.webp",
+            "stone_golem/animations/walk/north-west/03.webp",
+            "stone_golem/animations/walk/north-west/04.webp",
+            "stone_golem/animations/walk/north-west/05.webp",
+            "stone_golem/animations/walk/north-west/06.webp",
+            "stone_golem/animations/walk/north-west/07.webp",
+            "stone_golem/animations/walk/north-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:06 GMT",
+          "src_frames": 9,
+          "sub": "f3b79acd-fe44-4eea-907e-1934cfb2ff65"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__south.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/south/00.webp",
+            "stone_golem/animations/walk/south/01.webp",
+            "stone_golem/animations/walk/south/02.webp",
+            "stone_golem/animations/walk/south/03.webp",
+            "stone_golem/animations/walk/south/04.webp",
+            "stone_golem/animations/walk/south/05.webp",
+            "stone_golem/animations/walk/south/06.webp",
+            "stone_golem/animations/walk/south/07.webp",
+            "stone_golem/animations/walk/south/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:08 GMT",
+          "src_frames": 9,
+          "sub": "7a8b8757-1685-458b-be7a-add6e8f71174"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__south-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/south-east/00.webp",
+            "stone_golem/animations/walk/south-east/01.webp",
+            "stone_golem/animations/walk/south-east/02.webp",
+            "stone_golem/animations/walk/south-east/03.webp",
+            "stone_golem/animations/walk/south-east/04.webp",
+            "stone_golem/animations/walk/south-east/05.webp",
+            "stone_golem/animations/walk/south-east/06.webp",
+            "stone_golem/animations/walk/south-east/07.webp",
+            "stone_golem/animations/walk/south-east/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:10 GMT",
+          "src_frames": 9,
+          "sub": "603040ad-0215-4e5f-bfdf-bcb68a7c060d"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__south-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/south-west/00.webp",
+            "stone_golem/animations/walk/south-west/01.webp",
+            "stone_golem/animations/walk/south-west/02.webp",
+            "stone_golem/animations/walk/south-west/03.webp",
+            "stone_golem/animations/walk/south-west/04.webp",
+            "stone_golem/animations/walk/south-west/05.webp",
+            "stone_golem/animations/walk/south-west/06.webp",
+            "stone_golem/animations/walk/south-west/07.webp",
+            "stone_golem/animations/walk/south-west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:11 GMT",
+          "src_frames": 9,
+          "sub": "6f44dadd-d049-41ee-ab1d-43b80625d950"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/walk__west.webp",
+          "frame_paths": [
+            "stone_golem/animations/walk/west/00.webp",
+            "stone_golem/animations/walk/west/01.webp",
+            "stone_golem/animations/walk/west/02.webp",
+            "stone_golem/animations/walk/west/03.webp",
+            "stone_golem/animations/walk/west/04.webp",
+            "stone_golem/animations/walk/west/05.webp",
+            "stone_golem/animations/walk/west/06.webp",
+            "stone_golem/animations/walk/west/07.webp",
+            "stone_golem/animations/walk/west/08.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:47:13 GMT",
+          "src_frames": 9,
+          "sub": "f1feb749-b83d-474a-a2e6-75d131e63705"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      136,
+      136
+    ],
+    "pad": [
+      5,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 7,
+        "side": "right",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 3
+      }
+    ]
+  }
+}

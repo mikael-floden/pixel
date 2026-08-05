@@ -1,0 +1,33 @@
+{
+  "domain": "characters",
+  "id": "default_girl",
+  "name_seen": "Woman",
+  "law": "I",
+  "description": "A young woman of the human dead, level-headed and hard to rattle. She has worked out most of what happened to her and not yet said how she feels.",
+  "lore": [
+    "She fell recently, and she took it better than most people take it, which she is aware is a strange thing to be good at.",
+    "By the second evening she had worked out most of it on her own: that the fall was the end of something, that the people around the fire were being kind rather than helpful, and that nobody was going to explain the important part because nobody entirely knows it. She has asked good questions ever since and has not once asked whether it is really true.",
+    "She carries no blade yet. She arrived with what she stands in, like everybody, and has been in no hurry to fix that; she has been busy watching how this place works, which is a better use of a first season than most new stars make of it.",
+    "What she is is hard to rattle. Not brave in the way the tellers mean when they are working a room \u2014 brave in the flat, unremarkable way of somebody who looks at a thing that should be frightening, decides how frightened to be, and is then that amount of frightened and no more. It is the quality that carried humankind as far as it got, and it is worth more here than a blade is.",
+    "She has not yet said what she is waiting for. Everybody in Nangijala is waiting for something. She will get around to it."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_human_dead"
+    },
+    {
+      "domain": "lore",
+      "id": "the_falling"
+    },
+    {
+      "domain": "lore",
+      "id": "the_long_morning"
+    },
+    {
+      "domain": "characters",
+      "id": "default_boy"
+    }
+  ],
+  "gm_notes": "Deliberately leaves her reason-for-staying blank (RED_LINE.md section 8) so it can be filled in when quests exist, without contradicting anything shipped. Characters2 agent owns characters2/metadata.json; their authored copy wins on conflict."
+}

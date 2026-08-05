@@ -1,0 +1,291 @@
+// Ambient-life QA: against a running dev stack (npm run dev), force
+// time-of-day/weather through the game's __ml probes and assert each
+// ambient feature's gain, population, motion and director weights through
+// __mlAmbient. Randomness is pinned via reroll(r) — assertions are on the
+// deterministic weight table, never on lottery luck.
+import { chromium } from "playwright-core";
+
+const EXE = process.env.CHROMIUM || "/opt/pw-browsers/chromium";
+const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
+let failed = 0;
+const fail = (m) => {
+  console.error(`AMBIENT FAIL: ${m}`);
+  failed++;
+  process.exitCode = 1;
+};
+const ok = (m) => console.log(`  ok: ${m}`);
+
+try {
+  const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
+  await page.goto("http://localhost:5173/", { waitUntil: "load" });
+  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+  await page.evaluate(() => window.__mlSelect.commit());
+  await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 30000 });
+  await page.waitForFunction(() => window.__mlAmbient, null, { timeout: 10000 });
+
+  const dbg = (name) => page.evaluate((n) => window.__mlAmbient.debug(n), name);
+
+  // ---- registry ----
+  const list = await page.evaluate(() => window.__mlAmbient.list());
+  for (const want of ["fireflies", "pollen", "water", "bats", "birds", "thunder", "sandstorm", "leaves"])
+    if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
+  if (list.includes("heathaze") || list.includes("rainbow") || list.includes("tumbleweed"))
+    fail(`heathaze/rainbow/tumbleweed were removed but still mounted (${list})`);
+  ok(`mounted: ${list.join(", ")}`);
+
+  // ---- night: fireflies up, pollen down ----
+  await page.evaluate(() => {
+    window.__ml.timeOfDay("night", true);
+    window.__ml.weather(0, true);
+  });
+  await page.waitForTimeout(4000); // gain eases on a ~1.5s tau
+  const ffNight = await dbg("fireflies");
+  const poNight = await dbg("pollen");
+  if (ffNight.gain < 0.6) fail(`fireflies must glow at night (gain ${ffNight.gain.toFixed(2)})`);
+  if (ffNight.lit < 3) fail(`fireflies must be lit at night (${ffNight.lit}/${ffNight.count})`);
+  if (poNight.gain > 0.15) fail(`pollen must fade at night (gain ${poNight.gain.toFixed(2)})`);
+  ok(`night: fireflies gain ${ffNight.gain.toFixed(2)} (${ffNight.lit} lit), pollen gain ${poNight.gain.toFixed(2)}`);
+
+  // fireflies actually wander
+  const p1 = ffNight.sample;
+  await page.waitForTimeout(800);
+  const p2 = (await dbg("fireflies")).sample;
+  if (p1 && p2 && Math.hypot(p1.x - p2.x, p1.y - p2.y) < 0.5)
+    fail(`fireflies must wander (moved ${Math.hypot(p1.x - p2.x, p1.y - p2.y).toFixed(2)}px in 800ms)`);
+  else ok("fireflies wander");
+
+  // ---- day: pollen up, fireflies out ----
+  await page.evaluate(() => window.__ml.timeOfDay("day", true));
+  await page.waitForTimeout(4500);
+  const ffDay = await dbg("fireflies");
+  const poDay = await dbg("pollen");
+  if (ffDay.gain > 0.15) fail(`fireflies must melt away by day (gain ${ffDay.gain.toFixed(2)})`);
+  if (poDay.gain < 0.5) fail(`pollen must drift in daylight (gain ${poDay.gain.toFixed(2)})`);
+  if (poDay.lit < 3) fail(`pollen must be visible by day (${poDay.lit}/${poDay.count})`);
+  ok(`day: pollen gain ${poDay.gain.toFixed(2)} (${poDay.lit} lit), fireflies gain ${ffDay.gain.toFixed(2)}`);
+
+  // cloudy kills the sunbeams
+  await page.evaluate(() => window.__ml.weather(1, true));
+  await page.waitForTimeout(4500);
+  const poCloud = await dbg("pollen");
+  if (poCloud.gain > poDay.gain - 0.2)
+    fail(`cloud cover must thin pollen (clear ${poDay.gain.toFixed(2)} -> cloudy ${poCloud.gain.toFixed(2)})`);
+  else ok(`cloudy thins pollen (${poDay.gain.toFixed(2)} -> ${poCloud.gain.toFixed(2)})`);
+  await page.evaluate(() => window.__ml.weather(0, true));
+
+  // ---- director weights (deterministic — no lottery luck) ----
+  const w = await page.evaluate(() => ({
+    day: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }),
+    night: window.__mlAmbient.weights({ night: 1, sun: 0, cloud: 0, mist: 0, weatherName: "Clear sky" }),
+    rainDay: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 1, mist: 0, weatherName: "Rain" }),
+    rainNight: window.__mlAmbient.weights({ night: 1, sun: 0, cloud: 1, mist: 0, weatherName: "Rain" }),
+  }));
+  const ratio = w.day.bats / w.night.bats;
+  if (Math.abs(ratio - 0.01) > 0.005)
+    fail(`bats by day must be ~1% of night (got ${(ratio * 100).toFixed(2)}%)`);
+  else ok(`bats day/night likeliness ${(ratio * 100).toFixed(1)}%`);
+  // Birds are the DAYTIME mirror: full by day, ~5% at night.
+  const birdRatio = w.night.birds / w.day.birds;
+  if (Math.abs(birdRatio - 0.05) > 0.01)
+    fail(`birds by night must be ~5% of day (got ${(birdRatio * 100).toFixed(2)}%)`);
+  else ok(`birds night/day likeliness ${(birdRatio * 100).toFixed(1)}%`);
+  const rd = w.rainDay.thunder / w.day.thunder;
+  const rn = w.rainNight.thunder / w.day.thunder;
+  if (Math.abs(rd - 2) > 0.05) fail(`thunder raining must be x2 base (got x${rd.toFixed(2)})`);
+  if (Math.abs(rn - 3) > 0.05) fail(`thunder night+raining must be x3 base (got x${rn.toFixed(2)})`);
+  if (!(rd < rn)) fail("thunder: night+rain must beat rain alone");
+  ok(`thunder likeliness rain x${rd.toFixed(2)}, night+rain x${rn.toFixed(2)}`);
+  // Sandstorm is TERRAIN-gated: no sand underfoot, no storm — ever.
+  const ss = await page.evaluate(() => ({
+    onSand: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Clear sky" }).sandstorm,
+    offSand: window.__mlAmbient.weights({ sand: 0, mist: 0, weatherName: "Clear sky" }).sandstorm,
+    sandRain: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Rain" }).sandstorm,
+  }));
+  if (!(ss.onSand > 0.3)) fail(`sandstorm must be likely on sand (${ss.onSand})`);
+  if (ss.offSand > 0.001) fail(`sandstorm must NEVER roll off sand (${ss.offSand})`);
+  if (ss.sandRain > 0.001) fail(`rain must kill the sandstorm (${ss.sandRain})`);
+  ok(`sandstorm likeliness: terrain-gated (sand ${ss.onSand.toFixed(2)}, grass ${ss.offSand}, rain ${ss.sandRain})`);
+  // ---- director rolls + episode life cycle ----
+  await page.evaluate(() => window.__ml.timeOfDay("night", true));
+  await page.waitForTimeout(300);
+  // Pin the roll low → lands on the first non-zero-weight episode (bats at night).
+  const rolled = await page.evaluate(() => window.__mlAmbient.reroll(0.01));
+  if (rolled.active !== "bats") fail(`pinned night roll should pick bats (got ${rolled.active})`);
+  const bats1 = await dbg("bats");
+  if (!bats1.active) fail("bats must be active after winning the roll");
+  // First flock launches within ~6s of activation.
+  await page.waitForTimeout(7000);
+  const bats2 = await dbg("bats");
+  if (bats2.flocks < 1) fail(`an active bats episode must launch a flock (${bats2.flocks})`);
+  else ok(`bats episode launched ${bats2.flocks} flock(s), ${bats2.inFlight} in flight`);
+  // Pin the roll high → the quiet slot; bats deactivate gracefully.
+  const quiet = await page.evaluate(() => window.__mlAmbient.reroll(0.999999));
+  if (quiet.active !== null) fail(`high pinned roll should land on quiet (got ${quiet.active})`);
+  if ((await dbg("bats")).active) fail("bats must deactivate when the quiet slot wins");
+  else ok("quiet slot wins → bats stand down");
+
+  // ---- demo button (maintainer 2026-07-18): selects the effect ONLY, never
+  // changes time-of-day/weather; has AUTO (shows the live effect) + NONE ----
+  await page.evaluate(() => window.__mlAmbient.demo("auto"));
+  const btn = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent ?? null);
+  if (!btn || !btn.startsWith("ambient: auto")) fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
+  else ok(`settings button injected (${btn})`);
+
+  // The button must NOT touch time-of-day: record it, demo an effect, assert
+  // the phase is unchanged (the whole point of this change).
+  await page.evaluate(() => window.__ml.timeOfDay("day", true));
+  const todBefore = await page.evaluate(() => window.__ml.timeOfDay().name);
+  await page.evaluate(() => window.__mlAmbient.demo("thunder"));
+  await page.waitForTimeout(600);
+  const todAfter = await page.evaluate(() => window.__ml.timeOfDay().name);
+  if (todAfter !== todBefore) fail(`demo must NOT change time-of-day (${todBefore} -> ${todAfter})`);
+  else ok(`demo leaves time-of-day alone (stayed ${todAfter})`);
+
+  // Demo thunder (solo): the thunder episode is ON, fields suppressed. (Manual
+  // mode drives episodes directly now, so the DIRECTOR is parked, not pinned.)
+  const thEff = await page.evaluate(() => window.__mlAmbient.effects().find((e) => e.name === "thunder"));
+  if (!thEff || !thEff.on || !thEff.enabled)
+    fail(`demo(thunder) must switch thunder on (got ${JSON.stringify(thEff)})`);
+  await page.waitForTimeout(3500);
+  const ffSolo = await dbg("fireflies");
+  if (!ffSolo.suppressed || ffSolo.gain > 0.15)
+    fail(`demoing thunder must suppress fireflies (suppressed=${ffSolo.suppressed}, gain ${ffSolo.gain.toFixed(2)})`);
+  else ok("solo: thunder on, fireflies suppressed");
+
+  // Demo a FIELD (fireflies): FORCED on at full regardless of the daytime
+  // env gate, episodes quiet — "select fireflies" actually shows fireflies.
+  await page.evaluate(() => window.__mlAmbient.demo("fireflies"));
+  await page.waitForTimeout(4000);
+  const dirField = await page.evaluate(() => window.__mlAmbient.director());
+  const ffOn = await dbg("fireflies");
+  if (dirField.active !== null) fail(`selecting a field must quiet episodes (got ${JSON.stringify(dirField)})`);
+  if (!ffOn.forced || ffOn.gain < 0.6)
+    fail(`selected fireflies must force ON by day (forced=${ffOn.forced}, gain ${ffOn.gain?.toFixed?.(2)})`);
+  else ok(`select(fireflies): forced on by day (gain ${ffOn.gain.toFixed(2)}), episodes quiet`);
+
+  // NONE: everything off.
+  await page.evaluate(() => window.__mlAmbient.demo("none"));
+  await page.waitForTimeout(4000);
+  const ffNone = await dbg("fireflies");
+  const poNone = await dbg("pollen");
+  const dirNone = await page.evaluate(() => window.__mlAmbient.director());
+  if (ffNone.gain > 0.15 || poNone.gain > 0.15 || dirNone.active !== null)
+    fail(`NONE must silence everything (ff ${ffNone.gain?.toFixed?.(2)}, po ${poNone.gain?.toFixed?.(2)}, ep ${dirNone.active})`);
+  else ok("none: every ambient effect off");
+
+  // Episodes still show FULL regardless of time (sandstorm dust floor).
+  await page.evaluate(() => window.__mlAmbient.demo("sandstorm"));
+  await page.waitForTimeout(6000);
+  const ssd = await dbg("sandstorm");
+  if (!ssd.active || ssd.streaks < 30) fail(`demoed sandstorm must run (active ${ssd.active}, ${ssd.streaks} streaks)`);
+  else ok(`demo(sandstorm): running (gain ${ssd.gain.toFixed(2)}, ${ssd.streaks} streaks)`);
+
+  // Clicking the real button advances the ring (sandstorm → leaves) and prints state.
+  const label = await page.evaluate(() => {
+    document.querySelector(".ml-ambient-btn").click();
+    return document.querySelector(".ml-ambient-btn").textContent;
+  });
+  if (label !== "ambient: leaves") fail(`button click must advance sandstorm -> leaves (got ${JSON.stringify(label)})`);
+  else ok("button click advances the ring (sandstorm -> leaves)");
+
+  // Leaves must FALL in world-height, LAND, and REST on the ground (not slide
+  // down-screen forever). Give them time for the low ones to touch down.
+  await page.waitForTimeout(9000);
+  const lvd = await dbg("leaves");
+  if (lvd.count < 3) fail(`leaves must be falling (${lvd.count})`);
+  if ((lvd.resting ?? 0) < 1) fail(`some leaves must LAND and rest on the ground (resting ${lvd.resting} of ${lvd.count})`);
+  else ok(`leaves fall + land: ${lvd.falling} falling, ${lvd.resting} resting, ${lvd.fading} fading`);
+
+  // ---- per-effect toggles + compatibility (maintainer 2026-07-19): play
+  // several compatible effects at once; block incompatible ones ----
+  await page.evaluate(() => window.__mlAmbient.demo("none")); // clean manual slate
+  const en1 = await page.evaluate(() => window.__mlAmbient.toggle("water")); // universal
+  const en2 = await page.evaluate(() => window.__mlAmbient.toggle("birds")); // compatible w/ water
+  if (!en1.ok || !en2.ok) fail(`water+birds must both enable (got ${JSON.stringify([en1, en2])})`);
+  const batTry = await page.evaluate(() => window.__mlAmbient.toggle("bats")); // conflicts birds
+  if (batTry.ok || batTry.blockedBy !== "birds")
+    fail(`bats must be BLOCKED while birds is on (got ${JSON.stringify(batTry)})`);
+  const eff = await page.evaluate(() => window.__mlAmbient.effects());
+  const onNames = eff.filter((e) => e.on).map((e) => e.name).sort();
+  if (!(onNames.includes("water") && onNames.includes("birds") && !onNames.includes("bats")))
+    fail(`expected water+birds ON, bats OFF (got ${onNames.join(",")})`);
+  const batsSwitch = eff.find((e) => e.name === "bats");
+  if (batsSwitch.blocked !== "birds") fail(`bats switch must report blocked-by birds (got ${JSON.stringify(batsSwitch)})`);
+  else ok(`toggles: multiple compatible ON (${onNames.join("+")}), bats blocked by birds`);
+  // Turn birds off → bats frees up.
+  await page.evaluate(() => window.__mlAmbient.setEnabled("birds", false));
+  const batNow = await page.evaluate(() => window.__mlAmbient.toggle("bats"));
+  if (!batNow.ok) fail(`bats must enable once birds is off (got ${JSON.stringify(batNow)})`);
+  else ok("toggles: bats frees up once birds is switched off");
+  // compatible() helper: water universal; the two day/night pairs exclusive.
+  const comp = await page.evaluate(() => ({
+    waterBats: window.__mlAmbient.compatible("water", "bats"),
+    waterLeaves: window.__mlAmbient.compatible("water", "leaves"),
+    birdsBats: window.__mlAmbient.compatible("birds", "bats"),
+    ffPollen: window.__mlAmbient.compatible("fireflies", "pollen"),
+  }));
+  if (!comp.waterBats || !comp.waterLeaves || comp.birdsBats || comp.ffPollen)
+    fail(`compatible() wrong: ${JSON.stringify(comp)}`);
+  else ok("compatible(): water universal; birds/bats + fireflies/pollen exclusive");
+
+  // ---- sprite-art birds/bats (maintainer 2026-07-24): the procedural flocks
+  // were replaced with the maintainer's PixelLab art — 8 bird TYPES + a bat,
+  // each an 8-direction object with a flap animation; a landed bird shows its
+  // still base. The boids sim is unchanged; these assert the RENDER swap. ----
+  await page.evaluate(() => { window.__ml.timeOfDay("day", true); window.__mlAmbient.demo("birds"); });
+  await page
+    .waitForFunction(() => { const d = window.__mlAmbient.debug("birds"); return d && d.ready && d.inFlight >= 1; }, null, { timeout: 20000 })
+    .catch(() => fail("birds sprite art never loaded / no flock launched"));
+  const bSeen = { dirs: new Set(), frames: new Set(), keys: new Set() };
+  for (let i = 0; i < 16; i++) {
+    await page.waitForTimeout(300);
+    const s = (await dbg("birds"))?.sample;
+    if (s) { bSeen.dirs.add(s.dir); bSeen.frames.add(s.frame); bSeen.keys.add(s.key); }
+  }
+  if (bSeen.frames.size < 4) fail(`birds fly clip must advance frames (saw ${bSeen.frames.size})`);
+  if (bSeen.dirs.size < 2) fail(`birds must face different directions as they wheel (saw ${[...bSeen.dirs]})`);
+  if (![...bSeen.keys].every((k) => /^amb-bird\d-fly$/.test(k))) fail(`airborne birds must use a fly spritesheet (saw ${[...bSeen.keys]})`);
+  else ok(`birds: art loaded, flap animates (${bSeen.frames.size} frames), faces ${bSeen.dirs.size} dirs (${[...bSeen.keys]})`);
+
+  // Land on the still base: point the CAMERA at dry ground far from the spawn
+  // player (so no flush, and LAND_CLEAR is satisfied) and wait out the settle.
+  await page.evaluate(() => window.__ml.lookAt(165, 42)); // dry the_island2 plateau, far from spawn
+  let perch = null;
+  for (let i = 0; i < 50 && !perch; i++) {
+    await page.waitForTimeout(500);
+    const d = await dbg("birds");
+    if (d && d.landed >= 1 && /^amb-bird\d-still$/.test(d.sample?.key || "")) perch = d.sample.key;
+  }
+  if (!perch) fail("a landed bird must show the still base sprite (amb-bird<n>-still)");
+  else ok(`birds land on the still base (${perch})`);
+  await page.evaluate(() => window.__ml.lookAt()); // re-attach the camera
+
+  // Bats: night sprite art — a flapping directional bat (never lands).
+  await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("bats"); });
+  await page
+    .waitForFunction(() => { const d = window.__mlAmbient.debug("bats"); return d && d.ready && d.inFlight >= 1; }, null, { timeout: 20000 })
+    .catch(() => fail("bats sprite art never loaded / no colony launched"));
+  const tSeen = { dirs: new Set(), frames: new Set(), keys: new Set() };
+  for (let i = 0; i < 16; i++) {
+    await page.waitForTimeout(300);
+    const s = (await dbg("bats"))?.sample;
+    if (s) { tSeen.dirs.add(s.dir); tSeen.frames.add(s.frame); tSeen.keys.add(s.key); }
+  }
+  if (tSeen.frames.size < 4) fail(`bats fly clip must advance frames (saw ${tSeen.frames.size})`);
+  if (![...tSeen.keys].every((k) => k === "amb-bat-fly")) fail(`bats must use the bat fly spritesheet (saw ${[...tSeen.keys]})`);
+  else ok(`bats: art loaded, flap animates (${tSeen.frames.size} frames), faces ${tSeen.dirs.size} dirs`);
+
+  // AUTO shows the LIVE active effect: at night with nothing pinned,
+  // fireflies self-gate on and the label reports "auto (fireflies)".
+  await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("auto"); });
+  await page.waitForTimeout(4000);
+  const autoLabel = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent);
+  const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
+  if (dirAuto.pinned !== null) fail(`auto must release the pin (got ${JSON.stringify(dirAuto)})`);
+  if (!/^ambient: auto \(.+\)$/.test(autoLabel)) fail(`AUTO must show the active effect (got ${JSON.stringify(autoLabel)})`);
+  else ok(`auto reports the live effect (${autoLabel})`);
+
+  if (!failed) console.log("AMBIENT OK");
+} finally {
+  await browser.close();
+}

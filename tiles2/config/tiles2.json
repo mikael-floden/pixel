@@ -1,0 +1,160 @@
+{
+  "_comment": "tiles2 — breaking change from tiles v1. Each ground type is a SPECIFICALLY named subfolder (saturated_grass, not 'grass') so more variants can be added later. Flow: generate -> raw/ (+ per-sheet metadata, kind=base|transition) -> postprocess copies into base/ or transitions/<other>/, normalizing brightness/hue/saturation to the ref-sprite(s). Raw is always kept so postprocess can be re-tuned and re-run.",
+  "tile": {
+    "type": "isometric",
+    "size": 64,
+    "view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "flat_top_px": 2
+  },
+  "prompt": {
+    "_comment": "Quality-focused prompts. NO lineless/no-outline (create-tiles-pro bakes an outline in regardless). We deliberately generate MANY base sheets per type, EACH with a different creative `angle` (sheet idx cycles the angle list) to explore the space — earthy sides on one, rocky on the next, flowery, dry, etc. A type may override `base_angles`; otherwise the generic list is used. `variations` gives per-tile micro-variety WITHIN a sheet.",
+    "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game terrain tile",
+    "base_template": "isometric {description} terrain tiles, {angle}, every tile is {name}: {variations}. {style}",
+    "transition_template": "isometric terrain tiles blending from {from_desc} to {to_desc}, {angle}: {variations}. {style}",
+    "base_variations": "1) plain even ground 2) soft surface texture 3) a few natural details 4) a slightly darker weathered patch 5) a slightly lighter sunlit patch 6) small scattered specks",
+    "base_angles": [
+      "plain and even",
+      "a slightly richer, denser texture",
+      "fine scattered detail and small flecks",
+      "a few tiny surface accents",
+      "a touch lighter and sunlit",
+      "a touch darker and cooler in tone",
+      "with natural sides",
+      "clean, even and minimal"
+    ],
+    "transition_variations": "1) mostly {from_name} with {to_name} entering from one corner 2) an even diagonal split from {from_name} to {to_name} 3) mostly {to_name} with a patch of {from_name} 4) a soft natural border between {from_name} and {to_name} 5) {to_name} scattered across {from_name} 6) a gradual blend from {from_name} into {to_name}",
+    "_transition_angles_note": "Each of the 5 sheets per pair uses a different BORDER STYLE (cycled by sheet index), so together they cover every kind of edge a map builder might need.",
+    "transition_angles": [
+      "with a soft ragged natural border",
+      "with a clean sharp border",
+      "with a patchy scattered border of small islands",
+      "with a wide gradual blend",
+      "with interlocking fingers along the border",
+      "with a gentle wavy border"
+    ]
+  },
+  "ground_types": [
+    { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass",
+      "_angles_note": "Keep it PLAIN saturated grass — angles are SMALL variations only (soil sides, slight tone/density, a few tiny accents). No dramatic re-themes (no tall overgrowth, no cliff sides, no dry/bare fields) so the whole type keeps one look & feel.",
+      "base_angles": [
+        "each tile has natural dark soil sides",
+        "a slightly denser, richer grass texture",
+        "a few tiny scattered flower specks",
+        "a couple of small bare earth spots",
+        "faint moss and a few tiny pebbles",
+        "soil sides with a few small embedded stones",
+        "a touch lighter and sunlit",
+        "a touch darker and cooler in tone"
+      ] },
+    { "id": "regular_snow",    "name": "snow",                "description": "clean fresh white snow" },
+    { "id": "lightdark_dirt",  "name": "dirt",                "description": "packed brown dirt with mixed light and dark patches" },
+    { "id": "stone_mountain",  "name": "grey mountain stone", "description": "rugged grey mountain rock and stone" },
+    { "id": "black_mountain",  "name": "black volcanic rock", "description": "dark near-black volcanic mountain rock" },
+    { "id": "clear_water",     "name": "clear water",         "description": "clear calm blue water" },
+    { "id": "light_sand",      "name": "light sand",          "description": "pale light sandy beach" },
+    { "id": "crystal_ice",     "name": "crystal ice",         "description": "crystalline translucent pale-blue ice" }
+  ],
+  "elevation": {
+    "_comment": "base_x_N = TALLER variants of a terrain, stored as SIBLINGS of base/ inside each terrain folder (saturated_grass/base_x_2 … base_x_5), all on a 64x128 canvas. They stack PIXEL-PERFECTLY on base_x_1: identical 30px diamond top (tile_size 64, view_angle 28, flat_top 2) so the walkable top surface lands in the same place; only the face grows to N*16px (calibrated depth_ratio per height — see docs/ELEVATION.md). One 'level' = base_x_1's 16px face. VARIETY: each sheet numbers a seed-shuffled subset (objects_per_sheet items) of that (terrain, height) pool in objects_file, so one create-tiles-pro call yields many DIFFERENT objects (statues, dead trees, mushrooms, runestones, cairns, crystals …) rather than clones; target_sheets_per_elev sheets per (terrain, height) each draw a different subset. Raw lives in <terrain>/raw/ (kind=elevation, height=base_x_N); postprocess softens the outline and HARMONISES each tile toward the terrain's own palette (harmonize_refs) so greens/greys/blues snap to the existing ground colours and blend in — distinct accents (mushroom red, wood brown) fall outside the target hue bands and stay. No transitions.",
+    "target_sheets_per_elev": 3,
+    "objects_per_sheet": 10,
+    "objects_file": "elevation_objects.json",
+    "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+    "template": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a DIFFERENT {height_word} object standing FREE in empty space, resting on a small flat patch of {flavor}; the object rises straight up and IS the sprite. CRITICAL: the entire background is FULLY TRANSPARENT and there is NO black outline, NO dark border, NO frame, NO box, NO rectangle, NO square, NO cube edges and NO wireframe anywhere around the tile or the object — the object's silhouette is soft and organic against empty transparency, with no containing lines or hard straight edges enclosing it. Do NOT stand it on a raised block, cube, column, box, crate or pedestal, and do NOT draw the ground as a raised cube: just a small low patch at its base. Go for maximum variety — different shapes, species, ages and conditions, no two tiles alike. The set: {objects}. {style}",
+    "heights": [
+      { "id": "base_x_2", "levels": 2, "height_word": "small",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
+      { "id": "base_x_3", "levels": 3, "height_word": "medium-sized",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
+      { "id": "base_x_4", "levels": 4, "height_word": "large",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
+      { "id": "base_x_5", "levels": 5, "height_word": "huge towering",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 }
+    ],
+    "terrains": [
+      { "id": "saturated_grass", "flavor": "lush green grass", "harmonize_refs": ["saturated_grass", "stone_mountain"] },
+      { "id": "stone_mountain",  "flavor": "grey mountain stone", "harmonize_refs": ["stone_mountain"] },
+      { "id": "crystal_ice",     "flavor": "pale-blue crystalline ice", "harmonize_refs": ["crystal_ice"] },
+      { "id": "regular_snow",    "flavor": "white snow", "harmonize_refs": ["regular_snow", "stone_mountain"] },
+      { "id": "lightdark_dirt",  "flavor": "packed brown dirt", "harmonize_refs": ["lightdark_dirt", "stone_mountain"] },
+      { "id": "black_mountain",  "flavor": "dark near-black volcanic rock", "harmonize_refs": ["black_mountain"] },
+      { "id": "clear_water",     "flavor": "clear blue water", "harmonize_refs": ["clear_water", "saturated_grass"] },
+      { "id": "light_sand",      "flavor": "pale sandy beach", "harmonize_refs": ["light_sand", "saturated_grass"] }
+    ]
+  },
+  "_transitions_comment": "FULL MESH — no adjacency list. Map builders must have every border, so each type gets a transition to EVERY other type. The loop completes a type's bases, then generates its transition to every EARLIER type (the new type owns transitions toward all existing ones); a pair is skipped if already covered either direction. Stored under <type>/transitions/<earlier-type>.",
+  "targets": {
+    "_comment": "base_sheets_per_type raw BASE sheets first, THEN this type's transitions to every earlier type, before the next type. Each sheet = one create-tiles-pro item (~16 tiles). Sync (git<-PixelLab) drops sheets you delete in the UI, so the loop tops back up to target.",
+    "base_sheets_per_type": 5,
+    "transition_sheets_per_pair": 5
+  },
+  "budget": {
+    "min_generations_remaining": 500,
+    "min_usd": 1.0,
+    "_comment": "Proceed if the subscription pool is above min_generations_remaining OR there are >= min_usd credits (PixelLab bills USD credits once subscription generations hit 0; tiles are cheap)."
+  },
+  "postprocess": {
+    "_comment": "raw -> base/transitions. neutralize_outline softens the outer silhouette rim. harmonize pulls each tile's dominant MATERIAL colour (auto-detected per type from its first base sheet) to a common target — greens together for grass, whites for snow — keeping texture; dirt/rock/flowers untouched. ab_strength = hue+saturation pull, v_strength = mean-brightness leveling (0..1).",
+    "neutralize_outline": true,
+    "darkness_thresh": 60,
+    "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9, "hue_band": 65, "min_value": 14, "dark_material_value": 50, "dark_min_value": 38, "dark_include": 46 },
+    "_palette_comment": "Re-tint the whole tileset to the game's HUD/UI colour palette (cohesive muted-forest theme). Each entry OVERRIDES the auto-detected material colour that harmonize pulls every tile toward, so grass/dirt/etc. read as one harmonic set with the HUD. grass + dirt are the exact colours the designer supplied; the rest are sampled from the HUD (crystal-teal water, sage stone, near-black rock, cool-pale snow, warm sand, icy-cyan ice). Remove an entry to fall back to auto-detection. Reprocess after any change.",
+    "palette": {
+      "saturated_grass": [7, 59, 53],
+      "lightdark_dirt":  [169, 145, 102],
+      "regular_snow":    [210, 219, 214],
+      "stone_mountain":  [95, 105, 92],
+      "black_mountain":  [44, 44, 45],
+      "clear_water":     [58, 109, 112],
+      "light_sand":      [203, 180, 136],
+      "crystal_ice":     [143, 211, 228]
+    },
+    "_gap_close_comment": "THE actual fix for the in-game 'grid'/'Ʌ' seam. The seam is NOT a dark outline on the tiles — it is the dark BACKGROUND showing through 1-2px gaps along every diamond edge, because the generated diamond silhouette (soft/antialiased rim) does not perfectly tessellate (verified: seam pixels == background luminance; a magenta-background tessellation bleeds magenta along every edge). gap_close hardens the silhouette (alpha>thresh -> opaque, kills the dark AA halo) and bleeds it OUTWARD `grow` px, filling new pixels with the average of opaque neighbours at full alpha, so neighbouring diamonds overlap (same material, back-to-front draw) and no void shows. Runs LAST (after fade_outline, which reduces rim alpha and would otherwise reopen the gap). Base + transition floor tiles ONLY — elevation object sprites keep their true silhouette. Toggle enabled:false + reprocess to revert (raw untouched). NOTE: superseded `deseam`, which mis-diagnosed the seam as a dark outline and had ~no in-game effect.",
+    "deseam": {
+      "enabled": false,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
+    "_clean_top_rim_comment": "Kills the faint dark DOT the user sees at every diamond VERTEX in-game. Cause: the top diamond's baked edge rim sits a bit darker than the interior (snow interior lum ~210, rim ~180 — only ~30 down, so absolute-dark steps miss it); where four diamonds meet those rims converge into a dot, worst on bright snow/ice. Threshold is RELATIVE to the material brightness (value*factor) so it works on light and dark grounds. Only the TOP diamond (top_frac of the height) and only the silhouette-adjacent rim band are touched — the front soil/rock FACE and interior details (flowers/pebbles/rocks) are left alone. Runs after fade_outline, before gap_close. black_mountain (value<70) skipped. Toggle enabled:false + reprocess to revert.",
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true,
+      "edge_margin": 22
+    },
+    "gap_close": {
+      "enabled": true,
+      "alpha_thresh": 16,
+      "grow": 2
+    },
+    "_fade_outline_comment": "Softens the generated near-black wireframe OUTLINE by REDUCING its alpha (toward transparent) so hard black frame/platform lines on base_x_N tiles look gentler — like game1's step. Fades only near-black SILHOUETTE-RIM + THIN FRAME LINES (run>=run_min, perpendicular<=thick_max); compact dark art (rock, trunks) is spared. strength/rim_strength are GENTLE (partial fade, never full cut). protect_dark_material zeroes the rim + caps strength for near-black terrain (black_mountain) so it can't dissolve. Toggle enabled:false + reprocess to fully revert (raw untouched).",
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

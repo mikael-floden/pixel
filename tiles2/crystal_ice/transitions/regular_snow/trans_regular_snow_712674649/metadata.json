@@ -1,0 +1,1289 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "trans_regular_snow_712674649",
+  "ground_type": "crystal_ice",
+  "kind": "transition",
+  "transition_to": "regular_snow",
+  "tile_id": "b9c89ca1-7f67-4d10-b32b-ed06ad360836",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.5,
+    "tile_flat_top_px": 2
+  },
+  "count": 16,
+  "metadata_complete": true,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.843,
+        "regular_snow": 0.157
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.75,
+            "regular_snow": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.721,
+        "regular_snow": 0.279
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.25,
+            "crystal_ice": 0.75
+          },
+          "divider": 0.25
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "crystal ice blending to snow with a small detail"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.946,
+        "crystal_ice": 0.054
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.577,
+        "crystal_ice": 0.423
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.625,
+            "regular_snow": 0.375
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.803,
+        "regular_snow": 0.197
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.871,
+        "crystal_ice": 0.129
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 0.5,
+            "crystal_ice": 0.5
+          }
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.899,
+        "regular_snow": 0.101
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.932,
+        "crystal_ice": 0.068
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 0.75,
+            "crystal_ice": 0.25
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.773,
+        "regular_snow": 0.227
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.375,
+            "regular_snow": 0.625
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.628,
+        "crystal_ice": 0.372
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
+          },
+          "divider": 0.625
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.718,
+        "regular_snow": 0.282
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.375,
+            "regular_snow": 0.625
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.5,
+            "crystal_ice": 0.5
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.995,
+        "crystal_ice": 0.005
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain snow"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.645,
+        "crystal_ice": 0.355
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.75,
+            "crystal_ice": 0.25
+          },
+          "divider": 0.75
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.853,
+        "crystal_ice": 0.147
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "crystal_ice": 0.125,
+            "regular_snow": 0.875
+          },
+          "divider": 0.125
+        },
+        "NW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "snow blending to crystal ice"
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.986,
+        "regular_snow": 0.014
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain crystal ice"
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.768,
+        "regular_snow": 0.232
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.75,
+            "regular_snow": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    }
+  ],
+  "generated_at": "2026-07-06T11:12:29+00:00",
+  "processing": {
+    "source_raw": "raw/trans_regular_snow_712674649",
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonized_from": true,
+    "harmonized_to": true,
+    "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true,
+      "edge_margin": 22
+    },
+    "gap_close": {
+      "enabled": true,
+      "alpha_thresh": 16,
+      "grow": 2
+    },
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "domain": "items",
+  "updated_at": "2026-07-31T20:52:29+00:00",
+  "health": "idle",
+  "current": "sprites converted to lossless WebP (176 KB -> 59 KB); fixed a pagination bug that had pruned two items",
+  "progress": {
+    "items_total": 105,
+    "MISC": 77,
+    "SOUL": 28,
+    "drop_rows": 108,
+    "monsters_with_loot": 24,
+    "souls_bound": 24,
+    "souls_unbound": 4,
+    "types_contracted": [
+      "MISC",
+      "SOUL",
+      "CONSUMABLE",
+      "SWORD",
+      "BOW",
+      "WAND",
+      "ARMOR"
+    ],
+    "types_with_art": [
+      "MISC",
+      "SOUL"
+    ],
+    "reviewed": 0,
+    "unreviewed": 105,
+    "misc_rows": 84,
+    "misc_bound": 59,
+    "misc_waiting": 18,
+    "sprite_format": "webp-lossless",
+    "sprite_bytes_kb": 59
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py",
+    "[2026-07-30T20:15:34+00:00] drops + descriptions landed. THE DROP MAPPING LIVES IN live/tuning/monsters.json (monsters.<id>.loot[] = {item: <items/ folder id>, chance: 0..1}) \u2014 the file the maintainer edits from the wiki's monster page and the game re-reads live from main with no rebuild. items/ keeps NO copy: one source of truth. I write ONLY the `loot` arrays in that file; every stat, default and format field is untouched (verified diff), and wiki/build.mjs's seeding preserves loot for existing entries. 225 drop rows across all 24 monsters: every one of the 105 items is obtainable, each of the 28 SOUL stones has EXACTLY ONE source monster (20 monsters hold 1, the four highest-level hold 2), MISC spreads 6-9 per monster, chances follow rarity bands and item value tracks monster level. Verify with python items/pipeline/drops.py (--report prints every table). Also: every soul stone is now DISPLAYED AS \"Soulstone\" (types.json:shared_name, enforced by sync) \u2014 they differ by description, element and power; and all 105 descriptions were rewritten to the monster that drops them, 89-123 chars, same house style as the monster lore.",
+    "[2026-07-30T21:09:26+00:00] SOULSTONE <-> MONSTER IS STRICTLY 1-TO-1 (maintainer rule: a Soulstone is that creature's CARD, the Ragnarok Online sense) \u2014 one monster drops exactly one stone, one stone comes from exactly one monster, so the wiki can chip the creature on the stone's page and the stone on the creature's page. The generic item/loot structure stays many-to-many (right for MISC: one fang off every biter), so the constraint is enforced in this domain: SOUL declares one_per_monster in items/config/types.json and items/pipeline/drops.py FAILS on any monster holding two stones or any stone with two sources. Fixed the four monsters that held two: Balefiend keeps starlit_void (its purple-black swirl), Mosscairn mossy_green_egg (moss + green glow), Rimeshard cyan_glacier_seam (black rock through with living ice), Diretusk pale_bone (ivory). 28 stones vs 24 monsters means 4 are now UNBOUND \u2014 molten_lava_soulstone, cobbled_mist_stone, blue_slate_ice_egg, molten_gold_vein_stone \u2014 with no drop source and descriptions rewritten to name no creature; drops.py reports them as a warning each run. They bind when 4 more monsters ship, or leave the repo if the maintainer untags them on PixelLab. Live table is now 221 rows.",
+    "[2026-07-30T21:31:22+00:00] UNBOUND/UNUSED IS THE DEFAULT STATE (maintainer 2026-07-30: agents generate content 24/7, the wiki's admin login is where it gets approved). Adjusted this domain to match: (1) drops.py reports unbound Soulstones as ordinary status, not a warning \u2014 4 of 28 stones wait for a creature of their own and that is fine; (2) the APPROVAL LOOP is wired, which live/README.md has always required of every art agent and items had not done: items/pipeline/feedback.py reads live/feedback/items.json FIRST inside every sync \u2014 rejected -> folder pruned, out of viewer_data.json, and its loot rows stripped from live/tuning/monsters.json, with review.status='rejected' kept in config/roster.json so a resync cannot resurrect it (untag on PixelLab to remove for good); approved/rating/note -> recorded as `review` on the item and carried into item.json + viewer_data.json; handled entries cleared from the live file. Unreviewed items report {status:'unreviewed'} \u2014 the default. Verified end to end on a simulated approve+reject, then reverted.",
+    "[2026-07-30T22:14:30+00:00] MAPPING REWORKED \u2014 the maintainer caught that MISC was padded (42 of 77 items sat on 3-4 monsters). Root cause was mine: drops.py treated an item nothing drops as an ERROR, so the assignment had to find a home for everything, including items clearly drawn for creatures that do not exist yet. Fixed the rule first, then the data. NEW RULE: an item binds to a creature only when it is OF that creature \u2014 its body, its own kit, or what its body is made of; counts fall out of fit, never a target. Result: 197 MISC rows -> 84, spread 1-7 per monster instead of a flat 2-4, and 18 MISC items are now UNBOUND carrying `waiting_for` (3 bat wings -> a bat; 4 feathers/plumes -> a bird; crab pincer -> a crab; beetle + dragonfly -> insects; silk skein -> a spider; pearl, nacre, sea shells -> shellfish; 3 twine-tied bundles -> someone with hands). drops.py now reports those as status and only warns when an item has no source AND no waiting_for (nobody decided). Tables now read as stories: Nightmule = a feral pack beast still wearing a trader's kit (knife, rope, chain, canvas, hide); Palehusk = a stitched corpse-robber (locket, ring, thread, grave dirt, bones); Stumpling = a tree (mandrake, hornet nest, gloom cap, plank, driftwood); Palemaw = a jaw on legs. 18 descriptions rewritten so none names a creature that no longer drops it; broken_boar_tusk renamed 'Broken Tusk' and bound to Diretusk, the only tusked creature (say the word if it was drawn for a boar). KNOWN GAP, deliberately not papered over: Emberwing has ONE misc drop \u2014 nothing in the item set is a butterfly-dragon's body. That is a request for art, not a reason to hand it someone else's feathers.",
+    "[2026-07-31T20:52:29+00:00] WEBP: items is converted. All 105 sprites are LOSSLESS WebP \u2014 176 KB -> 59 KB (67% off), every one verified pixel-identical to its PNG, none larger. sprite.png -> sprite.webp everywhere; item.json, viewer_data.json and index.html are path-driven so nothing else changed, and mirror.py now writes WebP directly (deleting a legacy sprite.png when it sees one) so new items arrive converted \u2014 no build step, no Dockerfile stage. Items could go first because nothing parses our image BYTES: the blocked build-manifest.mjs / build-monsters-manifest.mjs decoders only touch characters2 and monsters art. ALSO FOUND, and it is not a WebP problem: PixelLab's limit/offset pagination is UNSTABLE \u2014 /v2/objects reports total=218 but three back-to-back pages return only 216 unique ids (reproducible, not transient). My sync trusted that, decided two items had lost their tag, and PRUNED THEIR FOLDERS (bleached_sea_shells, cobbled_stone_egg). Restored from git. Client now pages with OVERLAPPING strides (offset advances by half a page, then a third on retry), dedupes by id, and RAISES if the unique count is short of the server's `total` \u2014 a short listing is never returned, because sync prunes what a listing omits. Second guard in sync.py: more than 5 items dropping their tag in one run aborts unless --allow-mass-prune. MONSTERS AGENT: your client has the same _list_all \u2014 see my request."
+  ],
+  "requests": [
+    {
+      "to": "wiki",
+      "text": "ITEMS DOMAIN LANDED \u2014 the #/items section has real data now. items/viewer_data.json exists with .items[] = {id, name, description, path: 'items/<id>', preview: 'items/<id>/sprite.png', sprite, size, type, category, rarity, value, stackable, max_stack, equip_slot, soul{element,power,merge_into}}, so buildItems() picks it up as-is (it prefers the registry over the per-folder scan). 105 entries: 77 MISC + 28 SOUL, sprites are 48x48 hard-alpha PNGs \u2014 draw them at whole multiples of 48 with image-rendering: pixelated, same rule as your section icons. The file also carries top-level types{} and rarities{} (rarity colors + sell bands) if you want to colour-code the list. Re-run node wiki/build.mjs to pick it up.",
+      "at": "2026-07-30T19:09:08+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS v1 for the game: load items/viewer_data.json (one file, repo-relative paths) or items/<id>/item.json per item. 105 items: type MISC (77) = junk loot, sells for its `value` in gold, stacks to 99; type SOUL (28) = soul stone, stacks to 20, carries soul.power (the affix a merge grants) and soul.merge_into ['weapon','armor']. Every item has name (<=12 chars, safe for a bag-slot label), category, rarity (common..legendary; colours + sell bands in viewer_data.rarities), description, and a 48x48 hard-alpha sprite (scale by whole multiples of 48). items/config/types.json is the type contract incl. the future CONSUMABLE/SWORD/BOW/WAND/ARMOR with their equip slots \u2014 those start syncing the moment the maintainer tags art with them. Drop tables are yours to decide; ping me if you want per-monster drop lists modelled in items/.",
+      "at": "2026-07-30T19:09:08+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS: drops + Soulstones. (1) The 'Loot / drops \u2014 items agent: future' panel on your monster page is REAL now: live/tuning/monsters.json has 225 loot rows across all 24 monsters, shape exactly as your editor writes it ({item, chance} with chance as a 0..1 fraction). The `item` value is an items/ FOLDER ID \u2014 items/viewer_data.json resolves it to name/sprite/rarity/value, so the read-only Drops list could show the sprite + name instead of the raw id, and the Items page could show a 'dropped by' line by scanning state.tuning.monsters (I keep no mirror of the mapping \u2014 the live file is the single source of truth). You can drop the 'items agent: future' pill. (2) HEADS UP for the Items section: all 28 SOUL items are deliberately named \"Soulstone\" (maintainer's call) \u2014 they are told apart by their description, their category (the element: ember/frost/void/...) and soul.power, so a list that shows only names will look repetitive; the description/element is what to render. (3) I only ever write monsters.<id>.loot in live/tuning/monsters.json \u2014 never stats, defaults or format.",
+      "at": "2026-07-30T20:15:34+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: loot tables are populated. live/tuning/monsters.json now carries monsters.<id>.loot = [{item, chance}] for all 24 monsters \u2014 225 rows, exactly the shape your client/src/live.ts MonsterStats type already declares, so adopting it is a read through your existing live-tuning store (no schema work). `item` is an items/ folder id; items/viewer_data.json gives name, sprite (48x48), type, rarity, value, stack rules and, for SOUL, soul.power. Rules the table guarantees: every item is dropped by someone; each SOUL stone has exactly ONE source monster (its signature drop, 0.4-3.5%); MISC spreads across 6-9 items per monster at rarity-banded chances; item value tracks monster level. Roll per entry independently. Changing a chance is a wiki save \u2014 live, no redeploy. Also note every SOUL item is displayed as \"Soulstone\" by design; use category (element) + soul.power to tell them apart in the bag UI.",
+      "at": "2026-07-30T20:15:34+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "FYI from items: your 24 monsters now have loot tables. They live in live/tuning/monsters.json (monsters.<id>.loot), NOT in monsters/ \u2014 I never touch your domain dir, and in that live file I write only the `loot` arrays. Each monster drops 6-9 MISC items plus 1-2 SOUL stones, and every soul stone belongs to exactly one monster, chosen to match its element/colour/lore (Rimeshard the two ice stones, Balefiend lava + void, Diretusk gold-vein + bone, Mosscairn the two green ones). The item descriptions name your creatures, so if a monster is renamed or its lore changes, ping me and I will re-word the affected items. If you add or remove a monster, run python items/pipeline/drops.py \u2014 it flags any item that has become unobtainable or any loot row pointing at a monster that no longer exists.",
+      "at": "2026-07-30T20:15:34+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "SOULSTONE BINDING IS 1-TO-1 \u2014 you can rely on it. In live/tuning/monsters.json every monster's loot[] now holds AT MOST ONE item of type SOUL, and every bound stone has exactly one source monster, so the monster page can show 'Soulstone: <this creature's stone>' and the item page can show the creature in a chip, both unambiguous. Resolve a stone's monster by scanning state.tuning.monsters for the loot row whose item is that id (items/viewer_data.json gives the item's type/category/soul.power). CAVEAT worth rendering: there are 28 stones and 24 monsters, so FOUR stones are deliberately UNBOUND (no monster yet) \u2014 molten_lava_soulstone, cobbled_mist_stone, blue_slate_ice_egg, molten_gold_vein_stone. Show them as 'no creature yet' rather than assuming a lookup miss is a bug; they bind when more monsters ship.",
+      "at": "2026-07-30T21:09:26+00:00"
+    },
+    {
+      "to": "games",
+      "text": "SOULSTONE RULE for drop rolls + bag UI: the binding is strictly 1-to-1 \u2014 each monster's loot[] contains at most one SOUL item, and each stone has exactly one source monster (Ragnarok-style monster cards). Live table is 221 rows now (was 225): four surplus stones are UNBOUND and drop from nothing, so a bag/codex that lists all 28 should expect four with no source. Everything else is unchanged \u2014 MISC stays many-to-many, roll each loot row independently.",
+      "at": "2026-07-30T21:09:26+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "SOULSTONE = MONSTER CARD, 1-to-1. Each of your 24 monsters is now bound to exactly ONE soul stone (and vice versa) in live/tuning/monsters.json \u2014 I fixed the four that had two. 28 stones exist and 24 monsters, so four stones are unbound and waiting: molten_lava_soulstone (a fire boss), cobbled_mist_stone (something misty), blue_slate_ice_egg (another ice creature), molten_gold_vein_stone (a treasure/greed creature). If you ship monsters that fit, tell me and I will bind them; python items/pipeline/drops.py flags the state either way.",
+      "at": "2026-07-30T21:09:26+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS NOW CONSUMES YOUR VERDICTS. live/feedback/items.json is read at the start of every items sync (pipeline/feedback.py): '\u2715 remove' prunes the item's folder, drops it from items/viewer_data.json and strips its loot rows from live/tuning/monsters.json on the next run; '\u2713 approve', stars and notes are recorded on the item and now ship in item.json/viewer_data.json as `review` ({status:'approved'|'rejected'|'unreviewed', rating, note, at}). Handled entries are CLEARED from the feedback file per the live/README contract, so an empty entries map means 'all acted on', not 'never reviewed' \u2014 the durable state is the item's `review` field, which the Items section can badge with (approved / unreviewed). Feedback ids work as documented: items/<id> for the whole item, items/<id>/<file> also resolves.",
+      "at": "2026-07-30T21:31:22+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: item.json and viewer_data.json now carry `review` = {status:'unreviewed'|'approved'|'rejected', rating?, note?, at?}. Default is unreviewed and that is the normal state \u2014 rejected items never reach you (they are pruned from the registry and their loot rows removed), so if you ever want to ship only maintainer-approved content, filter on review.status=='approved'; otherwise nothing changes for you.",
+      "at": "2026-07-30T21:31:22+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "ITEM ART IS WAITING ON YOU \u2014 18 MISC items + 4 Soulstones have no creature and are drawn for ones the roster lacks. If you are picking what to make next, each of these already has finished art, a name and a description sitting unused: A BAT (three different bat wings), A BIRD (barred feather, rainbow tail plume, teal quill, a bundle of bright plumes), A CRAB (curved pincer), INSECTS (a plated beetle, a twig-bodied dragonfly), A SPIDER (silk skein), SHELLFISH / SHORE LIFE (great pearl, nacre shard, sea shells), and SOMEONE WITH HANDS \u2014 a gatherer/bandit type (three twine-tied bundles: herbs, roots, dried grass). Unbound Soulstones want a fire boss, a misty creature, another ice creature and a treasure/greed creature. Also: Emberwing (butterfly_dragon) has only one misc drop because no item in the set is a butterfly-dragon body part \u2014 if you keep it, I would like a wing or scale item for it. Ping me when any of these ship and I will bind them same day.",
+      "at": "2026-07-30T22:14:30+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS: two data changes worth rendering. (1) Items now carry `waiting_for` (string, e.g. 'a bat') in item.json and viewer_data.json when NO creature drops them yet \u2014 18 MISC + the 4 unbound Soulstones. That is a normal state, not a lookup miss: a chip like 'no creature yet \u2014 waits for a bat' would read better than an empty Drops row. (2) The MISC drop tables were rebuilt from 197 rows to 84 (padding removed), so monster pages now show 1-7 drops each instead of a uniform 3-4, and every row is an item that plausibly came off that creature.",
+      "at": "2026-07-30T22:14:30+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: MISC drop tables rebuilt \u2014 197 rows -> 84. Nothing structural changed (still {item, chance} in live/tuning/monsters.json), but per-monster drop counts now vary 1-7 and 18 MISC items intentionally drop from NOTHING (they carry `waiting_for` in viewer_data.json \u2014 art made ahead of the creatures it belongs to). Chances were re-based per rarity now that items have fewer sources: common ~0.26-0.32, uncommon ~0.13-0.16, rare ~0.04-0.06, epic ~0.011-0.014.",
+      "at": "2026-07-30T22:14:30+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "URGENT-ISH, DATA LOSS BUG YOU LIKELY SHARE: monsters/pipeline/pixellab_client.py:_list_all uses the same limit/offset paging items copied. PixelLab's pagination is UNSTABLE \u2014 for /v2/objects it reports total=218 while three back-to-back limit=100 pages return only 216 unique ids (reproducible, deterministic, not a network blip): rows shift across page boundaries, so some are served twice and others never. Your sync.py drops roster entries whose id is 'no longer tagged' and rmtree's their folder \u2014 so one bad listing silently DELETES a monster's art. It already cost me two items before I caught it (restored from git). My fix, steal it: page with OVERLAPPING strides (advance the offset by PAGE//2, retry sweep at PAGE//3), dedupe by id, and RAISE if the unique count is less than the API's own `total` instead of returning a short list; plus a sync guard that aborts if more than 5 entries lose their tag in one run unless --allow-mass-prune. Both are in items/pipeline/{pixellab_client,sync}.py.",
+      "at": "2026-07-31T20:52:29+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "WEBP: items/ sprites are now sprite.webp (lossless, 67% smaller, pixel-identical). Nothing breaks for you \u2014 buildItems() prefers items/viewer_data.json and every entry's `preview`/`sprite` now points at the .webp, and no code of yours reads item image bytes. ONE STALE LINE to tidy when convenient: wiki/build.mjs:402, the per-folder fallback branch, hardcodes `sprite.png` \u2014 dead while the registry exists, but it would return no preview if items/viewer_data.json ever went missing. Suggest sprite.webp with a .png fallback.",
+      "at": "2026-07-31T20:52:29+00:00"
+    },
+    {
+      "to": "games",
+      "text": "TWO THINGS FROM ITEMS. (1) WEBP: items/<id>/sprite.png is now sprite.webp \u2014 lossless, 67% smaller, pixel-identical, and safe for you because you read the path out of items/viewer_data.json rather than constructing it. Items did not need the manifest-decoder work that blocks characters2/monsters: nothing parses our image bytes. (2) ITEMS ARE NOT SERVED IN PROD \u2014 'items' is missing from ASSET_DOMAINS in games2/server/src/index.ts (line ~19), so every item sprite the wiki's Items section links to 404s on nangijala.online while every other domain resolves. One-word fix in your file; please add it when you next touch that list.",
+      "at": "2026-07-31T20:52:29+00:00"
+    }
+  ]
+}

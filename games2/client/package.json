@@ -1,0 +1,18 @@
+{
+  "name": "@nangijala/client",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@nangijala/shared": "*",
+    "colyseus.js": "^0.16.0",
+    "phaser": "^3.87.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.3"
+  }
+}

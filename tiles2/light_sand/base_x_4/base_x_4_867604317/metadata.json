@@ -1,0 +1,557 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_4_867604317",
+  "ground_type": "light_sand",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "face_px": 64,
+  "slot": 0,
+  "objects": [
+    "a weathered ship's mast half-buried in sand",
+    "a windswept leaning palm",
+    "a laden coconut palm",
+    "a tall sea-stack rock",
+    "a carved tiki statue",
+    "a tall agave",
+    "a wooden beach watchtower",
+    "a wooden lifeguard tower",
+    "a driftwood arch",
+    "a leaning driftwood totem"
+  ],
+  "tile_id": "f111328e-a703-42c3-befa-cc7bec9f0d3c",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 36.7,
+            "y": 53.0,
+            "r": 2.0,
+            "color": [
+              0.538,
+              0.392,
+              0.214
+            ],
+            "s": 0.67,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 19.7,
+            "y": 62.0,
+            "r": 2.0,
+            "color": [
+              0.568,
+              0.409,
+              0.222
+            ],
+            "s": 0.685,
+            "dir": "up"
+          },
+          {
+            "x": 14.8,
+            "y": 71.0,
+            "r": 2.0,
+            "color": [
+              0.69,
+              0.496,
+              0.265
+            ],
+            "s": 0.746,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 36.9,
+            "y": 54.2,
+            "r": 2.3,
+            "color": [
+              0.64,
+              0.447,
+              0.226
+            ],
+            "s": 0.71,
+            "dir": "up"
+          },
+          {
+            "x": 53.1,
+            "y": 62.3,
+            "r": 2.3,
+            "color": [
+              0.531,
+              0.406,
+              0.209
+            ],
+            "s": 0.674,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.0,
+            "y": 30.5,
+            "r": 2.0,
+            "color": [
+              0.411,
+              0.317,
+              0.159
+            ],
+            "s": 0.602,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 30.9,
+            "y": 47.7,
+            "r": 6.3,
+            "color": [
+              0.648,
+              0.458,
+              0.242
+            ],
+            "s": 0.721,
+            "dir": "up"
+          },
+          {
+            "x": 34.8,
+            "y": 67.5,
+            "r": 4.2,
+            "color": [
+              0.577,
+              0.408,
+              0.216
+            ],
+            "s": 0.681,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 28.9,
+            "y": 39.0,
+            "r": 7.1,
+            "color": [
+              0.879,
+              0.621,
+              0.328
+            ],
+            "s": 0.826,
+            "dir": "up"
+          },
+          {
+            "x": 35.5,
+            "y": 55.5,
+            "r": 6.1,
+            "color": [
+              0.691,
+              0.488,
+              0.26
+            ],
+            "s": 0.736,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 33.4,
+            "y": 56.6,
+            "r": 2.0,
+            "color": [
+              0.401,
+              0.305,
+              0.16
+            ],
+            "s": 0.594,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 60.5,
+            "y": 70.2,
+            "r": 2.0,
+            "color": [
+              0.551,
+              0.421,
+              0.21
+            ],
+            "s": 0.685,
+            "dir": "up"
+          },
+          {
+            "x": 7.7,
+            "y": 74.7,
+            "r": 2.0,
+            "color": [
+              0.436,
+              0.332,
+              0.168
+            ],
+            "s": 0.615,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 34.0,
+            "y": 63.8,
+            "r": 4.5,
+            "color": [
+              0.778,
+              0.529,
+              0.236
+            ],
+            "s": 0.761,
+            "dir": "up"
+          },
+          {
+            "x": 32.6,
+            "y": 47.9,
+            "r": 3.9,
+            "color": [
+              0.533,
+              0.377,
+              0.2
+            ],
+            "s": 0.659,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 49.3,
+            "y": 55.7,
+            "r": 3.8,
+            "color": [
+              0.579,
+              0.413,
+              0.227
+            ],
+            "s": 0.686,
+            "dir": "up"
+          },
+          {
+            "x": 15.6,
+            "y": 60.4,
+            "r": 3.3,
+            "color": [
+              0.608,
+              0.433,
+              0.233
+            ],
+            "s": 0.702,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.0,
+            "y": 52.6,
+            "r": 2.0,
+            "color": [
+              0.623,
+              0.441,
+              0.245
+            ],
+            "s": 0.711,
+            "dir": "up"
+          },
+          {
+            "x": 29.2,
+            "y": 76.0,
+            "r": 2.0,
+            "color": [
+              0.593,
+              0.418,
+              0.232
+            ],
+            "s": 0.695,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    }
+  ],
+  "emissive_tiles": 11,
+  "generated_at": "2026-07-06T17:54:28+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonize_refs": [
+      "light_sand",
+      "saturated_grass"
+    ],
+    "harmonized": 2,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

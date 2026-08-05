@@ -1,0 +1,31 @@
+{
+  "id": "default_girl",
+  "version": 13,
+  "pixellab_character_id": "d3581979-61e9-4a69-9bb9-229e04eb73d2",
+  "description": "A young female adventurer at the very start of her journey, before she has found any gear, weapons or armor \u2014 this is the bare starting character, exactly how she looks before any equipment is picked up, stripped down to only the base layer worn beneath armor. Extremely tough, self-assured and powerfully confident, with a fierce, determined expression and a commanding, unshakable posture. Sharp intense eyes, dark brown hair, and a lean, athletic, toned build that shows real strength and agility. Her stance is grounded, strong and self-assured \u2014 shoulders back, chin level, radiating quiet badass energy. She is completely unequipped and undressed, stripped down to ONLY a simple plain two-piece cloth undergarment \u2014 a plain cloth band/wrap top and simple briefs, like a minimal bikini base layer \u2014 muted and understated, strictly in browns, blacks, greys and off-white, nothing colorful. Nothing else at all: no shirt, no tunic, no trousers, no shorts, no dress, no costume. She has NO gear of any kind: no armor, no jacket, no shoulder guard, no cloak, no utility belt, no weapon, no sword, no dagger, no bags or pouches \u2014 completely unequipped. Her hands are completely bare \u2014 absolutely no gloves, no wraps, no bracers, nothing on the hands or wrists. Her feet are completely bare \u2014 barefoot, no shoes, no boots, no sandals, no socks, no wraps, nothing on the feet or ankles. She still looks cool, memorable, capable and genuinely badass through her fierce determined face, dark brown hair and commanding posture alone. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, restrained muted earth-tone palette, full-body character, single centered figure, transparent background.",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "size": [
+    112,
+    112
+  ],
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 1923704594,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
+}

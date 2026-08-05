@@ -1,0 +1,117 @@
+{
+  "manifest_version": 1,
+  "id": "thunder_rumble",
+  "name": "Thunder Rumble",
+  "category": "ambience",
+  "description": "a deep rolling thunder rumble",
+  "feel": "ominous, powerful",
+  "tags": [
+    "thunder",
+    "storm",
+    "rumble",
+    "weather",
+    "sky"
+  ],
+  "usage": "Play on sheet-lightning flashes (games-ambient) / storm events; sync the boom to the flash via sync_points.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "mix_gain_db": -20,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -1.0,
+      1.0
+    ],
+    "gain_jitter_db": [
+      -2.0,
+      2.0
+    ],
+    "start_jitter_ms": [
+      0,
+      15
+    ]
+  },
+  "quality": "aaa",
+  "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 193149,
+    "duration_seconds": 4.024,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
+        "bytes": 386342,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/thunder_rumble/thunder_rumble__take01.m4a",
+        "bytes": 66908,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/thunder_rumble/thunder_rumble__take01.ogg",
+        "bytes": 45039,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  },
+  "takes": [
+    "ambience/thunder_rumble/thunder_rumble__take01.wav",
+    "ambience/thunder_rumble/thunder_rumble__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "A distant deep rolling thunder rumble building to a low powerful boom then fading, cinematic sky storm, no rain, no music. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "music": {
+    "tonal": false,
+    "root_midi": null,
+    "note": null,
+    "fundamental_hz": null,
+    "cents_off": null,
+    "pitch_confidence": 0.096,
+    "max_shift_semitones": 0,
+    "scale_snap_replaces_jitter": false,
+    "tonality": "atonal",
+    "spectral_flatness": 0.003
+  },
+  "envelope": {
+    "duration_ms": 4023.9,
+    "onset_ms": 1.6,
+    "peak_ms": 870.4,
+    "attack_ms": 868.8,
+    "peak_dbfs": -1.0,
+    "rms": 0.1407,
+    "crest": 6.3
+  },
+  "sync_points": [
+    {
+      "t_ms": 870.4,
+      "name": "transient",
+      "note": "main attack \u2014 measured; safe sync/trigger point"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "dark_grain_soulstone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "bark",
+  "rarity": "uncommon",
+  "value": 42,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Woodgrain runs black through it, all a felled Sprigling leaves. It hardens armor and hands blows back to the giver.",
+  "sprite": "items/dark_grain_soulstone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "2ecff4be-1af0-48a4-9ead-cd59b6f56912",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:28:10.536555+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:21+00:00",
+  "soul": {
+    "element": "bark",
+    "power": "+8 armor and 5% of damage taken is reflected to the attacker",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

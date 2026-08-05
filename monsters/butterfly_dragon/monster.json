@@ -1,0 +1,657 @@
+{
+  "id": "butterfly_dragon",
+  "name": "Emberwing",
+  "lore": "No bigger than a lantern, it drifts on wings too gaudy for a dragon \u2014 then breathes fire that shames its size.",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "adc65dc6-1e76-44ff-80b7-8e086379384d",
+    "url": "https://www.pixellab.ai/create-object/adc65dc6-1e76-44ff-80b7-8e086379384d",
+    "prompt": "A tiny dragon with oversized butterfly wings.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 121,
+    "height": 97
+  },
+  "native_size": {
+    "width": 97,
+    "height": 97
+  },
+  "pad": {
+    "x": 12,
+    "y": 0
+  },
+  "sprite": "butterfly_dragon/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "butterfly_dragon/rotations/south.webp",
+    "west": "butterfly_dragon/rotations/west.webp",
+    "east": "butterfly_dragon/rotations/east.webp",
+    "north": "butterfly_dragon/rotations/north.webp",
+    "south-east": "butterfly_dragon/rotations/south-east.webp",
+    "south-west": "butterfly_dragon/rotations/south-west.webp",
+    "north-east": "butterfly_dragon/rotations/north-east.webp",
+    "north-west": "butterfly_dragon/rotations/north-west.webp"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "d0f07d40-dde9-4c38-bf06-9ee3545a2b2b",
+      "source_name": "Opens the mouth and make a fire burst attack",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/east/00.webp",
+            "butterfly_dragon/animations/attack/east/01.webp",
+            "butterfly_dragon/animations/attack/east/02.webp",
+            "butterfly_dragon/animations/attack/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:10 GMT",
+          "src_frames": 4,
+          "sub": "1f11ddc8-b1b4-4131-b60b-ceb86d3e3a01"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__north.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/north/00.webp",
+            "butterfly_dragon/animations/attack/north/01.webp",
+            "butterfly_dragon/animations/attack/north/02.webp",
+            "butterfly_dragon/animations/attack/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:11 GMT",
+          "src_frames": 4,
+          "sub": "3ff91f48-1e54-48ed-8d3c-baf0925be47e"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__north-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/north-east/00.webp",
+            "butterfly_dragon/animations/attack/north-east/01.webp",
+            "butterfly_dragon/animations/attack/north-east/02.webp",
+            "butterfly_dragon/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:13 GMT",
+          "src_frames": 4,
+          "sub": "cd751ffb-d7bc-4dfc-b8a8-0aae7e1c2f2a"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__north-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/north-west/00.webp",
+            "butterfly_dragon/animations/attack/north-west/01.webp",
+            "butterfly_dragon/animations/attack/north-west/02.webp",
+            "butterfly_dragon/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:14 GMT",
+          "src_frames": 4,
+          "sub": "f99fb477-7af4-43f2-b6e7-615d362a838b"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__south.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/south/00.webp",
+            "butterfly_dragon/animations/attack/south/01.webp",
+            "butterfly_dragon/animations/attack/south/02.webp",
+            "butterfly_dragon/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:16 GMT",
+          "src_frames": 4,
+          "sub": "48e8aa69-c812-4647-8a78-a599a5f6b0cd"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__south-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/south-east/00.webp",
+            "butterfly_dragon/animations/attack/south-east/01.webp",
+            "butterfly_dragon/animations/attack/south-east/02.webp",
+            "butterfly_dragon/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:17 GMT",
+          "src_frames": 4,
+          "sub": "6fa29165-631e-43c7-bd3d-fe67cbb78ec8"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__south-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/south-west/00.webp",
+            "butterfly_dragon/animations/attack/south-west/01.webp",
+            "butterfly_dragon/animations/attack/south-west/02.webp",
+            "butterfly_dragon/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:18 GMT",
+          "src_frames": 4,
+          "sub": "7e7557ed-a55f-4b71-9d30-c9594ee5e8fa"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/attack__west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/attack/west/00.webp",
+            "butterfly_dragon/animations/attack/west/01.webp",
+            "butterfly_dragon/animations/attack/west/02.webp",
+            "butterfly_dragon/animations/attack/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:19 GMT",
+          "src_frames": 4,
+          "sub": "72067a0f-bcf8-4c30-9e5e-e374ec52723c"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "02d8b2c1-b8d3-4fa4-8913-050bf733387c",
+      "source_name": "Flying hovering jump",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/east/00.webp",
+            "butterfly_dragon/animations/walk/east/01.webp",
+            "butterfly_dragon/animations/walk/east/02.webp",
+            "butterfly_dragon/animations/walk/east/03.webp",
+            "butterfly_dragon/animations/walk/east/04.webp",
+            "butterfly_dragon/animations/walk/east/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:21 GMT",
+          "src_frames": 6,
+          "sub": "959352b6-0b56-4585-9bfd-1551e849cc5f"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__north.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/north/00.webp",
+            "butterfly_dragon/animations/walk/north/01.webp",
+            "butterfly_dragon/animations/walk/north/02.webp",
+            "butterfly_dragon/animations/walk/north/03.webp",
+            "butterfly_dragon/animations/walk/north/04.webp",
+            "butterfly_dragon/animations/walk/north/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:22 GMT",
+          "src_frames": 6,
+          "sub": "fd722c78-b51b-4ba6-b51c-fdb90b1d7d0f"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__north-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/north-east/00.webp",
+            "butterfly_dragon/animations/walk/north-east/01.webp",
+            "butterfly_dragon/animations/walk/north-east/02.webp",
+            "butterfly_dragon/animations/walk/north-east/03.webp",
+            "butterfly_dragon/animations/walk/north-east/04.webp",
+            "butterfly_dragon/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:23 GMT",
+          "src_frames": 6,
+          "sub": "d42c873f-d3da-4642-895c-4253496941e3"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__north-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/north-west/00.webp",
+            "butterfly_dragon/animations/walk/north-west/01.webp",
+            "butterfly_dragon/animations/walk/north-west/02.webp",
+            "butterfly_dragon/animations/walk/north-west/03.webp",
+            "butterfly_dragon/animations/walk/north-west/04.webp",
+            "butterfly_dragon/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:25 GMT",
+          "src_frames": 6,
+          "sub": "552d48da-0c8f-402f-a059-0d1b57ae266c"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__south.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/south/00.webp",
+            "butterfly_dragon/animations/walk/south/01.webp",
+            "butterfly_dragon/animations/walk/south/02.webp",
+            "butterfly_dragon/animations/walk/south/03.webp",
+            "butterfly_dragon/animations/walk/south/04.webp",
+            "butterfly_dragon/animations/walk/south/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:26 GMT",
+          "src_frames": 6,
+          "sub": "df4bf6c0-1ec6-4ccb-8e29-6a8975c647a9"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__south-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/south-east/00.webp",
+            "butterfly_dragon/animations/walk/south-east/01.webp",
+            "butterfly_dragon/animations/walk/south-east/02.webp",
+            "butterfly_dragon/animations/walk/south-east/03.webp",
+            "butterfly_dragon/animations/walk/south-east/04.webp",
+            "butterfly_dragon/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:27 GMT",
+          "src_frames": 6,
+          "sub": "9b74274a-14d0-4662-8d1f-20ddc5b978b8"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__south-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/south-west/00.webp",
+            "butterfly_dragon/animations/walk/south-west/01.webp",
+            "butterfly_dragon/animations/walk/south-west/02.webp",
+            "butterfly_dragon/animations/walk/south-west/03.webp",
+            "butterfly_dragon/animations/walk/south-west/04.webp",
+            "butterfly_dragon/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:28 GMT",
+          "src_frames": 6,
+          "sub": "1c686b89-4073-4128-b47c-87ec00570ae0"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "butterfly_dragon/animations/walk__west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/walk/west/00.webp",
+            "butterfly_dragon/animations/walk/west/01.webp",
+            "butterfly_dragon/animations/walk/west/02.webp",
+            "butterfly_dragon/animations/walk/west/03.webp",
+            "butterfly_dragon/animations/walk/west/04.webp",
+            "butterfly_dragon/animations/walk/west/05.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:29 GMT",
+          "src_frames": 6,
+          "sub": "ec6895af-eec5-4f4e-acd7-d16349fa4276"
+        }
+      }
+    },
+    "die": {
+      "group_id": "af3bff79-cddf-4697-aef8-881ec4a2f26c",
+      "source_name": "Burns up in a flame and dissapers",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/east/00.webp",
+            "butterfly_dragon/animations/die/east/01.webp",
+            "butterfly_dragon/animations/die/east/02.webp",
+            "butterfly_dragon/animations/die/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:31 GMT",
+          "src_frames": 4,
+          "sub": "a77310a7-001e-4984-bc8c-fddab0d1e3dd"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__north.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/north/00.webp",
+            "butterfly_dragon/animations/die/north/01.webp",
+            "butterfly_dragon/animations/die/north/02.webp",
+            "butterfly_dragon/animations/die/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:31 GMT",
+          "src_frames": 4,
+          "sub": "c175e9bf-c5f7-4bdf-872a-5e7015f602c2"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__north-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/north-east/00.webp",
+            "butterfly_dragon/animations/die/north-east/01.webp",
+            "butterfly_dragon/animations/die/north-east/02.webp",
+            "butterfly_dragon/animations/die/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:32 GMT",
+          "src_frames": 4,
+          "sub": "7ecb2637-e53e-4325-b1b3-709757af2a44"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__north-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/north-west/00.webp",
+            "butterfly_dragon/animations/die/north-west/01.webp",
+            "butterfly_dragon/animations/die/north-west/02.webp",
+            "butterfly_dragon/animations/die/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:33 GMT",
+          "src_frames": 4,
+          "sub": "310882c1-afea-4060-b3ba-5ecf2547a732"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__south.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/south/00.webp",
+            "butterfly_dragon/animations/die/south/01.webp",
+            "butterfly_dragon/animations/die/south/02.webp",
+            "butterfly_dragon/animations/die/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:34 GMT",
+          "src_frames": 4,
+          "sub": "4e8013db-ba24-4bfc-81d6-ce9e085959c8"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__south-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/south-east/00.webp",
+            "butterfly_dragon/animations/die/south-east/01.webp",
+            "butterfly_dragon/animations/die/south-east/02.webp",
+            "butterfly_dragon/animations/die/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:35 GMT",
+          "src_frames": 4,
+          "sub": "9201c4c7-1a63-4064-983a-06e6d38febb5"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__south-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/south-west/00.webp",
+            "butterfly_dragon/animations/die/south-west/01.webp",
+            "butterfly_dragon/animations/die/south-west/02.webp",
+            "butterfly_dragon/animations/die/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:37 GMT",
+          "src_frames": 4,
+          "sub": "79f8f6cd-7f5e-4f6f-8031-fbc3b76da9d6"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/die__west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/die/west/00.webp",
+            "butterfly_dragon/animations/die/west/01.webp",
+            "butterfly_dragon/animations/die/west/02.webp",
+            "butterfly_dragon/animations/die/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:38 GMT",
+          "src_frames": 4,
+          "sub": "f97fabe7-77f6-4b07-b3e7-c5cf27024415"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "72a58ff5-2335-44c2-b412-1ceeb9ac9c95",
+      "source_name": "Angry idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/east/00.webp",
+            "butterfly_dragon/animations/angry/east/01.webp",
+            "butterfly_dragon/animations/angry/east/02.webp",
+            "butterfly_dragon/animations/angry/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:39 GMT",
+          "src_frames": 4,
+          "sub": "0abd5621-fb49-4328-a969-916b114e1dc2"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__north.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/north/00.webp",
+            "butterfly_dragon/animations/angry/north/01.webp",
+            "butterfly_dragon/animations/angry/north/02.webp",
+            "butterfly_dragon/animations/angry/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:40 GMT",
+          "src_frames": 4,
+          "sub": "1da6e322-d545-4d80-963f-3d42e1cef0c6"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__north-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/north-east/00.webp",
+            "butterfly_dragon/animations/angry/north-east/01.webp",
+            "butterfly_dragon/animations/angry/north-east/02.webp",
+            "butterfly_dragon/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:42 GMT",
+          "src_frames": 4,
+          "sub": "139f1a37-bf4f-4732-884c-5e38f939101a"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__north-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/north-west/00.webp",
+            "butterfly_dragon/animations/angry/north-west/01.webp",
+            "butterfly_dragon/animations/angry/north-west/02.webp",
+            "butterfly_dragon/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:43 GMT",
+          "src_frames": 4,
+          "sub": "f795d8a9-ce2e-4630-a4ea-28d44972fd6f"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__south.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/south/00.webp",
+            "butterfly_dragon/animations/angry/south/01.webp",
+            "butterfly_dragon/animations/angry/south/02.webp",
+            "butterfly_dragon/animations/angry/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:44 GMT",
+          "src_frames": 4,
+          "sub": "8cf41ef3-c3de-44ae-99a2-28b947dfd623"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__south-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/south-east/00.webp",
+            "butterfly_dragon/animations/angry/south-east/01.webp",
+            "butterfly_dragon/animations/angry/south-east/02.webp",
+            "butterfly_dragon/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:45 GMT",
+          "src_frames": 4,
+          "sub": "9c836146-6426-4b84-8d50-a031abb62037"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__south-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/south-west/00.webp",
+            "butterfly_dragon/animations/angry/south-west/01.webp",
+            "butterfly_dragon/animations/angry/south-west/02.webp",
+            "butterfly_dragon/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:46 GMT",
+          "src_frames": 4,
+          "sub": "762635a0-0884-4bb8-ac46-76f8d79e8fbe"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/angry__west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/angry/west/00.webp",
+            "butterfly_dragon/animations/angry/west/01.webp",
+            "butterfly_dragon/animations/angry/west/02.webp",
+            "butterfly_dragon/animations/angry/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:47 GMT",
+          "src_frames": 4,
+          "sub": "0ad00fc5-478d-4795-96c5-628ede4b91ef"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "9978e611-a2b6-4354-a66e-d0e97f562e1e",
+      "source_name": "Calm idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/east/00.webp",
+            "butterfly_dragon/animations/idle/east/01.webp",
+            "butterfly_dragon/animations/idle/east/02.webp",
+            "butterfly_dragon/animations/idle/east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:48 GMT",
+          "src_frames": 4,
+          "sub": "51f10d09-2346-4892-a199-0108916e63ae"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__north.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/north/00.webp",
+            "butterfly_dragon/animations/idle/north/01.webp",
+            "butterfly_dragon/animations/idle/north/02.webp",
+            "butterfly_dragon/animations/idle/north/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:49 GMT",
+          "src_frames": 4,
+          "sub": "bd93b287-0c7a-4cb9-baaf-3df7e574a04f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__north-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/north-east/00.webp",
+            "butterfly_dragon/animations/idle/north-east/01.webp",
+            "butterfly_dragon/animations/idle/north-east/02.webp",
+            "butterfly_dragon/animations/idle/north-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:50 GMT",
+          "src_frames": 4,
+          "sub": "57ad1f4f-a02a-41ec-8449-cdd233d9119c"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__north-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/north-west/00.webp",
+            "butterfly_dragon/animations/idle/north-west/01.webp",
+            "butterfly_dragon/animations/idle/north-west/02.webp",
+            "butterfly_dragon/animations/idle/north-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:51 GMT",
+          "src_frames": 4,
+          "sub": "e8146425-7e17-4cbb-b7d9-0d340c2d1a5e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__south.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/south/00.webp",
+            "butterfly_dragon/animations/idle/south/01.webp",
+            "butterfly_dragon/animations/idle/south/02.webp",
+            "butterfly_dragon/animations/idle/south/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:52 GMT",
+          "src_frames": 4,
+          "sub": "919bf68a-d488-49bb-8c2c-19a3d0fc67d1"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__south-east.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/south-east/00.webp",
+            "butterfly_dragon/animations/idle/south-east/01.webp",
+            "butterfly_dragon/animations/idle/south-east/02.webp",
+            "butterfly_dragon/animations/idle/south-east/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:53 GMT",
+          "src_frames": 4,
+          "sub": "1badd72c-4e12-4a3d-a97b-e4172fabf672"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__south-west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/south-west/00.webp",
+            "butterfly_dragon/animations/idle/south-west/01.webp",
+            "butterfly_dragon/animations/idle/south-west/02.webp",
+            "butterfly_dragon/animations/idle/south-west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:54 GMT",
+          "src_frames": 4,
+          "sub": "95056766-2731-4516-8398-43f61f567846"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "butterfly_dragon/animations/idle__west.webp",
+          "frame_paths": [
+            "butterfly_dragon/animations/idle/west/00.webp",
+            "butterfly_dragon/animations/idle/west/01.webp",
+            "butterfly_dragon/animations/idle/west/02.webp",
+            "butterfly_dragon/animations/idle/west/03.webp"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:50:55 GMT",
+          "src_frames": 4,
+          "sub": "34fb6f9a-4ac8-4fe7-b24d-e512a46007c9"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      97,
+      97
+    ],
+    "pad": [
+      12,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 0.917,
+        "strip_px": 172,
+        "ext": 10
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 0.917,
+        "strip_px": 172,
+        "ext": 10
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "green_crystal_shard",
+  "name": "Jade Shard",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "mineral",
+  "rarity": "uncommon",
+  "value": 34,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Teal-green crystal with a wicked point, prised out of a Mosscairn's seams. Holds an edge and a grudge.",
+  "sprite": "items/green_crystal_shard/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "92c7dbcc-8591-4979-819d-78fd6484a39e",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:12:28.832801+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:25 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:25+00:00"
+}

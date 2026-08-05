@@ -1,13 +1,51 @@
-# Modular Pixel Character Factory
+# Pixel Art Factory
 
-An automated loop that generates **modular, game-ready pixel-art characters** in
-the style of *Grave Seasons* / Stardew Valley, using [PixelLab](https://pixellab.ai)
-as the drawing backend.
+Automated loops that generate **game-ready pixel art** in the style of *Grave
+Seasons* / Stardew Valley, using [PixelLab](https://pixellab.ai) as the drawing
+backend. This repo holds **all** graphics for the game, split into self-contained
+**domains** — each is its own directory with its own automated loop that
+generates art and pushes it to `main`.
 
-The repo explores **skeletons** — generation-parameter profiles (view, size,
-number of directions, frames/animation, style…) — so you can A/B several before
-committing to a winner. Each character has an **undressed base body** plus
-**outfits** ("dresses") — full clothing changes from swim trunks to godly armor.
+## Domains
+
+| Domain | What it makes | Docs |
+|---|---|---|
+| [`characters2/`](characters2/) | Modular characters (2nd gen) — base bodies + per-direction animations | see `characters2/` |
+| [`tiles2/`](tiles2/) | Tile/material library (2nd gen) — iso terrain + prop sheets | see `tiles2/` |
+| [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
+| [`objects/`](objects/) | Animated props / map objects | see `objects/` |
+| [`sounds/`](sounds/) | AAA game sound effects (UI, items, tools, movement, combat) — ElevenLabs SFX v2, lossless 48 kHz, mastered; needs `ELEVENLABS_API_KEY` | [`sounds/README.md`](sounds/README.md) |
+| [`music/`](music/) | Film-score-grade background music — ElevenLabs Music (`music_v1`); every track ships a sub-second `metadata.json` (sections, beat grid, onsets, loudness curve, key/scale for in-key SFX pitching) so the game can sync effects to the score; needs `ELEVENLABS_API_KEY` | [`music/README.md`](music/README.md) |
+| [`items/`](items/) | Items — everything tagged with an item type on PixelLab (`MISC`, `SOUL`, later `CONSUMABLE`/`SWORD`/`BOW`/`WAND`/`ARMOR`), mirrored one folder per item with game metadata (name, rarity, gold value, soul power) in `items/<id>/item.json` + a rolled-up `items/viewer_data.json` | [`items/README.md`](items/README.md) |
+| [`lore/`](lore/) | The story — the "red line" backbone (Game-Master-facing), the chapters players read, and the individual lore of every monster, item, character and place, cross-linked; published as `lore/lore.json` | [`lore/README.md`](lore/README.md) |
+| [`monsters/`](monsters/) | Monsters/creatures — everything tagged `MONSTER` on PixelLab (objects *and* characters), mirrored one folder per monster with canonical idle/walk/angry/attack/die states (`monsters/animation_map.json`) + a review gallery | [`monsters/README.md`](monsters/README.md) |
+
+Each domain is **independent**: its own config, pipeline, generated art and
+viewer, all inside its directory (the pipelines touch disjoint paths, so their
+concurrent pushes to `main` rebase cleanly). Shared repo-level files are just
+`README.md`, `CLAUDE.md`, `requirements.txt`, `.gitignore`, and a gitignored
+`.env`. See [`CLAUDE.md`](CLAUDE.md) for the multi-domain layout.
+
+All domains share the same conventions: a [PixelLab](https://pixellab.ai)
+backend keyed by `PIXELLAB_API_KEY` (kept in a gitignored `.env`, **never
+committed**), fully **resumable** loops that derive the next unit from the
+filesystem, budget-awareness via `/balance`, one commit + push per unit, and a
+phone-friendly `index.html` viewer.
+
+---
+
+# Characters domain
+
+> HISTORICAL: the section below described the retired first-generation
+> `characters/` domain (deleted 2026-07-14 with `maps/` and `games/` when the
+> project committed to the 2nd-generation pipeline — see `games2/` and the
+> `*2` domains).
+
+An automated loop that generates **modular, game-ready pixel-art characters**.
+It explores **skeletons** — generation-parameter profiles (view, size, number of
+directions, frames/animation, style…) — so you can A/B several before committing
+to a winner. Each character has an **undressed base body** plus **outfits**
+("dresses") — full clothing changes from swim trunks to godly armor.
 
 ## How the loop works
 

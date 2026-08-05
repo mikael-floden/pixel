@@ -1,0 +1,103 @@
+{
+ "_note": "Per-character swim waterline (shoulder line) hand-specified by the maintainer. build-manifest.mjs uses these when present, else auto-detects (shoulderLine). uid -> dir -> {lx,ly,rx,ry} normalized frame coords.",
+ "default_girl": {
+  "south": {
+   "lx": 0.391,
+   "ly": 0.437,
+   "rx": 0.5632,
+   "ry": 0.4453
+  },
+  "south-east": {
+   "lx": 0.1947,
+   "ly": 0.4918,
+   "rx": 0.5271,
+   "ry": 0.4972
+  },
+  "east": {
+   "lx": 0.1885,
+   "ly": 0.4422,
+   "rx": 0.5478,
+   "ry": 0.4613
+  },
+  "north-east": {
+   "lx": 0.1828,
+   "ly": 0.4144,
+   "rx": 0.5421,
+   "ry": 0.4442
+  },
+  "north": {
+   "lx": 0.1831,
+   "ly": 0.4815,
+   "rx": 0.5862,
+   "ry": 0.4704
+  },
+  "north-west": {
+   "lx": 0.2202,
+   "ly": 0.5041,
+   "rx": 0.6016,
+   "ry": 0.4208
+  },
+  "west": {
+   "lx": 0.2282,
+   "ly": 0.37,
+   "rx": 0.5905,
+   "ry": 0.4709
+  },
+  "south-west": {
+   "lx": 0.238,
+   "ly": 0.3806,
+   "rx": 0.6366,
+   "ry": 0.537
+  }
+ },
+ "default_boy": {
+  "south": {
+   "lx": 0.3587,
+   "ly": 0.4188,
+   "rx": 0.5643,
+   "ry": 0.4212
+  },
+  "south-east": {
+   "lx": 0.2265,
+   "ly": 0.4399,
+   "rx": 0.5712,
+   "ry": 0.4283
+  },
+  "east": {
+   "lx": 0.285,
+   "ly": 0.3993,
+   "rx": 0.5994,
+   "ry": 0.4364
+  },
+  "north-east": {
+   "lx": 0.2423,
+   "ly": 0.4023,
+   "rx": 0.5673,
+   "ry": 0.4105
+  },
+  "north": {
+   "lx": 0.2288,
+   "ly": 0.428,
+   "rx": 0.5659,
+   "ry": 0.4086
+  },
+  "north-west": {
+   "lx": 0.2355,
+   "ly": 0.4758,
+   "rx": 0.6078,
+   "ry": 0.4098
+  },
+  "west": {
+   "lx": 0.2676,
+   "ly": 0.366,
+   "rx": 0.5835,
+   "ry": 0.4525
+  },
+  "south-west": {
+   "lx": 0.281,
+   "ly": 0.3663,
+   "rx": 0.65,
+   "ry": 0.4623
+  }
+ }
+}

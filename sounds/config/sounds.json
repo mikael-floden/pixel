@@ -1,0 +1,1156 @@
+{
+  "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
+  "engine": {
+    "default": "ai",
+    "procedural": {
+      "family": "sfxr",
+      "note": "REJECTED (v1). DrPetter's sfxr chiptune synth. Retained ONLY as an offline placeholder for pipeline testing (`--engine placeholder`). Its output is 8-bit-bleep quality and must never be shipped. See README post-mortem."
+    },
+    "ai": {
+      "provider": "elevenlabs",
+      "endpoint": "https://api.elevenlabs.io/v1/sound-generation",
+      "model_id": "eleven_text_to_sound_v2",
+      "output_format": "mp3_44100_192",
+      "prompt_influence": 0.5,
+      "api_key_env": "ELEVENLABS_API_KEY",
+      "note": "REQUIRED engine. ElevenLabs SFX v2 (2026 quality leader for realistic foley). Requests high-bitrate MP3 (this key tier delivers MP3, not lossless PCM); the factory decodes via ffmpeg and masters to a clean 48 kHz WAV. Needs ELEVENLABS_API_KEY.",
+      "prompt_directives": "High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready",
+      "prompt_directives_loop": "Seamless, evenly-textured environmental ambience bed; immersive and continuous with no sudden one-off events; steady throughout so it loops cleanly; no music, no melody, no speech, no discernible words; natural field-recording quality"
+    }
+  },
+  "audio": {
+    "sample_rate": 44100,
+    "peak_normalize": 0.9,
+    "delivery": {
+      "bitrate": "128k",
+      "formats": [
+        "m4a",
+        "ogg"
+      ],
+      "master": "wav",
+      "note": "Every asset ships .m4a (AAC, iOS/Safari) + .ogg (Vorbis, Chrome/Firefox/Android) via ffmpeg; WAV is the lossless master. See spec/AUDIO_FORMATS.md."
+    }
+  },
+  "budget": {
+    "min_ai_credits_remaining": 1000
+  },
+  "defaults": {
+    "loop": false,
+    "prompt_influence": 0.5,
+    "variants": 2,
+    "variation": {
+      "round_robin": true,
+      "no_immediate_repeat": true,
+      "pitch_jitter_semitones": [
+        -1.0,
+        1.0
+      ],
+      "gain_jitter_db": [
+        -2.0,
+        2.0
+      ],
+      "start_jitter_ms": [
+        0,
+        15
+      ]
+    }
+  },
+  "catalog": [
+    {
+      "id": "coin_pickup",
+      "name": "Coin Pickup",
+      "category": "ui",
+      "description": "a bright, short metallic jingle played when the player picks up a gold coin",
+      "tags": [
+        "coin",
+        "pickup",
+        "money",
+        "reward",
+        "collect"
+      ],
+      "preset": "pickupCoin",
+      "ai_prompt": "A single gold coin collected: a bright, clean metallic ting with a fast attack and a short shimmering ring-out, small and satisfying",
+      "duration_hint": 0.5,
+      "usage": "Play on gold_coin / gold_ingot pickup and shop sales.",
+      "feel": "rewarding"
+    },
+    {
+      "id": "gem_pickup",
+      "name": "Gem Pickup",
+      "category": "ui",
+      "description": "a sparkly ascending chime for collecting a gem or valuable",
+      "tags": [
+        "gem",
+        "ruby",
+        "pickup",
+        "sparkle",
+        "valuable"
+      ],
+      "preset": "pickupCoin",
+      "ai_prompt": "Picking up a precious gemstone: a crystalline glassy chime with a delicate sparkling upward shimmer, jewel-like and magical yet grounded",
+      "duration_hint": 0.6,
+      "usage": "Play on gem_ruby and other high-value pickups.",
+      "feel": "rewarding, mystical"
+    },
+    {
+      "id": "item_get",
+      "name": "Item Get",
+      "category": "ui",
+      "description": "a cheerful little fanfare for receiving a new item into the inventory",
+      "tags": [
+        "item",
+        "get",
+        "inventory",
+        "reward",
+        "fanfare"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "Receiving an important item: a warm, triumphant short orchestral-tinged flourish with a soft harp/bell sparkle, rewarding and premium",
+      "duration_hint": 0.9,
+      "usage": "Play when a tool or item enters the inventory.",
+      "feel": "rewarding, triumphant"
+    },
+    {
+      "id": "menu_select",
+      "name": "Menu Select",
+      "category": "ui",
+      "description": "a soft neutral blip when moving the cursor between menu options",
+      "tags": [
+        "menu",
+        "cursor",
+        "navigate",
+        "blip",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "A refined UI cursor move: a soft, tactile muted wooden-and-glass click, subtle and premium, very short",
+      "duration_hint": 0.12,
+      "usage": "Cursor movement in menus and dialogs.",
+      "feel": "clean, tactile"
+    },
+    {
+      "id": "menu_confirm",
+      "name": "Menu Confirm",
+      "category": "ui",
+      "description": "a bright positive blip confirming a menu choice",
+      "tags": [
+        "menu",
+        "confirm",
+        "accept",
+        "ok",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "A UI confirmation: a clean, positive soft chime with a gentle glassy ring, satisfying and modern",
+      "duration_hint": 0.15,
+      "usage": "Confirming/accepting a selection.",
+      "feel": "clean, positive"
+    },
+    {
+      "id": "menu_cancel",
+      "name": "Menu Cancel",
+      "category": "ui",
+      "description": "a low descending blip for backing out or cancelling",
+      "tags": [
+        "menu",
+        "cancel",
+        "back",
+        "close",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "A UI back/cancel: a soft muted low click with a short downward tone, understated and clean",
+      "duration_hint": 0.15,
+      "usage": "Cancel / back / close a menu.",
+      "feel": "clean, neutral"
+    },
+    {
+      "id": "error_buzz",
+      "name": "Error Buzz",
+      "category": "ui",
+      "description": "a short harsh buzz signalling an invalid or blocked action",
+      "tags": [
+        "error",
+        "invalid",
+        "denied",
+        "buzz",
+        "ui"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "An invalid-action cue: a soft, muted low double-thud denial, tasteful and non-harsh, not a harsh electronic buzz",
+      "duration_hint": 0.2,
+      "usage": "Invalid action, not enough money, blocked placement.",
+      "feel": "negative, non-harsh"
+    },
+    {
+      "id": "notification",
+      "name": "Notification",
+      "category": "ui",
+      "description": "a gentle two-note tone announcing a notification or new message",
+      "tags": [
+        "notify",
+        "message",
+        "alert",
+        "chat",
+        "ui"
+      ],
+      "preset": "tone",
+      "ai_prompt": "A gentle notification: a warm, rounded two-note bell tone with a soft tail, pleasant and unobtrusive",
+      "duration_hint": 0.4,
+      "usage": "New chat message / quest notification.",
+      "feel": "welcoming, gentle"
+    },
+    {
+      "id": "chest_open",
+      "name": "Chest Open",
+      "category": "item",
+      "description": "a rising creak-and-clunk as a wooden chest is opened",
+      "tags": [
+        "chest",
+        "open",
+        "container",
+        "treasure",
+        "creak"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "A heavy wooden treasure chest opening: creaking oak hinges, a solid iron latch clunk, wood settling, then a faint magical shimmer of treasure inside",
+      "duration_hint": 0.8,
+      "usage": "Opening wooden_chest / containers.",
+      "feel": "rewarding, anticipatory"
+    },
+    {
+      "id": "chest_close",
+      "name": "Chest Close",
+      "category": "item",
+      "description": "a short wooden thud as a chest lid closes",
+      "tags": [
+        "chest",
+        "close",
+        "container",
+        "thud",
+        "wood"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "A heavy wooden chest lid closing: a solid deep wooden thud with an iron latch click and a short low resonance",
+      "duration_hint": 0.3,
+      "usage": "Closing wooden_chest / containers.",
+      "feel": "tactile, solid"
+    },
+    {
+      "id": "key_unlock",
+      "name": "Key Unlock",
+      "category": "item",
+      "description": "a metallic click-clunk of a key turning in a lock",
+      "tags": [
+        "key",
+        "unlock",
+        "lock",
+        "door",
+        "metal"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "An iron key turning a lock: metallic tumblers clicking, the key scraping, a firm mechanism clunk as it unlocks, weighty and detailed",
+      "duration_hint": 0.4,
+      "usage": "Using iron_key / unlocking a door or chest.",
+      "feel": "tactile, mechanical"
+    },
+    {
+      "id": "drink_potion",
+      "name": "Drink Potion",
+      "category": "item",
+      "description": "a bubbly gulp-and-sparkle of drinking a potion",
+      "tags": [
+        "potion",
+        "drink",
+        "heal",
+        "quaff",
+        "bubbly"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "Drinking a potion: a cork pop, several liquid glugs of swallowing, then a soft magical restorative shimmer",
+      "duration_hint": 0.7,
+      "usage": "Consuming a potion / healing item.",
+      "feel": "restorative"
+    },
+    {
+      "id": "eat_food",
+      "name": "Eat Food",
+      "category": "item",
+      "description": "a soft munch-and-satisfied blip of eating food",
+      "tags": [
+        "food",
+        "eat",
+        "munch",
+        "restore",
+        "bite"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "Eating food: a couple of soft organic bites and chews with subtle mouth foley, then a small satisfied cue, natural and not cartoonish",
+      "duration_hint": 0.4,
+      "usage": "Eating a food item to restore energy.",
+      "feel": "organic, homely"
+    },
+    {
+      "id": "sword_swing",
+      "name": "Sword Swing",
+      "category": "tool",
+      "description": "a quick whoosh of a sword swung through the air",
+      "tags": [
+        "sword",
+        "swing",
+        "whoosh",
+        "attack",
+        "weapon"
+      ],
+      "preset": "laserShoot",
+      "ai_prompt": "A steel sword swung fast through the air: a sharp, weighty whoosh with an airy metallic edge, no impact",
+      "duration_hint": 0.3,
+      "usage": "Swinging the sword (miss / wind-up).",
+      "feel": "weighty, kinetic",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "sword_hit",
+      "name": "Sword Hit",
+      "category": "tool",
+      "description": "a sharp metallic clang of a sword striking a target",
+      "tags": [
+        "sword",
+        "hit",
+        "clang",
+        "impact",
+        "weapon"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "A steel sword striking metal armor: a bright, heavy metallic clang with a sharp transient and a short ringing tail, forceful impact",
+      "duration_hint": 0.25,
+      "usage": "Sword connecting with an enemy or object.",
+      "feel": "impactful, sharp",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "axe_chop",
+      "name": "Axe Chop",
+      "category": "tool",
+      "description": "a heavy wooden thock of an axe biting into a tree",
+      "tags": [
+        "axe",
+        "chop",
+        "wood",
+        "tree",
+        "impact"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "An axe biting deep into wood: a heavy, meaty wooden thock with splintering, solid and impactful",
+      "duration_hint": 0.3,
+      "usage": "Chopping oak_tree / pine_tree with the axe.",
+      "feel": "impactful, meaty",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "pickaxe_hit",
+      "name": "Pickaxe Hit",
+      "category": "tool",
+      "description": "a sharp stony crack of a pickaxe striking rock",
+      "tags": [
+        "pickaxe",
+        "mine",
+        "rock",
+        "stone",
+        "impact"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "A pickaxe striking solid rock: a sharp, hard stone impact with a bright metallic ping and small gravel debris scatter",
+      "duration_hint": 0.3,
+      "usage": "Mining rock / ore with the pickaxe.",
+      "feel": "impactful, stony",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "hoe_till",
+      "name": "Hoe Till",
+      "category": "tool",
+      "description": "a gritty dig of a hoe breaking soil",
+      "tags": [
+        "hoe",
+        "till",
+        "soil",
+        "dirt",
+        "farm"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "A hoe breaking soil: a gritty, earthy dig with clods of dirt crumbling and a short scrape, natural farm foley",
+      "duration_hint": 0.35,
+      "usage": "Tilling a soil tile with the hoe.",
+      "feel": "earthy, grounded"
+    },
+    {
+      "id": "watering_can",
+      "name": "Watering Can",
+      "category": "tool",
+      "description": "a soft splash of water poured from a watering can",
+      "tags": [
+        "water",
+        "watering",
+        "splash",
+        "farm",
+        "crops"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "Water poured from a watering can onto soil: a gentle, even sprinkling shower of droppets pattering on earth, soft and wet",
+      "duration_hint": 0.5,
+      "usage": "Watering crops with the watering can.",
+      "feel": "gentle, wet"
+    },
+    {
+      "id": "footstep_grass",
+      "name": "Footstep (Grass)",
+      "category": "movement",
+      "description": "a soft muffled step on grass",
+      "tags": [
+        "footstep",
+        "walk",
+        "grass",
+        "movement",
+        "soft"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.12,
+        "p_base_freq": 0.25,
+        "p_lpf_freq": 0.35,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "A single footstep on grass: a soft, muffled organic step with subtle blades rustling, close and natural",
+      "duration_hint": 0.12,
+      "usage": "Per-step while walking on grass/foliage tiles.",
+      "feel": "grounded, soft",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "footstep_stone",
+      "name": "Footstep (Stone)",
+      "category": "movement",
+      "description": "a crisp tap of a step on stone or pavement",
+      "tags": [
+        "footstep",
+        "walk",
+        "stone",
+        "movement",
+        "tap"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.1,
+        "p_base_freq": 0.4,
+        "p_hpf_freq": 0.15,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "A single footstep on stone pavement: a crisp, hard leather-on-stone tap with a tight natural room, close and clean",
+      "duration_hint": 0.1,
+      "usage": "Per-step while walking on stone/path tiles.",
+      "feel": "grounded, crisp",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "footstep_wood",
+      "name": "Footstep (Wood)",
+      "category": "movement",
+      "description": "a hollow knock of a step on a wooden floor",
+      "tags": [
+        "footstep",
+        "walk",
+        "wood",
+        "movement",
+        "hollow"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.13,
+        "p_base_freq": 0.3,
+        "p_lpf_freq": 0.5,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "A single footstep on a wooden floor: a hollow, resonant boot on timber creak-thud, close and warm",
+      "duration_hint": 0.12,
+      "usage": "Per-step while walking on wood/bridge tiles.",
+      "feel": "grounded, hollow",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "jump",
+      "name": "Jump",
+      "category": "movement",
+      "description": "a short upward blip as the character hops",
+      "tags": [
+        "jump",
+        "hop",
+        "movement",
+        "blip"
+      ],
+      "preset": "jump",
+      "ai_prompt": "A character hop/jump: a soft cloth-and-body effort with a light launch whoosh, grounded and organic, no cartoon boing",
+      "duration_hint": 0.25,
+      "usage": "Character jump / hop.",
+      "feel": "light, effortful"
+    },
+    {
+      "id": "splash",
+      "name": "Water Splash",
+      "category": "movement",
+      "description": "a wet splash of stepping or falling into water",
+      "tags": [
+        "water",
+        "splash",
+        "swim",
+        "wet",
+        "movement"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "A body/foot entering water: a rich, wet splash with droplet spray and a short bubbling settle, full-bodied",
+      "duration_hint": 0.5,
+      "usage": "Entering water / fishing bobber landing.",
+      "feel": "wet, full"
+    },
+    {
+      "id": "hit_hurt",
+      "name": "Take Damage",
+      "category": "combat",
+      "description": "a short pained grunt-blip when the player takes damage",
+      "tags": [
+        "damage",
+        "hurt",
+        "hit",
+        "pain",
+        "combat"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "A character taking a physical hit: a dull, meaty body impact thud with a subtle cloth/armor rustle, visceral but not gory",
+      "duration_hint": 0.25,
+      "usage": "Player / entity takes damage.",
+      "feel": "visceral",
+      "variants": 5,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "enemy_defeat",
+      "name": "Enemy Defeat",
+      "category": "combat",
+      "description": "a descending puff as an enemy is defeated and vanishes",
+      "tags": [
+        "enemy",
+        "defeat",
+        "die",
+        "poof",
+        "combat"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "An enemy defeated and collapsing: a heavy impact followed by a body/armor collapse and a short low descending magical dissipation",
+      "duration_hint": 0.5,
+      "usage": "Enemy defeated / despawns.",
+      "feel": "conclusive"
+    },
+    {
+      "id": "explosion",
+      "name": "Explosion",
+      "category": "combat",
+      "description": "a punchy boom for bombs and destructible objects",
+      "tags": [
+        "explosion",
+        "boom",
+        "bomb",
+        "blast",
+        "destroy"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "A cinematic explosion: a deep punchy sub-heavy blast with a sharp crack, debris scatter and a rumbling tail, powerful and full",
+      "duration_hint": 0.7,
+      "usage": "Bombs, barrels, destructibles breaking.",
+      "feel": "powerful, cinematic"
+    },
+    {
+      "id": "magic_cast",
+      "name": "Magic Cast",
+      "category": "combat",
+      "description": "a shimmering rising sweep of casting a spell",
+      "tags": [
+        "magic",
+        "spell",
+        "cast",
+        "shimmer",
+        "sweep"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "Casting a fantasy spell: a shimmering rising swell of magical energy with sparkling harmonics and a soft whoosh release, ethereal and rich",
+      "duration_hint": 0.7,
+      "usage": "Casting a spell / using magic.",
+      "feel": "mystical, shimmering"
+    },
+    {
+      "id": "level_up",
+      "name": "Level Up",
+      "category": "feedback",
+      "description": "a bright ascending fanfare for gaining a level",
+      "tags": [
+        "level",
+        "up",
+        "fanfare",
+        "progress",
+        "reward"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "A level-up reward: a bright, uplifting ascending magical arpeggio with warm bells and a shimmering sparkle, celebratory and premium",
+      "duration_hint": 1.0,
+      "usage": "Player gains a level / skill increases.",
+      "feel": "triumphant, uplifting"
+    },
+    {
+      "id": "quest_complete",
+      "name": "Quest Complete",
+      "category": "feedback",
+      "description": "a triumphant little jingle marking a completed quest",
+      "tags": [
+        "quest",
+        "complete",
+        "success",
+        "jingle",
+        "reward"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "A quest completed: a short warm triumphant orchestral flourish with a bell/harp resolve, satisfying and rewarding",
+      "duration_hint": 1.0,
+      "usage": "Completing a quest / objective.",
+      "feel": "triumphant, warm"
+    },
+    {
+      "id": "birds_day",
+      "name": "Birdsong (Day)",
+      "category": "ambience",
+      "description": "a gentle daytime woodland ambience",
+      "feel": "welcoming, peaceful",
+      "tags": [
+        "ambience",
+        "birds",
+        "day",
+        "nature",
+        "peaceful"
+      ],
+      "ai_prompt": "A gentle daytime woodland ambience: soft songbirds chirping and twittering at a distance, a faint warm breeze, calm and welcoming",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "crickets_night",
+      "name": "Crickets (Night)",
+      "category": "ambience",
+      "description": "a calm night-time countryside ambience",
+      "feel": "calm, safe",
+      "tags": [
+        "ambience",
+        "crickets",
+        "night",
+        "nature",
+        "calm"
+      ],
+      "ai_prompt": "A calm night-time countryside ambience: steady chirping crickets, a distant owl, faint gentle wind, tranquil and safe",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "wind",
+      "name": "Wind",
+      "category": "ambience",
+      "description": "a soft open-air wind ambience",
+      "feel": "open, airy",
+      "tags": [
+        "ambience",
+        "wind",
+        "air",
+        "outdoor"
+      ],
+      "ai_prompt": "A soft open-air wind ambience: gentle wind moving across grassland with subtle whistling, airy and spacious",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "category": "ambience",
+      "description": "a steady gentle rain ambience",
+      "feel": "cozy, calming",
+      "tags": [
+        "ambience",
+        "rain",
+        "weather",
+        "calm"
+      ],
+      "ai_prompt": "A steady gentle rain ambience: soft rainfall pattering on leaves and ground, no thunder, cozy and calming",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "ocean_waves",
+      "name": "Ocean Waves",
+      "category": "ambience",
+      "description": "a calm coastal ambience",
+      "feel": "soothing",
+      "tags": [
+        "ambience",
+        "ocean",
+        "waves",
+        "water",
+        "coast"
+      ],
+      "ai_prompt": "A calm coastal ambience: gentle ocean waves lapping and rolling onto a sandy shore, faint distant seabirds, soothing",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "river",
+      "name": "River",
+      "category": "ambience",
+      "description": "a flowing river ambience",
+      "feel": "fresh, lively",
+      "tags": [
+        "ambience",
+        "river",
+        "water",
+        "stream"
+      ],
+      "ai_prompt": "A flowing river ambience: steady babbling water over rocks with a gentle current, fresh and lively",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "fire_crackle",
+      "name": "Campfire",
+      "category": "ambience",
+      "description": "a cozy campfire ambience",
+      "feel": "cozy, warm, continuous",
+      "tags": [
+        "ambience",
+        "fire",
+        "campfire",
+        "warm"
+      ],
+      "ai_prompt": "A cozy campfire ambience: continuous dense crackling and hissing of a steady wood fire with frequent pops and embers, warm and full and enveloping, close-up, no gaps of silence",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "cave_drips",
+      "name": "Cave Drips",
+      "category": "ambience",
+      "description": "a dark cave ambience",
+      "feel": "mysterious, tense",
+      "tags": [
+        "ambience",
+        "cave",
+        "drips",
+        "echo",
+        "mystical"
+      ],
+      "ai_prompt": "A dark cave ambience: echoing water drips in a deep hollow reverberant space with a faint low rumble, mysterious and tense",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "town_murmur",
+      "name": "Town Murmur",
+      "category": "ambience",
+      "description": "a lively medieval town ambience",
+      "feel": "welcoming, lively",
+      "tags": [
+        "ambience",
+        "town",
+        "crowd",
+        "market",
+        "welcoming"
+      ],
+      "ai_prompt": "A lively medieval town ambience: distant indistinct chatter and footsteps and faint market bustle, warm and welcoming, no discernible words",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "category": "ambience",
+      "description": "a deep forest ambience",
+      "feel": "immersive, natural",
+      "tags": [
+        "ambience",
+        "forest",
+        "nature",
+        "trees"
+      ],
+      "ai_prompt": "A deep forest ambience: rustling leaves, distant birds and insects, gentle wind through the trees, natural and immersive",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "thunder_rumble",
+      "name": "Thunder Rumble",
+      "category": "ambience",
+      "loop": false,
+      "variants": 2,
+      "description": "a deep rolling thunder rumble",
+      "feel": "ominous, powerful",
+      "tags": [
+        "thunder",
+        "storm",
+        "rumble",
+        "weather",
+        "sky"
+      ],
+      "ai_prompt": "A distant deep rolling thunder rumble building to a low powerful boom then fading, cinematic sky storm, no rain, no music",
+      "duration_hint": 4.0,
+      "usage": "Play on sheet-lightning flashes (games-ambient) / storm events; sync the boom to the flash via sync_points."
+    },
+    {
+      "id": "footstep_sand",
+      "name": "Footstep (Sand)",
+      "category": "movement",
+      "loop": false,
+      "variants": 5,
+      "description": "a soft gritty step on sand",
+      "feel": "grounded, soft",
+      "tags": [
+        "footstep",
+        "walk",
+        "sand",
+        "beach",
+        "desert",
+        "movement"
+      ],
+      "ai_prompt": "A single soft gritty footstep on dry sand, subtle shifting grains, close and natural",
+      "duration_hint": 0.4,
+      "usage": "Per-step on sand/beach/desert tiles.",
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "footstep_snow",
+      "name": "Footstep (Snow)",
+      "category": "movement",
+      "loop": false,
+      "variants": 5,
+      "description": "a crunchy compressing step on snow",
+      "feel": "grounded, crisp",
+      "tags": [
+        "footstep",
+        "walk",
+        "snow",
+        "winter",
+        "cold",
+        "movement"
+      ],
+      "ai_prompt": "A single crunchy footstep compressing fresh snow, tight squeaky crunch, close and natural",
+      "duration_hint": 0.4,
+      "usage": "Per-step on snow tiles.",
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "swim_stroke",
+      "name": "Swim Stroke",
+      "category": "movement",
+      "loop": true,
+      "variants": 1,
+      "description": "a rhythmic water swimming loop of arm strokes",
+      "feel": "fluid, wet",
+      "tags": [
+        "swim",
+        "water",
+        "stroke",
+        "movement",
+        "loop"
+      ],
+      "ai_prompt": "Rhythmic swimming in water: steady arm strokes and splashes with gentle water movement, immersive and continuous",
+      "duration_hint": 6.0,
+      "usage": "Loop while the player swims; crossfade in/out on water enter/exit."
+    }
+  ],
+  "quality_target": "Best-in-class. Every shipped clip must be indistinguishable from professionally recorded/edited foley. No 8-bit, no bleeps, no synth artifacts.",
+  "mix": {
+    "note": "One-shots are peak-normalized to -1 dBFS; THIS sets the balance the game applies on top. gain_db is relative trim per category; LUFS are integrated-loudness bus targets.",
+    "bus_lufs": {
+      "dialogue": -12,
+      "ui": -12,
+      "sfx": -14,
+      "music": -20,
+      "ambience": -28
+    },
+    "category_gain_db": {
+      "ui": -3,
+      "item": -4,
+      "tool": -2,
+      "movement": -8,
+      "combat": 0,
+      "feedback": -1,
+      "ambience": -20
+    },
+    "ducking": {
+      "note": "Side-chain: dip music by amount for release_ms when these play.",
+      "music_duck_db": -5,
+      "release_ms": 300,
+      "triggers": [
+        "feedback",
+        "combat_stinger",
+        "dialogue"
+      ]
+    }
+  },
+  "roadmap": {
+    "note": "Backlog of missing sounds by priority (see spec/SOUND_DESIGN.md). Move an entry into `catalog` to have the loop generate it.",
+    "1_ambience_loops": [],
+    "2_movement_surfaces": [
+      "footstep_dirt",
+      "footstep_mud",
+      "footstep_water",
+      "land",
+      "dodge_roll"
+    ],
+    "3_combat_depth": [
+      "hit_flesh",
+      "hit_armor",
+      "hit_wood",
+      "hit_stone",
+      "block",
+      "parry",
+      "crit_hit",
+      "bow_shoot",
+      "arrow_impact",
+      "enemy_alert",
+      "enemy_attack_tell",
+      "death_1",
+      "death_2"
+    ],
+    "4_dialogue_blip": [
+      "dialogue_blip_generic",
+      "dialogue_blip_male",
+      "dialogue_blip_female",
+      "dialogue_blip_creature"
+    ],
+    "5_stingers": [
+      "stinger_discovery",
+      "stinger_danger",
+      "stinger_boss_appear",
+      "stinger_victory",
+      "stinger_game_over"
+    ],
+    "6_farming_tools": [
+      "fishing_cast",
+      "fishing_reel",
+      "fishing_nibble",
+      "fishing_catch",
+      "harvest",
+      "crop_ready",
+      "tree_fall",
+      "craft",
+      "forge"
+    ],
+    "7_world": [
+      "door_wood_open",
+      "door_wood_close",
+      "door_metal_open",
+      "door_metal_close",
+      "teleport",
+      "sleep",
+      "wake",
+      "rooster_dawn",
+      "thunder",
+      "save_chime"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Nangijala Wiki</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128214;</text></svg>">
+<link rel="stylesheet" href="wiki.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-title">Nangijala</div>
+      <div class="brand-sub">game wiki</div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <button id="admin-btn" class="ghost-btn" title="Game Master sign in">Game Master</button>
+    </div>
+  </aside>
+  <main id="main">
+    <header id="topbar">
+      <button id="menu-btn" class="ghost-btn" aria-label="Menu">☰</button>
+      <input id="search" type="search" placeholder="Search…" autocomplete="off">
+      <div id="build-stamp" class="muted"></div>
+    </header>
+    <div id="content"><div class="loading">Loading the world…</div></div>
+  </main>
+</div>
+<div id="menu-scrim"></div>
+<div id="savebar" class="hidden">
+  <span id="savebar-text"></span>
+  <button id="save-btn" class="primary-btn">Save</button>
+  <button id="export-btn" class="ghost-btn">Export</button>
+  <button id="discard-btn" class="ghost-btn">Discard</button>
+</div>
+<dialog id="login-dialog">
+  <form id="login-form" method="dialog">
+    <h3>Game Master sign in</h3>
+    <p class="muted">Signing in unlocks rating, approve/remove and live gameplay
+    tuning. Saves are committed by the game server — no credentials live in
+    this browser beyond your session.</p>
+    <input id="login-user" type="text" placeholder="username" autocomplete="username">
+    <input id="login-pass" type="password" placeholder="password" autocomplete="current-password">
+    <p id="login-error" class="login-error"></p>
+    <div class="dialog-row">
+      <button id="login-submit" value="signin" class="primary-btn" type="submit">Sign in</button>
+      <button value="cancel" class="ghost-btn" type="button" onclick="this.closest('dialog').close()">Close</button>
+    </div>
+  </form>
+</dialog>
+<audio id="shared-audio" preload="none"></audio>
+<script src="wiki.js"></script>
+</body>
+</html>

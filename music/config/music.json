@@ -1,0 +1,158 @@
+{
+  "engine": {
+    "provider": "elevenlabs",
+    "model_id": "music_v1",
+    "primary_format": "pcm_44100",
+    "fallback_format": "mp3_44100_128",
+    "global_negative_styles": [
+      "vocals", "sung lyrics", "singing", "spoken word",
+      "chiptune", "8-bit", "lo-fi", "distortion", "harsh percussion",
+      "EDM", "trap beat", "abrupt ending", "fade to silence mid-phrase"
+    ]
+  },
+  "budget": {
+    "min_ai_credits_remaining": 2000
+  },
+  "mastering": {
+    "peak_dbfs": -1.0,
+    "edge_fade_ms": 15
+  },
+  "analysis": {
+    "rms_hop_ms": 50
+  },
+  "catalog": [
+    {
+      "id": "nangijala_cherry_valley",
+      "name": "Nangijala — Cherry Valley",
+      "use": "Main overworld background bed: daytime exploring of the home valley (village, meadows, cherry orchards). The default track the player hears most, so it must be beautiful, calm, and never fatiguing.",
+      "feeling": ["home", "warmth", "gentle wonder", "quiet longing", "safety after a long journey"],
+      "narrative": "Nangijala is the land the Lionheart brothers wake up in — an afterlife valley of cherry blossoms and campfires. The music says: you have arrived somewhere kind, but it remembers the crossing; a thread of melancholy runs under the warmth.",
+      "references": ["Howard Shore — Concerning Hobbits (the Shire)", "Joe Hisaishi — pastoral cues", "gentle Nordic folk"],
+      "length_ms": 120000,
+      "bpm": 76,
+      "time_signature": "4/4",
+      "key": { "root": "D", "mode": "major" },
+      "loop": {
+        "loopable": true,
+        "recommended": { "crossfade_ms": 600 }
+      },
+      "layers": [
+        {
+          "id": "combat",
+          "name": "Combat — Drums of the Valley",
+          "description": "The same Cherry Valley theme at battle intensity: driving war drums and taiko join, a low brass ostinato runs under the melody, strings turn to urgent tremolo. Crossfade in when combat starts — the melody stays recognizably the same, so the world never 'changes song'.",
+          "intensity": 1.0,
+          "style_delta": [
+            "driving war drums and taiko hits keeping the same tempo",
+            "low brass ostinato under the same main melody",
+            "urgent tremolo strings",
+            "forceful battle energy, same key and structure"
+          ],
+          "global_delta": ["epic battle intensity", "percussion-forward cinematic mix"],
+          "drop_negative": ["percussion"]
+        }
+      ],
+      "prompt": "A warm, mythical orchestral fantasy theme for the overworld of a storybook adventure game, set in a peaceful afterlife valley of cherry blossoms, green meadows and campfire smoke. Cinematic but intimate, in the spirit of Howard Shore's Shire music and gentle Nordic folk. Structure: a solo wooden flute opens alone with a simple, singable melody over a soft string pad and sparse fingerpicked harp; the full theme then blooms in warm legato strings with the harp keeping flowing eighth-note arpeggios; a wide-eyed middle section lifts with a distant French horn countermelody and a soft wordless-choir-like pad, the emotional high point; then the theme settles back down to the quiet solo flute and strings for a gentle, unresolved, loop-friendly ending that can flow back into the beginning. A faint, soft frame-drum heartbeat keeps a clear gentle pulse throughout. Strictly instrumental. D major, 76 BPM, 4/4. High-fidelity, lush, spacious cinematic mix with soft dynamics and a touch of wistful melancholy under the warmth.",
+      "sections": [
+        {
+          "name": "awakening",
+          "description": "Solo wooden flute states the main melody over a soft string pad and sparse harp. The player's quietest moment — arrival, morning light.",
+          "sync_hints": [
+            "Safe entry point for scene fade-in; ambience (birds, wind) should sit above the sparse mix here.",
+            "Align slow environment events (petal falls, drifting smoke) to downbeats_s."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "valley_theme",
+          "description": "The theme blooms: warm legato strings carry the melody, harp keeps flowing eighth-note arpeggios, frame-drum heartbeat becomes audible.",
+          "sync_hints": [
+            "Good moment for the world to feel alive: NPC activity, animals, waterwheel motion synced to beats_s.",
+            "Footstep SFX pitched to sfx_safe_notes read as part of the arrangement here."
+          ],
+          "weight": 1.2
+        },
+        {
+          "name": "wonder",
+          "description": "Emotional high point: French horn countermelody and soft choir-like pad widen the sound. Vista moment.",
+          "sync_hints": [
+            "Best section for reveals (vista opens, title card, quest banner) — trigger on this section's first downbeat.",
+            "Use events.peaks inside this window for one-shot sparkle/light effects."
+          ],
+          "weight": 1.1
+        },
+        {
+          "name": "homecoming",
+          "description": "The theme returns, gentler — strings soften, harp thins out. Warmth with the melancholy thread most audible.",
+          "sync_hints": [
+            "Good window for quiet dialogue or journal UI — mix leaves headroom for voice/UI sounds."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "return_to_stillness",
+          "description": "Back to solo flute and pad, unresolved cadence; engineered to flow back into 'awakening' on loop.",
+          "sync_hints": [
+            "Loop seam lives here: crossfade loop.recommended.crossfade_ms from end_s into 0.0.",
+            "Avoid triggering big scripted moments in this window — the bed is at its thinnest."
+          ],
+          "weight": 0.7
+        }
+      ]
+    },
+    {
+      "id": "karmanjaka_riders_canyon",
+      "name": "Karmanjaka — Riders' Canyon",
+      "use": "Region theme for the wild canyon country beyond the river: cliffs, rope bridges, riders, outlaws. Plays while exploring/riding there. Melody-first by design — the player should hum this on the way to the fridge.",
+      "feeling": ["adventure", "swagger", "danger with a grin", "wind in your face", "wild freedom"],
+      "narrative": "Karmanjaka is the untamed land in the mountains — Katla's country, riders and rebels. Where Cherry Valley says 'you are home', this says 'ride'. Inspired by the Gerudo Valley school of area themes: a bold, unforgettable tune with flamenco fire, not background wallpaper. No melody is forbidden.",
+      "references": ["Koji Kondo — Gerudo Valley (Ocarina of Time)", "flamenco/Spanish guitar", "Morricone western trumpet"],
+      "length_ms": 120000,
+      "bpm": 126,
+      "time_signature": "4/4",
+      "key": { "root": "E", "mode": "phrygian_dominant" },
+      "loop": {
+        "loopable": true,
+        "recommended": { "crossfade_ms": 250 }
+      },
+      "prompt": "A bold, melody-first orchestral-flamenco region theme for a wild canyon land in an adventure game: virtuosic Spanish nylon-string guitar, rhythmic hand claps (palmas) and castanets, driving hand percussion, and a proud, singable trumpet melody with a dusty spaghetti-western edge. Structure: fiery solo guitar falsetas and claps set the groove; the trumpet then states a strong, memorable main theme any player could hum; a moodier half-time bridge lets the guitar take a lyrical solo over low strings; then the full ensemble returns with the main theme bigger, harmonized, with soaring strings, ending crisply so it loops straight back into the opening groove. Strictly instrumental. E Phrygian dominant (Spanish scale), 126 BPM, 4/4, tight rhythmic pulse throughout. High-fidelity, punchy, close and dry like a band in a canyon, confident and adventurous.",
+      "sections": [
+        {
+          "name": "canyon_groove",
+          "description": "Solo flamenco guitar falsetas over palmas and hand percussion — the groove and attitude arrive before the tune.",
+          "sync_hints": [
+            "Strong percussion onsets — sync hoofbeats/footsteps to beats_s and they read as part of the band.",
+            "Good entry point when crossing into the region."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "riders_theme",
+          "description": "The trumpet states the main melody — proud, singable, the heart of the track.",
+          "sync_hints": [
+            "Region title card / vista reveal on this section's first downbeat.",
+            "Peaks here are ideal for scripted stunts (bridge collapse, hawk flyover)."
+          ],
+          "weight": 1.2
+        },
+        {
+          "name": "canyon_shadows",
+          "description": "Half-time bridge: lyrical guitar solo over low strings — the danger under the swagger.",
+          "sync_hints": [
+            "Good window for dialogue or discovering something ominous; mix leaves headroom."
+          ],
+          "weight": 0.9
+        },
+        {
+          "name": "full_gallop",
+          "description": "Full ensemble reprise — theme harmonized, strings soaring, maximum ride energy; ends crisply for the loop seam.",
+          "sync_hints": [
+            "Highest intensity window — chase sequences and mounted sprints belong here.",
+            "Loop seam: crossfade quickly (250 ms) back into canyon_groove on a downbeat."
+          ],
+          "weight": 1.0
+        }
+      ]
+    }
+  ]
+}

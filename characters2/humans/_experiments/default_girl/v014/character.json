@@ -1,0 +1,31 @@
+{
+  "id": "default_girl",
+  "version": 14,
+  "pixellab_character_id": "b65c3449-983a-4475-b497-1305f23bab73",
+  "description": "A young female adventurer at the very start of her journey, before she has found any gear, weapons or armor \u2014 this is the bare starting character, exactly how she looks before any equipment is picked up, stripped down to only the base layer worn beneath armor. Extremely tough, self-assured and powerfully confident, with a fierce, determined expression and a commanding, unshakable posture. Sharp intense eyes, dark brown hair, and a lean, athletic, toned build that shows real strength and agility. Her stance is grounded, strong and self-assured \u2014 shoulders back, chin level, radiating quiet badass energy. She is completely unequipped and undressed, stripped down to ONLY a simple plain two-piece cloth undergarment \u2014 a plain cloth band/wrap top and simple briefs, like a minimal bikini base layer \u2014 muted and understated, colored ONLY in brown, black, grey and white. ABSOLUTELY NO BLUE anywhere on the character \u2014 no blue cloth, no denim, no navy, no teal, no cyan; no other colors at all, strictly brown, black, grey and white only. Nothing else at all: no shirt, no tunic, no trousers, no shorts, no dress, no costume. She has NO gear of any kind: no armor, no jacket, no shoulder guard, no cloak, no utility belt, no weapon, no sword, no dagger, no bags or pouches \u2014 completely unequipped. Her hands are completely bare \u2014 absolutely no gloves, no wraps, no bracers, nothing on the hands or wrists. Her feet are completely bare \u2014 barefoot, no shoes, no boots, no sandals, no socks, no wraps, nothing on the feet or ankles. She still looks cool, memorable, capable and genuinely badass through her fierce determined face, dark brown hair and commanding posture alone. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, restrained muted earth-tone palette, full-body character, single centered figure, transparent background.",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "size": [
+    112,
+    112
+  ],
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 1825436337,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
+}

@@ -5,9 +5,28 @@ run in parallel — each owns one top-level domain directory:
 
 | Domain | Directory | Owner agent |
 |--------|-----------|-------------|
-| Characters (base bodies, dresses, animations) | `characters/` | characters agent |
+| Characters, 2nd gen | `characters2/` | characters2 agent |
+| Tiles/materials, 2nd gen | `tiles2/` | tiles2 agent |
+| Worlds, 2nd gen | `maps2/` | maps2 agent |
 | Animated props / map objects | `objects/` | objects agent |
-| Tilesets / environments | `maps/` | maps agent |
+| Sounds | `sounds/` | sounds agent |
+| Music (background score) | `music/` | music agent |
+| Monsters/creatures | `monsters/` | monsters agent |
+| Items (loot, souls, gear) | `items/` | items agent |
+| Lore (the story, chapters, per-entity lore) | `lore/` | lore agent |
+| The game (consumer) | `games2/` | game agent |
+| The game's UI/HUD/menus | `games2/` (UI surfaces) | games-ui agent |
+
+`games2/` is the one domain shared by TWO agents (maintainer decision
+2026-07-17): the game agent (gameplay/netcode/world/server) and the games-ui
+agent (HUD, menus, screens, overlays). One-writer-per-file still holds — the
+per-file split inside `games2/` is documented in `games2/UI_AGENT.md`; the
+games-ui agent's board file is `coordination/games-ui.json`.
+
+RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` — the first
+generation (domains + game + the old emission registry/demo), deleted after
+the 2nd generation took over (paused workflows factory/maps/tiles.yml and
+the stale boards characters/maps/tiles.json removed too). History is in git.
 
 They share one repo, one `main` branch, and one PixelLab account. This document
 is the contract that lets them work at the same time without stepping on each
@@ -102,6 +121,38 @@ below its floor:
 Tune these to match priorities (the human decides). Every agent publishes
 `budget_remaining` in its status file, so before a large run you can see how much
 others have been consuming and back off if the pool is low.
+
+## Durable runner — do NOT babysit an in-session loop
+
+Hard-won lesson: a loop running inside your agent's session/container **dies on
+every container restart** (nothing in-container survives, not even a watchdog).
+Do not rely on it for continuous generation. Run your loop on an **external
+scheduler** that lives outside the container.
+
+**GitHub Actions (proven, recommended).** Each domain adds its **own** workflow
+`.github/workflows/<domain>.yml` (one writer per file — `.github/workflows/` is
+shared, but each file is owned by one domain). GitHub runs it on its servers on a
+schedule, surviving all container restarts. **Reference template:
+`.github/workflows/factory.yml` (characters)** — copy it and change the name +
+paths to your domain. Recipe:
+
+- Triggers: `schedule` (hourly cron, but pick an off-`:00` minute so all three
+  domains don't hit the API at once) + `workflow_dispatch` (manual/API trigger).
+- `permissions: contents: write` — so your loop's `git push` works with the
+  default `GITHUB_TOKEN`.
+- `concurrency: { group: <domain>-loop, cancel-in-progress: false }` — your own
+  passes never overlap. Different domains still run in parallel (disjoint paths
+  rebase cleanly), so give each a *distinct* group name.
+- Use the shared **`PIXELLAB_API_KEY`** repo secret (already set) via `env`.
+- Run `python <domain>/pipeline/loop.py --max-minutes 50 --min-balance <floor>`.
+
+Then trigger once from the repo's **Actions** tab (or `workflow_dispatch`) and
+you're durable — no human, no babysitting, survives restarts.
+
+Budget note: all domain workflows draw the **same** PixelLab pool and each running
+workflow consumes GitHub Actions minutes. Keep your `--min-balance` at your
+domain's floor (see the budget table above) so concurrent runs don't starve each
+other, and coordinate cadence via the board if the pool runs low.
 
 ## Unified viewer (optional)
 

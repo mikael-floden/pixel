@@ -1,0 +1,289 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_5_1910438589",
+  "ground_type": "clear_water",
+  "kind": "elevation",
+  "height": "base_x_5",
+  "levels": 5,
+  "face_px": 80,
+  "slot": 0,
+  "objects": [
+    "a towering dead tree rising from the water",
+    "a towering reed-and-driftwood spire",
+    "a colossal willow over the water",
+    "a towering rock pillar carved by a waterfall",
+    "a ruined temple pillar in the water",
+    "a tall stilted lighthouse",
+    "a towering mangrove tree",
+    "a tall sunken ship's mast with a crow's nest",
+    "a giant standing stone in the lake",
+    "a colossal rock islet crowned with a tree"
+  ],
+  "tile_id": "d09ba64f-6672-4fe7-99c7-eb372bf15f24",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.7346,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 5,
+    "face_px": 80
+  },
+  "count": 12,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 27.0,
+            "y": 72.9,
+            "r": 2.0,
+            "color": [
+              0.395,
+              0.192,
+              0.104
+            ],
+            "s": 0.517,
+            "dir": "up"
+          },
+          {
+            "x": 23.0,
+            "y": 46.2,
+            "r": 2.0,
+            "color": [
+              0.468,
+              0.245,
+              0.139
+            ],
+            "s": 0.572,
+            "dir": "up"
+          },
+          {
+            "x": 16.8,
+            "y": 49.8,
+            "r": 2.0,
+            "color": [
+              0.435,
+              0.226,
+              0.128
+            ],
+            "s": 0.552,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 28.0,
+            "y": 14.7,
+            "r": 2.4,
+            "color": [
+              0.3,
+              0.455,
+              0.215
+            ],
+            "s": 0.603,
+            "dir": "up"
+          },
+          {
+            "x": 29.0,
+            "y": 19.4,
+            "r": 2.0,
+            "color": [
+              0.516,
+              0.21,
+              0.11
+            ],
+            "s": 0.555,
+            "dir": "up"
+          },
+          {
+            "x": 12.6,
+            "y": 77.0,
+            "r": 2.0,
+            "color": [
+              0.381,
+              0.2,
+              0.114
+            ],
+            "s": 0.521,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 17.3,
+            "y": 92.6,
+            "r": 2.0,
+            "color": [
+              0.66,
+              0.208,
+              0.171
+            ],
+            "s": 0.588,
+            "dir": "up"
+          },
+          {
+            "x": 24.3,
+            "y": 101.5,
+            "r": 2.0,
+            "color": [
+              0.515,
+              0.208,
+              0.174
+            ],
+            "s": 0.562,
+            "dir": "sw"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    }
+  ],
+  "emissive_tiles": 3,
+  "generated_at": "2026-07-05T20:37:42+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonize_refs": [
+      "clear_water",
+      "saturated_grass"
+    ],
+    "harmonized": 2,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}

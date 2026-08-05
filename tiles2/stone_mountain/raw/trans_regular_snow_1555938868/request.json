@@ -1,0 +1,121 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "trans_regular_snow_1555938868",
+  "ground_type": "stone_mountain",
+  "kind": "transition",
+  "transition_to": "regular_snow",
+  "tile_id": "cc45b308-938b-4573-b00b-6df71d03e5cb",
+  "prompt": "isometric terrain tiles blending from rugged grey mountain rock and stone to clean fresh white snow, with a soft ragged natural border: 1) mostly grey mountain stone with snow entering from one corner 2) an even diagonal split from grey mountain stone to snow 3) mostly snow with a patch of grey mountain stone 4) a soft natural border between grey mountain stone and snow 5) snow scattered across grey mountain stone 6) a gradual blend from grey mountain stone into snow. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game terrain tile",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.5,
+    "tile_flat_top_px": 2
+  },
+  "seed": 1555938868,
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 64
+    }
+  ],
+  "generated_at": "2026-07-05T09:55:19+00:00",
+  "processed": true,
+  "processed_to": "transitions/regular_snow/trans_regular_snow_1555938868"
+}

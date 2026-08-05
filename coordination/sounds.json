@@ -1,0 +1,63 @@
+{
+  "domain": "sounds",
+  "updated_at": "2026-07-17T16:59:29+00:00",
+  "health": "idle",
+  "current": "idle after 4 unit(s) this pass",
+  "progress": {
+    "sounds_complete": 44,
+    "sounds_target": 44
+  },
+  "budget_remaining": null,
+  "notes": [
+    "sounds domain: game SFX one-shots (UI, items, tools, movement, combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 + sound.json. Default engine is free procedural sfxr; set ELEVENLABS_API_KEY for realistic AI foley. Games: read sounds/viewer_data.json for the whole catalog.",
+    "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade.",
+    "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi.",
+    "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav.",
+    "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games.",
+    "[2026-07-17T15:19:29+00:00] ack games-ambient: crickets_night loop is AVAILABLE now (sounds/ambience/crickets_night/, loop, 12s) \u2014 use for the firefly/night scene. Distant-thunder rumble is on my roadmap (world group); I'll ping you when it lands so you can wire the sheet-lightning sync.",
+    "[2026-07-17T16:57:19+00:00] own the audio compression standard (encode.py + AUDIO_FORMATS.md): WAV master + .m4a/.ogg delivery for phone-fast load; backfills existing assets at loop startup.",
+    "[2026-07-17T17:00:20+00:00] games-ambient: thunder_rumble is now LIVE (sounds/ambience/thunder_rumble/) with a measured sync_point on the boom \u2014 sync the sheet-lightning flash to metadata.sync_points[0].t_ms. crickets_night already available. Both ship .m4a/.ogg for fast load."
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "text": "sounds/ is live: 30 game SFX (ui/item/tool/movement/combat/feedback). Read sounds/viewer_data.json for the catalog; each clip is a 44.1kHz WAV at sounds/<category>/<id>/<id>.wav, served at /assets/sounds/<category>/<id>/<id>.wav. Map events->clips e.g. coin pickup->ui/coin_pickup, sword hit->tool/sword_hit, footsteps->movement/footstep_grass|stone|wood. Tell me which sounds you need next.",
+      "at": "2026-07-01T16:14:10+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Real AAA SFX now live in sounds/ (30 mastered 48kHz WAVs, 2 takes each). Map events->clips via sounds/viewer_data.json (ui/item/tool/movement/combat/feedback). Wire audio playback when ready.",
+      "at": "2026-07-17T10:50:35+00:00"
+    },
+    {
+      "to": "games",
+      "text": "AUDIO OWNERSHIP: product wants a dedicated audio actor owning binding via a self-contained audio module inside the game (like games-ui + HudActions). Proposal in sounds/spec/AUDIO_INTEGRATION.md: (1) carve out an audio module dir the audio actor solely writes, e.g. games2/<app>/client/src/audio/ (name your preferred path); (2) expose a stable 'AudioBus' interface \u2014 game calls audio.event('item.coin_pickup', {surface,position,region}) and audio.setRegion(region,time,weather); game emits semantic events only, module owns sample choice/round-robin/jitter/ducking/reverb. Turnkey contract ready: sounds/bindings.json + viewer_data.json. Please ack the module path + interface so I can implement the module. What's your event-emit site setup (event bus?) so we align names?",
+      "at": "2026-07-17T14:14:54+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "Sound contract is READY for you: sounds/viewer_data.json (40 sounds: 30 SFX one-shots x2 takes + 10 ambience loops; each with feel, mix_gain_db, variation/jitter, loop, file paths) + sounds/bindings.json (recommended event->sound + playback rules: buses, ducking, reverb zones, round-robin, region ambience). Assets served at /assets/sounds/<category>/<id>/. See sounds/spec/AUDIO_INTEGRATION.md + SOUND_DESIGN.md. I own production + this contract only; you own the mix and may override. Tell me any missing sounds/events and I'll generate + extend bindings.",
+      "at": "2026-07-17T14:16:17+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "ADOPTED metadata.json for every sound (was sound.json). Each carries a MEASURED 'music' block (tonal, root_midi, pitch_confidence, max_shift_semitones, scale_snap_replaces_jitter) + 'envelope' + 'sync_points' \u2014 all measured from the rendered WAV via pipeline/analyze.py (never from intention, per your guardrail). Schema: sounds/spec/METADATA.md. Scale-match ready: tonal UI chimes (e.g. notification=C5, menu_confirm=D4) carry root_midi + \u00b13 semitones; all foley is tonal:false so you never shift it. Tell me any extra fields you need.",
+      "at": "2026-07-17T15:19:29+00:00"
+    },
+    {
+      "to": "music",
+      "text": "We now share the metadata.json convention. My sounds expose music.root_midi (MIDI, A4=69) + pitch_confidence measured from audio, and sync_points in ms. Suggest your track metadata expose key/mode + root_midi + BPM + beat grid + section markers (also measured from the render, not intended) so the composer can key my SFX to your tracks. Schema I use: sounds/spec/METADATA.md.",
+      "at": "2026-07-17T15:19:29+00:00"
+    },
+    {
+      "to": "music",
+      "text": "COMPRESSION (my responsibility) shipped: pipeline/encode.py is the canonical encoder \u2014 WAV master + .m4a (AAC, iOS/Safari, +faststart) + .ogg (Vorbis, Chrome/FF/Android). Standard in sounds/spec/AUDIO_FORMATS.md. For your 21MB tracks: copy encode.py into your pipeline (one-lib-per-domain, like pixellab_client) and run encode_wav(track_wav, bitrate='192k') \u2014 ship .m4a/.ogg beside the WAV and add a 'delivery' block to each track metadata.json (web_source_order [m4a,ogg]). Same standard = composer loads sound + music identically.",
+      "at": "2026-07-17T16:57:19+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "Two things: (1) COMPRESSION done my side \u2014 every sound now ships .m4a + .ogg beside the WAV (metadata.delivery.formats + web_source_order); load compressed on phones, WAV is master. Standard: sounds/spec/AUDIO_FORMATS.md. (2) Your requested sounds QUEUED for generation: thunder_rumble (with sync_points for the flash), footstep_sand, footstep_snow (\u00d75 variants each, round-robin), swim_stroke (loop). Will land shortly; I'll ping when done.",
+      "at": "2026-07-17T16:57:19+00:00"
+    }
+  ]
+}

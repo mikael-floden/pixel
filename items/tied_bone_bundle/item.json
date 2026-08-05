@@ -1,0 +1,30 @@
+{
+  "id": "tied_bone_bundle",
+  "name": "Bone Bundle",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "bone",
+  "rarity": "common",
+  "value": 14,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Long pale bones tied off in a bundle. A Palehusk was carrying them, which raises questions about the string.",
+  "sprite": "items/tied_bone_bundle/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "34c24b95-0214-4084-8cdc-dc80d79942a6",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:11:53.666652+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:28 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:28+00:00"
+}

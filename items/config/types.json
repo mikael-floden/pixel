@@ -1,0 +1,79 @@
+{
+  "_comment": "The item TYPE contract for the whole game. Each type's `tag` is the PixelLab tag the maintainer puts on an object in the create-object UI — that tag is the ground truth for what an item IS, and pipeline/sync.py discovers items by exactly these tags. Adding a type here (with its tag) is all it takes for a newly tagged batch to start syncing. `rarities` is the shared rarity ladder every item's `rarity` field is drawn from. A type may declare `shared_name`: every item of that type carries that ONE display name (SOUL -> every stone is a \"Soulstone\"; they differ by their description, element and power, not by name), and sync enforces it instead of the usual unique-name rule. NOTHING here is generated: edit by hand.",
+  "types": {
+    "MISC": {
+      "tag": "MISC",
+      "label": "Junk",
+      "summary": "Loot dropped by monsters with no use but gold — body parts, hides, feathers, minerals, oddments. Sold at any shop.",
+      "stackable": true,
+      "max_stack": 99,
+      "equip_slot": null,
+      "sellable": true
+    },
+    "SOUL": {
+      "tag": "SOUL",
+      "label": "Soul Stone",
+      "summary": "A soul stone dropped by monsters — the card of one specific creature. Merged into a weapon or a piece of armor to grant it the stone's power; the stone is consumed by the merge. `one_per_monster` makes the binding STRICTLY 1-to-1: a stone is dropped by exactly one monster and a monster drops exactly one stone, so the wiki can show the creature on the stone and the stone on the creature. A stone with no monster yet is UNBOUND (it waits for one) — never a second stone on a monster that already has one.",
+      "shared_name": "Soulstone",
+      "stackable": true,
+      "max_stack": 20,
+      "equip_slot": null,
+      "sellable": true,
+      "merge_into": ["weapon", "armor"],
+      "drop_chance_band": [0.004, 0.035],
+      "one_per_monster": true
+    },
+    "CONSUMABLE": {
+      "tag": "CONSUMABLE",
+      "label": "Consumable",
+      "summary": "Used from the bag for an immediate effect — potions, elixirs, food. Consumed on use.",
+      "stackable": true,
+      "max_stack": 20,
+      "equip_slot": null,
+      "sellable": true
+    },
+    "SWORD": {
+      "tag": "SWORD",
+      "label": "Sword",
+      "summary": "Melee weapon. Equipped in the weapon slot; can carry merged soul powers.",
+      "stackable": false,
+      "max_stack": 1,
+      "equip_slot": "weapon",
+      "sellable": true
+    },
+    "BOW": {
+      "tag": "BOW",
+      "label": "Bow",
+      "summary": "Ranged weapon. Equipped in the weapon slot; can carry merged soul powers.",
+      "stackable": false,
+      "max_stack": 1,
+      "equip_slot": "weapon",
+      "sellable": true
+    },
+    "WAND": {
+      "tag": "WAND",
+      "label": "Wand",
+      "summary": "Magic weapon. Equipped in the weapon slot; can carry merged soul powers.",
+      "stackable": false,
+      "max_stack": 1,
+      "equip_slot": "weapon",
+      "sellable": true
+    },
+    "ARMOR": {
+      "tag": "ARMOR",
+      "label": "Armor",
+      "summary": "Worn protection. Equipped in the armor slot; can carry merged soul powers.",
+      "stackable": false,
+      "max_stack": 1,
+      "equip_slot": "armor",
+      "sellable": true
+    }
+  },
+  "rarities": {
+    "common": { "rank": 0, "color": "#c8ccd4", "sell_band": [3, 15] },
+    "uncommon": { "rank": 1, "color": "#5fd36a", "sell_band": [15, 45] },
+    "rare": { "rank": 2, "color": "#5aa9ff", "sell_band": [45, 120] },
+    "epic": { "rank": 3, "color": "#b06bff", "sell_band": [120, 300] },
+    "legendary": { "rank": 4, "color": "#ffb03a", "sell_band": [300, 900] }
+  }
+}

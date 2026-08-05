@@ -1,0 +1,30 @@
+{
+  "id": "black_glass_lump",
+  "name": "Obsidian",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "mineral",
+  "rarity": "uncommon",
+  "value": 40,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Fist-sized lump of glossy black glass, cooled out of some fire-thing's crust. Keen enough to shave with, so don't.",
+  "sprite": "items/black_glass_lump/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "6cc13275-f528-41e2-b2d5-aa569ac277e8",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:12:28.832801+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:24 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:23+00:00"
+}

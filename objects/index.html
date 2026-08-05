@@ -56,7 +56,15 @@ function openDetail(o) {
   b.innerHTML = "";
   b.appendChild(el("div", "name", o.name + ' <span class="badge">· ' + o.category + '</span>'));
   b.appendChild(el("div", "sub", o.description || ""));
-  b.appendChild(el("div", "sub", (o.size ? o.size.join("×") + "px · " : "") + (o.view || "") + " · " + (o.status || "")));
+  b.appendChild(el("div", "sub", (o.size ? o.size.join("×") + "px art · " : "") + (o.view || "") + " · " + (o.status || "")));
+
+  const pl = o.placement;
+  if (pl) {
+    b.appendChild(el("h3", null, "Scale in world (vs. character)"));
+    b.appendChild(el("div", "sub", "≈ " + pl.world_height_m + " m tall → render at " + pl.world_px_height +
+      "px (a character is " + pl.character_height_px + "px / " + pl.character_height_m + "m)."));
+    b.appendChild(scaleRow(o, pl));
+  }
 
   b.appendChild(el("h3", null, "Sprite"));
   const srow = el("div", "row");
@@ -74,6 +82,29 @@ function openDetail(o) {
   document.getElementById("detail").showModal();
 }
 
+// A to-scale comparison: object sprite (scaled to world_px_height) next to a
+// character-height silhouette, both standing on one ground line.
+function scaleRow(o, pl) {
+  const charPx = pl.character_height_px || 64, objPx = pl.world_px_height || charPx;
+  const factor = Math.min(3, 240 / Math.max(objPx, charPx));   // shared display scale
+  const wrap = el("div"); wrap.style.cssText =
+    "display:flex;align-items:flex-end;gap:24px;height:" + Math.ceil(Math.max(objPx, charPx) * factor + 20) +
+    "px;padding:8px 4px;border-bottom:1px solid var(--edge);";
+  // character silhouette
+  const ch = el("div"); ch.style.cssText =
+    "width:" + Math.round(charPx * factor * 0.35) + "px;height:" + Math.round(charPx * factor) +
+    "px;background:#3a3f4d;border-radius:40% 40% 20% 20%/30% 30% 10% 10%;opacity:.8;";
+  const chc = el("div", "cell"); chc.appendChild(ch);
+  chc.appendChild(el("div", "sub", "character"));
+  // object sprite at true relative size
+  const oc = el("div", "cell");
+  const img = el("img"); img.src = (o.animations[0] && o.animations[0].gif) || o.sprite;
+  img.style.cssText = "height:" + Math.round(objPx * factor) + "px;width:auto;object-fit:contain;image-rendering:pixelated;background:none;";
+  oc.appendChild(img); oc.appendChild(el("div", "sub", pl.world_px_height + "px"));
+  wrap.appendChild(chc); wrap.appendChild(oc);
+  return wrap;
+}
+
 function cell(src, label) {
   const c = el("div", "cell");
   const img = el("img"); img.src = src; img.loading = "lazy"; c.appendChild(img);
@@ -88,7 +119,7 @@ function render() {
     const img = el("img"); img.src = (o.animations[0] && o.animations[0].gif) || o.sprite; img.loading = "lazy";
     thumb.appendChild(img); card.appendChild(thumb);
     card.appendChild(el("div", "name", o.name));
-    card.appendChild(el("div", "sub", o.category));
+    card.appendChild(el("div", "sub", o.category + (o.placement ? " · " + o.placement.world_height_m + "m" : "")));
     const tags = el("div", "tags");
     if (o.rotation_files && Object.keys(o.rotation_files).length) tags.appendChild(el("span", "tag", Object.keys(o.rotation_files).length + "‑dir"));
     o.animations.forEach(a => tags.appendChild(el("span", "tag", "▶ " + a.key)));

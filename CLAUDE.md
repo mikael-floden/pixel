@@ -13,15 +13,69 @@ Each art domain is a **self-contained top-level directory** and is owned by its
 own agent/loop/Routine. Keep everything for a domain **inside its directory** —
 do not add domain-specific files to the repo root.
 
-- `characters/` — this agent's domain (undressed base characters + dresses +
-  animations). Everything lives here: `characters/config/factory.json`,
-  `characters/pipeline/*.py`, `characters/skeletons/` (generated art),
-  `characters/index.html` + `characters/viewer_data.json` (viewer),
-  `characters/spec/`.
+- `characters2/` — character art, 2nd generation (its own agent).
+- `tiles2/` — tile/material library, 2nd generation (its own agent).
+- `maps2/` — worlds, 2nd generation (its own agent; `worlds/<name>/world.json`).
 - `objects/` — animated props / map objects (a separate agent).
-- `maps/` — tilesets / environments (a separate agent).
+- `games2/` — the Nangijala game (consumer of the art domains; see
+  `games2/CLAUDE.md`).
+- `items/` — game items via PixelLab (its own agent; the item TYPE tags on
+  PixelLab's objects store — `MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`,
+  `WAND`, `ARMOR` — are the ground truth; one folder per item holding
+  `item.json` + `sprite.webp` (lossless WebP, 67% under PNG and pixel-identical),
+  rolled up into `items/viewer_data.json`; sync only, no generation loop). See
+  `items/README.md`.
+- `lore/` — the game's story (its own agent; no generation, no API). Owns the
+  **red line** (`lore/RED_LINE.md`, the GM-facing backbone everything hangs
+  off), player-facing **chapters**, and per-entity lore for every other
+  domain's entities. Writes only `lore/**`; publishes `lore/lore.json`, where
+  the owning domain's own text always wins and lore fills the gaps. Its build
+  refuses to run when a cross-reference has gone stale. See `lore/README.md`.
+- `monsters/` — pixel-art monsters via PixelLab (its own agent; the MONSTER
+  tag on PixelLab — objects AND characters stores — is the ground truth;
+  one folder per monster with canonical idle/walk/angry/attack/die states in
+  `monsters/animation_map.json`; no loop yet — runs on demand). See
+  `monsters/README.md`.
+- RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` (first-
+  generation domains + game, incl. the #emission demo built from the old
+  tiles registry) were deleted when the project committed to the 2nd
+  generation. Their history lives in git.
 - Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
-  `requirements.txt`, `.gitignore`, `.env` (gitignored).
+  `requirements.txt`, `.gitignore`, `.env` (gitignored), `.dockerignore`.
+
+**LOSSLESS WEBP IS THE IMAGE FORMAT FOR ALL GAME ART.** Project default since
+2026-07-31; every domain the game loads has migrated (characters2, monsters,
+tiles2, maps2, objects, items, wiki — zero PNGs between them). **Ship new art as
+WebP.** VP8L is mathematically lossless, so this is not a quality trade: it is
+the same pixels at ~33% of the bytes.
+
+- Convert with the shared, verified script: `python3 games2/scripts/to-webp.py
+  --write --replace <path>`. It re-decodes every file and refuses to replace one
+  that does not round-trip exactly.
+- **`lossless=True` and `exact=True` are BOTH non-default in Pillow.** Without
+  the first you silently get lossy VP8 and ringing on every hard pixel-art edge
+  — and lossy WILL move the foot anchors, shoulder waterlines and monster
+  contact points the game renders with. Without the second, libwebp rewrites
+  the RGB underneath fully-transparent pixels. If you write your own encoder
+  call, pass both.
+- A FULLY TRANSPARENT frame is a valid **28-byte** file (common at the end of
+  die/fade animations). Never write a "smaller than N bytes means corrupt"
+  guard — it is simply false for WebP.
+- If your domain ships a manifest, put the REAL extension in it; the game reads
+  it and never guesses. `games2/scripts/imagelib.mjs` reads both formats, so a
+  stale `.png` path in your JSON keeps working while you convert.
+- The deliberate PNG exceptions are PWA icons, hand-drawn build-source art,
+  the WebP gate's test fixtures, and docs images — see `games2/CLAUDE.md`.
+
+**`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an allowlist:
+a new top-level domain is invisible to the game image until it is added there,
+and a subtree can be excluded from the image while staying in the repo. If an
+asset 404s at `/assets/...` in the deployed game but exists on GitHub, THIS
+FILE IS THE FIRST PLACE TO LOOK — it is the only thing that can produce that
+symptom. Currently excluded from the image while remaining in the repo:
+`tiles2/*/raw` (the tiles2 generator's pre-postprocess sheets, 4,648 files /
+34 MB, served by nothing — see the comment there and the board messages to
+tiles2/maps2/wiki, 2026-07-31).
 
 The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
 cleanly. The only real cross-domain hazard is editing a *shared* file at once;

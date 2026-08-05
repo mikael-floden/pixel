@@ -1,0 +1,142 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_4_119153396",
+  "ground_type": "stone_mountain",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "transition_to": null,
+  "tile_id": "3688dc66-fb6c-4b94-abc0-a61ca6f09966",
+  "slot": 1,
+  "attempt": 0,
+  "objects": [
+    "a shattered stone archway",
+    "a jagged obsidian tower",
+    "a tall precarious cairn",
+    "a tall ore-veined rock column",
+    "a grey stone statue of a warrior",
+    "a tall standing menhir",
+    "a weathered obelisk",
+    "a ruined stone tower",
+    "a squat fortress watchtower",
+    "a weathered rock arch",
+    "a craggy cliff outcrop",
+    "a tall rugged rock spire"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a very tall four-level block of grey mountain stone with a flat diamond top surface and solid vertical sides, topped with a DIFFERENT object standing on it. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a shattered stone archway 2) a jagged obsidian tower 3) a tall precarious cairn 4) a tall ore-veined rock column 5) a grey stone statue of a warrior 6) a tall standing menhir 7) a weathered obelisk 8) a ruined stone tower 9) a squat fortress watchtower 10) a weathered rock arch 11) a craggy cliff outcrop 12) a tall rugged rock spire. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.4885,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "seed": 119153396,
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-05T14:18:30+00:00",
+  "processed": true,
+  "processed_to": "base_x_4/base_x_4_119153396"
+}

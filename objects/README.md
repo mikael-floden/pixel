@@ -1,5 +1,39 @@
 # Pixel Object Factory
 
+> ## STATUS 2026-07-31: DORMANT — one asset, no agent
+>
+> **There is no objects agent, and there has not been one for a long time.** The
+> maintainer will recreate it when there is time. Until then this domain is
+> caretaken by the games agent and it holds exactly **one** asset: the
+> **campfire**, which the game draws as the spawn bonfire.
+>
+> The other 16 objects (axe, barrel, clay_pot, fishing_rod, gem_ruby,
+> gold_coin, gold_ingot, hammer, iron_key, oak_tree, pickaxe, pine_tree,
+> shovel, sword, wooden_chest, wooden_crate) were **deleted**. Nothing
+> referenced them: no `maps2` world has ever pointed at `objects/` — verified
+> across all 10 `world.json` files, zero references — and the game loads
+> exactly one file from this domain (`campfire/animations/burn__south`). They
+> were 34 MB of art with no consumer. Their history is in git if the agent
+> returns and wants them back.
+>
+> `config/objects.json` was pinned to match reality: `targets.num_objects`
+> 75 → **1**, the catalog trimmed from 67 entries to the campfire, and
+> `procedural.kinds` emptied. **That pin is deliberate** — the loop's whole
+> job was to build *toward* 75, and the procedural generator invents new kinds
+> once the catalog runs out, so leaving either in place would have quietly
+> refilled the domain with props nothing asked for the moment anyone ran it.
+> If you are the recreated agent: raise those numbers on purpose, with the
+> maintainer, rather than treating the current values as a bug.
+>
+> **Art here is lossless WebP** (project default since 2026-07-31; 0.82 MB →
+> 0.28 MB, 34%, pixel-verified). ⚠️ **`pipeline/sync.py` still writes `.png`.**
+> It was not changed because it cannot be exercised without the PixelLab API,
+> and untested pipeline edits are worse than a documented gap. If you re-sync
+> this domain, run `python3 games2/scripts/to-webp.py --write --replace
+> objects/` afterwards and re-run `pipeline/viewer_build.py`, or teach `sync.py`
+> to save WebP directly — see `games2/CLAUDE.md` for the conversion rules
+> (lossless only; `exact=True`).
+
 An automated loop that generates **game-ready pixel-art objects** — props, tools
 and items (chest, gold coin, rock, bird, sword, shovel, tree, torch, potion…) —
 in the style of *Grave Seasons* / Stardew Valley, using
@@ -17,20 +51,26 @@ under `maps/` — each is owned by its own loop and this loop never touches them
 ## What is an "object"?
 
 An **object** is a single, self-contained sprite asset: a chest, a coin, a tree,
-a bird, a sword. **Each object is one folder** — `objects/<id>/` — and nothing
-else. If you see a folder under `objects/` with an `object.json` in it, that's an
-object; the only non-object folders are the tooling (`pipeline/`, `config/`,
-`spec/`).
+a bird, a sword. **Each object is one folder** — `objects/<id>/`. If you see a
+folder under `objects/` with an `object.json` in it, that's an object; the only
+non-object folders are the tooling (`pipeline/`, `config/`, `spec/`).
 
-Every object has:
+Every object is a **persistent PixelLab object** (created with
+`create-8-direction-object`), which means it also lives in your PixelLab
+**create-object** web tool — so you can open it and press **regenerate** if it
+looks bad, and [`sync.py`](#staying-in-sync-no-loose-pointers) pulls the new art
+back into the repo. Each object has:
 
-1. a **base sprite** — one transparent PNG, always;
-2. optional **rotations** — the same object seen from 4 or 8 directions;
-3. optional **animations** — short looping clips (coin spin, chest open, tree
-   sway, torch flicker, bird flap…), packaged as per-frame PNGs, a horizontal
-   **sprite-sheet strip**, and a preview **GIF**.
+1. **8 rotations** — always 8 directions (`rotations/<dir>.png`, `sprite.png` =
+   south);
+2. **3 animations** chosen to fit the object (chest → open/close/rattle, coin →
+   spin/flip/bounce, tree → sway/rustle/shake…), each generated across **all 8
+   directions** at **max frames (16)**, packaged as per-frame PNGs + a
+   **sprite-sheet strip** + a preview **GIF** per direction;
+3. a **type-appropriate size** (a coin is small, an oak is large) and a
+   **`placement`** that keeps it to scale next to a character.
 
-What an object gets is decided per object in [`config/objects.json`](config/objects.json).
+What each object gets is defined in [`config/objects.json`](config/objects.json).
 
 ---
 
@@ -105,17 +145,37 @@ art — just read the JSON and load the PNGs.
     }
   },
 
+  "placement": {                        // REALISM RULE — how big this is in the world
+    "world_height_m": 0.7,              // the object's real-world height (metres)
+    "world_px_height": 26,              // => render the sprite scaled to THIS pixel height
+    "character_height_px": 64,          // ...next to a character drawn 64px tall
+    "character_height_m": 1.7           // (so 64px == 1.7m; a coin ~8px, an oak ~226px)
+  },
+
   "status": "complete",                 // "in_progress" while the loop is still filling this object
   "generations_used": 5.0,
   "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)"
 }
 ```
 
+### Sizing objects in the world (important)
+
+Sprites are generated at whatever **art** resolution looks best (`size`), which is
+**not** how big the object is in the world. Use **`placement.world_px_height`** for
+that: render each sprite scaled so its on-screen height equals `world_px_height`,
+and draw characters at `placement.character_height_px` (64px). Then everything is
+to scale — a gold coin is ~8px beside a 64px character, an oak tree towers at
+~226px. This is a hard rule the loop enforces: every object carries a real
+`world_height_m` and the derived `world_px_height`, so nothing lands
+unrealistically sized. (Change the reference or an object's height in
+`config/objects.json → scale`, and the loop rewrites every manifest's `placement`
+on its next run, no re-generation.)
+
 ### How to load it
 
-- **Static prop** (rock, crate, coin): draw `sprite.png`. Every frame/rotation of
-  the object shares the `size` given in the manifest, so you can atlas-pack by
-  `size` with no surprises.
+- **Static prop** (rock, crate, coin): draw `sprite.png`, scaled to
+  `placement.world_px_height`. The object's frames/rotations all share the art
+  `size`, so you can atlas-pack by `size` with no surprises.
 - **Directional prop** (barrel, sign post): pick `rotations.files[direction]` for
   the facing you need. `south` is the same image as `sprite.png`.
 - **Animated prop** (chest, coin, torch, tree):
@@ -195,6 +255,29 @@ one `main` and **one PixelLab account**. Coordination follows
 - The loop respects a **shared-budget floor** (`budget.min_generations_remaining`,
   set to **2000** per the protocol) so it never drains the pool the characters
   and maps loops also draw from.
+
+## Staying in sync (no loose pointers)
+
+`pipeline/sync.py` keeps the repo and PixelLab consistent, and runs automatically
+at the start of every loop pass (zero generations). Unlike characters — which
+persist on PixelLab and are edited/synced there — **objects are generated
+statelessly and don't live on PixelLab** (`POST /v2/objects` → 405), so the repo
+is the source of truth. Sync therefore:
+
+1. **Prunes loose pointers** — any manifest/viewer reference to a file that no
+   longer exists is dropped; an object whose `sprite.png` is gone is removed
+   entirely, so the viewer can never point at a dead file.
+2. **Mirrors PixelLab-side deletions** — if an object the repo mirrored from the
+   PixelLab UI (tagged `pixellab_object_id`) is deleted there, its repo folder is
+   removed too. Generated objects (no such id) are never touched.
+3. **Imports UI-authored objects** — anything made in the PixelLab Object creator
+   is mirrored in (best-effort, with `If-Modified-Since` change detection like the
+   characters agent); anything it can't import is reported, not silently dropped.
+
+```bash
+python pipeline/sync.py            # reconcile + push
+python pipeline/sync.py --dry-run  # report only, change nothing
+```
 
 ## Notes / guardrails
 

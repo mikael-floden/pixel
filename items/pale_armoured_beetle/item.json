@@ -1,0 +1,31 @@
+{
+  "id": "pale_armoured_beetle",
+  "name": "Bone Beetle",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "insect",
+  "rarity": "common",
+  "value": 12,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one.",
+  "sprite": "items/pale_armoured_beetle/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "5c26815e-4c3f-4a99-afde-ef8d1ff09a03",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:07:05.104661+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:32 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:32+00:00",
+  "waiting_for": "an insect"
+}

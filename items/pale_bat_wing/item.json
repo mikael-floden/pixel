@@ -1,0 +1,31 @@
+{
+  "id": "pale_bat_wing",
+  "name": "Pale Wing",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "hide",
+  "rarity": "common",
+  "value": 10,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Tan membrane on pale finger bones, torn free mid-flight. The gaunt things that haunt the drifts fly on these.",
+  "sprite": "items/pale_bat_wing/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "40a6abf9-4e81-4f31-b8c5-b7c42be4ce76",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:12:28.832801+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:24+00:00",
+  "waiting_for": "a bat"
+}

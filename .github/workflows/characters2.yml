@@ -1,0 +1,59 @@
+name: characters2 sync
+
+# Mirrors the two DECIDED game heroes (humans/default_boy, humans/default_girl)
+# from PixelLab into the repo: base 8-direction model + every animation the user
+# adds in the PixelLab UI (and later outfits). PixelLab is the source of truth.
+# Cheap + idempotent: it only downloads assets whose source URL / animation group
+# changed, so a run with nothing new costs nothing and commits nothing.
+
+on:
+  # Scheduled auto-sync PAUSED at the user's request. Re-enable by uncommenting.
+  # Run manually via the Actions "Run workflow" button when you want a sync.
+  # schedule:
+  #   - cron: "*/30 * * * *"      # every 30 min — picks up newly-added animations
+  workflow_dispatch:
+    inputs:
+      names:
+        description: "Only sync these heroes (space-separated: default_boy default_girl). Empty = both."
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: characters2
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push (rebase-on-reject fetches what it
+          # needs). Full history cost ~minutes per run for nothing.
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Sync heroes from PixelLab
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          if [ -z "$PIXELLAB_API_KEY" ]; then
+            echo "::warning::PIXELLAB_API_KEY secret is not set. Skipping."
+            exit 0
+          fi
+          git config user.name "pixel-characters2-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python characters2/pipeline/sync.py ${{ github.event.inputs.names }}

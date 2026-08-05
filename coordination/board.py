@@ -89,6 +89,14 @@ def cmd_inbox(domain):
         print(f"- {src}: {b.get('health', '?')}, updated {b.get('updated_at', '?')}, "
               f"budget {b.get('budget_remaining')}{flag}")
         for r in b.get("requests", []):
+            # Some boards carry legacy free-form string requests ("To MAPS2 —
+            # ..."). Don't crash on them: surface a string to <domain> when it
+            # mentions the domain near the start, else leave it to the humans.
+            if isinstance(r, str):
+                if domain.lower() in r[:120].lower():
+                    requests_for_me += 1
+                    print(f"    >> REQUEST (free-form) from {src}: {r}")
+                continue
             if r.get("to") == domain:
                 requests_for_me += 1
                 print(f"    >> REQUEST from {src}: {r.get('text')}")

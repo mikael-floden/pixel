@@ -1,0 +1,31 @@
+{
+  "id": "green_herb_bundle",
+  "name": "Herb Bundle",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "plant",
+  "rarity": "common",
+  "value": 8,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Long green stalks tied into a sheaf, damp from the ditch some blob had been squatting in.",
+  "sprite": "items/green_herb_bundle/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "2bccefe3-70d4-409e-a879-d4aba9894c8a",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG",
+    "created_at": "2026-07-27T08:56:09.254868+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:42 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:42+00:00",
+  "waiting_for": "a gatherer with hands"
+}

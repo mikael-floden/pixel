@@ -1,0 +1,38 @@
+{
+  "id": "amethyst_rune_soulstone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "arcane",
+  "rarity": "epic",
+  "value": 275,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Violet facets around a gold rune, cut from an Emberwing. Hits land arcane, and spells come back to hand faster.",
+  "sprite": "items/amethyst_rune_soulstone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "d21bfc35-278f-448a-aad2-878ec549553b",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:28:10.536555+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:20+00:00",
+  "soul": {
+    "element": "arcane",
+    "power": "+20 arcane damage on hit and -10% spell cooldowns",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

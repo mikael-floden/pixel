@@ -1,0 +1,222 @@
+"""PixelLab API client for the TILES2 domain — isometric tile generation.
+
+tiles2 generates isometric terrain tiles via the async `create-tiles-pro`
+endpoint. POST returns {tile_id, background_job_id}; poll the job, then the
+completed job's `last_response.images` holds the tiles as RAW RGBA bytes (base64)
+with width/height (NOT PNG). `create_tiles` hides all that and returns decoded
+Pillow images.
+
+House format (tiles2 is a breaking change from tiles v1):
+    tile_type=isometric, tile_size=64, tile_view="high top-down",
+    tile_view_angle=28.0, tile_depth_ratio=0.50, tile_flat_top_px=2.
+There is deliberately NO outline (create-tiles-pro has no outline param; we ask
+for lineless in the prompt and remove any residual outline in post-process).
+
+Base URL https://api.pixellab.ai/v2, Bearer auth from PIXELLAB_API_KEY.
+Isolated per-domain copy (see repo CLAUDE.md / coordination/PROTOCOL.md).
+"""
+
+from __future__ import annotations
+
+import base64
+import io
+import os
+import time
+
+import numpy as np
+import requests
+from PIL import Image
+
+BASE_URL = "https://api.pixellab.ai/v2"
+API_KEY_ENV = "PIXELLAB_API_KEY"
+
+
+class PixelLabError(RuntimeError):
+    pass
+
+
+class BudgetExhausted(PixelLabError):
+    pass
+
+
+def _decode_tile(item):
+    """Decode one tiles-pro image item -> RGBA PIL. Items are raw rgba bytes with
+    width/height; fall back to PNG if the bytes happen to be encoded."""
+    raw = base64.b64decode(item["base64"] if isinstance(item, dict) else item)
+    w = item.get("width") if isinstance(item, dict) else None
+    h = item.get("height") if isinstance(item, dict) else None
+    try:
+        return Image.open(io.BytesIO(raw)).convert("RGBA")
+    except Exception:
+        if w and h and len(raw) == w * h * 4:
+            return Image.fromarray(np.frombuffer(raw, np.uint8).reshape(h, w, 4), "RGBA")
+        n = len(raw) // 4
+        s = int(n ** 0.5)
+        return Image.fromarray(np.frombuffer(raw, np.uint8)[:s * s * 4].reshape(s, s, 4), "RGBA")
+
+
+class PixelLabClient:
+    def __init__(self, api_key=None, base_url=BASE_URL, timeout=180):
+        self.api_key = api_key or os.environ.get(API_KEY_ENV)
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+        self._session = requests.Session()
+
+    def require_key(self):
+        if not self.api_key:
+            raise PixelLabError(
+                f"{API_KEY_ENV} is not set. Export your PixelLab key (gitignored .env).")
+
+    def _headers(self):
+        self.require_key()
+        return {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+
+    def _request(self, method, path, retries=5, max_429_wait=1200, **kw):
+        """429 handling is special: the account has a hard cap on CONCURRENT
+        background jobs (shared across domains), and abandoned/stalled jobs keep
+        occupying slots until they drain server-side (there is no cancel API). So
+        on 429 we do NOT count it against `retries` and burn the request — we poll
+        (every 30s) up to `max_429_wait` seconds for a slot to free, then give up.
+        A rejected 429 costs no generation, so waiting is free."""
+        url = f"{self.base_url}/{path.lstrip('/')}"
+        last = None
+        attempt = 0
+        wait_429_start = None
+        while True:
+            try:
+                r = self._session.request(method, url, headers=self._headers(),
+                                          timeout=self.timeout, **kw)
+            except requests.RequestException as e:
+                last = e
+                attempt += 1
+                if attempt >= retries:
+                    break
+                time.sleep(min(2 ** attempt, 30))
+                continue
+            if r.status_code == 429:
+                last = PixelLabError(f"{method} {path} -> 429: {r.text[:200]}")
+                now = time.monotonic()
+                if wait_429_start is None:
+                    wait_429_start = now
+                elif now - wait_429_start > max_429_wait:
+                    raise PixelLabError(
+                        f"{method} {path} -> 429 for >{max_429_wait}s (concurrent-job "
+                        f"cap not clearing): {r.text[:200]}")
+                time.sleep(30)
+                continue                       # does NOT consume the retry budget
+            if r.status_code in (500, 502, 503, 504):
+                last = PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:200]}")
+                attempt += 1
+                if attempt >= retries:
+                    break
+                time.sleep(min(2 ** attempt, 30))
+                continue
+            if r.status_code >= 400:
+                raise PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:300]}")
+            return r.json()
+        raise PixelLabError(f"{method} {path} failed after {retries} retries: {last}")
+
+    def _post(self, path, payload):
+        return self._request("POST", path, json=payload)
+
+    def _get(self, path):
+        return self._request("GET", path)
+
+    # -- budget --------------------------------------------------------------
+
+    def balance(self):
+        return self._get("/balance")
+
+    def generations_remaining(self):
+        return float(self.balance().get("subscription", {}).get("generations", 0) or 0)
+
+    def credits_usd(self):
+        return float(self.balance().get("credits", {}).get("usd", 0) or 0)
+
+    def budget(self):
+        b = self.balance()
+        return {
+            "generations": float(b.get("subscription", {}).get("generations", 0) or 0),
+            "usd": float(b.get("credits", {}).get("usd", 0) or 0),
+        }
+
+    def ensure_budget(self, min_generations, min_usd=0.5):
+        """OK if the subscription pool is above its floor OR there are USD credits
+        to fall back on (PixelLab bills credits once subscription generations hit 0;
+        tiles are cheap, so a small USD floor is enough)."""
+        b = self.budget()
+        if b["generations"] >= min_generations or b["usd"] >= min_usd:
+            return b
+        raise BudgetExhausted(
+            f"subscription generations {b['generations']:.0f} < {min_generations} "
+            f"and only ${b['usd']:.2f} credits (need >= ${min_usd:.2f})")
+
+    def wait_job(self, job_id, timeout=420, interval=6, stall=180):
+        """Poll a background job. Give up if it runs past `timeout` OR if its
+        reported progress hasn't advanced for `stall` seconds (a PixelLab-side
+        stall — the '3% forever' case) — so one hung job doesn't block the loop."""
+        start = last_change = time.monotonic()
+        last_prog = None
+        while True:
+            j = self._get(f"/background-jobs/{job_id}")
+            st = j.get("status")
+            if st == "completed":
+                return j.get("last_response") or {}
+            if st == "failed":
+                raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:200]}")
+            lr = j.get("last_response") or {}
+            prog = next((j.get(k) if isinstance(j.get(k), (int, float)) else lr.get(k)
+                         for k in ("progress", "percent")
+                         if isinstance(j.get(k), (int, float)) or isinstance(lr.get(k), (int, float))), None)
+            now = time.monotonic()
+            if prog is not None and prog != last_prog:
+                last_prog, last_change = prog, now
+            if now - start > timeout:
+                raise PixelLabError(f"job {job_id} timed out after {timeout}s (progress={prog})")
+            if prog is not None and now - last_change > stall:
+                raise PixelLabError(f"job {job_id} stalled at progress={prog} for {stall}s")
+            time.sleep(interval)
+
+    # -- isometric tile sets -------------------------------------------------
+
+    def create_tiles(self, description, tile_size=64, tile_view="high top-down",
+                     view_angle=28.0, depth_ratio=0.50, tile_type="isometric",
+                     flat_top_px=2, tile_height=None, seed=None, job_timeout=420):
+        """Generate one isometric tile SET (variations from the numbered
+        `description`). Returns [PIL, ...]. ~20 generations per call.
+
+        Sends the fixed tiles2 house format; `view_angle`/`depth_ratio` override
+        the `tile_view` preset per the API (angle=side..top-down, depth=thickness).
+        """
+        payload = {
+            "description": description,
+            "tile_type": tile_type,
+            "tile_size": int(tile_size),
+            "tile_view": tile_view,
+            "tile_view_angle": float(view_angle),
+            "tile_depth_ratio": float(depth_ratio),
+        }
+        if tile_height is not None:
+            payload["tile_height"] = int(tile_height)
+        if flat_top_px is not None:
+            payload["tile_flat_top_px"] = int(flat_top_px)
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._post("/create-tiles-pro", payload)
+        tile_id = resp.get("tile_id")
+        job = resp.get("background_job_id")
+        last = self.wait_job(job, timeout=job_timeout) if job else resp
+        tile_id = tile_id or last.get("tile_id")
+        images = last.get("images") or []
+        return [_decode_tile(im) for im in images], tile_id
+
+    def tiles_pro_exists(self, tile_id):
+        """True if this tiles-pro item still exists in the account (used by sync
+        to detect tiles the user deleted in the PixelLab UI). 404 -> deleted."""
+        try:
+            self._get(f"/tiles-pro/{tile_id}")
+            return True
+        except PixelLabError as e:
+            if " 404:" in str(e) or " 404 " in str(e):
+                return False
+            raise

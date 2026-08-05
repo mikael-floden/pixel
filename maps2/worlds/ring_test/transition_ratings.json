@@ -1,0 +1,65 @@
+{
+ "schema": "pixel-maps2/transition-ratings@1",
+ "source": "maps2/worlds/ring_test evaluation (11-critic panel + synthesis)",
+ "note": "rating 1-5 (5 excellent). value_cliff pairs need an intermediate terrain or wider blend; never coincide their material seam with an elevation step.",
+ "transitions": [
+  {
+   "pair": "grass \u2194 dirt (radial seam)",
+   "rating": 4,
+   "verdict": "A green grassy fringe encroaching over the orange dirt \u2014 a believable field edge. The softer grass feathers into the harder dirt via scattered tufts, sprigs, an"
+  },
+  {
+   "pair": "dirt \u2194 stone radial seam: lightdark_dirt (softer, lower/front) one-sided-feathers UP into stone_mountain (harder, higher/back) via a band of scattered grey rubble/pebbles laid over the dirt.",
+   "rating": 4,
+   "verdict": "Scree at the foot of a mountain. The stone side sheds a band of grey pebbles and rock chips onto the orange dirt, so the eye reads it as loose rocky debris accu"
+  },
+  {
+   "pair": "snow \u2194 saturated_grass (radial seam), one-sided feather",
+   "rating": 4,
+   "verdict": "Reads as natural patchy snowmelt: irregular white snow blobs strewn over the green with grass tufts poking back up through the snow edge. It looks like a thawin"
+  },
+  {
+   "pair": "grass \u2194 water (shore)",
+   "rating": 4,
+   "verdict": "Reads as a marshy, reedy shoreline, not a seam. Grass tufts/reeds poke up along the waterline, a band of small pools sits one cell inland, and pale sandbars sit"
+  },
+  {
+   "pair": "dirt \u2194 water (shore)",
+   "rating": 4,
+   "verdict": "A muddy / marshy mudflat shoreline. Reddish-brown dirt blobs scatter out into the mid-blue water while small blue puddles pool back inside the dirt, so the inte"
+  },
+  {
+   "pair": "black volcanic \u2194 clear water (shore)",
+   "rating": 4,
+   "verdict": "A volcanic rocky coastline. The softer water feathers up into the black terrace across ~2-3 cells: a waterline row of dark volcanic transition tiles (some with "
+  },
+  {
+   "pair": "stone \u2194 water (shore)",
+   "rating": 4,
+   "verdict": "A rocky rip-rap shoreline. The grey stone terrain ends in a jagged ridge of pointed rocks, then a scatter of grey boulders spills down into shallow cyan water, "
+  },
+  {
+   "pair": "snow \u2194 water (shore)",
+   "rating": 4,
+   "verdict": "A natural, irregular shoreline. The blue water meets white snow along a ragged, blobby foam/ice edge \u2014 not a hard seam. A breaking-wave foam curl arcs into the "
+  },
+  {
+   "pair": "black volcanic \u2194 snow (radial seam)",
+   "rating": 3,
+   "verdict": "A bright snowfield dusted with scattered black volcanic ash/debris where it meets a stark black lava-rock plateau. Conceptually legible as an ashfall-on-snow ed"
+  },
+  {
+   "pair": "stone_mountain (light grey) \u2194 black volcanic (near-black) \u2014 radial seam",
+   "rating": 2,
+   "verdict": "An ugly seam. The border reads as a jagged dark chasm / staircase of cliff steps rather than natural ground. Because stone is near-white and volcanic is near-bl"
+  }
+ ],
+ "rules_for_generator": [
+  "Flag any adjacency whose base top-face value delta exceeds ~0.45 and auto-require an intermediate-value terrain or bridge tile \u2014 a feather alone cannot hide a value cliff.",
+  "Never place stone_mountain directly beside black_mountain; separate with a mid-grey scorched-rock / ash / dark-gravel terrain.",
+  "Decouple material seams from elevation terrace steps \u2014 offset the colour border from any cliff face.",
+  "Keep the harder/darker material on the up-slope side so the one-sided feather stays valid.",
+  "Default feather width +1 cell vs this test; jitter tile density along the iso diagonal to avoid picket-fence rows.",
+  "Fill each terrain with ONE canonical plain tile for ~80% of cells (the single cleanest single-colour tile), ~8% other clean variants, ~2% special accents. Using a pool of near-identical 'clean' variants still reads as a mottled 'salami' patchwork; one repeated plain tile reads as flat uniform ground. Cliff faces use the plain tile only."
+ ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "dried_grass_bundle",
+  "name": "Dry Grass",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "plant",
+  "rarity": "common",
+  "value": 6,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Olive stalks tied off with cord, hauled out of a meadow nest. Poor fodder, but it burns beautifully.",
+  "sprite": "items/dried_grass_bundle/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "a617cda4-2358-433e-a7f6-cac47f886608",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:11:53.666652+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:27 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:27+00:00",
+  "waiting_for": "a gatherer with hands"
+}

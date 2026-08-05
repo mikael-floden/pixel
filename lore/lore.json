@@ -1,0 +1,1677 @@
+{
+  "format": "pixel-lore@1",
+  "generated_at": "2026-07-31T15:53:43Z",
+  "note": "Authored by the lore agent, keyed by the owning domain's folder id. entities.<domain>.<id>.description is the SHORT line shown under the entity's name \u2014 it REPLACES the domain's own description, and is guaranteed never to be longer than the longest text that domain already ships, so substituting it cannot grow the layout. entities.<domain>.<id>.lore is the LONG read-more text, an array of paragraphs, shown only if the reader expands it; no length limit. 'entries' are standalone articles (chapters, peoples, places). Plain text only \u2014 no markup. Cross-references are {domain, id} pairs. Every entry carries an 'icon' (repo-relative path to a 48x48 png) \u2014 draw it at whole multiples of 48 with image-rendering: pixelated, never at a fractional width. See lore/icons/icons.json.",
+  "layout_budget": {
+    "monsters": 118,
+    "items": 123,
+    "characters": 161,
+    "objects": 84,
+    "tiles": 51
+  },
+  "default_icon": "lore/icons/rune.png",
+  "entities": {
+    "characters": {
+      "default_boy": {
+        "description": "A young man of the human dead. No claws, no scales, nothing in the blood \u2014 he came down with his name still on him, which is more than most manage.",
+        "lore": [
+          "He fell recently. Recently enough that the grass where he landed has not entirely stood back up, and recently enough that he still occasionally checks his pockets for something he last had on the other side.",
+          "He came down with his name. That is worth more than it sounds \u2014 most do not, not at first, and some never get it back \u2014 and whoever met his star that night did the job properly and got him to say it aloud while he still could.",
+          "He has nothing else. What he is wearing is what he arrived in, which is what he was wearing at the end, and he has not yet decided whether that is a hard thing to think about. Nobody who falls has anything. It is the one experience every soul in Nangijala has had, and it is why a stranger here will feed you without being asked.",
+          "There is nothing exceptional about him and this is not modesty. He has no claws and no scales and nothing in the blood. What he has is a quick pair of hands, a stubborn streak he had before he died, and the ordinary human inability to see a light come down over the next field and not walk over to find out who it was.",
+          "In this particular country that last thing is not a small quality. It is very nearly the whole of what has held the place together."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          },
+          {
+            "domain": "characters",
+            "id": "default_girl"
+          }
+        ]
+      },
+      "default_girl": {
+        "description": "A young woman of the human dead, level-headed and hard to rattle. She has worked out most of what happened to her and not yet said how she feels.",
+        "lore": [
+          "She fell recently, and she took it better than most people take it, which she is aware is a strange thing to be good at.",
+          "By the second evening she had worked out most of it on her own: that the fall was the end of something, that the people around the fire were being kind rather than helpful, and that nobody was going to explain the important part because nobody entirely knows it. She has asked good questions ever since and has not once asked whether it is really true.",
+          "She carries no blade yet. She arrived with what she stands in, like everybody, and has been in no hurry to fix that; she has been busy watching how this place works, which is a better use of a first season than most new stars make of it.",
+          "What she is is hard to rattle. Not brave in the way the tellers mean when they are working a room \u2014 brave in the flat, unremarkable way of somebody who looks at a thing that should be frightening, decides how frightened to be, and is then that amount of frightened and no more. It is the quality that carried humankind as far as it got, and it is worth more here than a blade is.",
+          "She has not yet said what she is waiting for. Everybody in Nangijala is waiting for something. She will get around to it."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          },
+          {
+            "domain": "lore",
+            "id": "the_long_morning"
+          },
+          {
+            "domain": "characters",
+            "id": "default_boy"
+          }
+        ]
+      }
+    },
+    "items": {
+      "amethyst_rune_soulstone": {
+        "description": "Faceted violet, plum deepening to lilac, with a thumbnail of gold at the middle that looks written rather than grown.",
+        "lore": [
+          "Everybody picks their first one up out of the ash braced for it to be hot, and it is not. It is blood-warm, the same as all of them, and the flinch is what handlers remember about the first one they took. Fire went into the making and no fire came out. What came out is faceted all over, not cut faces but rounded ones, lumped and overlapping like something that cooled in more of a hurry than it wanted to, and violet right through: plum down in the hollows, pale lilac wherever the light gets at it. Ash does not mark it. One wipe and it is finished.",
+          "At the middle, small enough to cover with a thumbnail, there is a mark in gold, or near enough gold that the trade calls it gold. Two strokes and a splayed foot. The facets are never twice the same on two stones and the mark is, down to the stroke, on every one that has ever been brought in, and the Chroniclers make a great deal of that. A thing that comes back identical however many times you fetch it, they say, is what writing is and what writing is for, and here it is at the bottom of a creature, put there by the world without their help. The tellers hear them out and then observe that the mark is gold, and gold is the one substance every dead person from every country remembers the same, so of course it comes back the same. That is not writing. That is only gold behaving as gold does. Both parties take this as a win and both have been taking it as a win for a long time.",
+          "In a blade it does not burn, which is the first surprise and not the last. The blow arrives with more behind it than the arm put in, and whatever you have just done comes back to your hand quicker than you could fetch it \u2014 steadily enough that anyone who has carried one a season stops noticing and then misses it badly. Cutlers describe the effect as a blade that has already made this stroke before, and are not being poetic; they mean the tempo, which is the thing you cannot get by paying more."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "butterfly_dragon"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          }
+        ]
+      },
+      "banded_solar_stone": {
+        "description": "Dark stone terraced in bands, a seam of live gold running the length of them. It lights whatever pouch you put it in.",
+        "lore": [
+          "It is the only one a smith will not work after dark, and the reason is practical rather than nervous. The seam in it is live. Put it on the bench beside heated metal and there is no telling the colour of the work from the colour coming off the stone, so the setting gets done at noon with the doors open, by people who otherwise keep their doors shut in order to read the heat. Dark stone, terraced in bands the whole way up, gold running the length of the banding and brightest across the middle, one red fleck low on it that is neither. It does not go down when you put it away.",
+          "This is the piece that costs something to hold. Wrapped twice in hide it still finds the seams of a pouch, and you do not carry one and also arrive anywhere unannounced. Handlers on the eastern ground say the two best stones that country gives up are exact opposites, and that a sensible person carries one and not both. Set to an edge it burns what the edge touches. Set close, it does the other thing, and the smiths are careful to say they only sell it and have never once needed it.",
+          "The size of it starts to bother you after a while. Every hard piece lends a little of what it remembers: a stone off something that burned will warm the room it is in and no more, though the creature it came off could have taken a wood with it. This one lends nothing little. It does the entire thing, undiminished, out of a lump you can close a hand round. The inference is short and unwelcome. The light was never spread through that animal at all. It was already this small, in there, with a body built round it, and what came across the black wood on its hands was the carrying-case.",
+          "The bands are the part that gets counted. Layers are read the way layers are read anywhere, as one habit laid over another over a long time doing the same thing, and a banded piece is taken as evidence of an age of it. Count the bands on this one and you get a number. Then set the number beside what it came off: a shape that went into the ground one way and came out the other with its light already burning, and no age behind it worth the name. Either the layers mean nothing here, in which case the reading is worth nothing anywhere, or they are an honest record of a very long time and that time was not the creature's. The counting gets done anyway. It is done quietly, with the bag already tied."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "night_beast"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "black_egg_lava_veins": {
+        "description": "Charred black plates forked open by live orange veins that never cool. What you strike goes on burning after you stop.",
+        "lore": [
+          "Ask somebody who carries one what they carry it in and you get a considered answer, because they have tried several. Cloth chars through in a season. A pouch lasts longer and comes back stiff and brown as a boot left too near a hearth. The arrangement most people end at is a tin with sand in it, lashed to the outside of the pack where it can do the least.",
+          "Everything else that comes off that shape cools. The plates shed as the fire under them goes out and finish as black glass, as cold in the hand as any other glass. The body slumps and runs and sets grey. The hard piece sitting in the middle of the puddle when it stops has been out in open air ever since, in some cases for longer than anyone has been keeping count, and it is exactly as warm now as it was then. Nothing goes into it. It is not consuming anything. It has simply never been persuaded to stop.",
+          "Which is what it does to whatever you hit. Fire off a blade is not rare, and mostly it is over when the swing is: heat arrives, heat goes. This one does not deliver a fire, it leaves one, and you are free to step back and attend to something else while it carries on without you. That follows from what got compressed to make it. The shape it came out of stood a long stretch of years on a crossing with nothing to burn and next to nothing coming past, keeping the heat banked against an occasion that mostly did not arrive. What reached the bottom of a thing like that was never burning. It was the banking \u2014 a fire held in with no fuel, no audience and no end in view. Set that against an edge and of course it carries on after you have finished.",
+          "They grade it in the dark. In an unlit room a good one shows its whole branching through the shell, the orange forking out of the middle and stopping a finger's width short of the rim, and by the best of them you can find a door. On a poor one the light has drawn back to a single dull coal at the centre, the shell reads as ordinary charred rock, and it is worth a fraction of the other. Few of either come to hand, since a crossing has to empty first and then go on being described for years by people who have not walked it, and crossings do not empty often. As for the orange, anyone who has stood on the wrong-coloured ground where the rock is warm underfoot will tell you it is the same stuff, from a very long way down and a long way off, and will then change the subject, because the obvious next question has no answer that holds up."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "stone_turtle"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "brown_stone_egg": {
+        "description": "Dull brown plates shut on a copper vein, far too heavy for its size. A Puddling's last piece; in armour, hard to shift.",
+        "lore": [
+          "This is the one they put in a new hand. It is the plainest hard piece there is, dull brown plates shut against each other, black seams between them, one thread of copper down in the middle taking whatever light is going, and it does the single thing that settles the matter for somebody who has never held one: it weighs wrong. Not heavy. Wrongly heavy, in a way the arm reports before the eye will agree to it. Very little explaining is needed after that.",
+          "In armour it does something the low country long ago stopped remarking on. The plate thickens, which anybody can measure. The rest cannot be felt while it is happening: the wearer is not braced, does not feel rooted to anything, and simply finds out afterwards that the blow which should have put them on their back left them standing where they had been standing. People who have worn one for years call it the least dramatic advantage available anywhere, and go on wearing it.",
+          "The trouble with them is how many there are, and it is the low-country sorters who have to hold the trouble. Every hard piece is supposed to be the bottom of one long forgetting, one thing thinned all the way down over a great while, and there are more of these coming out of the wet ground than there are lives in the district to account for them, by a margin that gets worse every season. Three explanations are in circulation. That the ground is doing the forgetting and the low wet places are only where it runs deepest. That the counting was always sloppy. And a third, said late in the evening and not repeated in daylight, which is that the arithmetic is fine and it is the assumption of one life to one stone that is wrong.",
+          "Meet the creature and you learn very little, there being famously nothing in it to learn. The stone is the only part of the business that holds still long enough to be looked at properly, and what it has to say is not about a life at all. It says that something down in that wet ground was agreed on, by a great many people, for a very long time, and pressed. Loose remembering does not come out this heavy. Whatever else about them is unsettled, that much is in the hand."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "water_poring"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "crimson_vein_mossy_stone": {
+        "description": "Moss green blotched with bark brown, dark veins branching in to one red knot at the middle. Filed with the blood stones.",
+        "lore": [
+          "The trade sorts its stones by what they do rather than by what they came out of, and this one goes in the tray with the blood-natured: the ones that open a thing and hand some of it back to the arm that opened it. Whoever puts it there says the same sentence while doing it, which is that the only thing that ever ran in a Stumpling was sap. The word is wrong about the origin and exactly right about the behaviour, and there is no better word, so it stays and the caveat gets said aloud every time. It is the one stone on the bench that comes with an apology attached.",
+          "In the hand it is warm the way they are all warm, but not evenly. Roll it in the palm and there is a hot spot over the middle, and you can find it in a bag by feel alone. The green is not moss and not a coating; take a knife to it and you take off stone. Bark-brown blotches sit over the shoulder of it, the dark branching runs out from a knot low of centre and has gone brown well before it reaches the rim, and the red does not come to the surface anywhere. Handlers grade them on exactly that. A short bright knot with the veining still dark close in is what is wanted. The ones where the red has spread thin along the branches are weak in a blade, and everybody who has fitted both can tell you which they had.",
+          "What it does is take and give back. Set against an edge it lands heavier than a stone that size accounts for, and some of what it opens closes again on your side. That follows, once you think about who did the remembering. Hardly anyone remembers a forest on its own account; they remember having a use for one. Sap on the hands, the smell of a fresh cut, a load carried out at dusk and a winter that was warmer for it. Something is opened and the one who opened it goes home better off than they came, and that transaction is at the bottom of this creature, so that is what the stone does when it is set in a blade. There is no cruelty in it. It is being a wood, precisely as a wood was remembered.",
+          "It also settles a thing the creature will not. Everyone who has met one comes away with the same idea about that flat top, which is that something was done to it, and recently enough to be worth being careful about. The stone says otherwise. The cut is at the very bottom of the thing, harder and older than any part of it, and what is at the bottom is what a creature was assembled out of and never what happened to it later. It was not felled. It arrived felled. That is the sort of fact a stone will give you and the creature cannot: you could follow one through the trees for a season and learn none of it, since there is no mouth on it to say so and nothing red showing anywhere on the outside."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "tree_stump"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "cyan_glacier_seam_stone": {
+        "description": "Grey plates split by one bright cyan seam that runs clean through. It bites frost and leaves the target wading.",
+        "lore": [
+          "Everyone handed one for the first time does the same thing, which is close a hand round it and then look up. It is warm. Off the crystal ground, out of a shape that is ice from the crown down, and it sits in the palm at about blood heat like every other hard piece anyone has ever taken, with the seam the warmest part of it. This gets argued about more than the price does. It is also the only evidence going that anything in that thing was ever under way at all \u2014 watched from a distance it might as well be weather with legs, and weather does not leave a warm stone behind it.",
+          "The grading is done on the seam and not on either material. Sight along it: on a good one the cyan enters one face, forks somewhere in the middle and comes out the far side, so the two ends can be lined up and shown to go the whole way through. On a poor one it is a bright line that stops inside, and what you have is a grey pebble with a stripe on it. The rock on its own is worth nothing. The ice on its own is worth nothing. It is the joint that is worth anything, which people find funny for about a week.",
+          "What it lends gets called cold, and cold is only how it arrives. In an edge it puts the frost in ahead of the metal, and for a while afterwards whatever took the hit is doing everything at the wrong speed \u2014 not staggered, not visibly hurt, simply late on each thing it tries, as though it had been asked to do all of it in water. That is the honest shape of what was in there. High ground does not stop anything and never has; it makes everything that happens on it take longer, until from any distance you would care to watch from, slow and stopped are difficult to tell apart. Something that spent an age being that leaves a piece of it small enough to bind to a spear."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "ice_crystal_golem"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "cyan_lightning_egg": {
+        "description": "Pebbled black under a net of branching cyan that will not sit still. Warm. Its spark rarely stops at one body.",
+        "lore": [
+          "The register the graders keep has two columns that do not mean the same thing: the ground a stone came off, and the nature it turns out to have. Black rock, fire. High snow, frost. The columns are two ways of saying one thing, and in every line but this one they agree. This comes down off the high snow \u2014 a great many days uphill, on the wrong side of the massif entirely from the ground where the emptying is supposed to happen \u2014 and it grades storm, on evidence a child could check, which is that it throws a spark. It is also worth more than anything else that comes off that mountain, and only some of that is the walk.",
+          "Set it on a table between the two stones it ought to resemble, the pale blue rimed one and the grey one with the single cyan seam. Those two are cold to the hand whatever they are underneath; you put them down colder than you picked them up. This one has nothing cold on it at all. It is pebbled black, netted all through the gaps between the pebbles with cyan, near-white down the middle of each line and going teal at the edges, branching and then branching again off the branches, and it is warm the whole way out to the surface. The stone-workers make a good deal of that. The people who work the high snow make nothing of it and are not being difficult: every hard piece is warm underneath, and how far the warmth gets has never settled an argument. The light settles nothing either. Watch the net a while and it has gone somewhere else in it, and then somewhere else again, and it has not once been seen to stop.",
+          "Setting one is the part the smiths talk about, because it will not stay inside its own outline. Put it to an edge and by the time the setting is finished the light is in the metal as well, and the first thing anyone learns fighting with one is not to let a friend stand at their shoulder. The spark goes where it was sent, and then now and again it is not there any more; it is in the next body along, whichever body that happens to be. That is the entire disagreement in one object and neither side has given ground. Cold at that height is not a temperature, say the ones who live in it, it is a thing that comes and gets you the moment the glove is off, and a storm is only what that amounts to when there is enough of it. A hard piece is the last of what a creature was, say the ones who grade them, and that creature was the colour and the temperature of the mountain from the crest of its head down to its claws, and cold does not go looking. What can be said without taking a side is that everything you can learn standing in front of one of those says hunger, and hunger is not a direction. This is the only thing ever to come off one that says which way."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "snow_demon"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
+      "dark_grain_soulstone": {
+        "description": "Dark as bog oak, black grain running through the brown. A felled Sprigling's last: it stiffens plate and hands blows back.",
+        "lore": [
+          "Of all the hard pieces this is the one that behaves least like a stone on a bench. It is dark as bog oak, brown showing under the black, with a knot at the middle where the grain turns and runs out to the seams, and it will not take a polish: rub it and it goes dull and faintly warm the way sanded oak does. The grain is not decoration either. Set into a plate across the run of it, the plate is stiff and the stone is fine. Set it along the run and the first serious blow starts a split down the black line that does not stop. An armourer has to read this one before working it, which is true of no other kind, and most of them find it quietly insulting.",
+          "Worn, it does the unremarkable half of its work first, which is that the plate gets harder to open. The other half is the half people remember. A share of every blow goes back to whoever delivered it, at once and at about the size they delivered it, and the wearer feels nothing whatever; two or three exchanges in, the other party has usually stopped to look at their own hands. It is not protection so much as bookkeeping. It is not merciful, either. It simply insists on the second half of a stroke that everyone involved had considered finished.",
+          "The stone gets carried about as an exhibit, mostly by people arguing that the round green things in the wood are not what the field guides take them for. A hard piece is meant to be the last of what a thing was, and this is plainly the last of what was done to a thing, over and over, by hands that were not its own. On that reading the stone is not the creature's at all: it belongs to everyone who ever went in among trees with an edge, and the green thing was only where it collected. The workers who take these off the wood floor do not argue back. They say a stone has never once told anybody whose it was, that it makes no odds to the plate either way, and go back to reading the grain. What they will grant is that the only other thing in this world which comes back identical out of every mouth is a gold coin, and that identical is what ends up hard."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "forest_poring_2"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          }
+        ]
+      },
+      "gold_seamed_teal_soulstone": {
+        "description": "Sea-green, webbed with gold where it broke and broke again. It holds armour together, and gold has a way of turning up.",
+        "lore": [
+          "Gold is the one thing this country never gets wrong. It arrives in the same shape whoever brings it, which is how it came to be money without anyone deciding it should be, and it is why finding gold inside a hard piece stopped several conversations the first time one of these was prised out. The mend is not set into the stone the way a jewel is set into a ring. It goes all the way through. It has been filed at, heated and worked over by people who knew their trade, and it will not come out of the sea-green and the sea-green will not come off it. The other thing everyone notices, and it is the thing that stays with you, is that it is not cold. Gold in the hand is always cold. This gold is exactly as warm as the stone around it.",
+          "Handlers grade these by the seams, and the argument about how is not settled. The long break runs the whole length and is the one everybody agrees about; it is the smaller ones that get counted, the branches off it, the hairlines that stop halfway, the mend that plainly crosses an older mend. One school holds that the count is a tally of how many seasons the animal worked its ground. Another holds that a stone is not a calendar and the count means whatever the light is doing. What is not in dispute is what the counting implies, which is that this thing broke and held, and broke and held, and went out to do the same work the following night. You do not get that from meeting one. Meeting one is a single bite and then the encounter is over.",
+          "Armourers make no claim that it stops a blow. What they claim, and what the people wearing it repeat, is that a plate with one of these in it comes apart later than it should and often does not come apart at all: it takes the hit, it opens, and it holds. A stone that is mostly mend teaches a mend. Whichever account of the gold you prefer, and there are two and neither has won, both of them are accounts of a broken thing that carried on. The rest is harder to describe and everyone carrying one describes it anyway. Gold starts turning up. A coin in the grass you would have walked over, a thread of it in a rock face you had already looked at twice. It may be that the stone finds gold. It is at least as likely that you have begun looking at the world the way that animal looked at it, taking an interest in the few things that refuse to go, and that the stone is only lending you the habit it was pressed out of."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "lava_salamander_2"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          }
+        ]
+      },
+      "green_venom_vein_stone": {
+        "description": "Cobbled grey plates, green standing wet in every joint. In a blade the poison layers on and never clears out.",
+        "lore": [
+          "Of everything that comes out of a broken shape, this is the one that has to travel by itself. It goes at the bottom of the bag with something folded between it and the rest, because the green gets out. Not much of it, and not fast, and it does not ever stop: a pouch that has carried one for a season has a mark on the inside that will outlast the pouch. There is a working rule about it among the people who crack for a living, and the rule is that you carry one of these or you carry the rest.",
+          "The stone itself is grey and cobbled \u2014 rounded plates about the size of a thumbnail, packed the way a wall is packed, each one paler across the top where the light sits \u2014 and the green stands in the joints between them. It is brightest in one seam running down through the middle and one that comes round the flank and out at the bottom edge, and it is wet there, and it is wet there a hundred years on. The obvious reading is a coat of something over a stone. A chipped one puts an end to that: the plates and the joints and the green carry straight on inwards, and there is no part of the thing that is not made out of the gaps between other parts.",
+          "Set against an edge it does none of the ordinary work. It will not sharpen anything, or put weight behind a blow, or stiffen a plate. What it does is leave green in whatever the edge opens, and the green stays where it lands and takes the next lot on top of itself, and the lot after that on top of both. Everyone who fights with one ends up counting, which no other stone in the trade asks of the hand holding it, and the fifth is as far as it will go, for a reason the stone has never offered.",
+          "A hard piece is supposed to be one fact, or one appetite, or one habit of being, worn down over an age until it is very nearly a mineral, and a decent grader can usually say which of the three is in their hand inside a minute. Look for it in this one. There is no fact in there and no habit; there is a substance, and the substance is what was holding the shape upright, and the only thing it has ever been observed to do is gather. That is not a life pressed small. It is a process pressed small, and a process is not supposed to leave anything behind at all. It grades high regardless \u2014 high enough that the question tends not to get raised \u2014 and the ones who raise it anyway want to know what, exactly, this is a record of."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "malformed_creature"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "grey_stone_crimson_veins": {
+        "description": "Cold grey plates with a warm red seam shut inside them. It gives nothing until you cut, and then it takes its share back.",
+        "lore": [
+          "Most soulstones are warm all the way through. This one is warm along a line. The plates are properly cold, colder than the grass it came out of, and the heat is down in the black seams between them, so the way to be sure of one is to close your fist and wait for a single warm line to come up against the palm. Buyers turn them to the light first, hunting the gap where the red shows through. The people who crack for a living gave that habit up years ago. A stone shut tight and a stone with the red on show are the same stone.",
+          "It will not be cut. Every tool anyone has taken to one parts it along a seam instead of through it, so it goes into work exactly as it came out of the grass: wired in behind a guard, sunk into a pommel, seated under the lip of a bracer with the plates untouched. Smiths do not mind that. What they pass on to the buyer is the other rule, which is that the setting has to leave the seams open to the air. Shut one into metal on every side and it lies there like a pebble and does nothing at all.",
+          "Carrying it is uneventful. It has no opinion about a long march and none about a wait, and it is the plainest thing in the pack right up until the first cut lands. Then it arrives about half a breath late. Whatever you opened, some part of it comes back the other way and closes what it finds. Everyone who has felt it says the same two things in the same order: that it is a great deal of comfort, and that it is not a kindness. Nothing is being given here. Something is being taken and divided.",
+          "The last thing worth knowing only shows up when a good many are laid out side by side. Handle enough of any other kind and small disagreements start turning up between them, a shade off, a hair of weight off, one stretch of country to the next. Not these. The same grey, the same plating, the same red shut away the same way, off an animal that has gone unmentioned long enough that most of what it was has already gone with the telling. Whatever it has lost, and it has lost nearly all of it, the bottom of it has not moved. A description of that animal would be out of date by now. The stone is not."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "saber_toothed_tiger"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_chronicle"
+          }
+        ]
+      },
+      "hollow_black_soulstone": {
+        "description": "Cracked all the way through, with nothing in the cracks. What reached the bottom of this one was never its own.",
+        "lore": [
+          "Every soulstone is the last hard piece of something \u2014 one fact, one appetite, one habit of being, pressed down until it is nearly a mineral. Almost all of them are warm and solid and read, to anyone who has handled a few, like a life that got very small.",
+          "This one is cracked all the way through, and there is nothing in the cracks.",
+          "That is not damage. It came out like that. The people who work the eastern ground have taken enough of them now to be certain, and it has caused a good deal of quiet discussion, because a stone is supposed to be the bottom of a creature and this one appears to be the bottom of something that was never there.",
+          "The working explanation, and it is only that, is that what reached the bottom of Grinmask was not Grinmask. Something else was in the shape, doing the wearing, and when the shape broke it was the visitor's last hard piece that fell into the grass. If that is right, then everyone carrying one of these is carrying a fragment of the thing under the mountain, which several people have pointed out and nobody has stopped doing.",
+          "It cuts through armour the way it cuts through most things. Whatever is compressed in there does not recognise a boundary as an argument."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "masked_shadow_creature"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
+      "lichen_green_soulstone": {
+        "description": "Mottled olive crust over smooth grey, dark in the seams. A Mirewart's last piece; small hurts close as you walk.",
+        "lore": [
+          "There are more of these in circulation than any other kind of stone. Buyers who deal in quantity do not count them, they weigh them, and quote by the handful, and a bagful has bought a first winter's boots for a great many people who came down with nothing else to sell. The trade is comfortable enough with that arithmetic and does not go into it.",
+          "In the hand it is two things at once. The crust is dry and fine-grained and drags on a callus, and where the crust has not taken, the grey underneath is as smooth as anything that has spent long enough in moving water. Graders go by how much of that grey is still showing. Crusted over almost to the seams is a full one. Mostly bare, with a few olive patches, is a thin one, and it does about half the work for rather less than half the price.",
+          "The work is slow and that is not a fault in it. The trade's word is a walking stone: it does what it does between places and none of it during. Anyone who wants a wound gone this minute should carry something else. Carry one across a long day and there is no moment where you feel it happening, and then at the fire you find your knuckles have closed and the split in your lip has stopped being a split. A good many people are still carrying the first one they ever took, long after they could afford better, and give reasons for it that do not quite hold together.",
+          "The last of it is the part worth more thought than it usually gets. A frog gives away nothing to anyone looking at one; whatever has gone out of it, it sits the same. That difficulty stops at the stone, because a stone can be read. The ones taken out of new water come up patchy, with a great deal of grey in them. The ones taken out of water that has been standing since before the roads last moved come up crusted over so completely that the grey is only a rumour underneath, and those are the full ones, and they fetch the most, and the trade has agreed among itself not to follow that thought any further."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "mystical_frog"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "matte_black_shadow_stone": {
+        "description": "Matte black, softly faceted, handing back no light at all. In a full pouch you find this one by touch, not by eye.",
+        "lore": [
+          "Stones get sorted on a dark cloth by lamplight, and every one of them says something on the way down. A bright piece throws a coin of light onto the cloth. A banded one lays a stripe. This one lands, and there is only cloth where it landed, and handlers who have done the work for years still count the row twice before they tie the bag. It is egg-sized and warm like all of them, lobed in soft facets with no shine on any face, and the single mark you can point at is a rust-coloured speck low on one side.",
+          "Carrying one is a small, constant nuisance. It takes no lamp and throws nothing, and a hand going through a pouch passes straight over it, so people sew a bright thread to the pouch that holds it and check the thread instead. Setting it is the opposite of a nuisance: the metal takes it without argument, which the smiths who work the eastern pieces say of no other stone. What it adds is not weight in the swing. It is that a fight ends, and the end of it does not particularly include you. A shape goes down in front of you and now and then the ground you are standing on is not ground anyone is looking at.",
+          "Meet the creature this comes out of and you would come away with an account of a charge. Head lowered, the crown of horn-blades going in first, a body that bounds instead of walking. Ferocious, you would write, or else stupid, and the field-guides have written both. The stone disagrees with all of it. There is nothing in this piece about going forward. What went to the bottom and stopped there is the not-being-seen, and if that is the last hard fact of the thing, then the charging was the loud part and never the true one. It is a correction only a stone can make. You will not get it by watching one, because while it is being watched it is doing the other thing.",
+          "Then there is the part the ones who write these down keep going round the outside of. Everything else that comes off that creature is borrowed or temporary: the body settles into pale ash and the wind has the ash by morning, and half of what is left in the heap grew on animals it never met. This piece is the only entry on the list that is both permanent and its own, which ought to be tidy and is not. A hard piece is supposed to cost an age of forgetting. This one cost an afternoon on the eastern ground, and the people who have taken several have started keeping a count."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "diablo"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
+      "mossy_green_egg": {
+        "description": "Dark green plates shut around a yellow-green star, and the moss on them is still growing. It cuts and it mends.",
+        "lore": [
+          "Set one on a shelf and leave it a year and the moss will have got further. Not much further \u2014 a plate's width up the shaded side \u2014 but further, on a stone that is fed nothing, watered by nothing and kept indoors. Of everything that comes back in a bag off a broken shape, this is the only piece still doing something, and the people who handle stones by the sackful stopped finding that remarkable a long time ago and still, as a rule, keep this one where they can see it.",
+          "They grade it by the star. Hold it up against a fire and the light comes through the seams between the plates; on a good one the yellow-green runs out along every crack to the rim, so the whole egg is drawn on in lines, and on a poor one it has stayed down in the middle and shows from a single angle. That is not a judgement about looks. A stone whose star reaches the rim closes a cut while you are still swinging. One that does not will get round to it.",
+          "It is also the one stone people argue about where to put. The convention is to set a hard piece against an edge, and against an edge this one behaves exactly as the trade expects of it. But the mending only runs while the stone is near the body, and there are fitters who will tell you flatly that a blade wastes it \u2014 put it in the breastplate, wear it against the ribs, and it works on you all day whether or not there is anything in front of you. The counter is that a stone spending its afternoon mending a man who has not been touched is a stone doing very little. Both sides are describing one fact and neither will say it plainly, so here it is: growth does not distinguish. It goes into whatever it is set against. Turn it on a shape and it opens it; hold it to yourself and it closes you. It is not doing two things.",
+          "There is a heap at the edge of every field in every country, which is why this is the one good stone a working person can expect to own, and why the other thing about it can be tested. Take twenty of them off twenty broken heaps, a century and a border apart, and lay them out on a cloth. You cannot sort them. The plating runs the same way, the star sits at the same depth, the moss is the same moss. A stone out of something that once fell is always an individual \u2014 a facet rubbed smooth by whatever it did ten thousand times, a flaw you would know again in the dark. These have no such thing, because there was never anyone in one of them to differ. It is the same fact that makes a gold coin a gold coin, arriving from a direction that pleases very few people."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "stone_golem"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          }
+        ]
+      },
+      "mossy_root_stone": {
+        "description": "Dull olive under a dark web of root, plain enough to lose in the grass. Your cuts close over and your blows come up green.",
+        "lore": [
+          "It is the one that gets lost. The bright kinds announce themselves in a bag and you always know what your hand is reaching past. This one comes up matte olive with no shine on it anywhere, and if you set it down in grass to free both hands there is a fair chance you spend the rest of the afternoon on your knees. People who carry one keep it in a pocket rather than a bag, and the ones who have already had that afternoon keep it in a pocket they have sewn shut.",
+          "Stones are weighed by hand as much as by scale, and what the hand is after is appetite. A stone off something that burned sits in the palm with a want in it that comes through a glove. This one sits there like a stone. That is exactly why it spent years at the wrong end of the bag, and it is also, once you have handled enough of them, the tell. The flattest of them are not empty. They are the ones whose want is pointed at something other than you.",
+          "In use it is slow in both directions, and that is the whole of it. The first swing feels like nothing. So does the second. What you notice, some hours on, is that the small hurts you took early have closed over without your attention, and that whatever you have been working at is coming apart in a way the edge alone did not manage. Run a thumb over the surface and the threads stand very slightly proud of it, dark, forking, crossing over and under one another out to the rim, and not one of them is doing anything a witness would call an attack.",
+          "The rest of what comes off one of these is a person's kit. A camp knife, a rope end chewed to a splay, three harness links polished smooth on the inside, and every piece of it about somebody who is not there. The stone is the only thing in the pile that is about the animal, and there is no owner in it anywhere. Whatever it is still standing in the road waiting to be told did not reach the bottom. What reached the bottom was the going on, unloaded, in a straight line, and that is the part you are carrying."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "dark_donkey"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "pale_bone_soulstone": {
+        "description": "Chalk-cream, crazed edge to edge with fine dark fissures, and not one of them gives. In armour it refuses to come apart.",
+        "lore": [
+          "Hand one to somebody who has not held one before and watch the thumb. The whole surface is crazed, fine dark fissures running edge to edge and dividing the chalk-cream into panels like a flat of dried mud, and every pair of hands new to it presses, gently, to find out how near the thing is to coming apart. It does not give. There is a short unpleasant demonstration the trade keeps for buyers who will not take that on trust, involving a bench and the flat of a hammer, and the stone wins.",
+          "Armourers enjoy working with it and dislike putting a price on it. It seats easily, takes any fixing offered, and by long habit it goes low and to the back: over a shoulder-piece, or against the plate that has already been repaired once, which is superstition and is also where the trouble tends to start again. It is cheap for what it is, and the reason is an honest one. There is nothing to feel. It pays out only at the moment you would otherwise be getting up off the ground, and that is a hard thing to sell to anyone who has never been on the ground.",
+          "What is worth knowing turns up when several are set out together. The webs are not the same web. Some are fine as hair and some are coarse enough to count, and the count is never low, and out of every one that has ever been laid on a bench not one has come up smooth. You would not guess any of that from watching the animal, which stands out in the open at the correct distance from nothing at all, wool to the ankles, unbothered, giving no sign of it whatever. The stone is the honest version, and it will still be saying so long after the shape it came out of has stopped being anywhere at all."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "mammoth"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "pale_sand_stone": {
+        "description": "Sun-bleached plates cracked round a heart of gold, all a Dewling leaves. Blows land like a dropped weight, and dazzle.",
+        "lore": [
+          "The people who sort stones grade this kind by how little colour is left in it, and they grade it upward as the colour goes. A sand-brown one came off ground somebody still walks on. The pale ones, bleached to about the shade of a bone left out a season and with the seams gone nearly white, come off meadows a great many people remember and none of them visit, and they are held to be worth roughly twice a brown one. It is a strange way to price anything. Everybody stopped finding it strange a long while back.",
+          "What gets looked at is the middle, where the cracks run together and there is a bank of gold sitting under them with no shine on it at all. Cutlers who have set a few say the same thing about the work: keep the seams turned outward. Bedded the wrong way round, with the gold sunk into the metal, the blade is merely heavy. Turned out, whatever takes the hit stands there afterwards blinking at nothing for a second or two, and there is no light anywhere about to account for whatever it thinks it just saw.",
+          "It puts the argument in its plainest form, which is why it keeps getting carried to fires by people who want to have the argument. A hard piece is the bottom of a long forgetting, and this one is exactly that, worn down and down until there is no particular year left in it, no particular grass, no weather. What it has not got is anyone it was worn down out of. The workers who enjoy the puzzle say that is no trouble: something was worn, a hundred thousand crossings of a wet field at first light, and the wear is real whether or not the walker ever was. The ones who do not enjoy it answer that by that reckoning you are carrying the bottom of a morning, and ask what is supposed to become of the morning.",
+          "The stones are also why the collectors' word for the round ones has outlived every attempt to be rid of it. Empty a day's bag onto a cloth and the leavings argue with each other: the globules pair this one off with a pond thing, the wood one off with a frog, and none of it agrees with anything. Then set the hard pieces out in a row and the arguing stops. One shape, whatever country it came out of, the same plated egg with the seams running in to a middle, sized for the same palm, and only the colour to say which weather it grew in. Whatever they are, they are one thing happening in a lot of different weather, and the stones say so with more authority than the word ever had."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "forest_poring"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          }
+        ]
+      },
+      "pink_seam_granite_stone": {
+        "description": "Grey granite plates held by unbroken salmon-pink seams. In armour a crushing blow arrives as a shove, a fall as a bruise.",
+        "lore": [
+          "Pick one up expecting a pebble and you get something else, because it is not one piece. The body is grey granite in plates, and every plate is held to the next by a seam of salmon pink, so the thing holds the way a wall holds rather than the way a stone does, which is to say by how it is joined. That is also exactly how it is graded. Seams unbroken and running right round the body is a full one. Pink that is dashed, or pinched out, or stops and starts again a finger further on, is a poor one, and a poor one comes apart in service, and everyone in the trade knows somebody it came apart on.",
+          "It is the one stone on the bench a good cutter is glad to break. Struck along a seam it opens into two clean plates and both of them still work, which is true of nothing else on the shelf. Struck across the grain it goes to gravel and is worth nothing to anyone. So the pink has to be read before the hammer comes down, and the people who can read it do very little else for a living. What comes off that bench and into armour does not make the armour lighter; it makes the ground feel closer. Drops come off short. Whatever lands on the wearer still lands, and simply arrives without the part of it that was going to break something.",
+          "There is a rule in the trade that gets repeated without much enjoyment, which is that the best armour does not come off fighters. Stones out of things that struck, and struck hard, go into blades, which is where they are wanted and where they do good service. The stones that will actually keep a person in one piece come off animals that never struck anything in their existence and spent the whole of it with one question in front of them, which is where to be standing when something heavy happens. What is pressed into one of these is not courage and it is not strength. It is somewhere to be. Anyone who has stood under a roof they were not sure about, in the dark, listening to it, has held that same thought for a minute or two. This one held it for a lifetime and held it until it went to granite."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "white_rabbit"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "purple_venom_claw": {
+        "description": "A purple hook with one pale ridge of light down the curve, and a hard green crust dried on the last third of the point.",
+        "lore": [
+          "Tip the bag out after a night's work on the eastern ground and most of it is other creatures' property \u2014 hooks off a big cat, shed talons, a wet eye with somebody else's iris in it. That is why a heap of leavings usually settles nothing: the details are real but they are the wrong creature's details, and details are the whole reason anyone stoops. This hook is the exception on the cloth. It grew where it sits, it is sized to the hand it grew on, and everything else in the bag gets carried home on its credit.",
+          "In the hand it is longer than a finger and curved well past any use. A pale ridge of light runs down the outer edge where the wear is, the purple goes almost black at the base, and the base is a socket rather than a tang, shaped round a knuckle that is not there any more, with nothing on it to haft. People try. It makes a poor knife every time and they keep the poor knife, because a claw is worth nothing and a claw with a hand behind it is worth something, and that difference is the whole reason anyone stoops for one.",
+          "The last third of the point is crusted, mustard at the base of the crust and hard green at the tip, sitting on the purple rather than in it, so it was put there and did not grow there. It flakes under a thumbnail, and a kept one travels point-down in a stiff wrap by people who wash afterwards. That green is not unique to this creature: the stitched-together thing further along the black rock leaks the same colour, and two unrelated heaps off the same ground agreeing about a pigment is exactly the sort of coincidence a heap of leavings exists to catch. Which way it ran is not readable. A crusted point has either delivered that green into something or taken it out of something, and the crust will not say. The bag does not answer the question. It carries it."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "diablo"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "red_seam_pyre_stone": {
+        "description": "Dark plates split by live red, brightest where the seams meet. It never cools, and what it sets alight keeps burning.",
+        "lore": [
+          "A bag of hard pieces can be sorted in the dark if there is one of these in it. Every soulstone comes out warm; this one comes out well past warm and stays there, at about the heat of a stone left too near a fire, year on year, with nothing at all going into it. Carriers keep it wrapped and away from the rest, not because it will set anything alight lying still, which it will not, but because after a day of it against your back you stop being able to tell which of you is the warm one.",
+          "The people who set stones grade this kind by depth. Held against a strong light the red in the seams either stops at the skin of the plates or runs down into them, and the deep ones are the ones worth a socket, because a shallow stone lights what you hit and a deep one keeps it lit. They will also tell you, at length and unprompted, that this kind does not divide. Every attempt to split one along its own cracks has ended with two pieces of dark rock and no fire in either. So it goes into the hilt whole, behind the guard, and the weapon is built around it rather than the other way about.",
+          "What the stone says about the animal is not what the animal says about itself. That plate-work, the dark broken into small facets with the seams running between them, is the crust of the thing out on the black rock copied exactly and at the wrong size. Those facets belong on something the length of a hand. Whatever got told into that creature over the centuries, and a great deal did, it never reached the bottom. The last hard piece kept the small animal's proportions the whole way down, which is more than the creature can still do.",
+          "Set and struck, it lights what the edge touched, and then comes the part that decides the price: the burning carries on after the blow, after the swing, after you have moved off down the line and stopped attending to it. A piece off something that flared once would give a flash and have done. This one gives a thing that goes on with no remaining reason to go on, which is a fair record of what it came out of, and worth a good deal more than a flash to anyone who has to work for their stones."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "lava_salamander"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_fires"
+          }
+        ]
+      },
+      "rimed_blue_soulstone": {
+        "description": "Grey-blue plates, white rime in every seam, cold to hold. All a Frostling's melt leaves; its hits leave a target wading.",
+        "lore": [
+          "These come dear, and the price is not really about the stone. It is about the walk. The high snow lies a long way above the last fire anybody is still tending, and a collector who goes down up there, usually knocked apart by the very thing they were working, pulls themselves back together some hours later a day's descent below where they had been standing, with the morning's collecting still lying in the drift where it fell. People go up anyway. Not many go up twice in a season.",
+          "It is grey-blue and plated, with white standing in every seam the way rime stands in the joints of a wall, and it is the only kind that is cold on the outside. Every other hard piece is warm in the palm within a breath or two. This one stays cold for as long as anybody has troubled to hold it, and is warm underneath that in the way they all are, which gets described as a stone with a fire a long way down inside it. Sorters use the fact as a test. Blue junk comes up to hand temperature while you are still asking after it. A real one does not.",
+          "Cutlers bed it deep, because a grip that cold is hard to keep hold of through a long piece of work. The hit lands cold, and now and again, not reliably and never on the stroke anybody was counting on, whatever took it begins moving like a thing at the end of a long day with no long day behind it. Fighters who plan around that come to grief. Fighters who treat it as weather they occasionally get do well enough, which is roughly how the high country asks to be treated in general.",
+          "It comes off the best-agreed ground in the world and the emptiest, and the people who go up for them come back saying the same thing in different words. Up there nothing has needed correcting in a very long time; the snow is held in shape by an agreement everybody made and then stopped thinking about, and there is hardly anyone left on it to walk. A hard piece is supposed to be the bottom of somebody. This one is the bottom of a very long agreement about snow, which is either the same statement in other words or not the same statement at all, and it does not get settled at that altitude, there being no fire up there to settle it at. It keeps perfectly and grows nothing whatever, which is precisely what the Chroniclers have always said they want out of a thing, and which more than one teller has called the coldest possible advertisement for it."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "ice_poring"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_chronicle"
+          }
+        ]
+      },
+      "rusted_slit_stone": {
+        "description": "Near-black, slit all over, bright copper standing in every slit. Blows land harder and the armour that stops them fails.",
+        "lore": [
+          "Cutters do not like it. The slits go in further than they look and further than they have any right to, and a stone opened along one is two stones worth considerably less than half each. So most are never cut at all. They are caged instead, a band round the middle and pinned, and the smith goes home early and charges the same. The standing joke on the bench is that a band of iron is the wrong thing to hold this one with, and it is only a joke, because the stone does not spread. Whatever was going to happen to it has finished happening.",
+          "It sits in the palm like a wet cobble off a road: near black, going brown where the light gets at it, with the copper standing bright in every slit. New handlers rub it on a cloth expecting the orange to come away. It never does. That is the first thing that tells somebody this is not rust in the ordinary sense, and the second thing is that it is warm, which rust is not.",
+          "They are graded on the copper. Bright, and running the full length of the slits, is a prime one. Copper gone flat and brown, or pinched out halfway along, is what the buyers call a dry one, and a dry one does noticeably less to the other man's armour. Anybody who has handled enough of them will add something else, unprompted: no two are quite the same rust. One kind of stone, and there is no argument about that part. But one comes up coppery, one comes up nearly black, one has a green in it, and the difference is not the animal.",
+          "Which is the finding, and the trade is used to it and new handlers are not. The softest thing on the low ground bottoms out in iron, and the iron was never its own. What has been pressed down in here is not a creature so much as a place, some patch of ground with somebody's things left standing out on it, going off in the weather for as long as it took. The stone is a fair record of that patch of ground. It is a poorer record of the animal, and none whatever of the person the ground belonged to, and it is that ordering people find they cannot put down once they have noticed it."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "hedgehog"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          }
+        ]
+      },
+      "smouldering_dark_egg": {
+        "description": "Scorched near black, embers banked in every crack. A Slagling's last warmth: it warms the blade and the hide behind it.",
+        "lore": [
+          "Most hard pieces come off the ground and go into the bag. This one goes into a pocket, and a great many of them never come out of it again. It is scorched nearly black across the plates, dark red where the shell shows through, and the seams are still lit: a low orange banked down in the cracks that does not brighten, does not spread, and has never yet been seen to go out.",
+          "In a blade it is a poor bargain and the trade is honest about that. It warms the edge a little, and what the edge does is a little warmer, and that is the whole of it. Worn, it earns itself back on one afternoon in a hundred. It takes the worst out of a real fire, a spill off the black rock, a roof going up, and there is no drama in the doing: a person walks out of a thing they had no business walking out of, singed, complaining about their eyebrows.",
+          "There is a small quarrel about them and it is a fair one. A teller will point out that the thing in your pocket is warm, and will be warm in a hundred years, and has not in all that time held anybody's attention for a minute together, and that a fire is not warmth, it is warmth with somebody talking beside it, and the two ought not to be confused by people who know better. The ones who carry them do not really disagree. They say only that high on the black rock, where the rota lapsed further back than anyone can now date and the nearest tended fire is a day's walk down the mountain, a warm thing in the pocket is not an argument about anything. It is company."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "lava_poring"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_fires"
+          }
+        ]
+      },
+      "starlit_void_stone": {
+        "description": "Night-black, small lights all through it, pale seams branching over it that open into nothing. Lighter than it should be.",
+        "lore": [
+          "The first thing anyone learns about hard pieces is that they are heavy out of all proportion. A whole existence pressed down into something you can close a fist on, and the weight is how a handler tells one from a pebble in the dark. Then this comes along and rises too fast into the hand, and grading it by heft gives a number the grader does not believe and takes twice. To look at, there is nothing wanting: night-black, small lights all through it at no settled depth, so that turning it brings a different few of them near, and pale seams branching over the surface that a nail can find no gap in. It reads solid. It weighs like a shell.",
+          "It goes into blades and only into blades, and that rule got made the hard way. A blow with one behind it lands heavy and lands dark, and every so often the fight has you standing behind the thing you were standing in front of, before that thing has finished turning. In a blade this is a gift. An armourer once set one into a breastplate on the reasoning that a piece which moves you might move you out of the way, and what it moved the wearer into, in one stride, was the middle of what he was backing out of. Armourers have not tried it since and are short with anyone who asks them to.",
+          "What the stone says is not what watching the creature says. Watch one and you get four lit eyes in a slab of black stone that hangs in the air and comes down with all its weight at once, and you would put the weight at the centre of it. Hold the piece and it does not attend to you at all. Most of them have a direction, a side that warms or a lean toward the palm; this one is indifferent in a way handlers call restful until they have carried it a while. There is no looking in it. For a shape that did little else but look, what pressed down at the bottom was a manoeuvre, and the manoeuvre is being on the side of you that is not the front. Both parties in the long argument about what that creature ever was bring this stone to the table. It has settled the argument for neither, and it is still the dearest thing that ground gives up."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "diablo_2"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      }
+    },
+    "monsters": {
+      "butterfly_dragon": {
+        "description": "Wings exact to the last scale, a lantern-sized dragon guessed at, and a jet of flame three times its length.",
+        "lore": [
+          "Somebody told this one into existence, though not on purpose and not by themselves. No dragon was ever anywhere to be remembered; what there was, in a hundred countries at once, was the telling of one, and a telling said often enough to enough people who were listening weighs as much here as a life does. So what pooled in this case was not the memory of an animal. It was the memory of an account of one, and you can see the difference from ten paces. Whoever did most of the remembering had never seen a dragon, which is unremarkable, since no one has. They had seen a meadow in summer. They had lain in it and watched the irises being worked over, close up, for as long as a child watches anything, and when the account ran out \u2014 and an account is mostly the places where it runs out \u2014 that was what came to hand. The wings are accordingly the best-made thing about the creature: four of them, violet banded through with pink, exact to the last scale. The body is stubby, grey-green and only approximately a lizard. What somebody actually looked at comes out sharp. What they took on trust comes out roughly.",
+          "Then it opens its mouth and puts out a jet of flame three times its own length, and the joke stops there. That part is not vague. The fire is the one detail that survives every retelling in every country whose dead are here, so it came through whole and unworn, entirely indifferent to the fact that the thing carrying it is the size of a lantern. Being wrong about a creature does not make the creature harmless. It only decides which parts of it are.",
+          "The oddity, and stone-workers will raise it before you have finished asking, is that a creature this full of fire does not put down a fire stone. Knocked down, it goes up in its own flame, and at the very end the flame stops being orange. It turns violet \u2014 the colour of the wings, the colour of the one summer that actually got looked at \u2014 and what sits in the ash afterwards is violet too, faceted all over, with a small gold mark set at the middle of it like something written down. Carried, it lands a blow with the weight of a thing recalled rather than a thing swung, and it brings whatever you have just done back to your hand faster than you could fetch it yourself. The Chroniclers make a good deal of that mark. The tellers let them have it, and then point out that the only part of this creature anybody anywhere can be relied on to have is the fire, which is not the part that lasted. Both sides go home satisfied, which is usual.",
+          "It has no hoard. Where a dragon keeps one was never clear to anybody; that it has one was, so the having came through and the where did not. What it does instead is both halves of itself at once, without ever noticing that they do not go together: it sits out on the warm black rock as though guarding something, with nothing under it to guard, and then comes down to the meadow irises and works them over the way the thing whose wings it has would, and goes away trailing petals it has no use for. It cannot want the hoard. There is no one in it to want with. It is only doing, very carefully, what it was assembled out of."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "amethyst_rune_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_fires"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "monsters",
+            "id": "forest_poring"
+          }
+        ]
+      },
+      "dark_donkey": {
+        "description": "Unharnessed, unloaded, unled \u2014 and still keeping to its route. Get in the way and it comes on at a walk.",
+        "lore": [
+          "In the life it fell out of, somebody owned it. That is not a small thing to know about a creature. It means there was a person who fed it and swore at it and roped things onto its back every morning, and that the donkey came down here, and the person did not come down beside it.",
+          "Look at what comes off one. A bronze camp knife on a ribbed grip, made for rope and rations. Braided hemp chewed to a splay at one end. Three iron links worn smooth on the inside where a harness sat for years. A roll of coarse grey canvas. A hide pegged out with little stakes by somebody who began the tanning and gave up on it. The teeth are the animal's own and say only that it chewed all day. Everything else is one person's kit for going somewhere and stopping for the night, and every bit of it is still coming off a donkey that is carrying nothing at all.",
+          "One more thing comes out of it, and that one gets underestimated exactly once. It comes up olive and threaded through with root, and there is no fire in it and no appetite, which is what people look for when they weigh a stone in the hand, so the plain ones tend to get set aside. The ones who crack for a living stopped doing that with this one early. Think about what root actually does. A road stays a road because somebody walks it daily; leave off for a season and the verge is up through the middle of it, without hurry, without anything you could call force, and the road loses. That is what a working body presses down to, and carried it does both of the things it always did \u2014 closes your own small hurts over while you are busy with something else, and puts the verge into whatever you strike. Nothing about it looks like a weapon. It is nevertheless the sort of thing that takes a wall apart.",
+          "Anybody who has met one on a path will say the same. It does not stalk and it does not hold ground. It comes on at a walk, in a line, and the line does not bend around you. You are standing in a route it was walking before the route went soft, and whatever you would take that up with went out of it a long time ago. A working animal does not need much of itself to go on working: a road, a load, and a voice up at the front. It has the road. The load went, and it walks as though it had not. The voice went so long ago that there is no name left to put to it, and the ears have not been told. You will see one halt in open ground with both ears swung forward at nothing whatever, waiting to be spoken to, and then walk on."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "mossy_root_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "diablo": {
+        "description": "A crowned bone face, two sizes too big for the starved body carrying it. Fights head-first. Goes to ash.",
+        "lore": [
+          "The people who do this for a living keep a list of what comes off one, and most of the list is not its own. A matched pair of glossy black hooks that would sit better on a big hunting cat. A hooked grey talon of the sort the lit thing in the woods sheds as well. A whole wet eye, brown-irised, when neither eye in that bone head is brown. They will tell you the fiends carry spares. They say it the way you would state a fact about stock, and then they talk about something else.",
+          "Two things on the list are its own, and they are the two worth having. The first is a purple hook grown on its own hand and sized for that hand; what is dried on the point is green, and it is the same green that keeps the stitched-together thing on the black rock upright, and how it got onto the claw is not a question people enjoy. The second is matte black, warm, and takes the light off your palm without handing any of it back. It cannot be forgotten and will not thin, though nothing put it through the long forgetting a hard piece is supposed to cost, and the ones who write these things down have not stopped arguing about how something emptied in an afternoon leaves a piece as hard as one that took an age. Set against a blade it strikes like something coming out of an unlit doorway, and when a shape goes down in front of you it will now and then take you out of sight along with it, which is exactly what its owner used to do.",
+          "Look at what is standing there and the list makes a sort of sense. A narrow body with the ribs showing and hands that hang. A face of pale hard bone far too big for the rest of it, crowned with a spread of horn-blades, two red eyes sunk deep enough that you cannot tell what they are looking at. It does not walk. It gathers both feet under itself and goes across the ground in bounds, landing in a crouch each time \u2014 a thing that has legs and no longer has the habit of them. And it fights with its face: the head drops, and the crown goes into you forehead-first, which is not how anything that ever hunted for a living would choose to go about it. The hardest thing left on it is the thing it leads with.",
+          "None of that came from thinning. Out in the open country most of what comes at you is finishing a round it started a long time ago, and there is something almost restful in how little it wants from you \u2014 it will hurt you because you stood in the round, and for no other reason. This one was emptied instead, all at once, near the mouth in the east, and whatever is working the shape is in a hurry. Breaking it takes no time either. The body folds at the knees and settles rather than falls, and the settling is ash, pale and fine, in a heap you could cover with a hat; the heap goes flat, the flat goes to a smear with a little sparkle still in it, and the wind has that by morning. The face goes with everything else, which is the part anybody who has gone looking for the masks wants to hear twice, because a face is supposed to be the piece that stays. This one's does not. It only goes last."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "matte_black_shadow_stone"
+          },
+          {
+            "domain": "items",
+            "id": "purple_venom_claw"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "monsters",
+            "id": "diablo_2"
+          },
+          {
+            "domain": "monsters",
+            "id": "malformed_creature"
+          }
+        ]
+      },
+      "diablo_2": {
+        "description": "Nothing behind the face \u2014 four slit eyes burning in black stone, wreathed in dark. Its attack is to fall on you.",
+        "lore": [
+          "Black stone, broad at the brow and tapering to a chin, with four eyes burning orange in it: one high on the forehead, then a pair, then one set low, all of them slit and all of them awake. Red marks are cut into the stone above and below them, and two people who have looked at those marks closely will not afterwards agree on what they say. It hangs in the air inside a wreath of slow dark, and the dark takes fire when it moves.",
+          "Ask why it should be a face, of all the things to be left with. A face is what other people hold of you, and they hold it hardest and let it go last. It is therefore the piece that keeps its shape longest, and a shape kept well enough will get up and go about its business whether or not there is anyone inside it doing the getting up. Everything else about whatever this was got taken. The face was held too well to take.",
+          "There are two accounts of this one and neither has won. One says it is a mask of the kind the emptied things leave lying in the dirt, and that a mask left long enough near the mouth stops being an object. The other says there was never anything behind it at all: that this is what the emptying makes when it has nothing to work with, a shell with the outside done beautifully and the inside not attempted. The ones who handle them prefer the second account, and will admit after a while that they prefer it because the first has a next question in it.",
+          "It does not strike at you. It rises, and then it comes down, all of its weight at once, meaning to crush rather than to cut, and the dark drags flame behind it the way a cloak drags. For a thing with nothing inside it, it is not idle. It grows a leaf of crystal veined orange and red that will still be warm in your pouch two days later. It grows horns, four off one base and ridged like bark, which are shed once whatever they were grown to settle has been settled \u2014 so you find them lying about and never on the face in front of you. Only one thing in the pile was never grown here: an eye, whole and wet, with a brown iris. None of the four in its head are brown.",
+          "The eyes shut before anything else happens. All four at once, and not a crack showing yet, so whatever was doing the looking is already gone by the time the stone starts to come apart. Then the dark unwinds, and the face splits, and the rubble goes pale, and what is sitting on the ground at the end of it is one smooth dome of grey stone with nothing cut into it at all. No eyes. No marks. The people who collect faces have argued for years about whether that counts as one. In among the rubble is the hard piece: night-black, flecked all through with small lights, warm as they all are. Carried, it does what the shell did \u2014 blows land heavy and dark, and now and again it puts you round behind the thing you are fighting before that thing has finished turning. Edge-on, this was never more than a slab. That is how it was always able to be where you were not looking."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "starlit_void_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "lore",
+            "id": "the_chronicle"
+          },
+          {
+            "domain": "monsters",
+            "id": "masked_shadow_creature"
+          },
+          {
+            "domain": "monsters",
+            "id": "diablo"
+          }
+        ]
+      },
+      "forest_poring": {
+        "description": "Round and sand-pale, balancing one bright drop on a stalk. The drop is the weapon and comes round like a flail.",
+        "lore": [
+          "Somebody started calling the round ones lings and the word stuck, the way a word does when there is no better one going. It is a habit of the people who sort them, not a fact about the things, and it comes apart the moment you empty a collecting bag at the end of a long day. This one and the wobbling blue thing at the ponds leave the identical mint-green globule, which is a real family resemblance. The green one in the trees leaves a different glob altogether and shares it with a frog, which is an animal, and fell out of the sky, and was alive somewhere first. The ones on the black rock and the high snow leave nothing of the sort at all. One word covers all of them and it is our word.",
+          "This one happens in the low country. A great many of the people who ever fell had crossed a wet field at first light before they did, and of everything a wet field at first light contains, the detail nobody gets wrong is one drop hanging on a stem with the sun caught in it. So that is the part that shows, perfectly, held up over the rest of it on a stalk.",
+          "The rest of it is what a field looks like after a hundred thousand people have remembered it roughly. Handled that often a thing wears down: the particular grass goes, the particular year goes, the colour goes pale and dry, and what is left is grain. That is the body \u2014 a heap of worn-out meadow with one kept detail balanced on top of it. Flatten it and the wet is off the grass by the time you have checked your arm, and there is no body, because there was never a body. In the flattened place there is something sun-bleached and warm about the size of an egg, gold down at the heart of it, and heavy out of all proportion to what was carrying it about.",
+          "Set into a weapon that stone makes a blow land like a dropped sack and leaves whatever took it blinking at nothing for a second or two, which is a fair account of the meadow at mid-morning and always was. It is also a fair account of the creature: swinging its one bright thing round in whichever direction somebody happens to be standing, catching the light, hitting like a weight on the end of a stalk, meaning none of it."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "pale_sand_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_coming"
+          },
+          {
+            "domain": "monsters",
+            "id": "forest_poring_2"
+          }
+        ]
+      },
+      "forest_poring_2": {
+        "description": "Green, damp, a shoot coming up out of its head, and a little wooden sword in a fist it does not really have.",
+        "lore": [
+          "Off the grass and in among the trees, the same business is going on with different materials: green, damp, a shine on top of it like fruit, and a small shoot coming up out of its head that would be a branch if there were anything underneath for a branch to be on.",
+          "What each of them turns up holding is decided by what its place is remembered for, and the two places are not remembered for the same thing. A meadow is somewhere people walked across. A wood, to very nearly everybody who remembers a wood at all, is somewhere a person went to take something out of, and the stroke is the part of that which comes back identical from everybody. So it produces a little sword of pale wood with a dark grip, out of nowhere in particular, and swings it, and could not tell you why, because there is nothing in it that could hold a why. Read no grudge into that. Something still walking a round at least chose the round once, back when there was someone inside doing the choosing; this never had one. What it has is everybody's faint idea of a woodland thing and none of anybody's reasons, and it will come at a traveller with the same blank willingness it shows a passing bird.",
+          "It comes apart faster than anything else its size. There is an instant where it is still standing and already finished, and then it is chips: small green pieces, all directions at once, gone before they land twice. Sometimes a planed length of dark oak turns up in the middle of it, which it certainly did not plane. The hard piece stays, black grain running through it like sawn timber. Worked into armour it stiffens the plate and hands part of every blow back to whoever gave it \u2014 the wood's half of an old transaction, kept long after the rest of the transaction went soft. Somebody swung; something took it; the taking is the part that got remembered hard enough to end up a stone."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "dark_grain_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "forest_poring"
+          },
+          {
+            "domain": "monsters",
+            "id": "tree_stump"
+          }
+        ]
+      },
+      "hedgehog": {
+        "description": "Still laying in stores for a hand that stopped coming. Crowd this brown handful of spines and the quills stay in.",
+        "lore": [
+          "Small when it fell and small now: a brown handful with a soft tan face, four pale feet, and a black eye with a bit of light left in it. It travels along the bottom of things \u2014 walls, hedge-lines, the low side of a path \u2014 because that is where it went before, and it has kept the route long after the route stopped leading anywhere.",
+          "The nuts are the part that gives it away. It carries a fistful of hard glossy kernels, streaked tan and brown, and will not be parted from them, and a hedgehog has no use for a nut and never had. Somewhere behind this one there was a person who put food out at an hour, and an animal that learned to be at the place when they did, and of that whole arrangement the piece that lasted is the being-there. It is still laying in stores. It could not tell you who for. It could not have told you at the time either, which is somehow the worse half of it.",
+          "Rust is what it comes down to, which is not what anybody expects out of something soft. The stone comes out of it looking like old iron gone sour, weeping copper from every slit, and it has looked exactly that way since the hour it was picked out of the grass and it will look that way for good \u2014 a rust that has finished happening. The likeliest account of why is also the least dramatic. This animal spent its whole existence underneath the things people leave outdoors: a spade, a gate hinge, a length of chain lying in wet grass, all of it going quietly off in the weather while the hedgehog went past at the same hour every night for years together. It did not keep the person. It kept what the weather does to what the person left behind. Set against a blade it puts more into a blow than the blade earned, and armour that stops the blow starts giving up shortly afterwards, on its own schedule and not the wearer's.",
+          "One other thing turns up among its leavings and it is worth stopping over. A coarse black pelt, matted into clumps, three of its quills driven through and left in. Two animals on the low side of a path in the dark, both running on habit, neither of them choosing any part of what happened between them. Something out there is going about patchy now, and the hedgehog has been carrying the evidence on its back ever since, snagged in among the spines, because it has no way of putting anything down."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "rusted_slit_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "white_rabbit"
+          }
+        ]
+      },
+      "ice_crystal_golem": {
+        "description": "Dark rock grown through with ice: a crown, a mouthful, bladed arms, and more torn out of the ground at need.",
+        "lore": [
+          "Above the snow line the ground turns to crystal and stays that way. Nothing up there is warm long enough to become anything else, and almost nothing lives on it, and those turn out to be one fact rather than two. It is not that the high country goes untold, either. It is told constantly and by accident: every account of anything at all up there restates that it is cold, that it is high, and that it is where it was, and it has been restated in that shape by everyone who ever fell, in every language they fell with, without one of them meaning to be maintaining anything.",
+          "This is what walks about in it. The rock came first \u2014 dark, plated, heavy, no different from the ground it stood out of \u2014 and the ice is what the place did to the rock afterwards. It did not stop at the surface. Blades stand off the skull in a crown, off the shoulders, off the backs of the forearms, and the mouth is a row of them. When it wants more than it is wearing it reaches down and takes it, because up there the ground is the same material as the thing standing on it, and there has never once been a shortage.",
+          "The chips that come off it are near-black glass with a cold blue sheen, which is an odd thing to be picking up at that height. It is the stuff of the black ground far below that has no business being warm and is. People who have stood on both say the only difference is what got to the rock first, and then talk about something else. The same seam accounts for the eyes, which unsettle people rather more than the size does: a dull red spark down in one socket, no fellow to it in the other, holding steady from every angle you can take. Get a proper look at a broken one and the unsettling stops. The red is a thread in the rock and not a light behind it, and the sockets have no back to them \u2014 two holes in a face-shaped stone, about as deep as a thumb, and then solid.",
+          "The hard piece in it is not ice either. Grey plated rock with a single bright cyan seam driven through it, pocket-sized and thoroughly unpleasant to keep in a pocket: the whole creature in small, the two materials and the joint between them. What it lends is both at once. Worked into an edge it puts the cold in ahead of the metal, and whatever took the blow spends a while afterwards moving as though the ground had gone knee-deep.",
+          "It will still be standing up there when the low country it has never once visited has gone soft twice over. There is nothing in it that could be pleased about that. It has no round to walk, and nothing it is late for, and no name it keeps failing to produce; it goes where the ice is, and comes back, and has been doing that since before the first fires were lit. People who work the high ground say they do not find it frightening. They find it restful, which is its own sort of warning, and after a season of it they come down."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "cyan_glacier_seam_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_coming"
+          },
+          {
+            "domain": "monsters",
+            "id": "stone_golem"
+          }
+        ]
+      },
+      "ice_poring": {
+        "description": "Packed snow with two dark eyes, heavier than snow should be. Every spike it throws is grown out of itself.",
+        "lore": [
+          "Low in this country the ground does not stay put. A path takes itself somewhere else between one season and the next; a hill everybody was certain of turns out not to be there, and there is no saying when it stopped. High under the crystal country none of that happens. The snow up there has not needed correcting in a very long time, and there is also hardly anyone left up there to walk on it. What comes up out of that combination is packed harder than anything down in the grass.",
+          "It is snow pressed into a shape with two dark eyes set well into it, and it weighs more than snow has any business weighing. What it is packed from does not melt: a handful of the blue-white pebbles that come off one will sit in a warm palm all afternoon and be exactly as cold when it is put down. The parts keep. The whole one does not.",
+          "It arms itself out of itself. A spike comes up through the top, grows to a point, and goes \u2014 and there is measurably less creature afterwards than there was before it started. It will do that until there is not enough left to do it with, because there is nothing up there to show it another way and nothing in it that could be shown. At the end it does not shatter, which is what people expect and would be easier to watch. It slumps. The shape gives up its edges and goes down into a lump of slush inside its own footprint, and the wet mark outlasts the rest of it by an hour.",
+          "In the slush lies a pale blue stone rimed white, cold to hold and staying cold, and warm underneath that in the way they all are. In a blade it puts winter into the hit, and every so often \u2014 not reliably, and never on the swing you were counting on \u2014 whatever took the hit goes heavy-footed for a while, as though it had walked further uphill than it meant to and only just noticed. That is the high ground pressed down to the size of a fist: the part of the world that has not gone anywhere, standing about in the drifts in quantity, on a road that has stopped having anyone on it."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "rimed_blue_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "monsters",
+            "id": "lava_poring"
+          }
+        ]
+      },
+      "lava_poring": {
+        "description": "Under a crust of cooled rock, a fistful of heat going out. To strike, it splits along the seams and flares.",
+        "lore": [
+          "There is a stretch of the mountain that is the wrong colour and warm through the boot. No account of why has ever satisfied anybody, and the disagreement is half of what keeps the place going: argued over, walked around, described in detail to people who have never been within a day of it, and hardly ever crossed. Things get up out of ground held that way.",
+          "This one is mostly crust. Everybody who ever sat close to a fire remembers the same thing about one, and it is not the flame \u2014 it is the black skin that forms over a log late in the evening with the red still moving underneath. Everyone has that part exactly, so that is the part that stood up: a fistful of banked heat in a shell of cooled rock, going out from the moment it got up.",
+          "It fights by splitting. The shell opens along its seams, the heat comes out all at once and very bright, and then the shell shuts and there is a little less inside than there was. It cannot do that many times. Nothing about the arrangement suggests it was built to last, and nothing about it suggests it minds.",
+          "Coming apart, the light goes first. The yellow drains back out of the seams, the red follows it, and the shell crumbles smaller and smaller until there is not enough left of it to crumble. What is on the ground afterwards is the litter a fire leaves: a faceted lump of orange stone still lit along its splits, a piece or two of black glass keen enough to shave with, and one ember down in the middle of it that will not go out however long you wait.",
+          "The ember is the hard piece \u2014 scorched dark red, more embers sulking in its cracks, warm in the pocket and warm a hundred years from now. It does not burn hot in a blade. It warms one, and it warms whoever is carrying it, and it takes the worst out of a fire that would otherwise have had the skin off them. Which is right, because what it is the last of was never the burning. It is being warm."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "smouldering_dark_egg"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "ice_poring"
+          }
+        ]
+      },
+      "lava_salamander": {
+        "description": "Basks all day, crusted and cracked open on the light beneath, then gets up breathing fire it never learned.",
+        "lore": [
+          "What fell was small. A damp thing the length of a hand, the colour of wet bark and living under it, no danger to anything and in no danger either. That is the animal, entire. There is nothing whatever in it to account for what is out on the black rock now.",
+          "Then it thinned, the way everything here thins, and by the time its own account of itself had gone there was a great deal of everybody else's lying about to take up the slack. A great many of the dead handled a creature like this once, in a great many countries, and nearly all of them handled it the same way: you put a log on the fire, and a little while later something comes running out of the flame. Every one of them drew the obvious conclusion. Not one of them ever went back and checked. So the shape it holds now is theirs, and it stands several times the size the animal was: the hide gone to crust, the crust split along the seams, something in the gaps that is steady rather than flickering, and eyes the same colour as the gaps. When the mouth opens what comes out is fire. It is the same animal all the way through, for all that. Nothing got up out of the warm ground out there to replace it; it fell, once, and it was smaller than a hand.",
+          "The hard piece is a coal. Dark rock, cracked through, live red still moving in the seams, and as warm the year after as the day it came out; set into a blade it sets alight whatever the blade touches, and the burning carries on a while after you have stopped. Which is odd on the face of it, the fire on the animal having been somebody else's idea to begin with. Except that it was told into burning and then it burned, every day, for a very long time, and there is no line anywhere in that where the borrowed thing stops and the creature's own habit starts. Everything else it leaves goes cold. The shed teeth, the broad amber fang split from crown to root where it came down on the wrong kind of bone, the foot cut clean off at the joint with its three cream claws: warm in the hand for an hour or two, and then only leavings.",
+          "It does not appear to hunt. There is very little on that stretch worth the trouble, and it spends most of a day flat against the warm stone doing nothing at all, which is precisely what the story about it says it should be doing. Then it gets up and walks a round that nothing accounts for, and bites whatever is standing in it. The black rock runs toward the cave and gets warmer the whole way. It walks to the edge of that and turns, every time, and has never gone in."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "red_seam_pyre_stone"
+          },
+          {
+            "domain": "monsters",
+            "id": "lava_salamander_2"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_fires"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
+      "lava_salamander_2": {
+        "description": "Dull olive, pale flat eyes, a gape wider than the skull carrying it. One bite. Rarely two.",
+        "lore": [
+          "The Chronicle files this one beside the burning one because at forty paces they have the same silhouette, and there the resemblance stops. Nothing about this animal is on fire. It is the colour of lichen on a north face, dull olive going grey, mottled so finely that if it holds still against wet stone there is nothing there to see. The eyes are the wrong colour for eyes, flat and pale and pinkish at the inner corner, and it fell out of a life spent in water under stone, in the dark, where they cannot have been much use to it either. What it did bring down with it was the jaw. The head is most of the creature and the jaw is most of the head, hinged much further back than looks reasonable, so that the gape comes out wider than the skull carrying it. One bite, delivered without any preamble at all, and generally that is the encounter.",
+          "What it does now is take the hard things. Bone first: it will spend an entire night on a single marrow bone and leave it knobbed, stained and lying in the open, which is how anyone knows one is working an area. Bone is only where it starts. Stone gets chewed; what cannot be chewed gets swallowed; and of everything on that mountain that will not soften or wear or go anywhere, the best by a long way is gold, which it takes whenever it finds any, though not one of these creatures has ever been opened up with gold still inside it. There is no mystery in the appetite once you have watched this country for a season. Everything else goes. A hillside goes, a path goes, a fat reliable thing you were counting on goes soft where it stands and then is not anywhere at all. A creature that will only take what refuses to go is, in its blunt way, the most sensible thing on that mountain, and it has never at any point known that about itself. It works ground that other things have quietly stopped working, nearer the cave than anything out there that still has an inside.",
+          "The paws it sheds are never a matching pair: three pale curled claws on a scrap of mottled hide, and the next one off the same animal is subtly the wrong shape. Whatever grows back after a loss comes back approximate, and the one after that comes back approximate from the approximation. The hard piece prised out of the jaw carries that whole history in a single object, sea-green and broken clean through, the break filled in with gold. The mend gets explained two ways and both ways have people who will swear by them: that the gold is everything hard the creature ever took, gone at last to the one part of it that could hold anything; or that the crack came first and the gold went in after, and the appetite was only ever the animal trying to get back what it had already lost. Worked into armour it makes the armour hold, and carried about it seems to arrange for gold to turn up."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "gold_seamed_teal_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          },
+          {
+            "domain": "monsters",
+            "id": "lava_salamander"
+          }
+        ]
+      },
+      "malformed_creature": {
+        "description": "Bare, blotched, hairless and shaped exactly like a person, coming at a walk with one hand open and green.",
+        "lore": [
+          "Out on the black rock, where the ground is warm underfoot, something walks that is exactly the shape of a person. Bare, hairless, not a stitch on it, the head a little large for the body, skin blotched in patches that do not match one another. Nothing about it is monstrous in the way that word usually goes. The masked ones drop a face in the dirt when they go down; this one never took the face off, and wears the whole thing, all over, all the time.",
+          "It kept the belongings too, and that is the part people find hard. A bronze locket knotted over with spirals, worn in under the skin. A pitted silver band still sitting on a finger, plainly never made for that hand. Grave dirt worked into the creases. A bundle of long pale bones on a cord, carried. Half a spool of plain linen thread. Every one of those is a fact about somebody with the somebody taken out of it, and the people who go through what one of these leaves behind are not robbing it so much as reading it. No name has ever been read off one.",
+          "It follows, and it does not hurry. Upright, arms hanging and never swinging, which is what tells you at fifty paces, because a person's arms swing and this one's do not. When it arrives it does not bite and it does not claw. It reaches. An open hand, out and across, a gesture anybody would recognise, and everyone who has met one says that is the worse thing. What comes off the hand is green. There is green in the seams of it under the blotching, and by every account it is what holds the shape upright now; where the skin has parted it weeps. It does not clear out of a wound. It settles, and the next one settles on top of that, and the next on top of that again. Nothing about this creature ever subtracts.",
+          "Why the outside is the part that lasted has a tidy account, and the people fondest of it are the ones who have not been out there. It runs like this: the outside of a person is the part other people hold \u2014 a face, a build, the set of a hand doing nothing, kept by every acquaintance who ever passed it in a doorway \u2014 while the inside was only ever held by the one occupant. That is a decent account of skin still walking and no account at all of the rest. Not of what did the taking. Not of why it went all at once instead of over an age. Not of why it is happening now, and here, on ground where none of this used to happen. Break one and it puts its hands down first, the way something might that half remembers kneeling, then folds up small, and the colour washes out of it, blotches and flush and all, until there is a pale heap on the warm rock getting flatter. The stone is in there: cobbled grey, green still leaking from every joint of it, warm in the palm, and warm and leaking in a hundred years. Harder to put down is where the heap was. A long way round the massif from any way into the cave that anybody knows, and it was not out there on its own."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "green_venom_vein_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "monsters",
+            "id": "masked_shadow_creature"
+          }
+        ]
+      },
+      "mammoth": {
+        "description": "Crowd it and one sweep of ivory clears the road. Otherwise it grazes, wool to the ankles, a herd of one.",
+        "lore": [
+          "Nothing else grazing this country comes anywhere near it for size. Dark brown wool hangs off it nearly to the ankles, the shoulder stands over a grown person, and the tusks come out cream and curve up and out far enough to clear a path on their own. It grazes ground with very little left in it: the molars that come out of one are worn flat past anything grass would account for. What surprises people who expect trouble from something that size is how uninterested it is. Nothing about it is hunting. Nothing about it was ever posted to watch anything. It shifts what is in front of it the way weather shifts things, without attitude, and nearly everything that has ever gone wrong between one of these and a person went wrong because the person stood too close for too long. Crowd it and the head comes round, and one sweep of that ivory ends the conversation.",
+          "The spacing is the part to watch. It keeps a gap open on either side of itself. It halts the way an animal halts when the animal ahead of it has halted. It will stand for long stretches in the middle of open ground doing nothing in particular, at the correct interval from nothing in particular. That is herd behaviour, performed accurately, by one animal, and whatever came down out of the sky alongside it is not here to complete the arrangement.",
+          "Bringing one down is not like bringing down the small things. The knees go first, and that takes a while. Then it settles into the grass. Then the whole enormous thing goes pale at once, wool and hide and ivory together, while the outline stays exactly where it was \u2014 and then the outline goes as well. People who have watched that once do not go out of their way to watch it again, because for a moment it looks like the thing everybody in this country is actually afraid of. It is not that, and the flattened grass is the proof, because there is something lying in it: a piece of ivory small enough to close a hand around, chalk-cream, webbed all over with fine fissures, and warm. The largest thing anybody has met out there comes down to something that fits in a fist, which is either the most even-handed fact in Nangijala or the most unpleasant one, depending on who is holding it. And it could not have been anything else. What this animal knows better than any other is not breaking. The tusks it sheds are snapped clean off at the root by something that never once broke stride, and every fissure in that stone is a break it kept walking after. Set into armour it lends precisely that, which is not strength. It is the habit of continuing while damaged."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "pale_bone_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "saber_toothed_tiger"
+          }
+        ]
+      },
+      "masked_shadow_creature": {
+        "description": "Not a thing that thinned \u2014 a thing that was emptied. Whatever moved in kept the face, and the mask is all it leaves.",
+        "lore": [
+          "Everything else in the wild is running on habit \u2014 a shape that outlasted whoever was inside it, going patiently through the last motions it ever learned. Grinmask is not that, and anyone who has met both can tell within a heartbeat.",
+          "It was emptied. Not over centuries, the ordinary way, with the details going gently and nobody at any point in distress. All at once, the way a room is emptied, and something else moved into the space that was left.",
+          "What is in there now is a sliver of moving dark, and it is not the creature's own. It is wearing the outside. This is why it does not behave like anything else out there: a thing at the stage of Habit is uninterested in you and will only hurt you because you walked into its round, but Grinmask skips. It plays. It has a preference about being watched. There is somebody's intention operating in that shape and it did not come from the shape.",
+          "Break it and the dark simply stops being there \u2014 no struggle, no leaving, it is present and then it is not. What falls is the mask, which lands in the dirt and does not thin. It sits there being exactly a face for as long as anybody leaves it, long after everything else about the creature has stopped being anywhere at all.",
+          "It is still smiling. It was always going to be smiling. A face is the easiest part of a person to remember and the last part to let go, and the mask is not a disguise the creature put on. It is the only piece of the original that the emptying did not take.",
+          "This is the observation that started the whole investigation into the eastern mountain, and the masks are still the best evidence anyone has of what is down there. Nobody has yet explained why a hungry thing should bother leaving the faces behind."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "items",
+            "id": "hollow_black_soulstone"
+          }
+        ]
+      },
+      "mystical_frog": {
+        "description": "A green weight in the shallows, in no hurry to move, and the first thing a great many new stars ever meet.",
+        "lore": [
+          "Animals fall too. The sky drops them at the same rate it drops people and sorts neither, and where a new star gets met and told what has happened to it, a frog does not, because there is nothing useful anyone can say to a frog. This one came down in the wet and carried on with the only trade it had. Sit where the flies come. Hold still. Be cold. Be patient past the point where patience is a virtue and out the far side of it, where patience is simply what a thing is made of.",
+          "That is very nearly all there is to a frog, which is what makes it so hard to say how far down this one has got. When a person loses their particulars it shows. A frog that has lost every one of its own sits in the shallows in exactly the attitude it always sat in. It has not needed to eat for longer than most of the roads have been where they are, and it still waits where the flies would come. Under it in the silt is a smooth grey-blue stone, worn round by more water than it has sat in since, cold in the palm however long the day has been \u2014 and every round wet thing out in the ponds keeps one as well.",
+          "The low end of the meadows is where people walk when they have just come down and cannot yet say their own name, so this is very often the first thing anybody meets here: a green weight the size of two hands with a hard yellow eye on each side of its head, looking back and not getting up. Going out to meet a star is the oldest courtesy in this world. The frog is not keeping it; the frog was only already there, which for a great many arrivals has had to be near enough. It is also, very often, the first thing anybody breaks \u2014 it is close, it is slow, it does not run \u2014 and afterwards somebody is standing shin-deep in cold water with a small warm stone in their hand, mottled the green of the water round their shins and already quietly at work on their knuckles. Sitting in the wet and coming out of the sitting in slightly better repair than it went in was the whole of what the animal could do. Most people begin exactly this way. The first kindness this country does them, they take off a thing that was only sitting there."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "lichen_green_soulstone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_falling"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          }
+        ]
+      },
+      "night_beast": {
+        "description": "Dark hide split at the shoulders and spine, lit bone standing up through it. You see one coming a long way off.",
+        "lore": [
+          "On all fours, hunched, with long arms and hands that end in fingers rather than paws, and quicker on that hunch than a thing built like that has any right to be. The hide is dark and split: along the shoulders, down the whole length of the spine, at the flanks. Standing up through the splits is bone, pale, carrying its own light. The head is bone the whole way round, two sockets in it and nothing you can find in them that is looking back.",
+          "Everything else out in that country is at some stage of going. A shape with the details gone but the round still walked. A shape with nothing left in it but the last thing it ever learned. Then, in its own time, nothing. This one is at no stage at all. It did not get here the slow way; it went into the ground one way and came out the other, and where the long accounting ought to be there is a light instead, and the light has not gone down by so much as a shade.",
+          "Keepers who worked the eastern circuit used to say there was one mercy left near the mouth and this was it, a thing that cannot cross a black wood without announcing itself. They stopped saying it after somebody watched one hunt. The light is not leaking and it is not for your benefit. It comes up out of the ribs at whatever is standing close in front, and anything that has been in an unlit place long enough to have given up on light goes blind where it stands and is still standing there, blind, when the long raking arm arrives. The crouch, the reach, the arm \u2014 all of it is built for coming out of the dark, and the light is the part that does the work.",
+          "Bone is all that comes off it, and nothing stranger than bone: ribs bleached clean, hooked talons in matched sets, some of them the same grey hooks the horned fiends shed, a marrow bone knobbed at both ends and stained where beige should not be. It bleeds, too, and freely, which is not what people expect from something that was emptied. Breaking it goes wrong in a particular way. It comes apart at the neck, the lit head leaves first, and the rest of it stays up on its hands a moment afterwards, which is the part that anyone who has seen it gets to in the telling and then skips. The hard piece is dark and banded, with a seam of live gold in it that has not gone out and is not going to, warm, and impossible to forget. It is the same light that was in the bones: in a weapon it burns what it touches, and close in it does to other things exactly what the ribs did. That light was burning in there the whole time it was out in that country. It was never once lit for anybody."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "banded_solar_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "monsters",
+            "id": "diablo"
+          }
+        ]
+      },
+      "saber_toothed_tiger": {
+        "description": "A hunter left over from an age this country stopped telling, black-furred, amber-eyed, built for one rush.",
+        "lore": [
+          "The fangs are longer than the jaw can shut over, so the mouth has to open the whole way before they are any use at all, and when it does you can see how little of the rest of the animal was built for anything else. Coat like wet coal. Eyes the colour of a lamp turned low. It came down out of a country far enough back that nothing walking around today has seen one of these standing up in life, and it has been out in the grass, more or less unmentioned, ever since.",
+          "Unmentioned is most of what is wrong with it. Other things get talked about badly \u2014 at the wrong fire, by somebody who only half saw them \u2014 and badly is still being held. This one does not come up. So it has gone the way untold things go, and the order is the sad part: the plain went first, then the weather on the plain, then whatever it used to be afraid of, then the others of its kind strung out along the line of a hunt. What is still out in the grass is the last hundred yards of one. It will lie in the open for hours doing nothing whatever, calm the way a cat is calm, which is not calm at all but a decision that has not been taken yet.",
+          "The leavings are honest about it. Coarse black mats of coat with other things' quills caught in them, off an animal that tried its luck on something quilled and ought to have walked past. A matched pair of glossy hooks, as sharp as the day they grew. Now and then a tooth hollowed at the root and gilded bright by somebody who thought the occasion called for that, and whoever it was is not around to say what the occasion had been. And under all of it, the piece that will not go any further down: grey, plated, shut around a clot of red. Of everything the animal used to be, what lasted was the part that took something back out of whatever it opened. Held against a blade it goes on doing exactly that, and it does not know how to do it by halves.",
+          "None of that came out of a telling. It was got by walking out to where one lies up and watching for a long while. The tellers will point out that being looked at is not the same as being told about; whoever wrote this down did not argue the point, and wrote it down."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "grey_stone_crimson_veins"
+          },
+          {
+            "domain": "lore",
+            "id": "the_chronicle"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "mammoth"
+          }
+        ]
+      },
+      "snow_demon": {
+        "description": "Gaunt, four-horned, snow to the claws. The wings never beat. Two colours on it are wrong, and both are hot.",
+        "lore": [
+          "The snow it stands in is the same colour it is, crest of the head down to the claws, so the first thing anybody sees of one is the eyes. Lean, hard, hunched forward at the shoulders. Four ivory horns off a single base, ridged like bark. Long hooked claws, grown in sets. Wings held open and never once beaten \u2014 it has had them the whole time and it comes at you on its feet. Then the specks: a rust-coloured scatter across the hide, the other wrong colour up there, since nothing that high makes rust. No fire is kept that high, no rota ever ran that far, no round goes up there at all, so there is no account of what this was to hold the thing walking around now up against. The ones found lower down can at least be argued about.",
+          "Everything on it is the colour and the temperature of the mountain, and the stone inside it is neither. Black, pebbled, a cyan vein running through it, and the vein moves. Worked into a blade it throws a spark that now and then does not stop where it lands: it carries on, from the body it found to the next body along. That mismatch is the argument about this one, and the argument is live. The people who work the high snow find no mystery in it and say so patiently \u2014 dry cold is the country that bites you when you take a glove off, and a storm is only what that gets to when there is enough of it. The people who work the stones are less easy, because a stone is supposed to be the last of what a creature was, and this creature is made of cold, and cold does not jump. What reached the bottom of it was the reaching. Past the thing in front of it, for the thing behind it.",
+          "It hunts without stopping, and there is very little up there to hunt. It moves hunched and unhurried and makes no sound on the snow, and what those claws open does not close quickly, because the cold gets into the wound and settles in. Talons drop out of it and grow back, so a patient tracker can follow one across a whole season by the sockets left in the drift behind it, ragged, always in sets. None of what it catches makes any difference. It has been starving the entire time and will go on starving, because there is nothing in there that could ever be full. When it goes down it goes all at once and stays down, and the heap darkens as it settles, and dark carries a long way up there. That is how the position gets reported at all, and the position is the trouble: a great many days uphill, on the far side of the massif from the eastern ground where this is supposed to happen, over country more of the dead have agreed on, for longer, than any other in the world. People used to call the high snow safe on exactly that reasoning, too well remembered to lose. The ones who still say it have not been up lately."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "cyan_lightning_egg"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          },
+          {
+            "domain": "monsters",
+            "id": "malformed_creature"
+          }
+        ]
+      },
+      "stone_golem": {
+        "description": "A cairn that got up. Moss on every weathered face, a flat head low in the shoulders, one fist that opens ground.",
+        "lore": [
+          "Count the dead who ever cleared stones off a field before they could work it, and you have counted a good share of everybody. Every one of those fields had a heap at the edge of it \u2014 near enough the same heap in every country and every century: rounded brown stones, waist-high, added to a little each season. Seen daily by whoever worked the ground. Walked around, never walked on, put to no further use after the first stone went onto it. Enough of that, in enough fields, for long enough, and one of the heaps has a face in it.",
+          "There was never anyone in it, and the proof is public, and it is not a pleasant thing to watch. When one of these goes down the head goes first \u2014 it tips off the shoulders, lands, rolls a little \u2014 and for a moment there is a black socket where it was sitting. Everybody leans in the first time. The dark in it is about as deep as your hand and then it is stone: no cavity, no worn place shaped to fit anyone, nothing that was ever occupied. Then the body follows in a run of rubble, and what is on the ground is a heap again, moss and all, about the size it must have started at. It stays a heap for a good long while. It does not always stay one.",
+          "Among the fallen stones there is usually something harder than the rest. A split geode still leaking cold light. A six-sided point of white quartz. A teal crystal with a working edge on it. Now and then raw gold sitting in rubble-grade rock, which is the find people go up for. The ones who crack them for a living hold that a thing like this has to gather around something to begin with, and that it takes whatever in the ground is hardest and least arguable and grows outward from there. Gold is the one substance the dead of every century remember the same way. If you were assembling a body out of nothing but agreement, that is where you would start too. And past all of that, at the middle, there is one thing more: mossed plates shut around a small yellow-green star, warm to hold. Growth is not the soft half of anything. Watch a root take a wall apart and you know what green does to stone, given time; the star hands that over all at once, out of the edge of a blade, and then spends the rest of the fight closing you up while you are busy elsewhere.",
+          "Look at where the green is. The crown, the shoulder tops, the outsides of the arms, one flank \u2014 the faces that catch weather, and none of the faces that do not. Moss does not grow on a thing that moves. It grew there in the field, through season after season of holding one attitude, and it is the only part of the whole arrangement that was ever alive. Which is about right for what anybody keeps of a big old rock at the edge of a field. Not the rock. The rock was never in question. What stays with you is that it was green on one side, and that things were living on it."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "mossy_green_egg"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          },
+          {
+            "domain": "lore",
+            "id": "the_human_dead"
+          },
+          {
+            "domain": "monsters",
+            "id": "ice_crystal_golem"
+          }
+        ]
+      },
+      "stone_turtle": {
+        "description": "Hot stone in a tortoise's shape, orange banked in every seam. Still keeping a crossing that stopped being used.",
+        "lore": [
+          "Of the ways over the gorge, at least one is no longer taken. The path up to it went somewhere else in a Turn, the walk round came out shorter than the walk up, and the crossing has carried nothing but weather since. There is a tortoise on it, made of hot stone, old past estimating. It does not hurry and it does not give chase, and a great deal goes past it with nothing happening at all. Some things do not. When one of those comes along, the seams in the shell come up bright all the way over the skull, and by then it is generally too late to have wanted the other route.",
+          "It was never posted there. The guards on the crossings people still use are the ordinary sad kind \u2014 a shape still doing a duty that outlived whoever gave it \u2014 and this one gets filed in with them at a glance and does not belong in the file. What put it on that ledge was the picture. For a long stretch of years, everybody who described a high crossing also described what waits on one, and the versions agreed better than the describers would have admitted: something old, something slow, something you do not argue with. Then the crossing emptied and the describing carried on without it, and all that attention had nothing left to attach to. It came up out of the ground into the gap and took the post. There is no duty in it and nothing owed to anyone. There is an expectation being met, in stone, by a thing with no idea it is meeting one.",
+          "Plates shed off it as the fire underneath them cools \u2014 black glass, mostly, and now and then one comes away whole in the shape of an egg. Nothing has ever hatched out of one. Nothing was going to: an old tortoise with a clutch under it is part of the picture people brought here, and this is that picture the whole way down, eggs included. There is one real egg and it is at the middle. Crack the shell and the rest of it slumps and runs and goes out, and what is sitting in the cooling puddle when it stops is charred black, split open by live orange, and too warm to be sensible about carrying. Set against a blade it does the one thing the whole shape was ever full of: what you strike goes on burning after you have stopped. The orange itself is the harder question. It runs through shell and skull alike, and it is the stone of the stretch of massif that is the wrong colour and warm to stand on, a very long way down and a long way off. How a piece of that ground came to be holding a crossing this high, and whether it walked here, has no answer anybody trusts."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "black_egg_lava_veins"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_fires"
+          },
+          {
+            "domain": "monsters",
+            "id": "stone_golem"
+          }
+        ]
+      },
+      "tree_stump": {
+        "description": "Cut flat on top by an axe that was never swung. Two dark eyes, no mouth, and root-legs that lash for its moss.",
+        "lore": [
+          "Reason backwards from a stump and you get a trunk, and there was never a trunk. What a great many people had instead was a wood \u2014 not one particular wood, the general one: the smell of it after rain, the bars of light coming down, the sound your own boots make in it. Enough of that settled in one place that there is a wood standing there now, and there was some left over when the wood was finished, and the leftover got up on roots. Its top is cut flat, and no axe has ever been swung in that wood. Open it and there is planed oak inside, the grain running true, dressed timber out of a tree that never grew. Nothing did that to it. The oak came in with everything else, because a forest does not get remembered on its own account: people remember a forest they had a use for, the clearing and the woodpile and the boards stacked under the eaves, and whatever comes up out of all that carries the whole of it, including the parts that only make sense if somebody had been working there.",
+          "Two eyes and nothing else on its face. No mouth, which unsettles people rather more than teeth would. It goes about on its roots at the pace of a thing with nowhere to be, carrying a small country on its back: a fat violet cap growing out of the moss on one shoulder, a paper hornet nest under the rim with one dark doorway low on the side and nothing at home in it most of the time, a knuckled little root that trots along at its foot and could as easily be a passenger as a relation. Crowd any of that and the roots come up and it lashes, harder than a thing its size has any business doing. Press it past holding and it does not fly apart. It sits down. It settles and shortens and goes on shortening, patiently, until what is left is a stump cut level with the ground in a wood that was never worked, and in the middle of that sits the hard piece: mossy green, warm in the hand, a red vein running out through it in branches the way roots run. Set against a blade it strikes harder than it ought to, and some of what it opens closes on your side instead. The people who work the stones file it with the blood-natured ones and are not entirely comfortable doing so, since the only thing that ever ran in the creature was sap.",
+          "What it is not doing is thinning. Nothing in it has gone missing, because nothing was ever in it: no name it fails to produce, no round it still walks for a keeper it can no longer picture. It cannot be got at that way at all. It holds for as long as the wood behind it holds, and that wood stands in the low country, where the ground is soft in both senses and changes most from one Turn to the next. What becomes of a thing like this when its wood goes elsewhere is a question that comes up late at a fire and is still open when the fire is out. The tellers hold that it could remember itself whole and go on, the same as anybody. The obvious objection is that there is nothing in it to do the remembering with; the tellers have heard that objection and are unmoved by it. Neither side has watched it happen. Meanwhile it hauls itself between the trees at its own pace, mushroom and empty nest and little root, entirely untroubled by the question \u2014 nothing in it was ever built for worrying, and somebody else has to do that part."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "crimson_vein_mossy_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_long_morning"
+          },
+          {
+            "domain": "lore",
+            "id": "the_age_of_coming"
+          },
+          {
+            "domain": "monsters",
+            "id": "forest_poring_2"
+          }
+        ]
+      },
+      "water_poring": {
+        "description": "Two big eyes in a wobble of pond water. Corner it and it bursts into spray, then gathers itself back up.",
+        "lore": [
+          "This is the first of them most new stars meet, and the one that has to be explained twice. Nothing fell to make it. No creature drowned in that water and came back small and round; there was never anybody in there at all. A low wet place got remembered by a great many people and walked past by none of them for a long while, and the remembering pooled the way water pools, and one morning it had a face on it.",
+          "Fight one and it bursts. It is alarming exactly once. The whole thing comes apart into spray, sits a moment as a flat wet patch on the ground, and is a blob again before you have finished deciding how you feel about it. Nothing you do to it lands the way it looks like it lands, because there is nothing in it for anything to land on.",
+          "People who sort creatures for a living get one question into the usual list and stop. What has it lost, they ask \u2014 and the question has nowhere to go, because there was never anything in it to be losing. It holds together for exactly as long as the remembering it condensed out of stays pooled where it is, and when that goes elsewhere it comes apart. Whether that is an ending, and whose, gets argued at fires and settles nothing.",
+          "It is water gathered round stones and it leaves both. There is a smooth grey-blue river stone it carries about the way it carries everything, for no reason it could give; the frogs down there keep one too, which is either evidence of something or the least interesting coincidence in the valley. Under that is the hard piece \u2014 dull brown plates veined with copper, egg-sized, warm, and much heavier in the palm than the whole creature looked from ten paces. Worked into armour it makes a person very difficult to shift, and that is the one true thing about a puddle, kept. A puddle is not brave and it is not stubborn. It simply cannot be pushed off its own low place, and it is back in it whatever the weather does, and it will still be there when everything that used to walk past it has gone."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "brown_stone_egg"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "monsters",
+            "id": "forest_poring"
+          }
+        ]
+      },
+      "white_rabbit": {
+        "description": "Tame in a way nothing wild is: it comes closer than it should, bolts, and bites in earnest when it cannot run.",
+        "lore": [
+          "The white is a poor idea in country that has things hunting in it, and the coat comes away with the cold still in it: a burr of fur, blue down in its shadows, that takes its time finishing the thaw in your palm. None of that is the strange part. The strange part is that it comes toward you.",
+          "Nothing wild does that. A rabbit is an animal that has decided in advance about every noise there is, and this one decides correctly about all of them, and then for a moment decides wrong. It drifts three or four steps in your direction with its ears up, the way an animal moves toward a person it is expecting something from, and then whatever is left inside catches up with it and it is forty feet away. Watch that happen twice and you know a thing about it that it does not know about itself. Somebody kept this one, and whoever it was got forgotten before the rabbit did.",
+          "The rest of what it does is a routine with the middle taken out. Twice a day it comes onto the same patch of open ground, faces the same way, and waits. Nothing arrives. After a while it goes and eats. People who have sat and watched it will tell you the hour is exact, and not one of them can tell you what the hour was for, and neither can it. Loyalty would need somebody in there to be loyal; what is keeping the appointment is the shape a loyalty leaves behind, still perfectly on time. It has also put by a store of hard brown kernels, which was never a rabbit's food. Half the small things in the low country are hoarding something they cannot eat.",
+          "It bolts from everything, which is why people underestimate it, and it will not turn while it still has somewhere to run. Take that away and it turns. The teeth are real and were always real, and there is no gentler lesson available in this country than the one a white rabbit hands somebody in their first season, which is that nearly everything here will hurt you eventually and almost none of it means to.",
+          "An animal that never fought anything in its existence is nonetheless the finest authority in the world on weight: how much roof will hold, how far a thing can drop and still run, what to do about the weight coming down. That turns out to be what the stone is \u2014 a plate of grey granite seamed with salmon pink, the exact pink of the inside of its ears, which people notice and then decide not to make anything of. Worked into armour it does for whoever wears it what the burrow did for the rabbit. Falls come off shorter. The blow meant to crush arrives merely heavy."
+        ],
+        "related": [
+          {
+            "domain": "items",
+            "id": "pink_seam_granite_stone"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "monsters",
+            "id": "hedgehog"
+          }
+        ]
+      }
+    }
+  },
+  "entries": [
+    {
+      "id": "the_falling",
+      "name": "The Falling",
+      "path": "lore/entries/the_falling",
+      "icon": "lore/icons/camp.png",
+      "icon_id": "camp",
+      "category": "chapter",
+      "summary": "Nobody walks into Nangijala. You fall into it, once, and the whole sky sees you do it.",
+      "body": [
+        "Nobody walks into Nangijala. You fall into it, once, and the whole sky sees you do it.",
+        "Look up on any clear night and wait. Sooner or later a line of light will open at one horizon and close at the other, and somewhere under it a person is sitting up in the grass with no idea where they are. That is all an arrival is. There is no gate, no ferryman, no one taking names. There is a streak of light that everybody sees, and then there is somebody new.",
+        "You arrive with what you were wearing and nothing else. Whatever you were carrying at the end stays at the end. Some people come down with a coat and a good pair of boots and consider themselves fortunate for a hundred years afterwards.",
+        "What you mostly do not arrive with is your name. This surprises people who have not seen it happen. The name is not taken; it simply does not always make the journey, and a new star will sit for an hour trying to produce it the way you try to produce a word you have known your whole life. Some get it back. Some never do, and go on quite happily as whatever the first person to reach them called them.",
+        "Which is why we go and meet them. It is the oldest courtesy in Nangijala and the only one that everybody still keeps: when you see a star come down, you walk to where it landed. You tell them what has happened. You tell them it is not going to hurt. And then, before it goes, you ask them for their name and one true thing about themselves, and you listen properly while they say it.",
+        "It costs nothing and it is the single most useful thing one person can do for another here, for reasons that took this world a very long time to work out.",
+        "Not every star has somebody in it. On some nights you will see one fall and go to the place and find nothing at all \u2014 no one in the grass, no track, nothing bent. Those are called wild stars. The tellers say they are people who arrived with too little left to arrive with. Nobody enjoys talking about it, and everybody goes and looks anyway, every time, in case this one is different.",
+        "There is a fire burning at the place where new stars come down. Somebody lit it a very long time ago so that the first thing anyone saw here would be a light with a person beside it. Whether that somebody is still around is a question this book will come back to."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_long_morning"
+        }
+      ],
+      "tags": [
+        "arrival",
+        "core",
+        "starting-area"
+      ],
+      "chapter": 1,
+      "preview": null
+    },
+    {
+      "id": "the_age_of_coming",
+      "name": "The Age of Coming",
+      "path": "lore/entries/the_age_of_coming",
+      "icon": "lore/icons/arch.png",
+      "icon_id": "arch",
+      "category": "chapter",
+      "summary": "Why one afternoon's walk crosses an aqueduct, a windmill, a line of telegraph poles and a ring of standing stones.",
+      "body": [
+        "Walk east from the meadow for an afternoon and you will pass under a broken aqueduct, through a field of standing stones, past a windmill nobody has turned in living memory, and along a line of poles strung with wire that goes from nowhere to nowhere. None of these things belong to the same world. All of them are here.",
+        "This is not a curiosity. It is the plainest evidence we have for how Nangijala is built, and the first thing a new star should be told once they have stopped shaking.",
+        "The dead arrive from everywhere and every when. They arrive remembering, and here, remembering is not a private event. A thing held firmly enough in enough minds simply is. Somebody came down out of the sky knowing exactly what an aqueduct was, and knew it so well and for so long that there is an aqueduct. Somebody else, falling a very long way from them in every sense, brought a windmill.",
+        "Neither of them was wrong. The world does not choose between them. It builds both, side by side, and lets the grass grow up through whichever one is being thought about less.",
+        "The oldest of us call the first stretch of the world's history the Age of Coming, and everything good to look at dates from it. It was an age with no maintenance and no scarcity, because nobody had yet noticed that anything needed maintaining. People fell, and the country got larger and stranger and more beautiful, and the building was tremendous.",
+        "You can still read what people brought. Somebody remembered a lighthouse hard enough that there is a lighthouse standing in the shallows, warning nothing, its lamp cold. Somebody brought a triumphal arch and set it in a field for a victory that happened in a country that is not here. Somebody brought a well, and a shrine of stacked stones, and a scarecrow, and a great oak with a house in it. There is a statue standing in the ice with a face nobody recognises, and everyone agrees it must have been important to whoever carried it here.",
+        "That is the second thing the ruins tell you, and it is less comfortable than the first. Everything built in the Age of Coming was built out of one person's certainty. When the certainty went, the building stayed \u2014 for a while.",
+        "The age ended without ceremony. Things began, here and there, to go soft. A wall that had stood since anyone could remember was suddenly not as tall as it had been, and then was a heap, and then was a green place where a heap used to be. Nobody understood it. There was a long stretch of the world's history during which the finest minds in Nangijala believed the answer had something to do with the sea.",
+        "It did not. What was happening was much simpler, and once somebody finally said it out loud, everything changed."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        }
+      ],
+      "tags": [
+        "history",
+        "ruins",
+        "world"
+      ],
+      "chapter": 2,
+      "preview": null
+    },
+    {
+      "id": "the_age_of_fires",
+      "name": "The Age of Fires",
+      "path": "lore/entries/the_age_of_fires",
+      "icon": "lore/icons/bonfire.png",
+      "icon_id": "bonfire",
+      "category": "chapter",
+      "summary": "The discovery that held the world together, and the argument that came with it.",
+      "body": [
+        "The discovery, when it finally came, was so plain that it embarrassed everybody who had spent centuries on the sea theory.",
+        "The things people talk about stay.",
+        "That is the whole of it. A thing remembered by one person alone holds its shape for a while and then begins to go. A thing spoken about \u2014 told, aloud, to somebody who is actually listening \u2014 holds very much longer, and a thing told often enough by enough people does not go at all. The high crossings over the gorge have stood through everything because for a great many years there was never a week when somebody was not telling somebody else about the crossings over the gorge.",
+        "What followed is remembered as the Age of Fires, and it was the best of us.",
+        "The fires were lit \u2014 real ones, because you cannot get people to sit down and listen in the dark and the cold \u2014 and there was a rota. That word does not sound like the foundation of a civilisation, but that is exactly what it was. Somebody was responsible for each fire. Somebody walked a circuit between them. When a star came down, a keeper went to it, told the new arrival what had happened to them, and asked for their name and one true thing while they could still say it, and then carried that name to the next fire and said it there.",
+        "Whole districts of Nangijala were held up, stone by stone, by people who were good at talking in the evening. Some of them are still standing.",
+        "It is worth being honest about the flaw, because everybody here has an opinion about it and a new star will be asked their view within a month.",
+        "A told story grows. It is retold slightly warmer, slightly braver, slightly better shaped, every time, by people who mean nothing but well. Keep a man alive by telling him for forty years and at the end of it you have a man \u2014 solid, present, in no danger of going anywhere \u2014 who is not quite the man who fell. The fire-keepers know this. Most of them have decided it is a price worth paying, and a few of them have decided it very defensively.",
+        "So there came a second party, who said: write it down. Set it down exactly, once, and it is safe from all of you. And they were right, and they were thorough, and they made the Chronicle, which is the book you are reading now.",
+        "And then they found the thing that nobody has yet explained. A person recorded perfectly \u2014 every detail fixed, nothing drifting, the record sitting there entire and correct \u2014 goes Quiet anyway, on the usual schedule, with their own complete and beautiful account open on the shelf beside them.",
+        "The fire-keepers say the reason is obvious and that they have been saying it the whole time. It was never the accuracy. It was the listening.",
+        "The Chroniclers, who are not fools, have never accepted this, because it is not an explanation, it is a slogan. The argument is unresolved. It is the only argument in Nangijala that everybody has taken a side in, and you will be asked."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_chronicle"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_coming"
+        }
+      ],
+      "tags": [
+        "history",
+        "fires",
+        "factions",
+        "core"
+      ],
+      "chapter": 3,
+      "preview": null
+    },
+    {
+      "id": "the_quiet",
+      "name": "The Quiet",
+      "path": "lore/entries/the_quiet",
+      "icon": "lore/icons/hourglass.png",
+      "icon_id": "hourglass",
+      "category": "chapter",
+      "summary": "You cannot die here. Something else can happen to you instead, and it is worse, and it is what most of the creatures in the world already are.",
+      "body": [
+        "You cannot die in Nangijala. That door is behind you and it does not open twice. New stars find this reassuring for about a season.",
+        "It does not mean nothing can happen to you. You can be broken \u2014 knocked about past the point of holding a shape \u2014 and it is as unpleasant as it sounds and it is not an ending. What is left of you goes where the remembering is thickest, which in practice means the nearest fire somebody is tending, and puts itself back together beside it over a few hours. You keep what you were carrying. You lose a little of what you were thinking about. Nobody here treats a fight as final, and everybody here knows exactly how far it is to the nearest lit fire.",
+        "What can still happen to you is this. You can be forgotten \u2014 by everyone else, and then, in the end, by yourself \u2014 until there is nothing holding your shape but habit. It takes a long time and it does not hurt at any point, which is the part people find hard to hear.",
+        "It goes in four stages, and they have been called the same four things for as long as anybody has been counting.",
+        "You begin Bright. You know who you were and you can say it: your name, your work, the face of somebody you loved, the road home. Most people who fall are Bright for a very long time, particularly if somebody is telling them.",
+        "Then you Fade. The particulars go first, and they go so gently you cannot catch them at it. You know that you loved someone. You cannot produce the face. You know there was a road home and you could not now say which direction it ran. A faded person is entirely themselves, and entirely present, and simply has less and less to say about it.",
+        "Then there is Habit, and this is where it stops being sad and starts being frightening, because at some point the person is gone and the behaviour is still running. A thing that still walks its round. A thing that still guards its bridge, faithfully, for a keeper whose name went out of the world before it did. A thing that still comes home in the evening to a house that is not there any more and stands in the place where the door used to be.",
+        "This is what almost everything you will meet in the wild already is.",
+        "It is worth saying plainly, because new stars arrive with ideas about monsters. The creatures out there are not wicked. Very nearly none of them chose anything. Some are shapes that outlasted their occupants and kept doing the last thing they were doing. Others never had an occupant at all, and this world will be explaining those to you for some time. Either way they will come at you for reasons that stopped being reasons a long while back. Do not hate them. They are what happens.",
+        "And then, at the end, the Quiet. The shape lets go. There is no body and no grave, because there was no death; the thing simply stops being anywhere, and afterwards the place it was seems slightly wider than it should. People who have watched it happen say the worst part is how ordinary it looks.",
+        "The Quiet is what this world is afraid of. Not the creatures, not the cave, not the winter. Every fire, every rota, every argument between the tellers and the Chroniclers, every stranger who walks half a night to meet a falling star \u2014 all of it is the same species of answer to the same single question.",
+        "Which is: who is going to remember me, and for how long, and will they do it out loud."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        },
+        {
+          "domain": "lore",
+          "id": "the_hole_under_the_mountain"
+        }
+      ],
+      "tags": [
+        "core",
+        "creatures",
+        "death"
+      ],
+      "chapter": 4,
+      "preview": null
+    },
+    {
+      "id": "the_hard_pieces",
+      "name": "The Hard Pieces",
+      "path": "lore/entries/the_hard_pieces",
+      "icon": "lore/icons/gauntlet.png",
+      "icon_id": "gauntlet",
+      "category": "chapter",
+      "summary": "What a soulstone is, why it is warm, and why an entire economy grew up around breaking open things that cannot fight back properly.",
+      "body": [
+        "Everything that thins gets thinner all the way down and then stops. At the very bottom there is one thing left that will not go any further, and if you break the shape open it falls out into the grass. It is about the size of an egg. It is warm.",
+        "This is a soulstone, and of everything you can pick up in Nangijala it is the one thing guaranteed not to fade. There is an exception, and people who have been near the eastern mountain will tell you about it whether you ask or not.",
+        "It is not a soul. A soul is a whole person and no person ends up in a stone. What is in there is the last piece \u2014 one fact, one appetite, one habit of being, pressed down over centuries until it is very nearly a mineral. A thing that spent its existence burning leaves a stone that is still, in some stubborn way, about burning. A thing that endured cold leaves a stone that endures it.",
+        "Because a soulstone cannot be forgotten, it cannot decay, and in a world where everything else is quietly going soft that makes it the most valuable substance there is. Work one into a blade or set it into armour and it will lend you a little of what it remembers. It does not make you stronger. It makes you harder to argue with.",
+        "One kind of creature gives one kind of stone, and no two kinds give the same one. Nobody decided this. It is simply what it looks like when a particular way of forgetting reaches the bottom, and it means that a stone is a fair record of a kind of creature in a way that a drawing or a description never is.",
+        "The people who do this for a living have two words for the work, and you can tell a great deal about somebody from which one they use in front of you.",
+        "The polite word is releasing. It is not dishonest. A thing at the stage of Habit has nothing left in it, and the shape it is wearing is going to let go regardless; break it and the last hard piece is saved instead of lost with everything else. Put like that it is a mercy, and a good many people who do it have thought about it carefully and concluded exactly that.",
+        "The other word is cracking, and it is what the same people say to each other.",
+        "The distance between those two words is the entire moral range of the profession and there is no point pretending otherwise. Everybody carrying a bag of warm stones has made their peace with it in their own way, and the ones who talk about it least have usually thought about it most.",
+        "Then there is the rest of what comes off them. Teeth, hide, bone, quills, feathers, cracked stone, a knife somebody was still carrying. Junk, and worth almost nothing, and collected by absolutely everybody.",
+        "It is not the material that is wanted. It is that a pile of a creature's leavings is a story with the details still on it \u2014 this one had a jaw like that, this one carried a blade of that make \u2014 and details are precisely what goes first. Somebody, somewhere, is buying every scrap of it, and has been for a long time, and has never satisfactorily explained what for."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_gold_agreement"
+        }
+      ],
+      "tags": [
+        "core",
+        "economy",
+        "items",
+        "soulstones"
+      ],
+      "chapter": 5,
+      "preview": null
+    },
+    {
+      "id": "the_gold_agreement",
+      "name": "The Gold Agreement",
+      "path": "lore/entries/the_gold_agreement",
+      "icon": "lore/icons/chest.png",
+      "icon_id": "chest",
+      "category": "chapter",
+      "summary": "Nangijala did not choose a currency. It discovered the one substance nobody has ever managed to misremember.",
+      "body": [
+        "Nangijala never decided on money. There was no mint, no decree, nobody with the authority to declare anything legal tender to anybody. What happened instead is that somebody eventually noticed a peculiar fact about gold, and the fact did the rest.",
+        "Gold is the only thing that everybody remembers the same.",
+        "Consider what that means in a country built the way this one is. Two people fall a thousand years and half a world apart. Ask them for a road and you will get two roads. Ask them for a house, a boat, a loaf, a king, and you will get two of each, and both will be real, and they will sit in the same field disagreeing with one another forever.",
+        "Ask them both for a gold coin and you get the same coin.",
+        "Weight, colour, the particular soft way it takes a mark from a thumbnail, the fact that it will not tarnish and will not go green and will not go anywhere at all \u2014 everybody who ever handled it came away with an identical impression, and they carried that identical impression down out of the sky. Gold is the one point in the whole of human memory where there is no argument to have.",
+        "So gold does not drift. It is the only common thing here that doesn't. Every other object in your possession is being held in shape by somebody's attention and will begin to go soft the moment that attention wanders, but a coin is a coin is a coin, and will still be exactly a coin when the house you are standing in has become a green place where a house used to be.",
+        "That is the whole reason it is money. Not scarcity \u2014 there is a great deal of it, and more falling all the time. It is money because it is the only thing you can put in a box and come back to.",
+        "There is a joke among the tellers that gold is the one honest thing in Nangijala because it is the only object nobody has ever managed to improve in the retelling. Like most jokes here it is repeated a little too often by people who are not laughing."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_coming"
+        }
+      ],
+      "tags": [
+        "economy",
+        "gold"
+      ],
+      "chapter": 6,
+      "preview": null
+    },
+    {
+      "id": "the_long_morning",
+      "name": "The Long Morning",
+      "path": "lore/entries/the_long_morning",
+      "icon": "lore/icons/sun_and_moon.png",
+      "icon_id": "sun_and_moon",
+      "category": "chapter",
+      "summary": "There is a further shore, and the way to it is open to anybody, and almost nobody goes.",
+      "body": [
+        "Nangijala is not the last place. This is not in dispute, which is unusual for anything in this book.",
+        "Every so often somebody here stops being here. Not the Quiet \u2014 nothing like the Quiet. A person who is entirely Bright, entirely themselves, who has got all the way back to their own name and their own face and the road home and does not need one other living soul to hold any of it for them, will one evening simply not be in the room, and everybody who knew them will find that they remember them perfectly and feel no grief at all, which is the strangest part of the whole business.",
+        "And that night the northern sky lights up.",
+        "The tellers call it the Long Morning, and they call the lights the far edge of somebody else's dawn, seen from underneath. It is a beautiful thing to say and there is no evidence for it whatsoever. Nobody has come back. Not once, not ever, not a word.",
+        "The Chroniclers regard that silence as disqualifying and have said so at length. The fire-keepers regard it as the entire point, and have said so at greater length.",
+        "What is not in dispute is that the way is open, and that it is open to everybody, and that it appears to cost nothing at all. Remember yourself completely and you may go on. That is the requirement, and it is the only requirement, and it has never once been observed to fail.",
+        "So the question a new star always eventually asks \u2014 usually about a year in, usually at somebody's fire, usually with the face of a person who thinks they have spotted something everybody else has missed \u2014 is why on earth is anybody still here.",
+        "The answers are not complicated. Almost nobody's is.",
+        "There are people waiting for somebody who has not fallen yet, and who will not go on ahead of them, and who have been standing at the meeting-places for a very long time getting slowly stranger. There are people who did fall, and whose person fell too, and thinned, and is still out there as a shape doing something faithful and empty; and they will not leave a thing that still has their name in its mouth. There are people who did something in the life before this one and cannot make going on feel like anything but getting away with it.",
+        "And there are the keepers, who could go tomorrow, and who have the rota.",
+        "Ask anybody here why they are still here and they will tell you, if you have sat with them long enough. Everybody in Nangijala has an answer to that question. It is the answer that makes them a person rather than a shape."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        }
+      ],
+      "tags": [
+        "core",
+        "aurora",
+        "endings"
+      ],
+      "chapter": 7,
+      "preview": null
+    },
+    {
+      "id": "the_hole_under_the_mountain",
+      "name": "The Hole Under the Mountain",
+      "path": "lore/entries/the_hole_under_the_mountain",
+      "icon": "lore/icons/rune.png",
+      "icon_id": "rune",
+      "category": "chapter",
+      "summary": "There is one mouth in the east massif, everybody knows where it is, and the ground around it forgets on a clock you can time with a candle.",
+      "body": [
+        "Everything else in this book is the world working as it always has. This chapter is not that.",
+        "There is a cave under the eastern mountain. It has one mouth, it is not hidden, and every single person in Nangijala can tell you roughly where it is. There is no legend about finding it. The whole difficulty has always been the other direction.",
+        "Near it, things forget faster.",
+        "That is the plain observation, and it was made carefully, by people who did not want it to be true. Ground that had been held for centuries \u2014 good ground, in the rota, with a fire on it \u2014 went soft in a season. Then the season became a month. A keeper working the eastern circuit reported that she had lost the name of her own fire while walking toward the mouth and had it back within an hour of walking away, and she was not a woman anybody had ever known to lose anything.",
+        "Things that go in come out wrong, or come out wearing something else's face, or do not come out.",
+        "The creatures around it are not like the creatures anywhere else, and anybody who has been near both can tell the difference immediately. Out in the world a beast is a shape that outlasted its occupant \u2014 it is running on habit, it is empty, and there is something almost restful about how uninterested it is in you. The things near the mouth are not empty in that way. They were emptied. It happened to them, all at once, and something is still wearing the outside.",
+        "When you break one, a mask comes down out of it and lands in the dirt, and it is still smiling. This is the detail that started the entire investigation, because the mask does not thin. Nothing about it goes soft. It sits there afterwards being exactly a face, indefinitely, long after everything else about the creature has stopped being anywhere at all.",
+        "There is a great deal of argument about what is down there and none of it is worth writing down yet. Two things, though, are worth stating, because both are checkable and both are unsettling.",
+        "The first is that the hole is new. Not new the way a season is new \u2014 new the way a wound is. The Age of Fires had no hole under the eastern mountain. There are people still walking around, thinning quietly, who remember when the east road was simply a road, and if you buy them an evening they will tell you what the ground there used to feel like.",
+        "The second is that whatever is down there is not angry with anybody. Nothing about it is angry. It has never once been observed to do anything out of malice, or vengeance, or any of the ordinary reasons a thing does harm.",
+        "It is hungry. That is all it is. The tellers say that is worse, and the tellers are right."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        }
+      ],
+      "tags": [
+        "core",
+        "cave",
+        "antagonist",
+        "mystery"
+      ],
+      "chapter": 8,
+      "preview": null
+    },
+    {
+      "id": "the_chronicle",
+      "name": "The Chronicle",
+      "path": "lore/entries/the_chronicle",
+      "icon": "lore/icons/triptych.png",
+      "icon_id": "triptych",
+      "category": "chapter",
+      "summary": "A note on the book you are holding: who writes it, why they write it, and what an empty page in it actually means.",
+      "body": [
+        "A word about this book, since you are already in it.",
+        "The Chronicle is the work of the Chroniclers, who hold that a thing written down exactly is a thing saved exactly, and who have been setting Nangijala down page by page for a long time now. Every creature described here was gone and looked at by somebody. Every account of the ages was assembled out of what people at fires could still be got to say. It is not a story anybody made up. It is a record, kept badly at the edges and very well in the middle, by people who took it seriously.",
+        "They are, it should be said, not universally loved for it. The tellers hold that a written thing stops growing, and they are not wrong. There is a stiffness to a page that there is not to an evening.",
+        "But consider what the alternative has cost. There are districts of this world that were held up for centuries by three people who were good at talking, and when those three thinned, the district went, and there is now nothing there but good grazing and a name nobody can source. The Chronicle exists because somebody looked at that and decided they would rather have a stiff and complete account of a place than a warm and vanished one.",
+        "So: read it, and treat what it says as true, because it was checked.",
+        "And when you find a page with nothing on it \u2014 a creature with no account, a place with no history, a name with no person attached \u2014 understand what you are looking at. It does not mean that nothing is known. It means no chronicler has got there yet. There are a great many more things in Nangijala than there are people willing to sit down and write about them, and the gap has been widening for some time.",
+        "If you know something that is not in here, the Chroniclers would like to hear it. That is not a formality. It is very nearly the entire method."
+      ],
+      "related": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        }
+      ],
+      "tags": [
+        "meta",
+        "factions",
+        "chroniclers"
+      ],
+      "chapter": 9,
+      "preview": null
+    },
+    {
+      "id": "the_human_dead",
+      "name": "The Human Dead",
+      "path": "lore/entries/the_human_dead",
+      "icon": "lore/icons/house.png",
+      "icon_id": "house",
+      "category": "people",
+      "summary": "No claws, no scales, nothing in the blood. What humans brought to Nangijala instead was a habit of telling each other things, and it turned out to be the only thing that mattered.",
+      "body": [
+        "Of everything that falls out of the sky into Nangijala, the human dead are neither the oldest nor the strongest nor the strangest, and they know it. A human arrives with no claws, no scales, nothing in the blood, and nothing to trade on but nerve and a quick pair of hands.",
+        "What they do have is a habit, and the habit turns out to be the most important fact about this world.",
+        "Humans talk. Not usefully, most of the time \u2014 they talk about the weather, and about people who are not present, and about what happened to them once in a place that no longer exists. They do it at the ends of days. They do it around fires, without being asked, as though something in them cannot sit in front of a light with another person and stay quiet.",
+        "In any other country that would be a pleasant nothing. Here it is maintenance. Every one of those idle evenings is a thing being held in shape, and the reason so much of Nangijala is still standing is that a species which cannot stop chattering fell into a world that is built out of being talked about. The fire-keepers did not invent the practice. They only noticed what everybody was already doing and wrote a rota for it.",
+        "It has made humans, on the whole, the ones who go and meet the stars. Not out of any particular virtue \u2014 they are as petty here as anywhere and the arguments in this world are almost all theirs \u2014 but because a human who sees a light come down over the next field is constitutionally incapable of not walking over to see who it was.",
+        "They are also the ones who fight, which follows from the same thing rather than from any talent for it. A human will go a long way out of their way for somebody they have sat with. Give them a reason and a blade and they will walk into the black rock after a thing that has nothing left in it, and come back with a warm stone in their pocket and a story about it, and tell the story that night, and hold up a corner of the world for another year without ever once thinking of it that way.",
+        "They fall young and they fall old and they fall in every state of readiness. Most arrive with nothing but what they stand in. Nearly all of them, given a season and somebody to listen, get their name back."
+      ],
+      "related": [
+        {
+          "domain": "characters",
+          "id": "default_boy"
+        },
+        {
+          "domain": "characters",
+          "id": "default_girl"
+        },
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_falling"
+        }
+      ],
+      "tags": [
+        "people",
+        "race",
+        "heroes"
+      ],
+      "preview": null
+    }
+  ]
+}

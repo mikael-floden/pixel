@@ -1,0 +1,32 @@
+{
+  "name": "nangijala",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "manifest": "node scripts/manifest.mjs",
+    "dev": "npm run manifest && concurrently -n server,client -c cyan,magenta \"npm:dev -w server\" \"npm:dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run manifest && npm run dev -w client",
+    "build": "npm run manifest && npm run build -w shared && npm run build -w server && npm run build -w client",
+    "build:client": "npm run manifest && npm run build -w client",
+    "serve": "cross-env SERVE_CLIENT=1 NODE_ENV=production npm run start -w server",
+    "start": "npm run build:client && npm run serve",
+    "test": "npm run manifest && npm run test -w server && npx tsx scripts/check-surfaces.mjs && npx tsx scripts/verify-deckwalk.mjs",
+    "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json",
+    "manifest:force": "node scripts/manifest.mjs --force"
+  },
+  "devDependencies": {
+    "@cwasm/webp": "^0.1.5",
+    "@types/compression": "^1.8.1",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "playwright-core": "^1.61.1",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.6.3"
+  }
+}

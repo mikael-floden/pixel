@@ -1,0 +1,31 @@
+{
+  "id": "pale_silk_skein",
+  "name": "Silk Skein",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "cloth",
+  "rarity": "uncommon",
+  "value": 26,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Silvery cord wound tight and bound at the waist, cool to the touch. No hand in Nangijala spun this one.",
+  "sprite": "items/pale_silk_skein/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "df0fe0ac-6fc0-46a9-9dfe-ab21868b9b7c",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:01:45.993321+00:00",
+    "last_modified": "Fri, 31 Jul 2026 20:47:41 GMT"
+  },
+  "synced_at": "2026-07-31T20:47:41+00:00",
+  "waiting_for": "a spider"
+}

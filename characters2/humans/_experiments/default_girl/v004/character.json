@@ -1,0 +1,31 @@
+{
+  "id": "default_girl",
+  "version": 4,
+  "pixellab_character_id": "49358d39-08a2-4012-9c4d-315451c97eb0",
+  "description": "A young female adventurer at the very start of her journey, before she has found any gear, weapons or armor \u2014 this is the bare starting character, exactly how she looks before any equipment is picked up. Tough, self-assured and powerfully confident with a relaxed cool attitude. Her expression is calm, friendly and approachable \u2014 an easy self-confident look, NOT angry, NOT scowling, NOT fierce, no frown \u2014 warm intelligent eyes. Windswept dark brown hair, and a lean, athletic, toned build that shows strength and agility. Her posture is relaxed and natural but self-assured \u2014 weight shifted to one leg, shoulders back, exuding easy charisma and quiet badass energy. She wears ONLY plain, simple, unremarkable starting clothes in muted natural colors \u2014 a simple plain tank top and casual shorts with basic shoes or boots \u2014 strictly in browns, blacks, greys and off-white, nothing colorful. The clothes fit her athletic frame naturally, hinting at her physicality without being revealing. She has NO gear of any kind: no armor, no jacket, no shoulder guard, no cloak, no utility belt, no gloves, no weapon, no sword, no dagger, no bags or pouches \u2014 completely unequipped. Not cute, not a princess, not wearing a dress. She radiates cool, memorable, capable badass energy through her relaxed confident posture, easy approachable expression, windswept hair and natural body language. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, restrained muted earth-tone palette, full-body character, single centered figure, transparent background.",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "size": [
+    112,
+    112
+  ],
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 1358959452,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
+}

@@ -1,0 +1,276 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_4_119153396",
+  "ground_type": "stone_mountain",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "face_px": 64,
+  "slot": 1,
+  "objects": [
+    "a shattered stone archway",
+    "a jagged obsidian tower",
+    "a tall precarious cairn",
+    "a tall ore-veined rock column",
+    "a grey stone statue of a warrior",
+    "a tall standing menhir",
+    "a weathered obelisk",
+    "a ruined stone tower",
+    "a squat fortress watchtower",
+    "a weathered rock arch",
+    "a craggy cliff outcrop",
+    "a tall rugged rock spire"
+  ],
+  "tile_id": "3688dc66-fb6c-4b94-abc0-a61ca6f09966",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.4885,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 19.6,
+            "y": 51.5,
+            "r": 2.2,
+            "color": [
+              0.737,
+              0.435,
+              0.105
+            ],
+            "s": 0.688,
+            "dir": "up"
+          },
+          {
+            "x": 44.5,
+            "y": 58.4,
+            "r": 2.0,
+            "color": [
+              0.554,
+              0.299,
+              0.152
+            ],
+            "s": 0.609,
+            "dir": "up"
+          },
+          {
+            "x": 28.1,
+            "y": 93.1,
+            "r": 2.0,
+            "color": [
+              0.721,
+              0.386,
+              0.041
+            ],
+            "s": 0.653,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 4,
+      "file": "tile_04.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.webp",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 18.1,
+            "y": 45.7,
+            "r": 2.9,
+            "color": [
+              0.393,
+              0.199,
+              0.128
+            ],
+            "s": 0.525,
+            "dir": "up"
+          },
+          {
+            "x": 30.7,
+            "y": 80.7,
+            "r": 2.6,
+            "color": [
+              0.306,
+              0.166,
+              0.104
+            ],
+            "s": 0.477,
+            "dir": "up"
+          },
+          {
+            "x": 33.7,
+            "y": 86.2,
+            "r": 2.0,
+            "color": [
+              0.325,
+              0.195,
+              0.131
+            ],
+            "s": 0.507,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 14,
+      "file": "tile_14.webp",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.webp",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "emissive_tiles": 2,
+  "generated_at": "2026-07-05T14:18:30+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9,
+      "hue_band": 65,
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
+    },
+    "harmonize_refs": [
+      "stone_mountain"
+    ],
+    "harmonized": 1,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "strength_light": 0.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 150,
+      "protect_dark_material": true
+    }
+  }
+}
