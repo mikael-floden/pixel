@@ -438,11 +438,18 @@ def sync_npcs(client, force=False):
         if not (s["rot_new"] or s["anim_new"]):
             totals["skipped"] += 1
         man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
-        index[folder] = {
+        # Authored fields are carried in the roll-up too, so a consumer (the
+        # wiki) can render the whole cast from ONE file. `pixellab_name` is the
+        # raw prompt junk — kept for tracing, never for display.
+        rec = {
             "pixellab_character_id": cid,
-            "name": c.get("name"),
+            "pixellab_name": c.get("name"),
             "animations": sorted((man.get("animations") or {}).keys()),
         }
+        for k in ("display_name", "species", "sex", "role", "lore"):
+            if man.get(k) is not None:
+                rec[k] = man[k]
+        index[folder] = rec
         if i % 25 == 0 or i == len(npcs):
             print(f"  npcs: {i}/{len(npcs)} mirrored "
                   f"(+{totals['frames']} frames so far)", flush=True)
