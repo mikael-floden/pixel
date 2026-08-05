@@ -902,19 +902,24 @@ export class GameAudio {
   private stepCache = new Map<string, SoundEntry>();
   private lastJumpVoiceT = 0; // ctx-time of the last jump/fall grunt (debounce)
 
-  /** A CATALOG sound (e.g. `splash`) played as a footstep: its primary take
-   * every step (no rotation) with the gentle step micro-jitter — the same
-   * doctrine as the composer foley sets, but sourced from the catalog. */
+  /** A CATALOG sound (e.g. `splash`) played as a footstep: the approved
+   * PRIMARY take with the gentle step micro-jitter — the same doctrine as the
+   * composer foley sets, but sourced from the catalog. Like those, it BINDS
+   * the one take it plays rather than carrying the catalog's whole take list
+   * behind a disabled rotation (maintainer 2026-08-05: one sound is one
+   * sound). Audibly identical — the same primary file played before. */
   private catalogStepEntry(base: SoundEntry): SoundEntry {
     let e = this.stepCache.get(base.id);
     if (!e) {
+      const primary = base.takes?.length ? [base.takes[0]] : undefined;
       e = {
         ...base,
         id: `catstep_${base.id}`,
+        takes: primary,
         mix_gain_db: 0, // level decided per-play
         variation: {
-          round_robin: false, // the approved primary take, every step
-          no_immediate_repeat: false,
+          round_robin: true,
+          no_immediate_repeat: true,
           pitch_jitter_semitones: [-0.2, 0.2],
           gain_jitter_db: [-0.7, 0.4],
           start_jitter_ms: [0, 0],
@@ -947,16 +952,25 @@ export class GameAudio {
       // Link) rotate a few efforts. Round-robin, no immediate repeat, plus a
       // natural pitch spread (a voice never lands twice at the same pitch).
       const voice = profile === "voice";
+      // ONE SOUND MEANS ONE SOUND (maintainer 2026-08-05). Steps and clicks
+      // play the set's APPROVED PRIMARY take and only that, so the entry binds
+      // that one url — it does not carry every take and then switch rotation
+      // off. The old shape advertised four sounds and played one, which the
+      // wiki had to mirror as a `round_robin: false` workaround. The variation
+      // contract below is now the plain one for every profile; how many sounds
+      // an event has is expressed by the URL LIST, which is the honest place
+      // for it. Audibly identical: the same primary file plays as before.
+      const takes = voice ? urls : urls.slice(0, 1);
       e = {
         id: `composer_foley_${set}`,
         category: voice ? "movement" : step ? "movement" : "ui",
         loop: false,
-        file: urls[0],
-        urls,
+        file: takes[0],
+        urls: takes,
         mix_gain_db: 0, // level is decided per-play by the caller
         variation: {
-          round_robin: voice, // steps/clicks: primary take; voice: rotate
-          no_immediate_repeat: voice,
+          round_robin: true,
+          no_immediate_repeat: true,
           pitch_jitter_semitones: voice
             ? [-0.4, 0.4]
             : step
