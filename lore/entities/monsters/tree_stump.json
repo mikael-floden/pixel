@@ -3,33 +3,18 @@
   "id": "tree_stump",
   "name_seen": "Stumpling",
   "kind": "made",
-  "law": "III",
-  "description": "Cut flat on top by an axe that was never swung. Two dark eyes, no mouth, and root-legs that lash for its moss.",
+  "law": "II",
+  "description": "A stump with no tree behind it, walking on root-legs. It does not mind you coming. It minds you leaving.",
   "lore": [
-    "Reason backwards from a stump and you get a trunk, and there was never a trunk. What a great many people had instead was a wood — not one particular wood, the general one: the smell of it after rain, the bars of light coming down, the sound your own boots make in it. Enough of that settled in one place that there is a wood standing there now, and there was some left over when the wood was finished, and the leftover got up on roots. Its top is cut flat, and no axe has ever been swung in that wood. Open it and there is planed oak inside, the grain running true, dressed timber out of a tree that never grew. Nothing did that to it. The oak came in with everything else, because a forest does not get remembered on its own account: people remember a forest they had a use for, the clearing and the woodpile and the boards stacked under the eaves, and whatever comes up out of all that carries the whole of it, including the parts that only make sense if somebody had been working there.",
-    "Two eyes and nothing else on its face. No mouth, which unsettles people rather more than teeth would. It goes about on its roots at the pace of a thing with nowhere to be, carrying a small country on its back: a fat violet cap growing out of the moss on one shoulder, a paper hornet nest under the rim with one dark doorway low on the side and nothing at home in it most of the time, a knuckled little root that trots along at its foot and could as easily be a passenger as a relation. Crowd any of that and the roots come up and it lashes, harder than a thing its size has any business doing. Press it past holding and it does not fly apart. It sits down. It settles and shortens and goes on shortening, patiently, until what is left is a stump cut level with the ground in a wood that was never worked, and in the middle of that sits the hard piece: mossy green, warm in the hand, a red vein running out through it in branches the way roots run. Set against a blade it strikes harder than it ought to, and some of what it opens closes on your side instead. The people who work the stones file it with the blood-natured ones and are not entirely comfortable doing so, since the only thing that ever ran in the creature was sap.",
-    "What it is not doing is thinning. Nothing in it has gone missing, because nothing was ever in it: no name it fails to produce, no round it still walks for a keeper it can no longer picture. It cannot be got at that way at all. It holds for as long as the wood behind it holds, and that wood stands in the low country, where the ground is soft in both senses and changes most from one Turn to the next. What becomes of a thing like this when its wood goes elsewhere is a question that comes up late at a fire and is still open when the fire is out. The tellers hold that it could remember itself whole and go on, the same as anybody. The obvious objection is that there is nothing in it to do the remembering with; the tellers have heard that objection and are unmoved by it. Neither side has watched it happen. Meanwhile it hauls itself between the trees at its own pace, mushroom and empty nest and little root, entirely untroubled by the question — nothing in it was ever built for worrying, and somebody else has to do that part."
+    "Every village that ever was had one: the stump at the wood's edge where you walked people to say goodbye. You carried their bag that far and no farther, and they sat on it to retie a boot, and then they went, and you stood by the stump until you could not see them. A thousand villages, a hundred thousand goodbyes, all of them remembered hard by the people left standing there \u2014 and in Nangijala that much remembering, pooled in one shape, eventually stands up.",
+    "So mind the one thing every handler tells you and no field guide bothers to: a Stumpling will let you walk right up. It goes for your back. The lashing starts when you turn and go, because going is the only thing that was ever done to it, and somewhere in all that borrowed remembering it has decided, wordlessly, with nobody inside it to decide, that this time it will not be left.",
+    "[[characters/646b922c|Sigrun]] will not crack them. She does the trade's other work all day and charges double to anyone who brings her one of these still whole, hoping she'll change her mind. The stone inside is [[items/crimson_vein_mossy_stone|blood-natured]] \u2014 it feeds your wounds shut while you fight, holding on to you the way the stump holds on to everyone \u2014 and she says a thing that keeps its grip that well should be allowed to keep it. People assume she is joking. People have not watched her leave her smithy, at the end of a market day, by the long way around the one that stands at the east fence."
   ],
   "related": [
     {
-      "domain": "items",
-      "id": "crimson_vein_mossy_stone"
-    },
-    {
       "domain": "lore",
       "id": "the_quiet"
-    },
-    {
-      "domain": "lore",
-      "id": "the_long_morning"
-    },
-    {
-      "domain": "lore",
-      "id": "the_age_of_coming"
-    },
-    {
-      "domain": "monsters",
-      "id": "forest_poring_2"
     }
-  ]
+  ],
+  "gm_notes": "Worked example of the v2 register: ~230 words, a thing HAPPENS (it strikes when you leave), a named living NPC whose behaviour characterises both her and it, the stone folded in via a link instead of a closing essay. The goodbye-stump origin is a leaf-story \u2014 root-free, safe under churn."
 }

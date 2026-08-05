@@ -4,13 +4,11 @@
   "name_seen": "Balefiend",
   "kind": "hollowed",
   "law": "II",
-  "description": "Nothing behind the face \u2014 four slit eyes burning in black stone, wreathed in dark. Its attack is to fall on you.",
+  "description": "Nothing behind the face — four slit eyes burning in black stone, wreathed in dark. Its attack is to fall on you.",
   "lore": [
-    "Black stone, broad at the brow and tapering to a chin, with four eyes burning orange in it: one high on the forehead, then a pair, then one set low, all of them slit and all of them awake. Red marks are cut into the stone above and below them, and two people who have looked at those marks closely will not afterwards agree on what they say. It hangs in the air inside a wreath of slow dark, and the dark takes fire when it moves.",
-    "Ask why it should be a face, of all the things to be left with. A face is what other people hold of you, and they hold it hardest and let it go last. It is therefore the piece that keeps its shape longest, and a shape kept well enough will get up and go about its business whether or not there is anyone inside it doing the getting up. Everything else about whatever this was got taken. The face was held too well to take.",
-    "There are two accounts of this one and neither has won. One says it is a mask of the kind the emptied things leave lying in the dirt, and that a mask left long enough near the mouth stops being an object. The other says there was never anything behind it at all: that this is what the emptying makes when it has nothing to work with, a shell with the outside done beautifully and the inside not attempted. The ones who handle them prefer the second account, and will admit after a while that they prefer it because the first has a next question in it.",
-    "It does not strike at you. It rises, and then it comes down, all of its weight at once, meaning to crush rather than to cut, and the dark drags flame behind it the way a cloak drags. For a thing with nothing inside it, it is not idle. It grows a leaf of crystal veined orange and red that will still be warm in your pouch two days later. It grows horns, four off one base and ridged like bark, which are shed once whatever they were grown to settle has been settled \u2014 so you find them lying about and never on the face in front of you. Only one thing in the pile was never grown here: an eye, whole and wet, with a brown iris. None of the four in its head are brown.",
-    "The eyes shut before anything else happens. All four at once, and not a crack showing yet, so whatever was doing the looking is already gone by the time the stone starts to come apart. Then the dark unwinds, and the face splits, and the rubble goes pale, and what is sitting on the ground at the end of it is one smooth dome of grey stone with nothing cut into it at all. No eyes. No marks. The people who collect faces have argued for years about whether that counts as one. In among the rubble is the hard piece: night-black, flecked all through with small lights, warm as they all are. Carried, it does what the shell did \u2014 blows land heavy and dark, and now and again it puts you round behind the thing you are fighting before that thing has finished turning. Edge-on, this was never more than a slab. That is how it was always able to be where you were not looking."
+    "A face of black stone, four slit eyes lit orange down it, red marks cut above and below them, the whole thing hanging inside a wreath of slow dark that takes fire when it moves. It does not strike. It rises, and it comes down on you with everything it weighs, meaning to crush. And the eyes shut first — all four, a breath before the stone cracks — so whatever was doing the looking is gone before the breaking starts.",
+    "There are two accounts of it and neither has won. One: it is a shell the emptying made when it had nothing left to work with, the outside done beautifully, the inside not attempted. The other: it is one of the masks, left lying too long near [[lore/the_hole_under_the_mountain|the mouth]], and no longer an object. The crackers prefer the first. The second has a next question in it.",
+    "[[characters/cfe826c1|Jehanne]] was sent a rubbing of the red marks, on the reasoning that a priestess reads things. She kept it through a winter. In spring she burned it, and told the sender the marks say nothing at all — in the voice she keeps for the prayers she no longer believes. She has not gone east since."
   ],
   "related": [
     {
@@ -18,20 +16,9 @@
       "id": "starlit_void_stone"
     },
     {
-      "domain": "lore",
-      "id": "the_hole_under_the_mountain"
-    },
-    {
-      "domain": "lore",
-      "id": "the_chronicle"
-    },
-    {
       "domain": "monsters",
       "id": "masked_shadow_creature"
-    },
-    {
-      "domain": "monsters",
-      "id": "diablo"
     }
-  ]
+  ],
+  "gm_notes": "The shell-or-mask argument stays unresolved on purpose; if it is ever settled, settle it toward the cave. The red marks have no assigned meaning in canon — Jehanne's burned rubbing is a leaf event, not a beat. Do not give the marks a reading."
 }

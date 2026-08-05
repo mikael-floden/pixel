@@ -3,27 +3,25 @@
   "id": "default_boy",
   "name_seen": "Man",
   "law": "I",
-  "description": "A young man of the human dead. No claws, no scales, nothing in the blood \u2014 he came down with his name still on him, which is more than most manage.",
+  "description": "Newly woken on the meadow with his name still on him, which is rarer than it sounds. What he was is over; what he will be has not been decided yet.",
   "lore": [
-    "He fell recently. Recently enough that the grass where he landed has not entirely stood back up, and recently enough that he still occasionally checks his pockets for something he last had on the other side.",
-    "He came down with his name. That is worth more than it sounds \u2014 most do not, not at first, and some never get it back \u2014 and whoever met his star that night did the job properly and got him to say it aloud while he still could.",
-    "He has nothing else. What he is wearing is what he arrived in, which is what he was wearing at the end, and he has not yet decided whether that is a hard thing to think about. Nobody who falls has anything. It is the one experience every soul in Nangijala has had, and it is why a stranger here will feed you without being asked.",
-    "There is nothing exceptional about him and this is not modesty. He has no claws and no scales and nothing in the blood. What he has is a quick pair of hands, a stubborn streak he had before he died, and the ordinary human inability to see a light come down over the next field and not walk over to find out who it was.",
-    "In this particular country that last thing is not a small quality. It is very nearly the whole of what has held the place together."
+    "He woke in the meadow grass with his name still on him, which is rarer than it sounds, and [[characters/6bb1eb5a|Solveig]] was beside him before the dew had soaked through his shirt. She told him the truth once, plainly, and asked his name and one true thing. The name came easily. The true thing took him until sundown — it was small, and she thanked him for it as if he had paid a debt, because here a true thing said aloud is exactly that.",
+    "He still checks his pockets for something he last had on the other side. They are empty. So were everyone's — arriving with nothing is the one experience this whole country shares, and it is why a stranger here will feed you before you ask.",
+    "There is nothing remarkable about him, and this is not modesty: quick hands, a stubborn streak he had before the end, and no idea yet what either is for. Solveig is unworried. The ones who thank her, she says, always turn up at the meadow again sooner or later — on the far side of the courtesy, walking out into the wet grass to meet somebody new."
   ],
   "related": [
     {
       "domain": "lore",
-      "id": "the_human_dead"
+      "id": "the_waking"
     },
     {
       "domain": "lore",
-      "id": "the_falling"
+      "id": "the_human_dead"
     },
     {
       "domain": "characters",
       "id": "default_girl"
     }
   ],
-  "gm_notes": "Written to be true of any player behind him \u2014 no backstory that a player could contradict by playing. The one committed fact is that he is a recent fall who kept his name, which sets him up as the reader-surrogate for chapter 1. Characters2 agent owns characters2/metadata.json; this text is published via lore.json only, and their authored copy wins on any conflict."
+  "gm_notes": "Player-surrogate: the only committed facts are the recent waking, the kept name, and being met by Solveig — chapter-1 events every player has. All v1 star imagery purged (arrival is the Waking). The close seeds the long arc of players becoming keepers themselves. Characters2 owns characters2/metadata.json; their authored copy wins on any conflict."
 }

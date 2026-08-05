@@ -1,0 +1,27 @@
+{
+  "domain": "objects",
+  "id": "campfire",
+  "name_seen": "Campfire",
+  "law": "II",
+  "description": "The fire on the meadow. It has never once been let go out.",
+  "lore": [
+    "It has never gone out. That is not a figure of speech: it is the fire Signe lit, or a fire fed from it, or a fire people only say was fed from it, and in this country all three are the same wood. Every soul that ever opened its eyes on the meadow saw this light first \u2014 before the stone house, before the grass, before their own name came back to them. [[lore/the_waking|The waking]] is cold and confused everywhere except within reach of it.",
+    "[[characters/6bb1eb5a|Solveig]] keeps it now. There is a seat with its back to the wind, a second cup in case the newest arrival comes thirsty, and split wood stacked like a promise. When she asks your name and one true thing, look into the flames while you answer; everyone does. What is said there holds.",
+    "Feed it if you pass. Not because it needs you tonight \u2014 because one night it will, and it does not announce which."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    },
+    {
+      "domain": "lore",
+      "id": "the_age_of_fires"
+    },
+    {
+      "domain": "characters",
+      "id": "6bb1eb5a"
+    }
+  ],
+  "gm_notes": "THE fire of Movement IV \u2014 the last of the meadow rota, Solveig's watch. The Signe provenance is hearsay-canon on purpose (B4 revealed): the chain of feedings is unverifiable and the world does not care. Any scene of a player's first minutes should happen in its light."
+}
