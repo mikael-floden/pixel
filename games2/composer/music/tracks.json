@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-05T07:34:59+00:00",
+  "generated_at": "2026-08-05T07:55:51+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -137,6 +137,923 @@
       "candidates_tried": [],
       "sections": [],
       "source_format": "mp3"
+    },
+    "town": {
+      "id": "town",
+      "files": [
+        {
+          "file": "town.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1467190
+        },
+        {
+          "file": "town.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1725261
+        }
+      ],
+      "duration_s": 104.954,
+      "bpm": 107.67,
+      "asked_bpm": 108,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.866,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 107.67,
+        "beat_anchor_s": 0.209,
+        "confidence": 0.357,
+        "raw_bpm": 107.67
+      },
+      "loop": {
+        "loop_start_s": 30.198,
+        "loop_end_s": 101.317,
+        "crossfade_ms": 900,
+        "score": 0.9297,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -10.19,
+        "gain_db": -7.81,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -8.11
+      },
+      "measured": {
+        "duration_s": 104.95,
+        "lufs": -10.19,
+        "true_peak_dbtp": -0.3,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 1.359,
+        "crest_db": 14.02,
+        "centroid_hz": 6812.5,
+        "stereo_corr": 0.984,
+        "silence_frac": 0.0
+      },
+      "faults": [
+        "harsh/bright (6812 Hz)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 82.46,
+          "faults": [
+            "harsh/bright (6812 Hz)"
+          ],
+          "duration_s": 104.95,
+          "lufs": -10.19,
+          "true_peak_dbtp": -0.3,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.359,
+          "crest_db": 14.02,
+          "centroid_hz": 6812.5,
+          "stereo_corr": 0.984,
+          "silence_frac": 0.0,
+          "loop_score": 0.9428
+        },
+        {
+          "score": 40.64,
+          "faults": [
+            "harsh/bright (7514 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 104.95,
+          "lufs": -9.82,
+          "true_peak_dbtp": -0.38,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 12.98,
+          "centroid_hz": 7513.8,
+          "stereo_corr": 0.949,
+          "silence_frac": 0.041,
+          "loop_score": 0.9425
+        },
+        {
+          "score": 39.82,
+          "faults": [
+            "harsh/bright (7216 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 104.95,
+          "lufs": -12.13,
+          "true_peak_dbtp": -0.21,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 16.08,
+          "centroid_hz": 7215.6,
+          "stereo_corr": 0.964,
+          "silence_frac": 0.017,
+          "loop_score": 0.9392
+        }
+      ],
+      "sections": [
+        {
+          "name": "Main Theme (Fiddle & Whistle)",
+          "duration_ms": 21000,
+          "styles": [
+            "lively fiddle melody",
+            "pennywhistle harmony",
+            "strummed lute",
+            "bouncing plucked bass",
+            "light hand percussion"
+          ]
+        },
+        {
+          "name": "Answering Phrase (Accordion & Dulcimer)",
+          "duration_ms": 21000,
+          "styles": [
+            "warm accordion melody",
+            "shimmering hammered dulcimer",
+            "tambourine",
+            "lute continues strumming",
+            "folk dance feel"
+          ]
+        },
+        {
+          "name": "Main Theme Reprise (Fuller)",
+          "duration_ms": 21000,
+          "styles": [
+            "fiddle and whistle lead",
+            "accordion fills",
+            "prominent frame drum",
+            "all instruments playing together",
+            "sociable and communal feel"
+          ]
+        },
+        {
+          "name": "Interlude (Lute & Dulcimer)",
+          "duration_ms": 21000,
+          "styles": [
+            "gentler lute melody",
+            "hammered dulcimer accents",
+            "plucked bass melody",
+            "sparse percussion",
+            "relaxed and homely"
+          ]
+        },
+        {
+          "name": "Full Theme for Loop",
+          "duration_ms": 21000,
+          "styles": [
+            "fiddle and whistle melody returns",
+            "all instruments rejoin",
+            "builds slightly to seamless loop point",
+            "cheerful and bright",
+            "welcoming sound"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "cave": {
+      "id": "cave",
+      "files": [
+        {
+          "file": "cave.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1388370
+        },
+        {
+          "file": "cave.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1786730
+        }
+      ],
+      "duration_s": 109.376,
+      "bpm": 55.57,
+      "asked_bpm": 58,
+      "musical": {
+        "root": "D#",
+        "mode": "minor",
+        "confidence": 0.675,
+        "midi_pitch_classes": [
+          1,
+          3,
+          5,
+          6,
+          8,
+          10,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          3,
+          5,
+          6,
+          10,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 55.57,
+        "beat_anchor_s": 0.499,
+        "confidence": 0.518,
+        "raw_bpm": 166.71
+      },
+      "loop": {
+        "loop_start_s": 7.875,
+        "loop_end_s": 99.001,
+        "crossfade_ms": 900,
+        "score": 0.9612,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.7,
+        "lufs_in": -13.94,
+        "gain_db": -4.06,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.02
+      },
+      "measured": {
+        "duration_s": 110.02,
+        "lufs": -13.94,
+        "true_peak_dbtp": -0.95,
+        "lead_in_s": 0.7,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.49,
+        "centroid_hz": 1557.1,
+        "stereo_corr": 0.401,
+        "silence_frac": 0.057
+      },
+      "faults": [
+        "slow start (0.70s)",
+        "fades out (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 33.95,
+          "faults": [
+            "slow start (1.40s)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 110.02,
+          "lufs": -12.44,
+          "true_peak_dbtp": -1.4,
+          "lead_in_s": 1.4,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 13.36,
+          "centroid_hz": 1560.0,
+          "stereo_corr": 0.094,
+          "silence_frac": 0.034,
+          "loop_score": 0.9754
+        },
+        {
+          "score": 35.0,
+          "faults": [
+            "slow start (1.05s)",
+            "gaps (10.0% silent)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 110.02,
+          "lufs": -12.78,
+          "true_peak_dbtp": -1.02,
+          "lead_in_s": 1.05,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.5,
+          "centroid_hz": 2504.4,
+          "stereo_corr": 0.324,
+          "silence_frac": 0.1,
+          "loop_score": 0.9723
+        },
+        {
+          "score": 36.73,
+          "faults": [
+            "slow start (0.70s)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 110.02,
+          "lufs": -13.94,
+          "true_peak_dbtp": -0.95,
+          "lead_in_s": 0.7,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.49,
+          "centroid_hz": 1557.1,
+          "stereo_corr": 0.401,
+          "silence_frac": 0.057,
+          "loop_score": 0.9697
+        }
+      ],
+      "sections": [
+        {
+          "name": "Entrance and Deep Drone",
+          "duration_ms": 20000,
+          "styles": [
+            "immediate start",
+            "deep sustained low string drone",
+            "very soft dynamics",
+            "long natural reverb",
+            "enormous sense of space"
+          ]
+        },
+        {
+          "name": "First Echoes",
+          "duration_ms": 25000,
+          "styles": [
+            "continued low string drone",
+            "single soft marimba notes",
+            "like water drips",
+            "sparse piano notes",
+            "very patient"
+          ]
+        },
+        {
+          "name": "Deeper Atmosphere",
+          "duration_ms": 25000,
+          "styles": [
+            "distant breathy bass flute melody",
+            "slow low cello swells",
+            "prepared-piano notes echoing",
+            "deep warm low end",
+            "gentle unfatiguing highs"
+          ]
+        },
+        {
+          "name": "Crystal Glimmer",
+          "duration_ms": 20000,
+          "styles": [
+            "far-off soft bowed metal shimmer",
+            "marimba notes return",
+            "cello swells continue",
+            "quiet wonder",
+            "consonant harmony"
+          ]
+        },
+        {
+          "name": "Return to Stillness",
+          "duration_ms": 20000,
+          "styles": [
+            "low string drone becomes prominent",
+            "marimba and piano fade",
+            "breath of bass flute",
+            "seamless loop point",
+            "sense of ancient silence"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "home": {
+      "id": "home",
+      "files": [
+        {
+          "file": "home.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1401429
+        },
+        {
+          "file": "home.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1625677
+        }
+      ],
+      "duration_s": 99.985,
+      "bpm": 60.44,
+      "asked_bpm": 68,
+      "musical": {
+        "root": "D#",
+        "mode": "major",
+        "confidence": 0.925,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          3,
+          5,
+          7,
+          10
+        ]
+      },
+      "timing": {
+        "bpm": 60.44,
+        "beat_anchor_s": 0.813,
+        "confidence": 0.489,
+        "raw_bpm": 90.67
+      },
+      "loop": {
+        "loop_start_s": 30.999,
+        "loop_end_s": 87.489,
+        "crossfade_ms": 900,
+        "score": 0.9531,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -15.02,
+        "gain_db": -2.98,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -3.24
+      },
+      "measured": {
+        "duration_s": 99.99,
+        "lufs": -15.02,
+        "true_peak_dbtp": -0.26,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 15.95,
+        "centroid_hz": 5810.8,
+        "stereo_corr": 0.698,
+        "silence_frac": 0.022
+      },
+      "faults": [
+        "harsh/bright (5811 Hz)",
+        "fades out (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 41.14,
+          "faults": [
+            "harsh/bright (4754 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 99.99,
+          "lufs": -13.25,
+          "true_peak_dbtp": -0.94,
+          "lead_in_s": 0.15,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.98,
+          "centroid_hz": 4754.2,
+          "stereo_corr": 0.703,
+          "silence_frac": 0.033,
+          "loop_score": 0.9396
+        },
+        {
+          "score": 42.35,
+          "faults": [
+            "harsh/bright (5811 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 99.99,
+          "lufs": -15.02,
+          "true_peak_dbtp": -0.26,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 15.95,
+          "centroid_hz": 5810.8,
+          "stereo_corr": 0.698,
+          "silence_frac": 0.022,
+          "loop_score": 0.953
+        },
+        {
+          "score": 41.94,
+          "faults": [
+            "harsh/bright (5003 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 99.99,
+          "lufs": -12.65,
+          "true_peak_dbtp": -0.83,
+          "lead_in_s": 0.1,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.3,
+          "centroid_hz": 5002.9,
+          "stereo_corr": 0.77,
+          "silence_frac": 0.024,
+          "loop_score": 0.943
+        }
+      ],
+      "sections": [
+        {
+          "name": "Intro Melody Part A",
+          "duration_ms": 20000,
+          "styles": [
+            "solo fingerpicked acoustic guitar",
+            "gentle start",
+            "simple melody",
+            "soft dynamics",
+            "warm tone"
+          ]
+        },
+        {
+          "name": "Theme Development",
+          "duration_ms": 25000,
+          "styles": [
+            "warm solo cello carries melody",
+            "soft piano answers",
+            "fingerpicked acoustic guitar continues",
+            "quiet music-box glimmer underneath",
+            "hopeful"
+          ]
+        },
+        {
+          "name": "Full Theme",
+          "duration_ms": 30000,
+          "styles": [
+            "distant pennywhistle joins",
+            "cello, piano, and guitar interweave",
+            "richer harmony",
+            "deeply comforting",
+            "music-box element present"
+          ]
+        },
+        {
+          "name": "Loop Point / Outro",
+          "duration_ms": 25000,
+          "styles": [
+            "cello and pennywhistle fade slightly",
+            "guitar and piano become more prominent",
+            "music-box glimmer becomes clearer",
+            "seamless loop point",
+            "gentle fade to resolve theme"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "battle": {
+      "id": "battle",
+      "files": [
+        {
+          "file": "battle.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1939
+        },
+        {
+          "file": "battle.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 2187
+        }
+      ],
+      "duration_s": 0.073,
+      "bpm": 142,
+      "asked_bpm": 142,
+      "musical": {
+        "root": null,
+        "mode": null,
+        "confidence": 0.0,
+        "midi_pitch_classes": null,
+        "sfx_safe_pitch_classes": null
+      },
+      "timing": {
+        "bpm": null,
+        "beat_anchor_s": 0.0,
+        "confidence": 0.0
+      },
+      "loop": {
+        "loop_start_s": 0.0,
+        "loop_end_s": 0.073,
+        "crossfade_ms": 900,
+        "score": 0.0,
+        "beat_snapped": false
+      },
+      "trim_db": 0.0,
+      "master": {
+        "headroom_limited": true,
+        "lufs_in": -70.0,
+        "gain_db": -7.65,
+        "lufs_out": -70.0,
+        "true_peak_dbtp": -2.18
+      },
+      "measured": {
+        "duration_s": 0.07,
+        "lufs": -70.0,
+        "true_peak_dbtp": 6.15,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 1.0,
+        "crest_db": 4.13,
+        "centroid_hz": 7812.4,
+        "stereo_corr": 0.424,
+        "silence_frac": 0.0
+      },
+      "faults": [
+        "weak loop seam (0.00)",
+        "odd dynamics (crest 4.1 dB)",
+        "harsh/bright (7812 Hz)",
+        "short (0s of 90s)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 42.0,
+          "faults": [
+            "weak loop seam (0.00)",
+            "odd dynamics (crest 4.1 dB)",
+            "harsh/bright (7812 Hz)",
+            "short (0s of 90s)"
+          ],
+          "duration_s": 0.07,
+          "lufs": -70.0,
+          "true_peak_dbtp": 6.15,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.0,
+          "crest_db": 4.13,
+          "centroid_hz": 7812.4,
+          "stereo_corr": 0.424,
+          "silence_frac": 0.0,
+          "loop_score": 0.0
+        },
+        {
+          "score": 37.6,
+          "faults": [
+            "harsh/bright (6543 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 89.95,
+          "lufs": -10.44,
+          "true_peak_dbtp": -0.24,
+          "lead_in_s": 0.35,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.47,
+          "centroid_hz": 6542.7,
+          "stereo_corr": 0.338,
+          "silence_frac": 0.032,
+          "loop_score": 0.9649
+        },
+        {
+          "score": 41.15,
+          "faults": [
+            "harsh/bright (6741 Hz)",
+            "fades out (tail 0.00)"
+          ],
+          "duration_s": 89.95,
+          "lufs": -10.41,
+          "true_peak_dbtp": -0.2,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.57,
+          "centroid_hz": 6741.4,
+          "stereo_corr": 0.27,
+          "silence_frac": 0.038,
+          "loop_score": 0.9541
+        }
+      ],
+      "sections": [
+        {
+          "name": "A1: The Charge",
+          "duration_ms": 21000,
+          "styles": [
+            "full energy start",
+            "galloping low staccato strings ostinato",
+            "punchy taiko and timpani",
+            "urgent brass calls",
+            "bold rising horn melody in a minor key",
+            "high strings answer melody",
+            "relentless pulse"
+          ]
+        },
+        {
+          "name": "A2: Melee",
+          "duration_ms": 21000,
+          "styles": [
+            "maintains high energy",
+            "snare rolls increase intensity",
+            "brass takes over melody",
+            "choir shouts for rhythmic accent",
+            "powerful cinematic percussion",
+            "staccato strings continue relentless drive"
+          ]
+        },
+        {
+          "name": "B: The Hero's Stand",
+          "duration_ms": 21000,
+          "styles": [
+            "soaring high string melody",
+            "heroic brass counter-melody",
+            "ostinato shifts slightly to build tension",
+            "courageous and uplifting feel",
+            "powerful, controlled low end",
+            "full orchestra"
+          ]
+        },
+        {
+          "name": "C1: Turning the Tide",
+          "duration_ms": 21000,
+          "styles": [
+            "melody returns to horns with more force",
+            "percussion becomes more complex and driving",
+            "crescendo in dynamics",
+            "fast string runs",
+            "exciting and triumphant feel",
+            "powerful cymbal crashes"
+          ]
+        },
+        {
+          "name": "C2: Moment of Silence & Loop Point",
+          "duration_ms": 6000,
+          "styles": [
+            "dramatic pause in final bar",
+            "full orchestra cuts out",
+            "single timpani hit with reverb tail",
+            "sets up a seamless loop",
+            "breath-taking silence"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "adventure": {
+      "id": "adventure",
+      "files": [
+        {
+          "file": "adventure.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1733605
+        },
+        {
+          "file": "adventure.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1949349
+        }
+      ],
+      "duration_s": 120.094,
+      "bpm": 95.7,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "major",
+        "confidence": 0.932,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          4,
+          7,
+          9
+        ]
+      },
+      "timing": {
+        "bpm": 95.7,
+        "beat_anchor_s": 0.592,
+        "confidence": 0.621,
+        "raw_bpm": 95.7
+      },
+      "loop": {
+        "loop_start_s": 38.554,
+        "loop_end_s": 97.967,
+        "crossfade_ms": 900,
+        "score": 0.9368,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -11.98,
+        "gain_db": -6.02,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -6.85
+      },
+      "measured": {
+        "duration_s": 120.09,
+        "lufs": -11.98,
+        "true_peak_dbtp": 0.08,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 1.747,
+        "crest_db": 15.08,
+        "centroid_hz": 4370.4,
+        "stereo_corr": 0.36,
+        "silence_frac": 0.0
+      },
+      "faults": [],
+      "candidates_tried": [
+        {
+          "score": 85.64,
+          "faults": [
+            "harsh/bright (5774 Hz)"
+          ],
+          "duration_s": 120.09,
+          "lufs": -12.65,
+          "true_peak_dbtp": -1.0,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.306,
+          "crest_db": 14.04,
+          "centroid_hz": 5773.7,
+          "stereo_corr": 0.309,
+          "silence_frac": 0.0,
+          "loop_score": 0.9185
+        },
+        {
+          "score": 93.47,
+          "faults": [],
+          "duration_s": 120.09,
+          "lufs": -11.98,
+          "true_peak_dbtp": 0.08,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.747,
+          "crest_db": 15.08,
+          "centroid_hz": 4370.4,
+          "stereo_corr": 0.36,
+          "silence_frac": 0.0,
+          "loop_score": 0.9429
+        },
+        {
+          "score": 81.49,
+          "faults": [
+            "harsh/bright (7204 Hz)"
+          ],
+          "duration_s": 120.09,
+          "lufs": -11.52,
+          "true_peak_dbtp": 0.01,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.834,
+          "crest_db": 14.23,
+          "centroid_hz": 7204.2,
+          "stereo_corr": 0.431,
+          "silence_frac": 0.0,
+          "loop_score": 0.8632
+        }
+      ],
+      "sections": [
+        {
+          "name": "Main Theme A",
+          "duration_ms": 20000,
+          "styles": [
+            "warm string bed",
+            "gentle walking pulse",
+            "hopeful flute melody",
+            "light plucked strings",
+            "soft cellos",
+            "starts playing at once"
+          ]
+        },
+        {
+          "name": "Main Theme B",
+          "duration_ms": 20000,
+          "styles": [
+            "noble French horn answers",
+            "tin-whistle melody",
+            "harp arpeggios",
+            "call and response",
+            "light brushed snare",
+            "continued forward motion"
+          ]
+        },
+        {
+          "name": "Development",
+          "duration_ms": 20000,
+          "styles": [
+            "flute and horn melodies intertwine",
+            "subtle dynamic swell",
+            "lush string harmonies",
+            "fuller orchestration",
+            "sense of wonder",
+            "rising gently"
+          ]
+        },
+        {
+          "name": "Bridge",
+          "duration_ms": 20000,
+          "styles": [
+            "strings carry the main theme",
+            "ethereal harp glissandos",
+            "woodwinds fade out",
+            "minimal percussion",
+            "spacious mix",
+            "breathing room"
+          ]
+        },
+        {
+          "name": "Return to Theme",
+          "duration_ms": 20000,
+          "styles": [
+            "curious flute melody returns",
+            "light plucked strings",
+            "walking pace rhythm re-establishes",
+            "warm cellos",
+            "gentle and optimistic"
+          ]
+        },
+        {
+          "name": "Outro / Loop",
+          "duration_ms": 20000,
+          "styles": [
+            "melody fades to warm string bed",
+            "soft harp arpeggios",
+            "gentle walking pulse continues",
+            "seamless transition to beginning",
+            "sustained string chords",
+            "fade out non-essential elements"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
     }
   }
 }
