@@ -574,6 +574,22 @@ ALTERNATIVES: dict[str, list[tuple]] = {
         ("plip", "a single tiny water plip, one small round droplet note, clean and cute", 0.5, None),
         ("bell", "one tiny soft muted hand-bell ding, gentle and warm", 0.6, None),
     ],
+    # LEVEL UP (maintainer 2026-08-06). No base set — these ten ARE the ten
+    # alternatives. A level-up is a MUSICAL moment, so unlike the impact sets
+    # brightness is not a fault here: bells and sparkle are supposed to ring.
+    # Gates stay off, as with every alternative — the ear decides.
+    "level_up": [
+        ("fanfare", "a short triumphant orchestral brass fanfare, three rising notes ending bright and proud", 1.8, None),
+        ("retro", "a classic retro arcade level-up jingle, a short rising chunky 8-bit style phrase, cheerful", 1.4, None),
+        ("chimes", "a bright glockenspiel run climbing quickly upward, clear ringing metal bars, celebratory", 1.6, None),
+        ("harp", "one quick harp glissando sweeping upward, ending on a soft shining chord", 1.8, None),
+        ("choir", "a short warm angelic choir swell on an open ah vowel, rising and resolving brightly", 2.0, None),
+        ("bells", "small bright hand bells ringing out a quick happy upward flourish", 1.6, None),
+        ("musicbox", "a delicate music box playing a short ascending phrase, twinkling and gentle", 2.0, None),
+        ("drums", "a quick triumphant timpani roll rising to one bright cymbal shine", 1.8, None),
+        ("sparkle", "a magical sparkle shimmer rising upward, twinkling glassy stars, light and airy", 1.6, None),
+        ("horn", "a single noble french horn call rising warmly and holding, proud and hopeful", 2.0, None),
+    ],
     "item_drop": [
         ("sack", "a heavy little grain sack landing on packed earth, one deep dull flump", 0.6, 550),
         ("block", "a small wooden block dropping on a plank floor with one little bounce, a warm double knock", 0.7, 600),
