@@ -131,12 +131,20 @@ const ANIM_FPS: Record<string, number> = {
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
 const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
-// The marked monster's 1px target border colour (maintainer round 9: "a bit
-// dark red"). The border itself is a GENERATED outline texture — see
-// ringTextureFor: 4-NEIGHBOUR dilation only, so a diagonal silhouette step
-// yields single diagonally-touching border pixels, the way pixel art draws
-// its own outlines (round 10: the 8-direction offset-copy ring read THICK).
-const TARGET_RING_COLOR = 0x8e2222;
+// The target/aggro border palettes (maintainer rounds 9-11). Each border is a
+// GENERATED outline texture — see ringTextureFor: 4-NEIGHBOUR dilation only,
+// so a diagonal silhouette step yields single diagonally-touching border
+// pixels, the way pixel art draws its own outlines (round 10: 8-direction
+// dilation read THICK). Round 11: the border is 2px — an inner line in the
+// base colour and an outer line slightly BRIGHTER in the same palette.
+// RED = monsters: the one you clicked (the whole fight through) and every
+// monster currently hunting YOU. LIGHT-LIGHT-BLUE = the ground item you are
+// fetching (tap or PICK UP), replacing the old hand icon.
+const TARGET_RING_COLOR = 0x8e2222; // dark red, inner (round 9's approved tone)
+const TARGET_RING_BRIGHT = 0xb83a3a; // outer line, same palette a step brighter
+const ITEM_RING_COLOR = 0x9adcf0; // light-light-blue, inner
+const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
+const RING_PAD = 2; // outline canvas pad = border width in art pixels
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -704,9 +712,8 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
-  private targetRingImg?: Phaser.GameObjects.Image; // the marked monster's generated 1px outline
-  private pickupIcon?: Phaser.GameObjects.Image; // hand marker under the item being fetched
-  private pickupIconQueued = false;
+  private monsterRings = new Map<string, Phaser.GameObjects.Image>(); // red outlines: engaged + hunters
+  private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
@@ -721,8 +728,6 @@ export class WorldScene extends Phaser.Scene {
       wy: number;
       item: string;
       bornAt: number;
-      baseY: number; // resting screen y + depth in the WORLD layer: the pick-up
-      baseDepth: number; // marker lifts the item out of it and must put it back
     }
   >();
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
@@ -1917,55 +1922,62 @@ export class WorldScene extends Phaser.Scene {
           hpBarText:
             mv.lvText?.visible && mv.hpText?.visible ? `${mv.lvText.text}|${mv.hpText.text}` : null,
         })),
-      // The target overlays, for the gate: the marked monster's 1px border,
-      // the pick-up hand, whether a walk-to beacon is up, the debug rings.
-      // (The in-fight hp/level readout is per monster — monsterInfo().)
+      // The target overlays, for the gate: the red monster borders (engaged +
+      // hunters), the blue item border, whether a walk-to beacon is up, the
+      // debug rings. (The in-fight hp/level readout is per monster —
+      // monsterInfo().)
       targetOverlay: () => ({
-        icon: !!this.targetRingImg?.visible, // the border ring
-        ringTint: this.targetRingImg?.visible ? TARGET_RING_COLOR : null,
-        hand: !!this.pickupIcon?.visible,
-        handUnderItem: !!(
-          this.pickupIcon?.visible &&
-          this.pendingPickupId &&
-          this.drops.get(this.pendingPickupId) &&
-          this.drops.get(this.pendingPickupId)!.img.depth > this.pickupIcon.depth
-        ),
+        icon: !!(this.engagedId && this.monsterRings.get(this.engagedId)?.visible), // engaged border
+        ringTint:
+          this.engagedId && this.monsterRings.get(this.engagedId)?.visible
+            ? TARGET_RING_COLOR
+            : null,
+        rings: [...this.monsterRings.values()].filter((r) => r.visible).length,
+        itemRing: !!this.itemRingImg?.visible,
+        itemRingTint: this.itemRingImg?.visible ? ITEM_RING_COLOR : null,
         beacon: !!this.tapMarker,
         engaged: this.engagedId,
         pendingPickup: this.pendingPickupId,
         aggroRings: this.aggroRadiusOn,
         loaderState: this.load.state,
       }),
-      // Debug: the generated outline image's live state (round-10 border QA).
+      // Debug: the generated outline images' live state (rounds 10-11 QA).
       ringInfo: () => {
-        const img = this.targetRingImg;
-        if (!img) return null;
-        const tex = this.textures.get(img.texture.key);
-        const src = tex?.getSourceImage() as HTMLCanvasElement | undefined;
-        let filled = -1;
-        try {
-          const c = src?.getContext?.("2d");
-          if (c && src) {
-            const d = c.getImageData(0, 0, src.width, src.height).data;
-            filled = 0;
-            for (let i = 3; i < d.length; i += 4) if (d[i] > 0) filled++;
+        const describe = (img?: Phaser.GameObjects.Image) => {
+          if (!img) return null;
+          const tex = this.textures.get(img.texture.key);
+          const src = tex?.getSourceImage() as HTMLCanvasElement | undefined;
+          let filled = -1;
+          try {
+            const c = src?.getContext?.("2d");
+            if (c && src) {
+              const d = c.getImageData(0, 0, src.width, src.height).data;
+              filled = 0;
+              for (let i = 3; i < d.length; i += 4) if (d[i] > 0) filled++;
+            }
+          } catch {
+            /* not a canvas source */
           }
-        } catch {
-          /* not a canvas source */
-        }
+          return {
+            key: img.texture.key,
+            visible: img.visible,
+            x: img.x,
+            y: img.y,
+            depth: img.depth,
+            originX: img.originX,
+            originY: img.originY,
+            scaleX: img.scaleX,
+            alpha: img.alpha,
+            texW: src?.width ?? null,
+            texH: src?.height ?? null,
+            filled,
+          };
+        };
         return {
-          key: img.texture.key,
-          visible: img.visible,
-          x: img.x,
-          y: img.y,
-          depth: img.depth,
-          originX: img.originX,
-          originY: img.originY,
-          scaleX: img.scaleX,
-          alpha: img.alpha,
-          texW: src?.width ?? null,
-          texH: src?.height ?? null,
-          filled,
+          monsters: Object.fromEntries(
+            [...this.monsterRings.entries()].map(([id, img]) => [id, describe(img)]),
+          ),
+          item: describe(this.itemRingImg),
         };
       },
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
@@ -2362,8 +2374,6 @@ export class WorldScene extends Phaser.Scene {
       wy: g.y,
       item: g.item,
       bornAt: this.time.now,
-      baseY: y - 7,
-      baseDepth: y,
     };
     this.drops.set(id, rec);
     this.withItemTexture(g.item, (key) => {
@@ -2472,163 +2482,199 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** The marked monster's 1px OUTLINE texture for its current frame, built
-   * on first sight and cached in the texture manager: the frame is drawn
-   * into a canvas padded 1px on every side, its alpha read back, and a
-   * TARGET_RING_COLOR pixel painted at every transparent pixel that has a
-   * solid 4-NEIGHBOUR (N/S/E/W — never diagonals: side-dilation leaves
-   * single diagonally-touching pixels across the art's diagonal steps, the
-   * thin connected border pixel art itself outlines with; 8-way dilation
-   * doubles up there and reads thick — maintainer round 10). The pad is
-   * symmetric, so a setFlipX mirror still lines up with the mirrored art.
-   * ~1 tiny canvas per (strip, frame) actually marked — trivial memory. */
-  private ringTextureFor(sp: Phaser.GameObjects.Sprite): string | null {
+  /** A marked body's OUTLINE texture for its current frame, built on first
+   * sight and cached in the texture manager: the frame is drawn into a
+   * canvas padded RING_PAD px on every side, its alpha read back, and a 2px
+   * two-tone border grown out of the silhouette — the INNER line in the
+   * palette's base colour, the OUTER line a step brighter (maintainer round
+   * 11). Each line is a 4-NEIGHBOUR dilation (N/S/E/W — never diagonals:
+   * side-dilation leaves single diagonally-touching pixels across the art's
+   * diagonal steps, the thin connected border pixel art itself outlines
+   * with; 8-way dilation doubles up there and reads thick — round 10). The
+   * pad is symmetric, so a setFlipX mirror still lines up with the mirrored
+   * art. ~1 tiny canvas per (strip, frame, palette) actually marked. */
+  private ringTextureFor(
+    sp: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    inner: number,
+    outer: number,
+  ): string | null {
     const frame = sp.frame;
-    const key = `ring:${sp.texture.key}|${frame.name}`;
+    const key = `ring:${inner.toString(16)}:${sp.texture.key}|${frame.name}`;
     if (this.textures.exists(key)) return key;
     const fw = frame.cutWidth;
     const fh = frame.cutHeight;
     if (!fw || !fh) return null;
-    const w = fw + 2;
-    const h = fh + 2;
+    const w = fw + RING_PAD * 2;
+    const h = fh + RING_PAD * 2;
     const cnv = document.createElement("canvas");
     cnv.width = w;
     cnv.height = h;
     const ctx = cnv.getContext("2d", { willReadFrequently: true });
     if (!ctx) return null;
-    ctx.drawImage(frame.source.image as CanvasImageSource, frame.cutX, frame.cutY, fw, fh, 1, 1, fw, fh);
+    ctx.drawImage(
+      frame.source.image as CanvasImageSource,
+      frame.cutX, frame.cutY, fw, fh,
+      RING_PAD, RING_PAD, fw, fh,
+    );
     const a = ctx.getImageData(0, 0, w, h).data;
     // Solid = the art's own opacity threshold; soft anti-alias fringes on
     // generated strips stay outside the border.
-    const solid = (x: number, y: number) =>
-      x >= 0 && y >= 0 && x < w && y < h && a[(y * w + x) * 4 + 3] >= 128;
-    const out = ctx.createImageData(w, h);
-    const od = out.data;
-    const r = (TARGET_RING_COLOR >> 16) & 0xff;
-    const g = (TARGET_RING_COLOR >> 8) & 0xff;
-    const b = TARGET_RING_COLOR & 0xff;
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        if (solid(x, y)) continue;
-        if (solid(x - 1, y) || solid(x + 1, y) || solid(x, y - 1) || solid(x, y + 1)) {
-          const i = (y * w + x) * 4;
-          od[i] = r;
-          od[i + 1] = g;
-          od[i + 2] = b;
-          od[i + 3] = 255;
+    const n = w * h;
+    const solid = new Uint8Array(n);
+    for (let i = 0; i < n; i++) if (a[i * 4 + 3] >= 128) solid[i] = 1;
+    // One 4-neighbour dilation ring: mask=1 where a transparent-in-`base`
+    // pixel touches a `base` pixel on a side.
+    const growRing = (base: Uint8Array) => {
+      const ring = new Uint8Array(n);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = y * w + x;
+          if (base[i]) continue;
+          if (
+            (x > 0 && base[i - 1]) ||
+            (x < w - 1 && base[i + 1]) ||
+            (y > 0 && base[i - w]) ||
+            (y < h - 1 && base[i + w])
+          )
+            ring[i] = 1;
         }
       }
-    }
+      return ring;
+    };
+    const ring1 = growRing(solid);
+    const filled = new Uint8Array(n);
+    for (let i = 0; i < n; i++) filled[i] = solid[i] | ring1[i];
+    const ring2 = growRing(filled);
+    const out = ctx.createImageData(w, h);
+    const od = out.data;
+    const paint = (ring: Uint8Array, c: number) => {
+      const r = (c >> 16) & 0xff;
+      const g = (c >> 8) & 0xff;
+      const b = c & 0xff;
+      for (let i = 0; i < n; i++) {
+        if (!ring[i]) continue;
+        od[i * 4] = r;
+        od[i * 4 + 1] = g;
+        od[i * 4 + 2] = b;
+        od[i * 4 + 3] = 255;
+      }
+    };
+    paint(ring1, inner);
+    paint(ring2, outer);
     ctx.putImageData(out, 0, 0);
     // NEAREST explicitly: addCanvas does not inherit pixelArt's default the
-    // way loaded textures do, and LINEAR smears the 1px outline into a soft
+    // way loaded textures do, and LINEAR smears the outline into a soft
     // translucent halo at any fractional camera zoom (measured).
     this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
     return key;
   }
 
-  /** The engagement overlays, per frame after the monster loop: (1) the
-   * SWORD MARKER over the walk-to target — visible from the tap until the
-   * battle begins (in reach, or the monster is already fighting), gently
-   * bobbing above its head; (2) the settings debug rings: every monster's
-   * aggro radius, plus the provoke radius on the sword-marked one. (The
-   * in-fight hp/level readout lives ON the monster — updateMonsterHpBar.) */
+  /** The engagement overlays, per frame after the monster loop: (1) the red
+   * target/aggro borders + the blue item border; (2) the settings debug
+   * rings: every monster's aggro radius, plus the provoke radius on the
+   * marked one. (The in-fight hp/level readout lives ON the monster —
+   * updateMonsterHpBar.) */
   private updateTargetOverlays() {
     const state = this.room?.state as any;
-    const mv = this.engagedId ? this.monsters.get(this.engagedId) : undefined;
-    const m = this.engagedId && state?.monsters ? state.monsters.get(this.engagedId) : undefined;
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
 
-    // (1) The TARGET BORDER (maintainer rounds 9-10, replacing the sword
-    // icon): a 1-MONSTER-PIXEL dark red outline hugging the marked monster's
-    // own silhouette. It is a GENERATED texture (ringTextureFor): the current
-    // frame's alpha is read back and a border pixel is painted at every
-    // TRANSPARENT pixel with a solid 4-NEIGHBOUR — sides only, never
-    // diagonals, so a diagonal silhouette step gets single diagonally-
-    // touching border pixels, exactly how pixel art draws its own outlines
-    // (round 10: dilating diagonally too doubled up on every step and the
-    // border read THICK). And it is drawn ABOVE the darkness overlay and
-    // every lit copy at FULL alpha, whatever the hour — the mark is UI, and
-    // lighting/shadow/fog must never touch it (round 10; round 9 matched the
-    // body's layer + alpha, which dimmed the red with the world). An outline
-    // has no interior, so nothing bleeds through the body it surrounds.
-    let ringOn = false;
-    if (mv && m && me && mv.mstate !== "die" && !mv.culled && mv.sprite.visible) {
-      const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
-      const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
-      const battleOn = dist <= range * 1.2 || mv.mstate === "combat";
-      if (!battleOn) {
-        const sp = mv.sprite;
-        const ringKey = this.ringTextureFor(sp);
-        if (ringKey) {
-          ringOn = true;
-          if (!this.targetRingImg) {
-            this.targetRingImg = this.add.image(0, 0, ringKey).setVisible(false);
-          }
-          // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
-          // applyObjectLights syncs lit copies LATER in the frame, so its
-          // x/y is one frame stale — on a hopping monster that lag smeared
-          // the ring sideways instead of hugging the silhouette.
-          // The outline canvas is the frame padded 1px on every side, so the
-          // origin shifts by that pad to keep the art aligned under the
-          // sprite's own origin (which the walk shift[] moves per frame).
-          const fw = sp.frame.cutWidth;
-          const fh = sp.frame.cutHeight;
-          this.targetRingImg
-            .setTexture(ringKey)
-            .setOrigin((sp.originX * fw + 1) / (fw + 2), (sp.originY * fh + 1) / (fh + 2))
-            .setScale(sp.scaleX, sp.scaleY)
-            .setFlipX(sp.flipX)
-            .setPosition(sp.x, sp.y)
-            .setAlpha(1)
-            .setDepth(900_001.45) // above every lit copy, below the hp bar
-            .setVisible(true);
-        }
+    // (1) The RED BORDERS (maintainer rounds 9-11): a 2-MONSTER-PIXEL dark
+    // red two-tone outline hugging the body's own silhouette — on the
+    // monster I clicked (from the tap through the ENTIRE fight, round 11)
+    // AND on every monster currently hunting ME (synced Monster.tsid). The
+    // outline is a GENERATED texture (ringTextureFor — thin 4-neighbour
+    // lines, inner base + outer brighter) drawn ABOVE the darkness overlay
+    // and every lit copy at FULL alpha, whatever the hour — the mark is UI,
+    // and lighting/shadow/fog never touch it (round 10). An outline has no
+    // interior, so nothing bleeds through the body it surrounds.
+    const mySid = this.room?.sessionId;
+    for (const [id, mv2] of this.monsters) {
+      const sm = state?.monsters?.get(id);
+      const hunting =
+        !!sm && sm.tsid === mySid && !!mySid && (mv2.mstate === "chase" || mv2.mstate === "combat");
+      const on =
+        (this.engagedId === id || hunting) &&
+        !!sm &&
+        mv2.mstate !== "die" &&
+        !mv2.culled &&
+        mv2.sprite.visible;
+      let ring = this.monsterRings.get(id);
+      if (!on) {
+        ring?.setVisible(false);
+        continue;
+      }
+      const sp = mv2.sprite;
+      const ringKey = this.ringTextureFor(sp, TARGET_RING_COLOR, TARGET_RING_BRIGHT);
+      if (!ringKey) {
+        ring?.setVisible(false);
+        continue;
+      }
+      if (!ring) {
+        ring = this.add.image(0, 0, ringKey).setVisible(false);
+        this.monsterRings.set(id, ring);
+      }
+      // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
+      // applyObjectLights syncs lit copies LATER in the frame, so its x/y
+      // is one frame stale — on a hopping monster that lag smeared the
+      // ring sideways instead of hugging the silhouette. The outline canvas
+      // is the frame padded RING_PAD px on every side, so the origin shifts
+      // by that pad to keep the art aligned under the sprite's own origin
+      // (which the walk shift[] moves per frame).
+      const fw = sp.frame.cutWidth;
+      const fh = sp.frame.cutHeight;
+      ring
+        .setTexture(ringKey)
+        .setOrigin(
+          (sp.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
+          (sp.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
+        )
+        .setScale(sp.scaleX, sp.scaleY)
+        .setFlipX(sp.flipX)
+        .setPosition(sp.x, sp.y)
+        .setAlpha(1)
+        .setDepth(900_001.45) // above every lit copy, below the hp bar
+        .setVisible(true);
+    }
+    // Rings for monsters that left the room entirely.
+    for (const [id, ring] of this.monsterRings) {
+      if (!this.monsters.has(id)) {
+        ring.destroy();
+        this.monsterRings.delete(id);
       }
     }
-    if (!ringOn) this.targetRingImg?.setVisible(false);
 
-    // (1b) The PICK-UP HAND, CENTRED ON and drawn UNDER the item we are
-    // fetching (maintainer rounds 8-9): the loot sits in the open palm, so
-    // the hand replaces the walk-to beacon AND the item's ground shadow.
-    // Both the hand and the item ride ABOVE the darkness overlay while
-    // targeted — the pair is a marker, and markers are never dimmed.
-    let handOn = false;
+    // (1b) The ITEM BORDER (maintainer round 11, replacing the round-8/9
+    // hand icon): the drop I am fetching — a tap on it, or the nearest one
+    // via PICK UP / F — gets the same generated outline in light-light-blue,
+    // until it is picked up. Rendered exactly like the red one: above the
+    // lighting at full alpha; the item itself stays an ordinary world-layer
+    // drop (shadow, night dimming and the end-of-life flash untouched).
+    let itemRingOn = false;
     const pd = this.pendingPickupId ? this.drops.get(this.pendingPickupId) : undefined;
     if (pd && pd.img.visible) {
-      handOn = true;
-      if (!this.pickupIcon && this.textures.exists("ui:pickup-target")) {
-        this.pickupIcon = this.add
-          .image(0, 0, "ui:pickup-target")
-          .setOrigin(0.5, 0.5)
-          .setDepth(900_001.88); // unlit, and just UNDER the item it holds
-      } else if (!this.pickupIcon && !this.pickupIconQueued) {
-        this.pickupIconQueued = true;
-        this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));
-        this.load.start();
-      }
-      if (this.pickupIcon) {
-        // The spawn TOSS owns y while it runs — never fight a live tween.
-        const tossing = this.tweens.isTweening(pd.img);
-        const bob = tossing ? 0 : Math.sin(this.time.now / 260) * 2;
-        if (!tossing) pd.img.setPosition(pd.img.x, pd.baseY + bob);
-        this.pickupIcon.setPosition(pd.img.x, pd.img.y).setVisible(true);
-        // Lift the item onto the palm: unlit, one hair above the hand, and
-        // its ground shadow off (the palm is what it rests on now).
-        pd.img.setDepth(900_001.89);
-        pd.shadow.setVisible(false);
-      }
-    }
-    if (!handOn) this.pickupIcon?.setVisible(false);
-    // Any drop that is NOT the current target keeps its ordinary world-layer
-    // depth, position and shadow (a target can change or be picked up).
-    for (const [id, rec] of this.drops) {
-      if (handOn && id === this.pendingPickupId && this.pickupIcon) continue;
-      if (rec.img.depth !== rec.baseDepth) {
-        rec.img.setPosition(rec.img.x, rec.baseY).setDepth(rec.baseDepth);
-        rec.shadow.setVisible(true);
+      const ringKey = this.ringTextureFor(pd.img, ITEM_RING_COLOR, ITEM_RING_BRIGHT);
+      if (ringKey) {
+        itemRingOn = true;
+        if (!this.itemRingImg) {
+          this.itemRingImg = this.add.image(0, 0, ringKey).setVisible(false);
+        }
+        const fw = pd.img.frame.cutWidth;
+        const fh = pd.img.frame.cutHeight;
+        this.itemRingImg
+          .setTexture(ringKey)
+          .setOrigin(
+            (pd.img.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
+            (pd.img.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
+          )
+          .setScale(pd.img.scaleX, pd.img.scaleY)
+          // Live img position: the spawn TOSS tween owns y while it runs and
+          // the border rides along with it.
+          .setPosition(pd.img.x, pd.img.y)
+          .setAlpha(1)
+          .setDepth(900_001.44) // unlit, beside the monster rings
+          .setVisible(true);
       }
     }
+    if (!itemRingOn) this.itemRingImg?.setVisible(false);
 
     // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
@@ -5509,15 +5555,8 @@ export class WorldScene extends Phaser.Scene {
       });
       queued++;
     }
-    // …and the PICK-UP HAND (<1 KB): preloading kills the race where a lazy
-    // first-tap load lands after the walk-to window has already closed. (The
-    // monster marker needs no asset since round 9 — it is drawn from the
-    // monster's own silhouette.)
-    if (!this.textures.exists("ui:pickup-target") && !this.pickupIconQueued) {
-      this.pickupIconQueued = true;
-      this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));
-      queued++;
-    }
+    // (Neither target marker needs an asset since rounds 9-11 — both borders
+    // are drawn from the marked body's own silhouette.)
     if (!queued) return;
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
       this.buildAnimations();

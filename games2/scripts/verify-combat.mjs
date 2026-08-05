@@ -91,7 +91,7 @@ try {
   );
   const ringTint = await page.evaluate(() => window.__ml.targetOverlay().ringTint);
   if (ringTint !== 0x8e2222) fail(`target border tint is ${ringTint?.toString(16)} (want 8e2222)`);
-  ok("1px dark-red target border on the marked monster, no walk-to beacon");
+  ok("dark-red target border on the marked monster, no walk-to beacon");
   await page.waitForFunction(
     (fid) => {
       const f = window.__ml.monsterInfo().find((m) => m.id === fid);
@@ -118,6 +118,8 @@ try {
   const clips = new Set();
   let monsterCombatClipSeen = false;
   let hpBarSeen = false;
+  let borderInCombatSeen = false;
+  let borderLostInCombat = false;
   const t0 = Date.now();
   let killed = false;
   while (Date.now() - t0 < 40000) {
@@ -130,8 +132,9 @@ try {
         st.engage(fid);
       }
       return {
-        frog: f ? { hp: f.hp, mstate: f.mstate, anim: f.anim, hpBar: f.hpBar } : null,
+        frog: f ? { hp: f.hp, mstate: f.mstate, anim: f.anim, hpBar: f.hpBar, culled: f.culled } : null,
         myAnim: st.myAnim ? st.myAnim() : "",
+        overlayIcon: st.targetOverlay().icon,
       };
     }, frogPick.id);
     if (!s.frog) {
@@ -141,10 +144,18 @@ try {
     if (/kick|punch/.test(s.myAnim)) clips.add(/kick/.test(s.myAnim) ? "kick" : "punch");
     if (s.frog.anim && /attack|angry/.test(s.frog.anim)) monsterCombatClipSeen = true;
     if (s.frog.hpBar) hpBarSeen = true;
+    // Round 11: the red border stays up for the ENTIRE fight.
+    if (s.frog.mstate === "combat" && !s.frog.culled) {
+      if (s.overlayIcon) borderInCombatSeen = true;
+      else borderLostInCombat = true;
+    }
     await page.waitForTimeout(180);
   }
   if (!killed) fail("frog never died (40s)");
   ok("engaged and killed a frog");
+  if (!borderInCombatSeen) fail("red border never seen during combat");
+  if (borderLostInCombat) fail("red border dropped out mid-combat (must persist the whole fight)");
+  ok("red border persisted through the whole fight");
   const blood = await page.evaluate(() => window.__ml.bloodFx());
   if (!(blood >= 1)) fail(`no blood spatter played during the fight (count ${blood})`);
   ok(`blood spatters played (${blood})`);
@@ -217,10 +228,11 @@ try {
   if (!dropId) fail("no loot dropped over 10 frog kills (frog tables are 25%+ x2 — astronomically unlucky or broken)");
   ok("loot dropped on the ground");
 
-  // The PICK-UP HAND (round 8): walking to a tapped item shows the hand
-  // marker over it and NO walk-to beacon. Stand off far enough that the
-  // walk-to window stays open, but INSIDE pickupNearest's 5-cell (160wu)
-  // "don't sprint across the map for a mis-tap" cap.
+  // The ITEM BORDER (round 11, replacing the round-8 hand): walking to a
+  // targeted item shows the light-light-blue outline on it and NO walk-to
+  // beacon. Stand off far enough that the walk-to window stays open, but
+  // INSIDE pickupNearest's 5-cell (160wu) "don't sprint across the map for
+  // a mis-tap" cap.
   await page.evaluate(() => {
     const st = window.__ml;
     const d = st.dropsList()[0];
@@ -231,12 +243,12 @@ try {
   await page.waitForFunction(
     () => {
       const t = window.__ml.targetOverlay();
-      return t.hand === true && t.beacon === false && t.handUnderItem === true;
+      return t.itemRing === true && t.beacon === false && t.itemRingTint === 0x9adcf0;
     },
     undefined,
     { timeout: 8000, polling: 120 },
   );
-  ok("pick-up hand centred UNDER the item, no walk-to beacon");
+  ok("light-blue item border on the fetched item, no walk-to beacon");
 
   // Pickup: probe = the button path (walk-to + grab). Backpack DOM follows.
   await page.evaluate(() => {

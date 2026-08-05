@@ -71,6 +71,13 @@ test("a kited monster gives up at the leash and returns to roam", async () => {
         const s = r1.state.monsters.get(frogId)?.mstate;
         return s === "chase" || s === "combat";
       }, 6000, "frog fights back");
+      // The hunt target is MIRRORED into the synced tsid (round 11: the
+      // client draws the red aggro border on monsters whose tsid is mine).
+      await waitFor(
+        () => r1.state.monsters.get(frogId)?.tsid === r1.sessionId,
+        3000,
+        "synced tsid mirrors the hunt target",
+      );
     } finally {
       clearInterval(poke);
     }
@@ -83,6 +90,13 @@ test("a kited monster gives up at the leash and returns to roam", async () => {
     // step is rejected, and it disengages to roam/walk home. Before the fix
     // it pinned at the rim in "chase" forever (the review's live repro).
     await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "roam", 15000, "give-up to roam");
+    // tsid clears on the next stepMonsters tick after the disengage (the
+    // mirror lives at the tick top, stepCombat's give-up happens after it).
+    await waitFor(
+      () => r1.state.monsters.get(frogId)?.tsid === "",
+      2000,
+      "tsid clears when the hunt ends",
+    );
     // And it STAYS given up (no chase/disengage yo-yo while we sit far away).
     await new Promise((r) => setTimeout(r, 1500));
     assert.equal(r1.state.monsters.get(frogId)?.mstate, "roam", "no re-aggro from across the map");

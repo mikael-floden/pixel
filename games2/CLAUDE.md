@@ -820,42 +820,51 @@ visible head/shoulders are ABOVE the surface).
   reach (covers a chaser wall-wedged INSIDE the box). combat.review.test.ts
   kites a frog, asserts the give-up, the approach-provocation and the slow
   lifting on escape.
-- **The two TARGET MARKERS** (rounds 2-9). Neither coexists with the walk-to
+- **The two TARGET MARKERS** (rounds 2-11). Neither coexists with the walk-to
   beacon: monster taps, chase repaths and item walk-tos all pass
   showMarker=false to setMoveTarget — the ground beacon is for plain ground
-  taps only. MONSTER = a 1-ART-PIXEL dark red (0x8e2222) BORDER on the marked
-  body, not an icon (rounds 9-10): a GENERATED outline texture per (strip,
-  frame) — ringTextureFor reads the frame's alpha into a 1px-padded canvas
-  and paints a border pixel at every transparent pixel with a solid
-  4-NEIGHBOUR. SIDES ONLY, never diagonals: side-dilation leaves single
+  taps only. Both markers are BORDERS built from the marked body's own
+  silhouette — a GENERATED outline texture per (strip, frame, palette):
+  ringTextureFor reads the frame's alpha into a RING_PAD(2)px-padded canvas
+  and grows a 2px TWO-TONE border (round 11) — the INNER line in the base
+  colour, the OUTER line a step brighter — each line one 4-NEIGHBOUR
+  dilation. SIDES ONLY, never diagonals: side-dilation leaves single
   diagonally-touching pixels across the art's diagonal steps, the thin
   connected border pixel art itself outlines with — round 10 killed the
-  previous 8-offset-silhouette-copies approach because dilating diagonally
-  too doubled the border at every step and it read THICK. Drawn as ONE image
-  at depth 900_001.45 (above the darkness overlay and every lit copy, below
-  the hp bar) at FULL alpha whatever the hour — round 10's other half: the
-  mark is UI and lighting/shadow/fog never touch it (round 9 matched the
-  body's layer+alpha, which dimmed the red with the world; an outline has no
-  interior, so nothing bleeds through the body). Three traps paid for in
-  screenshots: position from the LIVE sprite, never from `mv.lit` — lit
-  copies sync later in the frame, so a hopping monster smeared the ring
-  sideways; shift the origin by the 1px pad ((originX·fw+1)/(fw+2)) so the
-  outline tracks the per-frame walk shift[]; and set the canvas texture's
-  filter to NEAREST explicitly — addCanvas does not inherit pixelArt's
-  default, and LINEAR smears the 1px line into a soft halo at fractional
-  camera zoom (measured: zero exact-tint pixels on screen). Probe:
-  `__ml.ringInfo()` (texture key/dims/filled px + live image state). ITEM =
-  the HAND (ui2/icon-pickup-target
-  .webp, the maintainer's art, preloaded in the deferred batch), centred ON
-  the item and drawn UNDER it, both lifted above the lighting overlay and the
-  item's ground shadow hidden — the loot sits in the open palm, unlit. Restore
-  the item's baseY/baseDepth when it stops being the target. The in-fight readout lives ON
+  original 8-offset-silhouette-copies approach because dilating diagonally
+  too doubled the border at every step and it read THICK. Drawn at depth
+  ~900_001.44-.45 (above the darkness overlay and every lit copy, below the
+  hp bar) at FULL alpha whatever the hour — the mark is UI and
+  lighting/shadow/fog never touch it (round 9 matched the body's
+  layer+alpha, which dimmed the red with the world; an outline has no
+  interior, so nothing bleeds through the body). RED (0x8e2222 inner /
+  0xb83a3a outer) marks MONSTERS — the one you clicked for the ENTIRE fight
+  (round 11; it used to hide when battle began) AND every monster currently
+  hunting YOU: Monster.tsid (synced, mirrored each tick from the server-only
+  targetSid while mstate is chase/combat, "" otherwise) — one ring image per
+  bordered monster in WorldScene.monsterRings, destroyed when the monster
+  leaves. LIGHT-LIGHT-BLUE (0x9adcf0 inner / 0xc4ecfa outer) marks the
+  GROUND ITEM being fetched — a tap on it or PICK UP/F's nearest target —
+  until it is picked up; it REPLACED the round-8/9 hand icon
+  (ui2/icon-pickup-target.webp deleted; the item itself stays an ordinary
+  world-layer drop, shadow and night dimming untouched). Three traps paid
+  for in screenshots: position from the LIVE sprite, never from `mv.lit` —
+  lit copies sync later in the frame, so a hopping monster smeared the ring
+  sideways; shift the origin by the pad ((originX·fw+RING_PAD)/(fw+2·
+  RING_PAD)) so the outline tracks the per-frame walk shift[]; and set the
+  canvas texture's filter to NEAREST explicitly — addCanvas does not inherit
+  pixelArt's default, and LINEAR smears the thin lines into a soft halo at
+  fractional camera zoom (measured: zero exact-tint pixels on screen).
+  Probes: `__ml.ringInfo()` (per-monster + item outline state),
+  targetOverlay().rings/itemRing/itemRingTint. (The retired marker art —
+  the sword icons of rounds 2-8 and the round-8/9 pick-up hand — lives in
+  git history.) The in-fight readout lives ON
   the monster (maintainer: keep it SMALL, only the LEVEL, no name — he
   rejected a separate top-centre frame): updateMonsterHpBar draws a slim
   player-style bar (76×6 dark track, red fill — sized so "Lv N" LEFT-aligned
   and "hp/max" RIGHT-aligned keep a middle gap even at 4-digit HP), shown
-  while wounded, in combat, or my engaged target. Bar, texts and the sword
-  icon live ABOVE the darkness overlay (depths 900_001.5-1.9 — under the
+  while wounded, in combat, or my engaged target. Bar, texts and the target
+  borders live ABOVE the darkness overlay (depths 900_001.44-1.9 — under the
   damage floats at 900_002), so day/night/shadow never touch them — combat
   UI at 890k was dimming with the world. When adding HUD chrome NEVER reuse
   .ml-bars/.ml-bar-row classes — verify-bars counts them (2 chips, 3 rows).

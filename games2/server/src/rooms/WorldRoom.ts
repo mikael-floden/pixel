@@ -862,6 +862,11 @@ export class WorldRoom extends Room<WorldState> {
       zone.cellSet.has(Math.floor(x / CELL_WU) + Math.floor(y / CELL_WU) * grid.width);
 
     mons.forEach(({ id, m }, i) => {
+      // Mirror the hunt target into the synced field (colyseus only encodes
+      // changes, so re-assigning the same value each tick costs nothing). The
+      // client draws the red aggro border on monsters whose tsid is its own
+      // session (round 11); roam/return/die always read as "not hunting".
+      m.tsid = (m.mstate === "chase" || m.mstate === "combat") ? m.targetSid : "";
       const zone = zoneById.get(m.areaId);
       if (!zone) {
         m.moving = false;

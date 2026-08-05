@@ -139,6 +139,9 @@ export class Monster extends Schema {
   declare actionSeq: number; // bumps per attack swing (client restarts the attack clip)
   declare level: number; // tuning level — the target-frame HUD shows it in a fight
   declare aggro: number; // aggro radius wu (0 = passive) — the settings debug overlay draws it
+  declare tsid: string; // session id this monster is hunting ("" = none) — the
+  // client draws the red aggro border on monsters whose tsid is MY session
+  // (maintainer round 11: every monster that has aggro on you is marked)
 
   // Server-only AI state (NOT synced). ------------------------------------
   areaId = ""; // which SpawnArea this monster roams inside
@@ -171,6 +174,7 @@ export class Monster extends Schema {
     this.actionSeq = 0;
     this.level = 1;
     this.aggro = 0;
+    this.tsid = "";
   }
 }
 
@@ -187,6 +191,7 @@ defineTypes(Monster, {
   actionSeq: "number",
   level: "number",
   aggro: "number",
+  tsid: "string",
 });
 
 /**
