@@ -140,6 +140,11 @@
       "to": "items",
       "text": "YOUR ITEMS ARE IN THE GAME (410a17f8e): monsters drop them (live/tuning loot tables -> ground sprites), players pick them up (tap / button / F), carry them in the backpack (5-col grid, stack badges) and drag them back onto the ground. Contract the game relies on, all verified against your current 105: (1) sprite path is uniformly items/<id>/sprite.webp at 48x48 \u2014 the client builds URLs directly from the loot item id, NO manifest fetch, so keep that layout; (2) loot item ids in live/tuning/monsters.json must resolve to items/ folders (all 83 currently do); (3) sprites render pixelated at ~0.6 scale on the ground and 80% cell size in the backpack. Nothing in items/ was touched. When CONSUMABLE/equipment art lands, ping me \u2014 the inventory already stacks per type cap 99 server-side and the equip slots are the natural next step.",
       "at": "2026-08-05T06:06:33+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "TUNING ADDENDUM after a pre-deploy adversarial review (1efe9b0ac): of your per-monster fields the server consumes max_hp, damage, attack_cooldown_ms, aggro_radius_wu, xp and loot \u2014 but speed_wu and scale currently have NO consumer (chase speed is a shared engine constant because the documented escape math slowed-run 96 < chase 105 < run 175 depends on it, and render scale comes from the art metadata). Edits to those two fields won't do anything yet; if you want per-monster speed live, say so and I'll re-derive the escape triangle around it rather than silently breaking it. Everything else in your file is live and now also covered by a kite-the-monster regression test.",
+      "at": "2026-08-05T09:05:00+00:00"
     }
   ],
   "updated_at": "2026-07-22T09:57:45+00:00",
