@@ -56,12 +56,14 @@ import {
   attackRange,
   PLAYER_BODY_RADIUS,
   PROVOKE_RADIUS_WU,
+  DROP_TTL_MS,
+  DROP_FLASH_MS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { colorForName } from "../placeholder";
-import { setBar, setLevel, setTarget } from "../bars";
+import { setBar, setLevel } from "../bars";
 import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -523,6 +525,7 @@ interface MonsterAvatar {
   combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
   hpBg?: Phaser.GameObjects.Rectangle;
   hpFill?: Phaser.GameObjects.Rectangle;
+  hpText?: Phaser.GameObjects.Text; // "Lv N · hp/max" over the bar (in a fight)
   lastHp?: number;
 }
 
@@ -690,16 +693,22 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
-  private lastTargetSig = ""; // last engaged-monster line pushed to the target frame
   private attackIcon?: Phaser.GameObjects.Image; // sword marker over the walk-to target
+  private attackIconQueued = false; // its texture load has been queued
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
   private drops = new Map<
     string,
-    { img: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; wx: number; wy: number; item: string }
+    { img: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; wx: number; wy: number; item: string; bornAt: number }
   >();
+  private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
+  // Grave crosses (objects/grave_cross): appear where a monster died, hold on
+  // the last frame, then REVERSE back into the ground and vanish.
+  private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
+  private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
+  private crossLoadQueued = false;
   private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
@@ -1050,7 +1059,6 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
     // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
     // game viewport itself gets the matching pixel frame overlay.
-    setTarget(null); // a fresh scene never inherits the old world's target frame
     this.hud = new HudBar({
       onLogout: () => this.logout(),
       // The Chat page's bottom input sends through the SAME rate-limited path
@@ -1868,24 +1876,25 @@ export class WorldScene extends Phaser.Scene {
           aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
           mstate: mv.mstate ?? "roam",
           hpBar: !!mv.hpBg?.visible,
+          hpBarText: mv.hpText?.visible ? mv.hpText.text : null,
         })),
-      // The three round-2 overlays, for the gate: is the sword marker up (and
-      // over whom), is the target frame DOM live, are the debug rings on.
+      // The round-2 overlays, for the gate: is the sword marker up (and over
+      // whom), are the debug rings on. (The in-fight hp/level readout is per
+      // monster — monsterInfo().hpBarText.)
       targetOverlay: () => ({
         icon: !!this.attackIcon?.visible,
         engaged: this.engagedId,
-        frame: (() => {
-          const el = document.querySelector(".ml-target") as HTMLElement | null;
-          if (!el || el.style.display === "none") return null;
-          return {
-            name: el.querySelector(".ml-target-name")?.textContent ?? "",
-            num: el.querySelector(".ml-target-num")?.textContent ?? "",
-            fill: (el.querySelector(".ml-target-fill") as HTMLElement | null)?.style.width ?? "",
-          };
-        })(),
         aggroRings: this.aggroRadiusOn,
       }),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
+      graveCrosses: () =>
+        this.graveCrosses.map((gc) => ({
+          x: Math.round(gc.sprite.x),
+          y: Math.round(gc.sprite.y),
+          frame: gc.sprite.frame.name,
+          playing: gc.sprite.anims.isPlaying,
+          reversing: gc.reversing,
+        })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
         if (this.night && v !== undefined) this.night.glowFlip = v;
@@ -2035,6 +2044,7 @@ export class WorldScene extends Phaser.Scene {
     this.room = room;
     this.connected = true;
     this.reconnectRetries = 0;
+    this.roomBoundAt = this.time.now;
     const cam = this.cameras.main;
     const $ = getStateCallbacks(room);
     // Shared time-of-day: fires immediately with the current phase (instant
@@ -2241,11 +2251,26 @@ export class WorldScene extends Phaser.Scene {
       .setAlpha(0.55)
       .setDepth(y - 0.6);
     const img = this.add.image(p.x, y - 7, "__MISSING").setVisible(false).setDepth(y);
-    const rec = { img, shadow, wx: g.x, wy: g.y, item: g.item };
+    // Witnessed drops carry their local birth time (drives the end-of-life
+    // flash); join-inherited ones (the state flood right after bind) start
+    // the clock at join — their flash can come late, and the server's sweep
+    // is the ground truth either way.
+    const rec = { img, shadow, wx: g.x, wy: g.y, item: g.item, bornAt: this.time.now };
     this.drops.set(id, rec);
     this.withItemTexture(g.item, (key) => {
       if (this.drops.get(id) !== rec) return; // picked up before the art landed
       img.setTexture(key).setScale(0.6).setVisible(true);
+      // The little TOSS (maintainer: "thrown up from the ground", subtle):
+      // freshly witnessed drops pop up a few px and settle; the join flood
+      // (< 2s after bind) lands silent so a full field doesn't bounce at us.
+      if (this.time.now - this.roomBoundAt > 2000) {
+        const rest = y - 7;
+        img.setY(y); // out of the ground…
+        this.tweens.add({ targets: img, y: rest - 8, duration: 190, ease: "Quad.easeOut", yoyo: false,
+          onComplete: () => {
+            this.tweens.add({ targets: img, y: rest, duration: 240, ease: "Bounce.easeOut" });
+          } });
+      }
     });
   }
 
@@ -2338,13 +2363,12 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** The three engagement overlays, per frame after the monster loop:
-   * (1) the SWORD MARKER over the walk-to target — visible from the tap
-   * until the battle begins (in reach, or the monster is already fighting),
-   * gently bobbing above its head; (2) the TARGET FRAME (DOM, player-bar
-   * styling) with the monster's name, level and X/X HP; (3) the settings
-   * debug rings: every monster's aggro radius, plus the provoke radius on
-   * the sword-marked one. */
+  /** The engagement overlays, per frame after the monster loop: (1) the
+   * SWORD MARKER over the walk-to target — visible from the tap until the
+   * battle begins (in reach, or the monster is already fighting), gently
+   * bobbing above its head; (2) the settings debug rings: every monster's
+   * aggro radius, plus the provoke radius on the sword-marked one. (The
+   * in-fight hp/level readout lives ON the monster — updateMonsterHpBar.) */
   private updateTargetOverlays() {
     const state = this.room?.state as any;
     const mv = this.engagedId ? this.monsters.get(this.engagedId) : undefined;
@@ -2364,7 +2388,8 @@ export class WorldScene extends Phaser.Scene {
             .image(0, 0, "ui:attack-target")
             .setOrigin(0.5, 1)
             .setDepth(890_010);
-        } else if (!this.attackIcon && !this.load.isLoading()) {
+        } else if (!this.attackIcon && !this.attackIconQueued) {
+          this.attackIconQueued = true; // appending to a busy loader is fine
           this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
           this.load.start();
         }
@@ -2377,23 +2402,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!iconOn) this.attackIcon?.setVisible(false);
 
-    // (2) The target frame (DOM — push only on change).
-    const sig = m && mv && mv.mstate !== "die"
-      ? `${m.kind}|${m.level}|${Math.ceil(m.hp)}|${m.hpMax}`
-      : "";
-    if (sig !== this.lastTargetSig) {
-      this.lastTargetSig = sig;
-      if (!sig) setTarget(null);
-      else {
-        const name = String(m.kind)
-          .split("_")
-          .map((w: string) => (w.match(/^\d+$/) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
-          .join(" ");
-        setTarget({ name, level: m.level ?? 1, hp: Math.ceil(m.hp), hpMax: m.hpMax });
-      }
-    }
-
-    // (3) Aggro-radius debug rings.
+    // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
     if (this.aggroGfx) {
       this.aggroGfx.clear();
@@ -2463,6 +2472,7 @@ export class WorldScene extends Phaser.Scene {
     mv.lit?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
+    mv.hpText?.destroy();
     if (mv.mstate === "die" && mv.sprite.visible && !mv.culled) {
       // The server held the schema entry for the die clip; now the corpse
       // FADES instead of popping off (RO body dissolve). The sprites are
@@ -2479,6 +2489,9 @@ export class WorldScene extends Phaser.Scene {
           shadow.destroy();
         },
       });
+      // …and the GRAVE CROSS rises where it fell (maintainer 2026-08-05),
+      // right as the loot appears beside it.
+      this.spawnGraveCross(mv.lx, mv.lyFlat, mv.elev);
     } else {
       mv.sprite.destroy();
       mv.shadow.destroy();
@@ -2486,27 +2499,132 @@ export class WorldScene extends Phaser.Scene {
     this.monsters.delete(id);
   }
 
-  /** Tiny hp bar floating over a WOUNDED monster (full-health and dying
-   * monsters show none — RO shows the bar only once you have hurt it). */
-  private updateMonsterHpBar(mv: MonsterAvatar, m: any) {
-    const hurt = m.hpMax > 0 && m.hp < m.hpMax && m.mstate !== "die";
-    if (!hurt) {
+  /** The wooden grave cross (objects/grave_cross, the maintainer's PixelLab
+   * object): plays its 16-frame SOUTH "appear" once at the death spot, holds
+   * on the LAST frame, and after a minute plays the same clip REVERSED —
+   * sinking back into the ground — and vanishes. Client-local decoration:
+   * every client witnesses the same death via the synced die state. Spawns
+   * QUEUE while the strip loads (appending to a busy loader is fine — a
+   * kill during the deferred-anim batch must not silently drop its cross). */
+  private spawnGraveCross(lx: number, lyFlat: number, elevPx: number) {
+    const KEY = "grave-cross-appear";
+    if (this.textures.exists(KEY)) {
+      this.materializeCross(lx, lyFlat, elevPx);
+      return;
+    }
+    this.pendingCrosses.push({ lx, lyFlat, elevPx });
+    if (!this.crossLoadQueued) {
+      this.crossLoadQueued = true;
+      this.load.spritesheet(KEY, withV("/assets/objects/grave_cross/animations/appear__south.webp"), {
+        frameWidth: 34,
+        frameHeight: 34,
+      });
+      this.load.once(`filecomplete-spritesheet-${KEY}`, () => {
+        for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx);
+      });
+      this.load.start();
+    }
+  }
+
+  private materializeCross(lx: number, lyFlat: number, elevPx: number) {
+    const KEY = "grave-cross-appear";
+    if (!this.anims.exists(KEY)) {
+      this.anims.create({
+        key: KEY,
+        frames: this.anims.generateFrameNumbers(KEY, {}),
+        frameRate: 13,
+        repeat: 0,
+      });
+    }
+    const y = lyFlat - elevPx;
+    const sprite = this.add
+      .sprite(lx, y, KEY, 0)
+      .setOrigin(0.5, 1)
+      .setDepth(y - 0.5); // ground decor: just under bodies standing on the spot
+    sprite.y += 2; // the mound reads planted, not floating
+    sprite.play(KEY);
+    sprite.once("animationcomplete", () => {
+      sprite.anims.pause(); // hold the standing cross (last frame)
+    });
+    this.graveCrosses.push({ sprite, bornAt: this.time.now, reversing: false });
+  }
+
+  /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
+  private stepGroundDecor() {
+    const now = this.time.now;
+    for (let i = this.graveCrosses.length - 1; i >= 0; i--) {
+      const gc = this.graveCrosses[i];
+      if (!gc.reversing && now - gc.bornAt >= 60_000) {
+        gc.reversing = true;
+        gc.sprite.anims.resume();
+        gc.sprite.playReverse("grave-cross-appear");
+        gc.sprite.once("animationcomplete", () => gc.sprite.destroy());
+        // If the reverse somehow never completes (tab hidden through it),
+        // the sweep below still drops the record; the sprite dies with it.
+      }
+      if (gc.reversing && (!gc.sprite.active || now - gc.bornAt >= 70_000)) {
+        if (gc.sprite.active) gc.sprite.destroy();
+        this.graveCrosses.splice(i, 1);
+      }
+    }
+    // Ground items: the last DROP_FLASH_MS before the server sweeps them,
+    // flash transparent FASTER AND FASTER until gone (maintainer). Timed
+    // from the witnessed birth; the server's sweep is authoritative.
+    for (const rec of this.drops.values()) {
+      const left = DROP_TTL_MS - (now - rec.bornAt);
+      if (left <= DROP_FLASH_MS) {
+        const t = Math.max(0, 1 - left / DROP_FLASH_MS); // 0 → 1 over the final stretch
+        const hz = 2 + t * 8; // 2Hz ramping to 10Hz
+        const s = 0.5 + 0.5 * Math.sin((now / 1000) * hz * Math.PI * 2);
+        const a = 0.15 + 0.85 * s;
+        rec.img.setAlpha(a);
+        rec.shadow.setAlpha(0.55 * a);
+      }
+    }
+  }
+
+  /** The slim in-fight readout floating over a monster, styled after the
+   * player's own HP bar but SMALL (maintainer 2026-08-05: "keep it small like
+   * it is now, just a little bit bigger" — and only the LEVEL, no name):
+   * a dark rounded-feel track with a red fill plus one tiny "Lv N · hp/max"
+   * line. Shown while the monster is wounded, in combat, or MY engaged
+   * target; hidden for full-health passers-by and corpses. */
+  private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
+    const inFight =
+      m.hpMax > 0 &&
+      m.mstate !== "die" &&
+      (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id);
+    if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
+      mv.hpText?.setVisible(false);
       return;
     }
     if (!mv.hpBg) {
-      mv.hpBg = this.add.rectangle(0, 0, 32, 4, 0x10101c, 0.82).setDepth(890_000).setOrigin(0.5, 0.5);
-      mv.hpFill = this.add.rectangle(0, 0, 30, 2, 0x62d96a, 1).setDepth(890_001).setOrigin(0, 0.5);
+      mv.hpBg = this.add.rectangle(0, 0, 42, 6, 0x10101c, 0.85).setDepth(890_000).setOrigin(0.5, 0.5);
+      mv.hpFill = this.add.rectangle(0, 0, 40, 4, 0xf25d5d, 1).setDepth(890_001).setOrigin(0, 0.5);
+      mv.hpText = this.add
+        .text(0, 0, "", {
+          fontFamily: "monospace",
+          fontSize: "9px",
+          color: "#f4efe4",
+          stroke: "#10101c",
+          strokeThickness: 2,
+        })
+        .setOrigin(0.5, 1)
+        .setDepth(890_002)
+        .setResolution(2);
     }
     const frac = Math.max(0, Math.min(1, m.hp / m.hpMax));
-    const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 7;
+    const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 8;
     mv.hpBg.setPosition(mv.lx, topY).setVisible(true);
     mv.hpFill!
-      .setPosition(mv.lx - 15, topY)
+      .setPosition(mv.lx - 20, topY)
       .setVisible(true)
-      .setSize(Math.max(1, 30 * frac), 2);
-    mv.hpFill!.setFillStyle(frac > 0.5 ? 0x62d96a : frac > 0.25 ? 0xffc94d : 0xf25d5d);
+      .setSize(Math.max(1, 40 * frac), 4);
+    const label = `Lv ${m.level ?? 1} · ${Math.ceil(m.hp)}/${m.hpMax}`;
+    if (mv.hpText!.text !== label) mv.hpText!.setText(label);
+    mv.hpText!.setPosition(mv.lx, topY - 4).setVisible(true);
   }
 
   /** A small rising damage number (world-space, above the night overlay). */
@@ -3135,6 +3253,11 @@ export class WorldScene extends Phaser.Scene {
       if (id === myId && this.engagedId && !moving && !player.dead) {
         const tgt = this.monsters.get(this.engagedId);
         if (tgt) dir = faceDirWorld(av.fx, av.fy, tgt.fx, tgt.fy) ?? dir;
+      } else if (id === myId && this.pendingPickupId && !moving && !player.dead) {
+        // …and a player grabbing an item TURNS TO it (maintainer 2026-08-05:
+        // "always turn/face the item currently being picked up").
+        const d = this.drops.get(this.pendingPickupId);
+        if (d) dir = faceDirWorld(av.fx, av.fy, d.wx, d.wy) ?? dir;
       }
 
       // HUD: hp/ep/xp/level are server-owned; push only on change (DOM).
@@ -3449,6 +3572,7 @@ export class WorldScene extends Phaser.Scene {
             mv.lit?.setVisible(false);
             mv.hpBg?.setVisible(false);
             mv.hpFill?.setVisible(false);
+            mv.hpText?.setVisible(false);
             // Phaser's UpdateList advances anims on invisible sprites too.
             sp.anims.pause();
           }
@@ -3514,7 +3638,7 @@ export class WorldScene extends Phaser.Scene {
         if (mv.lastHp !== undefined && m.hp < mv.lastHp)
           this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
         mv.lastHp = m.hp;
-        this.updateMonsterHpBar(mv, m);
+        this.updateMonsterHpBar(mv, m, id);
         this.resolveBodyDepth(mv, sLvl);
         // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
         // ~140px, its south one ~90 — one size can't fit both facings).
@@ -3540,6 +3664,8 @@ export class WorldScene extends Phaser.Scene {
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.updateTargetOverlays();
+    // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
+    this.stepGroundDecor();
 
     this.updateChaseCam(delta);
 

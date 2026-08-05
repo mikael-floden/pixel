@@ -160,7 +160,8 @@ export const EP_REGEN_FRAC_PER_S = 0.08;
 
 export const DROP_SCATTER_WU = 26; // items land scattered around the corpse/player
 export const DROP_SPACING_WU = 24; // keep ground items at least this far apart (readability)
-export const DROP_TTL_MS = 90_000; // ground items despawn (RO-style)
+export const DROP_TTL_MS = 60_000; // ground items despawn after a minute (maintainer 2026-08-05)
+export const DROP_FLASH_MS = 5_000; // final stretch: flash transparent, faster and faster
 export const PICKUP_RADIUS_WU = 40; // how close the body must be to grab
 export const INV_MAX_STACK = 99;
 export const INV_MAX_SLOTS = 30;

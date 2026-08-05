@@ -37,7 +37,7 @@
   },
   "targets": {
     "num_objects": 1,
-    "_comment": "MAINTAINER 2026-07-31: this domain is down to ONE asset (the campfire) and has NO agent. It was generating toward 75 objects that nothing referenced \u2014 no maps2 world has ever pointed at objects/, and the game loads exactly one file from here (the spawn bonfire). The other 16 were deleted. If the objects agent is recreated, RAISE THIS DELIBERATELY and add catalog entries back; do not let the loop refill to 75 on its own."
+    "_comment": "MAINTAINER 2026-07-31: this domain is down to ONE asset (the campfire) and has NO agent. It was generating toward 75 objects that nothing referenced — no maps2 world has ever pointed at objects/, and the game loads exactly one file from here (the spawn bonfire). The other 16 were deleted. If the objects agent is recreated, RAISE THIS DELIBERATELY and add catalog entries back; do not let the loop refill to 75 on its own."
   },
   "catalog": [
     {
@@ -59,6 +59,23 @@
         }
       ],
       "world_height_m": 0.6
+    },
+    {
+      "id": "grave_cross",
+      "name": "Wooden grave cross",
+      "category": "decor",
+      "description": "a wooden grave cross that appears from the ground where something died",
+      "size": 34,
+      "animations": [
+        {
+          "key": "appear",
+          "description": "Appears from the ground",
+          "frames": 16
+        }
+      ],
+      "world_height_m": 0.9,
+      "pixellab_object_id": "56b75726-69bd-4b23-a54f-3626b5df3700",
+      "_note": "The maintainer's own PixelLab object (2026-08-05): synced as-is, SOUTH-only animation by design — the game plays it at monster graves and reverses it to sink away. Do not regenerate."
     }
   ],
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
@@ -78,5 +95,6 @@
     ],
     "_disabled": "Emptied 2026-07-31 with the domain reduction. This is what invents objects once the catalog is exhausted; with num_objects 1 it would not fire, but an agent raising the target would silently start generating props nothing asked for."
   },
-  "_animations": "Every object is a persistent 8-direction PixelLab object (create-8-direction-object) with EXACTLY 3 animations chosen to fit it, each animated across all 8 directions."
+  "_animations": "Every object is a persistent 8-direction PixelLab object (create-8-direction-object) with EXACTLY 3 animations chosen to fit it, each animated across all 8 directions.",
+  "num_objects": 2
 }

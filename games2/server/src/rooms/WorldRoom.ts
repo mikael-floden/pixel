@@ -376,6 +376,10 @@ export class WorldRoom extends Room<WorldState> {
       this.state.drops.delete(id);
       player.action = "pickup";
       player.actionSeq++;
+      // Turn TO the item being grabbed (maintainer 2026-08-05) — the synced
+      // dir is what every other client renders the crouch with.
+      const face = faceDirWorld(player.x, player.y, drop.x, drop.y);
+      if (face) player.dir = face;
       client.send("inv", { items: player.inv });
     });
 
@@ -892,6 +896,13 @@ export class WorldRoom extends Room<WorldState> {
           this.disengageMonster(m, zone, now);
           return;
         }
+        // WATER SANCTUARY: a swimming victim is untouchable and unhuntable —
+        // reaching the water IS an escape (monsters cannot enter it, and the
+        // swing loop refuses swimming attackers, so there is no water-sniping).
+        if (tp.swimming) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
         const stats = monsterStatsFor(m.kind);
         const dxp = tp.x - m.x;
         const dyp = tp.y - m.y;
@@ -1011,7 +1022,7 @@ export class WorldRoom extends Room<WorldState> {
         let bestD = Infinity;
         let bestProvoked = false;
         this.state.players.forEach((p, sid) => {
-          if (p.dead || Math.abs(p.elev - m.elev) > 2) return;
+          if (p.dead || p.swimming || Math.abs(p.elev - m.elev) > 2) return; // water = sanctuary
           const marked = p.target === id;
           const radius = marked
             ? Math.max(stats.aggro_radius_wu, PROVOKE_RADIUS_WU)
@@ -1045,7 +1056,7 @@ export class WorldRoom extends Room<WorldState> {
         // Budgeted A*: a roam leg is a wander, not a commute — cap the search
         // so one unlucky path can't overrun the 20Hz tick (see
         // MONSTER_ROAM_MAX_NODES). Player taps are unbudgeted.
-        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES);
+        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES, false);
         m.tripActive = !!m.trip;
         if (!m.tripActive) {
           // No route (rare — target boxed in): pause and retry shortly.
@@ -1203,7 +1214,7 @@ export class WorldRoom extends Room<WorldState> {
       }
       m.targetX = (best.c + 0.5) * CELL_WU;
       m.targetY = (best.r + 0.5) * CELL_WU;
-      m.trip = startTrip(grid, m.x, m.y, m.targetX, m.targetY, false, now, m.elev, undefined, 900);
+      m.trip = startTrip(grid, m.x, m.y, m.targetX, m.targetY, false, now, m.elev, undefined, 900, false);
       m.tripActive = !!m.trip;
       m.returning = m.tripActive;
       if (!m.tripActive) {
@@ -1474,6 +1485,9 @@ export class WorldRoom extends Room<WorldState> {
       // moving (the attack icon hangs over it and approach-aggro reads it);
       // ground taps / movement keys disengage explicitly from the client.
       if (player.moving) return;
+      // No fighting FROM the water either — sanctuary cuts both ways, or a
+      // swimmer could snipe shore monsters that can never reach back.
+      if (player.swimming) return;
       const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
       const range = attackRange(PLAYER_BODY_RADIUS, rm);
       // A grace band past swing range: the monster's own circling must not

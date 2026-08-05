@@ -67,19 +67,28 @@ try {
   if (!frogPick) fail("no mystical_frog in monster_demo");
 
   // ROUND 2 overlays: engage from SPAWN DISTANCE (no teleport) — the sword
-  // marker must hang over the walk-to target and the target frame must show
-  // the monster's level + X/X HP in the player-bar style.
+  // marker must hang over the walk-to target, and once the fight is on the
+  // monster's own slim bar shows "Lv N · hp/max" (player-bar style, no name).
   await page.evaluate((fid) => window.__ml.engage(fid), frogPick.id);
   await page.waitForFunction(
-    () => {
-      const t = window.__ml.targetOverlay();
-      return t.icon === true && !!t.frame && /LEVEL \d+/.test(t.frame.name) && /\d+ \/ \d+ HP/.test(t.frame.num);
-    },
+    () => window.__ml.targetOverlay().icon === true,
     undefined,
     { timeout: 8000, polling: 150 },
   );
-  const frame0 = await page.evaluate(() => window.__ml.targetOverlay().frame);
-  ok(`sword marker + target frame during walk-to (${frame0.name} — ${frame0.num})`);
+  ok("sword marker over the walk-to target");
+  await page.waitForFunction(
+    (fid) => {
+      const f = window.__ml.monsterInfo().find((m) => m.id === fid);
+      return !!f && typeof f.hpBarText === "string" && /^Lv \d+ · \d+\/\d+$/.test(f.hpBarText);
+    },
+    frogPick.id,
+    { timeout: 10000, polling: 150 },
+  );
+  const barText = await page.evaluate(
+    (fid) => window.__ml.monsterInfo().find((m) => m.id === fid)?.hpBarText,
+    frogPick.id,
+  );
+  ok(`monster fight bar reads "${barText}" (level + X/X, no name)`);
   // The aggro-radius debug toggle flips through the settings probe.
   const rings = await page.evaluate(() => {
     const on = window.__ml.toggleAggroRadius(true);
@@ -121,8 +130,18 @@ try {
   if (!killed) fail("frog never died (40s)");
   ok("engaged and killed a frog");
   const afterKill = await page.evaluate(() => window.__ml.targetOverlay());
-  if (afterKill.icon || afterKill.frame) fail(`overlays must clear after the kill: ${JSON.stringify(afterKill)}`);
-  ok("sword marker + target frame clear when the fight ends");
+  if (afterKill.icon) fail(`sword marker must clear after the kill: ${JSON.stringify(afterKill)}`);
+  ok("sword marker clears when the fight ends");
+
+  // The grave cross rises where it fell: appears after the corpse fade, plays
+  // the 16-frame SOUTH clip once and HOLDS on the last frame.
+  await page.waitForFunction(() => window.__ml.graveCrosses().length >= 1, undefined, { timeout: 8000, polling: 200 });
+  await page.waitForFunction(
+    () => window.__ml.graveCrosses().some((g) => String(g.frame) === "15" && !g.playing && !g.reversing),
+    undefined,
+    { timeout: 6000, polling: 200 },
+  );
+  ok("grave cross rose from the ground and holds its last frame");
   if (clips.size === 0) fail("no kick/punch clip ever played on the player");
   ok(`unarmed clips played: ${[...clips].join("+")}`);
   if (!monsterCombatClipSeen) fail("monster attack/angry clip never played");
@@ -138,7 +157,7 @@ try {
   // Loot: monster_demo uses live tuning chances — drops are probabilistic per
   // kill, so grind frogs (they respawn) until one drops or we hit the cap.
   let dropId = null;
-  for (let round = 0; round < 6 && !dropId; round++) {
+  for (let round = 0; round < 10 && !dropId; round++) {
     const drops = await page.evaluate(() => window.__ml.dropsList());
     if (drops.length) {
       dropId = drops[0].id;
@@ -176,7 +195,7 @@ try {
       await page.waitForTimeout(250);
     }
   }
-  if (!dropId) fail("no loot dropped over 6 frog kills (frog tables are 25%+ x2 — astronomically unlucky or broken)");
+  if (!dropId) fail("no loot dropped over 10 frog kills (frog tables are 25%+ x2 — astronomically unlucky or broken)");
   ok("loot dropped on the ground");
 
   // Pickup: probe = the button path (walk-to + grab). Backpack DOM follows.

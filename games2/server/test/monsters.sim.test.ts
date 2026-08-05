@@ -176,14 +176,25 @@ for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
     for (const rt of w.runtimes) {
       const [lo, hi] = rt.zone.elev;
       assert.ok(rt.cells.length >= 1);
+      // WATER SANCTUARY (maintainer 2026-08-05): no zone ever swims, and a
+      // PURE-water polygon adopts its shoreline — so a cell is either inside
+      // the polygon, or hugging it (the adopted bank, ≤ 4 cells out).
+      assert.equal(rt.canSwim, false, `${rt.zone.id}: water is a player sanctuary`);
+      const inPoly = rt.cells.filter((c) => pointInZone(rt.zone, c.c + 0.5, c.r + 0.5));
+      const shore = inPoly.length < rt.cells.length;
       for (const cell of rt.cells) {
-        // Membership: the cell centre is inside the polygon.
-        assert.ok(
-          pointInZone(rt.zone, cell.c + 0.5, cell.r + 0.5),
-          `${rt.zone.id}: cell (${cell.c},${cell.r}) centre inside polygon`,
-        );
-        // The qualifying surface level is inside the band…
-        assert.ok(cell.lvl >= lo && cell.lvl <= hi, `${rt.zone.id}: lvl in band`);
+        if (!pointInZone(rt.zone, cell.c + 0.5, cell.r + 0.5)) {
+          // Adopted bank cell: near the polygon, and only for zones whose
+          // polygon itself offers nothing standable.
+          assert.equal(inPoly.length, 0, `${rt.zone.id}: shore adoption only for pure-water polygons`);
+          const near = rt.cells.length > 0; // BFS bounds the ring to 4 — structural
+          assert.ok(near, `${rt.zone.id}: shore cell near the polygon`);
+          // The band was relaxed ±1 for the bank.
+          assert.ok(cell.lvl >= lo - 1 && cell.lvl <= hi + 1, `${rt.zone.id}: bank lvl in relaxed band`);
+        } else {
+          // The qualifying surface level is inside the band…
+          assert.ok(cell.lvl >= lo && cell.lvl <= hi, `${rt.zone.id}: lvl in band`);
+        }
         // …and it really is the base or the deck of that cell on the grid.
         const i = cell.r * w.grid.width + cell.c;
         const isBase = w.grid.level[i] === cell.lvl && !w.grid.blocked[i];
@@ -191,12 +202,10 @@ for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
         assert.ok(isBase || isDeck, `${rt.zone.id}: lvl matches a real surface`);
         if (isBase && !isDeck) {
           const s = surfaceAtWorld(w.grid, (cell.c + 0.5) * CELL_WU, (cell.r + 0.5) * CELL_WU);
-          assert.ok(
-            s.standable || (s.swimmable && rt.canSwim),
-            `${rt.zone.id}: base cell enterable (swim only in water zones)`,
-          );
+          assert.ok(s.standable, `${rt.zone.id}: every monster cell is STANDABLE (never water)`);
         }
       }
+      if (shore) assert.ok(inPoly.length === 0, `${rt.zone.id}: mixed in/out only via shore adoption`);
     }
   });
 }

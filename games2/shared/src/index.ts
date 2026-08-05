@@ -1809,9 +1809,17 @@ export function startTrip(
   // roam legs pass MONSTER_ROAM_MAX_NODES so one unlucky search can't blow the
   // server tick — see that constant.
   maxNodes?: number,
+  // Monsters route with canSwim false (water is a player sanctuary); player
+  // taps omit it and keep findPath's swimming default.
+  canSwim?: boolean,
 ): AutopilotTrip | null {
   const path = grid
-    ? (findPath(grid, fromX, fromY, toX, toY, { fromElev, goalLevel, ...(maxNodes ? { maxNodes } : {}) }) ?? [])
+    ? (findPath(grid, fromX, fromY, toX, toY, {
+        fromElev,
+        goalLevel,
+        ...(maxNodes ? { maxNodes } : {}),
+        ...(canSwim === undefined ? {} : { canSwim }),
+      }) ?? [])
     : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
@@ -2154,8 +2162,37 @@ export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRu
       const d = grid.deck[i];
       if (d >= 0 && d >= lo && d <= hi) decks.push({ c, r, lvl: d });
     }
-    const canSwim = swim.length > stand.length;
-    const cells = canSwim ? [...stand, ...swim, ...decks] : [...stand, ...decks];
+    // WATER IS A PLAYER SANCTUARY (maintainer 2026-08-05: "no monster can
+    // enter/go on water … a player can always use the water to escape/hide")
+    // — no monster ever lives on, roams onto or chases into swimmable cells.
+    // A zone whose polygon is pure water (a pond pad) doesn't die: its
+    // monsters live on the SHORE — the nearest standable ring around the
+    // polygon (one ring at a time, elev band relaxed by ±1 for the bank).
+    const canSwim = false;
+    const cells = [...stand, ...decks];
+    if (!cells.length && swim.length) {
+      const seen = new Set(swim.map((p) => p.c + p.r * grid.width));
+      let frontier = [...swim];
+      for (let ring = 0; ring < 4 && !cells.length && frontier.length; ring++) {
+        const next: typeof swim = [];
+        for (const p of frontier) {
+          for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+            const c = p.c + dc;
+            const r = p.r + dr;
+            if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+            const i = r * grid.width + c;
+            if (seen.has(i)) continue;
+            seen.add(i);
+            if (grid.blocked[i]) continue;
+            const lvl = grid.level[i];
+            const s = surfaceFor(grid.type[i]);
+            if (s.standable && lvl >= lo - 1 && lvl <= hi + 1) cells.push({ c, r, lvl });
+            else if (s.swimmable) next.push({ c, r, lvl });
+          }
+        }
+        frontier = next;
+      }
+    }
     if (!cells.length) continue; // nothing valid — skip (caller may log)
     const cellSet = new Set(cells.map((p) => p.c + p.r * grid.width));
     out.push({ zone, cells, cellSet, canSwim });

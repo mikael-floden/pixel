@@ -806,14 +806,26 @@ visible head/shoulders are ABOVE the surface).
 - **Round-2 UI**: the SWORD MARKER (ui2/icon-attack-target.webp — the
   maintainer's upload flipped horizontally, lossless) bobs over the engaged
   monster from the tap until the battle begins (in reach ×1.2, or the monster
-  turns combat), Phaser image at depth 890_010; the TARGET FRAME (bars.ts
-  setTarget) is a top-centre DOM chip in the player-bar language — name ·
-  LEVEL n, red gauge, "X/X HP" — driven per-frame on change from the synced
-  monster. ITS CLASSES ARE ITS OWN (.ml-target*): verify-bars counts .ml-bars
-  === 2 and .ml-bar-row === 3, so never reuse those in new HUD chrome. The
-  "aggro radius" settings switch (debug, off by default, ml-aggro-radius in
-  localStorage) draws each monster's synced radius as a projectFlat-sampled
-  ring (red; gold provoke ring on the marked target).
+  turns combat), Phaser image at depth 890_010. The in-fight readout lives ON
+  the monster (maintainer: keep it SMALL, only the LEVEL, no name — he
+  rejected a separate top-centre frame): updateMonsterHpBar draws a slim
+  player-style bar (42×6 dark track, red fill — a hair bigger than the old
+  wounded-only bar) plus one tiny "Lv N · hp/max" line, shown while wounded,
+  in combat, or my engaged target. When adding HUD chrome NEVER reuse
+  .ml-bars/.ml-bar-row classes — verify-bars counts them (2 chips, 3 rows).
+  The "aggro radius" settings switch (debug, off by default, ml-aggro-radius
+  in localStorage) draws each monster's synced radius as a projectFlat-
+  sampled ring (red; gold provoke ring on the marked target).
+- **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
+  enter/go on water … the player can always use the water to escape/hide").
+  Enforced at every layer: buildZoneRuntimes never returns swim cells
+  (canSwim is always false — a PURE-water zone polygon adopts its SHORE, the
+  nearest standable ring, so pond kinds live at the water's edge instead of
+  dying out); monster roam/chase/orbit/separation contexts and both monster
+  startTrip call sites route with canSwim false; a SWIMMING victim instantly
+  disengages its hunter (reaching water IS the escape) and swimmers can
+  neither swing nor provoke (no water-sniping from the sanctuary — cuts both
+  ways). Players keep canSwim true everywhere.
 - **Monster combat clips**: attack/angry/die strips (525 files, ~3.1MB)
   background-load in the SAME deferred batch as the player's action states —
   boot stays walk+idle (the loading-time work must not regress). The COMPLETE
@@ -837,7 +849,19 @@ visible head/shoulders are ABOVE the surface).
   elev threads through spawnDrop so a bridge drop stays ON the deck), last
   resort ring-scans the nearest standable cell; only open-water corpses keep
   their spot, where swimmers can grab. GroundItems sync in state.drops,
-  despawn after 90s. Item sprites are uniform `items/<id>/sprite.webp` 48×48
+  despawn after DROP_TTL 60s; the last DROP_FLASH 5s the client flashes them
+  transparent FASTER AND FASTER (2→10Hz, timed from the witnessed onAdd —
+  join-inherited drops restart the clock, the server sweep stays the truth).
+  Freshly witnessed drops TOSS UP a few px and bounce to rest (subtle; the
+  join flood lands silent). THE GRAVE CROSS (objects/grave_cross — the
+  maintainer's PixelLab object, synced 2026-08-05 with config pin + README
+  note in objects/): when the corpse fades, the 16-frame SOUTH "appear" clip
+  rises at the death spot alongside the loot, HOLDS its last frame, and
+  after a minute plays REVERSED — sinking away. Client-local decor driven by
+  the synced die state; `graveCrosses()` probe + verify-combat assert it.
+  A player grabbing an item TURNS TO it: predicted locally (pendingPickup
+  facing) and synced for everyone (the pickup handler faces the drop).
+  Item sprites are uniform `items/<id>/sprite.webp` 48×48
   (verified across all 105) — the client lazy-loads per KIND, no manifest
   fetch. TAP an item to fetch it (walk + grab), or the PICKUP button beside
   jump / the F key (nearest within 5 cells; the gamepad button synthesizes F
