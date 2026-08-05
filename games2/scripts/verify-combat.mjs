@@ -79,7 +79,7 @@ try {
   await page.waitForFunction(
     (fid) => {
       const f = window.__ml.monsterInfo().find((m) => m.id === fid);
-      return !!f && typeof f.hpBarText === "string" && /^Lv \d+ · \d+\/\d+$/.test(f.hpBarText);
+      return !!f && typeof f.hpBarText === "string" && /^Lv \d+\|\d+\/\d+$/.test(f.hpBarText);
     },
     frogPick.id,
     { timeout: 10000, polling: 150 },

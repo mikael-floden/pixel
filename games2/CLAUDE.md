@@ -817,9 +817,12 @@ visible head/shoulders are ABOVE the surface).
   turns combat), Phaser image at depth 890_010. The in-fight readout lives ON
   the monster (maintainer: keep it SMALL, only the LEVEL, no name — he
   rejected a separate top-centre frame): updateMonsterHpBar draws a slim
-  player-style bar (42×6 dark track, red fill — a hair bigger than the old
-  wounded-only bar) plus one tiny "Lv N · hp/max" line, shown while wounded,
-  in combat, or my engaged target. When adding HUD chrome NEVER reuse
+  player-style bar (76×6 dark track, red fill — sized so "Lv N" LEFT-aligned
+  and "hp/max" RIGHT-aligned keep a middle gap even at 4-digit HP), shown
+  while wounded, in combat, or my engaged target. Bar, texts and the sword
+  icon live ABOVE the darkness overlay (depths 900_001.5-1.9 — under the
+  damage floats at 900_002), so day/night/shadow never touch them — combat
+  UI at 890k was dimming with the world. When adding HUD chrome NEVER reuse
   .ml-bars/.ml-bar-row classes — verify-bars counts them (2 chips, 3 rows).
   The "aggro radius" settings switch (debug, off by default, ml-aggro-radius
   in localStorage) draws each monster's synced radius as a projectFlat-
@@ -853,10 +856,11 @@ visible head/shoulders are ABOVE the surface).
   "close and not on top of each other") is a pseudo-random scatter around the
   corpse/player that keeps DROP_SPACING_WU 24 from items already lying there
   (candidates scored by nearest-drop distance, the ring grows as the ground
-  crowds, best-spaced wins when nothing clears) — deck-aware (the dropper's
-  elev threads through spawnDrop so a bridge drop stays ON the deck), last
-  resort ring-scans the nearest standable cell; only open-water corpses keep
-  their spot, where swimmers can grab. GroundItems sync in state.drops,
+  crowds, best-spaced wins when nothing clears; the ring STARTS ~21wu out so
+  loot never covers the grave cross rising at the death spot) — deck-aware
+  (the dropper's elev threads through spawnDrop so a bridge drop stays ON
+  the deck), last resort ring-scans the nearest standable cell; only
+  open-water corpses keep their spot, where swimmers can grab. GroundItems sync in state.drops,
   despawn after DROP_TTL 60s; the last DROP_FLASH 5s the client flashes them
   transparent FASTER AND FASTER (2→10Hz, timed from the witnessed onAdd —
   join-inherited drops restart the clock, the server sweep stays the truth).

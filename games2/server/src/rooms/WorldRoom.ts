@@ -1324,7 +1324,10 @@ export class WorldRoom extends Room<WorldState> {
     let placed = false;
     for (let t = 0; t < 12 && !placed; t++) {
       const a = Math.random() * Math.PI * 2;
-      const r = (0.35 + Math.random() * 0.65) * DROP_SCATTER_WU * (1 + t / 6);
+      // Never right ON the source: the grave cross rises exactly there, and
+      // loot must not cover it (maintainer: "a small margin away from the
+      // cross is enough, not much") — so the ring starts ~21wu out.
+      const r = (0.8 + Math.random() * 0.5) * DROP_SCATTER_WU * (1 + t / 6);
       const cx = clamp(x + Math.cos(a) * r, 1, this.worldW - 1);
       const cy = clamp(y + Math.sin(a) * r, 1, this.worldH - 1);
       if (!ok(cx, cy)) continue;
@@ -1516,8 +1519,12 @@ export class WorldRoom extends Room<WorldState> {
         const pux = pdx * pin; // player -> monster
         const puy = pdy * pin;
         const bctx = { maxClimb: WALK_CLIMB, canSwim: false };
-        const bx = clamp(player.x + puy * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldW - 1);
-        const by = clamp(player.y - pux * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldH - 1);
+        // OPPOSITE tangential to the monster's (its u points monster->player,
+        // ours player->monster — same formula on mirrored vectors gives
+        // PARALLEL strafing, the round-5 report): with the flip the pair
+        // truly revolves about its midpoint like boxers.
+        const bx = clamp(player.x - puy * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldW - 1);
+        const by = clamp(player.y + pux * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldH - 1);
         if (canEnterElev(this.terrain, player.elev, player.x, player.y, bx, player.y, bctx).ok) player.x = bx;
         if (canEnterElev(this.terrain, player.elev, player.x, player.y, player.x, by, bctx).ok) player.y = by;
         player.elev = resolveElevAt(this.terrain, player.elev, player.x, player.y, bctx);

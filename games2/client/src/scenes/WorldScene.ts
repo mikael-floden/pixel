@@ -525,7 +525,8 @@ interface MonsterAvatar {
   combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
   hpBg?: Phaser.GameObjects.Rectangle;
   hpFill?: Phaser.GameObjects.Rectangle;
-  hpText?: Phaser.GameObjects.Text; // "Lv N · hp/max" over the bar (in a fight)
+  lvText?: Phaser.GameObjects.Text; // "Lv N" — left-aligned on the bar
+  hpText?: Phaser.GameObjects.Text; // "hp/max" — right-aligned on the bar
   lastHp?: number;
 }
 
@@ -1876,7 +1877,8 @@ export class WorldScene extends Phaser.Scene {
           aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
           mstate: mv.mstate ?? "roam",
           hpBar: !!mv.hpBg?.visible,
-          hpBarText: mv.hpText?.visible ? mv.hpText.text : null,
+          hpBarText:
+            mv.lvText?.visible && mv.hpText?.visible ? `${mv.lvText.text}|${mv.hpText.text}` : null,
         })),
       // The round-2 overlays, for the gate: is the sword marker up (and over
       // whom), are the debug rings on. (The in-fight hp/level readout is per
@@ -2387,18 +2389,18 @@ export class WorldScene extends Phaser.Scene {
           this.attackIcon = this.add
             .image(0, 0, "ui:attack-target")
             .setOrigin(0.5, 1)
-            .setDepth(890_010);
+            .setDepth(900_001.9); // above darkness + lit copies — lighting never dims it
         } else if (!this.attackIcon && !this.attackIconQueued) {
           this.attackIconQueued = true; // appending to a busy loader is fine
           this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
           this.load.start();
         }
         if (this.attackIcon) {
-          // Hug the monster (maintainer: "closer … further down"): the icon's
-          // BOTTOM rides just above the head, dipping into it on the bob.
+          // ON the monster, not over it (maintainer round 5: "you attack the
+          // monster"): the icon's bottom rides at the body's upper half.
           const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
           const bob = Math.sin(this.time.now / 260) * 2;
-          this.attackIcon.setPosition(mv.lx, top + 6 + bob).setVisible(true);
+          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.55 + bob).setVisible(true);
         }
       }
     }
@@ -2474,6 +2476,7 @@ export class WorldScene extends Phaser.Scene {
     mv.lit?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
+    mv.lvText?.destroy();
     mv.hpText?.destroy();
     if (mv.mstate === "die" && mv.sprite.visible && !mv.culled) {
       // The server held the schema entry for the die clip; now the corpse
@@ -2586,11 +2589,12 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** The slim in-fight readout floating over a monster, styled after the
-   * player's own HP bar but SMALL (maintainer 2026-08-05: "keep it small like
-   * it is now, just a little bit bigger" — and only the LEVEL, no name):
-   * a dark rounded-feel track with a red fill plus one tiny "Lv N · hp/max"
-   * line. Shown while the monster is wounded, in combat, or MY engaged
-   * target; hidden for full-health passers-by and corpses. */
+   * player's own HP bar (round 5): "Lv N" LEFT-aligned on the bar, "hp/max"
+   * RIGHT-aligned, a clear gap between them even at 4-digit HP — the bar is
+   * sized for that layout. Level only, no name. Drawn ABOVE the darkness
+   * overlay (900_000) and the lit copies, UNDER the damage floats (900_002):
+   * day, night and shadow never touch it. Shown while the monster is
+   * wounded, in combat, or MY engaged target. */
   private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
     const inFight =
       m.hpMax > 0 &&
@@ -2599,34 +2603,37 @@ export class WorldScene extends Phaser.Scene {
     if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
+      mv.lvText?.setVisible(false);
       mv.hpText?.setVisible(false);
       return;
     }
+    const W = 76; // fits "Lv 19" + gap + "9999/9999" at 8px monospace
     if (!mv.hpBg) {
-      mv.hpBg = this.add.rectangle(0, 0, 42, 6, 0x10101c, 0.85).setDepth(890_000).setOrigin(0.5, 0.5);
-      mv.hpFill = this.add.rectangle(0, 0, 40, 4, 0xf25d5d, 1).setDepth(890_001).setOrigin(0, 0.5);
-      mv.hpText = this.add
-        .text(0, 0, "", {
-          fontFamily: "monospace",
-          fontSize: "9px",
-          color: "#f4efe4",
-          stroke: "#10101c",
-          strokeThickness: 2,
-        })
-        .setOrigin(0.5, 1)
-        .setDepth(890_002)
-        .setResolution(2);
+      const style = {
+        fontFamily: "monospace",
+        fontSize: "8px",
+        color: "#f4efe4",
+        stroke: "#10101c",
+        strokeThickness: 2,
+      };
+      mv.hpBg = this.add.rectangle(0, 0, W, 6, 0x10101c, 0.85).setDepth(900_001.5).setOrigin(0.5, 0.5);
+      mv.hpFill = this.add.rectangle(0, 0, W - 2, 4, 0xf25d5d, 1).setDepth(900_001.6).setOrigin(0, 0.5);
+      mv.lvText = this.add.text(0, 0, "", style).setOrigin(0, 1).setDepth(900_001.7).setResolution(2);
+      mv.hpText = this.add.text(0, 0, "", style).setOrigin(1, 1).setDepth(900_001.7).setResolution(2);
     }
     const frac = Math.max(0, Math.min(1, m.hp / m.hpMax));
     const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 8;
     mv.hpBg.setPosition(mv.lx, topY).setVisible(true);
     mv.hpFill!
-      .setPosition(mv.lx - 20, topY)
+      .setPosition(mv.lx - (W - 2) / 2, topY)
       .setVisible(true)
-      .setSize(Math.max(1, 40 * frac), 4);
-    const label = `Lv ${m.level ?? 1} · ${Math.ceil(m.hp)}/${m.hpMax}`;
-    if (mv.hpText!.text !== label) mv.hpText!.setText(label);
-    mv.hpText!.setPosition(mv.lx, topY - 4).setVisible(true);
+      .setSize(Math.max(1, (W - 2) * frac), 4);
+    const lv = `Lv ${m.level ?? 1}`;
+    const hp = `${Math.ceil(m.hp)}/${m.hpMax}`;
+    if (mv.lvText!.text !== lv) mv.lvText!.setText(lv);
+    if (mv.hpText!.text !== hp) mv.hpText!.setText(hp);
+    mv.lvText!.setPosition(mv.lx - W / 2, topY - 3).setVisible(true);
+    mv.hpText!.setPosition(mv.lx + W / 2, topY - 3).setVisible(true);
   }
 
   /** A small rising damage number (world-space, above the night overlay). */
@@ -3574,6 +3581,7 @@ export class WorldScene extends Phaser.Scene {
             mv.lit?.setVisible(false);
             mv.hpBg?.setVisible(false);
             mv.hpFill?.setVisible(false);
+            mv.lvText?.setVisible(false);
             mv.hpText?.setVisible(false);
             // Phaser's UpdateList advances anims on invisible sprites too.
             sp.anims.pause();
