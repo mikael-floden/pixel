@@ -48,8 +48,14 @@ it.
 - **`npcs/index.json`** (`characters2-npcs@1`) is the roll-up consumers should
   read: every folder with its full PixelLab id, raw name, and animation slugs —
   no tree-walking needed.
-- Authored facts (display names, lore, roles) belong in `metadata.json` under
-  the same folder key, and merge onto the NPC's `character.json` like a hero's.
+- **Every NPC is authored**: `metadata.json` carries `display_name`, `species`,
+  `sex`, `role` and `lore` for all 191, keyed by folder. Sex and role were read
+  from the ART (every south sprite inspected on contact sheets) — never from
+  `pixellab_prompt`, which is the same copy-pasted "young female adventurer"
+  text on all 191 and says female for everyone. 107 female / 84 male, 191
+  unique names, 38 roles (knight, alchemist, herbalist, blacksmith, ranger,
+  barbarian, priestess, champion…). These merge onto each `character.json` AND
+  into `index.json`, so the wiki can render the whole cast from one file.
 - `verify_sync.py` checks the set BOTH ways (nothing tagged is missing, nothing
   untagged survives) plus full per-NPC integrity.
 
