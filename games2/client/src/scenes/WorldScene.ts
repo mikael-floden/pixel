@@ -123,10 +123,14 @@ const ANIM_FPS: Record<string, number> = {
   // death fall read deliberate. (Movement clips use measured gaitFps instead.)
   kick: 12,
   punch: 12,
-  hurt: 10,
+  hurt: 16, // round 7 (maintainer): the got-hit flinch plays FAST
   pickup: 9,
   die: 8,
 };
+// The blood spatter's 8 direction variants (objects/blood_spatter, trimmed to
+// burst->dispersal) — one is picked at random per landed hit, played forward
+// or reversed at random.
+const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -710,6 +714,7 @@ export class WorldScene extends Phaser.Scene {
   private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
   private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
   private crossLoadQueued = false;
+  private bloodSeen = 0; // QA counter: blood spatters spawned this session
   private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
@@ -1902,8 +1907,13 @@ export class WorldScene extends Phaser.Scene {
         icon: !!this.attackIcon?.visible,
         engaged: this.engagedId,
         aggroRings: this.aggroRadiusOn,
+        // load-path introspection (a wedged loader once ate the icon)
+        iconTex: this.textures.exists("ui:attack-target"),
+        iconQueued: this.attackIconQueued,
+        loaderState: this.load.state,
       }),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
+      bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
           x: Math.round(gc.sprite.x),
@@ -2662,25 +2672,42 @@ export class WorldScene extends Phaser.Scene {
 
   /** A small rising damage number (world-space, above the night overlay). */
   private spawnDamageFloat(x: number, y: number, text: string, color: number) {
+    // Round 7 (maintainer): twice as big, on screen 0.2s longer.
     const t = this.add
       .text(x, y, text, {
         fontFamily: "monospace",
-        fontSize: "13px",
+        fontSize: "26px",
         fontStyle: "bold",
         color: `#${color.toString(16).padStart(6, "0")}`,
         stroke: "#101018",
-        strokeThickness: 3,
+        strokeThickness: 5,
       })
       .setOrigin(0.5, 1)
-      .setDepth(900_002);
+      .setDepth(900_002)
+      .setResolution(2);
     this.tweens.add({
       targets: t,
-      y: y - 26,
+      y: y - 30,
       alpha: { from: 1, to: 0 },
-      duration: 650,
+      duration: 850,
       ease: "Cubic.easeOut",
       onComplete: () => t.destroy(),
     });
+  }
+
+  /** A blood spatter on a struck body (objects/blood_spatter, the
+   * maintainer's PixelLab object trimmed to burst->dispersal): one of the 8
+   * direction variants at random, played forward or REVERSED at random —
+   * reversed reads as the burst converging, so no two hits look alike. */
+  private spawnBloodFx(x: number, y: number) {
+    const dir = BLOOD_DIRS[Math.floor(Math.random() * BLOOD_DIRS.length)];
+    const key = `blood:${dir}`;
+    if (!this.anims.exists(key)) return; // strips still background-loading — skip quietly
+    const s = this.add.sprite(x, y, key, 0).setOrigin(0.5, 0.5).setDepth(900_001.95);
+    this.bloodSeen++;
+    if (Math.random() < 0.5) s.play(key);
+    else s.playReverse(key);
+    s.once("animationcomplete", () => s.destroy());
   }
 
   /** Drive a monster's 8-dir WALK clip (mv.walkKey — the manifest-resolved
@@ -3243,10 +3270,13 @@ export class WorldScene extends Phaser.Scene {
         av.lastHitSeq = player.hitSeq;
         if (!first && !player.dead) {
           // The flinch — unless a stronger clip (attack/die) is mid-play.
+          // FAST since round 7 (16fps clip, short overlay window)…
           if (!av.actionUntil || nowMs >= av.actionUntil || av.actionKey === "hurt") {
             av.actionKey = "hurt";
-            av.actionUntil = nowMs + 420;
+            av.actionUntil = nowMs + 300;
           }
+          // …with the blood ON the body (maintainer round 7).
+          this.spawnBloodFx(av.lx, av.sprite.y - av.sprite.displayHeight * 0.45);
         }
       }
       if ((av.lastHp ?? player.hp) > player.hp)
@@ -3668,9 +3698,11 @@ export class WorldScene extends Phaser.Scene {
         const ox = gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
         const airPx = gd?.air?.[fi] ?? 0;
-        // Damage float + hp bar (RO: you SEE the number and the wound).
-        if (mv.lastHp !== undefined && m.hp < mv.lastHp)
+        // Damage float + blood + hp bar (RO: you SEE the number and the wound).
+        if (mv.lastHp !== undefined && m.hp < mv.lastHp) {
           this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
+          this.spawnBloodFx(mv.lx, mv.sprite.y - mv.sprite.displayHeight * 0.45);
+        }
         mv.lastHp = m.hp;
         this.updateMonsterHpBar(mv, m, id);
         this.resolveBodyDepth(mv, sLvl);
@@ -5251,6 +5283,25 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    // The BLOOD SPATTER variants (objects/blood_spatter, trimmed) ride the
+    // same batch — tiny (8 strips, 34px frames), ready before the first hit.
+    for (const dir of BLOOD_DIRS) {
+      const bk = `blood:${dir}`;
+      if (this.textures.exists(bk)) continue;
+      this.load.spritesheet(bk, withV(`/assets/objects/blood_spatter/animations/spatter__${dir}.webp`), {
+        frameWidth: 34,
+        frameHeight: 34,
+      });
+      queued++;
+    }
+    // …and the sword marker (240 bytes): preloading kills the race where a
+    // marked monster charges in and the walk-to window closes before a lazy
+    // first-engage load can land.
+    if (!this.textures.exists("ui:attack-target") && !this.attackIconQueued) {
+      this.attackIconQueued = true;
+      this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
+      queued++;
+    }
     if (!queued) return;
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
       this.buildAnimations();
@@ -5258,6 +5309,17 @@ export class WorldScene extends Phaser.Scene {
       // true does NOT register anims — without this re-run every late-loaded
       // combat strip would stay a texture no clip ever plays.
       this.buildMonsterAnimations();
+      for (const dir of BLOOD_DIRS) {
+        const bk = `blood:${dir}`;
+        if (this.textures.exists(bk) && !this.anims.exists(bk)) {
+          this.anims.create({
+            key: bk,
+            frames: this.anims.generateFrameNumbers(bk, {}),
+            frameRate: 14,
+            repeat: 0,
+          });
+        }
+      }
     });
     this.load.start();
   }

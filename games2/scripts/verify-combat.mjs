@@ -72,10 +72,12 @@ try {
   // happened to roam flaked both ways. The sword marker must hang over the
   // walk-to target; the slim bar shows "Lv N" + "hp/max" for the engaged
   // target.
+  // Park OUTSIDE the provoke radius (128wu): a marked frog inside it charges
+  // and the walk-to window can close between polls.
   await page.evaluate((fid) => {
     const st = window.__ml;
     const f = st.monsterInfo().find((m) => m.id === fid);
-    st.teleport(Math.round((f.x + 150) / 32), Math.round((f.y + 60) / 32));
+    st.teleport(Math.round((f.x + 200) / 32), Math.round((f.y + 90) / 32));
   }, frogPick.id);
   await page.waitForTimeout(250);
   await page.evaluate((fid) => window.__ml.engage(fid), frogPick.id);
@@ -138,6 +140,9 @@ try {
   }
   if (!killed) fail("frog never died (40s)");
   ok("engaged and killed a frog");
+  const blood = await page.evaluate(() => window.__ml.bloodFx());
+  if (!(blood >= 1)) fail(`no blood spatter played during the fight (count ${blood})`);
+  ok(`blood spatters played (${blood})`);
   const afterKill = await page.evaluate(() => window.__ml.targetOverlay());
   if (afterKill.icon) fail(`sword marker must clear after the kill: ${JSON.stringify(afterKill)}`);
   ok("sword marker clears when the fight ends");

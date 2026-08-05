@@ -76,6 +76,23 @@
       "world_height_m": 0.9,
       "pixellab_object_id": "56b75726-69bd-4b23-a54f-3626b5df3700",
       "_note": "The maintainer's own PixelLab object (2026-08-05): synced as-is, SOUTH-only animation by design — the game plays it at monster graves and reverses it to sink away. Do not regenerate."
+    },
+    {
+      "id": "blood_spatter",
+      "name": "Blood spatter",
+      "category": "effect",
+      "description": "a burst of blood dispersing into particles — the game's hit effect",
+      "size": 34,
+      "animations": [
+        {
+          "key": "spatter",
+          "description": "blood spatter in all directions",
+          "frames": 16
+        }
+      ],
+      "world_height_m": 0.5,
+      "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
+      "_note": "The maintainer's own PixelLab object (2026-08-05), stored TRIMMED (see object.json 'edited'): the game plays only the burst->dispersal window, forward or reversed, on every landed hit. Do not regenerate and do not mirror verbatim over the trims."
     }
   ],
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
@@ -96,5 +113,5 @@
     "_disabled": "Emptied 2026-07-31 with the domain reduction. This is what invents objects once the catalog is exhausted; with num_objects 1 it would not fire, but an agent raising the target would silently start generating props nothing asked for."
   },
   "_animations": "Every object is a persistent 8-direction PixelLab object (create-8-direction-object) with EXACTLY 3 animations chosen to fit it, each animated across all 8 directions.",
-  "num_objects": 2
+  "num_objects": 3
 }

@@ -1,10 +1,10 @@
 # Pixel Object Factory
 
-> ## STATUS 2026-08-05: DORMANT — two assets, no agent
+> ## STATUS 2026-08-05: DORMANT — three assets, no agent
 >
 > **There is no objects agent, and there has not been one for a long time.** The
 > maintainer will recreate it when there is time. Until then this domain is
-> caretaken by the games agent and it holds exactly **two** assets: the
+> caretaken by the games agent and it holds exactly **three** assets: the
 > **campfire**, which the game draws as the spawn bonfire, and the
 > **grave_cross** (the maintainer's own PixelLab object, synced 2026-08-05:
 > 8 static rotations + a 16-frame SOUTH-only "appear" animation), which the

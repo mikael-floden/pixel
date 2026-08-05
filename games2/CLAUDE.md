@@ -936,6 +936,16 @@ visible head/shoulders are ABOVE the surface).
   synced field inside hurtPlayer (not the next tick top), and ACKS the seqs
   it swallows while dead — un-acked seqs kept replaying and rendered the
   corpse offset, then popped it off-spawn on revive.
+- **Hit feedback (round 7)**: damage floats are 26px and linger 850ms
+  (maintainer: twice as big, 0.2s longer); every landed hit — player or
+  monster — plays a BLOOD SPATTER (objects/blood_spatter, the maintainer's
+  PixelLab object stored TRIMMED to the already-scattered dispersal window he
+  green-circled; see object.json:edited before any resync): one of the 8
+  direction variants at random, forward or REVERSED at random, 14fps, at
+  depth 900_001.95 (lighting never dims it), preloaded in the deferred batch
+  with the sword marker (a lazy first-engage load lost the walk-to race).
+  The got-hit flinch is FAST now (hurt 16fps, 300ms overlay). `bloodFx()`
+  probe counts spawns; verify-combat asserts ≥1 during the fight.
 - **Gates**: combat.unit.test.ts (curves/determinism/escape math),
   combat.test.ts (2 live rooms: full fight loop + death/respawn),
   combat.review.test.ts (leash give-up on a kited frog; world-agnostic
