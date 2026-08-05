@@ -7233,5 +7233,305 @@
     "brief": "a small stone dropping into a bucket of water, one deep round bloop",
     "generated_at": "2026-08-05T20:47:11+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_fanfare": {
+    "takes": [
+      "level_up_fanfare/level_up_fanfare__take01.wav"
+    ],
+    "durations_s": [
+      3.52
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.5,
+        "duration_s": 3.52,
+        "attack_ms": 66.2,
+        "tail_ratio": 0.808,
+        "tonality": 0.722,
+        "crest": 3.9,
+        "centroid_hz": 9547,
+        "mid_ratio": 0.623
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a short triumphant orchestral brass fanfare, three rising notes ending bright and proud",
+    "generated_at": "2026-08-05T23:13:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_retro": {
+    "takes": [
+      "level_up_retro/level_up_retro__take01.wav"
+    ],
+    "durations_s": [
+      2.72
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.5,
+        "duration_s": 2.72,
+        "attack_ms": 1241.5,
+        "tail_ratio": 0.727,
+        "tonality": 0.83,
+        "crest": 4.03,
+        "centroid_hz": 4126,
+        "mid_ratio": 0.934
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a classic retro arcade level-up jingle, a short rising chunky 8-bit style phrase, cheerful",
+    "generated_at": "2026-08-05T23:13:35+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_chimes": {
+    "takes": [
+      "level_up_chimes/level_up_chimes__take01.wav"
+    ],
+    "durations_s": [
+      3.2
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.1,
+        "duration_s": 3.2,
+        "attack_ms": 444.4,
+        "tail_ratio": 0.599,
+        "tonality": 0.81,
+        "crest": 21.25,
+        "centroid_hz": 6865,
+        "mid_ratio": 0.874
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a bright glockenspiel run climbing quickly upward, clear ringing metal bars, celebratory",
+    "generated_at": "2026-08-05T23:13:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_harp": {
+    "takes": [
+      "level_up_harp/level_up_harp__take01.wav"
+    ],
+    "durations_s": [
+      3.52
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.0,
+        "duration_s": 3.52,
+        "attack_ms": 48.4,
+        "tail_ratio": 0.419,
+        "tonality": 0.845,
+        "crest": 7.13,
+        "centroid_hz": 10294,
+        "mid_ratio": 0.432
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "one quick harp glissando sweeping upward, ending on a soft shining chord",
+    "generated_at": "2026-08-05T23:13:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_choir": {
+    "takes": [
+      "level_up_choir/level_up_choir__take01.wav"
+    ],
+    "durations_s": [
+      4.0
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.8,
+        "duration_s": 4.0,
+        "attack_ms": 65.9,
+        "tail_ratio": 0.772,
+        "tonality": 0.702,
+        "crest": 4.75,
+        "centroid_hz": 10709,
+        "mid_ratio": 0.622
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a short warm angelic choir swell on an open ah vowel, rising and resolving brightly",
+    "generated_at": "2026-08-05T23:13:40+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_bells": {
+    "takes": [
+      "level_up_bells/level_up_bells__take01.wav"
+    ],
+    "durations_s": [
+      3.2
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.0,
+        "duration_s": 3.2,
+        "attack_ms": 589.0,
+        "tail_ratio": 0.745,
+        "tonality": 0.917,
+        "crest": 6.57,
+        "centroid_hz": 7875,
+        "mid_ratio": 0.587
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "small bright hand bells ringing out a quick happy upward flourish",
+    "generated_at": "2026-08-05T23:13:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_musicbox": {
+    "takes": [
+      "level_up_musicbox/level_up_musicbox__take01.wav"
+    ],
+    "durations_s": [
+      4.0
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.0,
+        "duration_s": 4.0,
+        "attack_ms": 194.0,
+        "tail_ratio": 0.926,
+        "tonality": 0.579,
+        "crest": 13.2,
+        "centroid_hz": 6897,
+        "mid_ratio": 0.835
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a delicate music box playing a short ascending phrase, twinkling and gentle",
+    "generated_at": "2026-08-05T23:13:44+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_drums": {
+    "takes": [
+      "level_up_drums/level_up_drums__take01.wav"
+    ],
+    "durations_s": [
+      3.52
+    ],
+    "features": [
+      {
+        "mid_peak_db": -19.5,
+        "duration_s": 3.52,
+        "attack_ms": 2790.1,
+        "tail_ratio": 0.999,
+        "tonality": 0.923,
+        "crest": 5.45,
+        "centroid_hz": 2133,
+        "mid_ratio": 0.113
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a quick triumphant timpani roll rising to one bright cymbal shine",
+    "generated_at": "2026-08-05T23:13:46+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_sparkle": {
+    "takes": [
+      "level_up_sparkle/level_up_sparkle__take01.wav"
+    ],
+    "durations_s": [
+      3.2
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.6,
+        "duration_s": 3.2,
+        "attack_ms": 165.7,
+        "tail_ratio": 0.553,
+        "tonality": 0.618,
+        "crest": 7.05,
+        "centroid_hz": 8439,
+        "mid_ratio": 0.231
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a magical sparkle shimmer rising upward, twinkling glassy stars, light and airy",
+    "generated_at": "2026-08-05T23:13:48+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_horn": {
+    "takes": [
+      "level_up_horn/level_up_horn__take01.wav"
+    ],
+    "durations_s": [
+      4.0
+    ],
+    "features": [
+      {
+        "mid_peak_db": -5.7,
+        "duration_s": 4.0,
+        "attack_ms": 1349.7,
+        "tail_ratio": 0.975,
+        "tonality": 0.956,
+        "crest": 2.93,
+        "centroid_hz": 2906,
+        "mid_ratio": 0.99
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a single noble french horn call rising warmly and holding, proud and hopeful",
+    "generated_at": "2026-08-05T23:13:50+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
