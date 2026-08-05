@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-05T07:55:51+00:00",
+  "generated_at": "2026-08-05T08:02:23+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -688,175 +688,180 @@
         {
           "file": "battle.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1939
+          "size_bytes": 1080497
         },
         {
           "file": "battle.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 2187
+          "size_bytes": 1462479
         }
       ],
-      "duration_s": 0.073,
-      "bpm": 142,
+      "duration_s": 90.047,
+      "bpm": 143.55,
       "asked_bpm": 142,
       "musical": {
-        "root": null,
-        "mode": null,
-        "confidence": 0.0,
-        "midi_pitch_classes": null,
-        "sfx_safe_pitch_classes": null
+        "root": "G",
+        "mode": "minor",
+        "confidence": 0.783,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          9,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          3,
+          7,
+          9,
+          10
+        ]
       },
       "timing": {
-        "bpm": null,
-        "beat_anchor_s": 0.0,
-        "confidence": 0.0
+        "bpm": 143.55,
+        "beat_anchor_s": 0.023,
+        "confidence": 0.737,
+        "raw_bpm": 143.55
       },
       "loop": {
-        "loop_start_s": 0.0,
-        "loop_end_s": 0.073,
+        "loop_start_s": 27.102,
+        "loop_end_s": 84.584,
         "crossfade_ms": 900,
-        "score": 0.0,
-        "beat_snapped": false
+        "score": 0.945,
+        "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "headroom_limited": true,
-        "lufs_in": -70.0,
-        "gain_db": -7.65,
-        "lufs_out": -70.0,
-        "true_peak_dbtp": -2.18
+        "lufs_in": -10.85,
+        "gain_db": -7.15,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.6
       },
       "measured": {
-        "duration_s": 0.07,
-        "lufs": -70.0,
-        "true_peak_dbtp": 6.15,
+        "duration_s": 90.05,
+        "lufs": -10.85,
+        "true_peak_dbtp": -0.44,
         "lead_in_s": 0.0,
-        "tail_rms_ratio": 1.0,
-        "crest_db": 4.13,
-        "centroid_hz": 7812.4,
-        "stereo_corr": 0.424,
-        "silence_frac": 0.0
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.93,
+        "centroid_hz": 6505.3,
+        "stereo_corr": 0.337,
+        "silence_frac": 0.049
       },
       "faults": [
-        "weak loop seam (0.00)",
-        "odd dynamics (crest 4.1 dB)",
-        "harsh/bright (7812 Hz)",
-        "short (0s of 90s)"
+        "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 42.0,
+          "score": 88.0,
           "faults": [
-            "weak loop seam (0.00)",
-            "odd dynamics (crest 4.1 dB)",
-            "harsh/bright (7812 Hz)",
-            "short (0s of 90s)"
+            "gaps (10.7% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
           ],
-          "duration_s": 0.07,
-          "lufs": -70.0,
-          "true_peak_dbtp": 6.15,
-          "lead_in_s": 0.0,
-          "tail_rms_ratio": 1.0,
-          "crest_db": 4.13,
-          "centroid_hz": 7812.4,
-          "stereo_corr": 0.424,
-          "silence_frac": 0.0,
-          "loop_score": 0.0
-        },
-        {
-          "score": 37.6,
-          "faults": [
-            "harsh/bright (6543 Hz)",
-            "fades out (tail 0.00)"
-          ],
-          "duration_s": 89.95,
-          "lufs": -10.44,
-          "true_peak_dbtp": -0.24,
-          "lead_in_s": 0.35,
-          "tail_rms_ratio": 0.0,
-          "crest_db": 13.47,
-          "centroid_hz": 6542.7,
-          "stereo_corr": 0.338,
-          "silence_frac": 0.032,
-          "loop_score": 0.9649
-        },
-        {
-          "score": 41.15,
-          "faults": [
-            "harsh/bright (6741 Hz)",
-            "fades out (tail 0.00)"
-          ],
-          "duration_s": 89.95,
-          "lufs": -10.41,
-          "true_peak_dbtp": -0.2,
+          "duration_s": 90.05,
+          "lufs": -10.46,
+          "true_peak_dbtp": -0.33,
           "lead_in_s": 0.0,
           "tail_rms_ratio": 0.0,
-          "crest_db": 13.57,
-          "centroid_hz": 6741.4,
-          "stereo_corr": 0.27,
-          "silence_frac": 0.038,
-          "loop_score": 0.9541
+          "crest_db": 13.95,
+          "centroid_hz": 6082.2,
+          "stereo_corr": 0.324,
+          "silence_frac": 0.107,
+          "loop_score": 0.9593
+        },
+        {
+          "score": 92.65,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.05,
+          "lufs": -10.85,
+          "true_peak_dbtp": -0.44,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.93,
+          "centroid_hz": 6505.3,
+          "stereo_corr": 0.337,
+          "silence_frac": 0.049,
+          "loop_score": 0.9553
+        },
+        {
+          "score": 73.94,
+          "faults": [
+            "gaps (24.4% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.05,
+          "lufs": -10.58,
+          "true_peak_dbtp": 0.03,
+          "lead_in_s": 0.4,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.22,
+          "centroid_hz": 7482.4,
+          "stereo_corr": 0.355,
+          "silence_frac": 0.244,
+          "loop_score": 0.9492
         }
       ],
       "sections": [
         {
-          "name": "A1: The Charge",
-          "duration_ms": 21000,
+          "name": "Main Theme A",
+          "duration_ms": 22000,
           "styles": [
-            "full energy start",
-            "galloping low staccato strings ostinato",
+            "full energy from the start",
+            "galloping low staccato strings",
             "punchy taiko and timpani",
             "urgent brass calls",
-            "bold rising horn melody in a minor key",
-            "high strings answer melody",
-            "relentless pulse"
+            "bold rising horn melody",
+            "seamless loop"
           ]
         },
         {
-          "name": "A2: Melee",
+          "name": "Main Theme B",
           "duration_ms": 21000,
           "styles": [
-            "maintains high energy",
-            "snare rolls increase intensity",
-            "brass takes over melody",
-            "choir shouts for rhythmic accent",
-            "powerful cinematic percussion",
-            "staccato strings continue relentless drive"
+            "high strings answering melody",
+            "snare drum rolls",
+            "relentless galloping rhythm continues",
+            "driving energy",
+            "short choir shouts for accent",
+            "powerful brass swells"
           ]
         },
         {
-          "name": "B: The Hero's Stand",
-          "duration_ms": 21000,
+          "name": "Breathtaking Pause",
+          "duration_ms": 3000,
           "styles": [
-            "soaring high string melody",
-            "heroic brass counter-melody",
-            "ostinato shifts slightly to build tension",
-            "courageous and uplifting feel",
-            "powerful, controlled low end",
-            "full orchestra"
+            "one bar of near silence",
+            "dramatic pause",
+            "suspended cymbal swell fading out",
+            "single sustained high string note",
+            "momentary tension"
           ]
         },
         {
-          "name": "C1: Turning the Tide",
-          "duration_ms": 21000,
+          "name": "Return to Main Theme A",
+          "duration_ms": 22000,
           "styles": [
-            "melody returns to horns with more force",
-            "percussion becomes more complex and driving",
-            "crescendo in dynamics",
-            "fast string runs",
-            "exciting and triumphant feel",
-            "powerful cymbal crashes"
+            "explosive return to full energy",
+            "galloping low staccato strings",
+            "punchy taiko and timpani",
+            "urgent brass calls",
+            "bold rising horn melody"
           ]
         },
         {
-          "name": "C2: Moment of Silence & Loop Point",
-          "duration_ms": 6000,
+          "name": "Outro Loop Point",
+          "duration_ms": 22000,
           "styles": [
-            "dramatic pause in final bar",
-            "full orchestra cuts out",
-            "single timpani hit with reverb tail",
-            "sets up a seamless loop",
-            "breath-taking silence"
+            "high strings answering melody",
+            "relentless rhythm",
+            "powerful brass finish",
+            "snare rolls building to crescendo",
+            "prepared for seamless loop"
           ]
         }
       ],
