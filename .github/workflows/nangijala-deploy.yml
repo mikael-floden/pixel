@@ -54,7 +54,9 @@ jobs:
   # Quality gate — runs in parallel with the image build, so it adds ~no wall
   # time. Sparse checkout: only what typecheck + npm test actually read
   # (games2, characters2 for the manifest, maps2/worlds for the navigation
-  # sim and the surface gate).
+  # sim and the surface gate, live for the tuning resolver's baked layer —
+  # without it every monster fights as the builtin poring and the combat
+  # tests fail on exactly the stats they assert).
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -66,6 +68,7 @@ jobs:
             /games2/
             /characters2/
             /maps2/worlds/
+            /live/
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
