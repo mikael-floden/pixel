@@ -123,6 +123,7 @@ try {
         chatlog: r(".ml-chatlog"),
         stick: r(".ml-pad-stick"),
         jump: r(".ml-pad-jump"),
+        pickup: r(".ml-pad-pickup"),
         help: r(".ml-pad-help"),
         stickZ: (() => {
           const e = document.querySelector(".ml-pad-stick");
@@ -204,6 +205,20 @@ try {
   g.jump.vis && g.jump.r < g.hud.r && g.jump.l > g.hud.l - 2
     ? ok(`jump stays in the menu column under the other thumb (x ${g.jump.l}..${g.jump.r})`)
     : fail(`jump ${JSON.stringify(g.jump)} vs hud ${JSON.stringify(g.hud)}`);
+  // JUMP UNDER PICK UP (maintainer 2026-08-05): a centred vertical stack.
+  g.pickup.vis && g.pickup.b <= g.jump.t
+    ? ok(`jump sits UNDER pick up (pickup b=${g.pickup.b}, jump t=${g.jump.t})`)
+    : fail(`stack order wrong: pickup ${JSON.stringify(g.pickup)} jump ${JSON.stringify(g.jump)}`);
+  Math.abs((g.jump.l + g.jump.r) / 2 - (g.pickup.l + g.pickup.r) / 2) <= 2
+    ? ok("jump and pick up share a centre line")
+    : fail(`not centred: jump mid ${(g.jump.l + g.jump.r) / 2} vs pickup mid ${(g.pickup.l + g.pickup.r) / 2}`);
+  // ANIMATION only on orientation/handedness changes: at rest the stick's
+  // transition covers opacity (the grab fade) but NOT left/top — page entry
+  // must reposition instantly (the .anim class is transient).
+  const tp = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).transitionProperty);
+  /opacity/.test(tp) && !/left|top|all/.test(tp)
+    ? ok(`at rest only opacity transitions (${tp})`)
+    : fail(`resting transition-property "${tp}" — left/top must be .anim-gated`);
   if (!g.help || !g.help.vis) fail("handedness help chip missing on first visit");
   else {
     const overlaps = (a, b) => a && b && a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
@@ -223,7 +238,25 @@ try {
   await page.mouse.down();
   await page.mouse.move(sc.x - 90, sc.y, { steps: 4 }); // leftward — the corner stick has no room to the right
   await page.waitForTimeout(700);
+  // IN USE the ghost fades to fully visible (maintainer 2026-08-05)
+  const opHeld = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).opacity);
+  Math.abs(parseFloat(opHeld) - 1) <= 0.02
+    ? ok(`stick fades to 100% while held (${opHeld})`)
+    : fail(`stick opacity ${opHeld} while held, want 1`);
   await page.mouse.up();
+  const faded = await page
+    .waitForFunction(
+      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-stick")).opacity) - 0.25) <= 0.02,
+      null,
+      { timeout: 8000, polling: 150 },
+    )
+    .then(() => true)
+    .catch(() => false);
+  faded
+    ? ok("…and back to the 0.25 ghost on release")
+    : fail(
+        `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).opacity)} after release`,
+      );
   const p1 = await page.evaluate(() => {
     const m = window.__ml.me();
     return { x: m.x, y: m.y };

@@ -144,6 +144,14 @@ export function mountPageFrame() {
   // class). The title/select/loading screens never set it, so they keep
   // their portrait-only behavior (maintainer 2026-08-05).
   document.documentElement.classList.add("ml-ingame");
+  // …and UNLOCK rotation for the installed app: main.ts locks "portrait" at
+  // boot (the pre-game screens stay upright), so without this re-lock the
+  // phone never rotates in the world at all — lock("any") overrides both
+  // that and the manifest default. Rejects harmlessly in a browser tab
+  // (rotation is native there). Logout reloads the page, so the boot-time
+  // portrait lock returns for the select screen on the way out.
+  (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.("any")
+    .catch(() => {});
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;

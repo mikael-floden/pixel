@@ -1699,10 +1699,17 @@ visible head/shoulders are ABOVE the surface).
   alpha and BEHIND the corner chrome — position:fixed, z 4, under the
   chat overlay (5) and the pill/chips (8), all of which are
   pointer-events:none so the thumb steers straight through them; hidden
-  with the page when another tab is up. Jump + pick up stay in the menu
-  column under the other thumb, and the vertical tab strip is CENTERED
-  (equal top/bottom gaps — maintainer 2026-08-05). Portrait mirrors the
-  stick/jump/pick-up fractions by hand. A ONE-TIME help chip on the
+  with the page when another tab is up. WHILE HELD it fades to fully
+  visible (pointerdown -> opacity 1, release -> 0.25; the opacity
+  transition is the only always-on one). PICK UP stacks ABOVE JUMP on
+  the menu column's centre line under the other thumb, and the vertical
+  tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
+  stick/jump/pick-up fractions by hand. The position glide is
+  .anim-GATED: layout() arms a transient .anim class only when
+  orientation or handedness actually changed AND the page is visible —
+  entering the gamepad tab or plain resizes reposition instantly
+  (maintainer 2026-08-05: "not when clicking from and to the
+  game-controller page"). A ONE-TIME help chip on the
   gamepad page points at Settings → controls; the × dismisses it forever
   (`ml-hand-help`), it's an absolute overlay so it can never move the
   controls, and its BODY is pointer-events:none so it can't eat their
@@ -1718,8 +1725,16 @@ visible head/shoulders are ABOVE the surface).
   (index.html media query — coarse pointer + landscape + max-height
   520px) still covers the title/select/loading screens; `html.ml-ingame`
   (set by mountPageFrame) suppresses it in the world. The manifest is
-  `orientation: any` now (was portrait-primary) so the installed app can
-  rotate at all — on non-game screens the prompt still says turn back.
+  `orientation: any` now (was portrait-primary), AND — the real gate —
+  main.ts's boot-time `screen.orientation.lock("portrait")` (which
+  covers the installed app's pre-game screens) is RE-LOCKED to "any" by
+  mountPageFrame when the world mounts: that boot lock silently kept
+  the phone portrait in-game no matter what the manifest said
+  (maintainer: "nothing happens when I tilt"). Logout reloads, so the
+  portrait lock returns for the select screen. In a browser tab both
+  lock() calls reject harmlessly (not fullscreen) and rotation is
+  native. An already-installed WebAPK may also need a reinstall to shed
+  the OLD manifest's lock, and Android's system auto-rotate must be on.
 - **Dead-connection recovery**: backgrounding a phone tab freezes JS; the
   server drops the client and the room turns into a ZOMBIE (no patches/acks
   — prediction replays an ever-growing unacked history; the old "teleport

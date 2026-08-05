@@ -143,6 +143,21 @@ export function mountGamepadStick(page: HTMLElement) {
   // amplitude"). Radius kept in css px.
   let visSector = -1;
   let visRadius = 0;
+  // Animate INTO position only on orientation/handedness changes (maintainer
+  // 2026-08-05: "not when clicking from and to the game-controller page") —
+  // the left/top transitions live under a transient .anim class; everything
+  // else (page entry, plain resizes) repositions instantly.
+  let lastLand: boolean | null = null;
+  let lastHand: boolean | null = null;
+  let animTimer = 0;
+  const controls = () => [pad, jump, pickup, jumpLabel, pickupLabel, walkLabel];
+  const armAnim = () => {
+    for (const el of controls()) el.classList.add("anim");
+    window.clearTimeout(animTimer);
+    animTimer = window.setTimeout(() => {
+      for (const el of controls()) el.classList.remove("anim");
+    }, 350);
+  };
   const setCap = (sector: number, radiusCss: number) => {
     visSector = sector;
     visRadius = sector < 0 ? 0 : radiusCss;
@@ -176,6 +191,11 @@ export function mountGamepadStick(page: HTMLElement) {
     const pickFx = leftHand ? 1 - 0.465 : 0.465;
     const pickD = Math.round(jumpD * 0.72);
     const land = document.documentElement.classList.contains("ml-land");
+    // glide only when the ARRANGEMENT changes (rotation / handedness) and the
+    // page is actually visible — never on page entry or plain resizes
+    if (page.clientWidth > 0 && lastLand !== null && (land !== lastLand || leftHand !== lastHand)) armAnim();
+    lastLand = land;
+    lastHand = leftHand;
     if (land) {
       // LANDSCAPE: the stick leaves the page and FLOATS in the game view's
       // very bottom corner on the thumb's side, GHOSTED at 0.25 alpha
@@ -192,17 +212,20 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.opacity = "0.25";
       pad.style.left = `${leftHand ? 10 : window.innerWidth - 10 - well}px`;
       pad.style.top = `${window.innerHeight - 10 - well}px`;
-      jump.style.width = jump.style.height = `${jumpD}px`;
-      jump.style.left = `${Math.round(page.clientWidth * 0.32 - jumpD / 2)}px`;
-      jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+      // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
+      // stack around the column's midline, label above each button.
+      const cx = Math.round(page.clientWidth / 2);
+      const gap = 34; // room for the lower button's label between the two
       pickup.style.width = pickup.style.height = `${pickD}px`;
-      pickup.style.left = `${Math.round(page.clientWidth * 0.68 - pickD / 2)}px`;
-      pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
-      const labelY = Math.round(midY - jumpD / 2 - 10);
-      jumpLabel.style.left = `${Math.round(page.clientWidth * 0.32)}px`;
-      jumpLabel.style.top = `${labelY}px`;
-      pickupLabel.style.left = `${Math.round(page.clientWidth * 0.68)}px`;
-      pickupLabel.style.top = `${labelY}px`;
+      pickup.style.left = `${cx - Math.round(pickD / 2)}px`;
+      pickup.style.top = `${Math.round(midY - gap / 2 - pickD)}px`;
+      jump.style.width = jump.style.height = `${jumpD}px`;
+      jump.style.left = `${cx - Math.round(jumpD / 2)}px`;
+      jump.style.top = `${Math.round(midY + gap / 2)}px`;
+      pickupLabel.style.left = `${cx}px`;
+      pickupLabel.style.top = `${Math.round(midY - gap / 2 - pickD - 10)}px`;
+      jumpLabel.style.left = `${cx}px`;
+      jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
       walkLabel.style.display = "none"; // a floating label over world art is noise
     } else {
       pad.style.position = "";
@@ -276,11 +299,16 @@ export function mountGamepadStick(page: HTMLElement) {
     dragging = false;
     setKeys(-1, false);
     setCap(-1, 0); // glide back to centre
+    // the landscape ghost fades back to rest once the thumb lets go
+    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "0.25";
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {
     dragging = true;
     pad.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
+    // IN USE = fully visible (maintainer 2026-08-05): the landscape ghost
+    // fades to 1 while the thumb holds it (opacity transition is always on).
+    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "1";
     gameAudio.event("ui.press");
     apply(ev);
   });
@@ -347,14 +375,19 @@ function injectStyles() {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* the WELL: a round surface-2 basin with an inset shade. left/top ease so
-     a handedness flip GLIDES to the other side instead of teleporting
-     (the animate nice-to-have — cheap: the positions are already px). */
+  /* the WELL: a round surface-2 basin with an inset shade. The OPACITY
+     transition is always on (the landscape ghost fades to 1 while the thumb
+     holds it); left/top glide ONLY under the transient .anim class, which
+     layout() arms for orientation/handedness changes — page entry and plain
+     resizes reposition instantly (maintainer 2026-08-05). */
   .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface-2);border:1px solid var(--border-strong);
     box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
-    transition:left .25s ease,top .25s ease,opacity .25s ease;
+    transition:opacity .25s ease;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .ml-pad-stick.anim{transition:left .25s ease,top .25s ease,opacity .25s ease}
+  .ml-pad-jump.anim,.ml-pad-pickup.anim,.ml-pad-label.anim{
+    transition:left .25s ease,top .25s ease}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
@@ -363,11 +396,11 @@ function injectStyles() {
   /* JUMP: a round wiki button */
   .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
-    box-sizing:border-box;transition:left .25s ease,top .25s ease}
+    box-sizing:border-box}
   .ml-pad-pickup.press{background:var(--surface-2);border-color:var(--border-strong)}
   .ml-pad-jump{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
-    box-sizing:border-box;padding:0;transition:left .25s ease,top .25s ease;
+    box-sizing:border-box;padding:0;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-jump.press{background:var(--surface-2);border-color:var(--border-strong);
     transform:translateY(1px);box-shadow:none}

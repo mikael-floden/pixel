@@ -39,9 +39,15 @@ document.addEventListener(
   { passive: false },
 );
 document.addEventListener("gesturestart", (e) => e.preventDefault());
-// Portrait-only (for now): the manifest locks the installed app; in-browser
-// the lock API only works in fullscreen contexts, so it's best-effort (the
-// #ml-rotate CSS overlay in index.html covers plain browser landscape).
+// Portrait-only OUTSIDE the world (maintainer 2026-08-05: the WORLD plays
+// landscape; title/select/loading stay upright). In the installed app the
+// lock API works (fullscreen contexts) and this boot-time portrait lock
+// covers the pre-game screens; hud.ts mountPageFrame RE-LOCKS to "any" the
+// moment the world mounts — this line was the "nothing happens when I tilt"
+// bug once landscape shipped: it silently kept the old portrait-only rule
+// no matter what the manifest said. In a plain browser tab lock() rejects
+// (not fullscreen) and rotation is native; the #ml-rotate CSS overlay
+// covers the pre-game screens there.
 if (window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches) {
   (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.("portrait")
     .catch(() => {});
