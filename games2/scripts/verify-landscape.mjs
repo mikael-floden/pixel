@@ -171,6 +171,38 @@ try {
   Math.abs(g.tabFirst.t - (g.vh - g.tabLast.b)) <= 3
     ? ok(`tab buttons vertically centered (top gap ${g.tabFirst.t}, bottom gap ${g.vh - g.tabLast.b})`)
     : fail(`tabs not centered: top gap ${g.tabFirst.t} vs bottom gap ${g.vh - g.tabLast.b}`);
+  // FULL-SIZE buttons (maintainer: "menu buttons look smaller in landscape"
+  // — the ≤640px-height portrait rule was shrinking every landscape phone).
+  g.tab0.h === 56 && g.tab0.w >= 64
+    ? ok(`tabs at full size (${g.tab0.w}x${g.tab0.h} — not the short-phone 48px tier)`)
+    : fail(`tab ${JSON.stringify(g.tab0)}, want 56 tall / >=64 wide`);
+  // BACKPACK grid turns with the layout: 3 wide x 5 tall in landscape.
+  await page.evaluate(() => document.querySelector('[data-tab="backpack"]').click());
+  await page.waitForTimeout(300);
+  const slots = await page.evaluate(() => {
+    const g2 = document.querySelector(".ml-slots");
+    const cols = getComputedStyle(g2).gridTemplateColumns.split(" ").length;
+    const first = g2.firstElementChild.getBoundingClientRect();
+    return { cols, slotW: Math.round(first.width) };
+  });
+  slots.cols === 3 && slots.slotW >= 55
+    ? ok(`backpack is 3 wide x 5 tall in landscape (slots ${slots.slotW}px)`)
+    : fail(`backpack grid ${JSON.stringify(slots)}, want 3 columns of >=55px`);
+  // CHAT float stays INSIDE the game view: focus the Chat page's input and
+  // the keyboard-floated box must start at the game view's left edge, not 10.
+  await page.evaluate(() => document.querySelector('[data-tab="chat"]').click());
+  await page.waitForTimeout(300);
+  await page.evaluate(() => document.querySelector(".ml-chat-input").focus());
+  await page.waitForFunction(() => document.documentElement.classList.contains("ml-kb-up"), null, { timeout: 8000, polling: 100 }).catch(() => {});
+  const float = await page.evaluate(() => {
+    const r = document.querySelector(".ml-chat-input").getBoundingClientRect();
+    return { l: Math.round(r.left), r: Math.round(innerWidth - r.right) };
+  });
+  Math.abs(float.l - (menuW + 10)) <= 2 && Math.abs(float.r - 10) <= 2
+    ? ok(`floated chat box stays inside the game view (l=${float.l}, r-gap=${float.r})`)
+    : fail(`floated box spans wrong: ${JSON.stringify(float)}, want l=${menuW + 10} r=10`);
+  await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
+  await page.waitForTimeout(400);
   const icon = await page.evaluate(() => {
     const i = document.querySelector(".ml-tab-icon");
     const r = i.getBoundingClientRect();

@@ -1751,11 +1751,24 @@ visible head/shoulders are ABOVE the surface).
   the menu column's centre line under the other thumb, and the vertical
   tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
   stick/jump/pick-up fractions by hand. The position glide is
-  .anim-GATED: layout() arms a transient .anim class only when
-  orientation or handedness actually changed AND the page is visible —
-  entering the gamepad tab or plain resizes reposition instantly
-  (maintainer 2026-08-05: "not when clicking from and to the
-  game-controller page"). A ONE-TIME help chip on the
+  .anim-GATED and fires ONLY on a handedness change while the page is
+  visible; ROTATION SNAPS (maintainer 2026-08-05, twice refined: first
+  "not when clicking from and to the game-controller page", then "the
+  UI animation feels laggy when switching orientation" — the glide ran
+  against the canvas resize and the OS's own rotation animation).
+  applyLayout mirrors that for the anchor chrome with a transient
+  :root.ml-noanim (~400ms, transition:none!important on
+  bars/clock/chatlog/chatinput) around every ml-land flip, so the
+  handedness glide survives and rotation is instant.
+  LANDSCAPE COLUMN SIZING (same round, from device screenshots): tabs
+  keep their full 56px in landscape — the global ≤640px-HEIGHT rule was
+  written for short PORTRAIT phones but every landscape phone is under
+  640px tall, so it silently shrank the strip (a media ≤388px height
+  keeps 48px for genuinely tiny screens); the strip is 84px wide; the
+  BACKPACK grid turns with the layout (3 wide × 5 tall via
+  :root.ml-land .ml-slots, capped 320px); and the keyboard-floated Chat
+  page input takes the gv insets so it floats INSIDE the game view
+  instead of spanning the whole screen. A ONE-TIME help chip on the
   gamepad page points at Settings → controls; the × dismisses it forever
   (`ml-hand-help`), it's an absolute overlay so it can never move the
   controls, and its BODY is pointer-events:none so it can't eat their

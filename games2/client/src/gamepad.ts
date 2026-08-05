@@ -155,11 +155,13 @@ export function mountGamepadStick(page: HTMLElement) {
   // amplitude"). Radius kept in css px.
   let visSector = -1;
   let visRadius = 0;
-  // Animate INTO position only on orientation/handedness changes (maintainer
-  // 2026-08-05: "not when clicking from and to the game-controller page") —
-  // the left/top transitions live under a transient .anim class; everything
-  // else (page entry, plain resizes) repositions instantly.
-  let lastLand: boolean | null = null;
+  // Animate INTO position only on HANDEDNESS changes (maintainer 2026-08-05,
+  // twice refined: "not when clicking from and to the game-controller page",
+  // then "the UI animation feels laggy when switching orientation" — the
+  // rotation glide fought the canvas resize + the OS's own rotation
+  // animation, so orientation snaps like everything else now). The left/top
+  // transitions live under a transient .anim class; page entry, resizes and
+  // rotation reposition instantly.
   let lastHand: boolean | null = null;
   let animTimer = 0;
   const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel, walkLabel];
@@ -203,10 +205,9 @@ export function mountGamepadStick(page: HTMLElement) {
     const pickFx = leftHand ? 1 - 0.465 : 0.465;
     const pickD = Math.round(jumpD * 0.72);
     const land = document.documentElement.classList.contains("ml-land");
-    // glide only when the ARRANGEMENT changes (rotation / handedness) and the
-    // page is actually visible — never on page entry or plain resizes
-    if (page.clientWidth > 0 && lastLand !== null && (land !== lastLand || leftHand !== lastHand)) armAnim();
-    lastLand = land;
+    // glide only when HANDEDNESS changes and the page is actually visible —
+    // never on page entry, plain resizes or rotation
+    if (page.clientWidth > 0 && lastHand !== null && leftHand !== lastHand) armAnim();
     lastHand = leftHand;
     if (land) {
       // LANDSCAPE: the stick leaves the page and FLOATS in the game view's

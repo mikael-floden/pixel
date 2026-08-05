@@ -161,6 +161,8 @@ export function mountPageFrame() {
 }
 
 let layoutHooked = false;
+let lastLandState: boolean | null = null;
+let noAnimTimer = 0;
 
 /** Publish the layout in REAL px on :root. index.html's dvh CSS draws the
  * same portrait split; these px twins exist for the px consumers — the
@@ -183,6 +185,18 @@ function applyLayout() {
   const h = window.innerHeight;
   const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
   const left = getHand() === "left";
+  // ORIENTATION changes SNAP, handedness changes glide (maintainer
+  // 2026-08-05: the rotation glide read as LAG — it runs while the browser
+  // is busy rotating and resizing the whole canvas, and the OS plays its own
+  // rotation animation on top; the handedness flip has none of that and
+  // stays smooth). ml-noanim suppresses the anchor transitions for the
+  // frames around an orientation flip.
+  if (lastLandState !== null && land !== lastLandState) {
+    root.classList.add("ml-noanim");
+    window.clearTimeout(noAnimTimer);
+    noAnimTimer = window.setTimeout(() => root.classList.remove("ml-noanim"), 400);
+  }
+  lastLandState = land;
   root.classList.toggle("ml-land", land);
   root.classList.toggle("ml-lh", left);
   if (land) {
@@ -1238,6 +1252,12 @@ function injectStyles() {
      grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
      hand-drawn art; a fixed square box distorted + fractionally scaled them) */
   .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* rotation = snap (applyLayout arms this for ~400ms around an orientation
+     flip): the glide only stays for handedness changes, where nothing else
+     is moving. !important — these transitions live in four different
+     injected sheets. */
+  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
+  :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
   /* ── LANDSCAPE (maintainer 2026-08-05): the same 61.8/38.2 split turned on
      its side — the menu becomes a full-height SIDE COLUMN (--menu-w, set by
      applyLayout) and the tab row a VERTICAL strip. "Buttons always closest
@@ -1250,15 +1270,27 @@ function injectStyles() {
     flex-direction:row;border-top:none;border-right:1px solid var(--border)}
   :root.ml-land.ml-lh .ml-hud{left:auto;right:0;
     border-right:none;border-left:1px solid var(--border)}
-  :root.ml-land .ml-tabrow{flex-direction:column;flex:none;width:72px;height:auto;
+  :root.ml-land .ml-tabrow{flex-direction:column;flex:none;width:84px;height:auto;
     padding:12px 8px;gap:6px;order:2;justify-content:center;
     border-bottom:none;border-left:1px solid var(--border)}
   :root.ml-land.ml-lh .ml-tabrow{order:0;border-left:none;border-right:1px solid var(--border)}
-  :root.ml-land .ml-tab{flex:0 0 auto;width:100%}
+  /* full-size buttons (maintainer 2026-08-05: "the menu buttons … look
+     smaller in landscape"): the global ≤640px-HEIGHT rule was written for
+     SHORT PORTRAIT phones, but every landscape phone is ≤640px tall, so it
+     silently shrank the strip to 48px. Landscape keeps the 56px buttons —
+     6×56 + gaps + padding = 390px, which fits any ≥393px-tall viewport —
+     and only genuinely tiny phones drop back to 48. */
+  :root.ml-land .ml-tab{flex:0 0 auto;width:100%;height:56px}
+  @media (max-height:388px){ :root.ml-land .ml-tab{height:48px} }
   :root.ml-land .ml-pages{order:1;min-width:0}
   /* the settings grid drops to two columns in the narrow landscape column —
      three squeezed the labels into clipped fragments ("weathe…") */
   :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
+  /* the backpack turns its grid on its side with the layout (maintainer
+     2026-08-05: rows & cols switch — 3 wide × 5 tall): five 1fr columns in
+     the narrow menu column made ~33px slots; three make them page-filling.
+     The cap keeps tablet columns from ballooning the cells. */
+  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);max-width:320px}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the
@@ -1383,8 +1415,13 @@ function injectStyles() {
      Never fires on desktop (no keyboard → --ml-kb stays 0, the class never
      sets). */
   :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
+  /* The floated box lives INSIDE the game view (maintainer 2026-08-05: "not
+     stretch all the way from side to side") — the gv insets are 0 in
+     portrait, so there this is the same full-width-minus-10px it always was;
+     in landscape they subtract the menu column. */
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
-    left:10px;right:10px;bottom:var(--ml-inputlift);
+    left:calc(var(--gv-left,0px) + 10px);right:calc(var(--gv-right,0px) + 10px);
+    bottom:var(--ml-inputlift);
     box-shadow:var(--shadow);transition:bottom .15s ease-out}
   /* The floated box takes the full width just above the keys, so EVERYTHING
      else that lives on the bottom edge steps up over it: the on-screen chat
