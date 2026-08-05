@@ -227,10 +227,24 @@ unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
 TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
 the types living there, then each type's total spread across its own zones by
-area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
-after regenerating any world (like `minimaps.py`); it validates every zone
-(simple polygon, ≥num standable cells at the claimed elevation) before writing.
-Two placement laws: **`the_island2` MUST contain every monster** (the endgame
+area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by
+habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
+world is written (`save_world` calls `spawns.refresh`), so a terrain edit can
+never leave stale zones behind; it validates every zone (simple polygon, ≥num
+standable cells at the claimed elevation) before writing.
+Three placement laws:
+**NO MONSTER SPAWNS ON WATER** (maintainer 2026-08-05: "monsters can't swim…
+we're gonna soon make water into a safe zone") — not filtered at runtime but
+guaranteed by the GEOMETRY: no zone polygon on any world contains a single
+water-surfaced cell, so the game's "mostly-water zone ⇒ everyone swims" branch
+can never fire. `dry_mask()` keeps generated zones off the water (refusing wet
+diagonal fills, and CUTTING OPEN any pond the single ring would otherwise
+enclose) and `validate_zone()` re-asserts it for every zone of every world,
+hand-written ones included. There is no habitat on water any more: the old
+`water` habitat is now `shore`, the LAND band within 4 cells of water. A bridge
+zone stays legal because the monster stands on the deck — the same polygon at
+ground level under the span fails the assert.
+Then: **`the_island2` MUST contain every monster** (the endgame
 map — build-asserted, with habitat fallback so it can't silently drop one), and
 the four **feature-test maps** (`prop_demo`, `trans_demo`, `glow_test`,
 `occlusion_test`) carry NO monsters (explicit empty `zones: []`).

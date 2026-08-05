@@ -33,10 +33,43 @@ rectangles clustered near the player spawn are explicitly fake debug areas
 - A zone's cells are the cells whose **CENTER lies inside** the polygon
   (even-odd rule).
 - The area is where the monster **MAY** be. The game must validate every actual
-  spawn/roam point (standable/swimmable surface within `elev`, no prop) — so a
-  polygon may freely span the odd water speck, boulder or wall cell.
+  spawn/roam point (standable surface within `elev`, no prop) — so a polygon may
+  freely span the odd boulder or wall cell.
+- **NEVER water** — see the water law below. This is the one thing a polygon may
+  not contain, and it is guaranteed by the geometry rather than left to the game.
 - Zones **may overlap** each other: different monsters share ground, and two
   zones can even cover the SAME cells at different elevations (see `elev`).
+
+## The water law
+
+> "You need to fix so no monster can spawn on water. Monsters can't swim. We're
+> gonna soon make water into a safe zone." — maintainer, 2026-08-05
+
+**No zone polygon on any world contains a single water-surfaced cell.** Not "the
+game filters them out" — the polygons themselves are dry, so the guarantee holds
+however the game evolves. That matters concretely: the game's `buildZoneRuntimes`
+flips an ENTIRE zone to swimming when its swim cells outnumber its standable
+ones, which is exactly what used to put frogs in the ocean. With zero water
+inside any polygon that branch can never fire, and a water safe zone cannot be
+violated from the map side.
+
+A cell is **water-surfaced** for a zone banded `[lo,hi]` when its base material
+is water **and** no deck inside that band covers it. So the bridge guard is legal
+(it stands ON the span, `elev [24,24]`) while the water *under* the same span is
+not — the identical polygon at `elev [0,0]` fails the assert.
+
+Enforcement is two-sided, in `spawns.py`:
+
+- `dry_mask()` builds every generated zone dry. A diagonal fill that would land
+  on water is refused; a pond the outer ring would enclose is **cut open** —
+  spawns@1 rings have no holes, so the cheapest straight corridor from the pond
+  to outside the ring is removed and the boundary snakes around it instead.
+- `validate_zone()` re-asserts it for **every zone of every world**, including
+  hand-written and builder-owned files, so the law also covers zones `dry_mask`
+  never touched.
+
+There is no habitat that puts a monster on water; the former `water` habitat is
+now `shore`, the **land** band within 4 cells of water.
 
 ## `elev` — which surface is meant (caves & bridges)
 
@@ -48,7 +81,7 @@ range. This single field disambiguates every layered case:
   (base), while the snowfield zones above it ride the `kind:"cave"` roof decks
   at `[24,40]` — same cells, different zones, no ambiguity;
 - **bridges**: a zone on the span uses the deck level (`[24,24]` for the high
-  gorge bridge); the water below belongs to shore zones at `[0,0]`;
+  gorge bridge); the water below belongs to nobody — see the water law;
 - sloping ground (a grass trail climbing benches) simply widens the range.
 
 ## `num` — population
@@ -90,7 +123,7 @@ home for brand-new ids until the table is extended). Habitat keys:
 | dark    | black_mountain rock | malformed_creature, lava_salamander(+_2), lava_poring |
 | stone   | stone_mountain | stone_turtle (also the bridge guard), stone_golem |
 | sand    | beaches | (heuristic home for future `*sand*` ids) |
-| water   | water within 4 cells of land | mystical_frog, water_poring |
+| shore   | **land** within 4 cells of water — the bank | mystical_frog, water_poring |
 | cave    | THE CAVE floor, `elev [0,1]` | masked_shadow_creature, night_beast, diablo, diablo_2 |
 
 Per habitat: 4-connected components ≥ ~30 cells (forest 12), biggest kept;
@@ -101,7 +134,15 @@ way). Diagonal contacts are healed so every traced boundary is provably simple.
 Validation asserts each zone has at least `num` valid standable cells at its
 claimed elevation before the file is written.
 
-Two placement laws (maintainer 2026-07-29):
+Zones are re-derived automatically whenever a world is written: `save_world()`
+calls `spawns.refresh()` for the world it just saved, so `build.py <world>` and
+running a builder directly both re-check the zones against the new terrain. A
+terrain edit therefore cannot leave a stale zone sitting on new water — the
+build fails instead.
+
+Three placement laws (maintainer 2026-07-29, 2026-08-05):
+
+- **no monster spawns on water** — the water law above.
 
 - **`the_island2` MUST contain every monster** — it is the map closest to the
   end game (`MUST_HAVE_ALL` in spawns.py). Generation guarantees a zone for
@@ -120,7 +161,8 @@ explicit pad zones (`BUILDER_OWNS`).
 ## The demo world — `monster_demo`
 
 Like `prop_demo` demos tile props: one **5×5 pad per monster**, floored with
-the tile that creature most likely lives on (water = a swimmable pond), on a
+the tile that creature most likely lives on (no pad is water — the water law;
+the amphibious-looking ones get a beach), on a
 neutral stone courtyard so every pad — and therefore every spawn area — is
 visible at a glance. Each pad is one zone (`num 2`, `elev [0,0]`), big enough
 to watch the monster wander. Rebuild: `python maps2/pipeline/build.py

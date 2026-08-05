@@ -27,9 +27,10 @@ spawn areas", games2/shared/src/monsters.ts). Every world ships a sidecar
 
 A zone's cells are the cells whose CENTER lies inside the polygon. The area is
 where the monster MAY be — the game must still validate each actual spawn/roam
-point (standable/swimmable surface in the elev range, no prop), so a polygon is
-free to span the odd water speck or boulder. The same monster appears in many
-zones, and zones may OVERLAP each other freely (different monsters share ground).
+point (standable surface in the elev range, no prop), so a polygon is free to
+span the odd boulder. The same monster appears in many zones, and zones may
+OVERLAP each other freely (different monsters share ground). The ONE thing a
+polygon may never span is WATER — see the water law below.
 
 Zones are DERIVED from world.json by habitat rules (the standing doctrine: rules,
 never spot edits) — rerunning this script is idempotent and deterministic:
@@ -81,7 +82,27 @@ MUST_HAVE_ALL = {"the_island2"}
 # Fallback habitat order when a monster's own habitat has no home on a
 # must-have world (land grounds first, then the wetter/edge ones).
 FALLBACK_HABS = ("grass", "dirt", "stone", "dark", "snow", "forest",
-                 "ice", "sand", "cave", "water")
+                 "ice", "sand", "shore", "cave")
+
+# -- THE WATER LAW (maintainer 2026-08-05) ------------------------------------
+# "You need to fix so no monster can spawn on water. Monsters can't swim. We're
+# gonna soon make water into a SAFE ZONE."
+#
+# So water is not a habitat, not a spawn cell, and not even something a zone is
+# allowed to CONTAIN. The guarantee is made in the GEOMETRY rather than left to
+# the game: no zone polygon on any world encloses a single water-surfaced cell.
+# That last part is the load-bearing one — the game picks roam/spawn cells from
+# the polygon and flips an ENTIRE zone to swimming when swim cells outnumber
+# standable ones (`buildZoneRuntimes`, games2/shared/src/index.ts). With zero
+# water inside any polygon that branch can never fire again, whatever the game
+# does later, and a water safe-zone can never be violated from the map side.
+#
+# A cell is WATER-SURFACED for a zone of elevation band [lo,hi] when its base
+# material is water AND no deck inside that band covers it. So the bridge guard
+# stays legal (it stands ON the span, elev [lvl,lvl]) while the water UNDER a
+# bridge does not (a ground-level band there would put the monster in the drink
+# beneath it). Enforced by dry_mask() at construction and re-asserted for every
+# zone of every world — including builder-owned ones — by validate_zone().
 
 # -- habitat doctrine ---------------------------------------------------------
 # monsters/config/roster.json is the id authority (the PixelLab MONSTER tag
@@ -96,11 +117,12 @@ FALLBACK_HABS = ("grass", "dirt", "stone", "dark", "snow", "forest",
 #   dark    black_mountain rock
 #   stone   stone_mountain benches and walls
 #   sand    beaches
-#   water   water within WATER_SHORE_R of land (shore bands + lakes)
+#   shore   LAND within WATER_SHORE_R of water — the bank, never the water
+#           itself (the water law): where the amphibious-looking monsters live
 #   cave    THE CAVE floor (cells under kind:"cave" decks, elev [0,1])
 # plus one showcase zone on the biggest BRIDGE deck.
 MONSTER_HABITAT = {
-    "mystical_frog": "water",
+    "mystical_frog": "shore",
     "hedgehog": "forest",
     "white_rabbit": "snow",
     "malformed_creature": "dark",
@@ -110,7 +132,7 @@ MONSTER_HABITAT = {
     "lava_salamander_2": "dark",
     "butterfly_dragon": "grass",
     "ice_crystal_golem": "ice",
-    "water_poring": "water",
+    "water_poring": "shore",
     "stone_turtle": "stone",
     "tree_stump": "forest",
     "snow_demon": "snow",
@@ -126,11 +148,13 @@ MONSTER_HABITAT = {
     "mammoth": "snow",
 }
 # a NEW roster id without a table entry still gets a sensible home
+# NOTE the water law: a new `*_water` / `*_frog` id lands on the BANK (shore),
+# never in the water — there is no habitat that puts a monster on water.
 NAME_HINTS = (("lava", "dark"), ("shadow", "cave"), ("diablo", "cave"),
               ("night", "cave"), ("ice", "ice"), ("snow", "snow"),
-              ("water", "water"), ("frog", "water"), ("sand", "sand"),
-              ("stone", "stone"), ("rock", "stone"), ("forest", "forest"),
-              ("tree", "forest"), ("dark", "dark"))
+              ("water", "shore"), ("frog", "shore"), ("fish", "shore"),
+              ("sand", "sand"), ("stone", "stone"), ("rock", "stone"),
+              ("forest", "forest"), ("tree", "forest"), ("dark", "dark"))
 BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 
 # -- population doctrine (maintainer 2026-07-29) -------------------------------
@@ -154,8 +178,10 @@ MIN_ZONE = {"forest": 12}           # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
 TOP_K = 4                           # component cap per habitat (>= its members)
 TREE_R = 3
-WATER_SHORE_R = 4
+WATER_SHORE_R = 4                   # how far inland the `shore` band reaches
 BRIDGE_MIN_CELLS = 10
+DRY_PASSES = 60                     # water-law fixed-point backstop (asserts)
+ELEV_PASSES = 8                     # elev/dry-mask fixed-point backstop
 
 
 def roster_ids():
@@ -251,26 +277,40 @@ def comps(cells):
     return out
 
 
-def fix_diagonals(cells):
+def fix_diagonals(cells, blocked=None):
     """Add cells until no 2x2 block holds a diagonal-only contact — the outer
     boundary of such a mask is a SIMPLE rectilinear loop (no pinch vertices).
     Added cells may leave the habitat: the area is where a monster MAY be; the
-    game validates the actual ground anyway."""
+    game validates the actual ground anyway.
+
+    `blocked(cell)` marks cells this mask may NOT contain (the water law). A
+    pinch is normally closed with the horizontal partner; when that one is
+    blocked the vertical partner closes it just as well, and when BOTH are
+    blocked the pinch is broken from the other side instead — by dropping the
+    diagonal cell. Result: the mask never swallows a blocked cell."""
     cells = set(cells)
-    while True:
-        add = set()
+    for _ in range(DRY_PASSES):
+        add, drop = set(), set()
         for (x, y) in sorted(cells):
-            # main diagonal: (x,y) + (x+1,y+1) present, the other two absent
-            if ((x + 1, y + 1) in cells and (x + 1, y) not in cells
-                    and (x, y + 1) not in cells):
-                add.add((x + 1, y))
-            # anti-diagonal: (x,y) + (x-1,y+1) present, the other two absent
-            if ((x - 1, y + 1) in cells and (x - 1, y) not in cells
-                    and (x, y + 1) not in cells):
-                add.add((x - 1, y))
+            # main diagonal (ox=+1): (x,y) + (x+1,y+1) present, others absent
+            # anti-diagonal (ox=-1): (x,y) + (x-1,y+1) present, others absent
+            for ox in (1, -1):
+                if not ((x + ox, y + 1) in cells and (x + ox, y) not in cells
+                        and (x, y + 1) not in cells):
+                    continue
+                if blocked is None or not blocked((x + ox, y)):
+                    add.add((x + ox, y))
+                elif not blocked((x, y + 1)):
+                    add.add((x, y + 1))
+                else:
+                    drop.add((x + ox, y + 1))
+        if drop:                       # shrink first, then re-examine
+            cells -= drop
+            continue
         if not add:
             return cells
         cells |= add
+    raise AssertionError("fix_diagonals did not converge")
 
 
 def trace_outer(cells):
@@ -371,25 +411,117 @@ def poly_cells(poly, ctx=""):
     return out
 
 
+# -- the water law ------------------------------------------------------------
+
+def wet(w, x, y, lo, hi):
+    """Would a monster of a zone banded [lo,hi] be standing on WATER here?
+
+    True only when the base material is water AND no deck inside the band
+    covers it — so a bridge span is dry (you stand on the deck) but the water
+    beneath it is not. Off-grid and void cells are not water; they are simply
+    not spawnable, which validate_zone handles separately."""
+    if not (0 <= x < w.w and 0 <= y < w.h):
+        return False
+    if w.m(x, y) not in w.water:
+        return False
+    d = w.deck.get((x, y), -1)
+    return not (d > w.base(x, y) and lo <= d <= hi)
+
+
+def _cut_open(filled, inside, pocket):
+    """Mask cells to REMOVE so an enclosed pond stops being enclosed.
+
+    spawns@1 polygons are a single ring with no holes, so a pond the ring would
+    swallow cannot be excluded by punching a hole — the ring has to snake
+    around it. Cutting the cheapest of four straight corridors from the pond to
+    outside the ring does exactly that: the boundary walks in along one wall of
+    the corridor and back along the other. Ties break by direction then path,
+    so the cut is deterministic."""
+    best = None
+    for (dx, dy) in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+        # start at the pond cell furthest along this direction
+        sx, sy = max(sorted(pocket), key=lambda c: c[0] * dx + c[1] * dy)
+        path = []
+        x, y = sx + dx, sy + dy
+        while (x, y) in inside:
+            if (x, y) in filled:
+                path.append((x, y))
+            x, y = x + dx, y + dy
+        cand = (len(path), (dx, dy), tuple(path))
+        if best is None or cand < best:
+            best = cand
+    return set(best[2])
+
+
+def dry_mask(w, comp, lo, hi):
+    """Shrink a habitat component until the polygon traced from it encloses NO
+    water-surfaced cell. Two shrink moves, both strictly monotone:
+
+      * a diagonal-fill that would land on water is refused outright
+        (fix_diagonals' `blocked`), so the mask never grows into the sea;
+      * a pond the outer ring would enclose is CUT OPEN by _cut_open, and the
+        corridor cells join `banned` so the next pass cannot re-fill them.
+
+    `banned` only ever grows and every pass must add to it, so this terminates;
+    DRY_PASSES is a backstop that fails the BUILD rather than shipping a zone
+    with water in it."""
+    banned = set()
+    for _ in range(DRY_PASSES):
+        blocked = (lambda c: c in banned or wet(w, c[0], c[1], lo, hi))
+        parts = comps({c for c in comp if not blocked(c)})
+        if not parts:
+            return set()
+        filled = fix_diagonals(parts[0], blocked)
+        if not filled:
+            return set()
+        poly = trace_outer(filled)
+        inside = poly_cells(poly)
+        pond = {c for c in inside if wet(w, c[0], c[1], lo, hi)}
+        if not pond:
+            return filled
+        cut = set()
+        for pocket in comps(pond):
+            cut |= _cut_open(filled, inside, pocket)
+        assert cut - banned, "dry_mask stalled: pond cut made no progress"
+        banned |= cut
+    raise AssertionError("dry_mask did not converge")
+
+
+def _elev_of(w, cells):
+    lv = sorted(w.hab_level(x, y) for (x, y) in cells)
+    return [lv[0], lv[-1]]
+
+
 # -- zone construction --------------------------------------------------------
 
 def make_zone(w, kind, comp, zid, elev=None):
     """Build one zone with a placeholder population of 1. The real `num` is set
     later by balance_population(), which shares the world budget out per MONSTER
     (see the population doctrine above) — a zone can't know its own count
-    without knowing how many other zones its monster got."""
-    cells = fix_diagonals(comp)
+    without knowing how many other zones its monster got.
+
+    The elevation band and the water law are mutually dependent — narrowing the
+    band un-covers cells that a deck was bridging, which makes them water,
+    which shrinks the mask, which narrows the band. Both only ever shrink, so
+    iterating to a fixed point converges (ELEV_PASSES is the backstop)."""
+    band = [int(elev[0]), int(elev[1])] if elev else _elev_of(w, comp)
+    for _ in range(ELEV_PASSES):
+        cells = dry_mask(w, comp, band[0], band[1])
+        assert cells, f"{w.name}/{zid}: no dry ground left after the water law"
+        nxt = band if elev else _elev_of(w, (cells & set(comp)) or cells)
+        if nxt == band:
+            break
+        band = nxt
+    else:
+        raise AssertionError(f"{w.name}/{zid}: elev/water fixed point diverged")
     poly = trace_outer(cells)
     assert_simple(poly, f"{w.name}/{zid}")
     inside = poly_cells(poly)
-    if elev is None:
-        lv = sorted(w.hab_level(x, y) for (x, y) in comp)
-        elev = [lv[0], lv[-1]]
     zone = {"id": zid, "monster": kind,
             "area": [[x, y] for (x, y) in poly],
-            "elev": [int(elev[0]), int(elev[1])], "num": 1}
+            "elev": [int(band[0]), int(band[1])], "num": 1}
     zone["_valid"] = validate_zone(w, zone, inside)   # spawnable cells (the cap)
-    zone["_cells"] = len(comp)                        # habitat size (the weight)
+    zone["_cells"] = len(cells & set(comp))           # habitat size (the weight)
     return zone
 
 
@@ -445,20 +577,29 @@ def validate_zone(w, zone, inside=None):
     lo, hi = zone["elev"]
     assert 0 <= lo <= hi <= 64, f"{zone['id']}: bad elev {zone['elev']}"
     assert zone["num"] >= 1, f"{zone['id']}: num < 1"
-    wants_water = habitat_of(kind) == "water"
     ok = 0
     for (x, y) in inside:
-        if not (0 <= x < w.w and 0 <= y < w.h) or (x, y) in w.props:
+        if not (0 <= x < w.w and 0 <= y < w.h):
+            continue
+        # THE WATER LAW: monsters can't swim, and water is about to become a
+        # safe zone — so a zone may not even CONTAIN water it could roam onto.
+        assert not wet(w, x, y, lo, hi), (
+            f"{w.name}/{zone['id']} ({kind}): polygon contains WATER at "
+            f"({x},{y}) in elev {zone['elev']} — monsters can't swim. Redraw "
+            f"the zone off the water (dry_mask does this automatically for "
+            f"generated zones; a hand-written spawns.json must do it itself).")
+        if (x, y) in w.props:
             continue
         m = w.m(x, y)
         if m == "":
             continue
-        # BASE surface: the ground/water itself must suit the kind.
-        base_ok = lo <= w.base(x, y) <= hi and (m in w.water) == wants_water
+        # BASE surface: dry ground inside the band. Water never qualifies —
+        # the assert above already proved any water here is deck-covered.
+        base_ok = lo <= w.base(x, y) <= hi and m not in w.water
         # DECK surface: a deck top is standable whatever lies beneath it —
         # bridge spans over water, the cave ROOF over the cave floor.
         d = w.deck.get((x, y), -1)
-        deck_ok = (not wants_water) and d > w.base(x, y) and lo <= d <= hi
+        deck_ok = d > w.base(x, y) and lo <= d <= hi
         if base_ok or deck_ok:
             ok += 1
     assert ok >= zone["num"], \
@@ -478,9 +619,12 @@ def habitat_masks(w):
         for dx in range(-TREE_R, TREE_R + 1):
             for dy in range(-TREE_R, TREE_R + 1):
                 near.add((px + dx, py + dy))
+    # THE BANK, not the water: land within reach of water. Before the water law
+    # this mask was the wet side of the same border — that is exactly what put
+    # frogs in the ocean, so it is now the dry side and nothing else.
     shore = set()
-    for (x, y) in sorted(water):
-        if any((x + dx, y + dy) in land
+    for (x, y) in sorted(land):
+        if any((x + dx, y + dy) in water
                for dx in range(-WATER_SHORE_R, WATER_SHORE_R + 1)
                for dy in range(-WATER_SHORE_R, WATER_SHORE_R + 1)):
             shore.add((x, y))
@@ -493,7 +637,7 @@ def habitat_masks(w):
         "dark": {c for c in land if w.m(*c) == "black_mountain"},
         "stone": {c for c in land if w.m(*c) == "stone_mountain"},
         "sand": {c for c in land if w.m(*c) == "light_sand"},
-        "water": shore,
+        "shore": shore,
         "cave": set(w.cave_floor),
     }
 
@@ -601,10 +745,45 @@ def validate_file(name):
     return len(doc["zones"])
 
 
+def check_all(names):
+    """Gate: re-validate every SHIPPED spawns.json without regenerating anything.
+
+    refresh() proves the laws when zones are built, but a hand-edited spawns.json
+    or a world.json changed outside the pipeline would not be re-checked until
+    the next rebuild. This re-runs the full validation (simple polygon, enough
+    standable cells, and above all the WATER LAW) against what is on disk.
+
+        python maps2/pipeline/spawns.py --check      # exit 1 on any violation
+    """
+    bad = 0
+    zones = mons = 0
+    for name in names:
+        sp = os.path.join(WORLDS, name, "spawns.json")
+        if not os.path.isfile(sp):
+            print(f"  {name}: NO spawns.json")
+            bad += 1
+            continue
+        try:
+            n = validate_file(name)
+        except AssertionError as e:
+            print(f"  {name}: FAIL — {e}")
+            bad += 1
+            continue
+        doc = json.load(open(sp))
+        zones += n
+        mons += sum(z["num"] for z in doc["zones"])
+        print(f"  {name}: {n} zone(s) OK")
+    print(f"spawns --check: {zones} zone(s), {mons} monsters, "
+          f"{'ALL OK — no zone touches water' if not bad else f'{bad} WORLD(S) FAILED'}")
+    return 1 if bad else 0
+
+
 def main():
     names = [a for a in sys.argv[1:] if not a.startswith("-")]
     names = names or sorted(x for x in os.listdir(WORLDS)
                             if os.path.isfile(os.path.join(WORLDS, x, "world.json")))
+    if "--check" in sys.argv:
+        sys.exit(check_all(names))
     for name in names:
         refresh(name)
 
