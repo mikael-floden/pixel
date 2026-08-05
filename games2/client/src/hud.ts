@@ -18,6 +18,7 @@
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
+import { getHand, toggleHand, handLabel } from "./controls";
 import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
@@ -79,6 +80,17 @@ let ambPoll: ReturnType<typeof setInterval> | null = null;
  * Module-level so a HUD rebuild on rejoin doesn't re-probe. */
 const minimapExt = new Map<string, string>();
 
+/** A REAL touch device (a finger keyboard/thumbs are coming). Shared by the
+ * chat keyboard lift and the landscape layout — under Chrome's "Request
+ * Desktop Site" it reads false, which both consumers accept (no lift, no
+ * landscape layout: the desktop-shaped page keeps the portrait split). */
+function touchDevice(): boolean {
+  return (
+    (navigator.maxTouchPoints || 0) > 0 ||
+    window.matchMedia?.("(pointer: coarse)").matches === true
+  );
+}
+
 export interface HudActions {
   onLogout: () => void;
   /** Send a line from the Chat page's bottom input (same server path as the
@@ -127,24 +139,62 @@ export function mountPageFrame() {
   injectStyles();
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
+  // In the WORLD now: landscape becomes a real layout instead of the
+  // "rotate your phone" prompt (index.html hides #ml-rotate under this
+  // class). The title/select/loading screens never set it, so they keep
+  // their portrait-only behavior (maintainer 2026-08-05).
+  document.documentElement.classList.add("ml-ingame");
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;
     window.addEventListener("resize", applyLayout);
+    window.addEventListener("ml-hand", applyLayout);
   }
 }
 
 let layoutHooked = false;
 
-/** Publish the golden-ratio split in REAL px on :root. index.html's dvh CSS
- * draws the same split; these px twins exist for the px consumers — the
+/** Publish the layout in REAL px on :root. index.html's dvh CSS draws the
+ * same portrait split; these px twins exist for the px consumers — the
  * keyboard lift's floor, the chat overlay's bottom anchor — which parseFloat
- * a px value (a raw "38.2dvh" string would read as 38.2). */
+ * a px value (a raw "38.2dvh" string would read as 38.2).
+ *
+ * LANDSCAPE (maintainer 2026-08-05, in-game only, touch devices only): the
+ * same golden-ratio split turned on its side — the game view keeps 61.8% of
+ * the LONG axis and the menu takes the other 38.2% as a SIDE COLUMN. Which
+ * side follows handedness (controls.ts): right-handed puts the menu LEFT so
+ * the stick can live under the right thumb; left-handed mirrors. Everything
+ * that anchors to the game view's edges reads the --gv-left/--gv-right px
+ * insets published here (bars chips, chat overlay, clock pill, #game
+ * itself), so the whole chrome re-anchors from one function — and because
+ * those consumers transition their anchor properties, the swap glides.
+ * Desktop (no touch) keeps the portrait split at any aspect — unchanged. */
 function applyLayout() {
   const root = document.documentElement;
-  const hudH = Math.round(window.innerHeight * 0.382);
-  root.style.setProperty("--hud-h", `${hudH}px`);
-  root.style.setProperty("--hud-h-inv", `${window.innerHeight - hudH}px`);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
+  const left = getHand() === "left";
+  root.classList.toggle("ml-land", land);
+  root.classList.toggle("ml-lh", left);
+  if (land) {
+    const menuW = Math.round(w * 0.382);
+    root.style.setProperty("--menu-w", `${menuW}px`);
+    // The game view runs the full height: consumers of --hud-h ("px above
+    // the HUD rail") get 0 and land on the bottom edge, which is exactly
+    // where the chat overlay and the clock pill belong in landscape.
+    root.style.setProperty("--hud-h", `0px`);
+    root.style.setProperty("--hud-h-inv", `${h}px`);
+    root.style.setProperty("--gv-left", `${left ? 0 : menuW}px`);
+    root.style.setProperty("--gv-right", `${left ? menuW : 0}px`);
+  } else {
+    const hudH = Math.round(h * 0.382);
+    root.style.setProperty("--menu-w", `0px`);
+    root.style.setProperty("--hud-h", `${hudH}px`);
+    root.style.setProperty("--hud-h-inv", `${h - hudH}px`);
+    root.style.setProperty("--gv-left", `0px`);
+    root.style.setProperty("--gv-right", `0px`);
+  }
 }
 
 /** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
@@ -575,6 +625,23 @@ export class HudBar {
     });
     this.stateful.push([themeBtn, themeEntry]);
     row.appendChild(themeBtn);
+    // CONTROLS: right-handed (default) or left-handed — which side the
+    // analog stick lives on, and in landscape which side the whole menu
+    // column takes (maintainer 2026-08-05). controls.ts owns the state; the
+    // "ml-hand" event re-anchors the layout (applyLayout) and the gamepad.
+    const handEntry: HudActions["settings"][number] = {
+      label: "controls",
+      act: () => toggleHand(),
+      state: () => handLabel(),
+    };
+    const handBtn = plateButton("controls", () => {
+      handEntry.act();
+      this.refreshSettings();
+    });
+    handBtn.classList.add("ml-handbtn"); // stable hook for the landscape gate
+    this.stateful.push([handBtn, handEntry]);
+    row.appendChild(handBtn);
+    window.addEventListener("ml-hand", () => this.refreshSettings());
     // …and follow toggles from the WIKI side (its write → storage event →
     // theme.ts re-applies → "ml-theme") so the printed state never goes stale.
     window.addEventListener("ml-theme", () => this.refreshSettings());
@@ -1000,15 +1067,11 @@ function mountChatKeyboardLift() {
   let focusedAt = 0;
   let sawReport = false; // a source has, at least once, given a real keyboard height
 
-  // A REAL touch device (finger keyboard is coming). The maintainer runs the
-  // game in normal mobile mode now, where this is reliable — it only reads 0 /
-  // false under Chrome's "Request Desktop Site", which the maintainer has
-  // accepted won't get the lift ("if that's what they want they should blame
-  // themselves"). So this is exactly the right gate: it floats the box on every
-  // phone, and leaves a real mouse desktop (no keyboard) alone.
-  const touchDevice = () =>
-    (navigator.maxTouchPoints || 0) > 0 ||
-    window.matchMedia?.("(pointer: coarse)").matches === true;
+  // touchDevice() (module-level now — shared with the landscape layout) is
+  // the gate: it floats the box on every phone, and leaves a real mouse
+  // desktop (no finger keyboard) alone. Under Chrome's "Request Desktop
+  // Site" it reads false — accepted (maintainer: "if that's what they want
+  // they should blame themselves").
 
   /** Keyboard height in CSS px from whichever source actually reports one. */
   const reported = () =>
@@ -1167,6 +1230,27 @@ function injectStyles() {
      grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
      hand-drawn art; a fixed square box distorted + fractionally scaled them) */
   .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* ── LANDSCAPE (maintainer 2026-08-05): the same 61.8/38.2 split turned on
+     its side — the menu becomes a full-height SIDE COLUMN (--menu-w, set by
+     applyLayout) and the tab row a VERTICAL strip. "Buttons always closest
+     to the game-view": right-handed (default) puts the menu on the LEFT with
+     the tabs on its right edge; left-handed (.ml-lh) mirrors the whole
+     column. The icons stay upright — the strip re-flows, the art never
+     rotates (a sideways backpack is not a backpack). In-game + touch only:
+     applyLayout sets .ml-land, so desktop keeps the portrait split. ── */
+  :root.ml-land .ml-hud{top:0;bottom:0;left:0;right:auto;width:var(--menu-w,38.2vw);
+    flex-direction:row;border-top:none;border-right:1px solid var(--border)}
+  :root.ml-land.ml-lh .ml-hud{left:auto;right:0;
+    border-right:none;border-left:1px solid var(--border)}
+  :root.ml-land .ml-tabrow{flex-direction:column;flex:none;width:72px;height:auto;
+    padding:12px 8px;gap:6px;order:2;justify-content:flex-start;
+    border-bottom:none;border-left:1px solid var(--border)}
+  :root.ml-land.ml-lh .ml-tabrow{order:0;border-left:none;border-right:1px solid var(--border)}
+  :root.ml-land .ml-tab{flex:0 0 auto;width:100%}
+  :root.ml-land .ml-pages{order:1;min-width:0}
+  /* the settings grid drops to two columns in the narrow landscape column —
+     three squeezed the labels into clipped fragments ("weathe…") */
+  :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the

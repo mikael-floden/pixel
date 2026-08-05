@@ -30,6 +30,7 @@
  */
 
 import { gameAudio } from "../../composer/index";
+import { getHand } from "./controls";
 
 // Full-gate travel is derived from the WELL since the wiki remake (maintainer
 // 2026-07-30: "you should be able to drag the thumbstick a longer distance" —
@@ -110,6 +111,27 @@ export function mountGamepadStick(page: HTMLElement) {
   walkLabel.textContent = "Walk";
   page.append(jumpLabel, pickupLabel, walkLabel);
 
+  // ── ONE-TIME HELP (maintainer 2026-08-05): tell new players the stick side
+  // is theirs to choose. An absolute overlay chip at the top of the page, so
+  // it NEVER moves the controls; the × dismisses it forever (localStorage).
+  if (!localStorage.getItem("ml-hand-help")) {
+    const help = mk("div", "ml-pad-help");
+    const txt = mk("span", "");
+    txt.textContent = "Playing left-handed? Swap the stick side any time in Settings → controls.";
+    const x = mk("button", "ml-pad-help-x") as HTMLButtonElement;
+    x.type = "button";
+    x.textContent = "×";
+    x.setAttribute("aria-label", "Dismiss");
+    x.addEventListener("click", () => {
+      try {
+        localStorage.setItem("ml-hand-help", "1");
+      } catch {}
+      help.remove();
+    });
+    help.append(txt, x);
+    page.appendChild(help);
+  }
+
   // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
   // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
   // one midline). ──
@@ -142,31 +164,71 @@ export function mountGamepadStick(page: HTMLElement) {
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const midY = padTop + (page.clientHeight - padTop - padBot) * 0.5;
-    pad.style.left = `${Math.round(page.clientWidth * 0.705 - well / 2)}px`;
-    pad.style.top = `${Math.round(midY - well / 2)}px`;
-    jump.style.width = jump.style.height = `${jumpD}px`;
-    jump.style.left = `${Math.round(page.clientWidth * 0.25 - jumpD / 2)}px`;
-    jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
-    // Pick up sits between jump (25%) and the stick (70.5%), a size down so
-    // the jump stays the primary thumb target.
+    // HANDEDNESS (controls.ts): right-handed (default) keeps the maintainer's
+    // marked spots — stick 70.5% across, pick-up 46.5%, jump 25%; left-handed
+    // mirrors all three. The stick side is the promise ("always on the right
+    // / always on the left"), portrait and landscape alike. Pick up sits
+    // between jump and the stick, a size down so the jump stays the primary
+    // thumb target (games agent, 2026-08-05 — merged with handedness here).
+    const leftHand = getHand() === "left";
+    const stickFx = leftHand ? 1 - 0.705 : 0.705;
+    const jumpFx = leftHand ? 1 - 0.25 : 0.25;
+    const pickFx = leftHand ? 1 - 0.465 : 0.465;
     const pickD = Math.round(jumpD * 0.72);
-    pickup.style.width = pickup.style.height = `${pickD}px`;
-    pickup.style.left = `${Math.round(page.clientWidth * 0.465 - pickD / 2)}px`;
-    pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
-    // labels share one row, floating a fixed gap above the taller control
-    const labelY = Math.round(midY - well / 2 - 10);
-    for (const [el, fx] of [
-      [jumpLabel, 0.25],
-      [pickupLabel, 0.465],
-      [walkLabel, 0.705],
-    ] as const) {
-      el.style.left = `${Math.round(page.clientWidth * fx)}px`;
-      el.style.top = `${labelY}px`;
+    const land = document.documentElement.classList.contains("ml-land");
+    if (land) {
+      // LANDSCAPE: the stick leaves the page and FLOATS over the game view on
+      // the thumb's side of the SCREEN (position:fixed escapes the page box;
+      // an unselected gamepad tab still hides it — display:none up the tree).
+      // z-index 4 keeps it under the chat overlay (z 5) per the maintainer,
+      // and under the pill (8) and chips (8); it still sits over the canvas.
+      // Jump + pick up stay IN the menu column under the other thumb, side by
+      // side on the midline (no hand mirror inside the column — it is under
+      // the free thumb either way).
+      pad.style.position = "fixed";
+      pad.style.zIndex = "4";
+      pad.style.left = `${leftHand ? 24 : window.innerWidth - 24 - well}px`;
+      pad.style.top = `${Math.round(window.innerHeight * 0.56 - well / 2)}px`;
+      jump.style.width = jump.style.height = `${jumpD}px`;
+      jump.style.left = `${Math.round(page.clientWidth * 0.32 - jumpD / 2)}px`;
+      jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+      pickup.style.width = pickup.style.height = `${pickD}px`;
+      pickup.style.left = `${Math.round(page.clientWidth * 0.68 - pickD / 2)}px`;
+      pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
+      const labelY = Math.round(midY - jumpD / 2 - 10);
+      jumpLabel.style.left = `${Math.round(page.clientWidth * 0.32)}px`;
+      jumpLabel.style.top = `${labelY}px`;
+      pickupLabel.style.left = `${Math.round(page.clientWidth * 0.68)}px`;
+      pickupLabel.style.top = `${labelY}px`;
+      walkLabel.style.display = "none"; // a floating label over world art is noise
+    } else {
+      pad.style.position = "";
+      pad.style.zIndex = "";
+      pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
+      pad.style.top = `${Math.round(midY - well / 2)}px`;
+      jump.style.width = jump.style.height = `${jumpD}px`;
+      jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
+      jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+      pickup.style.width = pickup.style.height = `${pickD}px`;
+      pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
+      pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
+      // labels share one row, floating a fixed gap above the taller control
+      const labelY = Math.round(midY - well / 2 - 10);
+      walkLabel.style.display = "";
+      for (const [el, fx] of [
+        [jumpLabel, jumpFx],
+        [pickupLabel, pickFx],
+        [walkLabel, stickFx],
+      ] as const) {
+        el.style.left = `${Math.round(page.clientWidth * fx)}px`;
+        el.style.top = `${labelY}px`;
+      }
     }
     setCap(visSector, visRadius);
   };
   layout();
   window.addEventListener("resize", layout);
+  window.addEventListener("ml-hand", layout);
   new ResizeObserver(layout).observe(page);
 
   // ── input ──
@@ -281,10 +343,13 @@ function injectStyles() {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* the WELL: a round surface-2 basin with an inset shade */
+  /* the WELL: a round surface-2 basin with an inset shade. left/top ease so
+     a handedness flip GLIDES to the other side instead of teleporting
+     (the animate nice-to-have — cheap: the positions are already px). */
   .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface-2);border:1px solid var(--border-strong);
     box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
+    transition:left .25s ease,top .25s ease;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */
@@ -293,17 +358,33 @@ function injectStyles() {
     transition:transform ${SNAP_MS}ms ease-out}
   /* JUMP: a round wiki button */
   .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
-    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);box-sizing:border-box}
+    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
+    box-sizing:border-box;transition:left .25s ease,top .25s ease}
   .ml-pad-pickup.press{background:var(--surface-2);border-color:var(--border-strong)}
   .ml-pad-jump{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
-    box-sizing:border-box;padding:0;
+    box-sizing:border-box;padding:0;transition:left .25s ease,top .25s ease;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-jump.press{background:var(--surface-2);border-color:var(--border-strong);
     transform:translateY(1px);box-shadow:none}
   /* the wiki section-label look — matches the Settings "Ambient effects" header */
   .ml-pad-label{position:absolute;transform:translate(-50%,-100%);
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
-    text-transform:uppercase;pointer-events:none;user-select:none}`;
+    text-transform:uppercase;pointer-events:none;user-select:none}
+  /* the one-time handedness tip: an overlay chip, so it can never move the
+     controls under it (maintainer) — and pointer-events:none on the BODY so
+     it can't eat their input either (on a short viewport the chip can lie
+     over the stick; a drag must start on the stick, not on a tooltip). Only
+     the × is clickable. */
+  .ml-pad-help{position:absolute;left:16px;right:16px;top:10px;z-index:2;
+    display:flex;align-items:center;gap:8px;text-align:left;pointer-events:none;
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:8px 10px;color:var(--muted);font:500 12px/1.4 var(--sans);
+    box-shadow:var(--shadow)}
+  .ml-pad-help-x{flex:none;width:28px;height:28px;border-radius:8px;cursor:pointer;
+    pointer-events:auto;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--ink);
+    font:600 16px/1 var(--sans);padding:0;
+    -webkit-tap-highlight-color:transparent}`;
   document.head.appendChild(s);
 }

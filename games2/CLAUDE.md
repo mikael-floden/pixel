@@ -1644,9 +1644,52 @@ visible head/shoulders are ABOVE the surface).
   DOM UI no longer compensates: the wiki-style UI is ordinary responsive
   CSS, exactly like the wiki page itself (the maintainer plays in normal
   mobile view). uiscale.ts remains ONLY for loading.ts + the toast.
-- **Portrait-only (for now)**: manifest locks the installed app; in-browser
-  landscape on a small touch screen shows the `#ml-rotate` prompt
-  (index.html media query — coarse pointer + landscape + max-height 520px).
+- **LANDSCAPE + HANDEDNESS (maintainer 2026-08-05 — the WORLD plays
+  landscape; title/select/loading stay portrait-only)**: in-game, on a
+  TOUCH device, a landscape viewport turns the golden-ratio split on its
+  side — the game view keeps 61.8% of the long axis at FULL height and
+  the menu becomes a 38.2vw SIDE COLUMN with a VERTICAL tab strip
+  hugging the game-view edge ("buttons always closest to the game-view").
+  Which side is HANDEDNESS (`client/src/controls.ts`, localStorage
+  `ml-hand`, DEFAULT RIGHT, Settings button "controls", change event
+  "ml-hand", probe `__ml.hand(h?)`): the promise is the STICK's side —
+  right-handed keeps the stick on the right in every orientation (the
+  portrait layout the maintainer approved is exactly right-handed), so
+  the landscape menu goes LEFT; left-handed mirrors everything. The
+  MECHANISM is one function: `hud.ts applyLayout()` classes the root
+  (`ml-ingame`/`ml-land`/`ml-lh`) and publishes px vars — `--menu-w`,
+  `--hud-h` (0 in landscape, so every "above the HUD rail" consumer
+  lands on the bottom edge), and `--gv-left`/`--gv-right`, the game
+  view's insets. #game (index.html), the bars chips, the chat overlay
+  and the clock pill all anchor off the gv vars and TRANSITION their
+  anchor property, so orientation/handedness swaps glide (the animate
+  nice-to-have; the column itself snaps — display swaps don't animate).
+  ICONS ARE NOT ROTATED: the maintainer's "icons rotate 90°" described
+  the locked-page mental model; the real re-layout keeps every icon and
+  all text upright, which is the intent (a sideways backpack is not a
+  backpack), and the gate PINS transform:none on them. GAMEPAD: in
+  landscape the stick leaves the page and FLOATS over the game view on
+  the thumb's side (position:fixed, z 4 — UNDER the chat overlay's z 5
+  per the maintainer; hidden with the page when another tab is up), the
+  jump button stays in the menu column under the other thumb; portrait
+  mirrors the stick/jump fractions by hand. A ONE-TIME help chip on the
+  gamepad page points at Settings → controls; the × dismisses it forever
+  (`ml-hand-help`), it's an absolute overlay so it can never move the
+  controls, and its BODY is pointer-events:none so it can't eat their
+  input either (on a short viewport it can lie over the stick — caught
+  by verify-gamepad). Desktop (no touch — `touchDevice()`, shared with
+  the keyboard lift) keeps the portrait split at ANY aspect, which is
+  also what keeps every 480×320 desktop-context e2e gate on the portrait
+  coordinate model. Gate: `scripts/verify-landscape.mjs` (both hands,
+  portrait return, floating-stick input path, help persistence, desktop
+  immunity; reads settle-polled — the anchors transition, and the
+  starved compositor reports mid-flight values long after wall-clock).
+- **Portrait-only OUTSIDE the world**: the `#ml-rotate` prompt
+  (index.html media query — coarse pointer + landscape + max-height
+  520px) still covers the title/select/loading screens; `html.ml-ingame`
+  (set by mountPageFrame) suppresses it in the world. The manifest is
+  `orientation: any` now (was portrait-primary) so the installed app can
+  rotate at all — on non-game screens the prompt still says turn back.
 - **Dead-connection recovery**: backgrounding a phone tab freezes JS; the
   server drops the client and the room turns into a ZOMBIE (no patches/acks
   — prediction replays an ever-growing unacked history; the old "teleport

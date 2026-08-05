@@ -44,6 +44,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `setClockTime(timeIdx + phaseT)` + `clockStar()`. See the CLOCK PILL
   section of `games2/CLAUDE.md` before changing the art, the motion, or
   TIME_PHASE_SECONDS (day and night must stay equal).
+- `client/src/controls.ts` — handedness (right/left, default right): which
+  side the analog stick lives on, and in landscape which side the whole menu
+  column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
+  hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -68,7 +72,7 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   as a build step: a Dockerfile conversion would add minutes to every deploy
   and bust the layer cache).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
-  `scripts/verify-mobile.mjs`.
+  `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`.
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,

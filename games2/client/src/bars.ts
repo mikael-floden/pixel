@@ -40,14 +40,16 @@ let level = 1; // player level (1 until real state is wired)
 export function mountBars() {
   if (root) return;
   injectStyles();
+  // Anchored to the GAME VIEW's top corners via the --gv-left/--gv-right
+  // insets (hud.ts applyLayout): in portrait those are 0 and this is the
+  // screen's own corners, exactly as before; in landscape the game view
+  // shares the screen with the menu column, and the chips stay on the
+  // WORLD's corners instead of floating over the menu. The left/right
+  // transition makes the re-anchor glide (orientation + handedness swaps).
   root = document.createElement("div");
-  root.className = "ml-bars";
-  root.style.top = "10px";
-  root.style.left = "10px";
+  root.className = "ml-bars ml-bars-l";
   rootR = document.createElement("div");
-  rootR.className = "ml-bars";
-  rootR.style.top = "10px";
-  rootR.style.right = "10px";
+  rootR.className = "ml-bars ml-bars-r";
 
   const make = (container: HTMLElement, colour: string, max: number, suffix: string): Bar => {
     const row = document.createElement("div");
@@ -146,11 +148,14 @@ function injectStyles() {
   const s = document.createElement("style");
   s.textContent = `
   /* a translucent theme chip so the group reads over any world art */
-  .ml-bars{position:fixed;z-index:8;pointer-events:none;display:flex;
+  .ml-bars{position:fixed;top:10px;z-index:8;pointer-events:none;display:flex;
     flex-direction:column;gap:7px;padding:8px 10px;border-radius:12px;
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     border:1px solid color-mix(in srgb, var(--border) 65%, transparent);
-    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+    transition:left .3s ease,right .3s ease}
+  .ml-bars-l{left:calc(var(--gv-left,0px) + 10px)}
+  .ml-bars-r{right:calc(var(--gv-right,0px) + 10px)}
   .ml-bar-row{display:flex;flex-direction:column;width:126px}
   .ml-bar-gauge{position:relative;width:100%;height:10px;border-radius:999px;
     background:var(--surface-2);border:1px solid var(--border);

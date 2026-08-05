@@ -82,6 +82,7 @@ import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
+import { getHand, setHand } from "../controls";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
@@ -1661,6 +1662,10 @@ export class WorldScene extends Phaser.Scene {
         if (typeof v === "number") this.room?.send("timespeed", { v });
         return this.timeSpeed;
       },
+      // Get/set handedness (controls.ts) — the same toggle the Settings
+      // "controls" button drives; setting re-anchors the layout via the
+      // "ml-hand" event. QA hook for the landscape gate.
+      hand: (h?: "right" | "left") => (h ? setHand(h) : getHand()),
       // Place/clear a debug light at a grid position (headless probes).
       probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
         this.probeLight =

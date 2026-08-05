@@ -99,14 +99,19 @@ function injectStyles() {
      the bottom-right (maintainer 2026-07-31: "the same edge-margin as the
      pill"). --hud-h is real px, set by hud.ts applyLayout. Lines are
      translucent theme chips so they stay readable over any world art. */
-  /* --ml-chatw: the width left over once the time-of-day pill has taken the
-     bottom-right corner (clock.ts: 82px wide, 10px from the edge) — the log
-     and the input both stop short of it instead of being drawn over. */
-  .ml-chatlog,.ml-chatinput{--ml-chatw:calc(100vw - 112px)}
-  .ml-chatlog{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:5;
+  /* --ml-chatw: the width left over inside the GAME VIEW once the
+     time-of-day pill has taken its bottom-right corner (clock.ts: 82px wide,
+     10px from the edge) — the log and the input both stop short of it. The
+     --gv-left/--gv-right insets (hud.ts applyLayout) subtract the landscape
+     menu column, and anchor the whole overlay to the game view's own
+     bottom-left corner in every orientation. */
+  .ml-chatlog,.ml-chatinput{
+    --ml-chatw:calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 112px)}
+  .ml-chatlog{position:fixed;left:calc(var(--gv-left,0px) + 10px);
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:5;
     max-width:min(78vw,460px,var(--ml-chatw));display:flex;flex-direction:column;align-items:flex-start;gap:3px;
     font:13px/1.4 var(--sans);color:var(--ink);pointer-events:none;
-    transition:bottom .15s ease-out}
+    transition:bottom .15s ease-out,left .3s ease}
   /* …except while the in-world input is open, when the log steps up over it. */
   .ml-chatlog.ml-chat-typing{bottom:calc(var(--hud-h, 38.2dvh) + 52px)}
   .ml-chatline{padding:3px 9px;border-radius:9px;max-width:100%;overflow-wrap:anywhere;
@@ -116,7 +121,8 @@ function injectStyles() {
     transition:opacity 1.6s ease}
   .ml-chatline.ml-chatfade{opacity:0}
   .ml-chatwho{color:var(--accent-ink);font-weight:600}
-  .ml-chatinput{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:6;
+  .ml-chatinput{position:fixed;left:calc(var(--gv-left,0px) + 10px);
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:6;
     width:min(78vw,380px,var(--ml-chatw));box-sizing:border-box;
     background:var(--surface);color:var(--ink);
     border:1px solid var(--border);border-radius:10px;padding:8px 11px;
@@ -130,7 +136,8 @@ function injectStyles() {
      --ml-inputlift is published by hud.ts's keyboard lift, which recognises
      this box too. The :root prefix outranks the .ml-chat-typing rule above
      whichever order the two stylesheets happen to be injected in. */
-  :root.ml-kb-up .ml-chatinput:focus{left:10px;right:10px;width:auto;z-index:50;
+  :root.ml-kb-up .ml-chatinput:focus{left:calc(var(--gv-left,0px) + 10px);
+    right:calc(var(--gv-right,0px) + 10px);width:auto;z-index:50;
     bottom:var(--ml-inputlift, 10px);transition:bottom .15s ease-out}`;
   const s = document.createElement("style");
   s.textContent = css;
