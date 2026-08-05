@@ -639,8 +639,19 @@ button.drop-row {
    would just repeat one word down the page. */
 .npc-block { margin-top: 26px; }
 .npc-block h2 { display: flex; align-items: center; }
-.npc-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
-.npc-grid .npc-card { padding: 6px; gap: 4px; border-radius: 9px; }
+.npc-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.npc-grid .npc-card { padding: 6px; gap: 3px; border-radius: 9px; }
 .npc-grid .npc-card .thumb { height: 72px; border-radius: 6px; }
 .npc-grid .npc-card .card-sub { font-size: 10.5px; text-align: center; }
 .npc-grid .card-badges { justify-content: center; }
+/* They have real names now, so the tiles say who they are — quietly. ONE line
+   each, ellipsised rather than wrapped: a tile that grows a second line
+   re-flows all 191 and the block stops reading as secondary. */
+.npc-name, .npc-role {
+  text-align: center; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.npc-name { font-size: 12px; font-weight: 600; }
+.npc-role { font-size: 10.5px; }
+/* The trade under an NPC's name on its own page — a subtitle, not a heading. */
+.npc-trade { font-size: 13px; margin: -2px 0 2px; }

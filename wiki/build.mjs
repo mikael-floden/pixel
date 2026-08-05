@@ -237,6 +237,33 @@ function buildMonsters() {
 // only so a brand-new hero without a record still gets a sensible name; an
 // unlisted hero gets NO species/sex line rather than a guessed one.
 const HERO_NAMES = { default_boy: "Man", default_girl: "Woman" }; // mirrors games2/scripts/build-manifest.mjs
+/** The GAME STATE an NPC's PixelLab folder is really showing.
+ *
+ *  The heroes get this for free: animation_map.json maps `idle` →
+ *  `custom-calm-idle`, and the viewer prints the left-hand side. NPCs are not
+ *  in that file, so without this the viewer would print the folder itself —
+ *  "custom-calm-still-idle-breathing", and on 39 of them the upstream typo
+ *  "custom-calm-stili-idle-breathing".
+ *
+ *  Matched on WORDS, not on the whole string, so a new animation slug lands on
+ *  the right state without anyone editing a table, and a typo elsewhere in the
+ *  slug cannot hide the keyword. Longest keyword first: "spell_channel" must
+ *  win over "spell". Anything unrecognised is cleaned rather than passed
+ *  through — the reader never meets a `custom-` prefix. */
+const NPC_STATES = [
+  ["spell_channel", ["channel", "channeled"]], ["spell_wand", ["wand"]],
+  ["idle", ["idle", "breathing", "still", "calm"]], ["walk", ["walk", "walking"]],
+  ["run", ["run", "running"]], ["jump", ["jump"]], ["attack", ["attack", "swing", "slash"]],
+  ["sword", ["sword"]], ["bow", ["bow", "arrow"]], ["kick", ["kick"]], ["punch", ["punch"]],
+  ["hurt", ["hurt", "hit", "damaged"]], ["die", ["die", "dead", "death"]],
+  ["sit", ["sit", "sitting"]], ["talk", ["talk", "talking", "speak"]],
+  ["wave", ["wave", "waving", "greet"]], ["work", ["work", "working", "hammer", "craft"]],
+];
+function npcState(folder) {
+  const words = new Set(String(folder).toLowerCase().replace(/^custom[-_]/, "").split(/[-_\s]+/));
+  for (const [state, keys] of NPC_STATES) if (keys.some((k) => words.has(k))) return state;
+  return [...words].join("_") || "idle";
+}
 function buildCharacters() {
   const base = join(ROOT, "characters2", "humans");
   if (!isDir(base)) return null;
@@ -280,12 +307,19 @@ function buildCharacters() {
   // --- NPCs (characters2/npcs/, tag-driven mirror; landed 2026-08-01) -------
   // Same array, kind:"npc": the page splits on it, and everything shared —
   // routing, feedback, the animation player, lore joins — keeps working with
-  // one code path. Folders are keyed by the PixelLab id's first 8 hex chars
-  // because the NPC NAMES ARE PROMPT JUNK ("No boots, no gloves, (copy 5)") —
-  // the characters2 README says so outright. So players see none of them:
-  // every NPC is a "Villager" until someone authors a real name; the PixelLab
-  // name rides along for the admin, who reviews these. States are discovered
-  // from the folders on disk — NPCs are not in animation_map.json.
+  // one code path.
+  //
+  // The id is the FOLDER KEY exactly as characters2 publishes it, with no
+  // prefix of ours: the lore fold below matches loreEntities[dom][e.id], so a
+  // prefix would quietly fail to join the day the lore agent writes an NPC up.
+  //
+  // Every NPC is authored (characters2 2026-08-01): display_name, species,
+  // sex, role and lore ride on character.json, read from the ART rather than
+  // from pixellab_prompt — which is the same copy-pasted "young female
+  // adventurer" text on all 191 and says female for every one of them. That
+  // prompt, and the duplicate PixelLab name it produced, stay admin-only.
+  // States are discovered from the folders on disk: NPCs are not in
+  // animation_map.json.
   const npcBase = join(ROOT, "characters2", "npcs");
   for (const key of listDirs(npcBase)) {
     const cj = readJson(join(npcBase, key, "character.json"));
@@ -301,16 +335,28 @@ function buildCharacters() {
         const frames = listFiles(frameDir, artRe("\\d+")).length;
         if (frames) dirs[dir] = { frames, framesDir: `characters2/npcs/${key}/animations/${folder}/${dir}`, ...frameNaming(frameDir) };
       }
-      if (Object.keys(dirs).length) anims[folder] = { folder, dirs };
+      // KEYED BY GAME STATE, never by the PixelLab folder. The state name is
+      // what the viewer prints on its buttons, and the folder is a prompt
+      // slug — "custom-calm-still-idle-breathing", plus an upstream typo
+      // variant "…stili…" on 39 of them (maintainer 2026-08-01: "no technical
+      // names to the end user").
+      if (Object.keys(dirs).length) {
+        let state = npcState(folder);
+        while (anims[state]) state = /_\d+$/.test(state) ? state.replace(/_(\d+)$/, (_, n) => `_${+n + 1}`) : `${state}_2`;
+        anims[state] = { folder, dirs };
+      }
     }
     chars.push({
-      id: `npc-${key}`,
+      id: key,
       kind: "npc",
-      name: "Villager",
-      pixellabName: cj.name ?? null,             // admin-only display
-      species: "Human",
-      sex: null,
-      lore: null,
+      // "Villager" only survives as the fallback for an NPC synced before the
+      // agent has authored it — a nameless card, not a broken one.
+      name: cj.display_name ?? "Villager",
+      role: cj.role ? titleCase(cj.role) : null,   // "elder_scholar" → "Elder Scholar"
+      pixellabName: cj.name ?? null,               // admin-only display
+      species: cj.species ?? "Human",
+      sex: cj.sex ?? null,
+      lore: cj.lore ?? null,
       path: `characters2/npcs/${key}`,
       preview: art(`characters2/npcs/${key}/base/south`),
       baseStrip: art(`characters2/npcs/${key}/base/preview`),

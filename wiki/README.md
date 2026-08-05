@@ -320,27 +320,46 @@ and are **admin-only** (maintainer 2026-07-30: "I don't even know what a
 default_boy is"). Players get `Human · Male` under the thumbnail and the
 hero's story beside it.
 
-### NPCs are second, and nameless on purpose
+### NPCs are second, and quiet about it
 
-`characters2/npcs/` (191 tag-driven mirrors, landed 2026-08-01) join the
-same `characters` domain array with `kind: "npc"`, but the page is about the
-**playable cast foremost** (maintainer 2026-08-01): heroes keep their big
-cards on top, NPCs sit below in their own clearly secondary block — half-size
-portrait-only tiles under an "NPCs · count" heading.
+`characters2/npcs/` (191 tag-driven mirrors, landed 2026-08-01) join the same
+`characters` domain array with `kind: "npc"`, but the page is about the
+**playable cast foremost** (maintainer 2026-08-01): heroes keep their big cards
+on top, NPCs sit below in their own clearly secondary block under an
+"NPCs · count" heading — half-size tiles (94px against a hero's 192px at 426px
+wide, four to a row).
 
-- **Every NPC is a "Villager."** Their PixelLab names are prompt junk
-  ("No boots, no gloves, (copy 5)") — characters2's own README says so — and
-  folder keys are hash prefixes. Both are the `default_boy` class of fact:
-  admin-only, never shown to players. The lore agent can give an NPC a real
-  identity later via `lore.json` (`loreDesc` wins wherever it exists).
-- **‹ › pages within the group.** A hero pages among the 2 heroes, an NPC
-  among the 191 NPCs — otherwise the Villagers bury the cast between Man and
-  Woman.
-- **Global search**: players never see NPC rows (191 identical "Villager"
-  hits would drown everything); the admin finds them by folder key or
-  PixelLab name, each hit labelled `Villager · <key>`.
-- The nav/start-page count stays **heroes only**; the NPC block carries its
-  own count. `counts.npcs` exists separately in data.json.
+- **They are authored, not guessed.** characters2 ships `display_name`,
+  `species`, `sex`, `role` and `lore` on each `character.json`, read from the
+  ART. Never touch `pixellab_prompt`: it is the same copy-pasted "young female
+  adventurer" text on all 191 and says female for every one of them. That
+  prompt and the duplicate PixelLab name it produced stay admin-only, as does
+  the folder key. `"Villager"` survives only as the fallback for an NPC synced
+  before the agent has named it.
+- **The tiles say who, quietly**: name (12px) over trade (10.5px muted), one
+  line each, **ellipsised not wrapped** — a tile that grows a second line
+  re-flows all 191 and the block stops reading as secondary. Verified 0 of 191
+  names or trades clip at 360/393/426px.
+- **The id is the folder key, unprefixed.** The lore fold matches
+  `loreEntities[dom][e.id]`, so a wiki-invented prefix would silently fail to
+  join the day the lore agent writes an NPC up.
+- **No technical names reach a reader** (maintainer 2026-08-01). NPCs are
+  absent from `animation_map.json`, so their state keys would otherwise be raw
+  PixelLab folders — `custom-calm-still-idle-breathing`, plus an upstream typo
+  variant `...stili...` on 39 of them. `npcState()` in build.mjs matches folder
+  WORDS against the game's own state vocabulary, so both land on `idle` and the
+  viewer prints "Idle"; a new slug lands right without anyone editing a table.
+  `stateLabel()` in wiki.js then presents any state readably (`spell_wand` ->
+  "Spell wand"). One NPC legitimately has two idle clips (different art, both
+  folder spellings) and shows "Idle" and "Idle 2".
+- **Search**: the whole cast is findable by name, sex or trade now that the
+  names are real — they were excluded while all 191 were "Villager", because
+  191 identical rows drown every query. Folder key and PixelLab name remain
+  admin-only search terms.
+- **`‹ ›` pages within the group.** A hero pages among the 2 heroes, an NPC
+  among the 191 — otherwise the cast is buried between Man and Woman.
+- The nav/start-page count stays **heroes only**; the block carries its own.
+  `counts.npcs` exists separately in data.json.
 - No Movement-sounds panel on NPC pages — that kit follows the player.
 - Feedback ids are the repo path (`characters2/npcs/<key>`), so review works
   exactly like everything else.

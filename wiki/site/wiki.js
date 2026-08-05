@@ -363,7 +363,7 @@ function makePlayer(entity, kind) {
           }
           loadClip(); renderStateSeg(); renderDirPad(); onStateChange?.(s);
         },
-      }, s + (anims[s].fallback ? ` (→${anims[s].fallback})` : ""))));
+      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""))));
   }
 
   const dirPad = h("span", { class: "dirpad" });
@@ -614,6 +614,12 @@ const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? `
 /** What a hero IS, in words a player understands — "Human · Female", never
  *  the pipeline folder id (maintainer 2026-07-30). */
 const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
+/** A game state as a READER sees it: "idle" → "Idle", "spell_wand" → "Spell
+ *  wand". The keys are the game's own vocabulary, but they are still code —
+ *  lowercase and underscored — and the viewer prints them on its buttons
+ *  (maintainer 2026-08-01: "no technical names to the end user"). Anything
+ *  genuinely technical is fixed where it is BUILT, not papered over here. */
+const stateLabel = (s) => String(s).replace(/[_-]+/g, " ").replace(/^./, (c) => c.toUpperCase());
 /** Authored in characters2/metadata.json; the placeholder only runs for a
  *  hero the characters agent has not written up yet. */
 const heroLore = (c) => c.loreDesc ?? c.lore ?? (c.kind === "npc"
@@ -1260,11 +1266,11 @@ function viewMonster(id) {
 function viewCharacters() {
   const all = state.data.domains.characters;
   const heroes = all.filter((c) => c.kind !== "npc" && matches(state.query, c.id, c.name));
-  // Every NPC is named "Villager" (their PixelLab names are prompt junk —
-  // characters2's own README), so players match them only on that word; the
-  // admin can also hit the folder key and the raw PixelLab name.
+  // All 191 are authored now (characters2 2026-08-01), so a player can search
+  // the cast by name, sex or trade. The folder key and the duplicate PixelLab
+  // name stay admin-only.
   const npcs = all.filter((c) => c.kind === "npc" &&
-    matches(state.query, c.name, ...(state.admin ? [c.id, c.pixellabName] : [])));
+    matches(state.query, c.name, c.sex, c.role, ...(state.admin ? [c.id, c.pixellabName] : [])));
   return h("div", {},
     sectionHead("characters"),
     h("p", { class: "muted" }, state.admin
@@ -1285,12 +1291,18 @@ function viewCharacters() {
     npcs.length ? h("div", { class: "npc-block" },
       h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
       h("p", { class: "muted" }, state.admin
-        ? "The tag-driven NPC mirror. Names are PixelLab prompt junk, so players see every one as a Villager — review and prune from here."
+        ? "The tag-driven NPC mirror — name, sex and trade authored by the characters agent from the art itself. Review and prune from here."
         : "The folk you will meet along the way. You cannot set out as one of them."),
       h("div", { class: "grid npc-grid" }, ...npcs.map((c) =>
         h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
           h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
-          state.admin ? h("div", { class: "card-sub" }, c.id.replace(/^npc-/, "")) : null,
+          // They have real names now (characters2 2026-08-01) so the tiles
+          // say who they are — but QUIETLY: one line of name, one muted line
+          // of trade. Both truncate rather than wrap, because a tile that
+          // grows a second line of text re-flows the whole 191-card grid.
+          h("div", { class: "npc-name" }, c.name),
+          c.role ? h("div", { class: "npc-role muted" }, c.role) : null,
+          state.admin ? h("div", { class: "card-sub" }, c.id) : null,
           h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)))))) : null);
 }
 function viewCharacter(id) {
@@ -1323,6 +1335,9 @@ function viewCharacter(id) {
         heroKind(c) ? h("div", { class: "thumb-chip" }, heroKind(c)) : null),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
+        // The trade, quietly, under the name. Every NPC has one, so the line
+        // is there on all 191 and paging cannot shift the viewer below it.
+        c.role ? h("div", { class: "npc-trade muted" }, c.role) : null,
         // Folder id, frame size and state count are PIPELINE facts — admin
         // only (maintainer 2026-07-30). The NPC's PixelLab name is the same
         // class of fact: prompt junk a player must never meet.
@@ -2078,15 +2093,15 @@ function viewSearch() {
   const d = state.data.domains;
   const hits = [];
   d.monsters.forEach((m) => matches(q, m.id, m.name) && hits.push(["monsters", m.name, `#/monsters/${m.id}`, m.preview]));
-  // Heroes search by name; NPCs are 191 identical "Villager"s, so they stay
-  // out of GLOBAL search for players (the Characters page lists them all) and
-  // surface for the admin by folder key / PixelLab name, labelled by key so
-  // the hits are tellable-apart.
+  // The whole cast is searchable now that every NPC has a real name (they
+  // were excluded while all 191 were called "Villager" — 191 identical rows
+  // would have drowned every query). Name, sex and trade for a player; the
+  // folder key and the duplicate PixelLab name stay admin-only.
   d.characters.forEach((c) => {
-    if (c.kind === "npc") {
-      if (state.admin && matches(q, c.id, c.pixellabName))
-        hits.push(["characters", `Villager · ${c.id.replace(/^npc-/, "")}`, `#/characters/${c.id}`, c.preview]);
-    } else if (matches(q, c.id, c.name)) hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
+    if (matches(q, c.name, ...(c.kind === "npc" ? [c.sex, c.role] : [c.id]),
+                ...(state.admin ? [c.id, c.pixellabName] : []))) {
+      hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
+    }
   });
   d.tiles.forEach((t) => matches(q, t.id, t.name, t.description) && hits.push(["tiles", t.name, `#/tiles/${t.id}`, t.groups[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null]));
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
