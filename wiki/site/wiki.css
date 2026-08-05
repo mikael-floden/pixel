@@ -691,3 +691,10 @@ button.drop-row {
 /* Inline lore links — a name in running prose that IS the entity. Underlined
    subtly so the prose stays prose; same landing rules as "Read next". */
 .lore-inline { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); }
+
+/* Races (2026-08-05): each race is an inner topic — heading, the lore
+   agent's blurb, its playable heroes, then its paged NPC grid. */
+.race-block { margin-top: 18px; }
+.race-block h2 { display: flex; align-items: center; }
+.race-blurb { margin: 2px 0 10px; }
+.npc-block .page-rail { display: flex; align-items: center; gap: 6px; justify-content: flex-end; margin-top: 8px; }

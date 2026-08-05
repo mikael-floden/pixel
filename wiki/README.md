@@ -42,9 +42,14 @@ feedback ids are repo paths — but nothing user-visible says "monsters" or
 | route | shown as | route | shown as |
 | --- | --- | --- | --- |
 | `#/monsters` | **Creatures** | `#/sounds` | **Sound Effects** |
-| `#/characters` | **Characters** | `#/music` | **Music** |
+| `#/characters` | **Races** | `#/music` | **Music** |
 | `#/tiles` | **World** | `#/items` | **Items** |
-| `#/objects` | **Objects** | `#/tuning` | **Parameters** (admin) |
+| `#/objects` | **Scenery** | `#/tuning` | **Parameters** (admin) |
+
+("Races", not "Characters" — too close to "Creatures"; "Scenery", not
+"Objects" — maintainer 2026-08-05. The Races page is grouped by race, each an
+inner topic with the lore agent's "people" entry as its description; NPCs page
+20 to a card with ‹ › so one race's cast can never bury the next race.)
 
 Add a section to that table and the nav, the start page, the headings, the
 back-links and the search results all follow.

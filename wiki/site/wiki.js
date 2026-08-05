@@ -462,9 +462,12 @@ function takeRow(domain, entityPath, take, extra = []) {
 // start page, the headings and the back-links all follow.
 const SECTIONS = {
   monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
-  characters: { label: "Characters",    noun: "heroes",     icon: "characters", count: (d) => d.counts.characters },
+  // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
+  // close to "Creatures"). The nav counts RACES; the start tile keeps heroes.
+  characters: { label: "Races",         noun: "heroes",     icon: "characters", count: (d) => d.counts.characters,
+                navCount: (d) => new Set((d.domains.characters ?? []).map((c) => c.species || "Human")).size },
   tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles, navCount: (d) => d.counts.tile_types },
-  objects:    { label: "Objects",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
+  objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
   items:      { label: "Items",         noun: "items",      icon: "items",      count: (d) => d.counts.items },
@@ -1287,47 +1290,85 @@ function viewMonster(id) {
 }
 
 /* --- characters --- */
+const npcCard = (c) => h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
+  h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+  // Real names (characters2 2026-08-01), said QUIETLY: one line of name, one
+  // muted line of trade, both truncating — a tile that grows a second line
+  // re-flows the whole grid and the block stops reading as secondary.
+  h("div", { class: "npc-name" }, c.name),
+  c.role ? h("div", { class: "npc-role muted" }, c.role) : null,
+  state.admin ? h("div", { class: "card-sub" }, c.id) : null,
+  h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)));
+/** The NPC block, paged INSIDE its card: 20 tiles a page with ‹ › (maintainer
+ *  2026-08-05 — one race's full cast would bury the next race the day a
+ *  second one ships). In-place redraw, same idiom as the story pager; no
+ *  scroll on a page turn, the reader is already looking at the grid. */
+function npcPagedBlock(npcs) {
+  if (!npcs.length) return null;
+  const PER = 20;
+  const pages = Math.ceil(npcs.length / PER);
+  let page = 0;
+  const grid = h("div", { class: "grid npc-grid" });
+  const count = h("span", { class: "detail-count" });
+  const mk = (glyph, lbl, step) => h("button", {
+    class: "nav-btn", type: "button", title: lbl, "aria-label": lbl,
+    onclick: () => { const t = page + step; if (t < 0 || t >= pages) return; page = t; draw(); },
+  }, glyph);
+  const prev = mk("‹", "Previous NPCs", -1), next = mk("›", "Next NPCs", +1);
+  const draw = () => {
+    grid.replaceChildren(...npcs.slice(page * PER, (page + 1) * PER).map(npcCard));
+    count.textContent = `${page + 1} / ${pages}`;
+    prev.disabled = page === 0;
+    next.disabled = page === pages - 1;
+  };
+  draw();
+  return h("div", { class: "npc-block" },
+    h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
+    h("p", { class: "muted" }, state.admin
+      ? "The tag-driven NPC mirror — name, sex and trade authored by the characters agent from the art itself. Review and prune from here."
+      : "The folk you will meet along the way. You cannot set out as one of them."),
+    grid,
+    pages > 1 ? h("div", { class: "page-rail" }, count, prev, next) : null);
+}
+/** The lore agent's write-up of a race — its "people" entry, matched by name
+ *  (Human → "The Human Dead"). Their text wins, as everywhere. */
+const raceLore = (race) => (state.data.domains.lore ?? []).find((e) => e.category === "people" && new RegExp(race, "i").test(e.name));
 function viewCharacters() {
   const all = state.data.domains.characters;
   const heroes = all.filter((c) => c.kind !== "npc" && matches(state.query, c.id, c.name));
-  // All 191 are authored now (characters2 2026-08-01), so a player can search
-  // the cast by name, sex or trade. The folder key and the duplicate PixelLab
-  // name stay admin-only.
   const npcs = all.filter((c) => c.kind === "npc" &&
     matches(state.query, c.name, c.sex, c.role, ...(state.admin ? [c.id, c.pixellabName] : [])));
+  // RACES (maintainer 2026-08-05): the page is grouped by race, each an inner
+  // topic with the race's own description. Only Humans exist today — the
+  // structure is what matters, so a second race lands as a second block.
+  const races = [...new Set(all.map((c) => c.species || "Human"))].sort();
   return h("div", {},
     sectionHead("characters"),
     h("p", { class: "muted" }, state.admin
-      ? "The heroes from characters2 — every game state, all 8 directions."
-      : "The heroes you can play as — every move, seen from all 8 sides."),
-    h("div", { class: "grid" }, ...heroes.map((c) =>
-      h("a", { class: "card", href: `#/characters/${c.id}` },
-        h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
-        h("div", { class: "card-name" }, c.name),
-        // What the hero IS, not what the folder is called.
-        h("div", { class: "card-sub" }, heroKind(c)),
-        state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
-        h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))),
-    // --- NPCs: deliberately SECOND and visually smaller (maintainer
-    // 2026-08-01: "player selectable Characters foremost ... its own clear
-    // secondary/less important section"). Portrait-only tiles: 191 cards all
-    // captioned "Villager" would be noise, the faces ARE the content.
-    npcs.length ? h("div", { class: "npc-block" },
-      h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
-      h("p", { class: "muted" }, state.admin
-        ? "The tag-driven NPC mirror — name, sex and trade authored by the characters agent from the art itself. Review and prune from here."
-        : "The folk you will meet along the way. You cannot set out as one of them."),
-      h("div", { class: "grid npc-grid" }, ...npcs.map((c) =>
-        h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
-          h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
-          // They have real names now (characters2 2026-08-01) so the tiles
-          // say who they are — but QUIETLY: one line of name, one muted line
-          // of trade. Both truncate rather than wrap, because a tile that
-          // grows a second line of text re-flows the whole 191-card grid.
-          h("div", { class: "npc-name" }, c.name),
-          c.role ? h("div", { class: "npc-role muted" }, c.role) : null,
-          state.admin ? h("div", { class: "card-sub" }, c.id) : null,
-          h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)))))) : null);
+      ? "Every race of Nangijala — its playable heroes first, then its NPCs. From characters2; every game state, all 8 directions."
+      : "The races of Nangijala — the heroes you can set out as, and the folk you will meet."),
+    ...races.map((race) => {
+      const rl = raceLore(race);
+      const rHeroes = heroes.filter((c) => (c.species || "Human") === race);
+      const rNpcs = npcs.filter((c) => (c.species || "Human") === race);
+      if (!rHeroes.length && !rNpcs.length) return null;
+      return h("div", { class: "race-block" },
+        h("h2", {}, `${race}s`,
+          rHeroes.length ? h("span", { class: "pill ok", style: "margin-left:8px" }, `${rHeroes.length} playable`) : null),
+        // The race's short description — the lore agent's "people" entry
+        // where one exists, with the way into the full write-up.
+        rl ? h("p", { class: "muted race-blurb" }, rl.summary, " ", h("a", { href: `#/lore/${rl.id}` }, "Read more →"))
+           : h("p", { class: "muted race-blurb" }, "The chroniclers have not written this race up yet."),
+        rHeroes.length ? h("div", { class: "grid" }, ...rHeroes.map((c) =>
+          h("a", { class: "card", href: `#/characters/${c.id}` },
+            h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+            h("div", { class: "card-name" }, c.name),
+            // What the hero IS, not what the folder is called.
+            h("div", { class: "card-sub" }, heroKind(c)),
+            state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
+            h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))) : null,
+        npcPagedBlock(rNpcs));
+    }));
 }
 function viewCharacter(id) {
   const c = state.data.domains.characters.find((x) => x.id === id);
@@ -1626,7 +1667,7 @@ function viewObjects() {
   const cats = [...new Set(list.map((o) => o.category))].sort();
   return h("div", {},
     sectionHead("objects"),
-    h("p", { class: "muted" }, "Animated props and map objects from the objects agent."),
+    h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
     ...cats.map((cat) => h("div", {},
       h("h2", {}, cat),
       h("div", { class: "grid" }, ...list.filter((o) => o.category === cat).map((o) =>
