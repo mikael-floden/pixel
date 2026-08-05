@@ -1866,13 +1866,26 @@ visible head/shoulders are ABOVE the surface).
   answer was 28 — he pushed back, and fitting a circle to the ghost's own
   blur disc in the screenshot settled it: r = 169 device px for the known
   148px well ⇒ dpr 2.284, shipped centre 186/188 device px from the edges =
-  exactly the 84 css the old 10px inset gives), GHOSTED at 0.15 alpha (85%
-  transparent) and BEHIND the corner chrome — position:fixed, z 4, under the
+  exactly the 84 css the old 10px inset gives), GHOSTED (see below) and BEHIND the corner chrome — position:fixed, z 4, under the
   chat overlay (5) and the pill/chips (8), all of which are
   pointer-events:none so the thumb steers straight through them; hidden
-  with the page when another tab is up. WHILE HELD it fades to fully
-  visible (pointerdown -> opacity 1, release -> 0.15; the opacity
-  transition is the only always-on one), and it is BACKED BY A BLUR DISC
+  with the page when another tab is up. THE GHOST IS TWO PAINTED PARTS, EACH WITH ITS OWN ALPHA
+  (maintainer 2026-08-05, two rounds): .ml-pad-well (the basin) and
+  .ml-pad-top (the inner ring/cap), inside a .ml-pad-stick frame that
+  paints nothing. It HAS to be built that way — the cap must read
+  STRONGER than the well, and a parent's group opacity can only ever
+  make a child fainter (child effective = parent x child). Rest alphas:
+  LIGHT well .15 / cap .25 (85% / 75% transparent), DARK well .4 /
+  cap .5 (60% / 50%) — dark carries much further because a faint grey
+  ghost vanishes against dark terrain. Dark is both the explicit
+  data-theme AND the OS default (theme.ts deletes the attribute when
+  following the OS), so every dark rule needs its prefers-color-scheme
+  twin. WHILE HELD both parts go to 1 (.held on the frame; their
+  opacity transitions are the only always-on ones) — and that rule is
+  written :root.ml-land .ml-pad-stick.held ... ON PURPOSE: the dark
+  rest rules carry an attribute selector, so the shorter form LOST the
+  specificity race and the ghost stayed faint while held in dark
+  (light won only by source order). It is also BACKED BY A BLUR DISC
   — the bars chips' same blur(5px), but as its OWN full-opacity
   transparent element (.ml-pad-blur, z 3) pinned to the stick's rect:
   backdrop-filter ON the stick cannot work, because the stick's opaque
@@ -1882,7 +1895,22 @@ visible head/shoulders are ABOVE the surface).
   on the opaque HUD page there. PICK UP stacks ABOVE JUMP on
   the menu column's centre line under the other thumb, and the vertical
   tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
-  stick/jump/pick-up fractions by hand. Page-RELATIVE writes in layout() are skipped while the page is
+  stick/jump/pick-up fractions by hand.
+  ANYTHING THAT POSITIONS ITSELF AGAINST ml-land / THE GV VARS MUST
+  LISTEN TO "ml-layout", NEVER THE RAW RESIZE (maintainer 2026-08-05:
+  left-handed players "always see and be able to use" the stick — but
+  the bug was never handedness, it was WHICH TAB was open). applyLayout
+  fires "ml-layout" as its last act; gamepad.ts's own resize listener
+  is registered BEFORE hud's (WorldScene calls mountPageFrame AFTER new
+  HudBar), so on rotation it read the PREVIOUS ml-land, skipped the
+  landscape branch entirely and left the floating stick parented to a
+  display:none page at 0x0 — invisible and untappable. A hidden page
+  never resizes, so its ResizeObserver could not heal it either: the
+  stick only reappeared when you opened the gamepad tab. Both hands
+  were affected. Gate 4d rotates from portrait with the BACKPACK tab
+  open, for each hand, and asserts the stick is body-parented,
+  hit-tested at its centre, and actually steers the player.
+  Page-RELATIVE writes in layout() are skipped while the page is
   display:none (its width reads 0 — the buttons would park at garbage
   coordinates and visibly correct on tab entry; the maintainer's
   backpack -> rotate -> gamepad repro is pinned frame-by-frame in the

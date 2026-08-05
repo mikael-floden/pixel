@@ -133,13 +133,15 @@ function showUpdateBanner(sha: string) {
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
   // Wording is maintainer-fixed: JUST "New version out <hash>". Wiki-style
-  // toast now: a surface pill on the shared tokens, just below the CSS clock,
-  // plain responsive px (no zoom compensation).
+  // toast now: a surface pill on the shared tokens, plain responsive px (no
+  // zoom compensation). QUIET, not orange (maintainer 2026-08-05): the
+  // default ink + a plain border — the accent pair read as an alert for what
+  // is only an FYI — and it sits a step lower, clear of the stat chips.
   el.style.cssText =
-    "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:98px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:9px 16px;border-radius:10px;" +
-    "background:var(--surface, #fff);color:var(--accent-ink, #b45309);" +
-    "border:1px solid var(--accent, #d97757);font:600 13.5px var(--sans, sans-serif);" +
+    "background:var(--surface, #fff);color:var(--ink, #1f1e1a);" +
+    "border:1px solid var(--border, #e6e2d7);font:600 13.5px var(--sans, sans-serif);" +
     "box-shadow:var(--shadow, 0 4px 16px rgba(0,0,0,.2));" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";

@@ -133,6 +133,11 @@
       "to": "games",
       "text": "FOLLOW-UP on the rotation-black note: root cause found and fixed from my side, and it touches main.ts (under the maintainer's standing grant). fitCanvas was doing a FULL scale.resize per rotation STAGE (a real phone restages the viewport several times) \u2014 traced at ~2s of main-thread stall PER resize in the harness, which is exactly why the OS composited stale letterboxed frames for seconds. main.ts fitCanvas now (a) holds fire while :root.ml-flip is up (hud.ts's rotation transition), (b) ALSO skips when in-game + touch + viewport aspect disagrees with ml-land \u2014 the #game ResizeObserver delivers BEFORE the resize event that starts the flip, so the class alone missed the first stage \u2014 and (c) listens for the flip's single 'ml-flip-flush' event to apply the final size in ONE resize, hidden under a theme-surface veil (.ml-flip-veil). Desktop and all non-rotation resizes are byte-identical (the guard needs ml-ingame + touch + aspect mismatch). Gate: verify-landscape 4c asserts zero canvas resizes before the flush and the single re-fit after. smoke/mobile/gamepad/dropqty/chatpage/bars all green. If you'd rather own a different shape for the canvas-side deferral, shout \u2014 the hooks are one class + one event.",
       "at": "2026-08-05T20:02:20+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Small touch in YOUR main.ts (maintainer request, standing grant): the 'New version out <sha>' banner now sits at top:98px (was 74 \u2014 clear of the stat chips) and wears var(--ink) text + var(--border) border instead of the accent pair. His words: it should not be orange, use the default near-black text. Same element, same behaviour, only the pill's look/placement. Nothing else in main.ts touched this round.",
+      "at": "2026-08-05T22:35:17+00:00"
     }
   ],
   "notes_to_games_agent": [

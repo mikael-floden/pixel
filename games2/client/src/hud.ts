@@ -291,12 +291,10 @@ function applyLayout() {
   const h = window.innerHeight;
   const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
   const left = getHand() === "left";
-  // ORIENTATION changes run the two-phase FLIP glide (beginFlip above);
-  // handedness changes keep the plain anchor transitions. The old spots come
-  // from the rolling snapshot (flipRects) — by the time this listener runs,
-  // the viewport has ALREADY resized, so measuring here is too late. Any
-  // FURTHER resize while the flip is live (real rotations arrive in several
-  // stages) just refreshes its quiet-timer; the controller re-pins per frame.
+  // ORIENTATION changes run the flip (beginFlip above: veil + one canvas
+  // resize, anchors snapping); handedness changes keep the plain anchor
+  // transitions. Any FURTHER resize while the flip is live (real rotations
+  // arrive in several stages) just refreshes its quiet-timer.
   if (lastLandState !== null && land !== lastLandState) beginFlip();
   else if (flipCtl) flipCtl.lastResize = performance.now();
   lastLandState = land;
@@ -320,6 +318,17 @@ function applyLayout() {
     root.style.setProperty("--gv-left", `0px`);
     root.style.setProperty("--gv-right", `0px`);
   }
+  // THE LAYOUT IS PUBLISHED — everything that positions itself against
+  // ml-land / the gv vars must run AFTER this, never on the raw resize.
+  // gamepad.ts learned this the hard way: its own resize listener fires
+  // BEFORE this one (mountPageFrame hooks resize at mountPageFrame() time,
+  // which WorldScene calls AFTER new HudBar()), so it read a STALE ml-land
+  // and skipped the landscape branch — leaving the floating stick parented
+  // to a display:none page, 0×0 and unusable, until something else nudged
+  // it. The hidden page never resizes, so its ResizeObserver could not heal
+  // it either: rotating with any non-gamepad tab open lost the stick
+  // entirely (maintainer 2026-08-05). Order-proof by construction now.
+  window.dispatchEvent(new Event("ml-layout"));
 }
 
 /** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */

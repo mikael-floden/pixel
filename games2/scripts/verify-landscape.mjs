@@ -122,8 +122,9 @@ try {
         tabFirst: r(".ml-tab:first-child"),
         tabLast: r(".ml-tab:last-child"),
         stickOp: (() => {
-          const e = document.querySelector(".ml-pad-stick");
-          return e ? getComputedStyle(e).opacity : null;
+          const w = document.querySelector(".ml-pad-well");
+          const c = document.querySelector(".ml-pad-top");
+          return w && c ? { well: getComputedStyle(w).opacity, cap: getComputedStyle(c).opacity } : null;
         })(),
         pages: r(".ml-pages"),
         barsL: r(".ml-bars-l"),
@@ -288,9 +289,14 @@ try {
       ? ok(`stick centre equidistant from both edges (${Math.round(cxIn)} / ${Math.round(cyIn)} px)`)
       : fail(`stick centre margins differ: side ${cxIn}, bottom ${cyIn}`);
   }
-  Math.abs(parseFloat(g.stickOp) - 0.15) <= 0.01
-    ? ok(`stick ghosted at 0.15 alpha — 85% transparent (${g.stickOp})`)
-    : fail(`stick opacity ${g.stickOp}, want 0.15`);
+  // GHOST ALPHAS, per part and per theme (maintainer 2026-08-05, two rounds).
+  // The cap always reads a step stronger than the well; this context runs the
+  // LIGHT theme (well .15 = 85% transparent, cap .25 = 75%). Dark's stronger
+  // pair (.4/.5) is asserted in its own themed context at the end of the run.
+  g.stickOp && Math.abs(parseFloat(g.stickOp.well) - 0.15) <= 0.01 &&
+  Math.abs(parseFloat(g.stickOp.cap) - 0.25) <= 0.01
+    ? ok(`light ghost: well ${g.stickOp.well} (85% transparent), cap ${g.stickOp.cap} (75%)`)
+    : fail(`light ghost alphas wrong: ${JSON.stringify(g.stickOp)}, want well .15 / cap .25`);
   // ALWAYS ON SCREEN in landscape (maintainer 2026-08-05): the stick is
   // reparented to <body>, so another tab's page can't hide it.
   await page.evaluate(() => document.querySelector('[data-tab="backpack"]').click());
@@ -346,10 +352,16 @@ try {
   // ANIMATION only on orientation/handedness changes: at rest the stick's
   // transition covers opacity (the grab fade) but NOT left/top — page entry
   // must reposition instantly (the .anim class is transient).
-  const tp = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).transitionProperty);
-  /opacity/.test(tp) && !/left|top|all/.test(tp)
-    ? ok(`at rest only opacity transitions (${tp})`)
-    : fail(`resting transition-property "${tp}" — left/top must be .anim-gated`);
+  const tp = await page.evaluate(() => ({
+    frame: getComputedStyle(document.querySelector(".ml-pad-stick")).transitionProperty,
+    well: getComputedStyle(document.querySelector(".ml-pad-well")).transitionProperty,
+    cap: getComputedStyle(document.querySelector(".ml-pad-top")).transitionProperty,
+  }));
+  // The FRAME carries position only (and .anim-gated at that); the grab fade
+  // lives on the two painted parts, which own their own alphas now.
+  !/left|top|all/.test(tp.frame) && /opacity/.test(tp.well) && /opacity/.test(tp.cap)
+    ? ok(`at rest the frame animates nothing (${tp.frame}); the parts keep their opacity fade`)
+    : fail(`resting transitions wrong: ${JSON.stringify(tp)} — left/top must be .anim-gated`);
   if (!g.help || !g.help.vis) fail("handedness help chip missing on first visit");
   else {
     const overlaps = (a, b) => a && b && a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
@@ -370,23 +382,26 @@ try {
   await page.mouse.move(sc.x - 90, sc.y, { steps: 4 }); // leftward — the corner stick has no room to the right
   await page.waitForTimeout(700);
   // IN USE the ghost fades to fully visible (maintainer 2026-08-05)
-  const opHeld = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).opacity);
-  Math.abs(parseFloat(opHeld) - 1) <= 0.02
-    ? ok(`stick fades to 100% while held (${opHeld})`)
-    : fail(`stick opacity ${opHeld} while held, want 1`);
+  const opHeld = await page.evaluate(() => ({
+    well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
+    cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+  }));
+  Math.abs(parseFloat(opHeld.well) - 1) <= 0.02 && Math.abs(parseFloat(opHeld.cap) - 1) <= 0.02
+    ? ok(`BOTH parts fade to 100% while held (well ${opHeld.well}, cap ${opHeld.cap})`)
+    : fail(`held alphas ${JSON.stringify(opHeld)}, want 1/1`);
   await page.mouse.up();
   const faded = await page
     .waitForFunction(
-      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-stick")).opacity) - 0.15) <= 0.02,
+      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-well")).opacity) - 0.15) <= 0.02,
       null,
       { timeout: 8000, polling: 150 },
     )
     .then(() => true)
     .catch(() => false);
   faded
-    ? ok("…and back to the 0.15 ghost on release")
+    ? ok("…and back to the ghost alphas on release")
     : fail(
-        `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).opacity)} after release`,
+        `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-well")).opacity)} after release`,
       );
   const p1 = await page.evaluate(() => {
     const m = window.__ml.me();
@@ -601,6 +616,54 @@ try {
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
 
+  // ---- 4d. ROTATING WITH A NON-GAMEPAD TAB OPEN must not lose the stick
+  //          (maintainer 2026-08-05: left-handed players "always see and be
+  //          able to use" it — the bug was never handedness, it was TAB:
+  //          gamepad.ts's own resize listener runs BEFORE hud's applyLayout,
+  //          so it read a stale ml-land, skipped the landscape branch and
+  //          left the stick inside a display:none page at 0x0 — and a hidden
+  //          page never resizes, so its ResizeObserver could not heal it.
+  //          gamepad.ts listens to hud's "ml-layout" now. Checked for BOTH
+  //          hands, from portrait, on the backpack tab. ----
+  for (const hand of ["right", "left"]) {
+    await page.setViewportSize({ width: 393, height: 851 });
+    await settle();
+    await page.evaluate((h) => window.__ml.hand(h), hand);
+    await page.evaluate(() => document.querySelector('[data-tab="backpack"]').click());
+    await settle();
+    await page.setViewportSize({ width: 851, height: 393 }); // rotate, gamepad page HIDDEN
+    await settle();
+    const st = await page.evaluate(() => {
+      const p = document.querySelector(".ml-pad-stick");
+      const r = p.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return {
+        parent: p.parentElement.tagName, w: Math.round(r.width),
+        x: Math.round(r.left), b: Math.round(r.bottom),
+        hitIsPad: hit === p, tab: document.querySelector(".ml-tab.sel")?.dataset.tab,
+      };
+    });
+    st.parent === "BODY" && st.w > 100 && st.hitIsPad && st.tab === "backpack"
+      ? ok(`${hand}-handed: rotating on the backpack tab keeps the stick on screen and tappable (${st.w}px at x=${st.x})`)
+      : fail(`${hand}-handed rotation lost the stick: ${JSON.stringify(st)}`);
+    // …and it still DRIVES the player from there (whole input path)
+    const q0 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
+    const c = { x: (st.x + st.x + st.w) / 2, y: st.b - st.w / 2 };
+    await page.mouse.move(c.x, c.y);
+    await page.mouse.down();
+    await page.mouse.move(c.x, c.y - 90, { steps: 4 }); // north: no wall bias
+    await page.waitForTimeout(700);
+    await page.mouse.up();
+    const q1 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
+    const moved = Math.hypot(q1.x - q0.x, q1.y - q0.y);
+    moved > 10
+      ? ok(`…and steers the player from the hidden-tab rotation (${moved.toFixed(0)}wu)`)
+      : fail(`${hand}-handed stick did not steer after rotating on another tab (${moved.toFixed(1)}wu)`);
+  }
+  await page.evaluate(() => window.__ml.hand("right"));
+  await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
+  await settle();
+
   // ---- 5. help chip: dismiss is forever ----
   const before = await page.evaluate(() => {
     const s = document.querySelector(".ml-pad-stick").getBoundingClientRect();
@@ -647,6 +710,53 @@ try {
       : fail(`desktop got the landscape layout: ${JSON.stringify(d)}`);
   } finally {
     await dctx.close();
+  }
+}
+
+// ---- 7. DARK theme carries a STRONGER ghost (maintainer 2026-08-05): the
+//         faint light-theme pair vanishes on dark terrain. well .4 (60%
+//         transparent) / cap .5 (50%), and BOTH still reach 1 while held —
+//         the dark rest rules carry an attribute selector, so the held rule
+//         needs the specificity to beat them (it lost, once). ----
+{
+  const kctx = await browser.newContext({
+    viewport: { width: 851, height: 393 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1,
+  });
+  const kpage = await kctx.newPage();
+  await kpage.addInitScript(() => localStorage.setItem("wiki-theme", "dark"));
+  try {
+    await kpage.goto(`${BASE}/`, { waitUntil: "load" });
+    await kpage.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+    await kpage.evaluate(() => window.__mlSelect.commit());
+    await kpage.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 60000 });
+    await kpage.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 30000 });
+    await kpage.waitForTimeout(1200);
+    const alphas = await kpage.evaluate(() => ({
+      theme: document.documentElement.dataset.theme,
+      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+    }));
+    alphas.theme === "dark" && Math.abs(+alphas.well - 0.4) <= 0.01 && Math.abs(+alphas.cap - 0.5) <= 0.01
+      ? ok(`dark ghost: well ${alphas.well} (60% transparent), cap ${alphas.cap} (50%)`)
+      : fail(`dark ghost alphas wrong: ${JSON.stringify(alphas)}, want well .4 / cap .5`);
+    const r = await kpage.evaluate(() => {
+      const b = document.querySelector(".ml-pad-stick").getBoundingClientRect();
+      return { x: b.left + b.width / 2, y: b.top + b.height / 2 };
+    });
+    await kpage.mouse.move(r.x, r.y);
+    await kpage.mouse.down();
+    await kpage.mouse.move(r.x, r.y - 60, { steps: 3 });
+    await kpage.waitForTimeout(600);
+    const heldDark = await kpage.evaluate(() => ({
+      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+    }));
+    await kpage.mouse.up();
+    Math.abs(+heldDark.well - 1) <= 0.02 && Math.abs(+heldDark.cap - 1) <= 0.02
+      ? ok(`…and both parts still reach 100% while held in dark (${heldDark.well}/${heldDark.cap})`)
+      : fail(`dark held alphas ${JSON.stringify(heldDark)}, want 1/1 — check selector specificity`);
+  } finally {
+    await kctx.close();
   }
 }
 

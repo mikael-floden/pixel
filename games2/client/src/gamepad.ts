@@ -97,9 +97,16 @@ export function mountGamepadStick(page: HTMLElement) {
   // may be parented to <body> (see layout) and would survive the old HUD's
   // removal as a zombie — clear any strays first.
   document.querySelectorAll(".ml-pad-stick, .ml-pad-blur").forEach((e) => e.remove());
+  // The stick is a TRANSPARENT frame holding two painted parts: the WELL
+  // (the basin) and the CAP (the inner ring). They must carry INDEPENDENT
+  // alphas — the maintainer wants the cap read stronger than the well, and
+  // group opacity on a parent can only ever make a child fainter (child
+  // effective = parent × child). So the frame itself never paints or fades;
+  // each part owns its opacity, per theme (see injectStyles).
   const pad = mk("div", "ml-pad-stick");
+  const basin = mk("div", "ml-pad-well"); // `well` is the DIAMETER, below
   const top = mk("div", "ml-pad-top");
-  pad.append(top);
+  pad.append(basin, top);
   page.appendChild(pad);
 
   // ── the landscape ghost's BLUR DISC (maintainer 2026-08-05: "the same blur
@@ -243,7 +250,6 @@ export function mountGamepadStick(page: HTMLElement) {
       if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
-      pad.style.opacity = "0.15";
       pad.style.left = `${leftHand ? LAND_INSET : window.innerWidth - LAND_INSET - well}px`;
       pad.style.top = `${window.innerHeight - LAND_INSET - well}px`;
       // the blur disc rides exactly under it
@@ -281,7 +287,6 @@ export function mountGamepadStick(page: HTMLElement) {
       }
       pad.style.position = "";
       pad.style.zIndex = "";
-      pad.style.opacity = "";
       padBlur.style.display = "none"; // portrait sits on the opaque HUD page
       if (vis) {
         pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
@@ -308,7 +313,14 @@ export function mountGamepadStick(page: HTMLElement) {
     setCap(visSector, visRadius);
   };
   layout();
-  window.addEventListener("resize", layout);
+  // "ml-layout" — hud.ts applyLayout fires this AFTER it has published
+  // ml-land + the gv vars. Listening to the raw resize instead is a real bug
+  // (fixed 2026-08-05): this module's resize listener is registered BEFORE
+  // hud's, so it read the PREVIOUS orientation, skipped the landscape branch
+  // and stranded the floating stick inside a display:none page — and since a
+  // hidden page never resizes, the ResizeObserver below could not heal it.
+  // Rotating with any non-gamepad tab open simply lost the stick.
+  window.addEventListener("ml-layout", layout);
   window.addEventListener("ml-hand", layout);
   new ResizeObserver(layout).observe(page);
 
@@ -353,16 +365,16 @@ export function mountGamepadStick(page: HTMLElement) {
     dragging = false;
     setKeys(-1, false);
     setCap(-1, 0); // glide back to centre
-    // the landscape ghost fades back to rest once the thumb lets go
-    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "0.15";
+    pad.classList.remove("held"); // the landscape ghost fades back to rest
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {
     dragging = true;
     pad.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
-    // IN USE = fully visible (maintainer 2026-08-05): the landscape ghost
-    // fades to 1 while the thumb holds it (opacity transition is always on).
-    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "1";
+    // IN USE = fully visible (maintainer 2026-08-05): both parts of the
+    // landscape ghost fade to 1 while the thumb holds it (their opacity
+    // transitions are always on).
+    pad.classList.add("held");
     gameAudio.event("ui.press");
     apply(ev);
   });
@@ -435,11 +447,16 @@ function injectStyles() {
      layout() arms for orientation/handedness changes — page entry and plain
      resizes reposition instantly (maintainer 2026-08-05). */
   .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
-    background:var(--surface-2);border:1px solid var(--border-strong);
-    box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
-    transition:opacity .25s ease;
+    box-sizing:border-box;transition:none;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-  .ml-pad-stick.anim{transition:left .25s ease,top .25s ease,opacity .25s ease}
+  .ml-pad-stick.anim{transition:left .25s ease,top .25s ease}
+  /* the WELL — the basin. Its own element (not the frame's background) so the
+     cap can be MORE opaque than it: a parent's group opacity can only ever
+     make a child fainter (child effective = parent x child). */
+  .ml-pad-well{position:absolute;inset:0;border-radius:50%;box-sizing:border-box;
+    background:var(--surface-2);border:1px solid var(--border-strong);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.12);pointer-events:none;
+    transition:opacity .25s ease}
   .ml-pad-jump.anim,.ml-pad-pickup.anim,.ml-pad-label.anim,.ml-pad-blur.anim{
     transition:left .25s ease,top .25s ease}
   /* the ghost stick's backdrop blur — its own disc, see the note at the
@@ -453,7 +470,33 @@ function injectStyles() {
      fast, not instant */
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
-    transition:transform ${SNAP_MS}ms ease-out}
+    transition:transform ${SNAP_MS}ms ease-out,opacity .25s ease}
+  /* ── the LANDSCAPE ghost's rest alphas (maintainer 2026-08-05, two
+     rounds). The cap always reads a step stronger than the well, and DARK
+     carries both a good deal further — a faint grey ghost vanishes against
+     dark terrain:
+       light: well .15 (85% transparent), cap .25 (75%)
+       dark:  well .40 (60% transparent), cap .50 (50%)
+     Dark is BOTH the explicit choice and the OS default, exactly like the
+     theme tokens (theme.ts deletes data-theme when following the OS), so
+     each dark rule needs its media twin. Portrait is fully opaque — the
+     stick sits on the solid HUD page there. ── */
+  :root.ml-land .ml-pad-well{opacity:.15}
+  :root.ml-land .ml-pad-top{opacity:.25}
+  :root[data-theme="dark"].ml-land .ml-pad-well{opacity:.4}
+  :root[data-theme="dark"].ml-land .ml-pad-top{opacity:.5}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme]).ml-land .ml-pad-well{opacity:.4}
+    :root:not([data-theme]).ml-land .ml-pad-top{opacity:.5}
+  }
+  /* IN USE both parts go fully visible, whatever their rest alpha. The
+     :root.ml-land prefix is LOAD-BEARING: the dark rest rules above carry an
+     attribute selector, so a plain .ml-pad-stick.held .ml-pad-well loses
+     the specificity race to them and the ghost stayed faint while held in
+     dark mode (light mode won only by source order — measured, not
+     theorised). */
+  :root.ml-land .ml-pad-stick.held .ml-pad-well,
+  :root.ml-land .ml-pad-stick.held .ml-pad-top{opacity:1}
   /* JUMP: a round wiki button */
   .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
