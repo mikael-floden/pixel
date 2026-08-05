@@ -475,8 +475,13 @@ const SECTIONS = {
   monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
   // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
   // close to "Creatures"). The nav counts RACES; the start tile keeps heroes.
-  characters: { label: "Races",         noun: "heroes",     icon: "characters", count: (d) => d.counts.characters,
-                navCount: (d) => new Set((d.domains.characters ?? []).map((c) => c.species || "Human")).size },
+  // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
+  // close to "Creatures"). The count is the WHOLE cast — heroes and NPCs
+  // together — because "2 heroes" undersold a section holding 193 people
+  // (maintainer 2026-08-05). The word "characters" survives here, as the
+  // count noun, which is exactly where it never collided with "creatures".
+  characters: { label: "Races",         noun: "characters", icon: "characters",
+                count: (d) => (d.counts.characters ?? 0) + (d.counts.npcs ?? 0) },
   tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles, navCount: (d) => d.counts.tile_types },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
