@@ -440,10 +440,16 @@ to replace the parsing.
   whole-file comment strip once ate real code after an unmatched `/*`, and
   api.ts's doc header lists `audio.event("ui.confirm")` as an example).
   Engine-driven sounds with no `.event()` call — the ambience beds, the
-  water-entry splash — are marked emitted by hand. Where the composer PINS
-  the primary take (the UI click), players see only take 1 and the pill
-  says "always take 1 (of 4)" — never "equal 1/4"; the admin sees the other
-  takes flagged "not played".
+  water-entry splash — are marked emitted by hand. **One sound is one
+  sound** (maintainer 2026-08-05/06): the engine BINDS exactly what it
+  plays (`foleyEntry`/`catalogStepEntry` slice steps, clicks and thunder to
+  the approved primary take; only a jump VOICE carries several takes and
+  really rotates), and `setLayer`/`catLayer` mirror that with
+  `primary: true` — the layer's `takes` list IS the binding, pill "1 take".
+  A set's other recordings are unbound: they appear only in the admin's All
+  sounds library, plus a one-line admin note on the event
+  (`spareTakes`). The old `round_robin:false` pin flag and the wiki's
+  display-time slice workaround are both gone.
 - The composer's foley takes are served at `/assets/composer/foley/…`
   (Dockerfile copies them; dev falls back to `games2/composer/foley`).
 

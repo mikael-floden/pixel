@@ -870,15 +870,21 @@ function buildSfx(soundEntries) {
   const events = [];
   const GROUPS = { ui: "Interface", item: "Items", tool: "Tools", player: "Movement", footsteps: "Movement", combat: "Combat", progress: "Progress", consume: "World", container: "World", door: "World", region: "Ambience", ambience: "Ambience", weather: "Weather", system: "System" };
   const nice = (id) => titleCase(id.replace(/^[a-z]+\./, "").replace(/[._]/g, " "));
+  // over.primary mirrors the engine's ONE-SOUND-IS-ONE-SOUND binding
+  // (2026-08-05: catalogStepEntry / foleyEntry bind takes.slice(0, 1) — the
+  // approved primary take IS the sound; the set's other recordings are not
+  // part of the event and live only in the admin's All sounds library).
   const catLayer = (soundId, over = {}) => {
     const s = catById.get(soundId);
     if (!s) return null;
     const g = engine.gentle;
     const v = s.variation ?? {};
+    const all = (s.takes?.length ? s.takes : [s.file]).map((t) => ({ name: t.split("/").pop(), file: `sounds/${t}` }));
     return {
       source: "catalog", soundId, label: s.name ?? soundId,
-      takes: (s.takes?.length ? s.takes : [s.file]).map((t) => ({ name: t.split("/").pop(), file: `sounds/${t}` })),
-      pick: v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
+      takes: over.primary ? all.slice(0, 1) : all,
+      spareTakes: over.primary ? all.length - 1 : 0,
+      pick: over.primary ? "the one bound take" : v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: s.mix_gain_db ?? 0,
       trimDb: over.trimDb ?? 0,
@@ -897,8 +903,9 @@ function buildSfx(soundEntries) {
     useSet(set, over.usedBy ?? "event");
     return {
       source: "composer", set, label: `${set} (composer)`,
-      takes: cs.takes,
-      pick: over.pick ?? "round-robin, never the same twice",
+      takes: over.primary ? cs.takes.slice(0, 1) : cs.takes,
+      spareTakes: over.primary ? cs.takes.length - 1 : 0,
+      pick: over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",
       // Composer sets carry no catalog variation block: the engine's jitter
@@ -929,9 +936,9 @@ function buildSfx(soundEntries) {
     let sounds = [];
     let note = null;
     if (EVENT_FOLEY[id]) {
-      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, pick: "primary take only", usedBy: id });
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
       sounds = l ? [l] : [];
-      note = "composer takeover: every UI event plays the approved click";
+      note = "every UI event is bound to the approved click — one single sound";
     } else if (id === "player.jump") {
       continue;                                   // per-character events, added below
     } else {
@@ -946,9 +953,9 @@ function buildSfx(soundEntries) {
     if (events.some((e) => e.id === id)) continue;
     let sounds = [], note = null, bound = false;
     if (EVENT_FOLEY[id]) {
-      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, pick: "primary take only", usedBy: id });
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
       sounds = l ? [l] : []; bound = true;
-      note = "composer takeover: every UI event plays the approved click";
+      note = "every UI event is bound to the approved click — one single sound";
     } else if (id === "player.fall" || id === "player.jump") {
       continue;                                   // per-character events, added below
     }
@@ -965,13 +972,15 @@ function buildSfx(soundEntries) {
     const level = (s) => engine.stepBaseDb + (Number(FOOT_TRIM[s]) || 0);
     const one = (s, extraDb, layerNote) => {
       const catId = FOOT_CAT[s];
-      if (catId) return catLayer(catId, { trimDb: level(s) + extraDb, layerNote, usedBy: `footsteps.${s}` });
+      // Steps bind their primary take too (foleyEntry/catalogStepEntry both
+      // slice to one url — the approved take, every step, micro-jitter only).
+      if (catId) return catLayer(catId, { trimDb: level(s) + extraDb, layerNote, primary: true, usedBy: `footsteps.${s}` });
       const set = FOOT_SETS[s] ?? footDefault;
       return setLayer(set, {
         trimDb: level(s) + extraDb,
         lowpassHz: FOOT_LP[s] != null ? Number(FOOT_LP[s]) : null,
         rate: FOOT_RATE[s] != null ? Number(FOOT_RATE[s]) : 1,
-        layerNote, usedBy: `footsteps.${s}`,
+        layerNote, primary: true, usedBy: `footsteps.${s}`,
       });
     };
     const main = one(surf, 0, null);
@@ -987,12 +996,12 @@ function buildSfx(soundEntries) {
       sounds: layers });
   }
   // The wet shoreline step and the composer's own flourishes.
-  const wet = catLayer("splash", { rate: engine.wetStepRate, layerNote: "the water-exit splash, pitched brighter" });
+  const wet = catLayer("splash", { rate: engine.wetStepRate, primary: true, layerNote: "the water-exit splash, pitched brighter" });
   if (wet) events.push({ id: "footsteps.wet", group: "Movement", name: "Footsteps · Wet shoreline", bus: "sfx", duck: false, emitted: true, bound: true, note: null, sounds: [wet] });
   const star = catLayer("gem_pickup", { trimDb: -10 });
   if (star) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "played on the music's beat, in the track's key (scale-snapped)", sounds: [star] });
-  const thunder = setLayer("thunder", { trimDb: 6, pick: "primary take every strike", usedBy: "weather.thunder" });
+  const thunder = setLayer("thunder", { trimDb: 6, primary: true, usedBy: "weather.thunder" });
   if (thunder) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
 
