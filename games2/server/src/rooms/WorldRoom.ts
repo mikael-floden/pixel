@@ -73,6 +73,7 @@ import {
   CHASE_SPEED_WU,
   ESCAPE_RADIUS_WU,
   ORBIT_SPEED_WU,
+  ORBIT_FLIP_MEAN_S,
   MONSTER_DIE_MS,
   MONSTER_RESPAWN_MS,
   PLAYER_RESPAWN_MS,
@@ -934,6 +935,10 @@ export class WorldRoom extends Room<WorldState> {
           m.moving = false;
           const face = faceDirWorld(m.x, m.y, tp.x, tp.y);
           if (face) m.dir = face;
+          // The boxing pair RARELY switches direction — exponential with a
+          // ~ORBIT_FLIP_MEAN_S mean while actively circling (maintainer:
+          // "rarely change orbit direction, once every min on average").
+          if (Math.random() < dt / ORBIT_FLIP_MEAN_S) m.orbitSign = -m.orbitSign;
           const inv = 1 / (dist || 1);
           const ux = dxp * inv;
           const uy = dyp * inv;
@@ -1490,10 +1495,33 @@ export class WorldRoom extends Room<WorldState> {
       if (player.swimming) return;
       const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
       const range = attackRange(PLAYER_BODY_RADIUS, rm);
-      // A grace band past swing range: the monster's own circling must not
-      // flicker the engagement off every time it drifts a few wu out.
-      if (Math.hypot(m.x - player.x, m.y - player.y) > range * 1.2) return;
+      // A grace band past swing range: the circling must not flicker the
+      // engagement off every time the pair drifts a few wu apart.
+      const pdx = m.x - player.x;
+      const pdy = m.y - player.y;
+      const pdist = Math.hypot(pdx, pdy);
+      if (pdist > range * 1.2) return;
       if (Math.abs(m.elev - player.elev) > 2) return;
+      // THE BOXING SHUFFLE (maintainer: "both the player and the monster
+      // should walk around each other"): a standing engaged fighter drifts
+      // tangentially around its opponent with the SAME rotational sense as
+      // the monster's orbit — the pair revolves about its midpoint. Ground-
+      // validated per axis (never into water — the sanctuary — or off a
+      // cliff); no `moving` flag, so the stance stays the fight idle. The
+      // client needs no prediction: with no input pending, its predicted
+      // position IS the synced one, and the render ease glides the 20Hz
+      // steps.
+      if (this.terrain) {
+        const pin = 1 / (pdist || 1);
+        const pux = pdx * pin; // player -> monster
+        const puy = pdy * pin;
+        const bctx = { maxClimb: WALK_CLIMB, canSwim: false };
+        const bx = clamp(player.x + puy * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldW - 1);
+        const by = clamp(player.y - pux * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldH - 1);
+        if (canEnterElev(this.terrain, player.elev, player.x, player.y, bx, player.y, bctx).ok) player.x = bx;
+        if (canEnterElev(this.terrain, player.elev, player.x, player.y, player.x, by, bctx).ok) player.y = by;
+        player.elev = resolveElevAt(this.terrain, player.elev, player.x, player.y, bctx);
+      }
       if (now < player.nextSwingAt) return;
       player.nextSwingAt = now + PLAYER_ATTACK_MS;
       player.action = "attack";

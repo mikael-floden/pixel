@@ -790,10 +790,18 @@ visible head/shoulders are ABOVE the surface).
   RUN-AWAY LINE: ESCAPE_RADIUS_WU 780 ≈ 1.5 screens (camera frames ~520wu,
   zoomFor) beyond the home ZONE bbox — crossing it makes the hunter give up,
   walk home (m.returning, aggro-scan suppressed), and the flee slow lifts.
-  IN-FIGHT CIRCLING (maintainer's idea): waiting on its cooldown the monster
-  strafes tangentially (ORBIT_SPEED 24, per-monster handedness from an id
-  hash) holding ~0.8 reach, and the stationary player's DISPLAYED facing
-  tracks the target — so the attack/angry directions sweep for both bodies.
+  IN-FIGHT CIRCLING, round 4 ("more like a boxing fight"): BOTH bodies strafe
+  tangentially with the same rotational sense (ORBIT_SPEED 15) — the monster
+  holds ~0.8 reach radially, the standing engaged player is drifted by the
+  SERVER around its opponent (stepCombat; ground-validated, never into water,
+  moving stays false so the stance is the fight idle — and the client needs
+  NO prediction: with no input pending its predicted position IS the synced
+  one, the render ease glides the 20Hz steps). Handedness starts id-hashed
+  and RARELY flips (exponential, ~ORBIT_FLIP_MEAN_S 60s while circling).
+  Facing tracks the opponent on both sides, so attack/angry directions sweep.
+  ENGAGING SHOWS THE SWORD, NEVER THE BEACON: monster taps and chase repaths
+  pass showMarker=false to setMoveTarget — ground taps keep the beacon and
+  never the sword (maintainer round 4).
   THE GIVE-UP IS THE REJECTED STEP: chase movement is leash-gated (withinLeash
   = zone bbox + ESCAPE_RADIUS), so the monster reaches the rim but never
   crosses it — a "give up when beyond the leash" position check is provably

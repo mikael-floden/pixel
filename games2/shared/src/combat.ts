@@ -140,14 +140,16 @@ export const MONSTER_RESPAWN_MS = 12_000;
 export const MONSTER_DIE_MS = 1_100; // corpse lingers (die clip) before removal + drops
 
 // The in-fight CIRCLING (maintainer: "the player and the monster will slowly
-// circle each other in order to make the attack and angry-idle vary in
-// direction"): while waiting on its swing cooldown in reach, the monster
-// strafes tangentially around its target at ORBIT_SPEED. The direction it
-// faces (and so the attack/angry strips shown) then sweeps naturally. The
-// orbit handedness is per-monster (id hash) so a pack doesn't rotate in
-// lockstep. The player's DISPLAYED facing tracks the engaged monster
-// client-side, which completes the effect without touching real input.
-export const ORBIT_SPEED_WU = 24;
+// circle each other … more like a boxing fight"): while a fight waits on
+// cooldowns, BOTH bodies strafe tangentially with the same rotational sense —
+// the pair slowly revolves about its midpoint like boxers rounding a ring.
+// The monster holds the spacing (radial hold at ~0.8 reach); the standing
+// player just circles. Facing tracks the opponent on both sides, so the
+// attack/angry directions sweep. Handedness starts per-monster (id hash) and
+// RARELY reverses — ~once a minute on average (an exponential dt/60 flip
+// while circling), per the maintainer.
+export const ORBIT_SPEED_WU = 15;
+export const ORBIT_FLIP_MEAN_S = 60;
 
 // --- death / respawn / regen ------------------------------------------------
 

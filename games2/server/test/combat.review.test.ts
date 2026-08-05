@@ -132,11 +132,34 @@ test("sword-marking provokes on approach; escaping lifts the flee slow", async (
     // The hunt pins the flee slow on us (0.8, or 0.55 if a swing lands).
     await waitFor(() => me().slow < 1, 2000, "hunted player carries the flee slow");
 
+    // THE BOXING SHUFFLE: once the frog closes to reach, the standing player
+    // circles too — the server drifts an input-less engaged fighter around
+    // its opponent (both bodies walk around each other, maintainer round 4).
+    await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "combat", 8000, "fight reaches melee");
+    const bx0 = me().x;
+    const by0 = me().y;
+    await new Promise((r) => setTimeout(r, 1200));
+    if (!me().dead) {
+      const moved = Math.hypot(me().x - bx0, me().y - by0);
+      assert.ok(moved > 3, `standing fighter circles its opponent (moved ${moved.toFixed(1)}wu)`);
+    }
+
     // ESCAPE: cross the run-away line — the frog gives up, the slow lifts.
-    r1.send("engage", { id: null });
-    r1.send("teleport", { x: 1600, y: 1600 });
-    await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "roam", 15000, "give-up at the escape line");
-    await waitFor(() => me().slow === 1, 4000, "successful escape lifts the slow");
+    // Re-asserted every 300ms: under full-suite CPU contention a single
+    // teleport can race a landing swing (or a death + dead-guard), and the
+    // point here is the GIVE-UP, not one message's luck.
+    const kite = setInterval(() => {
+      if (!me().dead) {
+        r1.send("engage", { id: null });
+        r1.send("teleport", { x: 1600, y: 1600 });
+      }
+    }, 300);
+    try {
+      await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "roam", 20000, "give-up at the escape line");
+      await waitFor(() => me().slow === 1, 4000, "successful escape lifts the slow");
+    } finally {
+      clearInterval(kite);
+    }
     await r1.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);

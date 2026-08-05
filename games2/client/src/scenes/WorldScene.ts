@@ -967,7 +967,7 @@ export class WorldScene extends Phaser.Scene {
           this.engagedId = tgt.id;
           this.pendingPickupId = null;
           const mv = this.monsters.get(tgt.id)!;
-          this.setMoveTarget(mv.fx, mv.fy, true);
+          this.setMoveTarget(mv.fx, mv.fy, true, false, undefined, false); // sword mark, no beacon
           this.nextChaseRepathAt = 0;
           // Tell the server NOW, not on arrival: the target persists while
           // moving and the sword-marked monster aggros as we close in.
@@ -2359,7 +2359,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.trip) this.clearMoveTarget(); // arrived: stand and fight
     } else if (now >= this.nextChaseRepathAt) {
       this.nextChaseRepathAt = now + 300; // the target roams/circles — retarget
-      this.setMoveTarget(mv.fx, mv.fy, true);
+      this.setMoveTarget(mv.fx, mv.fy, true, false, undefined, false); // sword mark, no beacon
     }
   }
 
@@ -2394,9 +2394,11 @@ export class WorldScene extends Phaser.Scene {
           this.load.start();
         }
         if (this.attackIcon) {
+          // Hug the monster (maintainer: "closer … further down"): the icon's
+          // BOTTOM rides just above the head, dipping into it on the bob.
           const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
           const bob = Math.sin(this.time.now / 260) * 2;
-          this.attackIcon.setPosition(mv.lx, top - 10 + bob).setVisible(true);
+          this.attackIcon.setPosition(mv.lx, top + 6 + bob).setVisible(true);
         }
       }
     }
@@ -4377,7 +4379,7 @@ export class WorldScene extends Phaser.Scene {
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
-  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number) {
+  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number, showMarker = true) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
@@ -4396,6 +4398,14 @@ export class WorldScene extends Phaser.Scene {
     // every retarget and oscillate run/walk forever.
     if (hold && this.trip) trip.slow = this.trip.slow;
     this.trip = trip;
+    // Engaging a MONSTER shows the sword mark instead of a destination — the
+    // beacon would double-flag the same intent (maintainer 2026-08-05); a
+    // plain ground tap keeps the beacon and never the sword.
+    if (!showMarker) {
+      this.tapMarker?.destroy();
+      this.tapMarker = undefined;
+      return;
+    }
     const end = trip.target;
     this.ensureTapAssets();
     const p = this.projectFlat(end.x, end.y);
