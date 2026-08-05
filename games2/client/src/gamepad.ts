@@ -80,6 +80,10 @@ function synthKey(kind: "keydown" | "keyup", k: string) {
 /** Mount the stick into the gamepad page. Idempotent per page element. */
 export function mountGamepadStick(page: HTMLElement) {
   injectStyles();
+  // A HUD rebuild (rejoin) hands us a FRESH page element; the landscape stick
+  // may be parented to <body> (see layout) and would survive the old HUD's
+  // removal as a zombie — clear any strays first.
+  document.querySelectorAll(".ml-pad-stick, .ml-pad-blur").forEach((e) => e.remove());
   const pad = mk("div", "ml-pad-stick");
   const top = mk("div", "ml-pad-top");
   pad.append(top);
@@ -207,22 +211,26 @@ export function mountGamepadStick(page: HTMLElement) {
     const land = document.documentElement.classList.contains("ml-land");
     // glide only when HANDEDNESS changes and the page is actually visible —
     // never on page entry, plain resizes or rotation
-    if (page.clientWidth > 0 && lastHand !== null && leftHand !== lastHand) armAnim();
+    const vis = page.clientWidth > 0;
+    if (vis && lastHand !== null && leftHand !== lastHand) armAnim();
     lastHand = leftHand;
     if (land) {
-      // LANDSCAPE: the stick leaves the page and FLOATS in the game view's
-      // very bottom corner on the thumb's side, GHOSTED at 0.25 alpha
-      // (maintainer 2026-08-05: "75% transparency… behind any chat text or
-      // time-of-day pill") — position:fixed escapes the page box; an
-      // unselected gamepad tab still hides it (display:none up the tree).
-      // z-index 4 keeps it UNDER the chat overlay (5), the pill and the
-      // chips (8); chat lines and the pill are pointer-events:none, so the
-      // thumb steers straight through them. Jump + pick up stay IN the menu
-      // column under the other thumb, side by side on the midline (no hand
-      // mirror inside the column — it is under the free thumb either way).
+      // LANDSCAPE: the stick leaves the page ENTIRELY — reparented to <body>
+      // so it shows on EVERY tab (maintainer 2026-08-05: "always display the
+      // analog thumbstick when in landscape, regardless of active menu
+      // item"), floating in the game view's very bottom corner on the
+      // thumb's side, GHOSTED at 0.15 alpha ("85% transparency"; fades to 1
+      // while held). z-index 4 keeps it UNDER the chat overlay (5), the pill
+      // and the chips (8); chat lines and the pill are pointer-events:none,
+      // so the thumb steers straight through them. Jump + pick up stay IN
+      // the gamepad page under the other thumb. Reparenting keeps all the
+      // pointer listeners — and its viewport-based fixed position is valid
+      // even while the HUD shows another page, so there is nothing stale to
+      // animate from when tabs change.
+      if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
-      pad.style.opacity = "0.25";
+      pad.style.opacity = "0.15";
       pad.style.left = `${leftHand ? 10 : window.innerWidth - 10 - well}px`;
       pad.style.top = `${window.innerHeight - 10 - well}px`;
       // the blur disc rides exactly under it
@@ -231,43 +239,57 @@ export function mountGamepadStick(page: HTMLElement) {
       padBlur.style.left = pad.style.left;
       padBlur.style.top = pad.style.top;
       // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
-      // stack around the column's midline, label above each button.
-      const cx = Math.round(page.clientWidth / 2);
-      const gap = 34; // room for the lower button's label between the two
-      pickup.style.width = pickup.style.height = `${pickD}px`;
-      pickup.style.left = `${cx - Math.round(pickD / 2)}px`;
-      pickup.style.top = `${Math.round(midY - gap / 2 - pickD)}px`;
-      jump.style.width = jump.style.height = `${jumpD}px`;
-      jump.style.left = `${cx - Math.round(jumpD / 2)}px`;
-      jump.style.top = `${Math.round(midY + gap / 2)}px`;
-      pickupLabel.style.left = `${cx}px`;
-      pickupLabel.style.top = `${Math.round(midY - gap / 2 - pickD - 10)}px`;
-      jumpLabel.style.left = `${cx}px`;
-      jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
+      // stack around the column's midline, label above each button. Page-
+      // relative writes only while the page is VISIBLE: while it is
+      // display:none its width reads 0 and these would park the buttons at
+      // garbage coordinates — the source of the "controller graphics
+      // animate" glitch when opening the tab after a hidden re-layout. The
+      // ResizeObserver re-runs this before the first visible paint.
+      if (vis) {
+        const cx = Math.round(page.clientWidth / 2);
+        const gap = 34; // room for the lower button's label between the two
+        pickup.style.width = pickup.style.height = `${pickD}px`;
+        pickup.style.left = `${cx - Math.round(pickD / 2)}px`;
+        pickup.style.top = `${Math.round(midY - gap / 2 - pickD)}px`;
+        jump.style.width = jump.style.height = `${jumpD}px`;
+        jump.style.left = `${cx - Math.round(jumpD / 2)}px`;
+        jump.style.top = `${Math.round(midY + gap / 2)}px`;
+        pickupLabel.style.left = `${cx}px`;
+        pickupLabel.style.top = `${Math.round(midY - gap / 2 - pickD - 10)}px`;
+        jumpLabel.style.left = `${cx}px`;
+        jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
+      }
       walkLabel.style.display = "none"; // a floating label over world art is noise
     } else {
+      // PORTRAIT: back into the page (absolute inside it), opaque.
+      if (pad.parentElement !== page) {
+        page.insertBefore(pad, page.firstChild);
+        page.insertBefore(padBlur, pad);
+      }
       pad.style.position = "";
       pad.style.zIndex = "";
       pad.style.opacity = "";
       padBlur.style.display = "none"; // portrait sits on the opaque HUD page
-      pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
-      pad.style.top = `${Math.round(midY - well / 2)}px`;
-      jump.style.width = jump.style.height = `${jumpD}px`;
-      jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
-      jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
-      pickup.style.width = pickup.style.height = `${pickD}px`;
-      pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
-      pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
-      // labels share one row, floating a fixed gap above the taller control
-      const labelY = Math.round(midY - well / 2 - 10);
-      walkLabel.style.display = "";
-      for (const [el, fx] of [
-        [jumpLabel, jumpFx],
-        [pickupLabel, pickFx],
-        [walkLabel, stickFx],
-      ] as const) {
-        el.style.left = `${Math.round(page.clientWidth * fx)}px`;
-        el.style.top = `${labelY}px`;
+      if (vis) {
+        pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
+        pad.style.top = `${Math.round(midY - well / 2)}px`;
+        jump.style.width = jump.style.height = `${jumpD}px`;
+        jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
+        jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+        pickup.style.width = pickup.style.height = `${pickD}px`;
+        pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
+        pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
+        // labels share one row, floating a fixed gap above the taller control
+        const labelY = Math.round(midY - well / 2 - 10);
+        walkLabel.style.display = "";
+        for (const [el, fx] of [
+          [jumpLabel, jumpFx],
+          [pickupLabel, pickFx],
+          [walkLabel, stickFx],
+        ] as const) {
+          el.style.left = `${Math.round(page.clientWidth * fx)}px`;
+          el.style.top = `${labelY}px`;
+        }
       }
     }
     setCap(visSector, visRadius);
@@ -319,7 +341,7 @@ export function mountGamepadStick(page: HTMLElement) {
     setKeys(-1, false);
     setCap(-1, 0); // glide back to centre
     // the landscape ghost fades back to rest once the thumb lets go
-    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "0.25";
+    if (document.documentElement.classList.contains("ml-land")) pad.style.opacity = "0.15";
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {

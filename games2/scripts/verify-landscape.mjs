@@ -236,9 +236,23 @@ try {
   g.stick.l > g.game.l && Math.abs(851 - 10 - g.stick.r) <= 2 && Math.abs(g.vh - 10 - g.stick.b) <= 2
     ? ok(`stick in the game view's bottom-RIGHT corner (x ${g.stick.l}..${g.stick.r}, b ${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)} want r=${851 - 10}, b=${g.vh - 10}`);
-  Math.abs(parseFloat(g.stickOp) - 0.25) <= 0.01
-    ? ok(`stick ghosted at 0.25 alpha (${g.stickOp})`)
-    : fail(`stick opacity ${g.stickOp}, want 0.25`);
+  Math.abs(parseFloat(g.stickOp) - 0.15) <= 0.01
+    ? ok(`stick ghosted at 0.15 alpha — 85% transparent (${g.stickOp})`)
+    : fail(`stick opacity ${g.stickOp}, want 0.15`);
+  // ALWAYS ON SCREEN in landscape (maintainer 2026-08-05): the stick is
+  // reparented to <body>, so another tab's page can't hide it.
+  await page.evaluate(() => document.querySelector('[data-tab="backpack"]').click());
+  await page.waitForTimeout(300);
+  const onBackpack = await page.evaluate(() => {
+    const e = document.querySelector(".ml-pad-stick");
+    const r = e.getBoundingClientRect();
+    return { parent: e.parentElement.tagName, w: Math.round(r.width), visible: r.width > 0 && e.offsetParent !== null };
+  });
+  onBackpack.parent === "BODY" && onBackpack.w > 100
+    ? ok(`stick stays on screen on the backpack tab (parented to <body>, ${onBackpack.w}px)`)
+    : fail(`stick gone on another tab: ${JSON.stringify(onBackpack)}`);
+  await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
+  await page.waitForTimeout(300);
   // BLUR DISC: its own element (the stick's opaque bg + 0.25 opacity would
   // hide/dilute a backdrop-filter on the stick itself), pinned to the same
   // rect, z 3 = under the stick, transparent so ONLY the blur reads.
@@ -311,14 +325,14 @@ try {
   await page.mouse.up();
   const faded = await page
     .waitForFunction(
-      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-stick")).opacity) - 0.25) <= 0.02,
+      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-stick")).opacity) - 0.15) <= 0.02,
       null,
       { timeout: 8000, polling: 150 },
     )
     .then(() => true)
     .catch(() => false);
   faded
-    ? ok("…and back to the 0.25 ghost on release")
+    ? ok("…and back to the 0.15 ghost on release")
     : fail(
         `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick")).opacity)} after release`,
       );
@@ -328,6 +342,33 @@ try {
   });
   const moved = Math.hypot(p1.x - p0.x, p1.y - p0.y);
   moved > 3 ? ok(`floating stick moves the player (${moved.toFixed(1)}wu)`) : fail(`stick drag moved ${moved.toFixed(1)}wu`);
+
+  // ---- 2b. the maintainer's repro: backpack tab, ROTATE, then open the
+  //          gamepad tab — the controls must not animate into place ----
+  await page.evaluate(() => document.querySelector('[data-tab="backpack"]').click());
+  await page.setViewportSize({ width: 393, height: 851 });
+  await settle();
+  await page.setViewportSize({ width: 851, height: 393 });
+  await settle();
+  await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
+  const track = await page.evaluate(
+    () =>
+      new Promise((res) => {
+        const el = document.querySelector(".ml-pad-jump");
+        const seen = [];
+        let n = 0;
+        const tick = () => {
+          const r = el.getBoundingClientRect();
+          seen.push(`${Math.round(r.left)},${Math.round(r.top)}`);
+          if (++n < 8) requestAnimationFrame(tick);
+          else res(seen);
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+  new Set(track).size === 1 && !track[0].startsWith("-")
+    ? ok(`gamepad entry after rotation holds still (jump pinned at ${track[0]} over ${track.length} frames)`)
+    : fail(`controls moved on tab entry after rotation: ${[...new Set(track)].join(" -> ")}`);
 
   // ---- 3. LEFT-HANDED: everything mirrors ----
   await page.evaluate(() => window.__ml.hand("left"));

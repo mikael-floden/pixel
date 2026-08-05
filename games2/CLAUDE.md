@@ -1737,13 +1737,15 @@ visible head/shoulders are ABOVE the surface).
   the locked-page mental model; the real re-layout keeps every icon and
   all text upright, which is the intent (a sideways backpack is not a
   backpack), and the gate PINS transform:none on them. GAMEPAD: in
-  landscape the stick leaves the page and FLOATS in the game view's
-  very BOTTOM CORNER on the thumb's side (10px insets), GHOSTED at 0.25
-  alpha and BEHIND the corner chrome — position:fixed, z 4, under the
+  landscape the stick is REPARENTED TO <body> — visible and usable on
+  EVERY tab, not just the gamepad page (maintainer 2026-08-05); a HUD
+  rebuild clears strays first — floating in the game view's very BOTTOM
+  CORNER on the thumb's side (10px insets), GHOSTED at 0.15 alpha (85%
+  transparent) and BEHIND the corner chrome — position:fixed, z 4, under the
   chat overlay (5) and the pill/chips (8), all of which are
   pointer-events:none so the thumb steers straight through them; hidden
   with the page when another tab is up. WHILE HELD it fades to fully
-  visible (pointerdown -> opacity 1, release -> 0.25; the opacity
+  visible (pointerdown -> opacity 1, release -> 0.15; the opacity
   transition is the only always-on one), and it is BACKED BY A BLUR DISC
   — the bars chips' same blur(5px), but as its OWN full-opacity
   transparent element (.ml-pad-blur, z 3) pinned to the stick's rect:
@@ -1754,7 +1756,11 @@ visible head/shoulders are ABOVE the surface).
   on the opaque HUD page there. PICK UP stacks ABOVE JUMP on
   the menu column's centre line under the other thumb, and the vertical
   tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
-  stick/jump/pick-up fractions by hand. The position glide is
+  stick/jump/pick-up fractions by hand. Page-RELATIVE writes in layout() are skipped while the page is
+  display:none (its width reads 0 — the buttons would park at garbage
+  coordinates and visibly correct on tab entry; the maintainer's
+  backpack -> rotate -> gamepad repro is pinned frame-by-frame in the
+  gate). The position glide is
   .anim-GATED and fires ONLY on a handedness change while the page is
   visible; ROTATION SNAPS (maintainer 2026-08-05, twice refined: first
   "not when clicking from and to the game-controller page", then "the
