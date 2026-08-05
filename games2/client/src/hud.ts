@@ -923,6 +923,12 @@ export class HudBar {
     count.pattern = "[0-9]*";
     count.maxLength = 3; // INV_MAX_STACK is 99
     count.setAttribute("aria-label", `How many to drop, up to ${max}`);
+    // Tapping the box CLEARS it (maintainer): you type the number you want,
+    // never "delete the 1 first". Leaving it empty is not a change — blur
+    // repaints the amount that was there.
+    count.addEventListener("focus", () => {
+      count.value = "";
+    });
     count.addEventListener("input", () => {
       const v = count.value.trim();
       if (!/^\d+$/.test(v)) return; // mid-edit junk: hold the amount
@@ -938,12 +944,15 @@ export class HudBar {
     const of = mk("span", "ml-qty-of");
     of.textContent = `of ${max}`;
     // ONE line — count box and "of N" side by side, so the box can stand as
-    // tall as the ± buttons beside it (maintainer).
+    // tall as the ± buttons (maintainer). The item + count group hugs the
+    // LEFT edge, the two steppers sit together on the RIGHT.
     const countWrap = mk("div", "ml-qty-countwrap");
     const times = mk("span", "ml-qty-x");
     times.textContent = "×";
     countWrap.append(times, count, of);
-    head.append(img, dec, countWrap, inc);
+    const steppers = mk("div", "ml-qty-steppers");
+    steppers.append(dec, inc);
+    head.append(img, countWrap, steppers);
 
     const paint = () => {
       count.value = `${want}`;
@@ -1348,15 +1357,13 @@ function mountChatKeyboardLift() {
   // BOTH chat boxes: the Chat page's (.ml-chat-input) and the in-world
   // overlay's (.ml-chatinput, chat.ts). Either one focused means a keyboard is
   // coming, and everything anchored to the bottom has to get out of its way.
-  // The drop dialog's number box (.ml-qty-count) rides along: it raises no
-  // box of its own, but .ml-kb-up is what lifts the CARD clear of the number
-  // keyboard (a landscape phone is ~393px tall — a centred card would be
-  // buried under the keys).
+  // The drop dialog's number box deliberately does NOT ride along: it floats
+  // nothing, and lifting the card when the number keyboard opened moved the
+  // dialog out from under the maintainer's finger. It clears the keys by
+  // sitting at 45% of the view instead (see .ml-qty).
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement &&
-    (t.classList.contains("ml-chat-input") ||
-      t.classList.contains("ml-chatinput") ||
-      t.classList.contains("ml-qty-count"));
+    (t.classList.contains("ml-chat-input") || t.classList.contains("ml-chatinput"));
   document.addEventListener("focusin", (e) => {
     if (!isChatInput(e.target)) return;
     input = e.target as HTMLElement;
@@ -1518,25 +1525,31 @@ function injectStyles() {
   /* The backdrop DARKENS in BOTH themes (maintainer 2026-08-05) — a
      theme-coloured wash brightened the world in light mode, which read as the
      dialog lighting the room instead of dimming it. */
-  .ml-qty-back{position:fixed;inset:0;z-index:70;display:flex;
-    align-items:center;justify-content:center;
-    padding:0 var(--gv-right,0px) var(--hud-h,0px) var(--gv-left,0px);
+  .ml-qty-back{position:fixed;inset:0;z-index:70;
     background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-  /* …and while the number keyboard is up the card climbs to the top of the
-     game view, or the keys would bury it on a landscape phone. */
-  :root.ml-kb-up .ml-qty-back{align-items:flex-start;padding-top:12px}
-  .ml-qty{width:min(320px, calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 40px));
+  /* The card sits at 45% of the GAME VIEW's height, not 50% (maintainer
+     2026-08-05): a hair above centre, which keeps the number box clear of
+     the phone's number keyboard WITHOUT the card jumping when it opens —
+     a lift that moves the dialog under your finger is worse than the few
+     px it saves. Horizontally it is centred between the gv insets. */
+  .ml-qty{position:absolute;
+    left:calc(var(--gv-left,0px) + (100vw - var(--gv-left,0px) - var(--gv-right,0px)) / 2);
+    top:calc((100dvh - var(--hud-h,0px)) * .45);
+    transform:translate(-50%,-50%);
+    width:min(320px, calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 40px));
     box-sizing:border-box;display:flex;flex-direction:column;gap:10px;
     background:var(--bg);border:1px solid var(--border);border-radius:14px;
     padding:14px;box-shadow:var(--shadow)}
-  /* ONE row: the item, −, the typable count, + (maintainer: "the +/- should
-     be on same line as the icon/×3 of 12") */
+  /* ONE row: item + count LEFT, the two steppers together RIGHT (maintainer:
+     "the + and minus buttons should be left aligned on the right side. The
+     ×1 of 5 input should be left aligned on the left side") */
   .ml-qty-head{display:flex;align-items:center;gap:8px}
+  .ml-qty-steppers{margin-left:auto;display:flex;align-items:center;gap:8px}
   .ml-qty-head img{width:44px;height:44px;flex:none;object-fit:contain;
     image-rendering:pixelated}
-  .ml-qty-countwrap{flex:1 1 auto;min-width:0;display:flex;align-items:center;
-    justify-content:center;gap:5px}
+  .ml-qty-countwrap{flex:0 1 auto;min-width:0;display:flex;align-items:center;
+    justify-content:flex-start;gap:5px}
   .ml-qty-x{font:700 20px/1.15 var(--sans);color:var(--muted)}
   .ml-qty-count{width:2.6em;height:44px;box-sizing:border-box;text-align:center;
     background:var(--surface);color:var(--ink);

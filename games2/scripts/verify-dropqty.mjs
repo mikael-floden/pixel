@@ -103,6 +103,7 @@ const geom = () =>
         // it inside the same cell).
         const shares = (x) => !!x && !!im && x.top < im.bottom - 4 && x.bottom > im.top + 4;
         const of = b(".ml-qty-of");
+        const card = document.querySelector(".ml-qty")?.getBoundingClientRect();
         return {
           sameLine: shares(dec) && shares(inc) && shares(cnt),
           // "of N" beside the box (not under it), and the box as tall as ±
@@ -110,8 +111,13 @@ const geom = () =>
             !!of && !!cnt && !!dec && shares(of) && of.left >= cnt.right - 1 &&
             Math.abs(cnt.height - dec.height) <= 2,
           boxH: cnt ? Math.round(cnt.height) : null,
-          decLeftOfCount: !!dec && !!cnt && dec.right <= cnt.left,
-          incRightOfCount: !!inc && !!cnt && inc.left >= cnt.right,
+          // item + count hug the LEFT edge, the steppers ride the RIGHT one,
+          // adjacent to each other (maintainer 2026-08-05)
+          countLeft: !!im && !!cnt && !!card && im.left - card.left < 20 && cnt.left < card.left + card.width / 2,
+          steppersRight:
+            !!dec && !!inc && !!of && !!card &&
+            dec.left > of.right && card.right - inc.right < 20 && inc.left - dec.right < 14,
+          decLeftOfInc: !!dec && !!inc && dec.right <= inc.left,
           dropBelow: !!drop && !!im && drop.top >= im.bottom,
           dropFull: !!drop && !!document.querySelector(".ml-qty") &&
             drop.width >= document.querySelector(".ml-qty").getBoundingClientRect().width - 30,
@@ -237,9 +243,11 @@ try {
     const gvB = g.vh - g.gv.hud;
     const cx = (g.card.l + g.card.r) / 2;
     const cy = (g.card.t + g.card.b) / 2;
-    Math.abs(cx - (gvL + gvR) / 2) <= 3 && Math.abs(cy - gvB / 2) <= 3
-      ? ok(`card centred in the game view (${Math.round(cx)},${Math.round(cy)} of ${gvL}..${gvR} × 0..${gvB})`)
-      : fail(`card off-centre: ${JSON.stringify(g.card)} in game view ${gvL}..${gvR} × 0..${gvB}`);
+    // horizontally centred; vertically at 45% of the game view — a hair high,
+    // so the number keyboard clears the box without the card ever moving.
+    Math.abs(cx - (gvL + gvR) / 2) <= 3 && Math.abs(cy - gvB * 0.45) <= 3
+      ? ok(`card at 45% of the game view (${Math.round(cx)},${Math.round(cy)} of ${gvL}..${gvR} × 0..${gvB})`)
+      : fail(`card misplaced: ${JSON.stringify(g.card)}, want cy≈${Math.round(gvB * 0.45)} in ${gvL}..${gvR} × 0..${gvB}`);
     g.card.l >= gvL && g.card.r <= gvR && g.card.b <= gvB
       ? ok("…and stays inside it")
       : fail(`card spills out of the game view: ${JSON.stringify(g.card)}`);
@@ -268,10 +276,13 @@ try {
         ? ok(`backdrop darkens the world (${g.backBg})`)
         : fail(`backdrop is not a darkening wash: ${g.backBg}`);
     }
-    // ONE ROW: item, −, count + "of N", + — then DROP full width underneath.
-    g.rows.sameLine && g.rows.decLeftOfCount && g.rows.incRightOfCount
-      ? ok("item, −, count and + share one line")
+    // ONE ROW: item + count LEFT, −/+ together RIGHT — DROP full width under.
+    g.rows.sameLine && g.rows.decLeftOfInc
+      ? ok("item, count, − and + share one line")
       : fail(`head row wrong: ${JSON.stringify(g.rows)}`);
+    g.rows.countLeft && g.rows.steppersRight
+      ? ok("item + count hug the left edge, the steppers ride the right")
+      : fail(`row alignment wrong: ${JSON.stringify(g.rows)}`);
     g.rows.ofInline
       ? ok(`"of N" sits on that line too, and the box matches the buttons (${g.rows.boxH}px)`)
       : fail(`"of N" or the box height is off: ${JSON.stringify(g.rows)}`);
@@ -322,21 +333,22 @@ try {
     : fail(`no wrap above the stack: ${await shown()}`);
 
   // ---- 5. TYPING a number, and junk that must not move the amount ----
-  await page.evaluate(() => {
+  // Tapping the box CLEARS it, so the number is typed straight in (maintainer).
+  const cleared = await page.evaluate(() => {
     const e = document.querySelector(".ml-qty-count");
+    const before = e.value;
     e.focus();
-    e.select();
+    return { before, after: e.value };
   });
+  cleared.before !== "" && cleared.after === ""
+    ? ok(`focusing the box clears it ("${cleared.before}" → empty)`)
+    : fail(`box not cleared on focus: ${JSON.stringify(cleared)}`);
   await page.keyboard.type("4");
   (await shown()) === "4" ? ok("the count accepts a typed number") : fail(`typed 4, box shows ${await shown()}`);
   // out of range and non-numeric are both refused — the amount holds at 4,
   // and leaving the box repaints it.
   for (const junk of ["9", "0", "abc", ""]) {
-    await page.evaluate(() => {
-      const e = document.querySelector(".ml-qty-count");
-      e.focus();
-      e.select();
-    });
+    await page.evaluate(() => document.querySelector(".ml-qty-count").focus());
     if (junk) await page.keyboard.type(junk);
     else await page.keyboard.press("Backspace");
     await page.evaluate(() => document.querySelector(".ml-qty-count").blur());

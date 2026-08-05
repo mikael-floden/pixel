@@ -895,17 +895,23 @@ visible head/shoulders are ABOVE the surface).
   rounds the same day). Every filled slot badges its count in the lower-right
   corner, **×1 included**; every drag-out then opens a card centred in the
   GAME VIEW — a stack asks how many, a lone item is the plain confirm ("this
-  dialog acts as a nice confirm dialog"). ONE row: item, **−**, a TYPABLE
-  count box (inputMode numeric; junk or an out-of-range number leaves the
-  amount exactly as it was, and blur repaints from it), "of N", **+**; a
-  full-width **DROP** word underneath. No cancel button and no max button —
-  tapping OUTSIDE the card closes it, and −/+ WRAP AROUND, so one tap on −
-  from ×1 is "all of them". The backdrop is `rgba(0,0,0,.5)` — DARKENING in
-  both themes (a `color-mix` of the theme's own `--bg` brightened the light
-  theme, which read as the dialog lighting the room). It centres off
-  `--gv-left/--gv-right/--hud-h`, so it lands mid-view in both orientations,
-  and `:root.ml-kb-up` lifts it to the top of the view while the number
-  keyboard is up (a landscape phone is ~393px tall). MOVEMENT IS FROZEN while
+  dialog acts as a nice confirm dialog"). ONE row: item + a TYPABLE count box
+  + "of N" hugging the LEFT edge, **−** and **+** together on the RIGHT; a
+  full-width **DROP** word underneath. The box is `inputMode numeric`, CLEARS
+  ON FOCUS (type the number you want, never "delete the 1 first"), and junk
+  or an out-of-range value leaves the amount exactly as it was — blur
+  repaints from it. No cancel button and no max button — tapping OUTSIDE the
+  card closes it, and −/+ WRAP AROUND, so one tap on − from ×1 is "all of
+  them". The backdrop is `rgba(0,0,0,.5)` — DARKENING in both themes (a
+  `color-mix` of the theme's own `--bg` brightened the light theme, which
+  read as the dialog lighting the room). The card is absolutely placed off
+  `--gv-left/--gv-right/--hud-h`: horizontally centred in the game view,
+  vertically at **45%** of its height. That 5% is the whole
+  number-keyboard story — it keeps the box above the keys in both
+  orientations WITHOUT the card moving when they open (a `.ml-kb-up` lift was
+  tried first and rejected: a dialog that jumps out from under your finger is
+  worse than the few px it buys, so the drop dialog's box deliberately does
+  NOT register with mountChatKeyboardLift). MOVEMENT IS FROZEN while
   it's open, both halves: the full-screen backdrop swallows every tap before
   Phaser sees it, and `HudActions.onUiLock` disables Phaser's keyboard (which
   the analog stick synthesizes into), resets held keys and drops any trip or
