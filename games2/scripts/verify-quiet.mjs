@@ -34,7 +34,13 @@ const APPROVED_SOUNDING = new Set([
 const REQUIRED_ACTIONS = [
   "combat.hit_taken", "combat.kick", "combat.punch", "combat.monster_die",
   "combat.cross_on", "combat.cross_off", "player.die", "item.pickup", "item.drop",
+  "progress.level_up", // bound but EMPTY (maintainer 2026-08-05)
 ];
+
+// Names that must NOT exist anywhere: removed events whose bindings/emissions
+// were left dangling once (maintainer: "never ever do that again"). item.get
+// was a SECOND name for the moment the game emits as item.pickup.
+const REMOVED_NAMES = ["item.get", "tool.sword_swing"];
 // Approved sounds that must keep being emitted (an over-eager cleanup that
 // silences the whole game must not pass).
 const REQUIRED_APPROVED = ["player.jump", "player.fall", "ui.press", "ui.release", "ui.notify"];
@@ -89,6 +95,21 @@ for (const n of REQUIRED_ACTIONS) {
 for (const n of REQUIRED_APPROVED) {
   if (!emitted.has(n)) fail(`approved "${n}" is no longer emitted — approved audio was lost`);
 }
+// ---- nothing dangling: removed names gone from bindings AND from source ---
+const bindingsJson = JSON.parse(readFileSync(join(ROOT, "..", "sounds", "bindings.json"), "utf8"));
+const boundNames = new Set((bindingsJson.events ?? []).map((e) => e.event));
+for (const n of REMOVED_NAMES) {
+  if (boundNames.has(n)) fail(`"${n}" is still bound in sounds/bindings.json`);
+  if (emitted.has(n)) fail(`"${n}" is still emitted by the game`);
+  if (api.includes(`"${n}"`)) fail(`"${n}" still referenced in api.ts`);
+}
+console.log(`  removed cleanly (no binding, no emission, no engine ref): ${REMOVED_NAMES.join(", ")}`);
+// An event may be BOUND with no sound on purpose (level_up): assignable, silent.
+for (const e of bindingsJson.events ?? []) {
+  if (!e.sound && !emitted.has(e.event))
+    console.log(`NOTE  "${e.event}" is bound with no sound and nothing emits it`);
+}
+
 // An assignment for an event nobody fires is dead wiring — worth a loud note.
 for (const n of assigned) {
   if (!emitted.has(n)) console.log(`NOTE  assignment for "${n}" but nothing emits it (dead wiring?)`);

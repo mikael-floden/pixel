@@ -87,13 +87,6 @@
       "play": "one_shot"
     },
     {
-      "event": "item.get",
-      "sound": "item_get",
-      "bus": "sfx",
-      "play": "one_shot",
-      "duck": true
-    },
-    {
       "event": "container.chest_open",
       "sound": "chest_open",
       "bus": "sfx",
@@ -122,12 +115,6 @@
       "sound": "eat_food",
       "bus": "sfx",
       "play": "one_shot"
-    },
-    {
-      "event": "tool.sword_swing",
-      "sound": "sword_swing",
-      "bus": "sfx",
-      "play": "round_robin"
     },
     {
       "event": "tool.sword_hit",
@@ -210,10 +197,9 @@
     },
     {
       "event": "progress.level_up",
-      "sound": "level_up",
       "bus": "sfx",
       "play": "one_shot",
-      "duck": true
+      "note": "no sound assigned \u2014 the Game Master assigns one in the wiki"
     },
     {
       "event": "progress.quest_complete",

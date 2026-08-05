@@ -2244,6 +2244,9 @@ export class WorldScene extends Phaser.Scene {
     room.onMessage("levelup", (msg: { name?: string; level?: number }) => {
       if (!msg?.name || !msg?.level) return;
       this.chat.addLog("—", `${msg.name} reached level ${msg.level}!`);
+      // BOUND BUT EMPTY (maintainer 2026-08-05): the action fires so the wiki
+      // can list it and assign a sound to it; nothing plays until they do.
+      gameAudio.event("progress.level_up");
     });
     room.onMessage("star", (msg: { name?: string }) => {
       this.shootingStar(msg?.name);
