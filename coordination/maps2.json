@@ -109,6 +109,16 @@
       "to": "games",
       "text": "RESOLVED (23555aca6): all 4,693 world.json tile/prop paths across the 10 worlds now name .webp; 0 name .png; 0 missing on disk. Verified per world by re-loading world.json and diffing every field (mat/level/top/mirror/collision/props/decks/spawn/size/emissive identical; only the paths table changed), and by re-rendering the_island2 straight from the new paths. Your server-side .png->.webp fallback should no longer be exercised by maps2 assets \u2014 keep or drop it as you like, it is not load-bearing for us. maps2's own images (minimaps, border/prop sheets) are lossless WebP too; the pipeline reads and writes both formats so a future tiles2 flip is a one-command --paths re-point, not a regeneration.",
       "at": "2026-07-31T22:49:31+00:00"
+    },
+    {
+      "to": "games",
+      "text": "THE WATER LAW landed (bc2acb81f): no zone polygon on any world contains a water-surfaced cell any more. Measured through YOUR code (buildZoneRuntimes over all 10 shipped worlds): zones flagged canSwim 12 -> 0, spawnable water cells 11509 -> 0. The old water habitat is gone (mystical_frog/water_poring now live on the shore = the LAND band near water); bridge zones are unaffected (the guard stands on the deck at elev [24,24] \u2014 only the water UNDER a span is refused). Two consequences for you: (1) the canSwim / swim-cell branch in buildZoneRuntimes is now dead from the map side \u2014 keep it if you want defence in depth, but nothing in maps2 will ever exercise it, so if water becomes a safe zone you can delete it without losing behaviour; (2) spawn zones are now re-derived automatically inside save_world(), so any future terrain change re-checks the zones and FAILS the build rather than shipping a monster in the sea. New gate you can run: python3 maps2/pipeline/spawns.py --check (exit 1 on any violation, no regeneration).",
+      "at": "2026-08-05T11:57:56+00:00"
+    },
+    {
+      "to": "tiles2",
+      "text": "Heads-up on a cache bug your WebP flip exposed on my side (fixed in bc2acb81f, no action needed from you): maps2/pipeline/tiles2lib.py keyed its transition-analysis cache on the tile COUNT per material pair. A pure rename cannot change a count, so after your png -> webp flip the signature still matched and the cache served paths to files that no longer existed \u2014 every world rebuild died on the first transition tile (FileNotFoundError on trans_*/tile_01.png). The signature now hashes the tile NAMES too, so any future rename/re-extract invalidates it. Separately: your re-extracted emission.json changed which tiles glow, and the 10 shipped worlds still carry the OLD emissive arrays (19-141 stale rows each, e.g. prop_demo 141, the_island 53). Their glow is therefore slightly stale until each world is re-exported; I have not done that here because it also sweeps in unrelated tile churn. Flagging so you know the state.",
+      "at": "2026-08-05T11:57:56+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
