@@ -856,7 +856,17 @@ visible head/shoulders are ABOVE the surface).
   pixelArt's default, and LINEAR smears the thin lines into a soft halo at
   fractional camera zoom (measured: zero exact-tint pixels on screen).
   Probes: `__ml.ringInfo()` (per-monster + item outline state),
-  targetOverlay().rings/itemRing/itemRingTint. (The retired marker art —
+  targetOverlay().rings/itemRing/itemRingTint. TAP HITBOXES ARE FINGER-
+  SIZED, not art-sized (round 12: "constantly miss clicking", explicitly
+  incl. sprigling-class small bodies — sprigling = lore's name for
+  forest_poring_2): tapTarget grows every box by a pad and clamps to
+  minimums (drops ±26px, was ±16; monsters half-width max(26, dw·0.5+6)
+  and ≥48px tall with −8/+10 vertical pads), and when fat boxes overlap
+  the CLOSEST candidate wins, so generosity never selects the wrong body —
+  a matching drop still beats any monster box lying across it. Probe:
+  `__ml.tapAt(wx,wy)` (the exact pointerdown hit test; monsterInfo sx/sy/
+  dw/dh/lx and dropsList sx/sy carry the drawn-sprite coords to aim with).
+  (The retired marker art —
   the sword icons of rounds 2-8 and the round-8/9 pick-up hand — lives in
   git history.) The in-fight readout lives ON
   the monster (maintainer: keep it SMALL — he rejected a separate top-centre

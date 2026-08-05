@@ -145,6 +145,12 @@ const TARGET_RING_BRIGHT = 0xb83a3a; // outer line, same palette a step brighter
 const ITEM_RING_COLOR = 0x9adcf0; // light-light-blue, inner
 const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
 const RING_PAD = 2; // outline canvas pad = border width in art pixels
+// Tap hitboxes (maintainer round 12: taps kept missing small targets). World
+// px ≈ screen px at zoom 1; phones run integer zoom ≥1, so these are AT
+// LEAST fingertip-scale on every device.
+const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
+const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
+const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -1396,6 +1402,9 @@ export class WorldScene extends Phaser.Scene {
         return { c0, r0, rows };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      // What a tap at these WORLD (iso screen-space) coords would select —
+      // the exact hit test pointerdown runs (round 12 hitbox QA).
+      tapAt: (wx: number, wy: number) => this.tapTarget(wx, wy),
       camZoom: () => this.cameras.main.zoom,
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
       // Weather probes: info + LOCAL force (headless QA without the server).
@@ -1915,6 +1924,13 @@ export class WorldScene extends Phaser.Scene {
           // Combat mirrors (verify-combat drives fights through these).
           x: mv.fx,
           y: mv.fy,
+          // The DRAWN sprite in iso screen-space (what tapAt compares
+          // against) + its display box — round-12 hitbox QA aims with these.
+          sx: mv.sprite.x,
+          sy: mv.sprite.y,
+          dw: mv.sprite.displayWidth,
+          dh: mv.sprite.displayHeight,
+          lx: mv.lx,
           hp: (this.room?.state as any)?.monsters?.get(id)?.hp ?? null,
           hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
           level: (this.room?.state as any)?.monsters?.get(id)?.level ?? null,
@@ -2122,8 +2138,14 @@ export class WorldScene extends Phaser.Scene {
         };
       },
       dropsList: () => {
-        const out: Array<{ id: string; item: string; x: number; y: number; shown: boolean }> = [];
-        this.drops.forEach((d, id) => out.push({ id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible }));
+        const out: Array<{
+          id: string; item: string; x: number; y: number; shown: boolean; sx: number; sy: number;
+        }> = [];
+        // x/y = FLAT world units (server space); sx/sy = the drawn image in
+        // iso screen-space (what tapAt compares against — round-12 QA).
+        this.drops.forEach((d, id) =>
+          out.push({ id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible, sx: d.img.x, sy: d.img.y }),
+        );
         return out;
       },
       pickupNearest: () => this.pickupNearest(),
@@ -2437,22 +2459,39 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** What did a world-coords tap land on? Drops first (small, precise
-   * intent), then monsters (their art box). Culled monsters are not drawn,
-   * so they are not tappable. */
+   * intent), then monsters. Culled monsters are not drawn, so they are not
+   * tappable. Hitboxes are FINGER-SIZED, not art-sized (maintainer round 12:
+   * "less hard/annoying by constantly miss clicking", explicitly incl. small
+   * monsters like the sprigling): every box is the art box grown by a pad
+   * and clamped to a minimum, and when the fat boxes overlap in a crowd the
+   * CLOSEST candidate wins — generosity must never select the wrong body. */
   private tapTarget(wx: number, wy: number): { kind: "drop" | "monster"; id: string } | null {
+    let best: { kind: "drop" | "monster"; id: string; d: number } | null = null;
     for (const [id, d] of this.drops) {
       if (!d.img.visible) continue;
-      if (Math.abs(wx - d.img.x) <= 16 && Math.abs(wy - d.img.y) <= 16) return { kind: "drop", id };
+      const dx = wx - d.img.x;
+      const dy = wy - d.img.y;
+      if (Math.abs(dx) <= DROP_TAP_HALF && Math.abs(dy) <= DROP_TAP_HALF) {
+        const dist = Math.hypot(dx, dy);
+        if (!best || dist < best.d) best = { kind: "drop", id, d: dist };
+      }
     }
+    // A drop tap is deliberate and drops are tiny — they keep priority over
+    // any monster box lying across them.
+    if (best) return { kind: best.kind, id: best.id };
     for (const [id, mv] of this.monsters) {
       if (mv.culled || mv.mstate === "die") continue;
       const sp = mv.sprite;
-      const halfW = Math.max(18, sp.displayWidth * 0.4);
-      const top = sp.y - sp.displayHeight * sp.originY;
-      if (wx >= mv.lx - halfW && wx <= mv.lx + halfW && wy >= top && wy <= sp.y + 6)
-        return { kind: "monster", id };
+      const halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
+      let top = sp.y - sp.displayHeight * sp.originY - 8;
+      const bottom = sp.y + 10;
+      // A sprigling-sized body still gets a full fingertip of height.
+      if (bottom - top < MONSTER_TAP_MIN_H) top = bottom - MONSTER_TAP_MIN_H;
+      if (wx < mv.lx - halfW || wx > mv.lx + halfW || wy < top || wy > bottom) continue;
+      const dist = Math.hypot(wx - mv.lx, wy - (top + bottom) / 2);
+      if (!best || dist < best.d) best = { kind: "monster", id, d: dist };
     }
-    return null;
+    return best ? { kind: best.kind, id: best.id } : null;
   }
 
   /** Per-frame combat/fetch intent: walk to the engaged monster (which
