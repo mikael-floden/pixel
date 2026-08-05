@@ -136,7 +136,9 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
     assert.equal(me().action, "pickup", "pickup clip signalled");
 
     // DROP it back out (the backpack drag-out path): appears near the player,
-    // clamped + snapped to standable ground.
+    // clamped + snapped to standable ground. Sit out the 150ms pickup/drop
+    // cadence cap first — a human gesture can't beat it, a test can.
+    await new Promise((r) => setTimeout(r, 200));
     const before = r1.state.drops.size;
     r1.send("drop", { slot: 0, wx: me().x + 40, wy: me().y });
     await waitFor(() => r1.state.drops.size === before + 1, 3000, "ground item spawned");
@@ -167,7 +169,7 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
 });
 
 test("a monster kills a careless player; the player respawns", async () => {
-  const port = 2994;
+  const port = 2998; // 2994 belongs to timeofday.test.ts — ports are per FILE, not per test
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);

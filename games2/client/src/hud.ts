@@ -100,7 +100,7 @@ export interface HudActions {
   /** Backpack drag-out: an item slot was released over the GAME VIEW at
    * client coords (cx, cy) — the game converts to a world point and asks the
    * server to drop it there (clamped + ground-snapped server-side). */
-  onDropItem?: (slot: number, cx: number, cy: number) => void;
+  onDropItem?: (slot: number, item: string, cx: number, cy: number) => void;
 }
 
 // Tab icons: the maintainer's 1x pixel-art set (client/ui-src/icons/, baked
@@ -183,6 +183,7 @@ export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private invGrid: HTMLElement | null = null;
   private invItems: { item: string; n: number }[] = [];
+  private activeDrag: { cancel: () => void } | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
@@ -664,6 +665,11 @@ export class HudBar {
   private renderInventory() {
     const grid = this.invGrid;
     if (!grid) return;
+    // An "inv" refresh can land MID-DRAG (auto-pickup on arrival, a join
+    // refresh): rebuilding the grid detaches the captured cell, whose
+    // pointerup can then never fire — cancel the gesture explicitly or the
+    // ghost sprite is orphaned on screen until reload.
+    this.activeDrag?.cancel();
     grid.textContent = "";
     const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
     for (let i = 0; i < total; i++) {
@@ -681,7 +687,7 @@ export class HudBar {
           badge.textContent = `${entry.n}`;
           cell.appendChild(badge);
         }
-        this.armSlotDrag(cell, img, i);
+        this.armSlotDrag(cell, img, i, entry.item);
       }
       grid.appendChild(cell);
     }
@@ -692,9 +698,10 @@ export class HudBar {
    * the client coords to the game, anywhere else snaps back. Capture keeps
    * every move/up on the slot element, so Phaser never sees the gesture and
    * cannot arm a move trip from it. */
-  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number) {
+  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string) {
     cell.addEventListener("pointerdown", (e: PointerEvent) => {
       e.preventDefault();
+      this.activeDrag?.cancel(); // one gesture at a time
       cell.setPointerCapture(e.pointerId);
       let ghost: HTMLImageElement | null = null;
       const move = (ev: PointerEvent) => {
@@ -707,29 +714,32 @@ export class HudBar {
         ghost.style.left = `${ev.clientX - 20}px`;
         ghost.style.top = `${ev.clientY - 20}px`;
       };
-      const finish = (ev: PointerEvent) => {
-        cell.removeEventListener("pointermove", move);
-        cell.removeEventListener("pointerup", finish);
-        cell.removeEventListener("pointercancel", cancel);
-        cell.classList.remove("dragging");
-        if (ghost) {
-          ghost.remove();
-          // Over the GAME VIEW (top 61.8% — everything above the HUD's own
-          // top edge) => drop it into the world at that point.
-          const hudTop = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hud-h")) || window.innerHeight * 0.382);
-          if (ev.clientY < hudTop) this.actions.onDropItem?.(slot, ev.clientX, ev.clientY);
-        }
-      };
-      const cancel = () => {
+      const cleanup = () => {
         cell.removeEventListener("pointermove", move);
         cell.removeEventListener("pointerup", finish);
         cell.removeEventListener("pointercancel", cancel);
         cell.classList.remove("dragging");
         ghost?.remove();
+        ghost = null;
+        this.activeDrag = null;
       };
+      const finish = (ev: PointerEvent) => {
+        const dragged = !!ghost;
+        cleanup();
+        if (dragged) {
+          // Over the GAME VIEW (top 61.8% — everything above the HUD's own
+          // top edge) => drop it into the world at that point. The item id
+          // rides along: slot indices go stale in flight when a stack
+          // empties, and the server drops whatever the index NAMES NOW.
+          const hudTop = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hud-h")) || window.innerHeight * 0.382);
+          if (ev.clientY < hudTop) this.actions.onDropItem?.(slot, item, ev.clientX, ev.clientY);
+        }
+      };
+      const cancel = () => cleanup();
       cell.addEventListener("pointermove", move);
       cell.addEventListener("pointerup", finish);
       cell.addEventListener("pointercancel", cancel);
+      this.activeDrag = { cancel: cleanup };
     });
   }
 

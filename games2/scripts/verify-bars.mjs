@@ -35,10 +35,12 @@ try {
   // The bars mount with the HUD, BEFORE the first server patch lands — wait
   // for the real level-1 stats to replace the mount defaults, or every number
   // below races the join.
+  // 60s like the __mlSelect wait above: measured ~21s to the first real patch
+  // at this canvas size on the starved harness GL — 30s flaked.
   await page.waitForFunction(
     () => (document.querySelectorAll(".ml-bar-num")[0]?.textContent || "").includes("40"),
     undefined,
-    { timeout: 30000, polling: 200 },
+    { timeout: 60000, polling: 200 },
   );
   await page.waitForFunction(() => document.querySelectorAll(".ml-bars").length === 2,
     undefined, { timeout: 90000, polling: 250 });

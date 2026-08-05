@@ -749,7 +749,16 @@ visible head/shoulders are ABOVE the surface).
   must agree on live in `shared/src/combat.ts` (xpToNext, hpMaxFor, damageRoll,
   unarmedClip, the slow window, chase/orbit/drop constants). Progression +
   inventory PERSIST by token (store.ts); the backpack is PRIVATE — targeted
-  "inv" messages, never schema.
+  "inv" messages, never schema. PERSISTENCE SHAPE (review 2026-08-05):
+  position is per-world (`.data/players-<world>.json`) but progression +
+  backpack are WORLD-AGNOSTIC — one shared `.data/players-progress.json`
+  (store.ts progressStore(); old per-world progression seeds it once, lazily).
+  Both stores DEEP-COPY at load/save — a live Player.inv aliasing the store
+  record silently corrupted saves. One live session per token: a second join
+  (two tabs, one localStorage token) kicks the older session and takes over
+  the LIVE progression — two sessions on one record dup/eat items on
+  last-writer-wins saves. savePlayer flushes on leave, death, level-up and a
+  30s room timer, so a crash costs seconds, not the session.
 - **Tap a monster to engage** (RO): the client autopilots into radius-aware
   reach (attackRange = rA+rB+12), then the SERVER drives the swing loop while
   the target lives, stays in reach (×1.2 grace for the circling drift) and the
@@ -774,7 +783,14 @@ visible head/shoulders are ABOVE the surface).
   attack/angry directions sweep for both bodies. Chase may leave the zone
   polygon: containment switches to a LEASH box (zone bbox + 10 cells) and the
   roam snap-back disciplines only mstate=roam; disengage walks home via a
-  legal out-of-zone trip (m.returning).
+  legal out-of-zone trip (m.returning, aggro-scan suppressed meanwhile). THE
+  GIVE-UP IS THE REJECTED STEP: chase movement is leash-gated, so the monster
+  reaches the rim but never crosses it — a "give up when beyond the leash"
+  position check is provably dead code (pre-deploy review 2026-08-05: every
+  fight-and-flee wedged a monster at the rim in chase, forever). A chase ends
+  when (a) its contained() step is rejected at the rim, or (b) the victim is
+  past the leash AND out of reach (covers a chaser wall-wedged INSIDE the
+  leash box). combat.review.test.ts kites a frog and asserts the give-up.
 - **Monster combat clips**: attack/angry/die strips (525 files, ~3.1MB)
   background-load in the SAME deferred batch as the player's action states —
   boot stays walk+idle (the loading-time work must not regress). The COMPLETE
@@ -791,17 +807,25 @@ visible head/shoulders are ABOVE the surface).
   monster only (890_000 depth, culled with the body).
 - **Loot**: on the corpse sweep the tuning loot table rolls per entry
   (rollDrops, deterministic from id+diedAt), scattered onto STANDABLE ground
-  near the corpse; GroundItems sync in state.drops, despawn after 90s. Item
-  sprites are uniform `items/<id>/sprite.webp` 48×48 (verified across all 105)
-  — the client lazy-loads per KIND, no manifest fetch. TAP an item to fetch
-  it (walk + grab), or the PICKUP button beside jump / the F key (nearest
-  within 5 cells; the gamepad button synthesizes F exactly like jump→SPACE).
-  Server validates PICKUP_RADIUS_WU and plays the pickup clip via action.
-  BACKPACK (hud.ts): server-owned slots render in the 5-col grid; DRAG a slot
-  out over the game view to drop it — pointer-captured ghost (the bird-slider
-  pattern; Phaser never sees the gesture), released client coords →
-  getWorldPoint → "drop" {slot,wx,wy}, server clamps to 2.5 cells + standable
-  ground. INV_MAX_SLOTS 30, stacks of 99.
+  near the corpse (deck-aware: the dropper's elev threads through spawnDrop so
+  a bridge drop stays ON the deck; last resort ring-scans the nearest
+  standable cell — only open-water corpses keep their spot, where swimmers can
+  grab). GroundItems sync in state.drops, despawn after 90s. Item sprites are
+  uniform `items/<id>/sprite.webp` 48×48 (verified across all 105) — the
+  client lazy-loads per KIND, no manifest fetch. TAP an item to fetch it (walk
+  + grab), or the PICKUP button beside jump / the F key (nearest within 5
+  cells; the gamepad button synthesizes F exactly like jump→SPACE). Server
+  validates PICKUP_RADIUS_WU + the elev band; the client's pickup intent
+  RETRIES (~400ms) until the drop vanishes or 6s pass — a single
+  fire-and-forget send loses the predicted-vs-server position race on laggy
+  links. BACKPACK (hud.ts): server-owned slots render in the 5-col grid; DRAG
+  a slot out over the game view to drop it — pointer-captured ghost (the
+  bird-slider pattern; Phaser never sees the gesture), released client coords
+  → getWorldPoint → "drop" {slot,item,wx,wy}; the server clamps to 2.5 cells,
+  verifies the ITEM ID (slot indices go stale in flight when a stack empties)
+  and rate-caps pickup/drop at 150ms. An "inv" refresh mid-drag cancels the
+  gesture (renderInventory would orphan the ghost). INV_MAX_SLOTS 30, stacks
+  of 99.
 - **Monster stats come from the LIVE TUNING channel** — the wiki agent's
   document (live/tuning/monsters.json, format @1), adopted exactly as they
   requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.
@@ -809,9 +833,22 @@ visible head/shoulders are ABOVE the surface).
   initLive's fetch lands — the resolver checks for CONTENT, not truthiness
   (tests run without initLive at all). Real values were written into the file
   from each monster's curated level (hp 15+10L, dmg 2+1.6L, xp 8·L^1.35);
-  a wiki admin edit re-tunes live rooms with no deploy.
+  a wiki admin edit re-tunes live rooms with no deploy. `speed_wu` and
+  `scale` resolve but have NO consumer yet — chase speed is the shared
+  CHASE_SPEED_WU constant because the escape math depends on it; wiring
+  per-monster speed means re-deriving that triangle first.
+- **Client prediction under combat**: pending inputs carry the slow factor
+  they were ORIGINALLY integrated under (exactly like `jumping`) and replays
+  use it — replaying an RTT-deep buffer with the CURRENT synced slow rewrote
+  history at every slow boundary (review: an uncommanded forward teleport
+  right as you broke free of a chase). The server also mirrors slow into the
+  synced field inside hurtPlayer (not the next tick top), and ACKS the seqs
+  it swallows while dead — un-acked seqs kept replaying and rendered the
+  corpse offset, then popped it off-spawn on revive.
 - **Gates**: combat.unit.test.ts (curves/determinism/escape math),
   combat.test.ts (2 live rooms: full fight loop + death/respawn),
+  combat.review.test.ts (leash give-up on a kited frog; world-agnostic
+  progression; one-session-per-token), store.test.ts (deep-copy boundaries),
   verify-combat.mjs (dev stack: clips alternate kick+punch, monster
   attack/angry play, hp bar, loot, pickup, backpack DOM, drop-out).
   verify-bars asserts the REAL level-1 stats (40/40 HP, 20/20 EP, 0/50 XP)

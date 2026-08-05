@@ -52,6 +52,9 @@ export class Player extends Schema {
   lastHitAt = -100000; // when the last hit LANDED on this player (drives slow)
   lastCombatAt = -100000; // last swing given OR taken (gates regen)
   respawnAt = 0; // while dead: when to revive
+  nextItemMsgAt = 0; // pickup/drop cadence cap
+  regenAccHp = 0; // fractional regen accumulators: synced hp/ep move in whole
+  regenAccEp = 0; // points only, so patches stop churning at 20Hz while healing
   inv: { item: string; n: number }[] = []; // backpack (synced via targeted "inv" messages, not schema — private)
 
   constructor() {

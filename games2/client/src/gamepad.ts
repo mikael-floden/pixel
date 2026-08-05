@@ -258,11 +258,13 @@ export function mountGamepadStick(page: HTMLElement) {
   window.addEventListener("blur", () => {
     release();
     jumpUp();
+    pickUp();
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       release();
       jumpUp();
+      pickUp();
     }
   });
 }

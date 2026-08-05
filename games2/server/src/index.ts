@@ -7,9 +7,16 @@ import compression from "compression";
 import { constants as zlibConstants } from "zlib";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
+import { Encoder } from "@colyseus/schema";
 import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes } from "./live.js";
+
+// The combat schema (11 new Player fields, 4 new Monster fields, drops) put
+// the_island2's FULL-STATE join snapshot past the encoder's 8KB default —
+// the overflow stalls the first patch and a joiner sits on mount-default HUD
+// bars. 64KB clears every world with an order of magnitude of headroom.
+Encoder.BUFFER_SIZE = 64 * 1024;
 
 const PORT = Number(process.env.PORT || 2567);
 // server/src/index.ts → GAME_ROOT is pixel/games2; the art domains are

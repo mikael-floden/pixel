@@ -577,7 +577,8 @@ export class WorldScene extends Phaser.Scene {
   // re-blocked at the ledge (walk climb) — the anchor briefly rolls back to
   // the wall base until the server acks, and auto-jump saw that phantom wall
   // and fired a silly second hop on the hilltop.
-  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean }[] = [];
+  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean; slow: number }[] = [];
+  private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
@@ -684,6 +685,8 @@ export class WorldScene extends Phaser.Scene {
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
   private pendingPickupId: string | null = null; // walk-to-item, grab on arrival
+  private pickupIntentUntil = 0; // give up on a pickup intent after this
+  private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
@@ -941,6 +944,7 @@ export class WorldScene extends Phaser.Scene {
       if (tgt) {
         if (tgt.kind === "drop") {
           this.pendingPickupId = tgt.id;
+          this.pickupIntentUntil = this.time.now + 6000;
           this.engagedId = null;
           const d = this.drops.get(tgt.id)!;
           this.setMoveTarget(d.wx, d.wy, true);
@@ -1045,15 +1049,15 @@ export class WorldScene extends Phaser.Scene {
       // Backpack drag-out: client coords -> canvas coords -> world point ->
       // the server's "drop" (which clamps to a short reach + standable
       // ground, so the client conversion only has to be roughly right).
-      onDropItem: (slot, cx, cy) => {
+      onDropItem: (slot, item, cx, cy) => {
         if (!this.room) return;
         const rect = this.game.canvas.getBoundingClientRect();
         const px = ((cx - rect.left) / Math.max(1, rect.width)) * this.scale.width;
         const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
         const wp = this.cameras.main.getWorldPoint(px, py);
         const g = this.pickGround(wp.x, wp.y);
-        if (g) this.room.send("drop", { slot, wx: g.x, wy: g.y });
-        else this.room.send("drop", { slot }); // void/solid target: at my feet
+        if (g) this.room.send("drop", { slot, item, wx: g.x, wy: g.y });
+        else this.room.send("drop", { slot, item }); // void/solid target: at my feet
       },
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
@@ -2259,11 +2263,19 @@ export class WorldScene extends Phaser.Scene {
     if (!me) return;
     if (this.pendingPickupId) {
       const d = this.drops.get(this.pendingPickupId);
-      if (!d) this.pendingPickupId = null;
+      const nowP = this.time.now;
+      // The intent stays ARMED until the drop actually disappears (its
+      // onRemove clears us) or a timeout gives up: the server validates
+      // against ITS position, which trails the predicted one by the unacked
+      // input window, so a single fire-and-forget send silently loses the
+      // race on laggy links and the player stands next to untouched loot.
+      if (!d || nowP >= this.pickupIntentUntil) this.pendingPickupId = null;
       else if (Math.hypot(d.wx - me.fx, d.wy - me.fy) <= PICKUP_RADIUS_WU * 0.8) {
-        this.room.send("pickup", { id: this.pendingPickupId });
-        this.pendingPickupId = null;
-        this.clearMoveTarget();
+        if (nowP >= this.nextPickupSendAt) {
+          this.nextPickupSendAt = nowP + 400;
+          this.room.send("pickup", { id: this.pendingPickupId });
+        }
+        if (this.trip) this.clearMoveTarget(); // arrived: stand for the grab
       }
     }
     if (!this.engagedId) return;
@@ -2305,11 +2317,15 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     if (!bestId) return;
+    // Arm the intent either way — driveCombatIntent retries until the drop
+    // vanishes, which absorbs the predicted-vs-server position skew.
+    this.pendingPickupId = bestId;
+    this.pickupIntentUntil = this.time.now + 6000;
     if (bestD <= PICKUP_RADIUS_WU * 0.8) {
+      this.nextPickupSendAt = this.time.now + 400;
       this.room.send("pickup", { id: bestId });
     } else {
       const d = this.drops.get(bestId)!;
-      this.pendingPickupId = bestId;
       this.setMoveTarget(d.wx, d.wy, true);
     }
   }
@@ -2800,6 +2816,13 @@ export class WorldScene extends Phaser.Scene {
       swimT: 0,
       bobPhase: (uid.charCodeAt(0) + uid.length * 7) % 100, // deterministic per char
       baseTint,
+      // Seed the combat counters from the synced values (monsters do the
+      // same): a fighter's actionSeq/hitSeq are already >0 when a joiner
+      // first sees them, and an unseeded 0 would replay one stale
+      // kick/punch/pickup/flinch the moment the avatar appears.
+      lastActionSeq: player.actionSeq ?? 0,
+      lastHitSeq: player.hitSeq ?? 0,
+      lastHp: player.hp,
     });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
   }
@@ -2860,7 +2883,16 @@ export class WorldScene extends Phaser.Scene {
         // Each input replays with the jump state it was ORIGINALLY integrated
         // under (see the `pending` field note) — using "jumping right now" for
         // historical inputs rolled the anchor back below ledges after landing.
-        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean) => {
+        // The hit stagger mirrors the server through the SYNCED factor — both
+        // sides multiply the same stepMovement speedScale. Historical inputs
+        // must replay under the factor they were ORIGINALLY integrated with
+        // (like `jumping`): replaying an RTT-deep pending buffer with the
+        // CURRENT factor rewrote history at every slow onset/expiry — a
+        // rubber-band tug backward on the hit (fine, reads as hit-stop) and
+        // an uncommanded forward teleport when the slow expired (not fine,
+        // fired exactly as you broke free of a chase).
+        this.curSlowFactor = player.slow || 1;
+        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean, slowF: number) => {
           let blocked;
           let sideBlocked;
           let speed = 1;
@@ -2872,15 +2904,10 @@ export class WorldScene extends Phaser.Scene {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
-            // The hit stagger mirrors the server through the SYNCED factor —
-            // both sides multiply the same stepMovement speedScale. The value
-            // lags one patch behind the authoritative one right after a hit;
-            // reconciliation absorbs that as a tiny backward tug, which reads
-            // as the impact and is exactly the RO hit-stop feel.
             speed =
               surfaceAtWorld(this.terrain, rx, ry).speed *
               (jumping ? JUMP_SPEED_FACTOR : 1) *
-              (player.slow || 1);
+              slowF;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
@@ -2891,11 +2918,11 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
         if (this.sendAccum > 0)
-          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow);
+          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow, this.curSlowFactor);
         tx = rx;
         ty = ry;
         surfLevel = predElev;
@@ -2962,9 +2989,19 @@ export class WorldScene extends Phaser.Scene {
           this.clearMoveTarget();
           this.dropHold();
           this.engagedId = null;
+          this.pendingPickupId = null; // no surprise auto-grab after respawn
         }
-      } else if (id === myId && this.selfDead) {
-        this.selfDead = false; // respawned: the >2-cell snap does the rest
+      } else {
+        // Respawn: the hold-loop above kept re-arming the die overlay ~1s
+        // ahead, so without this clear the revived avatar walks around as a
+        // corpse until it expires — every client, not just our own.
+        if (av.actionKey === "die") {
+          av.actionKey = undefined;
+          av.actionUntil = 0;
+        }
+        if (id === myId && this.selfDead) {
+          this.selfDead = false; // respawned: the >2-cell snap does the rest
+        }
       }
 
       // Facing in a fight: a stationary engaged player LOOKS AT its target
@@ -3278,6 +3315,9 @@ export class WorldScene extends Phaser.Scene {
           sp.x = mv.lx;
           sp.y = ay;
           mv.surfLevel = m.elev ?? g.lvl;
+          // Track hp while parked too, or damage dealt off-screen aggregates
+          // into one phantom float the frame the body scrolls back into view.
+          mv.lastHp = m.hp;
           if (!mv.culled) {
             mv.culled = true;
             sp.setVisible(false);
@@ -4255,10 +4295,11 @@ export class WorldScene extends Phaser.Scene {
       ay: li.ay,
       running: li.running,
       dt: this.sendAccum,
-      // The jump state this window was integrated under — replays must match
-      // (jump flushes immediately in predictAndSend, so windows never straddle
-      // a jump onset).
+      // The jump/slow state this window was integrated under — replays must
+      // match (jump flushes immediately in predictAndSend, so windows never
+      // straddle a jump onset).
       jumping: this.time.now < this.jumpUntil,
+      slow: this.curSlowFactor,
     });
     const msg: InputMessage = { ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum };
     if (this.jumpQueued) {

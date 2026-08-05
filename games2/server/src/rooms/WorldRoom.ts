@@ -62,6 +62,7 @@ import {
   hpMaxFor,
   epMaxFor,
   slowFactorAt,
+  SLOW_FACTOR,
   rollDrops,
   LEVEL_CAP,
   PLAYER_ATTACK_MS,
@@ -85,7 +86,7 @@ import {
 import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
 import { monsterStatsFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning } from "../live.js";
-import { JsonPlayerStore, PlayerStore } from "../store.js";
+import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -284,6 +285,13 @@ export class WorldRoom extends Room<WorldState> {
     this.onMessage("input", (client, message: InputMessage) => {
       const player = this.state.players.get(client.sessionId);
       if (!player) return;
+      // A corpse doesn't move, but its in-flight inputs MUST still be acked:
+      // un-acked seqs stay in the client's pending replay buffer and render
+      // the body offset from where it fell (and pop it off-spawn on revive).
+      if (player.dead) {
+        if (typeof message.seq === "number") player.seq = message.seq;
+        return;
+      }
       // Queue the input with its (bounded) duration; update() integrates the
       // stream so server math matches client prediction exactly.
       if (player.inputQueue.length < 60) {
@@ -319,7 +327,9 @@ export class WorldRoom extends Room<WorldState> {
     // spawn; the client snaps to the teleport (its >2-cell jump threshold).
     this.onMessage("respawn", (client) => {
       const player = this.state.players.get(client.sessionId);
-      if (!player) return;
+      // Dead players ride the death->respawn cycle instead: teleporting the
+      // corpse mid-die-clip would strand a walking body at spawn.
+      if (!player || player.dead) return;
       this.placeAtSpawn(player);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
@@ -350,7 +360,12 @@ export class WorldRoom extends Room<WorldState> {
       const id = typeof message?.id === "string" ? message.id : "";
       const drop = this.state.drops.get(id);
       if (!player || player.dead || !drop) return;
+      const now = Date.now();
+      if (now < player.nextItemMsgAt) return; // pickup/drop share a light cadence cap
+      player.nextItemMsgAt = now + 150;
       if (Math.hypot(drop.x - player.x, drop.y - player.y) > PICKUP_RADIUS_WU) return;
+      // Same layer band as every combat range check — no grabbing through a deck.
+      if (Math.abs(player.elev - drop.elev) > 2) return;
       if (!this.addInvItem(player, drop.item)) {
         client.send("chat", { name: "—", text: "Your backpack is full." });
         return;
@@ -365,12 +380,22 @@ export class WorldRoom extends Room<WorldState> {
     // sends the world point it was released at; the server clamps it to a
     // short reach around the player and snaps to standable ground, so items
     // can't be flung across the map or into water/walls.
-    this.onMessage("drop", (client, message: { slot?: number; wx?: number; wy?: number }) => {
+    this.onMessage("drop", (client, message: { slot?: number; item?: string; wx?: number; wy?: number }) => {
       const player = this.state.players.get(client.sessionId);
       if (!player || player.dead) return;
+      const now = Date.now();
+      if (now < player.nextItemMsgAt) return;
+      player.nextItemMsgAt = now + 150;
       const slot = typeof message?.slot === "number" ? Math.floor(message.slot) : -1;
       const entry = player.inv[slot];
       if (!entry || entry.n < 1) return;
+      // Slot indices go stale the moment a stack empties and the array
+      // compacts (the client learns via the async "inv" refresh) — the item
+      // id in the message is the ground truth for WHICH item the player meant.
+      if (typeof message?.item === "string" && message.item !== entry.item) {
+        client.send("inv", { items: player.inv }); // heal the stale grid now
+        return;
+      }
       let wx = typeof message?.wx === "number" && isFinite(message.wx) ? message.wx : player.x;
       let wy = typeof message?.wy === "number" && isFinite(message.wy) ? message.wy : player.y;
       const dx = wx - player.x;
@@ -383,7 +408,7 @@ export class WorldRoom extends Room<WorldState> {
       const item = entry.item;
       entry.n--;
       if (entry.n <= 0) player.inv.splice(slot, 1);
-      this.spawnDrop(item, wx, wy);
+      this.spawnDrop(item, wx, wy, player.elev);
       client.send("inv", { items: player.inv });
     });
 
@@ -394,11 +419,15 @@ export class WorldRoom extends Room<WorldState> {
     // movement + jump so they hold the mark; client snaps via its jump threshold.
     this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
       const player = this.state.players.get(client.sessionId);
-      if (!player) return;
+      if (!player || player.dead) return;
       const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
       const h = this.terrain ? this.terrain.height * CELL_WU : this.worldH;
-      player.x = clamp(message?.x ?? player.x, 0, w - 1);
-      player.y = clamp(message?.y ?? player.y, 0, h - 1);
+      // Finite-number validation, same as the drop handler: NaN/junk here
+      // would poison the synced position and everything downstream of it.
+      const tx = typeof message?.x === "number" && isFinite(message.x) ? message.x : player.x;
+      const ty = typeof message?.y === "number" && isFinite(message.y) ? message.y : player.y;
+      player.x = clamp(tx, 0, w - 1);
+      player.y = clamp(ty, 0, h - 1);
       player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
       player.inputQueue.length = 0;
       player.timeCredit = 0;
@@ -575,6 +604,23 @@ export class WorldRoom extends Room<WorldState> {
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
 
+    // ONE live session per token (RO kicks the older login): a second tab on
+    // the same browser shares the localStorage token, and two live sessions on
+    // one store record dup/eat items on last-writer-wins saves. The newcomer
+    // takes over the LIVE progression (fresher than the store) and the old
+    // session is disconnected.
+    if (player.token) {
+      let oldSid = "";
+      this.state.players.forEach((p: Player, sid: string) => {
+        if (!oldSid && p.token === player.token && sid !== client.sessionId) oldSid = sid;
+      });
+      if (oldSid) {
+        const oldPlayer = this.state.players.get(oldSid);
+        if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
+        this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
+      }
+    }
+
     // Returning player? Restore their last position (server-authoritative),
     // but rescue anyone whose saved spot is now blocked (terrain can change).
     const saved = player.token ? this.store.load(player.token) : undefined;
@@ -586,19 +632,25 @@ export class WorldRoom extends Room<WorldState> {
     } else {
       this.placeAtSpawn(player);
     }
-    // Progression survives relogs (RO: your character IS the level). Records
-    // from before combat existed have none of these — fresh level 1.
-    player.level = Math.min(LEVEL_CAP, Math.max(1, saved?.level ?? 1));
-    player.xp = Math.max(0, saved?.xp ?? 0);
+    // Progression survives relogs (RO: your character IS the level) and is
+    // WORLD-AGNOSTIC — it lives in the shared progress store, not the
+    // per-world position file, so switching worlds never forks the character.
+    // Migration: tokens whose progression still rides an old per-world record
+    // (or none at all — pre-combat records) seed from `saved` once.
+    const prog = player.token ? progressStore().load(player.token) : undefined;
+    player.level = Math.min(LEVEL_CAP, Math.max(1, prog?.level ?? saved?.level ?? 1));
+    player.xp = Math.max(0, prog?.xp ?? saved?.xp ?? 0);
     player.hpMax = hpMaxFor(player.level);
     player.epMax = epMaxFor(player.level);
     // Never restore a corpse: a save written at 0 hp comes back at 1 (limping,
     // not dead — dying logs you out at the spawn next tick otherwise).
-    player.hp = Math.min(player.hpMax, Math.max(1, saved?.hp ?? player.hpMax));
-    player.ep = Math.min(player.epMax, Math.max(0, saved?.ep ?? player.epMax));
-    player.inv = Array.isArray(saved?.inv)
-      ? saved.inv
+    player.hp = Math.min(player.hpMax, Math.max(1, prog?.hp ?? saved?.hp ?? player.hpMax));
+    player.ep = Math.min(player.epMax, Math.max(0, prog?.ep ?? saved?.ep ?? player.epMax));
+    const invSrc = prog?.inv ?? saved?.inv;
+    player.inv = Array.isArray(invSrc)
+      ? invSrc
           .filter((s) => s && typeof s.item === "string" && typeof s.n === "number" && s.n > 0)
+          .map((s) => ({ item: s.item, n: Math.min(INV_MAX_STACK, Math.floor(s.n)) }))
           .slice(0, INV_MAX_SLOTS)
       : [];
     this.state.players.set(client.sessionId, player);
@@ -611,20 +663,29 @@ export class WorldRoom extends Room<WorldState> {
 
   onLeave(client: Client) {
     const player = this.state.players.get(client.sessionId);
-    if (player?.token) {
-      this.store.save(player.token, {
-        character: player.character,
-        name: player.name,
-        x: player.x,
-        y: player.y,
-        level: player.level,
-        xp: player.xp,
-        hp: player.hp,
-        ep: player.ep,
-        inv: player.inv,
-      });
-    }
+    if (player) this.savePlayer(player);
     this.state.players.delete(client.sessionId);
+  }
+
+  /** Persist one player: position to the per-world store, progression to the
+   * shared world-agnostic store. Called on leave, death, level-up and the
+   * periodic flush — onLeave-only persistence meant a crash ate every
+   * connected player's session gains. */
+  private savePlayer(player: Player) {
+    if (!player.token) return;
+    this.store.save(player.token, {
+      character: player.character,
+      name: player.name,
+      x: player.x,
+      y: player.y,
+    });
+    progressStore().save(player.token, {
+      level: player.level,
+      xp: player.xp,
+      hp: player.hp,
+      ep: player.ep,
+      inv: player.inv,
+    });
   }
 
   private update(dt: number) {
@@ -645,8 +706,11 @@ export class WorldRoom extends Room<WorldState> {
       // (shared slowFactorAt — both sides multiply stepMovement's speedScale).
       player.slow = player.dead ? 1 : slowFactorAt(player.lastHitAt, now);
       // A corpse doesn't walk: swallow queued input while dead (the client
-      // freezes its own input too; this is the authoritative guard).
+      // freezes its own input too; this is the authoritative guard). Ack the
+      // dropped seqs — un-acked entries would sit in the client's pending
+      // replay buffer and render the corpse offset from where it fell.
       if (player.dead) {
+        for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
         player.inputQueue.length = 0;
         player.moving = false;
         player.running = false;
@@ -827,11 +891,21 @@ export class WorldRoom extends Room<WorldState> {
         const dyp = tp.y - m.y;
         const dist = Math.hypot(dxp, dyp);
         // Give up beyond the leash (from HOME, not the victim): walk back.
+        // (Safety net — chase movement is leash-gated below, so normally the
+        // rim-rejected step and the victim check are what end a chase.)
         if (!this.withinLeash(zone, m.x, m.y)) {
           this.disengageMonster(m, zone, now);
           return;
         }
         const range = attackRange(rm, PLAYER_BODY_RADIUS);
+        // Give up when the VICTIM has escaped past the leash and is out of
+        // reach: the chase may not follow there, so it cannot be won — and a
+        // terrain-wedged chaser (a lake inside the leash box) must not stand
+        // hunting forever either. Rim-fights survive: in-reach keeps combat.
+        if (dist > range && !this.withinLeash(zone, tp.x, tp.y)) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
         const sameLayer = Math.abs(m.elev - tp.elev) <= 2; // no swiping through a deck
         if (dist <= range && sameLayer) {
           // IN REACH — the fight. Face the victim; CIRCLE it slowly (the
@@ -883,10 +957,18 @@ export class WorldRoom extends Room<WorldState> {
           if (contained(r2.x, r2.y)) {
             m.x = r2.x;
             m.y = r2.y;
+            if (r2.dir) m.dir = r2.dir;
+            m.moving = r2.moving;
+            m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+          } else {
+            // A leash-rejected chase step IS the give-up signal. The :830
+            // position check alone is dead code — every way a chasing monster
+            // moves is gated by withinLeash, so it can reach the rim but never
+            // cross it; without this branch it wedges there in "chase" forever
+            // (walking in place, untargetable-by-others, no way home).
+            this.disengageMonster(m, zone, now);
+            return;
           }
-          if (r2.dir) m.dir = r2.dir;
-          m.moving = r2.moving;
-          m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
         }
         bodies[i].x = m.x;
         bodies[i].y = m.y;
@@ -895,7 +977,11 @@ export class WorldRoom extends Room<WorldState> {
 
       // --- PROXIMITY AGGRO (predators: tuning aggro_radius_wu > 0) ---------
       // Scanned ~2/s, not per tick; passive monsters only ever retaliate.
-      if (now >= m.aggroCheckAt) {
+      // Suppressed while walking home from a given-up chase: a predator that
+      // just disengaged at the leash rim would otherwise re-aggro the same
+      // out-of-reach player every 450ms in a chase/disengage yo-yo (each
+      // round burning a full walk-home A*).
+      if (now >= m.aggroCheckAt && !m.returning) {
         m.aggroCheckAt = now + 450;
         const stats = monsterStatsFor(m.kind);
         if (stats.aggro_radius_wu > 0) {
@@ -1047,6 +1133,7 @@ export class WorldRoom extends Room<WorldState> {
   private respawnCounter = 0;
   private dropCounter = 0;
   private dropSweepAt = 0;
+  private storeFlushAt = 0;
   private leashBoxes = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
   /** True while (x,y) is within CHASE_LEASH_WU of the zone's bounding box —
@@ -1105,6 +1192,12 @@ export class WorldRoom extends Room<WorldState> {
     player.hitSeq++;
     player.lastHitAt = now;
     player.lastCombatAt = now;
+    player.regenAccHp = 0;
+    player.regenAccEp = 0;
+    // Mirror the slow into the synced field NOW, not at the next tick top —
+    // otherwise the patch carrying hitSeq precedes the one carrying slow and
+    // the client integrates a full-speed tick the server didn't.
+    if (!player.dead) player.slow = SLOW_FACTOR;
     if (player.hp <= 0 && !player.dead) {
       player.dead = true;
       player.action = "die";
@@ -1112,10 +1205,12 @@ export class WorldRoom extends Room<WorldState> {
       player.slow = 1;
       player.target = "";
       player.respawnAt = now + PLAYER_RESPAWN_MS;
+      for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
       player.inputQueue.length = 0;
       player.moving = false;
       player.running = false;
       this.broadcast("chat", { name: "—", text: `${player.name} was slain.` });
+      this.savePlayer(player); // a crash between here and respawn loses nothing
     }
   }
 
@@ -1129,7 +1224,9 @@ export class WorldRoom extends Room<WorldState> {
     m.diedAt = now;
     killer.target = "";
     const stats = monsterStatsFor(m.kind);
-    killer.xp += stats.xp;
+    // At the cap xp has nowhere to go (RO shows a frozen bar) — don't let it
+    // accumulate into a meaningless ever-growing number in the save file.
+    if (killer.level < LEVEL_CAP) killer.xp += stats.xp;
     let leveled = false;
     while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
       killer.xp -= xpToNext(killer.level);
@@ -1141,31 +1238,69 @@ export class WorldRoom extends Room<WorldState> {
       killer.hp = killer.hpMax;
       killer.ep = killer.epMax;
     }
-    if (leveled) this.broadcast("levelup", { name: killer.name, level: killer.level });
+    if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
+    if (leveled) {
+      this.broadcast("levelup", { name: killer.name, level: killer.level });
+      this.savePlayer(killer); // the worst thing a crash could eat is a ding
+    }
   }
 
-  /** Put one item on the ground near (x,y), scattered onto standable ground
-   * (never into water/props — loot must be reachable). */
-  private spawnDrop(item: string, x: number, y: number) {
+  /** Put one item on the ground near (x,y), scattered onto reachable ground.
+   * srcElev threads the dropper's layer through: a drop made ON a bridge deck
+   * stays on the deck (deck-aware elevation) instead of rendering in the
+   * water under the span. Placement prefers standable ground, then the deck
+   * layer, then the nearest standable cell — and only a corpse floating in
+   * open water (swim zones) keeps its exact spot, where swimmers can still
+   * grab it. */
+  private spawnDrop(item: string, x: number, y: number, srcElev = 0) {
     if (!item) return;
+    const terr = this.terrain;
     let gx = clamp(x, 1, this.worldW - 1);
     let gy = clamp(y, 1, this.worldH - 1);
+    const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
+    const ok = (px: number, py: number) =>
+      !terr ||
+      isStandableAtWorld(terr, px, py) ||
+      resolveElevAt(terr, srcElev, px, py, ctx) > levelAtWorld(terr, px, py); // on a deck
+    let placed = false;
     for (let t = 0; t < 6; t++) {
       const a = Math.random() * Math.PI * 2;
       const r = Math.random() * DROP_SCATTER_WU;
       const cx = clamp(x + Math.cos(a) * r, 1, this.worldW - 1);
       const cy = clamp(y + Math.sin(a) * r, 1, this.worldH - 1);
-      if (!this.terrain || isStandableAtWorld(this.terrain, cx, cy)) {
+      if (ok(cx, cy)) {
         gx = cx;
         gy = cy;
+        placed = true;
         break;
+      }
+    }
+    if (!placed && terr && !ok(gx, gy)) {
+      // All probes wet/blocked: take the nearest standable cell centre within
+      // a short ring-scan before giving up to the open-water fallback.
+      const c0 = Math.floor(gx / CELL_WU);
+      const r0 = Math.floor(gy / CELL_WU);
+      let best: { x: number; y: number; d: number } | null = null;
+      for (let dr = -3; dr <= 3; dr++) {
+        for (let dc = -3; dc <= 3; dc++) {
+          const px = (c0 + dc + 0.5) * CELL_WU;
+          const py = (r0 + dr + 0.5) * CELL_WU;
+          if (px < 1 || py < 1 || px > this.worldW - 1 || py > this.worldH - 1) continue;
+          if (!isStandableAtWorld(terr, px, py)) continue;
+          const d = Math.hypot(px - gx, py - gy);
+          if (!best || d < best.d) best = { x: px, y: py, d };
+        }
+      }
+      if (best) {
+        gx = best.x;
+        gy = best.y;
       }
     }
     const g = new GroundItem();
     g.item = item;
     g.x = gx;
     g.y = gy;
-    g.elev = this.terrain ? levelAtWorld(this.terrain, gx, gy) : 0;
+    g.elev = terr ? resolveElevAt(terr, srcElev, gx, gy, ctx) : 0;
     g.bornAt = Date.now();
     this.state.drops.set(`d${this.dropCounter++}`, g);
   }
@@ -1218,7 +1353,7 @@ export class WorldRoom extends Room<WorldState> {
       const stats = monsterStatsFor(m.kind);
       const loot =
         this.lootChance === null ? stats.loot : stats.loot.map((l) => ({ ...l, chance: this.lootChance! }));
-      for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y);
+      for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y, m.elev);
       this.state.monsters.delete(id);
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
     }
@@ -1226,6 +1361,12 @@ export class WorldRoom extends Room<WorldState> {
       const due = this.respawnQueue.filter((r) => now >= r.at);
       this.respawnQueue = this.respawnQueue.filter((r) => now < r.at);
       for (const r of due) this.respawnMonster(r.areaId, now);
+    }
+    // Periodic progression flush: bounds crash loss to ~30s of play (leave,
+    // death and level-up flush eagerly on top of this).
+    if (now >= this.storeFlushAt) {
+      this.storeFlushAt = now + 30_000;
+      this.state.players.forEach((p: Player) => this.savePlayer(p));
     }
     // Ground items despawn (1s sweep granularity is plenty for a 90s TTL).
     if (now >= this.dropSweepAt) {
@@ -1248,16 +1389,33 @@ export class WorldRoom extends Room<WorldState> {
           player.action = "";
           player.slow = 1;
           player.lastHitAt = -100000;
+          player.regenAccHp = 0;
+          player.regenAccEp = 0;
+          for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
           player.inputQueue.length = 0;
           player.timeCredit = 0;
         }
         return;
       }
       if (now - player.lastCombatAt > REGEN_DELAY_MS) {
-        if (player.hp < player.hpMax)
-          player.hp = Math.min(player.hpMax, player.hp + player.hpMax * HP_REGEN_FRAC_PER_S * dt);
-        if (player.ep < player.epMax)
-          player.ep = Math.min(player.epMax, player.ep + player.epMax * EP_REGEN_FRAC_PER_S * dt);
+        // Whole points only: the fraction accrues server-side so the synced
+        // hp/ep (and every client's HUD write) change ~2x/s, not 20x/s.
+        if (player.hp < player.hpMax) {
+          player.regenAccHp += player.hpMax * HP_REGEN_FRAC_PER_S * dt;
+          const whole = Math.floor(player.regenAccHp);
+          if (whole >= 1) {
+            player.regenAccHp -= whole;
+            player.hp = Math.min(player.hpMax, player.hp + whole);
+          }
+        }
+        if (player.ep < player.epMax) {
+          player.regenAccEp += player.epMax * EP_REGEN_FRAC_PER_S * dt;
+          const whole = Math.floor(player.regenAccEp);
+          if (whole >= 1) {
+            player.regenAccEp -= whole;
+            player.ep = Math.min(player.epMax, player.ep + whole);
+          }
+        }
       }
       if (!player.target) return;
       const m = this.state.monsters.get(player.target);
