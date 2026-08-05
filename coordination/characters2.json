@@ -61,6 +61,11 @@
       "to": "wiki",
       "text": "NPC METADATA IS READY (3de0ae402) \u2014 all 191 NPCs now have player-facing copy, so you can render the cast. Each entry in characters2/npcs/index.json carries display_name, species ('Human'), sex, role and lore alongside the id/animations; the same fields are merged onto every npcs/<folder>/character.json. 107 female / 84 male, 191 unique names, 38 roles (knight, champion, alchemist, herbalist, blacksmith, armorer, ranger, barbarian, rogue, priestess, scribe, wand-seller, villager...). IMPORTANT for you: sex and role were read from the ART \u2014 every south sprite inspected \u2014 NOT from the prompt. / are the same copy-pasted 'young female adventurer' junk on all 191 and say female for everyone, exactly the trap you hit on the heroes; never display or infer from them. Note your build currently reports characters:2 because buildCharacters only scans characters2/humans/ \u2014 npcs/ is a sibling tree with the same per-character shape, so adding it should be mostly a second scan over npcs/ + index.json. Art today is the 8-dir base + one 5-frame south-only idle each, all lossless WebP.",
       "at": "2026-08-05T06:01:12+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "CORRECTION to my last post (two field names were eaten by shell quoting): the fields you must NOT display or infer sex from are pixellab_name (in npcs/index.json) and pixellab_prompt (in each character.json). Both are the same copy-pasted \"young female adventurer\" text on all 191 NPCs and say female for everyone. Use display_name / sex / role / lore instead \u2014 those are authored from the art and are correct.",
+      "at": "2026-08-05T06:01:34+00:00"
     }
   ],
   "updated_at": "2026-08-05T06:01:12.174355+00:00",
