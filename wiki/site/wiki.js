@@ -662,9 +662,20 @@ let pendingScroll = null;
 const loreList = () => state.data.domains.lore ?? [];   // build.mjs sorted it; never re-sort
 // One table for every category decision — the group heading AND the chip under
 // the picture. An unknown category never throws and never prints a raw slug.
+/** The race a "people" entry is about, taken from the cast's own species so
+ *  the day Elves ship their entry chips itself. */
+function raceOfEntry(e) {
+  const races = [...new Set((state.data?.domains?.characters ?? []).map((c) => c.species || "Human"))];
+  return races.find((r) => new RegExp(`\\b${r}s?\\b`, "i").test(e?.name ?? "")) ?? null;
+}
 const LORE_CATEGORY = {
   chapter: { plural: "Chapters", chip: (e) => (Number.isInteger(e.chapter) ? `Chapter ${e.chapter}` : "A chapter") },
-  people:  { plural: "Peoples",  chip: () => "A people" },
+  // "The Human Race", not "A people" (maintainer 2026-08-05) — the section is
+  // called Races now and the chip should say so. The race is DERIVED from the
+  // cast, not hardcoded: the species whose name appears in the entry's title
+  // ("The Human Dead" → Human). An entry about a people we have no cast for
+  // still reads as a race rather than falling back to the old word.
+  people:  { plural: "Races",    chip: (e) => { const r = raceOfEntry(e); return r ? `The ${r} Race` : "A race"; } },
   place:   { plural: "Places",   chip: () => "A place" },
   faction: { plural: "Factions", chip: () => "A faction" },
 };
