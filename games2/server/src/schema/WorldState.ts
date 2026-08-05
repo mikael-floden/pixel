@@ -23,6 +23,18 @@ export class Player extends Schema {
   declare stamina: number; // swim stamina 0..MAX_STAMINA
   declare torch: boolean; // player's torch lit (visible to everyone)
   declare elev: number; // current surface elevation in LEVELS (world@2 decks: on the deck vs under it)
+  // COMBAT / PROGRESSION (server-owned; RO-flavoured — see shared/src/combat.ts).
+  declare level: number;
+  declare xp: number; // progress within the current level (resets each level-up)
+  declare hp: number;
+  declare hpMax: number;
+  declare ep: number; // reserved pool — no skill spends it yet (maintainer)
+  declare epMax: number;
+  declare dead: boolean; // corpse: die clip holds until the respawn snap
+  declare slow: number; // CURRENT speed factor (1 = normal, SLOW_FACTOR while hit-staggered) — client prediction multiplies by this
+  declare action: string; // transient one-shot: "attack" (client picks kick/punch) | "pickup"
+  declare actionSeq: number; // bumps per action so clients retrigger the clip
+  declare hitSeq: number; // bumps per hit TAKEN (drives the hurt flinch + damage float)
 
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
@@ -34,6 +46,13 @@ export class Player extends Schema {
   jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)
   lastChatAt = 0;
   token = ""; // persistence key (server-only)
+  // Server-only combat bookkeeping.
+  target = ""; // engaged monster id ("" = none)
+  nextSwingAt = 0;
+  lastHitAt = -100000; // when the last hit LANDED on this player (drives slow)
+  lastCombatAt = -100000; // last swing given OR taken (gates regen)
+  respawnAt = 0; // while dead: when to revive
+  inv: { item: string; n: number }[] = []; // backpack (synced via targeted "inv" messages, not schema — private)
 
   constructor() {
     super();
@@ -50,6 +69,17 @@ export class Player extends Schema {
     this.stamina = MAX_STAMINA;
     this.torch = true;
     this.elev = 0;
+    this.level = 1;
+    this.xp = 0;
+    this.hp = 40;
+    this.hpMax = 40;
+    this.ep = 20;
+    this.epMax = 20;
+    this.dead = false;
+    this.slow = 1;
+    this.action = "";
+    this.actionSeq = 0;
+    this.hitSeq = 0;
   }
 }
 
@@ -67,6 +97,17 @@ defineTypes(Player, {
   stamina: "number",
   torch: "boolean",
   elev: "number",
+  level: "number",
+  xp: "number",
+  hp: "number",
+  hpMax: "number",
+  ep: "number",
+  epMax: "number",
+  dead: "boolean",
+  slow: "number",
+  action: "string",
+  actionSeq: "number",
+  hitSeq: "number",
 });
 
 /**
@@ -85,6 +126,14 @@ export class Monster extends Schema {
   declare dir: string; // Direction name (from stepMovement) — 8-dir facing
   declare moving: boolean; // true while hopping — drives walk anim vs freeze on pause
   declare elev: number; // surface elevation in LEVELS (client lift + y-sort, like Player)
+  // COMBAT (server-owned). mstate drives the client clip: "roam" (walk/idle as
+  // before), "chase" (walk clip, hunting), "combat" (angry loop between
+  // swings), "die" (die clip once; the corpse entry lingers MONSTER_DIE_MS so
+  // every client sees the death before the schema entry disappears).
+  declare hp: number;
+  declare hpMax: number;
+  declare mstate: string;
+  declare actionSeq: number; // bumps per attack swing (client restarts the attack clip)
 
   // Server-only AI state (NOT synced). ------------------------------------
   areaId = ""; // which SpawnArea this monster roams inside
@@ -93,6 +142,13 @@ export class Monster extends Schema {
   tripActive = false; // true while an autopilot trip is in flight
   trip: AutopilotTrip | null = null; // handle from startTrip(); stepped via stepAutopilot
   nextMoveAt = 0; // Date.now() ms deadline: when paused, pick the next target after this
+  // Server-only combat bookkeeping.
+  targetSid = ""; // session id of the player this monster hunts ("" = none)
+  nextAttackAt = 0;
+  aggroCheckAt = 0; // throttle the proximity scan (~2/s, not per tick)
+  orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
+  returning = false; // walking home after a chase ended outside the zone
+  diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)
 
   constructor() {
     super();
@@ -102,6 +158,10 @@ export class Monster extends Schema {
     this.dir = DEFAULT_DIRECTION;
     this.moving = false;
     this.elev = 0;
+    this.hp = 20;
+    this.hpMax = 20;
+    this.mstate = "roam";
+    this.actionSeq = 0;
   }
 }
 
@@ -111,6 +171,40 @@ defineTypes(Monster, {
   y: "number",
   dir: "string",
   moving: "boolean",
+  elev: "number",
+  hp: "number",
+  hpMax: "number",
+  mstate: "string",
+  actionSeq: "number",
+});
+
+/**
+ * One item lying on the ground (a monster drop or a player discard). Synced to
+ * every client; the sprite comes from items/viewer_data.json by `item` id.
+ * RO-style: each drop is its own entity, picked up whole.
+ */
+export class GroundItem extends Schema {
+  declare item: string; // items/ folder id
+  declare x: number; // world units
+  declare y: number;
+  declare elev: number; // surface level where it landed (client lift)
+
+  // Server-only.
+  bornAt = 0; // Date.now() — despawns at bornAt + DROP_TTL_MS
+
+  constructor() {
+    super();
+    this.item = "";
+    this.x = 0;
+    this.y = 0;
+    this.elev = 0;
+  }
+}
+
+defineTypes(GroundItem, {
+  item: "string",
+  x: "number",
+  y: "number",
   elev: "number",
 });
 
@@ -153,6 +247,7 @@ export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare monsters: MapSchema<Monster>;
   declare spawnAreas: ArraySchema<MonsterArea>; // monster areas for this world (synced for the client overlay)
+  declare drops: MapSchema<GroundItem>; // items on the ground (monster loot + player discards)
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -165,6 +260,7 @@ export class WorldState extends Schema {
     this.players = new MapSchema<Player>();
     this.monsters = new MapSchema<Monster>();
     this.spawnAreas = new ArraySchema<MonsterArea>();
+    this.drops = new MapSchema<GroundItem>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -185,6 +281,7 @@ defineTypes(WorldState, {
   players: { map: Player },
   monsters: { map: Monster },
   spawnAreas: { array: MonsterArea },
+  drops: { map: GroundItem },
   timeIdx: "number",
   phaseT: "number",
   weather: "number",

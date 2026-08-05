@@ -1,12 +1,19 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname } from "path";
 
-/** What we persist for a returning player, keyed by their token. */
+/** What we persist for a returning player, keyed by their token. All the
+ * progression fields are OPTIONAL so records written before combat existed
+ * load unchanged (missing -> fresh level-1 defaults in onJoin). */
 export interface PlayerRecord {
   character: string;
   name: string;
   x: number;
   y: number;
+  level?: number;
+  xp?: number;
+  hp?: number;
+  ep?: number;
+  inv?: { item: string; n: number }[];
 }
 
 export interface PlayerStore {

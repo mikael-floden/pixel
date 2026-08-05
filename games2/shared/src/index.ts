@@ -123,6 +123,17 @@ export function vectorToDirection(dx: number, dy: number): Direction | null {
   return best[1];
 }
 
+/** The 8-way SCREEN facing from one world point toward another — what a body
+ * should display while looking at a target (combat: the monster faces its
+ * victim, the victim faces back). World deltas must go through the iso
+ * projection first: a pure +x world step draws down-RIGHT on screen, not
+ * right. Uses the same ISO_DX/ISO_DY the renderer projects with. */
+export function faceDirWorld(fromX: number, fromY: number, toX: number, toY: number): Direction | null {
+  const vx = toX - fromX;
+  const vy = toY - fromY;
+  return vectorToDirection((vx - vy) * ISO_DX, (vx + vy) * ISO_DY);
+}
+
 // --- Networking --------------------------------------------------------------
 export const ROOM_NAME = "world";
 // The EMISSION DEMO room: a real Colyseus room on a generated station world —
@@ -2011,6 +2022,7 @@ export function stepAutopilot(
 }
 
 export * from "./monsters";
+export * from "./combat";
 
 // ---------------------------------------------------------------------------
 // Spawn-zone runtimes (the terrain-aware half of spawns@1 — the pure geometry
