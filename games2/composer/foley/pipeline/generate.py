@@ -60,6 +60,18 @@ GAIT_VARIANTS = [
     "toe-first, soft settle",
     "medium weight, slightly faster",
 ]
+IMPACT_VARIANTS = [
+    "standard hit",
+    "slightly softer",
+    "slightly harder",
+    "slightly quicker",
+]
+SETTLE_VARIANTS = [
+    "standard take",
+    "slightly slower",
+    "slightly softer",
+    "slightly grittier texture",
+]
 PRESS_VARIANTS = [
     "standard press",
     "slightly softer press",
@@ -334,6 +346,122 @@ SETS: dict[str, dict] = {
         "max_ms": 350,
         "judge": "click",
         "pool": 9,
+    },
+    # ---- ROUND 5 (maintainer 2026-08-05): CANDIDATES FOR THE WIKI ----------
+    # Ten sets for the new assignable actions (combat, loot, the grave cross,
+    # dying). NOTHING here plays in the game: the engine is silent-by-default
+    # (engine/api.ts EVENT_ASSIGNMENTS) and these exist so the Game Master can
+    # audition them in the wiki and assign winners. Briefs follow every
+    # standing lesson: purely positive, WARM (bright = metal), one compact
+    # isolated moment. The monster world is porings/soft creatures — squishy,
+    # bouncy, never gory.
+    "hit_taken": {
+        "brief": (
+            "a single dull body impact, a fist landing on a thick padded "
+            "cloth jacket, one deep soft warm thump, low and muffled"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 500,
+        "judge": "grain",
+        "pool": 10,
+    },
+    "kick": {
+        "brief": (
+            "a single fast martial-arts kick through the air, one short "
+            "breathy whoosh of air ending in a light soft cloth snap"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 500,
+        "pool": 10,
+    },
+    "punch": {
+        "brief": (
+            "a single compact punch, knuckles landing one solid hit on a "
+            "heavy leather training bag, one deep warm thud"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 450,
+        "judge": "grain",
+        "pool": 10,
+    },
+    "monster_hit": {
+        "brief": (
+            "a single soft squashy impact, a hand slapping a plump jelly "
+            "creature, one muted bouncy wet thwack, round and rubbery"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 450,
+        "judge": "grain",
+        "pool": 10,
+    },
+    "monster_die": {
+        "brief": (
+            "a single soft squishy pop of a small round jelly creature "
+            "bursting, one bouncy wet plop followed by a quick gentle puff "
+            "of air, playful and round"
+        ),
+        "duration_s": 0.9,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 800,
+        "judge": "grain",
+        "pool": 10,
+    },
+    "player_die": {
+        "brief": (
+            "a body slumping and collapsing onto soft grassy ground, heavy "
+            "cloth folding and settling, ending with one final soft muffled "
+            "thump, slow and gentle"
+        ),
+        "duration_s": 1.2,
+        "variants": SETTLE_VARIANTS,
+        "pool": 8,
+    },
+    "cross_rise": {
+        "brief": (
+            "a small wooden post rising up out of loose garden soil, dry "
+            "earth crumbling and trickling off wood, ending with one firm "
+            "wooden settle into the ground"
+        ),
+        "duration_s": 1.2,
+        "variants": SETTLE_VARIANTS,
+        "pool": 8,
+    },
+    "cross_sink": {
+        "brief": (
+            "a small wooden post sinking slowly down into loose garden "
+            "soil, dry earth sliding and closing over wood, ending soft and "
+            "buried and muffled"
+        ),
+        "duration_s": 1.2,
+        "variants": SETTLE_VARIANTS,
+        "pool": 8,
+    },
+    "item_pickup": {
+        "brief": (
+            "a single quick pick-up of a small treasure from the ground, a "
+            "soft leather pouch grab with one tiny warm wooden clink, brisk "
+            "and satisfying"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 450,
+        "judge": "grain",
+        "pool": 10,
+    },
+    "item_drop": {
+        "brief": (
+            "a small pouch dropping onto packed dirt ground, one soft warm "
+            "thump with a tiny tumble and settle"
+        ),
+        "duration_s": 0.6,
+        "variants": IMPACT_VARIANTS,
+        "max_ms": 600,
+        "judge": "grain",
+        "pool": 10,
     },
 }
 

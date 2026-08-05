@@ -106,13 +106,39 @@ const NIGHT_MUSIC_DB = -5;
 // The context-score thresholds, fallback chain and hold time live in
 // bedSelect.ts as pure functions — see test/bedSelect.test.ts.
 
-// NO COMBAT / LOOT / LEVEL-UP AUDIO. The combat work (410a17f8e) started
-// emitting a swing per attack, a hit per blow, a chime per pickup and a
-// broadcast chime on every player's level-up. None of it was asked for and all
-// of it was bad, so the EMISSIONS WERE DELETED at the call sites in WorldScene
-// — not muted here behind a flag. A future round adds sound back by writing
-// the gameAudio.event() call at the same time as foley the maintainer has
-// actually approved (see games2/CLAUDE.md).
+// ---- SILENT-BY-DEFAULT EVENTS + THE WIKI ASSIGNMENT LOOP -----------------
+// A sound plays only when the maintainer asked for it (2026-08-05, twice).
+// The engine used to resolve ANY emitted event through sounds/bindings.json —
+// the sound agent's RECOMMENDATIONS — which is exactly how unapproved catalog
+// stand-ins started playing the moment the combat work emitted event names
+// that happened to be bound. Resolution is now:
+//   1. EVENT_ASSIGNMENTS — sounds the maintainer assigned in the wiki
+//      (live/tuning/sfx_requests.json → wired here by the composer, the
+//      request entry then deleted). The Game Master's explicit choice, so it
+//      outranks everything.
+//   2. the jump/fall VOICE branch and EVENT_FOLEY — approved in their rounds.
+//   3. bindings.json — consulted ONLY for BINDINGS_APPROVED events.
+// Anything else is SILENT, deliberately: the game may emit any semantic event
+// (the wiki lists emitted-but-silent events so the Game Master can assign a
+// sound to them), and silence is the correct sound for an unassigned one.
+const BINDINGS_APPROVED = new Set<string>([
+  "ui.notify", // the chat ping (approved long before combat)
+  "player.jump", // the catalog fallback when the voice set isn't bundled
+]);
+
+/** One wiki assignment: `sound` is a catalog id or "composer/<set>". The
+ * pitch/volume/jitter fields mirror pixel-wiki-sfx-requests@1 verbatim so a
+ * request wires in as data, not as new code. */
+interface EventAssignment {
+  sound: string;
+  pitch?: number; // playbackRate multiplier
+  volume_db?: number;
+  max_random_pitch_semis?: number;
+  bus?: BusName;
+}
+/** Filled ONLY from the Game Master's wiki requests — never by the composer's
+ * own taste. Empty means every assignable event is silent. */
+const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {};
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -506,6 +532,40 @@ export class GameAudio {
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    // The Game Master's wiki assignment outranks every built-in route.
+    const assigned = EVENT_ASSIGNMENTS[name];
+    if (assigned) {
+      const rate = (opts.rate ?? 1) * (assigned.pitch ?? 1);
+      const gainDb = (opts.gainDb ?? 0) + (assigned.volume_db ?? 0);
+      const j = assigned.max_random_pitch_semis ?? 0;
+      if (assigned.sound.startsWith("composer/")) {
+        const set = assigned.sound.slice("composer/".length);
+        const urls = composerFoley(set);
+        if (urls) {
+          this.oneShots.play(
+            {
+              id: `assigned:${name}`,
+              category: "feedback",
+              loop: false,
+              file: "",
+              urls,
+              variation: {
+                round_robin: true,
+                no_immediate_repeat: true,
+                pitch_jitter_semitones: [-j, j],
+                gain_jitter_db: [-0.75, 0.5],
+              },
+            },
+            assigned.bus ?? "sfx",
+            { ...opts, rate, gainDb },
+          );
+        }
+        return;
+      }
+      const snd = this.catalog?.sounds.get(assigned.sound);
+      if (snd) this.oneShots.play(snd, assigned.bus ?? "sfx", { ...opts, rate, gainDb });
+      return;
+    }
     // The jump grunt (maintainer 2026-07-19: a Link-style vocal effort) is a
     // composer set on the SFX bus, spatialized, NOT a −12 dB UI click — so it
     // gets its own branch. The SAME grunt plays when she starts to FALL off a
@@ -550,6 +610,10 @@ export class GameAudio {
       });
       return;
     }
+    // bindings.json is the sound agent's RECOMMENDATION, not an approval —
+    // only events the maintainer signed off may resolve through it. Every
+    // other emitted event is silent until a wiki assignment exists.
+    if (!BINDINGS_APPROVED.has(name)) return;
     const bound = this.bindings.get(name);
     if (!bound) return;
     const sound = this.catalog!.sounds.get(bound.sound);

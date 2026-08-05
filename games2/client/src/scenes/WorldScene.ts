@@ -711,6 +711,7 @@ export class WorldScene extends Phaser.Scene {
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
+  private joinQuietUntil = 0; // drops synced in at (re)join are not events
   private drops = new Map<
     string,
     {
@@ -2132,6 +2133,10 @@ export class WorldScene extends Phaser.Scene {
    * the dead-connection recovery. Called for the initial join and for every
    * in-place rejoin. */
   private bindRoom(room: Room) {
+    // The state flood right after (re)bind replays every EXISTING ground drop
+    // through drops.onAdd — inherited loot is scenery, not a drop happening,
+    // so item.drop only fires for drops witnessed after this window.
+    this.joinQuietUntil = this.time.now + 1500;
     this.room = room;
     this.connected = true;
     this.reconnectRetries = 0;
@@ -2335,6 +2340,10 @@ export class WorldScene extends Phaser.Scene {
   private addDrop(id: string, g: any) {
     const p = this.projectFlat(g.x, g.y);
     const y = p.y - Math.max(g.elev ?? 0, p.lvl) * MAP_GEOMETRY.lh;
+    if (this.time.now > this.joinQuietUntil) {
+      const spG = this.worldSpatial(p.x, y);
+      gameAudio.event("item.drop", { pan: spG.pan, dist: spG.dist });
+    }
     const shadow = this.add
       .image(p.x, y, SHADOW_TEX)
       .setOrigin(0.5, 0.5)
@@ -2712,6 +2721,8 @@ export class WorldScene extends Phaser.Scene {
       // …and the GRAVE CROSS rises where it fell (maintainer 2026-08-05),
       // right as the loot appears beside it.
       this.spawnGraveCross(mv.lx, mv.lyFlat, mv.elev);
+      const spM = this.worldSpatial(mv.lx, mv.lyFlat - mv.elev);
+      gameAudio.event("combat.monster_die", { pan: spM.pan, dist: spM.dist });
     } else {
       mv.sprite.destroy();
       mv.shadow.destroy();
@@ -2767,6 +2778,8 @@ export class WorldScene extends Phaser.Scene {
       sprite.anims.pause(); // hold the standing cross (last frame)
     });
     this.graveCrosses.push({ sprite, bornAt: this.time.now, reversing: false });
+    const spC = this.worldSpatial(lx, y);
+    gameAudio.event("combat.cross_on", { pan: spC.pan, dist: spC.dist });
   }
 
   /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
@@ -2778,6 +2791,8 @@ export class WorldScene extends Phaser.Scene {
         gc.reversing = true;
         gc.sprite.anims.resume();
         gc.sprite.playReverse("grave-cross-appear");
+        const spX = this.worldSpatial(gc.sprite.x, gc.sprite.y);
+        gameAudio.event("combat.cross_off", { pan: spX.pan, dist: spX.dist });
         gc.sprite.once("animationcomplete", () => gc.sprite.destroy());
         // If the reverse somehow never completes (tab hidden through it),
         // the sweep below still drops the record; the sprite dies with it.
@@ -2997,9 +3012,15 @@ export class WorldScene extends Phaser.Scene {
     if (!id || id === this.room?.sessionId) return { pan: 0, dist: 0 };
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return { pan: 0, dist: 0.5 };
+    return this.worldSpatial(av.sprite.x, av.sprite.y);
+  }
+
+  /** Pan/dist for any world-space point (monster deaths, grave crosses,
+   * ground drops) — the same camera-relative math avatarSpatial uses. */
+  private worldSpatial(sx: number, sy: number): { pan: number; dist: number } {
     const view = this.cameras.main.worldView;
-    const nx = (av.sprite.x - view.centerX) / Math.max(1, view.width * 0.55);
-    const ny = (av.sprite.y - view.centerY) / Math.max(1, view.height * 0.55);
+    const nx = (sx - view.centerX) / Math.max(1, view.width * 0.55);
+    const ny = (sy - view.centerY) / Math.max(1, view.height * 0.55);
     return {
       pan: Math.max(-1, Math.min(1, nx)),
       dist: Math.min(1, Math.hypot(nx, ny) * 0.75),
@@ -3438,12 +3459,23 @@ export class WorldScene extends Phaser.Scene {
           // unarmedClip; no weapons yet — maintainer).
           av.actionKey = unarmedClip(player.actionSeq, idSalt(id));
           av.actionUntil = nowMs + 600;
+          // SILENT semantic events (composer plays nothing until the Game
+          // Master assigns a sound in the wiki — engine/api.ts). Two literal
+          // names, not a ternary: the wiki lists events by scanning literal
+          // gameAudio.event("...") call sites.
+          const spA = this.avatarSpatial(id);
+          if (av.actionKey === "kick") gameAudio.event("combat.kick", { pan: spA.pan, dist: spA.dist });
+          else gameAudio.event("combat.punch", { pan: spA.pan, dist: spA.dist });
         } else if (player.action === "pickup") {
           av.actionKey = "pickup";
           av.actionUntil = nowMs + 850;
+          const spP = this.avatarSpatial(id);
+          gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
         } else if (player.action === "die") {
           av.actionKey = "die";
           av.actionUntil = nowMs + 10_000; // held below while dead anyway
+          const spD = this.avatarSpatial(id);
+          gameAudio.event("player.die", { pan: spD.pan, dist: spD.dist });
         }
       }
       if ((player.hitSeq ?? 0) !== (av.lastHitSeq ?? 0)) {
@@ -3458,6 +3490,8 @@ export class WorldScene extends Phaser.Scene {
           }
           // …with the blood ON the body (maintainer round 7).
           this.spawnBloodFx(av.lx, av.sprite.y - av.sprite.displayHeight * 0.45);
+          const spH = this.avatarSpatial(id);
+          gameAudio.event("combat.hit_taken", { pan: spH.pan, dist: spH.dist });
         }
       }
       if ((av.lastHp ?? player.hp) > player.hp)

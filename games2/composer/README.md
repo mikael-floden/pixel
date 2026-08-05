@@ -63,6 +63,29 @@ decides what sounds.
   end avoids mastering a lossy file (decode + re-encode = two generations of
   artefacts on a track the player hears for hours).
 
+### The wiki assignment loop (maintainer 2026-08-05)
+
+The Game Master auditions sounds in the wiki and assigns them to in-game
+events; the game never plays unapproved audio. The machinery:
+
+- The engine is **silent-by-default** (`engine/api.ts`): an emitted event
+  resolves through `EVENT_ASSIGNMENTS` (the Game Master's wiki picks) → the
+  approved voice branch / `EVENT_FOLEY` → `bindings.json` for
+  `BINDINGS_APPROVED` names only. Everything else plays nothing.
+- Assignment requests land in **`live/tuning/sfx_requests.json`**
+  (`pixel-wiki-sfx-requests@1`): `{event, sound (catalog id or
+  composer/<set>), pitch, volume_db, max_random_pitch_semis, note}`. **Read it
+  at every run start**, wire accepted entries into `EVENT_ASSIGNMENTS`
+  verbatim (the fields map 1:1), and DELETE the entries acted on
+  (read-modify-write). Feedback on takes: `live/feedback/composer.json`.
+- Candidate SFX are generated as foley sets (round-5 sets: `hit_taken`,
+  `kick`, `punch`, `monster_hit`, `monster_die`, `player_die`, `cross_rise`,
+  `cross_sink`, `item_pickup`, `item_drop`) — served at
+  `/assets/composer/foley`, auditioned in the wiki, played nowhere until
+  assigned.
+- Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
+  approved list + assignments, and every assignable action must stay emitted.
+
 ### ENFORCE UNMODIFIED AUDIO (Settings switch)
 
 The maintainer's A/B test switch (requested 2026-07-18, exactly for cases

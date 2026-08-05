@@ -1673,17 +1673,22 @@ visible head/shoulders are ABOVE the surface).
   and resumes where it left off. Audition without hunting for the trigger:
   `__ml.audioBed("cave")`, `__ml.audioBed()` to release, `__ml.audioField()` for
   what the score is reading. Gate: `scripts/verify-beds.mjs` (dev stack).
-- **A SOUND PLAYS ONLY WHEN IT WAS ASKED FOR** (maintainer 2026-08-05: "I don't
-  tell you to add dumb sound"). Every audio event the combat/loot work
-  introduced — `tool.sword_swing`, `combat.hit_taken`, `item.get`,
-  `progress.level_up` — has been **DELETED** from the call sites, not muted:
-  bad sound gets removed, and a deleted call has to be deliberately rewritten
-  where a flag could be flipped back by accident. **Do not re-add them.** The
-  way to give a feature sound is to bring foley the maintainer has heard and
-  approved, and write the `gameAudio.event()` call in that same change — never
-  point a new feature at an existing catalog sound and hope. Gate:
-  `scripts/verify-quiet.mjs` (source check, no browser needed; it also fails if
-  the approved sounds stop being emitted).
+- **A SOUND PLAYS ONLY WHEN IT WAS ASKED FOR — and the wiki is where it gets
+  asked for** (maintainer 2026-08-05). The engine is **silent-by-default**:
+  an emitted event plays NOTHING unless it is (a) on the small approved list
+  (jump/fall grunts, UI clicks, chat notify) or (b) assigned by the Game
+  Master in the wiki (requests land in `live/tuning/sfx_requests.json`; the
+  composer wires them into `EVENT_ASSIGNMENTS` in `composer/engine/api.ts` and
+  deletes the acted-on entry). `sounds/bindings.json` is a recommendation, not
+  an approval — it resolves only for `BINDINGS_APPROVED` names, which is how
+  unapproved catalog stand-ins got in last time. **So: EMIT semantic events
+  freely** — `gameAudio.event("...")` with a LITERAL name (the wiki scans call
+  sites; a ternary hides the name) — silent events are exactly what the Game
+  Master assigns sounds to. Assignable actions already emitted: `combat.kick`,
+  `combat.punch`, `combat.hit_taken`, `combat.monster_die`, `combat.cross_on`,
+  `combat.cross_off`, `player.die`, `item.pickup`, `item.drop`. Gate:
+  `scripts/verify-quiet.mjs` (source check: the can-sound surface must not
+  grow without approval; the assignable actions must keep being emitted).
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
   It follows whichever score is playing (context bed or catalog track), and the
