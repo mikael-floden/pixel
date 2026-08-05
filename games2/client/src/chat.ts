@@ -35,6 +35,14 @@ export class ChatUI {
     this.input.style.display = "none";
     document.body.append(this.log, this.input);
 
+    // Losing focus CLOSES the box — the keyboard lift blurs it when the next
+    // tap lands outside (see hud.ts), and an open-but-blurred box would leave
+    // `open` true forever: WorldScene keeps Phaser's keyboard DISABLED while
+    // the chat is open, so the player could never walk again.
+    this.input.addEventListener("blur", () => {
+      if (this.open) this.close();
+    });
+
     this.input.addEventListener("keydown", (e) => {
       e.stopPropagation();
       if (e.key === "Enter") {

@@ -388,12 +388,12 @@ export class WorldRoom extends Room<WorldState> {
     // ALWAYS a pseudo-random scatter around the PLAYER (maintainer
     // 2026-08-05), spaced off items already lying there — the release point
     // only expresses "onto the ground", never a throw.
-    this.onMessage("drop", (client, message: { slot?: number; item?: string; wx?: number; wy?: number }) => {
+    this.onMessage("drop", (client, message: { slot?: number; item?: string; n?: number; wx?: number; wy?: number }) => {
       const player = this.state.players.get(client.sessionId);
       if (!player || player.dead) return;
       const now = Date.now();
       if (now < player.nextItemMsgAt) return;
-      player.nextItemMsgAt = now + 150;
+      player.nextItemMsgAt = now + 150; // charged before every early return below
       const slot = typeof message?.slot === "number" ? Math.floor(message.slot) : -1;
       const entry = player.inv[slot];
       if (!entry || entry.n < 1) return;
@@ -405,9 +405,21 @@ export class WorldRoom extends Room<WorldState> {
         return;
       }
       const item = entry.item;
-      entry.n--;
+      // HOW MANY: the backpack's quantity dialog (maintainer 2026-08-05) sends
+      // the count a ×2+ stack was dropped with; anything absent or junk is ONE,
+      // and the stack itself is the ceiling — a client can never drop what it
+      // does not hold. The cadence charge is per ITEM (a flat 150ms per
+      // message would let one tap put a 99-stack on the ground and repeat
+      // 6.7×/s), so a mass drop pays for its own burst.
+      const want = clamp(
+        typeof message?.n === "number" && isFinite(message.n) ? Math.floor(message.n) : 1,
+        1,
+        entry.n,
+      );
+      player.nextItemMsgAt += 20 * (want - 1);
+      entry.n -= want;
       if (entry.n <= 0) player.inv.splice(slot, 1);
-      this.spawnDrop(item, player.x, player.y, player.elev);
+      for (let i = 0; i < want; i++) this.spawnDrop(item, player.x, player.y, player.elev);
       client.send("inv", { items: player.inv });
     });
 

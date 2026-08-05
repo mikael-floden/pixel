@@ -111,8 +111,15 @@ export interface HudActions {
   }[];
   /** Backpack drag-out: an item slot was released over the GAME VIEW at
    * client coords (cx, cy) — the game converts to a world point and asks the
-   * server to drop it there (clamped + ground-snapped server-side). */
-  onDropItem?: (slot: number, item: string, cx: number, cy: number) => void;
+   * server to drop it there (clamped + ground-snapped server-side). `n` is
+   * HOW MANY of the stack to drop (the quantity dialog's answer; 1 for a
+   * lone item, which never opens the dialog). */
+  onDropItem?: (slot: number, item: string, cx: number, cy: number, n: number) => void;
+  /** A modal (the drop-quantity dialog) opened/closed. While locked the game
+   * freezes movement — the chat-input pattern (Phaser keyboard off, which
+   * also blocks the stick's synthesized keys; the dialog's own full-screen
+   * backdrop swallows every tap before Phaser can see it). */
+  onUiLock?: (locked: boolean) => void;
 }
 
 // Tab icons: the maintainer's 1x pixel-art set (client/ui-src/icons/, baked
@@ -256,6 +263,8 @@ export class HudBar {
   private invGrid: HTMLElement | null = null;
   private invItems: { item: string; n: number }[] = [];
   private activeDrag: { cancel: () => void } | null = null;
+  /** Close hook for the open drop-quantity dialog (null = none open). */
+  private qtyClose: (() => void) | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
@@ -283,6 +292,9 @@ export class HudBar {
   constructor(private actions: HudActions) {
     injectStyles();
     document.querySelector(".ml-hud")?.remove(); // idempotent across re-joins
+    // A stray quantity dialog from a torn-down HUD would hold a dead closure —
+    // remove it like the gamepad clears its floating stick.
+    document.querySelectorAll(".ml-qty-back").forEach((e) => e.remove());
     const hud = mk("div", "ml-hud");
     const tabRow = mk("div", "ml-tabrow");
     const pageWrap = mk("div", "ml-pages");
@@ -780,12 +792,12 @@ export class HudBar {
         img.alt = entry.item;
         img.draggable = false;
         cell.appendChild(img);
-        if (entry.n > 1) {
-          const badge = document.createElement("b");
-          badge.textContent = `${entry.n}`;
-          cell.appendChild(badge);
-        }
-        this.armSlotDrag(cell, img, i, entry.item);
+        // EVERY filled slot prints its count, ×1 included (maintainer
+        // 2026-08-05: "'×1', '×2', '×3', etc") — lower-right corner badge.
+        const badge = document.createElement("b");
+        badge.textContent = `×${entry.n}`;
+        cell.appendChild(badge);
+        this.armSlotDrag(cell, img, i, entry.item, entry.n);
       }
       grid.appendChild(cell);
     }
@@ -796,7 +808,7 @@ export class HudBar {
    * the client coords to the game, anywhere else snaps back. Capture keeps
    * every move/up on the slot element, so Phaser never sees the gesture and
    * cannot arm a move trip from it. */
-  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string) {
+  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string, count: number) {
     cell.addEventListener("pointerdown", (e: PointerEvent) => {
       e.preventDefault();
       this.activeDrag?.cancel(); // one gesture at a time
@@ -830,7 +842,12 @@ export class HudBar {
           // rides along: slot indices go stale in flight when a stack
           // empties, and the server drops whatever the index NAMES NOW.
           const hudTop = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hud-h")) || window.innerHeight * 0.382);
-          if (ev.clientY < hudTop) this.actions.onDropItem?.(slot, item, ev.clientX, ev.clientY);
+          // ALWAYS ask (maintainer 2026-08-05: "since this dialog acts as a
+          // nice confirm dialog, we want it for dropping 1 item when you only
+          // have ×1 as well") — a stack asks HOW MANY, a lone item asks
+          // WHETHER. The dialog keeps the release point, so the eventual drop
+          // lands where the finger let go.
+          if (ev.clientY < hudTop) this.openDropQty(slot, item, count, ev.clientX, ev.clientY);
         }
       };
       const cancel = () => cleanup();
@@ -839,6 +856,139 @@ export class HudBar {
       cell.addEventListener("pointercancel", cancel);
       this.activeDrag = { cancel: cleanup };
     });
+  }
+
+  /** The drop-quantity dialog (maintainer 2026-08-05, refined the same day):
+   * EVERY backpack drag-out lands here first — a stack asks how many, a lone
+   * item is a plain confirm. A wiki-style card centred in the GAME VIEW
+   * (positioned off the layout vars, so it lands mid-view in portrait AND
+   * landscape) over a DARKENING backdrop that swallows every pointer;
+   * movement is frozen while it's open (onUiLock).
+   *
+   * ONE ROW of controls — item, −, the count, + — over a full-width DROP.
+   * There is no cancel button and no max button (maintainer: "remove the close
+   * button to make it cleaner… remove the MAX button"): tapping OUTSIDE the
+   * card closes it, and −/+ WRAP AROUND, so one tap on − from ×1 is "all of
+   * them". The count itself is TYPABLE on the numeric keyboard; junk in the
+   * field never moves the amount. */
+  private openDropQty(slot: number, item: string, max: number, cx: number, cy: number) {
+    this.qtyClose?.(); // one dialog at a time
+    const back = mk("div", "ml-qty-back");
+    const card = mk("div", "ml-qty");
+    const head = mk("div", "ml-qty-head");
+    const img = document.createElement("img");
+    img.src = `/assets/items/${item}/sprite.webp`;
+    img.alt = item;
+    img.draggable = false;
+
+    // Inline stroke SVGs, not font glyphs: they inherit the theme ink via
+    // currentColor and can't fall out of a phone font's coverage.
+    const icon = (d: string) => {
+      const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      s.setAttribute("viewBox", "0 0 20 20");
+      s.setAttribute("aria-hidden", "true");
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", d);
+      s.appendChild(p);
+      return s;
+    };
+    const btn = (cls: string, label: string, d: string, act: () => void) => {
+      const b = mk("button", `ml-plate-btn ml-qty-btn ${cls}`) as HTMLButtonElement;
+      b.type = "button";
+      b.setAttribute("aria-label", label);
+      b.title = label;
+      b.appendChild(icon(d));
+      b.addEventListener("click", act);
+      return b;
+    };
+    let want = 1;
+    // WRAP-AROUND (maintainer): past the top comes 1 again, below 1 comes the
+    // whole stack — which is what replaced the max button.
+    const dec = btn("ml-qty-dec", "fewer", "M5 10h10", () => {
+      want = want <= 1 ? max : want - 1;
+      paint();
+    });
+    const inc = btn("ml-qty-inc", "more", "M10 5v10M5 10h10", () => {
+      want = want >= max ? 1 : want + 1;
+      paint();
+    });
+    // The count is an INPUT: tap it and type the amount on the phone's number
+    // keyboard (inputmode numeric + a digits-only pattern). It stays free-form
+    // while focused so a field can be cleared mid-edit; only a whole number
+    // inside 1..max moves `want`, and leaving the box repaints from `want` —
+    // so "1e9", "abc" or an empty box leave the amount exactly as it was.
+    const count = mk("input", "ml-qty-count") as HTMLInputElement;
+    count.type = "text";
+    count.inputMode = "numeric";
+    count.pattern = "[0-9]*";
+    count.maxLength = 3; // INV_MAX_STACK is 99
+    count.setAttribute("aria-label", `How many to drop, up to ${max}`);
+    count.addEventListener("input", () => {
+      const v = count.value.trim();
+      if (!/^\d+$/.test(v)) return; // mid-edit junk: hold the amount
+      const n = parseInt(v, 10);
+      if (n >= 1 && n <= max) want = n;
+    });
+    count.addEventListener("blur", () => paint());
+    count.addEventListener("keydown", (e) => {
+      // Never let the world see these keys, and Enter commits the box.
+      e.stopPropagation();
+      if (e.key === "Enter") count.blur();
+    });
+    const of = mk("span", "ml-qty-of");
+    of.textContent = `of ${max}`;
+    // ONE line — count box and "of N" side by side, so the box can stand as
+    // tall as the ± buttons beside it (maintainer).
+    const countWrap = mk("div", "ml-qty-countwrap");
+    const times = mk("span", "ml-qty-x");
+    times.textContent = "×";
+    countWrap.append(times, count, of);
+    head.append(img, dec, countWrap, inc);
+
+    const paint = () => {
+      count.value = `${want}`;
+    };
+    paint();
+    let closed = false;
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      window.removeEventListener("keydown", onKey, true);
+      back.remove();
+      if (this.qtyClose === close) this.qtyClose = null;
+      this.actions.onUiLock?.(false);
+    };
+    // The one action: the WORD, no icon (maintainer) — it is the confirm.
+    const dropB = mk("button", "ml-plate-btn ml-qty-btn ml-qty-drop") as HTMLButtonElement;
+    dropB.type = "button";
+    dropB.setAttribute("aria-label", "drop");
+    const dropTxt = mk("span", "");
+    dropTxt.textContent = "Drop";
+    dropB.appendChild(dropTxt);
+    dropB.addEventListener("click", () => {
+      const n = want;
+      close();
+      this.actions.onDropItem?.(slot, item, cx, cy, n);
+    });
+    card.append(head, dropB);
+    back.appendChild(card);
+    // A tap OUTSIDE the card is the CANCEL (maintainer: no close button) —
+    // and either way the backdrop is the event target, so Phaser never sees a
+    // pointer while the dialog is up. Removing the card blurs the number box
+    // with it, so the phone keyboard leaves too.
+    back.addEventListener("pointerdown", (e) => {
+      if (e.target === back) close();
+    });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        close();
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    document.body.appendChild(back);
+    this.actions.onUiLock?.(true);
+    this.qtyClose = close;
   }
 
   pushChat(name: string, text: string, t: Date = new Date()) {
@@ -1198,9 +1348,15 @@ function mountChatKeyboardLift() {
   // BOTH chat boxes: the Chat page's (.ml-chat-input) and the in-world
   // overlay's (.ml-chatinput, chat.ts). Either one focused means a keyboard is
   // coming, and everything anchored to the bottom has to get out of its way.
+  // The drop dialog's number box (.ml-qty-count) rides along: it raises no
+  // box of its own, but .ml-kb-up is what lifts the CARD clear of the number
+  // keyboard (a landscape phone is ~393px tall — a centred card would be
+  // buried under the keys).
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement &&
-    (t.classList.contains("ml-chat-input") || t.classList.contains("ml-chatinput"));
+    (t.classList.contains("ml-chat-input") ||
+      t.classList.contains("ml-chatinput") ||
+      t.classList.contains("ml-qty-count"));
   document.addEventListener("focusin", (e) => {
     if (!isChatInput(e.target)) return;
     input = e.target as HTMLElement;
@@ -1218,13 +1374,18 @@ function mountChatKeyboardLift() {
     poll = 0;
     drop();
   });
-  // Android ▼/Back hides the keyboard WITHOUT blurring the field, and on a device
-  // that reports no keyboard height we can't detect that — the floated box would
-  // hover over the game with no keyboard beneath it. The user's next tap OUTSIDE
-  // the box means they're done: blur it (→ focusout → drop). Tapping the box
-  // itself keeps focus so you can keep typing.
+  // Android ▼/Back hides the keyboard WITHOUT blurring the field. The user's
+  // next tap OUTSIDE the box means they're done: blur it (→ focusout → drop).
+  // Tapping the box itself keeps focus so you can keep typing.
+  // THE GATE IS FOCUS, NOT `lifted` (maintainer 2026-08-05: "closes the
+  // keyboard… now attacks an enemy or clicks the game-view and the keyboard
+  // will open again"): once a device HAS reported a keyboard height, the ▼
+  // close drops the float but the field keeps focus, and Chrome re-opens the
+  // keyboard on the next tap because a text field is still focused — Phaser
+  // preventDefault()s the canvas pointerdown, so nothing else ever takes
+  // focus away. Capture phase, so it can't be swallowed on the way down.
   addEventListener("pointerdown", (e) => {
-    if (lifted && input && e.target !== input) input.blur();
+    if (input && e.target !== input) input.blur();
   }, { capture: true, passive: true });
   vk?.addEventListener("geometrychange", sync);
   vv?.addEventListener("resize", sync);
@@ -1339,11 +1500,61 @@ function injectStyles() {
   .ml-slot.filled{position:relative;cursor:grab;touch-action:none}
   .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
     position:absolute;left:10%;top:10%;pointer-events:none}
-  .ml-slot.filled b{position:absolute;right:4px;bottom:2px;font-size:12px;color:var(--text);
-    text-shadow:0 1px 0 var(--surface);pointer-events:none}
+  /* the ×N count, lower-right of EVERY filled slot (maintainer 2026-08-05).
+     A small chip rather than bare text: it sits over the sprite's corner on a
+     crowded icon, and the ×1 case must stay quiet. */
+  .ml-slot.filled b{position:absolute;right:3px;bottom:2px;pointer-events:none;
+    padding:0 3px;border-radius:6px;font:700 11px/1.5 var(--sans);color:var(--ink);
+    background:color-mix(in srgb, var(--surface) 82%, transparent)}
   .ml-slot.dragging{opacity:.45}
   .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
     image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+  /* ── drop-quantity dialog: centred in the GAME VIEW, over a backdrop that
+     eats every pointer (that IS the movement lock's first half; the second is
+     onUiLock → Phaser's keyboard). The gv insets + --hud-h centre it inside
+     the view in BOTH orientations: portrait subtracts the HUD rail at the
+     bottom, landscape the menu column at one side. z 70 clears every other
+     overlay (slot ghost 60, floated chat input 50, chips 8). ── */
+  /* The backdrop DARKENS in BOTH themes (maintainer 2026-08-05) — a
+     theme-coloured wash brightened the world in light mode, which read as the
+     dialog lighting the room instead of dimming it. */
+  .ml-qty-back{position:fixed;inset:0;z-index:70;display:flex;
+    align-items:center;justify-content:center;
+    padding:0 var(--gv-right,0px) var(--hud-h,0px) var(--gv-left,0px);
+    background:rgba(0,0,0,.5);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  /* …and while the number keyboard is up the card climbs to the top of the
+     game view, or the keys would bury it on a landscape phone. */
+  :root.ml-kb-up .ml-qty-back{align-items:flex-start;padding-top:12px}
+  .ml-qty{width:min(320px, calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 40px));
+    box-sizing:border-box;display:flex;flex-direction:column;gap:10px;
+    background:var(--bg);border:1px solid var(--border);border-radius:14px;
+    padding:14px;box-shadow:var(--shadow)}
+  /* ONE row: the item, −, the typable count, + (maintainer: "the +/- should
+     be on same line as the icon/×3 of 12") */
+  .ml-qty-head{display:flex;align-items:center;gap:8px}
+  .ml-qty-head img{width:44px;height:44px;flex:none;object-fit:contain;
+    image-rendering:pixelated}
+  .ml-qty-countwrap{flex:1 1 auto;min-width:0;display:flex;align-items:center;
+    justify-content:center;gap:5px}
+  .ml-qty-x{font:700 20px/1.15 var(--sans);color:var(--muted)}
+  .ml-qty-count{width:2.6em;height:44px;box-sizing:border-box;text-align:center;
+    background:var(--surface);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:0 4px;
+    font:700 22px/1.2 var(--sans);font-variant-numeric:tabular-nums;outline:none}
+  .ml-qty-count:focus{border-color:var(--accent)}
+  .ml-qty-of{font:500 13px/1.3 var(--sans);color:var(--muted);white-space:nowrap}
+  .ml-qty-btn{padding:8px;flex:none}
+  .ml-qty-dec,.ml-qty-inc{width:44px}
+  .ml-qty-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  /* the only action button: full width, and it SAYS what it does (maintainer).
+     .ml-plate-btn's own background rule is later in this sheet, so the accent
+     needs the extra class to win. */
+  .ml-plate-btn.ml-qty-drop{width:100%;background:var(--accent-soft);
+    border-color:var(--accent);font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase}
+  .ml-plate-btn:disabled{opacity:.4;cursor:default}
   .ml-slot{display:block;aspect-ratio:1;background:var(--surface-2);
     border:1px solid var(--border);border-radius:10px}
   /* ── buttons: .ml-plate-btn survives as a CLASS (the ambient agent injects

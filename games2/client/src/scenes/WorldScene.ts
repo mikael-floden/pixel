@@ -1068,15 +1068,30 @@ export class WorldScene extends Phaser.Scene {
       // Backpack drag-out: client coords -> canvas coords -> world point ->
       // the server's "drop" (which clamps to a short reach + standable
       // ground, so the client conversion only has to be roughly right).
-      onDropItem: (slot, item, cx, cy) => {
+      onDropItem: (slot, item, cx, cy, n) => {
         if (!this.room) return;
         const rect = this.game.canvas.getBoundingClientRect();
         const px = ((cx - rect.left) / Math.max(1, rect.width)) * this.scale.width;
         const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
         const wp = this.cameras.main.getWorldPoint(px, py);
         const g = this.pickGround(wp.x, wp.y);
-        if (g) this.room.send("drop", { slot, item, wx: g.x, wy: g.y });
-        else this.room.send("drop", { slot, item }); // void/solid target: at my feet
+        if (g) this.room.send("drop", { slot, item, n, wx: g.x, wy: g.y });
+        else this.room.send("drop", { slot, item, n }); // void/solid target: at my feet
+      },
+      // A HUD modal is up (the drop-quantity dialog): FREEZE the player —
+      // "when this dialog is open the player can't walk" (maintainer
+      // 2026-08-05). Same gate the chat input uses (Phaser's keyboard, which
+      // is also what the analog stick synthesizes into), plus a reset so a
+      // key held at the moment it opened can't stick, and any autopilot trip
+      // or hold in flight is dropped. The dialog's own backdrop swallows
+      // taps, so tap-to-move can't start a new one either.
+      onUiLock: (locked) => {
+        // …and never hand the keys back to a chat box that is still typing.
+        this.input.keyboard!.enabled = !locked && !this.chat?.open;
+        if (!locked) return;
+        this.input.keyboard!.resetKeys();
+        this.dropHold();
+        this.clearMoveTarget();
       },
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
@@ -2022,6 +2037,15 @@ export class WorldScene extends Phaser.Scene {
       },
       pickupNearest: () => this.pickupNearest(),
       inv: () => this.hud?.invSnapshot?.() ?? [],
+      // QA (local only, like __ml.weather): paint a backpack WITHOUT farming
+      // the stacks — the server owns the real one and never sends a ×3 on
+      // demand. Drops made from a faked slot are healed by the server's item
+      // check, so this exercises the DIALOG, not the economy.
+      invFake: (items: { item: string; n: number }[]) => this.hud?.setInventory(items ?? []),
+      /** Is the player allowed to walk right now? (chat typing and the HUD's
+       * drop-quantity modal both freeze Phaser's keyboard — the stick
+       * synthesizes into it too, so this covers every input path.) */
+      canWalk: () => !!this.input.keyboard?.enabled,
       myAnim: () => {
         const av = this.room ? this.avatars.get(this.room.sessionId) : null;
         return av?.sprite.anims.getName() ?? "";

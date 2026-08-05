@@ -18,6 +18,11 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = process.env.OUT || "/tmp";
+// gamepad.ts LAND_INSET — the landscape ghost stick's corner inset, from the
+// centre the maintainer marked in red on two device screenshots (2026-08-05;
+// ~112 css px in from both edges once the screenshots' real 2.28 device-px
+// scale is measured off the ghost's own disc — see the note in gamepad.ts).
+const LAND_INSET = 38;
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 let bad = false;
@@ -264,9 +269,21 @@ try {
   g.stickPos === "fixed" && g.stickZ === "4"
     ? ok("stick floats (fixed, z 4 — under the chat overlay's z 5)")
     : fail(`stick pos=${g.stickPos} z=${g.stickZ}`);
-  g.stick.l > g.game.l && Math.abs(851 - 10 - g.stick.r) <= 2 && Math.abs(g.vh - 10 - g.stick.b) <= 2
+  // LAND_INSET (gamepad.ts): the maintainer marked the centre he wants in red
+  // on two device screenshots (2026-08-05) — ~94 css px in from BOTH edges,
+  // which with the 148px well is a 20px corner inset (was 10).
+  g.stick.l > g.game.l && Math.abs(851 - LAND_INSET - g.stick.r) <= 2 && Math.abs(g.vh - LAND_INSET - g.stick.b) <= 2
     ? ok(`stick in the game view's bottom-RIGHT corner (x ${g.stick.l}..${g.stick.r}, b ${g.stick.b})`)
-    : fail(`stick ${JSON.stringify(g.stick)} want r=${851 - 10}, b=${g.vh - 10}`);
+    : fail(`stick ${JSON.stringify(g.stick)} want r=${851 - LAND_INSET}, b=${g.vh - LAND_INSET}`);
+  // …and the two margins MUST match ("the margins should of course be the
+  // same on both sides"): centre-to-right-edge == centre-to-bottom-edge.
+  {
+    const cxIn = 851 - (g.stick.l + g.stick.r) / 2;
+    const cyIn = g.vh - (g.stick.t + g.stick.b) / 2;
+    Math.abs(cxIn - cyIn) <= 2
+      ? ok(`stick centre equidistant from both edges (${Math.round(cxIn)} / ${Math.round(cyIn)} px)`)
+      : fail(`stick centre margins differ: side ${cxIn}, bottom ${cyIn}`);
+  }
   Math.abs(parseFloat(g.stickOp) - 0.15) <= 0.01
     ? ok(`stick ghosted at 0.15 alpha — 85% transparent (${g.stickOp})`)
     : fail(`stick opacity ${g.stickOp}, want 0.15`);
@@ -411,7 +428,7 @@ try {
   g.tabrow.h > g.tabrow.w && Math.abs(g.tabrow.l - g.hud.l) <= 2 && g.tabrow.r < g.pages.l + 2
     ? ok("tab strip flipped to the column's game-view (left) edge")
     : fail(`tabrow ${JSON.stringify(g.tabrow)} pages ${JSON.stringify(g.pages)}`);
-  Math.abs(g.stick.l - 10) <= 2 && Math.abs(g.vh - 10 - g.stick.b) <= 2
+  Math.abs(g.stick.l - LAND_INSET) <= 2 && Math.abs(g.vh - LAND_INSET - g.stick.b) <= 2
     ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);

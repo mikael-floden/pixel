@@ -72,7 +72,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   as a build step: a Dockerfile conversion would add minutes to every deploy
   and bust the layer cache).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
-  `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`.
+  `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
+  `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
+  orientations; the SERVER's count clamp is unit-tested in
+  `server/test/combat.review.test.ts` instead).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -149,6 +152,15 @@ from the games agent), #18 (title/landing screen).
   dark. The desktop-site squeeze (viewport 980×2123, screen 393×851) still
   matters for the CANVAS (WorldScene.zoomFor) and the wiki drawer's iframe
   scaling — check it when touching those.
+- **A DEVICE SCREENSHOT'S SCALE IS NOT THE PORTRAIT DPR — MEASURE IT.** The
+  maintainer's phone is 393 css px wide in portrait (dpr 2.75) but its
+  LANDSCAPE viewport is ~988 css px, i.e. **2.28** device px per css px, and
+  a landscape screenshot also carries a ~152px black cutout band on one side
+  that is NOT viewport. Converting one of his red position marks with the
+  portrait dpr under-reported the move by 3× ("10px" when he had marked 28)
+  and he caught it. Anchor every measurement to something whose CSS size you
+  KNOW and can find in the image — the analog stick's 148px well (fit a
+  circle to its blur disc), the clock pill's 80×32 — then convert.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.

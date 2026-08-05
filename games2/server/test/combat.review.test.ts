@@ -166,6 +166,60 @@ test("sword-marking provokes on approach; escaping lifts the flee slow", async (
   }
 });
 
+test("dropping a stack drops exactly the asked-for count (clamped to what is held)", async () => {
+  const port = 2978; // unique per test file — see the grep-the-tests rule before picking one
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+  const token = `qty-${Date.now()}`;
+  try {
+    // Seed a real STACK through the shared progress store — the backpack is
+    // private, so this is the only way in without farming 7 kills.
+    progressStore().save(token, {
+      level: 1,
+      xp: 0,
+      hp: 40,
+      ep: 20,
+      inv: [{ item: "green_slime_glob", n: 7 }],
+    });
+    const c1 = new Client(`ws://localhost:${port}`);
+    const invs: any[] = [];
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+      name: "Hoarder",
+      character: "default_girl",
+      world: "prop_demo",
+      token,
+    });
+    r1.onMessage("inv", (m: any) => invs.push(m));
+    for (const t of ["chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
+    await waitFor(() => r1.state.players.size >= 1 && !!r1.state.players.get(r1.sessionId), 8000, "join");
+    const me = () => r1.state.players.get(r1.sessionId);
+    await waitFor(() => invs.length >= 1, 3000, "inv on join");
+    assert.deepEqual(invs[0].items, [{ item: "green_slime_glob", n: 7 }]);
+
+    // THREE of the seven (the quantity dialog's answer).
+    r1.send("drop", { slot: 0, item: "green_slime_glob", n: 3, wx: me().x + 40, wy: me().y });
+    await waitFor(() => r1.state.drops.size === 3, 4000, "three ground items");
+    await waitFor(() => invs[invs.length - 1].items[0]?.n === 4, 2000, "stack keeps the rest");
+
+    // A count BIGGER than the stack is clamped to it, never invented — and
+    // emptying the stack drops the slot. Sit out the per-item cadence charge
+    // (150ms + 20ms per extra item) the mass drop above bought.
+    await new Promise((r) => setTimeout(r, 400));
+    r1.send("drop", { slot: 0, item: "green_slime_glob", n: 99, wx: me().x + 40, wy: me().y });
+    await waitFor(() => r1.state.drops.size === 7, 4000, "the remaining four, and no more");
+    await waitFor(() => invs[invs.length - 1].items.length === 0, 2000, "empty stack leaves the grid");
+    let far = 0;
+    r1.state.drops.forEach((g: any) => {
+      far = Math.max(far, Math.hypot(g.x - me().x, g.y - me().y));
+    });
+    assert.ok(far < 200, "a mass drop still scatters around the player, never flung");
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
 test("progression is world-agnostic and one token means one live session", async () => {
   const port = 2980;
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });

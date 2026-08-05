@@ -891,6 +891,32 @@ visible head/shoulders are ABOVE the surface).
   stale in flight when a stack empties) and rate-caps pickup/drop at 150ms.
   An "inv" refresh mid-drag cancels the gesture (renderInventory would
   orphan the ghost). INV_MAX_SLOTS 30, stacks of 99.
+- **HOW MANY — the drop dialog** (maintainer 2026-08-05, three refinement
+  rounds the same day). Every filled slot badges its count in the lower-right
+  corner, **×1 included**; every drag-out then opens a card centred in the
+  GAME VIEW — a stack asks how many, a lone item is the plain confirm ("this
+  dialog acts as a nice confirm dialog"). ONE row: item, **−**, a TYPABLE
+  count box (inputMode numeric; junk or an out-of-range number leaves the
+  amount exactly as it was, and blur repaints from it), "of N", **+**; a
+  full-width **DROP** word underneath. No cancel button and no max button —
+  tapping OUTSIDE the card closes it, and −/+ WRAP AROUND, so one tap on −
+  from ×1 is "all of them". The backdrop is `rgba(0,0,0,.5)` — DARKENING in
+  both themes (a `color-mix` of the theme's own `--bg` brightened the light
+  theme, which read as the dialog lighting the room). It centres off
+  `--gv-left/--gv-right/--hud-h`, so it lands mid-view in both orientations,
+  and `:root.ml-kb-up` lifts it to the top of the view while the number
+  keyboard is up (a landscape phone is ~393px tall). MOVEMENT IS FROZEN while
+  it's open, both halves: the full-screen backdrop swallows every tap before
+  Phaser sees it, and `HudActions.onUiLock` disables Phaser's keyboard (which
+  the analog stick synthesizes into), resets held keys and drops any trip or
+  hold in flight. SERVER: `"drop"` takes an `n`, clamped to `1..entry.n` — a
+  client can never drop what it does not hold — and the 150ms item cadence is
+  charged PER ITEM (+20ms each) so one tap can't put a 99-stack on the ground
+  6.7×/s. Gates: `scripts/verify-dropqty.mjs` (badges, both orientations, the
+  wrap-around, typed junk, the movement lock) + the clamp test in
+  `server/test/combat.review.test.ts`. QA probe `__ml.invFake(items)` paints a
+  backpack locally (the server never hands out a ×3 on demand);
+  `__ml.canWalk()` reports the movement gate.
 - **Monster stats come from the LIVE TUNING channel** — the wiki agent's
   document (live/tuning/monsters.json, format @1), adopted exactly as they
   requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.
@@ -1076,6 +1102,18 @@ visible head/shoulders are ABOVE the surface).
   (`:focus::placeholder{color:transparent}`) — the prompt is an
   invitation, not a label. Gate: verify-chatpage (margins, both lifts,
   same line, placeholder).
+  A TAP ON THE WORLD ALWAYS BLURS THE BOX (maintainer 2026-08-05: "select
+  the input and then close the keyboard — if I now attack an enemy or click
+  the game-view the keyboard will open again"). Android's ▼/Back hides the
+  keyboard WITHOUT blurring the field, and Phaser preventDefault()s the
+  canvas pointerdown so nothing else ever takes focus away — Chrome then
+  re-opens the keyboard on the next tap anywhere. The lift's
+  blur-on-outside-tap is therefore gated on FOCUS, not on the box still
+  floating (it used to check `lifted`, which a device that DOES report a
+  keyboard height clears the moment ▼ is pressed, leaving the field focused
+  and the trap armed). ChatUI closes on blur for the same reason — an
+  open-but-blurred in-world box would leave WorldScene's Phaser keyboard
+  disabled forever and the player unable to walk.
   THE MOTION — TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is
   the design). The first cut alternated a SINGLE travelling orb on a belt
   (each body drawn three times, one pill-width apart, so an exit right was
@@ -1752,7 +1790,16 @@ visible head/shoulders are ABOVE the surface).
   landscape the stick is REPARENTED TO <body> — visible and usable on
   EVERY tab, not just the gamepad page (maintainer 2026-08-05); a HUD
   rebuild clears strays first — floating in the game view's very BOTTOM
-  CORNER on the thumb's side (10px insets), GHOSTED at 0.15 alpha (85%
+  CORNER on the thumb's side (gamepad.ts LAND_INSET, 38px — the centre the
+  maintainer marked in red on two device screenshots, ~112 css px in from
+  BOTH edges, equal margins by his instruction. MEASURE A DEVICE SCREENSHOT'S
+  SCALE, NEVER ASSUME THE PORTRAIT DPR: his phone is 393 css px wide in
+  portrait, dpr 2.75, but its LANDSCAPE viewport is ~988 css px = 2.28 device
+  px per css px. Reading the marks at 2.75 said "move it 10px" when the real
+  answer was 28 — he pushed back, and fitting a circle to the ghost's own
+  blur disc in the screenshot settled it: r = 169 device px for the known
+  148px well ⇒ dpr 2.284, shipped centre 186/188 device px from the edges =
+  exactly the 84 css the old 10px inset gives), GHOSTED at 0.15 alpha (85%
   transparent) and BEHIND the corner chrome — position:fixed, z 4, under the
   chat overlay (5) and the pill/chips (8), all of which are
   pointer-events:none so the thumb steers straight through them; hidden

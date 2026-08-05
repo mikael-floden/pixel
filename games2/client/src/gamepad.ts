@@ -46,6 +46,19 @@ const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // the cap's centre moves less than the thumb; the input circle (dead zone,
 // run, full gate) is untouched.
 const CAP_VISUAL_FRAC = 0.65;
+// LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
+// marked the centre he wants in red on two device screenshots (2026-08-05):
+// ~257 DEVICE px in from the side edge AND from the bottom, "the margins
+// should of course be the same on both sides".
+// SCALE, measured the hard way — do not eyeball it from the portrait
+// viewport: this phone is 393 css px wide in PORTRAIT (dpr 2.75) but its
+// LANDSCAPE viewport is ~988 css px, so its screenshots are only ~2.28
+// device px per css px. Fitting a circle to the ghost's own blur disc in the
+// screenshot gives r = 169 device px for the 148px well ⇒ dpr 2.284, and the
+// SHIPPED centre measures 186/188 device px from the edges = the 84 css the
+// 10px inset produces. The mark is therefore ~112 css px in, i.e. a 38px
+// corner inset — a 28px move, not the 10px a portrait-dpr reading suggested.
+const LAND_INSET = 38;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -231,8 +244,8 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
       pad.style.opacity = "0.15";
-      pad.style.left = `${leftHand ? 10 : window.innerWidth - 10 - well}px`;
-      pad.style.top = `${window.innerHeight - 10 - well}px`;
+      pad.style.left = `${leftHand ? LAND_INSET : window.innerWidth - LAND_INSET - well}px`;
+      pad.style.top = `${window.innerHeight - LAND_INSET - well}px`;
       // the blur disc rides exactly under it
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
