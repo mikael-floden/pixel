@@ -154,6 +154,13 @@ async function boot() {
     mountFoleyAudition();
     return;
   }
+  // Composer's SCORE audition (/#score): every generated music bed, playable
+  // with its measured loop point — the maintainer decides what plays where.
+  if (location.hash === "#score") {
+    const { mountScoreAudition } = await import("../../composer/scoreAudition");
+    mountScoreAudition();
+    return;
+  }
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // Monster catalog (the poring family) — served in parallel. Optional: a

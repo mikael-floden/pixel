@@ -31,6 +31,14 @@ function byName(...needles: string[]): string | null {
   return null;
 }
 
+/** The mystical night-bed URL, or null if not generated yet. This is the
+ * IN-WORLD night score (api.ts ensureNightMusic) — the generated context beds
+ * are audition-only until the maintainer routes them. */
+export function nightMusicUrl(): string | null {
+  const url = byName("night", "mystic", "nocturne");
+  return url ? withAudioV(url) : null;
+}
+
 /** The title/login theme URL, or null if not generated yet. */
 export function titleThemeUrl(): string | null {
   // A file named title/theme; else the first mp3 that isn't the night bed.

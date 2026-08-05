@@ -137,10 +137,23 @@ is a whisper.**
 - When tuning any future effect: start from imperceptible and increase only
   with explicit approval, never the reverse.
 
-## The CONTEXT SCORE — six beds, one per situation
+## The music beds — generated, NOT yet routed
 
-The score is not one track any more. `engine/contextMusic.ts` owns six looping
-beds and cross-fades whichever the player's situation calls for:
+**The in-world score is unchanged**: the sound-domain catalog bed by day,
+cross-faded into the mystical `night` bed after dark. The five new beds are
+generated and auditionable, and nothing plays them automatically —
+the maintainer listens first and then says what plays where (2026-08-05:
+"I didnt tell you to change the music in the game. Just generate more music").
+GENERATING an asset and ROUTING it are two separate decisions.
+
+**Listen at `/#score`** (`scoreAudition.ts`): every bed with what it was written
+for, its measured facts, and a button that jumps to the measured loop point so
+the seam can be judged in seconds.
+
+`engine/contextMusic.ts` + `engine/bedSelect.ts` hold the routing machinery,
+dormant, for when that call is made. A bed only takes the music bus during an
+explicit audition (`__ml.audioBed("cave")`, `__ml.audioBed()` to release).
+The intended mapping, when it is wanted:
 
 | bed | when | what triggers it |
 |---|---|---|
@@ -151,7 +164,7 @@ beds and cross-fades whichever the player's situation calls for:
 | `night` | the overworld after dark | sun strength |
 | `adventure` | anywhere else | the default, and by far the most-heard track |
 
-Selection lives in **`engine/bedSelect.ts` as pure functions**, tested in
+Selection (unused until routed) lives in **`engine/bedSelect.ts` as pure functions**, tested in
 `test/bedSelect.test.ts` (`npx tsx composer/test/bedSelect.test.ts`), because a
 wrong answer is only audible if you stand in the right place on the right map at
 the right time of day. Three rules the tests pin:

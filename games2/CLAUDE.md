@@ -1495,9 +1495,12 @@ visible head/shoulders are ABOVE the surface).
   `ambient/thunder` are the audio agent's wiring; **don't remove them**, and
   emit new semantic events (`gameAudio.event("item.get")` etc.,
   names from `sounds/bindings.json`) when adding gameplay that should sound.
-- **THE CONTEXT SCORE (2026-08-05)**: the music is now SIX situational beds —
-  `battle`, `cave`, `home`, `town`, `night`, `adventure` — cross-faded by what
-  the player is doing (`composer/engine/contextMusic.ts`). Battle reads the
+- **MUSIC BEDS, generated but NOT routed (2026-08-05)**: five new tracks
+  (`battle`, `cave`, `home`, `town`, `adventure`) exist and are auditionable at
+  **`/#score`**, but the IN-WORLD SCORE IS UNCHANGED (catalog bed by day, the
+  `night` bed after dark) — the maintainer picks what plays where before any of
+  it is wired. The routing machinery is dormant in
+  `composer/engine/contextMusic.ts`. When it IS turned on: battle reads the
   monster brain's own `mstate` (`chase`/`combat`); a ROAMING monster scores zero
   however close, so the score reacts to real fights only. Cave reads world@2
   deck slabs overhead; home reads the spawn bonfire; town reads road/farm tiles.
@@ -1509,6 +1512,12 @@ visible head/shoulders are ABOVE the surface).
   and resumes where it left off. Audition without hunting for the trigger:
   `__ml.audioBed("cave")`, `__ml.audioBed()` to release, `__ml.audioField()` for
   what the score is reading. Gate: `scripts/verify-beds.mjs` (dev stack).
+- **COMBAT SFX ARE MUTED** (maintainer 2026-08-05: "a lot of crappy sound when
+  fighting monsters ... get rid of it. Will add it back with good soundeffects").
+  KEEP EMITTING `tool.sword_swing` and `combat.hit_taken` — the call sites are
+  deliberately untouched; the composer decides what a semantic event sounds
+  like, and those two currently play nothing (`MUTED_EVENTS` in
+  `composer/engine/api.ts`). `item.get`/`progress.level_up` still sound.
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
   It follows whichever score is playing (context bed or catalog track), and the

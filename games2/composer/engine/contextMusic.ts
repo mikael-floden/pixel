@@ -60,14 +60,19 @@ interface LoopPoints {
   crossfade_ms: number;
   score: number;
 }
-interface TrackEntry {
+export interface TrackEntry {
   id: string;
   files: { file: string; mime: string }[];
   duration_s: number;
   bpm?: number | null;
   trim_db?: number;
   loop: LoopPoints;
-  musical?: { sfx_safe_pitch_classes?: number[] | null; midi_pitch_classes?: number[] | null };
+  musical?: {
+    root?: string | null;
+    mode?: string | null;
+    sfx_safe_pitch_classes?: number[] | null;
+    midi_pitch_classes?: number[] | null;
+  };
   timing?: { bpm?: number | null; beat_anchor_s?: number };
 }
 interface TracksFile {

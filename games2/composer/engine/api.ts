@@ -15,7 +15,7 @@ import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces } from "./foley";
-import { titleThemeUrl } from "./titleTheme";
+import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
 import { ContextMusic, hasBed } from "./contextMusic";
 import { BED_MIN_HOLD_S, BED_NAMES, BedName, desiredBed, resolveBed } from "./bedSelect";
 
@@ -97,15 +97,35 @@ const SWIM_EXIT_DB = -4;
 // The character-select TITLE THEME plays on the music bus (respects the music
 // toggle); trimmed a touch so it sits under the SFX, never blaring on load.
 const TITLE_THEME_DB = -4;
-// HISTORICAL — the mystical NIGHT bed's approved level (maintainer 2026-07-19).
-// Night is now one of the CONTEXT BEDS, and this number is what contextMusic's
-// WORLD_BED_DB was derived from: night.mp3 measures -16.79 LUFS and played at
-// -5 dB, so normalising every bed to -18 LUFS and playing at -3.8 dB reproduces
-// exactly this perceived loudness. Kept as that derivation's paper trail.
+// The mystical NIGHT bed's level (maintainer 2026-07-19) — this IS the
+// in-world night score: a second looping layer cross-faded IN as the sun sets
+// and OUT at dawn, looping continuously so each night you hear a different
+// stretch rather than only its opening.
 const NIGHT_MUSIC_DB = -5;
 
 // The context-score thresholds, fallback chain and hold time live in
 // bedSelect.ts as pure functions — see test/bedSelect.test.ts.
+
+/**
+ * SEMANTIC EVENTS THE COMPOSER CURRENTLY PLAYS NOTHING FOR.
+ *
+ * The combat system emits a swing on EVERY attack and a hit on every blow, and
+ * with the catalog stand-ins behind them that reads as constant noise the
+ * moment a fight starts — the maintainer's verdict, 2026-08-05: "a lot of
+ * crappy sound when fighting monsters ... get rid of it. Will add it back with
+ * good sound effects once I find time to iterate on it."
+ *
+ * Muted HERE, in the composer, and NOT by deleting the game's call sites: the
+ * game emitting semantic events is the right architecture (games2/CLAUDE.md
+ * tells the game agents to emit them and not to remove gameAudio calls), and
+ * the composer is the one who decides what a semantic event sounds like — in
+ * this case, nothing, until there is foley worth playing. Deleting this set's
+ * entries is the whole of "turn them back on".
+ *
+ * NOT muted, because they are not fight noise: `item.get` (loot pickup) and
+ * `progress.level_up`.
+ */
+const MUTED_EVENTS = new Set<string>(["tool.sword_swing", "combat.hit_taken"]);
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -239,6 +259,11 @@ export class GameAudio {
   private bedNow: BedName | null = null;
   private bedSince = 0;
   private bedOverride: BedName | null = null;
+  // Night music bed (in-world): a second looping layer, cross-faded by the sun.
+  private nightWanted = false;
+  private nightSrc: AudioBufferSourceNode | null = null;
+  private nightGain: GainNode | null = null;
+  private nightLoading = false;
   private storm = false;
   private musicToggleFast = false;
   private mode = "overworld";
@@ -331,9 +356,43 @@ export class GameAudio {
   /** The world is live — bring the score in (and retire the title theme). */
   startMusic(): void {
     this.musicWanted = true;
-    this.bedWanted = true; // arm the context score; slowTick picks the bed
+    this.nightWanted = true; // arm the night bed; slowTick cross-fades it
+    this.bedWanted = true; // context beds: audition-only until routed (see slowTick)
     this.stopTitleTheme();
+    this.ensureNightMusic();
     if (this.catalog && this.graph) void this.music.start(this.catalog.music);
+  }
+
+  private ensureNightMusic(): void {
+    if (!this.graph || !this.graph.running || this.nightSrc || this.nightLoading || !this.nightWanted) return;
+    const url = nightMusicUrl();
+    if (!url) return; // not generated yet
+    if (!this.nightGain) {
+      this.nightGain = this.graph.ctx.createGain();
+      this.nightGain.gain.value = 0.0001;
+      this.nightGain.connect(this.graph.bus("music"));
+    }
+    this.nightLoading = true;
+    void this.buffers.get(url).then((buf) => {
+      this.nightLoading = false;
+      if (!buf || !this.graph || !this.nightGain || this.nightSrc || !this.nightWanted) return;
+      const src = this.graph.ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true; // loops FOREVER — never restarted on the day/night flip
+      src.connect(this.nightGain);
+      // Start anywhere in the bed so it isn't always heard from its opening.
+      src.start(this.graph.now, 0);
+      this.nightSrc = src;
+    });
+  }
+
+  /** Cross-fade the night bed by how dark it is (0 day → 1 night); silent when
+   * music is off, in pure mode, or while a bed audition has the music bus. */
+  private applyNightLevel(night: number, tauS: number): void {
+    if (!this.nightGain || !this.graph) return;
+    const amt = this.pureOn ? 0 : Math.min(1, Math.max(0, night));
+    const target = this.musicOn && this.nightWanted ? dbToGain(NIGHT_MUSIC_DB) * amt : 0;
+    this.nightGain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, tauS);
   }
 
   /** AUDITION a bed in-game (`__ml.audioBed("cave")`), overriding the
@@ -460,6 +519,7 @@ export class GameAudio {
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    if (MUTED_EVENTS.has(name)) return;
     // The jump grunt (maintainer 2026-07-19: a Link-style vocal effort) is a
     // composer set on the SFX bus, spatialized, NOT a −12 dB UI click — so it
     // gets its own branch. The SAME grunt plays when she starts to FALL off a
@@ -973,26 +1033,44 @@ export class GameAudio {
       fire_crackle: field.fire,
     });
 
-    // THE SCORE. The context beds (battle/cave/home/town/night/adventure) are
-    // the score whenever one is available for the situation; the sound-domain
-    // catalog bed is the fallback that plays when it is not (which is exactly
-    // the old behaviour, so nothing regresses before the beds are generated).
-    // Pure mode freezes at the authored level. The toggle snaps; mood changes
-    // keep the slow ease.
+    // THE SCORE. The generated context beds (town/cave/home/battle/adventure)
+    // are NOT routed to situations — the maintainer wants to audition them
+    // first and then say what plays where (2026-08-05), so the in-world score
+    // is exactly what it has always been: the sound-domain catalog bed by day,
+    // cross-faded into the mystical NIGHT bed after dark. The bed machinery
+    // only takes the music bus while an explicit audition is running
+    // (auditionBed / __ml.audioBed / the /#score page).
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
     const tau = this.musicToggleFast ? 0.06 : 0.4;
-    const bedLevel = this.pureOn ? 1 : this.musicOn ? modeMul : 0;
-    const onBed = this.updateBeds(field, sun, bedLevel);
 
-    if (onBed) {
-      // A context bed owns the music bus — retire the catalog bed under it.
+    if (this.bedOverride) {
+      // Auditioning: the bed owns the bus, everything else steps aside.
+      this.updateBeds(field, sun, this.pureOn ? 1 : this.musicOn ? modeMul : 0);
       this.music.setLevel(0, tau);
-    } else {
-      // No bed for this situation: the catalog track keeps the old day/night
-      // dip so nights are moodier but never silent.
-      const dayLevel = this.pureOn ? 1 : (0.45 + 0.55 * sun) * modeMul;
-      this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
+      this.applyNightLevel(0, tau);
+      this.musicToggleFast = false;
+      return;
     }
+    // Not auditioning — make sure no bed is left holding the bus.
+    if (this.bedNow !== null) {
+      this.bedNow = null;
+      this.beds?.setContext(null);
+    }
+
+    // DAY/NIGHT MUSIC CROSS-FADE (maintainer 2026-07-19: "more mystical bg
+    // music during night"). When a night bed exists the DAY score fades to a
+    // low floor at night while the mystical NIGHT bed cross-fades UP, so nights
+    // belong to the night track — which loops CONTINUOUSLY (a new stretch each
+    // cycle, never just its opening). Without a night bed yet, keep the old
+    // gentle dip so nights aren't silent. Pure mode freezes at the authored
+    // score. The toggle snaps; mood changes keep the slow ease.
+    const nightAmt = Math.min(1, Math.max(0, 1 - sun));
+    const haveNight = !!this.nightGain || !!nightMusicUrl();
+    const dayFloor = haveNight ? 0.12 : 0.45;
+    const dayLevel = this.pureOn ? 1 : (dayFloor + (1 - dayFloor) * sun) * modeMul;
+    this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
+    if (this.nightWanted) this.ensureNightMusic(); // covers the async unlock/load
+    this.applyNightLevel(nightAmt, tau);
     this.musicToggleFast = false;
   }
 
