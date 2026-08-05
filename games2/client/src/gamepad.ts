@@ -85,6 +85,18 @@ export function mountGamepadStick(page: HTMLElement) {
   pad.append(top);
   page.appendChild(pad);
 
+  // ── the landscape ghost's BLUR DISC (maintainer 2026-08-05: "the same blur
+  // you use for the other on-top-of-game-view UI boxes"). It has to be its
+  // OWN element, not backdrop-filter on the stick: the stick's background is
+  // opaque, so it would paint straight over its own blurred backdrop — and
+  // the 0.25 ghost opacity would then dilute whatever survived to nothing
+  // (a child or ::before can't escape it either; parent opacity applies to
+  // the whole group). So the blur is a full-opacity, transparent disc pinned
+  // under the stick (z 3 vs 4), carrying exactly the bars chips' blur(5px).
+  // Landscape only — the portrait stick sits on the opaque HUD page.
+  const padBlur = mk("div", "ml-pad-blur");
+  page.appendChild(padBlur);
+
   // ── JUMP BUTTON (maintainer's spot: left side at the stick's mirror
   // height): a round wiki button. A press synthesizes SPACE (WorldScene:
   // keydown-SPACE -> tryJump), so the button jumps exactly like the
@@ -150,7 +162,7 @@ export function mountGamepadStick(page: HTMLElement) {
   let lastLand: boolean | null = null;
   let lastHand: boolean | null = null;
   let animTimer = 0;
-  const controls = () => [pad, jump, pickup, jumpLabel, pickupLabel, walkLabel];
+  const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel, walkLabel];
   const armAnim = () => {
     for (const el of controls()) el.classList.add("anim");
     window.clearTimeout(animTimer);
@@ -212,6 +224,11 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.opacity = "0.25";
       pad.style.left = `${leftHand ? 10 : window.innerWidth - 10 - well}px`;
       pad.style.top = `${window.innerHeight - 10 - well}px`;
+      // the blur disc rides exactly under it
+      padBlur.style.display = "block";
+      padBlur.style.width = padBlur.style.height = `${well}px`;
+      padBlur.style.left = pad.style.left;
+      padBlur.style.top = pad.style.top;
       // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
       // stack around the column's midline, label above each button.
       const cx = Math.round(page.clientWidth / 2);
@@ -231,6 +248,7 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.position = "";
       pad.style.zIndex = "";
       pad.style.opacity = "";
+      padBlur.style.display = "none"; // portrait sits on the opaque HUD page
       pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
       pad.style.top = `${Math.round(midY - well / 2)}px`;
       jump.style.width = jump.style.height = `${jumpD}px`;
@@ -386,8 +404,15 @@ function injectStyles() {
     transition:opacity .25s ease;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-stick.anim{transition:left .25s ease,top .25s ease,opacity .25s ease}
-  .ml-pad-jump.anim,.ml-pad-pickup.anim,.ml-pad-label.anim{
+  .ml-pad-jump.anim,.ml-pad-pickup.anim,.ml-pad-label.anim,.ml-pad-blur.anim{
     transition:left .25s ease,top .25s ease}
+  /* the ghost stick's backdrop blur — its own disc, see the note at the
+     element. Same blur(5px) as the .ml-bars chips; no background of its own,
+     so ONLY the blur reads. z 3 keeps it under the stick (4) and therefore
+     under the chat log (5) and the pill (8) too. */
+  .ml-pad-blur{position:fixed;z-index:3;display:none;border-radius:50%;
+    pointer-events:none;
+    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;

@@ -96,6 +96,17 @@ export function mountBars() {
   rootR.appendChild(goldRow);
 
   document.body.append(root, rootR);
+  // Publish the RIGHT chip's height so the time-of-day pill can park directly
+  // under it in right-handed landscape (clock.ts reads --bars-r-h). Measured,
+  // not assumed: the chip's height moves with the theme's font metrics, the
+  // gold row and the >=700px row-width tier.
+  if ("ResizeObserver" in window)
+    new ResizeObserver(() =>
+      document.documentElement.style.setProperty(
+        "--bars-r-h",
+        `${Math.round(rootR!.getBoundingClientRect().height)}px`,
+      ),
+    ).observe(rootR);
   renderGold();
   renderLevel();
 

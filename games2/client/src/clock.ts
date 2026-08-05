@@ -275,6 +275,15 @@ function mount() {
     pointer-events:none;box-sizing:content-box;
     transition:bottom .15s ease-out,right .3s ease;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
+  /* RIGHT-HANDED LANDSCAPE: the game view's bottom-right corner belongs to
+     the thumb stick, so the pill moves UP and parks directly under the XP
+     chip instead (maintainer 2026-08-05) — same right margin, so the two
+     right edges line up, and a 10px gap below the chip matching every other
+     margin. --bars-r-h is the chip's MEASURED height (bars.ts publishes it;
+     the fallback only covers the first frame). Left-handed keeps the corner:
+     there the stick is bottom-LEFT and the pill is nowhere near it. */
+  :root.ml-land:not(.ml-lh) .ml-clock{
+    top:calc(var(--bars-r-h, 78px) + 20px);bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

@@ -1722,6 +1722,13 @@ visible head/shoulders are ABOVE the surface).
   and the clock pill all anchor off the gv vars and TRANSITION their
   anchor property, so orientation/handedness swaps glide (the animate
   nice-to-have; the column itself snaps — display swaps don't animate).
+  ONE EXCEPTION to "corners stay corners": in RIGHT-handed landscape the
+  time-of-day pill leaves the game view's bottom-right corner — that is
+  the thumb stick's — and parks under the XP chip instead, right edges
+  aligned, 10px below it (maintainer 2026-08-05). It reads --bars-r-h,
+  the chip's MEASURED height, which bars.ts publishes from a
+  ResizeObserver (theme font metrics + the gold row move it).
+  Left-handed keeps the corner: the stick is bottom-LEFT there.
   ICONS ARE NOT ROTATED: the maintainer's "icons rotate 90°" described
   the locked-page mental model; the real re-layout keeps every icon and
   all text upright, which is the intent (a sideways backpack is not a
@@ -1733,7 +1740,14 @@ visible head/shoulders are ABOVE the surface).
   pointer-events:none so the thumb steers straight through them; hidden
   with the page when another tab is up. WHILE HELD it fades to fully
   visible (pointerdown -> opacity 1, release -> 0.25; the opacity
-  transition is the only always-on one). PICK UP stacks ABOVE JUMP on
+  transition is the only always-on one), and it is BACKED BY A BLUR DISC
+  — the bars chips' same blur(5px), but as its OWN full-opacity
+  transparent element (.ml-pad-blur, z 3) pinned to the stick's rect:
+  backdrop-filter ON the stick cannot work, because the stick's opaque
+  background paints over its own blurred backdrop and the 0.25 ghost
+  opacity would dilute the remainder to nothing (a child or ::before
+  inherits that opacity too). Portrait hides the disc — the stick sits
+  on the opaque HUD page there. PICK UP stacks ABOVE JUMP on
   the menu column's centre line under the other thumb, and the vertical
   tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
   stick/jump/pick-up fractions by hand. The position glide is

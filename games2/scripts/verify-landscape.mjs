@@ -124,6 +124,18 @@ try {
         stick: r(".ml-pad-stick"),
         jump: r(".ml-pad-jump"),
         pickup: r(".ml-pad-pickup"),
+        padBlur: r(".ml-pad-blur"),
+        padBlurCss: (() => {
+          const e = document.querySelector(".ml-pad-blur");
+          if (!e) return null;
+          const c = getComputedStyle(e);
+          return {
+            display: c.display,
+            z: c.zIndex,
+            filter: c.backdropFilter || c.webkitBackdropFilter,
+            bg: c.backgroundColor,
+          };
+        })(),
         help: r(".ml-pad-help"),
         stickZ: (() => {
           const e = document.querySelector(".ml-pad-stick");
@@ -172,9 +184,14 @@ try {
     ? ok(`HP chip at the game view's top-left (${g.barsL.l},${g.barsL.t})`)
     : fail(`left chip ${JSON.stringify(g.barsL)} want l=${menuW + 10}`);
   Math.abs(851 - 10 - g.barsR.r) <= 2 ? ok("XP chip at the top-right") : fail(`right chip ${JSON.stringify(g.barsR)}`);
-  Math.abs(851 - 10 - g.clock.r) <= 2 && Math.abs(g.vh - 10 - g.clock.b) <= 2
-    ? ok(`clock pill at the game view's bottom-right (${g.clock.r},${g.clock.b})`)
-    : fail(`clock ${JSON.stringify(g.clock)}`);
+  // The pill leaves the thumb's corner in RIGHT-handed landscape and parks
+  // under the XP chip (maintainer 2026-08-05): right edges aligned, 10px gap.
+  Math.abs(g.clock.r - g.barsR.r) <= 2 && Math.abs(g.clock.t - g.barsR.b - 10) <= 2
+    ? ok(`clock pill sits under the XP chip (top ${g.clock.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.clock.r}/${g.barsR.r})`)
+    : fail(`clock ${JSON.stringify(g.clock)} vs XP chip ${JSON.stringify(g.barsR)}`);
+  g.clock.b < g.vh - 100
+    ? ok("…and is clear of the stick's bottom corner")
+    : fail(`clock still low (b=${g.clock.b} of ${g.vh})`);
 
   // ---- 2. gamepad tab: stick FLOATS over the game view right side, jump in
   //         the column, help chip present and not touching the controls ----
@@ -190,6 +207,22 @@ try {
   Math.abs(parseFloat(g.stickOp) - 0.25) <= 0.01
     ? ok(`stick ghosted at 0.25 alpha (${g.stickOp})`)
     : fail(`stick opacity ${g.stickOp}, want 0.25`);
+  // BLUR DISC: its own element (the stick's opaque bg + 0.25 opacity would
+  // hide/dilute a backdrop-filter on the stick itself), pinned to the same
+  // rect, z 3 = under the stick, transparent so ONLY the blur reads.
+  if (!g.padBlurCss || g.padBlurCss.display === "none") fail("no blur disc under the landscape stick");
+  else {
+    /blur\(/.test(g.padBlurCss.filter || "")
+      ? ok(`stick backed by a blur disc (${g.padBlurCss.filter})`)
+      : fail(`blur disc has no backdrop-filter (${JSON.stringify(g.padBlurCss)})`);
+    +g.padBlurCss.z < +g.stickZ && /rgba\(0, 0, 0, 0\)|transparent/.test(g.padBlurCss.bg)
+      ? ok(`blur disc under the stick (z ${g.padBlurCss.z} < ${g.stickZ}) and adds no tint`)
+      : fail(`blur disc z/bg wrong: ${JSON.stringify(g.padBlurCss)} stick z ${g.stickZ}`);
+    Math.abs(g.padBlur.l - g.stick.l) <= 1 && Math.abs(g.padBlur.t - g.stick.t) <= 1 &&
+    Math.abs(g.padBlur.w - g.stick.w) <= 1
+      ? ok("blur disc tracks the stick's rect exactly")
+      : fail(`blur ${JSON.stringify(g.padBlur)} vs stick ${JSON.stringify(g.stick)}`);
+  }
   // behind the corner chrome: chat text (5) and the pill (8) draw OVER the
   // ghost stick (4) — and both are pointer-events:none, so the thumb still
   // steers straight through them.
@@ -278,9 +311,9 @@ try {
     ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);
-  Math.abs(851 - menuW - 10 - g.clock.r) <= 2
-    ? ok(`clock pill hugs the game view's right edge (${g.clock.r})`)
-    : fail(`clock ${JSON.stringify(g.clock)} want r=${851 - menuW - 10}`);
+  Math.abs(851 - menuW - 10 - g.clock.r) <= 2 && Math.abs(g.vh - 10 - g.clock.b) <= 2
+    ? ok(`left-handed: pill back in the game view's bottom-right corner (${g.clock.r},${g.clock.b})`)
+    : fail(`clock ${JSON.stringify(g.clock)} want r=${851 - menuW - 10}, b=${g.vh - 10}`);
   Math.abs(g.chatlog.l - 10) <= 2 ? ok("chat log at the game view's bottom-left") : fail(`chatlog ${JSON.stringify(g.chatlog)}`);
   await page.screenshot({ path: `${OUT}/landscape-lh.png` });
 
@@ -295,6 +328,12 @@ try {
     : fail(`--hud-h ${g.hudH}`);
   g.hud.t > 500 && g.hud.w >= 390 ? ok("menu back at the bottom") : fail(`hud ${JSON.stringify(g.hud)}`);
   g.tabrow.w > g.tabrow.h ? ok("tab row horizontal again") : fail(`tabrow ${JSON.stringify(g.tabrow)}`);
+  g.padBlurCss && g.padBlurCss.display === "none"
+    ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
+    : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
+  Math.abs(g.vh - g.hudH - 10 - g.clock.b) <= 2
+    ? ok(`portrait pill back above the HUD rail (b=${g.clock.b})`)
+    : fail(`portrait clock ${JSON.stringify(g.clock)}`);
   g = await geom();
   g.stickPos !== "fixed" && g.stick.l < 393 * 0.5
     ? ok(`left-handed portrait: stick on the page's LEFT (x ${g.stick.l}..${g.stick.r})`)
