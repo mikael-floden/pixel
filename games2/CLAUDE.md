@@ -1894,10 +1894,26 @@ visible head/shoulders are ABOVE the surface).
   no style-clearing round trip) and re-aims the pin, pre-paint, so the
   chrome visually never moves while the browser thrashes; any further
   resize just refreshes the controller's quiet-timer.
-  (2) GLIDE — once resizes have been QUIET ~300ms AND two consecutive
-  frames come in under ~34ms (hard cap 1.5s), the transforms clear
-  under a transform-ONLY transition (.ml-glide, 320ms) — compositor
-  work, no layout/paint, smooth right after the resize.
+  (1b) THE CANVAS DOES NOT RESIZE DURING THE STAGES (round 4 — his
+  screenshots showed multi-second stale letterboxed frames: a full
+  scale.resize per stage, framebuffer realloc + whole-world redraw,
+  back to back, blocks the main thread so long the OS composites
+  garbage; traced live at ~2s PER resize in the harness). main.ts
+  fitCanvas holds fire while :root.ml-flip is up — AND, because the
+  #game ResizeObserver delivers BEFORE the resize event that starts
+  the flip (traced: it beat beginFlip by 3ms), also whenever in-game
+  + touch + the aspect disagrees with ml-land (the same chimera test
+  as the snapshot guard). Meanwhile a THEME-SURFACE VEIL
+  (.ml-flip-veil, z 3 — over the canvas, under stick/HUD/chat/chips)
+  hides the stale-sized world; the chrome pins and glides ON TOP of
+  it. At quiet (~300ms without a resize) the controller emits ONE
+  "ml-flip-flush" and the canvas takes its final size in a single
+  resize, under the veil.
+  (2) GLIDE — after the flush, once two consecutive frames come in
+  under ~34ms (hard cap 2.5s), the transforms clear under a
+  transform-ONLY transition (.ml-glide, 320ms) and the veil fades
+  .35s, revealing the freshly-sized world — compositor work only,
+  no layout/paint, smooth right after the resize.
   TRAPS, all hit live: the OLD positions CANNOT be measured at
   resize-event time (the browser applies the new viewport BEFORE the
   event fires, so right/bottom-anchored fixed elements have already

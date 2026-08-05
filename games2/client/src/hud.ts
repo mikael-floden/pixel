@@ -227,35 +227,45 @@ let flipCtl: {
   lastResize: number;
   lastFrame: number;
   calm: number;
+  flushed: boolean;
 } | null = null;
 
-/** The orientation glide, FLIP-style (maintainer 2026-08-05, rounds 2-3: a
- * plain anchor transition "feels laggy", an outright snap "still feels
- * laggy" — the browser spends the flip's first frames resizing the canvas
- * and re-allocating the GL framebuffer while the OS plays its own rotation
- * animation. His ask: "wait for the frame buffer to re-initialize at the
- * old position and make the animation smooth once the laggy stuff has
- * finished reloading."
+/** The theme-surface VEIL over the game view during a flip. The world canvas
+ * cannot morph its aspect smoothly, and mid-rotation it shows either black
+ * (buffer cleared) or a stale-sized frame — so it reloads DISCREETLY behind
+ * the theme background while the chrome glides on top. z 3: above the
+ * canvas, below the stick (4) / HUD column (4) / chat (5) / chips (8). */
+let flipVeil: HTMLElement | null = null;
+
+/** The orientation glide, FLIP-style (maintainer 2026-08-05, rounds 2-4 —
+ * a plain anchor transition "feels laggy", an outright snap "still feels
+ * laggy", and mid-rotation screenshots showed stale letterboxed frames with
+ * chrome "at a location the UI was never at". His ask: "wait for the frame
+ * buffer to re-initialize at the old position and make the animation smooth
+ * once the laggy stuff has finished reloading."
  *
- * TWO PHASES, driven by a per-frame controller:
- *  1. PIN — the classes and layout vars snap immediately (the canvas MUST
- *     take its new size right away; that resize IS the heavy part), while
- *     every chrome element holds its OLD on-screen spot via translate().
- *     RE-COMPUTED EVERY FRAME, not once: a real phone rotation resizes the
- *     viewport in SEVERAL stages (the maintainer's mid-rotation screenshots
- *     show a landscape layout crammed into a portrait-shaped surface), and
- *     a delta computed against the first stage strands the chrome at a spot
- *     it never occupied — which is exactly the "animates from a location
- *     the UI was never at" he filmed. Each frame recovers every element's
- *     current anchor (rect − the translate we applied) and re-aims the pin
- *     at the old spot, pre-paint, so the chrome visually NEVER moves while
- *     the browser is thrashing.
- *  2. GLIDE — once the resize events have been quiet ~300ms AND two
- *     consecutive frames come in under ~34ms (capped at 1.5s so a starved
- *     device can't pin forever), the transforms clear under a
- *     transform-only transition. translate() animates on the compositor —
- *     no layout, no paint — so it stays smooth even if the main thread is
- *     still catching its breath. */
+ * Driven by a per-frame controller:
+ *  1. PIN + VEIL — the classes and layout vars snap immediately, the game
+ *     view goes behind a theme-surface veil, and every chrome element holds
+ *     its OLD on-screen spot via translate(). RE-COMPUTED EVERY FRAME, not
+ *     once: a real phone rotation resizes the viewport in SEVERAL stages,
+ *     and a delta computed against the first stage strands the chrome at a
+ *     spot it never occupied — the filmed bug. Each frame recovers every
+ *     element's true anchor (rect − the translate we applied) and re-aims
+ *     the pin, pre-paint, so the chrome visually NEVER moves while the
+ *     browser is thrashing.
+ *     Crucially the CANVAS DOES NOT RESIZE during this phase: :root.ml-flip
+ *     suspends main.ts's fitCanvas, because a full scale.resize per stage —
+ *     framebuffer realloc + whole-world redraw, several times over — is the
+ *     very stall that froze the OS rotation into stale letterboxed frames.
+ *  2. FLUSH — once resize events have been quiet ~300ms, ONE "ml-flip-flush"
+ *     re-fits the canvas at the final size (the single heavy redraw, hidden
+ *     by the veil).
+ *  3. GLIDE — after the flush, once two consecutive frames come in under
+ *     ~34ms (hard cap 2.5s), the transforms clear under a transform-only
+ *     transition and the veil fades, revealing the freshly-sized world.
+ *     translate()/opacity animate on the compositor — no layout, no paint —
+ *     so the reveal stays smooth. */
 function beginFlip() {
   const now = performance.now();
   if (flipCtl) {
@@ -263,6 +273,7 @@ function beginFlip() {
     // old spots — the controller re-aims at them against the new anchors,
     // and a rotate-back simply finds deltas near zero.
     flipCtl.lastResize = now;
+    flipCtl.flushed = false; // the final size changed again — re-flush at quiet
     return;
   }
   const token = ++flipToken;
@@ -274,10 +285,17 @@ function beginFlip() {
     lastResize: now,
     lastFrame: now,
     calm: 0,
+    flushed: false,
   };
   flipBusy = true;
   const root = document.documentElement;
   root.classList.add("ml-noanim");
+  root.classList.add("ml-flip"); // suspends main.ts fitCanvas until the flush
+  if (!flipVeil) {
+    flipVeil = mk("div", "ml-flip-veil");
+    document.body.appendChild(flipVeil);
+  }
+  flipVeil.style.opacity = "1";
   for (const el of document.querySelectorAll<HTMLElement>(FLIP_CHROME))
     el.classList.remove("ml-glide"); // a still-decaying previous glide must not animate the pins
   const step = (t: number) => {
@@ -308,33 +326,46 @@ function beginFlip() {
         c.applied.delete(el);
       }
     }
-    // SETTLE — no further resize stages for ~300ms AND frame deltas back
-    // under ~2 vsyncs twice in a row, or the hard cap.
+    // SETTLE — quiet resizes first, then ONE canvas flush, then calm frames.
     const dt = t - c.lastFrame;
     c.lastFrame = t;
     c.calm = dt < 34 ? c.calm + 1 : 0;
     const quiet = t - c.lastResize > 300;
-    if ((quiet && c.calm >= 2 && t - c.started >= 120) || t - c.started > 1500) glide();
+    const capped = t - c.started > 2500;
+    if (!c.flushed && (quiet || capped)) {
+      // The viewport has stopped restaging: let the canvas take its final
+      // size NOW, in one go, under the veil. This is the heavy frame —
+      // framebuffer realloc + world redraw — so the calm counter resets and
+      // the glide waits for the frames after it.
+      c.flushed = true;
+      root.classList.remove("ml-flip");
+      window.dispatchEvent(new Event("ml-flip-flush"));
+      c.calm = 0;
+    }
+    if (c.flushed && ((c.calm >= 2 && t - c.started >= 120) || capped)) glide();
     else requestAnimationFrame(step);
   };
   const glide = () => {
     const pinned = [...flipCtl!.applied.keys()];
     flipCtl = null;
     root.classList.remove("ml-noanim");
-    if (!pinned.length) {
-      flipBusy = false;
-      snapshotFlipRects();
-      return;
-    }
+    root.classList.remove("ml-flip"); // belt — the flush path already did
+    // the veil fades as the chrome glides, revealing the re-fitted world
+    if (flipVeil) flipVeil.style.opacity = "0";
+    const doneVeil = flipVeil;
     for (const el of pinned) el.classList.add("ml-glide");
     void document.body.offsetWidth; // flush, so the transition starts FROM the pin
     for (const el of pinned) el.style.transform = "";
     window.setTimeout(() => {
       if (token !== flipToken) return; // a newer flip owns these elements now
       for (const el of pinned) el.classList.remove("ml-glide");
+      if (doneVeil && doneVeil === flipVeil) {
+        doneVeil.remove();
+        flipVeil = null;
+      }
       flipBusy = false;
       snapshotFlipRects(); // the new anchors become the next flip's "old"
-    }, 400);
+    }, 450);
   };
   requestAnimationFrame(step);
 }
@@ -1605,6 +1636,10 @@ function injectStyles() {
   :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
   .ml-glide{transition:transform .32s ease!important}
+  /* the rotation veil: theme surface over the game view while the canvas
+     re-fits (beginFlip). Fades on the compositor with the chrome glide. */
+  .ml-flip-veil{position:fixed;inset:0;z-index:3;background:var(--bg);
+    pointer-events:none;opacity:1;transition:opacity .35s ease}
   /* Rotation exposes raw page behind the canvas for a few frames while the
      browser restages the viewport (maintainer screenshots 2026-08-05:
      "buggy black"). index.html paints #000 for the pre-game screens; in the

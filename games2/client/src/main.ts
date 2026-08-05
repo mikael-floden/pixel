@@ -246,7 +246,35 @@ async function boot() {
     scene: [WorldScene],
   });
   game.registry.set("renderScale", RS);
+  // A REAL touch device — hud.ts's touchDevice(), inlined (no import: keep
+  // main.ts free of the HUD module graph). Gates the rotation coherence
+  // check below so desktop is never affected.
+  const touch = () =>
+    (navigator.maxTouchPoints || 0) > 0 ||
+    window.matchMedia?.("(pointer: coarse)").matches === true;
   const fitCanvas = () => {
+    // ROTATION FLIP (hud.ts beginFlip): while an orientation transition is
+    // live, HOLD FIRE. A real rotation restages the viewport several times,
+    // and a full scale.resize per stage — framebuffer realloc + whole-world
+    // redraw, back to back — stalls the main thread long enough that the OS
+    // composites stale letterboxed frames (maintainer's mid-rotation
+    // screenshots, 2026-08-05). The flip veil covers the stale-sized canvas;
+    // when the viewport settles, hud.ts fires ONE "ml-flip-flush" and the
+    // canvas takes its final size in a single resize.
+    const root = document.documentElement;
+    if (root.classList.contains("ml-flip")) return;
+    // The FIRST stage sneaks past that class: the #game ResizeObserver
+    // delivers BEFORE the window resize event that starts the flip (traced
+    // live — the observer's scale.resize beat beginFlip by 3ms and cost a
+    // ~2s stall). Same coherence test as the hud's snapshot guard: in-game
+    // on a touch device, an aspect that disagrees with ml-land means a
+    // rotation is mid-flight — the flip's flush will call back.
+    if (
+      root.classList.contains("ml-ingame") &&
+      touch() &&
+      window.innerWidth > window.innerHeight !== root.classList.contains("ml-land")
+    )
+      return;
     const el = document.getElementById("game");
     const cv = game.canvas;
     if (!el || !cv) return;
@@ -261,6 +289,7 @@ async function boot() {
   };
   game.events.once(Phaser.Core.Events.READY, fitCanvas);
   window.addEventListener("resize", fitCanvas);
+  window.addEventListener("ml-flip-flush", fitCanvas);
   const gameEl = document.getElementById("game");
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 

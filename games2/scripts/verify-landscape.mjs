@@ -548,7 +548,18 @@ try {
     const oldTop = el.getBoundingClientRect().top;
     window.__flip2 = new Promise((res) => {
       const out = { oldLeft: Math.round(oldLeft), pinSeen: false, maxDrift: 0,
-        glideSeen: false, finalLeft: null, w: 0, timedOut: false };
+        glideSeen: false, finalLeft: null, w: 0, timedOut: false,
+        veil: null, cvEvents: [] };
+      // CANVAS DEFERRAL (the stall that froze real rotations): every buffer
+      // resize is recorded with whether the flip's single flush had happened
+      // yet. All of this observes from INSIDE the page — wall-clock checks
+      // from the driver race the starved harness.
+      const cv = document.querySelector("#game canvas");
+      let flushed = false;
+      window.addEventListener("ml-flip-flush", () => (flushed = true), { once: true });
+      new MutationObserver(() =>
+        out.cvEvents.push({ w: cv.width, h: cv.height, beforeFlush: !flushed }),
+      ).observe(cv, { attributes: true, attributeFilter: ["width", "height"] });
       const t0 = performance.now();
       let clearAt = 0;
       const tick = () => {
@@ -562,11 +573,15 @@ try {
           // the whole-stage 300px+ error this guards against).
           out.maxDrift = Math.max(out.maxDrift, Math.abs(r.left - oldLeft), Math.abs(r.top - oldTop));
           clearAt = 0;
+          if (!out.veil) {
+            const v = document.querySelector(".ml-flip-veil");
+            if (v) out.veil = { op: getComputedStyle(v).opacity, z: getComputedStyle(v).zIndex };
+          }
         } else if (out.pinSeen && !clearAt) clearAt = performance.now();
         if (el.classList.contains("ml-glide")) out.glideSeen = true;
         const now = performance.now();
-        if ((clearAt && now - clearAt > 600) || now - t0 > 8000) {
-          out.timedOut = now - t0 > 8000 && !clearAt;
+        if ((clearAt && now - clearAt > 600) || now - t0 > 12000) {
+          out.timedOut = now - t0 > 12000 && !clearAt;
           out.finalLeft = Math.round(r.left);
           out.w = Math.round(r.width);
           res(out);
@@ -579,12 +594,30 @@ try {
   await page.waitForTimeout(150);
   await page.setViewportSize({ width: 851, height: 393 }); // stage 2: the real size
   const flip2 = await page.evaluate(() => window.__flip2);
+  flip2.cvEvents.length && flip2.cvEvents.every((e) => !e.beforeFlush)
+    ? ok(`canvas held its buffer until the flip's single flush (${flip2.cvEvents.map((e) => `${e.w}x${e.h}`).join(" -> ")})`)
+    : fail(`canvas resized before the flush: ${JSON.stringify(flip2.cvEvents)}`);
+  flip2.veil && flip2.veil.op === "1" && +flip2.veil.z === 3
+    ? ok("theme veil covers the world while it re-fits (z 3, under the chrome)")
+    : fail(`veil wrong mid-flip: ${JSON.stringify(flip2.veil)}`);
   flip2.pinSeen && flip2.maxDrift <= 60
     ? ok(`staged rotation keeps the pill pinned through both stages (max drift ${Math.round(flip2.maxDrift)}px)`)
     : fail(`pill drifted mid-rotation: ${JSON.stringify(flip2)}`);
   flip2.glideSeen && !flip2.timedOut && Math.abs(flip2.finalLeft + flip2.w - (851 - 10)) <= 2
     ? ok(`…then glides once onto the TRUE final anchor (right edge ${flip2.finalLeft + flip2.w})`)
     : fail(`staged rotation landed wrong: ${JSON.stringify(flip2)}`);
+  const after = await page.evaluate(() => ({
+    cv: document.querySelector("#game canvas").width,
+    gameW: document.getElementById("game").clientWidth,
+    veil: !!document.querySelector(".ml-flip-veil"),
+    flip: document.documentElement.classList.contains("ml-flip"),
+  }));
+  after.cv === after.gameW && !after.flip
+    ? ok(`…and the single flush re-fitted the canvas to the final view (${after.cv}px)`)
+    : fail(`canvas never took its final size: ${JSON.stringify(after)}`);
+  !after.veil
+    ? ok("veil gone after the reveal")
+    : fail("flip veil still up after the transition");
   // back to portrait for the help-chip section
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
