@@ -97,6 +97,10 @@ export interface HudActions {
      * buttons show their current state — "time-of-day: Day", "speed: x2"). */
     state?: () => string;
   }[];
+  /** Backpack drag-out: an item slot was released over the GAME VIEW at
+   * client coords (cx, cy) — the game converts to a world point and asks the
+   * server to drop it there (clamped + ground-snapped server-side). */
+  onDropItem?: (slot: number, cx: number, cy: number) => void;
 }
 
 // Tab icons: the maintainer's 1x pixel-art set (client/ui-src/icons/, baked
@@ -177,6 +181,8 @@ function minimapDotPct(m: MinimapFeed): [number, number] {
 
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
+  private invGrid: HTMLElement | null = null;
+  private invItems: { item: string; n: number }[] = [];
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
@@ -512,13 +518,16 @@ export class HudBar {
     // the keyboard, jump button TBD.
     mountGamepadStick(this.pages.get("gamepad")!);
 
-    // Backpack: 5×3 empty item slots — wiki-style empty cells (surface-2
-    // well, 1px border, rounded), same count and layout as before. Real
-    // inventory comes later.
+    // Backpack: the REAL inventory (server-owned, arrives as targeted "inv"
+    // messages -> setInventory). 5-col grid, padded to at least 15 cells so
+    // an empty pack still reads as the familiar wall of slots. A filled slot
+    // DRAGS: pointer-captured ghost (the bird-density slider pattern);
+    // releasing over the game view (top 61.8%) asks the game to drop it
+    // there — releasing anywhere else snaps back.
     const bp = this.pages.get("backpack")!;
-    const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
-    bp.append(slots);
+    this.invGrid = mk("div", "ml-slots");
+    bp.append(this.invGrid);
+    this.renderInventory();
 
     // Equipment page: bare stone until its real content lands
     // (maintainer 2026-07-17: no placeholder text).
@@ -641,6 +650,89 @@ export class HudBar {
   /** Append a log line to the persistent Chat history (called for EVERY line the
    * on-screen chat shows — system + player). Caps at CHAT_HISTORY_MAX, dropping
    * the oldest, and re-renders if the Chat tab is currently visible. */
+  /** The server-owned backpack (targeted "inv" messages). Rerenders the grid. */
+  setInventory(items: { item: string; n: number }[]) {
+    this.invItems = Array.isArray(items) ? items : [];
+    this.renderInventory();
+  }
+
+  /** QA probe: what the backpack currently shows. */
+  invSnapshot(): { item: string; n: number }[] {
+    return this.invItems.map((s) => ({ ...s }));
+  }
+
+  private renderInventory() {
+    const grid = this.invGrid;
+    if (!grid) return;
+    grid.textContent = "";
+    const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
+    for (let i = 0; i < total; i++) {
+      const entry = this.invItems[i];
+      const cell = mk(entry ? "div" : "i", "ml-slot");
+      if (entry) {
+        cell.classList.add("filled");
+        const img = document.createElement("img");
+        img.src = `/assets/items/${entry.item}/sprite.webp`;
+        img.alt = entry.item;
+        img.draggable = false;
+        cell.appendChild(img);
+        if (entry.n > 1) {
+          const badge = document.createElement("b");
+          badge.textContent = `${entry.n}`;
+          cell.appendChild(badge);
+        }
+        this.armSlotDrag(cell, img, i);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  /** Pointer-captured drag (the bird-density slider pattern): a ghost sprite
+   * rides the finger; releasing over the game view (above the HUD line) hands
+   * the client coords to the game, anywhere else snaps back. Capture keeps
+   * every move/up on the slot element, so Phaser never sees the gesture and
+   * cannot arm a move trip from it. */
+  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number) {
+    cell.addEventListener("pointerdown", (e: PointerEvent) => {
+      e.preventDefault();
+      cell.setPointerCapture(e.pointerId);
+      let ghost: HTMLImageElement | null = null;
+      const move = (ev: PointerEvent) => {
+        if (!ghost) {
+          ghost = img.cloneNode(true) as HTMLImageElement;
+          ghost.className = "ml-slot-ghost";
+          document.body.appendChild(ghost);
+          cell.classList.add("dragging");
+        }
+        ghost.style.left = `${ev.clientX - 20}px`;
+        ghost.style.top = `${ev.clientY - 20}px`;
+      };
+      const finish = (ev: PointerEvent) => {
+        cell.removeEventListener("pointermove", move);
+        cell.removeEventListener("pointerup", finish);
+        cell.removeEventListener("pointercancel", cancel);
+        cell.classList.remove("dragging");
+        if (ghost) {
+          ghost.remove();
+          // Over the GAME VIEW (top 61.8% — everything above the HUD's own
+          // top edge) => drop it into the world at that point.
+          const hudTop = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hud-h")) || window.innerHeight * 0.382);
+          if (ev.clientY < hudTop) this.actions.onDropItem?.(slot, ev.clientX, ev.clientY);
+        }
+      };
+      const cancel = () => {
+        cell.removeEventListener("pointermove", move);
+        cell.removeEventListener("pointerup", finish);
+        cell.removeEventListener("pointercancel", cancel);
+        cell.classList.remove("dragging");
+        ghost?.remove();
+      };
+      cell.addEventListener("pointermove", move);
+      cell.addEventListener("pointerup", finish);
+      cell.addEventListener("pointercancel", cancel);
+    });
+  }
+
   pushChat(name: string, text: string, t: Date = new Date()) {
     this.chatMsgs.push({ name, text, t });
     if (this.chatMsgs.length > CHAT_HISTORY_MAX)
@@ -1097,6 +1189,14 @@ function injectStyles() {
   /* ── backpack slots: wiki empty cells ── */
   .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
     width:100%;max-width:560px;margin:auto 0}
+  .ml-slot.filled{position:relative;cursor:grab;touch-action:none}
+  .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
+    position:absolute;left:10%;top:10%;pointer-events:none}
+  .ml-slot.filled b{position:absolute;right:4px;bottom:2px;font-size:12px;color:var(--text);
+    text-shadow:0 1px 0 var(--surface);pointer-events:none}
+  .ml-slot.dragging{opacity:.45}
+  .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
+    image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
   .ml-slot{display:block;aspect-ratio:1;background:var(--surface-2);
     border:1px solid var(--border);border-radius:10px}
   /* ── buttons: .ml-plate-btn survives as a CLASS (the ambient agent injects

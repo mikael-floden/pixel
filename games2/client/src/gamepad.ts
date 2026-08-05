@@ -58,7 +58,7 @@ const SECTOR_KEYS: string[][] = [
   ["W"],
   ["W", "D"],
 ];
-const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16, SPACE: 32 };
+const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16, SPACE: 32, F: 70 };
 
 function synthKey(kind: "keydown" | "keyup", k: string) {
   const e = new KeyboardEvent(
@@ -92,14 +92,23 @@ export function mountGamepadStick(page: HTMLElement) {
   const jump = mk("button", "ml-pad-jump");
   page.appendChild(jump);
 
+  // ── PICK UP BUTTON (maintainer 2026-07-31: "a pick up-button next to the
+  // jump button"): same round wiki look, a size down. A press synthesizes F
+  // (WorldScene: keydown-F -> pickupNearest) — walks to the nearest ground
+  // item and grabs it, exactly like the keyboard.
+  const pickup = mk("button", "ml-pad-pickup");
+  page.appendChild(pickup);
+
   // labels over each control (maintainer: "write JUMP over it… WALK over
   // the button to the right") — the wiki section-label look, same as the
   // Settings "Ambient effects" header.
   const jumpLabel = mk("div", "ml-pad-label");
   jumpLabel.textContent = "Jump";
+  const pickupLabel = mk("div", "ml-pad-label");
+  pickupLabel.textContent = "Pick up";
   const walkLabel = mk("div", "ml-pad-label");
   walkLabel.textContent = "Walk";
-  page.append(jumpLabel, walkLabel);
+  page.append(jumpLabel, pickupLabel, walkLabel);
 
   // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
   // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
@@ -138,10 +147,17 @@ export function mountGamepadStick(page: HTMLElement) {
     jump.style.width = jump.style.height = `${jumpD}px`;
     jump.style.left = `${Math.round(page.clientWidth * 0.25 - jumpD / 2)}px`;
     jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+    // Pick up sits between jump (25%) and the stick (70.5%), a size down so
+    // the jump stays the primary thumb target.
+    const pickD = Math.round(jumpD * 0.72);
+    pickup.style.width = pickup.style.height = `${pickD}px`;
+    pickup.style.left = `${Math.round(page.clientWidth * 0.465 - pickD / 2)}px`;
+    pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
     // labels share one row, floating a fixed gap above the taller control
     const labelY = Math.round(midY - well / 2 - 10);
     for (const [el, fx] of [
       [jumpLabel, 0.25],
+      [pickupLabel, 0.465],
       [walkLabel, 0.705],
     ] as const) {
       el.style.left = `${Math.round(page.clientWidth * fx)}px`;
@@ -226,6 +242,18 @@ export function mountGamepadStick(page: HTMLElement) {
   jump.addEventListener("pointerdown", jumpDown);
   jump.addEventListener("pointerup", jumpUp);
   jump.addEventListener("pointercancel", jumpUp);
+  const pickDown = (e: PointerEvent) => {
+    e.preventDefault();
+    pickup.classList.add("press");
+    synthKey("keydown", "F");
+  };
+  const pickUp = () => {
+    pickup.classList.remove("press");
+    synthKey("keyup", "F");
+  };
+  pickup.addEventListener("pointerdown", pickDown);
+  pickup.addEventListener("pointerup", pickUp);
+  pickup.addEventListener("pointercancel", pickUp);
   // never leave keys stuck if the tab/page goes away mid-drag
   window.addEventListener("blur", () => {
     release();
@@ -262,6 +290,9 @@ function injectStyles() {
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
     transition:transform ${SNAP_MS}ms ease-out}
   /* JUMP: a round wiki button */
+  .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
+    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);box-sizing:border-box}
+  .ml-pad-pickup.press{background:var(--surface-2);border-color:var(--border-strong)}
   .ml-pad-jump{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
     box-sizing:border-box;padding:0;

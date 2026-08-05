@@ -48,11 +48,19 @@ import {
   WEATHER_COUNT,
   parseSpawns,
   type SpawnZone,
+  unarmedClip,
+  idSalt,
+  xpToNext,
+  faceDirWorld,
+  PICKUP_RADIUS_WU,
+  attackRange,
+  PLAYER_BODY_RADIUS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { withV } from "../assetver";
-import { MonsterManifest, MonsterDef, monsterWalkKey } from "../monsterManifest";
+import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { colorForName } from "../placeholder";
+import { setBar, setLevel } from "../bars";
 import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -103,7 +111,18 @@ import {
 // buildAnimations (frames / JUMP_MS) so the clip always spans the hop arc —
 // the art agent resizes it freely (the 2026-07-29 overhaul cut it 9→4 frames,
 // and the old fixed 18fps would have frozen a 4-frame clip mid-air at ~222ms).
-const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
+const ANIM_FPS: Record<string, number> = {
+  idle: 6,
+  walk: 12,
+  run: 14,
+  // One-shot combat clips: strikes read snappy, the pickup crouch and the
+  // death fall read deliberate. (Movement clips use measured gaitFps instead.)
+  kick: 12,
+  punch: 12,
+  hurt: 10,
+  pickup: 9,
+  die: 8,
+};
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -394,6 +413,12 @@ interface Avatar {
   foamTilt?: number; // current foam crest tilt variant (-1/0/+1), the lapping frame
   foamNextAt?: number; // time.now when the foam rolls to a new tilt
   baseTint: number;
+  // Combat mirrors (server action/actionSeq/hitSeq/dead drive one-shot clips).
+  actionKey?: string;
+  actionUntil?: number;
+  lastActionSeq?: number;
+  lastHitSeq?: number;
+  lastHp?: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
   // Direction hysteresis (stableDir): the direction currently DISPLAYED, and
@@ -462,6 +487,9 @@ interface MonsterAvatar {
   // playMonsterAnim behind that coincidence, and the moment the manifest
   // resolved properly every monster froze mid-slide (maintainer 2026-07-30).
   walkKey: string;
+  attackKey?: string; // resolved attack anim (undefined: art has none)
+  angryKey?: string; // between-swings loop (6 of 24 kinds ship none)
+  dieKey?: string;
   idleKey?: string; // resolved idle anim (undefined: no idle art — park on walk contact)
   // PER-DIRECTION ground contract (manifest `ground`): originY feet line,
   // originX foot centre, and the planted `contact` frame a pause parks on.
@@ -483,6 +511,13 @@ interface MonsterAvatar {
   // CAMERA GATE (see MONSTER_CULL_SLACK): true while the body's art cannot
   // touch the view, so its render pipeline is parked. Positions keep syncing.
   culled?: boolean;
+  // COMBAT mirrors (server mstate/actionSeq drive the clips).
+  mstate?: string;
+  lastActionSeq?: number;
+  combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
+  hpBg?: Phaser.GameObjects.Rectangle;
+  hpFill?: Phaser.GameObjects.Rectangle;
+  lastHp?: number;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -642,6 +677,16 @@ export class WorldScene extends Phaser.Scene {
   private jumpReadyAt = 0;
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
+  private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  private engagedId: string | null = null; // monster I tapped to fight (client intent)
+  private pendingPickupId: string | null = null; // walk-to-item, grab on arrival
+  private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
+  private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
+  private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
+  private drops = new Map<
+    string,
+    { img: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; wx: number; wy: number; item: string }
+  >();
   private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
@@ -869,6 +914,9 @@ export class WorldScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
+    // F = pick up nearest ground item (the gamepad pickup button synthesizes
+    // this same key, exactly like its jump button synthesizes SPACE).
+    this.input.keyboard!.on("keydown-F", () => this.pickupNearest());
 
     // Tap/hold-to-move. A tap RUNS to the tapped point — nobody walks when
     // they can run (maintainer), so there is no double-tap gesture; the
@@ -881,6 +929,30 @@ export class WorldScene extends Phaser.Scene {
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
+      // TAP TARGETS outrank ground movement (RO: click a monster to fight it,
+      // click an item to fetch it). Hit-tested against the drawn art boxes in
+      // world coords; a miss falls straight through to the movement path, so
+      // the hold-to-move machinery (and its wedge-proofing) is untouched.
+      const tgt = this.tapTarget(p.worldX, p.worldY);
+      if (tgt) {
+        if (tgt.kind === "drop") {
+          this.pendingPickupId = tgt.id;
+          this.engagedId = null;
+          const d = this.drops.get(tgt.id)!;
+          this.setMoveTarget(d.wx, d.wy, true);
+        } else {
+          this.engagedId = tgt.id;
+          this.pendingPickupId = null;
+          const mv = this.monsters.get(tgt.id)!;
+          this.setMoveTarget(mv.fx, mv.fy, true);
+          this.nextChaseRepathAt = 0;
+          this.nextEngageSendAt = 0;
+        }
+        return; // no hold armed: the walk-to is driven by driveCombatIntent
+      }
+      // A plain ground tap breaks off any fight/fetch (RO: moving cancels).
+      this.engagedId = null;
+      this.pendingPickupId = null;
       this.holdPointerId = p.id;
       this.holdGround = this.pickGround(p.worldX, p.worldY);
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
@@ -966,6 +1038,19 @@ export class WorldScene extends Phaser.Scene {
       // The Chat page's bottom input sends through the SAME rate-limited path
       // as the on-screen chat box.
       onChat: (text) => this.room?.send("chat", { text }),
+      // Backpack drag-out: client coords -> canvas coords -> world point ->
+      // the server's "drop" (which clamps to a short reach + standable
+      // ground, so the client conversion only has to be roughly right).
+      onDropItem: (slot, cx, cy) => {
+        if (!this.room) return;
+        const rect = this.game.canvas.getBoundingClientRect();
+        const px = ((cx - rect.left) / Math.max(1, rect.width)) * this.scale.width;
+        const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
+        const wp = this.cameras.main.getWorldPoint(px, py);
+        const g = this.pickGround(wp.x, wp.y);
+        if (g) this.room.send("drop", { slot, wx: g.x, wy: g.y });
+        else this.room.send("drop", { slot }); // void/solid target: at my feet
+      },
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
@@ -1742,6 +1827,13 @@ export class WorldScene extends Phaser.Scene {
           // Camera-gated (off-screen): its pipeline is parked this frame, so
           // `playing`/`depth`/`lit` are deliberately stale — QA must skip it.
           culled: !!mv.culled,
+          // Combat mirrors (verify-combat drives fights through these).
+          x: mv.fx,
+          y: mv.fy,
+          hp: (this.room?.state as any)?.monsters?.get(id)?.hp ?? null,
+          hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
+          mstate: mv.mstate ?? "roam",
+          hpBar: !!mv.hpBg?.visible,
         })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
@@ -1829,6 +1921,59 @@ export class WorldScene extends Phaser.Scene {
         });
         return best;
       },
+      // --- combat probes -------------------------------------------------
+      engage: (id?: string | null) => {
+        if (id === null) {
+          this.engagedId = null;
+          this.room?.send("engage", { id: null });
+          return null;
+        }
+        if (id) {
+          this.engagedId = id;
+          this.pendingPickupId = null;
+          this.nextChaseRepathAt = 0;
+          this.nextEngageSendAt = 0;
+        }
+        return this.engagedId;
+      },
+      combat: () => {
+        const p = this.room ? (this.room.state as any).players.get(this.room.sessionId) : null;
+        return {
+          engaged: this.engagedId,
+          pendingPickup: this.pendingPickupId,
+          hp: p?.hp,
+          hpMax: p?.hpMax,
+          ep: p?.ep,
+          level: p?.level,
+          xp: p?.xp,
+          dead: !!p?.dead,
+          slow: p?.slow ?? 1,
+          action: p?.action,
+          actionSeq: p?.actionSeq,
+          hitSeq: p?.hitSeq,
+        };
+      },
+      dropsList: () => {
+        const out: Array<{ id: string; item: string; x: number; y: number; shown: boolean }> = [];
+        this.drops.forEach((d, id) => out.push({ id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible }));
+        return out;
+      },
+      pickupNearest: () => this.pickupNearest(),
+      inv: () => this.hud?.invSnapshot?.() ?? [],
+      myAnim: () => {
+        const av = this.room ? this.avatars.get(this.room.sessionId) : null;
+        return av?.sprite.anims.getName() ?? "";
+      },
+      monsterAnimReady: (kind: string) => {
+        const def = this.monsterManifest?.monsters.find((d) => d.id === kind);
+        if (!def) return false;
+        const attack = resolveMonsterAnim(def, "attack");
+        if (!attack) return true; // no attack art = nothing to wait for
+        for (const dir of Object.keys(def.animations?.[attack] ?? {}))
+          if (this.anims.exists(monsterAnimKey(kind, attack, dir))) return true;
+        return false;
+      },
+      roomSend: (type: string, msg: unknown) => this.room?.send(type, msg),
     };
   }
 
@@ -1909,6 +2054,8 @@ export class WorldScene extends Phaser.Scene {
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
     $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
+    $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
+    $(room.state).drops.onRemove((_g: any, id: string) => this.removeDrop(id));
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
     $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
@@ -1922,6 +2069,14 @@ export class WorldScene extends Phaser.Scene {
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
+    room.onMessage("inv", (msg: { items?: { item: string; n: number }[] }) => {
+      this.hud?.setInventory(msg?.items ?? []);
+    });
+    room.onMessage("levelup", (msg: { name?: string; level?: number }) => {
+      if (!msg?.name || !msg?.level) return;
+      this.chat.addLog("—", `${msg.name} reached level ${msg.level}!`);
+      gameAudio.event("progress.level_up");
+    });
     room.onMessage("star", (msg: { name?: string }) => {
       this.shootingStar(msg?.name);
       gameAudio.star(); // a chime in key, on the beat
@@ -2007,22 +2162,221 @@ export class WorldScene extends Phaser.Scene {
       radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
       hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
+      attackKey: def ? resolveMonsterAnim(def, "attack") : undefined,
+      angryKey: def ? resolveMonsterAnim(def, "angry") : undefined,
+      dieKey: def ? resolveMonsterAnim(def, "die") : undefined,
       idleKey: def?.idleAnim ?? undefined,
       ground: def?.ground,
       groundIdle: def?.groundIdle ?? undefined,
     };
     sprite.y = p0.y - mv.hoverPx;
+    // Joining mid-fight must not replay a stale swing: start from the synced seq.
+    mv.lastActionSeq = m.actionSeq ?? 0;
+    mv.lastHp = m.hp;
     this.monsters.set(id, mv);
-    this.playMonsterAnim(mv, !!m.moving, m.dir);
+    this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+  }
+
+  /** Ground loot: one Image + a soft shadow per drop, y-sorted with the
+   * bodies. Item sprites are UNIFORM at items/<id>/sprite.webp (verified over
+   * all 105 items), so no manifest fetch is needed — textures lazy-load per
+   * KIND the first time one drops. */
+  private addDrop(id: string, g: any) {
+    const p = this.projectFlat(g.x, g.y);
+    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * MAP_GEOMETRY.lh;
+    const shadow = this.add
+      .image(p.x, y, SHADOW_TEX)
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(20, 9)
+      .setAlpha(0.55)
+      .setDepth(y - 0.6);
+    const img = this.add.image(p.x, y - 7, "__MISSING").setVisible(false).setDepth(y);
+    const rec = { img, shadow, wx: g.x, wy: g.y, item: g.item };
+    this.drops.set(id, rec);
+    this.withItemTexture(g.item, (key) => {
+      if (this.drops.get(id) !== rec) return; // picked up before the art landed
+      img.setTexture(key).setScale(0.6).setVisible(true);
+    });
+  }
+
+  private removeDrop(id: string) {
+    const rec = this.drops.get(id);
+    if (!rec) return;
+    rec.img.destroy();
+    rec.shadow.destroy();
+    this.drops.delete(id);
+    if (this.pendingPickupId === id) this.pendingPickupId = null;
+  }
+
+  /** Lazy per-kind item texture (48x48 webp). The callback fires immediately
+   * when cached, else when the background load lands. */
+  private withItemTexture(item: string, cb: (key: string) => void) {
+    const key = `item:${item}`;
+    if (this.textures.exists(key)) {
+      cb(key);
+      return;
+    }
+    this.load.image(key, withV(`/assets/items/${item}/sprite.webp`));
+    this.load.once(`filecomplete-image-${key}`, () => cb(key));
+    this.load.start();
+  }
+
+  /** What did a world-coords tap land on? Drops first (small, precise
+   * intent), then monsters (their art box). Culled monsters are not drawn,
+   * so they are not tappable. */
+  private tapTarget(wx: number, wy: number): { kind: "drop" | "monster"; id: string } | null {
+    for (const [id, d] of this.drops) {
+      if (!d.img.visible) continue;
+      if (Math.abs(wx - d.img.x) <= 16 && Math.abs(wy - d.img.y) <= 16) return { kind: "drop", id };
+    }
+    for (const [id, mv] of this.monsters) {
+      if (mv.culled || mv.mstate === "die") continue;
+      const sp = mv.sprite;
+      const halfW = Math.max(18, sp.displayWidth * 0.4);
+      const top = sp.y - sp.displayHeight * sp.originY;
+      if (wx >= mv.lx - halfW && wx <= mv.lx + halfW && wy >= top && wy <= sp.y + 6)
+        return { kind: "monster", id };
+    }
+    return null;
+  }
+
+  /** Per-frame combat/fetch intent: walk to the engaged monster (which
+   * moves), stand and engage in reach; walk to a tapped item and grab it.
+   * The SERVER owns everything that happens after the messages land. */
+  private driveCombatIntent() {
+    if (this.selfDead || !this.room) return;
+    const me = this.avatars.get(this.room.sessionId);
+    if (!me) return;
+    if (this.pendingPickupId) {
+      const d = this.drops.get(this.pendingPickupId);
+      if (!d) this.pendingPickupId = null;
+      else if (Math.hypot(d.wx - me.fx, d.wy - me.fy) <= PICKUP_RADIUS_WU * 0.8) {
+        this.room.send("pickup", { id: this.pendingPickupId });
+        this.pendingPickupId = null;
+        this.clearMoveTarget();
+      }
+    }
+    if (!this.engagedId) return;
+    const mv = this.monsters.get(this.engagedId);
+    if (!mv || mv.mstate === "die") {
+      this.engagedId = null;
+      return;
+    }
+    const now = this.time.now;
+    const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
+    const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
+    if (dist <= range) {
+      if (this.trip) this.clearMoveTarget(); // arrived: stand and fight
+      if (now >= this.nextEngageSendAt) {
+        // Re-assert ~1/s: the server clears the target whenever we move
+        // (RO: moving breaks the attack), so standing back in reach resumes.
+        this.nextEngageSendAt = now + 700;
+        this.room.send("engage", { id: this.engagedId });
+      }
+    } else if (now >= this.nextChaseRepathAt) {
+      this.nextChaseRepathAt = now + 300; // the target roams/circles — retarget
+      this.setMoveTarget(mv.fx, mv.fy, true);
+    }
+  }
+
+  /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
+   * when in reach, else walk to it first (same flow as tapping it). */
+  private pickupNearest() {
+    if (this.selfDead || !this.room) return;
+    const me = this.avatars.get(this.room.sessionId);
+    if (!me) return;
+    let bestId: string | null = null;
+    let bestD = CELL_WU * 5; // don't sprint across the map for a mis-tap
+    for (const [id, d] of this.drops) {
+      const dist = Math.hypot(d.wx - me.fx, d.wy - me.fy);
+      if (dist < bestD) {
+        bestD = dist;
+        bestId = id;
+      }
+    }
+    if (!bestId) return;
+    if (bestD <= PICKUP_RADIUS_WU * 0.8) {
+      this.room.send("pickup", { id: bestId });
+    } else {
+      const d = this.drops.get(bestId)!;
+      this.pendingPickupId = bestId;
+      this.setMoveTarget(d.wx, d.wy, true);
+    }
   }
 
   private removeMonster(id: string) {
     const mv = this.monsters.get(id);
     if (!mv) return;
-    mv.sprite.destroy();
-    mv.shadow.destroy();
     mv.lit?.destroy();
+    mv.hpBg?.destroy();
+    mv.hpFill?.destroy();
+    if (mv.mstate === "die" && mv.sprite.visible && !mv.culled) {
+      // The server held the schema entry for the die clip; now the corpse
+      // FADES instead of popping off (RO body dissolve). The sprites are
+      // detached from the map first, so a respawn under the same id can't
+      // fight the tween.
+      const corpse = mv.sprite;
+      const shadow = mv.shadow;
+      this.tweens.add({
+        targets: [corpse, shadow],
+        alpha: 0,
+        duration: 450,
+        onComplete: () => {
+          corpse.destroy();
+          shadow.destroy();
+        },
+      });
+    } else {
+      mv.sprite.destroy();
+      mv.shadow.destroy();
+    }
     this.monsters.delete(id);
+  }
+
+  /** Tiny hp bar floating over a WOUNDED monster (full-health and dying
+   * monsters show none — RO shows the bar only once you have hurt it). */
+  private updateMonsterHpBar(mv: MonsterAvatar, m: any) {
+    const hurt = m.hpMax > 0 && m.hp < m.hpMax && m.mstate !== "die";
+    if (!hurt) {
+      mv.hpBg?.setVisible(false);
+      mv.hpFill?.setVisible(false);
+      return;
+    }
+    if (!mv.hpBg) {
+      mv.hpBg = this.add.rectangle(0, 0, 32, 4, 0x10101c, 0.82).setDepth(890_000).setOrigin(0.5, 0.5);
+      mv.hpFill = this.add.rectangle(0, 0, 30, 2, 0x62d96a, 1).setDepth(890_001).setOrigin(0, 0.5);
+    }
+    const frac = Math.max(0, Math.min(1, m.hp / m.hpMax));
+    const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 7;
+    mv.hpBg.setPosition(mv.lx, topY).setVisible(true);
+    mv.hpFill!
+      .setPosition(mv.lx - 15, topY)
+      .setVisible(true)
+      .setSize(Math.max(1, 30 * frac), 2);
+    mv.hpFill!.setFillStyle(frac > 0.5 ? 0x62d96a : frac > 0.25 ? 0xffc94d : 0xf25d5d);
+  }
+
+  /** A small rising damage number (world-space, above the night overlay). */
+  private spawnDamageFloat(x: number, y: number, text: string, color: number) {
+    const t = this.add
+      .text(x, y, text, {
+        fontFamily: "monospace",
+        fontSize: "13px",
+        fontStyle: "bold",
+        color: `#${color.toString(16).padStart(6, "0")}`,
+        stroke: "#101018",
+        strokeThickness: 3,
+      })
+      .setOrigin(0.5, 1)
+      .setDepth(900_002);
+    this.tweens.add({
+      targets: t,
+      y: y - 26,
+      alpha: { from: 1, to: 0 },
+      duration: 650,
+      ease: "Cubic.easeOut",
+      onComplete: () => t.destroy(),
+    });
   }
 
   /** Drive a monster's 8-dir WALK clip (mv.walkKey — the manifest-resolved
@@ -2034,7 +2388,7 @@ export class WorldScene extends Phaser.Scene {
    * sector-boundary angles — the identical jitter the player fix killed):
    * a 45° change must persist DIR_STICK_MS before the sprite turns, 90°+
    * turns switch instantly. */
-  private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
+  private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
     // remote puppets, so a 160ms facing lag is invisible — while autopilot
@@ -2042,6 +2396,57 @@ export class WorldScene extends Phaser.Scene {
     // right before stopping (maintainer 2026-07-30). Players keep instant
     // large turns for input feel.
     const d = this.stableDir(mv, want, true);
+    mv.mstate = mstate;
+
+    // --- COMBAT CLIPS (attack / angry / die — deferred-loaded strips). The
+    // anims.exists guards make every branch degrade to the walk-park below
+    // until the background load lands and buildMonsterAnimations re-runs;
+    // 6 of 24 kinds ship no angry at all and park between swings instead.
+    // combatClip gates the per-frame walk-drift compensation: shift[]/air[]
+    // are measured on the WALK/IDLE strips and must never index into an
+    // attack frame.
+    if (mstate === "die") {
+      const dieAnim = mv.dieKey ? monsterAnimKey(mv.kind, mv.dieKey, d) : null;
+      if (dieAnim && this.anims.exists(dieAnim)) {
+        mv.combatClip = true;
+        if (mv.sprite.anims.getName() !== dieAnim) mv.sprite.play(dieAnim);
+        return;
+      }
+      // No die art: freeze on the parked contact frame (better than looping).
+      mv.combatClip = false;
+      mv.sprite.anims.stop();
+      const skD = monsterSheetKey(mv.kind, mv.walkKey, d);
+      const gD = mv.ground?.[d];
+      if (this.textures.exists(skD)) mv.sprite.setTexture(skD, gD?.contact ?? 0);
+      return;
+    }
+    if (mstate === "combat") {
+      const attackAnim = mv.attackKey ? monsterAnimKey(mv.kind, mv.attackKey, d) : null;
+      if (actionSeq !== (mv.lastActionSeq ?? 0)) {
+        mv.lastActionSeq = actionSeq;
+        if (attackAnim && this.anims.exists(attackAnim)) {
+          mv.combatClip = true;
+          mv.sprite.play(attackAnim); // restart even mid-clip: a new swing IS a restart
+          return;
+        }
+      }
+      // Let a running swing finish before falling back to the angry loop.
+      const cur = mv.sprite.anims.getName();
+      if (attackAnim && cur === attackAnim && mv.sprite.anims.isPlaying) {
+        mv.combatClip = true;
+        return;
+      }
+      const angryAnim = mv.angryKey ? monsterAnimKey(mv.kind, mv.angryKey, d) : null;
+      if (angryAnim && this.anims.exists(angryAnim)) {
+        mv.combatClip = true;
+        if (cur !== angryAnim || !mv.sprite.anims.isPlaying) mv.sprite.play(angryAnim, true);
+        return;
+      }
+      // No angry art (6 kinds): fall through to the stopped walk-park below.
+    }
+    mv.combatClip = false;
+    mv.lastActionSeq = actionSeq;
+
     // Re-anchor to the ACTIVE STATE's measured ground contract for this
     // direction: idle strips are framed independently of walk (their own
     // stripDims + anchors), and per-direction margins differ after art
@@ -2153,6 +2558,12 @@ export class WorldScene extends Phaser.Scene {
         // sessionIds), so drop all old sprites + prediction/input state.
         for (const id of [...this.avatars.keys()]) this.removeAvatar(id);
         for (const id of [...this.monsters.keys()]) this.removeMonster(id);
+        // Ground drops too: the fresh room re-sends its whole drops map via
+        // onAdd — stale sprites from the dead room would double every item.
+        for (const id of [...this.drops.keys()]) this.removeDrop(id);
+        this.engagedId = null;
+        this.pendingPickupId = null;
+        this.selfDead = false;
         this.pending = [];
         this.inputSeq = 0;
         this.sendAccum = 0;
@@ -2416,7 +2827,15 @@ export class WorldScene extends Phaser.Scene {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
-            speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
+            // The hit stagger mirrors the server through the SYNCED factor —
+            // both sides multiply the same stepMovement speedScale. The value
+            // lags one patch behind the authoritative one right after a hit;
+            // reconciliation absorbs that as a tiny backward tug, which reads
+            // as the impact and is exactly the RO hit-stop feel.
+            speed =
+              surfaceAtWorld(this.terrain, rx, ry).speed *
+              (jumping ? JUMP_SPEED_FACTOR : 1) *
+              (player.slow || 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
@@ -2447,6 +2866,81 @@ export class WorldScene extends Phaser.Scene {
         moving = player.moving;
         running = player.running;
         dir = player.dir;
+      }
+
+      // --- COMBAT SIGNALS (both self and remote) -------------------------
+      // One-shot clips ride action/actionSeq; hits ride hitSeq; death rides
+      // dead. All server-owned — the client only ever mirrors.
+      const nowMs = this.time.now;
+      if ((player.actionSeq ?? 0) !== (av.lastActionSeq ?? 0)) {
+        av.lastActionSeq = player.actionSeq;
+        if (player.action === "attack") {
+          // Unarmed: pseudo-random kick/punch, deterministic from the synced
+          // swing counter so every client shows the same move (shared
+          // unarmedClip; no weapons yet — maintainer).
+          av.actionKey = unarmedClip(player.actionSeq, idSalt(id));
+          av.actionUntil = nowMs + 600;
+          if (id === myId) gameAudio.event("tool.sword_swing");
+        } else if (player.action === "pickup") {
+          av.actionKey = "pickup";
+          av.actionUntil = nowMs + 850;
+          if (id === myId) gameAudio.event("item.get");
+        } else if (player.action === "die") {
+          av.actionKey = "die";
+          av.actionUntil = nowMs + 10_000; // held below while dead anyway
+        }
+      }
+      if ((player.hitSeq ?? 0) !== (av.lastHitSeq ?? 0)) {
+        const first = av.lastHitSeq === undefined;
+        av.lastHitSeq = player.hitSeq;
+        if (!first && !player.dead) {
+          // The flinch — unless a stronger clip (attack/die) is mid-play.
+          if (!av.actionUntil || nowMs >= av.actionUntil || av.actionKey === "hurt") {
+            av.actionKey = "hurt";
+            av.actionUntil = nowMs + 420;
+          }
+          if (id === myId) gameAudio.event("combat.hit_taken");
+        }
+      }
+      if ((av.lastHp ?? player.hp) > player.hp)
+        this.spawnDamageFloat(av.lx, av.sprite.y - av.sprite.displayHeight * 0.8, `${Math.round((av.lastHp ?? player.hp) - player.hp)}`, 0xf25d5d);
+      av.lastHp = player.hp;
+      if (player.dead) {
+        // Death: the die clip HOLDS (no overlay expiry) until the server
+        // revives us; movement input is pointless meanwhile.
+        av.actionKey = "die";
+        av.actionUntil = nowMs + 1000;
+        moving = false;
+        running = false;
+        if (id === myId && !this.selfDead) {
+          this.selfDead = true;
+          this.clearMoveTarget();
+          this.dropHold();
+          this.engagedId = null;
+        }
+      } else if (id === myId && this.selfDead) {
+        this.selfDead = false; // respawned: the >2-cell snap does the rest
+      }
+
+      // Facing in a fight: a stationary engaged player LOOKS AT its target
+      // (the circling monster sweeps around, so this is what makes the
+      // kick/punch directions vary — the other half of the maintainer's
+      // circling idea).
+      if (id === myId && this.engagedId && !moving && !player.dead) {
+        const tgt = this.monsters.get(this.engagedId);
+        if (tgt) dir = faceDirWorld(av.fx, av.fy, tgt.fx, tgt.fy) ?? dir;
+      }
+
+      // HUD: hp/ep/xp/level are server-owned; push only on change (DOM).
+      if (id === myId) {
+        const sig = `${player.hp}|${player.hpMax}|${player.ep}|${player.epMax}|${player.xp}|${player.level}`;
+        if (sig !== this.lastHudSig) {
+          this.lastHudSig = sig;
+          setBar("hp", Math.ceil(player.hp), player.hpMax);
+          setBar("ep", Math.floor(player.ep), player.epMax);
+          setBar("xp", Math.floor(player.xp), xpToNext(player.level));
+          setLevel(player.level);
+        }
       }
 
       // Project onto the iso ground with the FLAT (unlifted) point + cell level
@@ -2744,6 +3238,8 @@ export class WorldScene extends Phaser.Scene {
             sp.setVisible(false);
             mv.shadow.setVisible(false);
             mv.lit?.setVisible(false);
+            mv.hpBg?.setVisible(false);
+            mv.hpFill?.setVisible(false);
             // Phaser's UpdateList advances anims on invisible sprites too.
             sp.anims.pause();
           }
@@ -2789,18 +3285,27 @@ export class WorldScene extends Phaser.Scene {
         // shadows in front): occluder-aware depth + landing-ground shadow.
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
-        this.playMonsterAnim(mv, !!m.moving, m.dir);
+        this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
         // PER-FRAME drift compensation (the safe equivalent of the player
         // art's nadir postprocess — measured in the manifest, art untouched):
         // pin THIS frame's own body-mass origin-x so baked horizontal
         // translation never slides the body off its shadow; per-frame `air`
         // (deepest point risen vs the planted frame) feeds the hop shrink so
         // real levitation (demon stone, hops) reads as airborne on purpose.
-        const gd = (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
+        // NEVER during a combat clip: shift[]/air[] are indexed by WALK/IDLE
+        // frame numbers and an attack strip has different counts.
+        const gd = mv.combatClip
+          ? undefined
+          : (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
         const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
         const ox = gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
         const airPx = gd?.air?.[fi] ?? 0;
+        // Damage float + hp bar (RO: you SEE the number and the wound).
+        if (mv.lastHp !== undefined && m.hp < mv.lastHp)
+          this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
+        mv.lastHp = m.hp;
+        this.updateMonsterHpBar(mv, m);
         this.resolveBodyDepth(mv, sLvl);
         // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
         // ~140px, its south one ~90 — one size can't fit both facings).
@@ -3214,6 +3719,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private predictAndSend(dt: number) {
+    if (this.selfDead) {
+      this.sendAccum = 0;
+      this.jumpQueued = false;
+      return;
+    }
     // Self-heal a wedged hold gesture: if Phaser's own pointer slot says the
     // finger is no longer down but the scene never got its pointerup (overlay
     // races, touchcancel), the hold would otherwise persist forever — every
@@ -3234,6 +3744,8 @@ export class WorldScene extends Phaser.Scene {
     this.keysActive = ax !== 0 || ay !== 0;
     if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
+      this.engagedId = null; // RO: moving breaks the attack / the fetch
+      this.pendingPickupId = null;
       // STEER ASSIST: an accidental run into a solid prop's corner slips
       // around it when the tiles right beside the blocked cell allow it —
       // strictly local, no pathfinding (shared steerAssist). Applies to
@@ -3254,6 +3766,9 @@ export class WorldScene extends Phaser.Scene {
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.
       this.holdRepath(performance.now());
+      // Fight/fetch intent runs with OR without a trip: standing in reach it
+      // re-asserts the engagement; walking it retargets the moving monster.
+      this.driveCombatIntent();
       if (this.trip) {
         const drive = this.driveAutopilot();
         ax = drive.ax;
@@ -3713,13 +4228,17 @@ export class WorldScene extends Phaser.Scene {
     // Airborne overrides ground gait. ONE jump clip (art overhaul 2026-07-29):
     // the standing high-jump was retired on PixelLab and the steeplechase leap
     // now covers standing and running hops alike, timed to the hop arc.
-    const state = jumping
+    let state = jumping
       ? "jump"
       : moving
         ? running
           ? "run"
           : "walk"
         : "idle";
+    // One-shot combat/pickup overlays (kick/punch/hurt/pickup/die) outrank
+    // the movement state while their window runs; die holds via the update
+    // loop refreshing actionUntil for as long as the player is dead.
+    if (av.actionUntil && this.time.now < av.actionUntil && av.actionKey) state = av.actionKey;
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const d = this.stableDir(av, want);
     const key = this.resolveAnim(av.character, state, d);
@@ -4291,7 +4810,11 @@ export class WorldScene extends Phaser.Scene {
             ? ["run", "walk", "idle"]
             : state === "walk"
               ? ["walk", "idle"]
-              : ["idle"];
+              : state === "kick" || state === "punch"
+                ? [state, state === "kick" ? "punch" : "kick", "idle"] // deferred art mid-load: try the twin strike
+                : state === "hurt" || state === "pickup" || state === "die"
+                  ? [state, "idle"]
+                  : ["idle"];
     for (const s of order) {
       for (const d of [dir, DEFAULT_DIRECTION]) {
         const key = animKey(uid, s, d);
@@ -4323,8 +4846,37 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    // MONSTER combat strips (attack/angry/die — 525 strips, ~3.1 MB) join the
+    // SAME background batch: boot stays walk+idle only (the loading-time work
+    // must not regress), and the fight art streams in behind the live world.
+    // Sliced with each strip's OWN measured frame size (stripDims) — the
+    // monster-level size goes stale on in-place art repairs and frames bleed.
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      for (const state of ["attack", "angry", "die"]) {
+        const anim = resolveMonsterAnim(def, state);
+        if (!anim) continue;
+        const dirStrips = def.strips?.[anim] ?? {};
+        for (const [dir, url] of Object.entries(dirStrips)) {
+          if (!url) continue;
+          const sk = monsterSheetKey(def.id, anim, dir);
+          if (this.textures.exists(sk)) continue;
+          const dims = def.stripDims?.[anim]?.[dir];
+          this.load.spritesheet(sk, withV(url), {
+            frameWidth: dims?.w ?? def.frameW,
+            frameHeight: dims?.h ?? def.frameH,
+          });
+          queued++;
+        }
+      }
+    }
     if (!queued) return;
-    this.load.once(Phaser.Loader.Events.COMPLETE, () => this.buildAnimations());
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.buildAnimations();
+      // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
+      // true does NOT register anims — without this re-run every late-loaded
+      // combat strip would stay a texture no clip ever plays.
+      this.buildMonsterAnimations();
+    });
     this.load.start();
   }
 
@@ -4350,7 +4902,13 @@ export class WorldScene extends Phaser.Scene {
           // from its own frame count so the once-through clip spans the whole
           // ~JUMP_MS hop and lands on its feet regardless of how many frames
           // the art ships (currently 4; was 9).
-          const once = state === "jump" || state === "kick";
+          const once =
+            state === "jump" ||
+            state === "kick" ||
+            state === "punch" ||
+            state === "hurt" ||
+            state === "pickup" ||
+            state === "die";
           const rate =
             state === "jump"
               ? frames.length / (JUMP_MS / 1000)
@@ -4373,21 +4931,44 @@ export class WorldScene extends Phaser.Scene {
   private buildMonsterAnimations() {
     for (const def of this.monsterManifest?.monsters ?? []) {
       const walk = monsterWalkKey(def);
-      const states: Array<[string, boolean]> = [[walk, false]];
-      if (def.idleAnim && def.idleAnim !== walk) states.push([def.idleAnim, true]);
-      for (const [anim, isIdle] of states) {
+      // kind: loop (walk/idle/angry) vs once (attack spans ~0.7s, die spans
+      // the server's MONSTER_DIE_MS corpse window so the clip and the sweep
+      // agree). Combat strips background-load AFTER join — this builder is
+      // idempotent and re-runs on that loader's COMPLETE, registering whatever
+      // arrived (the single-call-site trap, documented in CLAUDE.md).
+      const states: Array<[string, "loop" | "idle" | "attack" | "die"]> = [[walk, "loop"]];
+      if (def.idleAnim && def.idleAnim !== walk) states.push([def.idleAnim, "idle"]);
+      const angry = resolveMonsterAnim(def, "angry");
+      const attack = resolveMonsterAnim(def, "attack");
+      const die = resolveMonsterAnim(def, "die");
+      if (angry && angry !== walk) states.push([angry, "idle"]);
+      if (attack) states.push([attack, "attack"]);
+      if (die) states.push([die, "die"]);
+      for (const [anim, kind] of states) {
+        const isIdle = kind === "idle";
         const dirCounts = def.animations?.[anim] ?? {};
         for (const [dir, frames] of Object.entries(dirCounts)) {
           const sk = monsterSheetKey(def.id, anim, dir);
           if (!this.textures.exists(sk) || frames <= 0) continue; // strip missing
           const key = monsterAnimKey(def.id, anim, dir);
           if (this.anims.exists(key)) continue;
+          const rate =
+            kind === "attack"
+              ? Math.max(5, frames / 0.7) // one swing ≈ 700ms whatever the art ships
+              : kind === "die"
+                ? Math.max(3, frames / 1.05) // ≈ MONSTER_DIE_MS before the corpse sweeps
+                : isIdle
+                  ? frames <= 6
+                    ? 4
+                    : 7 // idle/angry breathe slower than a gait reads
+                  : frames <= 6
+                    ? 6
+                    : 10;
           this.anims.create({
             key,
             frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
-            // Idle breathes slower than a gait reads.
-            frameRate: isIdle ? (frames <= 6 ? 4 : 7) : frames <= 6 ? 6 : 10,
-            repeat: -1,
+            frameRate: rate,
+            repeat: kind === "attack" || kind === "die" ? 0 : -1,
           });
         }
       }

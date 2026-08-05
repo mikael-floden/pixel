@@ -742,6 +742,81 @@ visible head/shoulders are ABOVE the surface).
   ART-MEASURED bullet). Probe: `__ml.monsterInfo()` (per monster: depth,
   coverY, originY, hover, shadow anchor/size/depth, lit visible+tint).
 
+## Combat, items & progression (RO-flavoured; maintainer 2026-07-31)
+
+- **The player state OWNS level/xp/hp/hpMax/ep/epMax** (Player schema, synced;
+  ep is reserved — no skill spends it yet). Curves + every number both sides
+  must agree on live in `shared/src/combat.ts` (xpToNext, hpMaxFor, damageRoll,
+  unarmedClip, the slow window, chase/orbit/drop constants). Progression +
+  inventory PERSIST by token (store.ts); the backpack is PRIVATE — targeted
+  "inv" messages, never schema.
+- **Tap a monster to engage** (RO): the client autopilots into radius-aware
+  reach (attackRange = rA+rB+12), then the SERVER drives the swing loop while
+  the target lives, stays in reach (×1.2 grace for the circling drift) and the
+  player stands still — any movement input breaks the fight. No weapons yet:
+  each swing's clip is kick or punch, pseudo-random but DETERMINISTIC from the
+  synced actionSeq + an id salt (shared unarmedClip) so every client shows the
+  same move. Signals: Player.action/actionSeq (one-shots: attack/pickup/die),
+  hitSeq (hurt flinch + damage float), dead (die clip holds → respawn snap).
+- **Monster brain states** (Monster.mstate, server-only fields beside it):
+  roam (the shipped wander) → chase → combat → die. PASSIVE BY DEFAULT: the
+  tuning default aggro_radius_wu is 0 — everything retaliates when hit, only
+  predators (saber/night_beast/diablos/snow_demon/salamanders/masked/malformed,
+  128-160wu) proximity-aggro (~2 scans/s). ESCAPE MATH is load-bearing: each
+  hit taken sets the victim's synced `slow` to 0.55 for 1.5s, and slowed run
+  (96wu/s) < CHASE_SPEED (105) < free run (175) — you cannot outrun a monster
+  that keeps landing hits, you CAN once you break contact for 1.5s. The slow
+  multiplies stepMovement's speedScale on BOTH sides (WorldRoom ~:598, the
+  stepLocal closure in WorldScene) — mirror or rubber-band. IN-FIGHT CIRCLING
+  (maintainer's idea): waiting on its cooldown the monster strafes tangentially
+  (ORBIT_SPEED 24, per-monster handedness from an id hash) holding ~0.8 reach,
+  and the stationary player's DISPLAYED facing tracks the target — so the
+  attack/angry directions sweep for both bodies. Chase may leave the zone
+  polygon: containment switches to a LEASH box (zone bbox + 10 cells) and the
+  roam snap-back disciplines only mstate=roam; disengage walks home via a
+  legal out-of-zone trip (m.returning).
+- **Monster combat clips**: attack/angry/die strips (525 files, ~3.1MB)
+  background-load in the SAME deferred batch as the player's action states —
+  boot stays walk+idle (the loading-time work must not regress). The COMPLETE
+  handler re-runs buildMonsterAnimations (the single-call-site trap: a late
+  texture never registers a clip by itself). attack/die are once-through (die
+  paced to MONSTER_DIE_MS so the clip and the server's corpse sweep agree);
+  angry loops between swings; 6 kinds ship NO angry (forest_poring x2,
+  lava_poring, ice_crystal_golem, diablo x2) and park on the walk contact frame
+  instead — anims.exists guards make every gap degrade to the parked pose.
+  `combatClip` gates the per-frame walk drift compensation: shift[]/air[] are
+  measured on walk/idle strips and must never be indexed by an attack frame.
+  Corpses: the schema entry lingers MONSTER_DIE_MS, then the client fades the
+  detached sprite 450ms on onRemove. Small hp bar floats over a WOUNDED
+  monster only (890_000 depth, culled with the body).
+- **Loot**: on the corpse sweep the tuning loot table rolls per entry
+  (rollDrops, deterministic from id+diedAt), scattered onto STANDABLE ground
+  near the corpse; GroundItems sync in state.drops, despawn after 90s. Item
+  sprites are uniform `items/<id>/sprite.webp` 48×48 (verified across all 105)
+  — the client lazy-loads per KIND, no manifest fetch. TAP an item to fetch
+  it (walk + grab), or the PICKUP button beside jump / the F key (nearest
+  within 5 cells; the gamepad button synthesizes F exactly like jump→SPACE).
+  Server validates PICKUP_RADIUS_WU and plays the pickup clip via action.
+  BACKPACK (hud.ts): server-owned slots render in the 5-col grid; DRAG a slot
+  out over the game view to drop it — pointer-captured ghost (the bird-slider
+  pattern; Phaser never sees the gesture), released client coords →
+  getWorldPoint → "drop" {slot,wx,wy}, server clamps to 2.5 cells + standable
+  ground. INV_MAX_SLOTS 30, stacks of 99.
+- **Monster stats come from the LIVE TUNING channel** — the wiki agent's
+  document (live/tuning/monsters.json, format @1), adopted exactly as they
+  requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.
+  CAREFUL: liveTuning() serves an EMPTY-but-truthy placeholder before
+  initLive's fetch lands — the resolver checks for CONTENT, not truthiness
+  (tests run without initLive at all). Real values were written into the file
+  from each monster's curated level (hp 15+10L, dmg 2+1.6L, xp 8·L^1.35);
+  a wiki admin edit re-tunes live rooms with no deploy.
+- **Gates**: combat.unit.test.ts (curves/determinism/escape math),
+  combat.test.ts (2 live rooms: full fight loop + death/respawn),
+  verify-combat.mjs (dev stack: clips alternate kick+punch, monster
+  attack/angry play, hp bar, loot, pickup, backpack DOM, drop-out).
+  verify-bars asserts the REAL level-1 stats (40/40 HP, 20/20 EP, 0/50 XP)
+  after waiting out the join race; verify-gamepad expects Jump+Pick up+Walk.
+
 ## Depth-fog on BODIES (syncLitCopy)
 
 - Monsters and remote players are COLOURED by the elevation depth-fog like

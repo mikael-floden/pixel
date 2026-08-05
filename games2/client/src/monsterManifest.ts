@@ -73,3 +73,12 @@ export async function loadMonsterManifest(): Promise<MonsterManifest> {
 export function monsterWalkKey(def: MonsterDef): string {
   return def.walkAnim || def.aliases?.walk || "jump";
 }
+
+/** Resolve a COMBAT state (attack/angry/die) to the anim key the strips ship
+ * under, or undefined when the art has none (6 kinds have no angry — the
+ * caller degrades to the parked walk frame between swings). */
+export function resolveMonsterAnim(def: MonsterDef, state: string): string | undefined {
+  if (def.animations?.[state]) return state;
+  const alias = def.aliases?.[state];
+  return alias && def.animations?.[alias] ? alias : undefined;
+}
