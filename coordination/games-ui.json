@@ -123,6 +123,11 @@
       "to": "games",
       "text": "HEADS UP \u2014 combat.review.test.ts test 2 ('sword-marking provokes on approach; escaping lifts the flee slow') is FLAKY ON MAIN as of a7406e532 (round 6). Measured on a CLEAN worktree of origin/main with none of my changes: 2 failures in 3 runs, and 1 in 3 on a second sample. Failure is always the same: 'timeout waiting for give-up at the escape line' (line 158) after 20s \u2014 the kite loop teleports to (1600,1600) every 300ms but the frog never returns to roam. Round 6's slower ORBIT_SPEED/wider spacing looks like the trigger: in combat the monster holds its orbit radius, so if the fight is still in 'combat' when the victim teleports away, the give-up path (a rejected contained() step at the rim) may not be reached within the window. Your call whether the fix is in the test or in the give-up condition, but it will block deploys \u2014 npm test is a required job. Not touching it myself; my round pushed alongside it and is otherwise green (132 tests with only this one flaking).",
       "at": "2026-08-05T14:50:39+00:00"
+    },
+    {
+      "to": "games",
+      "text": "HEADS-UP, rotation on device (maintainer screenshots 2026-08-05 ~20:28): during an orientation change the GAME CANVAS shows solid BLACK for a long stretch (multiple seconds across his captures) before the world re-renders at the new aspect. The UI side is handled \u2014 chrome now pins at its old spot through the staged viewport resizes and glides once things settle (hud.ts beginFlip), and in-game html/body wear the theme background so exposed page reads surface-coloured, not black. But the canvas black itself is the resize path: Phaser scale resize -> framebuffer realloc + ground-RT full redraw + occluder rebuild at the new size. If that window can be shortened (e.g. keeping the previous frame up until the first new frame is presented, or prioritizing the ground RT redraw), rotation would look properly seamless. Your call if/when \u2014 filing so the observation isn't lost.",
+      "at": "2026-08-05T18:57:03+00:00"
     }
   ],
   "notes_to_games_agent": [

@@ -174,7 +174,6 @@ export function mountPageFrame() {
 
 let layoutHooked = false;
 let lastLandState: boolean | null = null;
-let noAnimTimer = 0;
 /** Cancels any orientation FLIP glide in flight (bumped per flip). */
 let flipToken = 0;
 /** True from the moment a flip pins until its glide finishes — the rect
@@ -217,76 +216,127 @@ function snapshotFlipRects() {
   flipRects = m;
 }
 
-/** The orientation glide, FLIP-style (maintainer 2026-08-05, round 2: a
- * plain anchor transition "feels laggy", and the earlier fix — rotation
- * snaps outright — still read as lag, because the browser spends the flip's
- * first frames resizing the canvas and re-allocating the GL framebuffer at
- * the new aspect while the OS plays its own rotation animation. His ask:
- * "wait for the frame buffer to re-initialize at the old position and make
- * the animation smooth once the laggy stuff has finished reloading."
+/** The live flip transition, if one is running. `applied` remembers the
+ * translate() currently on each element so its true anchor can be recovered
+ * from a rect without touching styles (anchor = rect − applied). */
+let flipCtl: {
+  token: number;
+  old: Map<HTMLElement, DOMRect>;
+  applied: Map<HTMLElement, { dx: number; dy: number }>;
+  started: number;
+  lastResize: number;
+  lastFrame: number;
+  calm: number;
+} | null = null;
+
+/** The orientation glide, FLIP-style (maintainer 2026-08-05, rounds 2-3: a
+ * plain anchor transition "feels laggy", an outright snap "still feels
+ * laggy" — the browser spends the flip's first frames resizing the canvas
+ * and re-allocating the GL framebuffer while the OS plays its own rotation
+ * animation. His ask: "wait for the frame buffer to re-initialize at the
+ * old position and make the animation smooth once the laggy stuff has
+ * finished reloading."
  *
- * So the flip is TWO PHASES now:
+ * TWO PHASES, driven by a per-frame controller:
  *  1. PIN — the classes and layout vars snap immediately (the canvas MUST
- *     take its new size right away; that resize IS the heavy part), but
- *     every chrome element gets a translate() that holds it at its OLD
- *     on-screen spot. Captured before the mutation, applied in the same
- *     rendering update (resize listeners and rAF callbacks run before the
- *     frame paints), so nothing ever flashes at the new position.
- *  2. GLIDE — a rAF loop watches frame deltas; once two consecutive frames
- *     come in under ~34ms (the pipeline has recovered — capped at 900ms so
- *     a starved device can't pin forever), the transforms clear under a
- *     transform-only transition. translate() animates on the compositor, no
- *     layout and no paint, so it stays smooth even if the main thread is
+ *     take its new size right away; that resize IS the heavy part), while
+ *     every chrome element holds its OLD on-screen spot via translate().
+ *     RE-COMPUTED EVERY FRAME, not once: a real phone rotation resizes the
+ *     viewport in SEVERAL stages (the maintainer's mid-rotation screenshots
+ *     show a landscape layout crammed into a portrait-shaped surface), and
+ *     a delta computed against the first stage strands the chrome at a spot
+ *     it never occupied — which is exactly the "animates from a location
+ *     the UI was never at" he filmed. Each frame recovers every element's
+ *     current anchor (rect − the translate we applied) and re-aims the pin
+ *     at the old spot, pre-paint, so the chrome visually NEVER moves while
+ *     the browser is thrashing.
+ *  2. GLIDE — once the resize events have been quiet ~300ms AND two
+ *     consecutive frames come in under ~34ms (capped at 1.5s so a starved
+ *     device can't pin forever), the transforms clear under a
+ *     transform-only transition. translate() animates on the compositor —
+ *     no layout, no paint — so it stays smooth even if the main thread is
  *     still catching its breath. */
-function armFlipGlide(before: Map<HTMLElement, DOMRect>) {
+function beginFlip() {
+  const now = performance.now();
+  if (flipCtl) {
+    // Rotation staged again (or rotated back) mid-transition: keep the SAME
+    // old spots — the controller re-aims at them against the new anchors,
+    // and a rotate-back simply finds deltas near zero.
+    flipCtl.lastResize = now;
+    return;
+  }
   const token = ++flipToken;
+  flipCtl = {
+    token,
+    old: flipRects,
+    applied: new Map(),
+    started: now,
+    lastResize: now,
+    lastFrame: now,
+    calm: 0,
+  };
   flipBusy = true;
-  requestAnimationFrame(() => {
-    if (token !== flipToken) return;
-    // PIN (pre-paint: the gamepad's own resize handler has run by now, so
-    // these are the settled NEW positions).
-    const pins: HTMLElement[] = [];
-    for (const [el, old] of before) {
+  const root = document.documentElement;
+  root.classList.add("ml-noanim");
+  for (const el of document.querySelectorAll<HTMLElement>(FLIP_CHROME))
+    el.classList.remove("ml-glide"); // a still-decaying previous glide must not animate the pins
+  const step = (t: number) => {
+    const c = flipCtl;
+    if (!c || c.token !== token) return;
+    // PIN (pre-paint: resize listeners have run this frame, so rects reflect
+    // the CURRENT stage's anchors).
+    for (const [el, old] of c.old) {
       if (!el.isConnected) continue;
-      const now = el.getBoundingClientRect();
-      if (!now.width || !old.width) continue; // hidden on either side: no glide
-      const dx = Math.round(old.left - now.left);
-      const dy = Math.round(old.top - now.top);
-      if (!dx && !dy) continue;
-      el.style.transform = `translate(${dx}px, ${dy}px)`;
-      pins.push(el);
+      const ap = c.applied.get(el);
+      const r = el.getBoundingClientRect();
+      if (!r.width || !old.width) {
+        // hidden on either side: never glide it in from nowhere
+        if (ap) {
+          el.style.transform = "";
+          c.applied.delete(el);
+        }
+        continue;
+      }
+      const dx = Math.round(old.left - (r.left - (ap?.dx ?? 0)));
+      const dy = Math.round(old.top - (r.top - (ap?.dy ?? 0)));
+      if (ap && ap.dx === dx && ap.dy === dy) continue;
+      if (dx || dy) {
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        c.applied.set(el, { dx, dy });
+      } else if (ap) {
+        el.style.transform = "";
+        c.applied.delete(el);
+      }
     }
-    if (!pins.length) {
+    // SETTLE — no further resize stages for ~300ms AND frame deltas back
+    // under ~2 vsyncs twice in a row, or the hard cap.
+    const dt = t - c.lastFrame;
+    c.lastFrame = t;
+    c.calm = dt < 34 ? c.calm + 1 : 0;
+    const quiet = t - c.lastResize > 300;
+    if ((quiet && c.calm >= 2 && t - c.started >= 120) || t - c.started > 1500) glide();
+    else requestAnimationFrame(step);
+  };
+  const glide = () => {
+    const pinned = [...flipCtl!.applied.keys()];
+    flipCtl = null;
+    root.classList.remove("ml-noanim");
+    if (!pinned.length) {
       flipBusy = false;
+      snapshotFlipRects();
       return;
     }
-    // SETTLE — frame deltas back under ~2 vsyncs twice in a row, or the cap.
-    const t0 = performance.now();
-    let last = t0;
-    let calm = 0;
-    const tick = (now: number) => {
-      if (token !== flipToken) return;
-      const dt = now - last;
-      last = now;
-      calm = dt < 34 ? calm + 1 : 0;
-      if ((calm >= 2 && now - t0 >= 100) || now - t0 > 900) glide();
-      else requestAnimationFrame(tick);
-    };
-    const glide = () => {
-      document.documentElement.classList.remove("ml-noanim");
-      window.clearTimeout(noAnimTimer);
-      for (const el of pins) el.classList.add("ml-glide");
-      void document.body.offsetWidth; // flush, so the transition starts FROM the pin
-      for (const el of pins) el.style.transform = "";
-      window.setTimeout(() => {
-        if (token !== flipToken) return;
-        for (const el of pins) el.classList.remove("ml-glide");
-        flipBusy = false;
-        snapshotFlipRects(); // the new anchors become the next flip's "old"
-      }, 400);
-    };
-    requestAnimationFrame(tick);
-  });
+    for (const el of pinned) el.classList.add("ml-glide");
+    void document.body.offsetWidth; // flush, so the transition starts FROM the pin
+    for (const el of pinned) el.style.transform = "";
+    window.setTimeout(() => {
+      if (token !== flipToken) return; // a newer flip owns these elements now
+      for (const el of pinned) el.classList.remove("ml-glide");
+      flipBusy = false;
+      snapshotFlipRects(); // the new anchors become the next flip's "old"
+    }, 400);
+  };
+  requestAnimationFrame(step);
 }
 
 /** Publish the layout in REAL px on :root. index.html's dvh CSS draws the
@@ -310,26 +360,14 @@ function applyLayout() {
   const h = window.innerHeight;
   const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
   const left = getHand() === "left";
-  // ORIENTATION changes run the two-phase FLIP glide (armFlipGlide above);
-  // handedness changes keep the plain anchor transitions. ml-noanim
-  // suppresses the anchor transitions through the flip's pin phase — the
-  // glide is transform-only, and armFlipGlide lifts the class the moment it
-  // starts (the 1200ms timer is only the no-glide fallback).
-  if (lastLandState !== null && land !== lastLandState) {
-    // The OLD spots come from the rolling snapshot (see flipRects — at this
-    // point the viewport has ALREADY resized, so measuring here is too
-    // late). Clear anything a superseded flip left behind first, so the pin
-    // math runs against true anchors.
-    const before = flipRects;
-    for (const el of document.querySelectorAll<HTMLElement>(FLIP_CHROME)) {
-      el.classList.remove("ml-glide");
-      el.style.transform = "";
-    }
-    root.classList.add("ml-noanim");
-    window.clearTimeout(noAnimTimer);
-    noAnimTimer = window.setTimeout(() => root.classList.remove("ml-noanim"), 1200);
-    armFlipGlide(before);
-  }
+  // ORIENTATION changes run the two-phase FLIP glide (beginFlip above);
+  // handedness changes keep the plain anchor transitions. The old spots come
+  // from the rolling snapshot (flipRects) — by the time this listener runs,
+  // the viewport has ALREADY resized, so measuring here is too late. Any
+  // FURTHER resize while the flip is live (real rotations arrive in several
+  // stages) just refreshes its quiet-timer; the controller re-pins per frame.
+  if (lastLandState !== null && land !== lastLandState) beginFlip();
+  else if (flipCtl) flipCtl.lastResize = performance.now();
   lastLandState = land;
   root.classList.toggle("ml-land", land);
   root.classList.toggle("ml-lh", left);
@@ -1567,6 +1605,12 @@ function injectStyles() {
   :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
   .ml-glide{transition:transform .32s ease!important}
+  /* Rotation exposes raw page behind the canvas for a few frames while the
+     browser restages the viewport (maintainer screenshots 2026-08-05:
+     "buggy black"). index.html paints #000 for the pre-game screens; in the
+     world, the exposed area wears the theme background instead, so a
+     mid-rotation frame reads as chrome-on-surface, not a black hole. */
+  html.ml-ingame, html.ml-ingame body{background:var(--bg)}
   /* ── LANDSCAPE (maintainer 2026-08-05): the same 61.8/38.2 split turned on
      its side — the menu becomes a full-height SIDE COLUMN (--menu-w, set by
      applyLayout) and the tab row a VERTICAL strip. "Buttons always closest

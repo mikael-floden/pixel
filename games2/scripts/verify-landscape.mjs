@@ -527,7 +527,65 @@ try {
   !flip.timedOut && Math.abs(flip.finalLeft + flip.w - (851 - 10)) <= 2
     ? ok(`…and lands on the landscape anchor (right edge ${flip.finalLeft + flip.w})`)
     : fail(`flip never settled on the anchor: ${JSON.stringify(flip)}`);
-  // back to portrait for the help-chip section (and let ITS flip finish too)
+  // back to portrait for the next section (and let ITS flip finish too)
+  await page.setViewportSize({ width: 393, height: 851 });
+  await settle();
+  await page.waitForFunction(
+    () => document.querySelector(".ml-clock").style.transform === "",
+    null, { timeout: 8000, polling: 100 },
+  );
+
+  // ---- 4c. STAGED rotation (the real-device shape, maintainer's mid-flip
+  //          screenshots 2026-08-05: a phone rotation resizes the viewport in
+  //          SEVERAL steps, and a pin computed once against the first stage
+  //          strands the chrome at a spot it never occupied — "animates the
+  //          UI for a location the UI was never at"). Two resizes 150ms
+  //          apart: the controller must RE-PIN through the second stage and
+  //          still land on the true final anchor. ----
+  await page.evaluate(() => {
+    const el = document.querySelector(".ml-clock");
+    const oldLeft = el.getBoundingClientRect().left;
+    const oldTop = el.getBoundingClientRect().top;
+    window.__flip2 = new Promise((res) => {
+      const out = { oldLeft: Math.round(oldLeft), pinSeen: false, maxDrift: 0,
+        glideSeen: false, finalLeft: null, w: 0, timedOut: false };
+      const t0 = performance.now();
+      let clearAt = 0;
+      const tick = () => {
+        const tf = el.style.transform;
+        const r = el.getBoundingClientRect();
+        if (tf) {
+          out.pinSeen = true;
+          // While pinned the pill must SIT at the old spot — through EVERY
+          // resize stage (the observer may read one rAF before the
+          // controller's same-frame correction, so allow slack far below
+          // the whole-stage 300px+ error this guards against).
+          out.maxDrift = Math.max(out.maxDrift, Math.abs(r.left - oldLeft), Math.abs(r.top - oldTop));
+          clearAt = 0;
+        } else if (out.pinSeen && !clearAt) clearAt = performance.now();
+        if (el.classList.contains("ml-glide")) out.glideSeen = true;
+        const now = performance.now();
+        if ((clearAt && now - clearAt > 600) || now - t0 > 8000) {
+          out.timedOut = now - t0 > 8000 && !clearAt;
+          out.finalLeft = Math.round(r.left);
+          out.w = Math.round(r.width);
+          res(out);
+        } else requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  });
+  await page.setViewportSize({ width: 851, height: 300 }); // stage 1: wrong height
+  await page.waitForTimeout(150);
+  await page.setViewportSize({ width: 851, height: 393 }); // stage 2: the real size
+  const flip2 = await page.evaluate(() => window.__flip2);
+  flip2.pinSeen && flip2.maxDrift <= 60
+    ? ok(`staged rotation keeps the pill pinned through both stages (max drift ${Math.round(flip2.maxDrift)}px)`)
+    : fail(`pill drifted mid-rotation: ${JSON.stringify(flip2)}`);
+  flip2.glideSeen && !flip2.timedOut && Math.abs(flip2.finalLeft + flip2.w - (851 - 10)) <= 2
+    ? ok(`…then glides once onto the TRUE final anchor (right edge ${flip2.finalLeft + flip2.w})`)
+    : fail(`staged rotation landed wrong: ${JSON.stringify(flip2)}`);
+  // back to portrait for the help-chip section
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
   await page.waitForFunction(
