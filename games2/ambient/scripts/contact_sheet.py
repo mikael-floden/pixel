@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""Render labelled contact sheets of every ambient bird's fly animation.
+"""Render labelled contact sheets of every ambient FLYER's fly animation.
 
 This is the MAINTAINER'S-EYE VIEW used to decide which flap frames to cull:
-each bird gets one block of 8 rows (the facings, in critters.ts DIR_INDEX
+each critter gets one block of 8 rows (the facings, in critters.ts DIR_INDEX
 order) x 16 columns (the flap frames, named F1..F16 exactly as the maintainer
 asked). Every cell is the real sheet cell blown up NEAREST-NEIGHBOUR, so what
 you judge here is what the game draws.
 
-Regenerate after ANY art change (resync.py) — a stale sheet means the frame
-numbers you send back point at different pixels. Output is split into parts
-because a single 8-bird sheet exceeds the chat upload's pixel limit.
+Covers every flyer that packs the shared 16x8 fly sheet — the 8 birds AND the
+bat, which share the layout exactly (544x272 @ 34px). Format-agnostic: the
+ambient art is migrating PNG -> lossless WebP and the bat has already flipped,
+so sheets are found by STEM, never by extension.
 
-    python games2/ambient/birds/contact_sheet.py [outdir] [--zoom N] [--per-part N]
+Regenerate after ANY art change (birds/resync.py) — a stale sheet means the
+frame numbers sent back point at different pixels. Output splits into parts
+because one sheet with every critter exceeds the chat upload's pixel limit.
+
+    python games2/ambient/scripts/contact_sheet.py [outdir] [--zoom N] [--per-part N]
+    python games2/ambient/scripts/contact_sheet.py out --only bat
 """
 import os
 import sys
@@ -19,10 +25,13 @@ import glob
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ART = os.path.join(HERE, "art")
+AMBIENT = os.path.dirname(HERE)
+BIRD_ART = os.path.join(AMBIENT, "birds", "art")
+BAT_ART = os.path.join(AMBIENT, "bats", "art")
 FRAME = 34  # critters.ts FRAME_W / FRAME_H
 NFRAMES = 16  # critters.ts FLY_FRAMES
-# critters.ts DIR_INDEX — the fly.png ROW order. Labels are the maintainer's.
+IMG_EXTS = ("png", "webp")  # art domains are mid-migration; try both
+# critters.ts DIR_INDEX — the fly sheet ROW order. Labels are the maintainer's.
 ROWS = ["S", "SE", "E", "NE", "N", "NW", "W", "SW"]
 
 BG = (233, 233, 236)
@@ -48,12 +57,26 @@ def font(size, bold=False):
         return ImageFont.load_default()
 
 
-def birds():
+def _fly(dirpath):
+    """The fly sheet in dirpath, whatever image format it currently ships as."""
+    for e in IMG_EXTS:
+        p = os.path.join(dirpath, f"fly.{e}")
+        if os.path.exists(p):
+            return p
+    return None
+
+
+def critters():
+    """Every flyer packing the shared 16x8 sheet: the 8 birds, then the bat."""
     out = []
-    for d in sorted(glob.glob(os.path.join(ART, "bird*")), key=lambda p: int(os.path.basename(p)[4:])):
-        fly = os.path.join(d, "fly.png")
-        if os.path.exists(fly):
-            out.append((os.path.basename(d), fly))
+    for d in sorted(glob.glob(os.path.join(BIRD_ART, "bird*")),
+                    key=lambda p: int(os.path.basename(p)[4:])):
+        p = _fly(d)
+        if p:
+            out.append((os.path.basename(d), p))
+    p = _fly(BAT_ART)
+    if p:
+        out.append(("bat", p))
     return out
 
 
@@ -62,7 +85,8 @@ def block(name, fly_path, zoom):
     sheet = Image.open(fly_path).convert("RGBA")
     exp = (FRAME * NFRAMES, FRAME * len(ROWS))
     if sheet.size != exp:
-        sys.exit(f"{name}: fly.png is {sheet.size}, expected {exp} — resync first")
+        sys.exit(f"{name}: {os.path.basename(fly_path)} is {sheet.size}, "
+                 f"expected {exp} — resync first")
 
     cell = FRAME * zoom
     w = GUTTER + NFRAMES * cell
@@ -106,15 +130,26 @@ def main():
         zoom = int(args[args.index("--zoom") + 1])
     if "--per-part" in args:
         per_part = int(args[args.index("--per-part") + 1])
-    pos = [a for a in args if not a.startswith("--") and not a.isdigit()]
+    only = args[args.index("--only") + 1].split(",") if "--only" in args else None
+    skip = {"--zoom", "--per-part", "--only"}
+    pos, i = [], 0
+    while i < len(args):
+        if args[i] in skip:
+            i += 2
+            continue
+        if not args[i].startswith("--"):
+            pos.append(args[i])
+        i += 1
     outdir = pos[0] if pos else HERE
 
-    bl = birds()
-    if not bl:
-        sys.exit(f"no bird art under {ART}")
+    cl = critters()
+    if only:
+        cl = [(n, p) for n, p in cl if n in only]
+    if not cl:
+        sys.exit(f"no flyer art found under {BIRD_ART} / {BAT_ART}")
     os.makedirs(outdir, exist_ok=True)
 
-    parts = [bl[i:i + per_part] for i in range(0, len(bl), per_part)]
+    parts = [cl[i:i + per_part] for i in range(0, len(cl), per_part)]
     written = []
     for pi, group in enumerate(parts, 1):
         blocks = [block(n, p, zoom) for n, p in group]
@@ -123,13 +158,13 @@ def main():
         im = Image.new("RGB", (w, h), BG)
         d = ImageDraw.Draw(im)
         names = ", ".join(n for n, _ in group)
-        d.text((PAD, 14), f"AMBIENT BIRDS — fly frames — part {pi}/{len(parts)}  ({names})",
+        d.text((PAD, 14), f"AMBIENT FLYERS — fly frames — part {pi}/{len(parts)}  ({names})",
                font=font(26, True), fill=INK)
         y = TITLE_H
         for b in blocks:
             im.paste(b, (PAD, y))
             y += b.height + GAP
-        out = os.path.join(outdir, f"bird-fly-frames-part{pi}.png")
+        out = os.path.join(outdir, f"ambient-fly-frames-part{pi}.png")
         im.save(out)
         written.append((out, im.size))
         print(f"part {pi}: {names}  -> {out}  {im.size[0]}x{im.size[1]}")
