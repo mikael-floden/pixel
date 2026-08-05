@@ -700,6 +700,8 @@ export class WorldScene extends Phaser.Scene {
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
   private attackIcon?: Phaser.GameObjects.Image; // sword marker over the walk-to target
   private attackIconQueued = false; // its texture load has been queued
+  private pickupIcon?: Phaser.GameObjects.Image; // hand marker over the item being fetched
+  private pickupIconQueued = false;
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
@@ -968,7 +970,7 @@ export class WorldScene extends Phaser.Scene {
           this.pickupIntentUntil = this.time.now + 6000;
           this.engagedId = null;
           const d = this.drops.get(tgt.id)!;
-          this.setMoveTarget(d.wx, d.wy, true);
+          this.setMoveTarget(d.wx, d.wy, true, false, undefined, false); // hand marker, no beacon
         } else {
           this.engagedId = tgt.id;
           this.pendingPickupId = null;
@@ -1905,7 +1907,10 @@ export class WorldScene extends Phaser.Scene {
       // monster — monsterInfo().hpBarText.)
       targetOverlay: () => ({
         icon: !!this.attackIcon?.visible,
+        hand: !!this.pickupIcon?.visible,
+        beacon: !!this.tapMarker,
         engaged: this.engagedId,
+        pendingPickup: this.pendingPickupId,
         aggroRings: this.aggroRadiusOn,
         // load-path introspection (a wedged loader once ate the icon)
         iconTex: this.textures.exists("ui:attack-target"),
@@ -2430,15 +2435,44 @@ export class WorldScene extends Phaser.Scene {
           this.load.start();
         }
         if (this.attackIcon) {
-          // CENTERED on the monster (maintainer round 6): the icon's centre
-          // sits at the body's visual centre, with the gentle bob on top.
+          // Round 8: HALFWAY between the body centre and the hp bar — the
+          // marker reads as "this one", clear of both the art and the bar.
+          // (bar sits at top - 8; centre was top + 0.5h.)
           const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
           const bob = Math.sin(this.time.now / 260) * 2;
-          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.5 + bob).setVisible(true);
+          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.25 - 4 + bob).setVisible(true);
         }
       }
     }
     if (!iconOn) this.attackIcon?.setVisible(false);
+
+    // (1b) The PICK-UP HAND over the item we are fetching (maintainer round
+    // 8): it REPLACES the walk-to beacon for item taps — same "this is the
+    // target" language as the sword, unlit like it (the ground beacon is
+    // suppressed at the setMoveTarget call sites).
+    let handOn = false;
+    const pd = this.pendingPickupId ? this.drops.get(this.pendingPickupId) : undefined;
+    if (pd && pd.img.visible) {
+      handOn = true;
+      if (!this.pickupIcon && this.textures.exists("ui:pickup-target")) {
+        this.pickupIcon = this.add
+          .image(0, 0, "ui:pickup-target")
+          .setOrigin(0.5, 1)
+          .setDepth(900_001.9); // unlit, exactly like the sword marker
+      } else if (!this.pickupIcon && !this.pickupIconQueued) {
+        this.pickupIconQueued = true;
+        this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));
+        this.load.start();
+      }
+      if (this.pickupIcon) {
+        // Hovering just ABOVE the item so the loot itself stays readable.
+        const bob = Math.sin(this.time.now / 260) * 2;
+        this.pickupIcon
+          .setPosition(pd.img.x, pd.img.y - pd.img.displayHeight * 0.5 - 2 + bob)
+          .setVisible(true);
+      }
+    }
+    if (!handOn) this.pickupIcon?.setVisible(false);
 
     // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
@@ -2500,7 +2534,7 @@ export class WorldScene extends Phaser.Scene {
       this.room.send("pickup", { id: bestId });
     } else {
       const d = this.drops.get(bestId)!;
-      this.setMoveTarget(d.wx, d.wy, true);
+      this.setMoveTarget(d.wx, d.wy, true, false, undefined, false); // hand marker, no beacon
     }
   }
 
@@ -5294,12 +5328,17 @@ export class WorldScene extends Phaser.Scene {
       });
       queued++;
     }
-    // …and the sword marker (240 bytes): preloading kills the race where a
-    // marked monster charges in and the walk-to window closes before a lazy
-    // first-engage load can land.
+    // …and the two TARGET MARKERS (<1 KB each): preloading kills the race
+    // where a marked monster charges in and the walk-to window closes before
+    // a lazy first-engage load can land.
     if (!this.textures.exists("ui:attack-target") && !this.attackIconQueued) {
       this.attackIconQueued = true;
       this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
+      queued++;
+    }
+    if (!this.textures.exists("ui:pickup-target") && !this.pickupIconQueued) {
+      this.pickupIconQueued = true;
+      this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));
       queued++;
     }
     if (!queued) return;

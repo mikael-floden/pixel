@@ -814,10 +814,17 @@ visible head/shoulders are ABOVE the surface).
   reach (covers a chaser wall-wedged INSIDE the box). combat.review.test.ts
   kites a frog, asserts the give-up, the approach-provocation and the slow
   lifting on escape.
-- **Round-2 UI**: the SWORD MARKER (ui2/icon-attack-target.webp — the
-  maintainer's upload flipped horizontally, lossless) bobs over the engaged
-  monster from the tap until the battle begins (in reach ×1.2, or the monster
-  turns combat), Phaser image at depth 890_010. The in-fight readout lives ON
+- **Round-2/8 UI — the two TARGET MARKERS**, both the maintainer's own art,
+  lossless in ui2/, both drawn ABOVE the lighting overlay (900_001.9) so they
+  never dim, both PRELOADED in the deferred batch (a lazy first-use load lost
+  the walk-to race once a marked monster charged). SWORD
+  (icon-attack-target.webp, crossed swords since round 8) bobs over the
+  engaged monster from the tap until the battle begins (in reach ×1.2, or the
+  monster turns combat), halfway between the body centre and the hp bar.
+  HAND (icon-pickup-target.webp) bobs just above the item being fetched.
+  NEITHER coexists with the walk-to beacon: monster taps, chase repaths and
+  item walk-tos all pass showMarker=false to setMoveTarget — the ground
+  beacon is for plain ground taps only, and it never shows a marker icon. The in-fight readout lives ON
   the monster (maintainer: keep it SMALL, only the LEVEL, no name — he
   rejected a separate top-centre frame): updateMonsterHpBar draws a slim
   player-style bar (76×6 dark track, red fill — sized so "Lv N" LEFT-aligned

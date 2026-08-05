@@ -212,6 +212,27 @@ try {
   if (!dropId) fail("no loot dropped over 10 frog kills (frog tables are 25%+ x2 — astronomically unlucky or broken)");
   ok("loot dropped on the ground");
 
+  // The PICK-UP HAND (round 8): walking to a tapped item shows the hand
+  // marker over it and NO walk-to beacon. Stand off far enough that the
+  // walk-to window stays open, but INSIDE pickupNearest's 5-cell (160wu)
+  // "don't sprint across the map for a mis-tap" cap.
+  await page.evaluate(() => {
+    const st = window.__ml;
+    const d = st.dropsList()[0];
+    st.teleport(Math.round((d.x + 96) / 32), Math.round((d.y + 32) / 32));
+  });
+  await page.waitForTimeout(250);
+  await page.evaluate(() => window.__ml.pickupNearest());
+  await page.waitForFunction(
+    () => {
+      const t = window.__ml.targetOverlay();
+      return t.hand === true && t.beacon === false;
+    },
+    undefined,
+    { timeout: 8000, polling: 120 },
+  );
+  ok("pick-up hand marker shown over the item, no walk-to beacon");
+
   // Pickup: probe = the button path (walk-to + grab). Backpack DOM follows.
   await page.evaluate(() => {
     const st = window.__ml;
