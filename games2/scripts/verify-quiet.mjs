@@ -1,53 +1,73 @@
-// Every semantic event the game can emit, fired at the engine, asserting which
-// ones make a sound. Guards the maintainer's standing rule: a sound plays only
-// when it was asked for (2026-08-05 "I don't tell you to add dumb sound").
-// Needs a dev stack (npm run dev).
-import { chromium } from "playwright-core";
+// No sound the maintainer did not ask for.
+//
+// The combat/loot work started emitting a swing per attack, a hit per blow, a
+// chime per pickup and a broadcast chime on every player's level-up. All of it
+// was REMOVED — the call sites are gone, not muted behind a flag — so this gate
+// is a SOURCE check: the game must not emit those events at all. A mute could
+// be flipped back by accident; a deleted call has to be deliberately rewritten.
+//
+// Runs with no browser and no dev stack: node scripts/verify-quiet.mjs
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join } from "path";
 
-const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const BASE = process.env.BASE || "http://localhost:5173";
+const ROOT = new URL("..", import.meta.url).pathname;
 
-// Everything the combat/loot work (410a17f8e) started emitting. None asked for.
-const MUST_BE_SILENT = ["tool.sword_swing", "combat.hit_taken", "item.get", "progress.level_up"];
-// Approved in their own rounds, long before the combat work.
-const MUST_STILL_SOUND = ["ui.press", "ui.release", "ui.notify"];
+// Events nothing may emit until there is foley the maintainer has approved.
+const FORBIDDEN = ["tool.sword_swing", "combat.hit_taken", "item.get", "progress.level_up"];
+// Approved in their own rounds — these must KEEP being emitted, so that
+// "silence everything" can never quietly pass this gate.
+const REQUIRED = ["player.jump", "player.fall", "ui.press", "ui.release", "ui.notify"];
 
-const fail = (m) => { throw new Error(m); };
-const browser = await chromium.launch({
-  executablePath: EXE,
-  args: ["--autoplay-policy=no-user-gesture-required", "--use-gl=swiftshader", "--mute-audio"],
-});
-const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
-try {
-  await page.goto(BASE);
-  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 30000 });
-  await page.evaluate(() => window.__mlSelect.commit());
-  await page.waitForFunction(() => window.__ml?.players?.() > 0, null, { timeout: 60000 });
-  await page.waitForTimeout(4000);
-
-  // Fire each event several times; `played` counts what actually STARTED.
-  const probe = async (name) =>
-    page.evaluate(async (n) => {
-      const before = window.__ml.audio().played;
-      for (let i = 0; i < 5; i++) {
-        window.__ml.audioEvent(n);
-        await new Promise((r) => setTimeout(r, 120)); // clear the 30 ms debounce
-      }
-      await new Promise((r) => setTimeout(r, 500));
-      return window.__ml.audio().played - before;
-    }, name);
-
-  for (const name of MUST_BE_SILENT) {
-    const n = await probe(name);
-    if (n !== 0) fail(`${name} played ${n} sound(s) — it must be silent`);
-    console.log(`  silent: ${name}`);
+const files = [];
+(function walk(dir) {
+  for (const name of readdirSync(dir)) {
+    if (name === "node_modules" || name === "dist" || name.startsWith(".")) continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walk(p);
+    else if (/\.(ts|mts|mjs)$/.test(name)) files.push(p);
   }
-  for (const name of MUST_STILL_SOUND) {
-    const n = await probe(name);
-    if (n < 1) fail(`${name} played nothing — the mute is too broad`);
-    console.log(`  sounds: ${name} (${n})`);
-  }
-  console.log("verify-quiet: ALL OK");
-} finally {
-  await browser.close();
+})(join(ROOT, "client", "src"));
+files.push(join(ROOT, "composer", "engine", "api.ts"));
+
+let failed = 0;
+const emitted = new Map(); // event name -> [file:line]
+for (const file of files) {
+  const src = readFileSync(file, "utf8");
+  src.split("\n").forEach((line, i) => {
+    // Only real emissions, not the comments that explain why they are gone.
+    const m = line.match(/gameAudio\.event\(\s*["']([^"']+)["']/);
+    if (!m) return;
+    const rel = file.slice(ROOT.length);
+    emitted.set(m[1], [...(emitted.get(m[1]) ?? []), `${rel}:${i + 1}`]);
+  });
 }
+
+for (const name of FORBIDDEN) {
+  const hits = emitted.get(name);
+  if (hits) {
+    console.log(`FAIL  "${name}" is emitted again at ${hits.join(", ")}`);
+    failed++;
+  } else {
+    console.log(`  removed: ${name}`);
+  }
+}
+for (const name of REQUIRED) {
+  if (!emitted.has(name)) {
+    console.log(`FAIL  "${name}" is no longer emitted — approved audio was lost`);
+    failed++;
+  } else {
+    console.log(`  still emitted: ${name}`);
+  }
+}
+
+// Anything NEW that starts emitting should be a deliberate, reviewed decision.
+const known = new Set([...FORBIDDEN, ...REQUIRED, "ui.confirm"]);
+for (const name of emitted.keys()) {
+  if (!known.has(name) && !name.includes("$")) {
+    console.log(`NOTE  "${name}" is emitted and not in this gate's list — ` +
+      `if it is new, the maintainer should hear it before it ships`);
+  }
+}
+
+console.log(failed ? `\nverify-quiet: ${failed} FAILURE(S)` : "\nverify-quiet: ALL OK");
+process.exit(failed ? 1 : 0);

@@ -2089,7 +2089,6 @@ export class WorldScene extends Phaser.Scene {
     room.onMessage("levelup", (msg: { name?: string; level?: number }) => {
       if (!msg?.name || !msg?.level) return;
       this.chat.addLog("—", `${msg.name} reached level ${msg.level}!`);
-      gameAudio.event("progress.level_up");
     });
     room.onMessage("star", (msg: { name?: string }) => {
       this.shootingStar(msg?.name);
@@ -2952,11 +2951,9 @@ export class WorldScene extends Phaser.Scene {
           // unarmedClip; no weapons yet — maintainer).
           av.actionKey = unarmedClip(player.actionSeq, idSalt(id));
           av.actionUntil = nowMs + 600;
-          if (id === myId) gameAudio.event("tool.sword_swing");
         } else if (player.action === "pickup") {
           av.actionKey = "pickup";
           av.actionUntil = nowMs + 850;
-          if (id === myId) gameAudio.event("item.get");
         } else if (player.action === "die") {
           av.actionKey = "die";
           av.actionUntil = nowMs + 10_000; // held below while dead anyway
@@ -2971,7 +2968,6 @@ export class WorldScene extends Phaser.Scene {
             av.actionKey = "hurt";
             av.actionUntil = nowMs + 420;
           }
-          if (id === myId) gameAudio.event("combat.hit_taken");
         }
       }
       if ((av.lastHp ?? player.hp) > player.hp)

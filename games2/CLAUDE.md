@@ -1515,12 +1515,14 @@ visible head/shoulders are ABOVE the surface).
 - **A SOUND PLAYS ONLY WHEN IT WAS ASKED FOR** (maintainer 2026-08-05: "I don't
   tell you to add dumb sound"). Every audio event the combat/loot work
   introduced — `tool.sword_swing`, `combat.hit_taken`, `item.get`,
-  `progress.level_up` — is MUTED (`MUTED_EVENTS` in `composer/engine/api.ts`).
-  KEEP EMITTING THEM: the call sites are deliberately untouched, because the
-  composer is what decides whether an event makes a sound. **If you add a
-  feature that emits audio, add its event name to `MUTED_EVENTS` in the same
-  change** — the maintainer hears it and asks for it before it ever plays.
-  Gate: `scripts/verify-quiet.mjs`.
+  `progress.level_up` — has been **DELETED** from the call sites, not muted:
+  bad sound gets removed, and a deleted call has to be deliberately rewritten
+  where a flag could be flipped back by accident. **Do not re-add them.** The
+  way to give a feature sound is to bring foley the maintainer has heard and
+  approved, and write the `gameAudio.event()` call in that same change — never
+  point a new feature at an existing catalog sound and hope. Gate:
+  `scripts/verify-quiet.mjs` (source check, no browser needed; it also fails if
+  the approved sounds stop being emitted).
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
   It follows whichever score is playing (context bed or catalog track), and the
