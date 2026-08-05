@@ -65,6 +65,31 @@ try {
     return best;
   });
   if (!frogPick) fail("no mystical_frog in monster_demo");
+
+  // ROUND 2 overlays: engage from SPAWN DISTANCE (no teleport) — the sword
+  // marker must hang over the walk-to target and the target frame must show
+  // the monster's level + X/X HP in the player-bar style.
+  await page.evaluate((fid) => window.__ml.engage(fid), frogPick.id);
+  await page.waitForFunction(
+    () => {
+      const t = window.__ml.targetOverlay();
+      return t.icon === true && !!t.frame && /LEVEL \d+/.test(t.frame.name) && /\d+ \/ \d+ HP/.test(t.frame.num);
+    },
+    undefined,
+    { timeout: 8000, polling: 150 },
+  );
+  const frame0 = await page.evaluate(() => window.__ml.targetOverlay().frame);
+  ok(`sword marker + target frame during walk-to (${frame0.name} — ${frame0.num})`);
+  // The aggro-radius debug toggle flips through the settings probe.
+  const rings = await page.evaluate(() => {
+    const on = window.__ml.toggleAggroRadius(true);
+    const shown = window.__ml.targetOverlay().aggroRings;
+    window.__ml.toggleAggroRadius(false);
+    return { on, shown, off: window.__ml.targetOverlay().aggroRings };
+  });
+  if (!(rings.on && rings.shown && !rings.off)) fail(`aggro ring toggle broken: ${JSON.stringify(rings)}`);
+  ok("aggro-radius debug toggle flips");
+
   const clips = new Set();
   let monsterCombatClipSeen = false;
   let hpBarSeen = false;
@@ -95,6 +120,9 @@ try {
   }
   if (!killed) fail("frog never died (40s)");
   ok("engaged and killed a frog");
+  const afterKill = await page.evaluate(() => window.__ml.targetOverlay());
+  if (afterKill.icon || afterKill.frame) fail(`overlays must clear after the kill: ${JSON.stringify(afterKill)}`);
+  ok("sword marker + target frame clear when the fight ends");
   if (clips.size === 0) fail("no kick/punch clip ever played on the player");
   ok(`unarmed clips played: ${[...clips].join("+")}`);
   if (!monsterCombatClipSeen) fail("monster attack/angry clip never played");

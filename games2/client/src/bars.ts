@@ -135,6 +135,45 @@ function renderLevel() {
   if (levelEl) levelEl.textContent = `LEVEL ${level}`;
 }
 
+// --- the TARGET FRAME (combat round 2) --------------------------------------
+// The monster you are fighting, top-centre, in the same chip language as the
+// player's own bars (maintainer 2026-08-05: "a HUD similar in style to the
+// players own HP bar") — but with its OWN class names throughout: the QA gate
+// counts .ml-bars and .ml-bar-row and must keep seeing exactly the player's.
+let targetRoot: HTMLDivElement | null = null;
+let targetName: HTMLElement | null = null;
+let targetFill: HTMLElement | null = null;
+let targetNum: HTMLElement | null = null;
+
+/** Show/refresh (info) or hide (null) the engaged monster's frame. */
+export function setTarget(info: { name: string; level: number; hp: number; hpMax: number } | null) {
+  if (!info) {
+    if (targetRoot) targetRoot.style.display = "none";
+    return;
+  }
+  if (!targetRoot) {
+    injectStyles();
+    targetRoot = document.createElement("div");
+    targetRoot.className = "ml-target";
+    targetName = document.createElement("div");
+    targetName.className = "ml-target-name";
+    const gauge = document.createElement("div");
+    gauge.className = "ml-target-gauge";
+    targetFill = document.createElement("div");
+    targetFill.className = "ml-target-fill";
+    gauge.append(targetFill);
+    targetNum = document.createElement("div");
+    targetNum.className = "ml-target-num";
+    targetRoot.append(targetName, gauge, targetNum);
+    document.body.appendChild(targetRoot);
+  }
+  targetRoot.style.display = "flex";
+  targetName!.textContent = `${info.name} · LEVEL ${info.level}`;
+  const frac = info.hpMax > 0 ? Math.max(0, Math.min(1, info.hp / info.hpMax)) : 0;
+  targetFill!.style.width = `${(frac * 100).toFixed(2)}%`;
+  targetNum!.textContent = `${info.hp} / ${info.hpMax} HP`;
+}
+
 /** The seam the real player level plugs into (1 until wired to server state). */
 export function setLevel(n: number) {
   level = Math.max(1, Math.round(n) || 1);
@@ -179,6 +218,24 @@ function injectStyles() {
     font-variant-numeric:tabular-nums;white-space:nowrap}
   .ml-gold-icon{height:16px;width:auto;image-rendering:pixelated;
     -webkit-user-drag:none;display:block}
-  @media (min-width:700px){ .ml-bar-row{width:170px} }`;
+  /* the engaged monster's frame: same chip language, its OWN class names */
+  .ml-target{position:fixed;z-index:8;pointer-events:none;top:10px;left:50%;
+    transform:translateX(-50%);display:none;flex-direction:column;gap:3px;
+    width:150px;padding:7px 10px;border-radius:12px;
+    background:color-mix(in srgb, var(--bg) 76%, transparent);
+    border:1px solid color-mix(in srgb, var(--border) 65%, transparent);
+    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .ml-target-name{font:600 11px/1.3 var(--sans);letter-spacing:.03em;
+    color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    text-align:center}
+  .ml-target-gauge{position:relative;width:100%;height:10px;border-radius:999px;
+    background:var(--surface-2);border:1px solid var(--border);
+    overflow:hidden;box-sizing:border-box}
+  .ml-target-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;
+    background:var(--bad)}
+  .ml-target-num{text-align:right;font:600 11px/1.3 var(--sans);
+    letter-spacing:.02em;color:var(--ink);font-variant-numeric:tabular-nums;
+    white-space:nowrap}
+  @media (min-width:700px){ .ml-bar-row{width:170px} .ml-target{width:190px} }`;
   document.head.appendChild(s);
 }

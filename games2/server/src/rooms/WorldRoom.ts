@@ -51,6 +51,7 @@ import {
   startTrip,
   stepAutopilot,
   WALK_SPEED,
+  RUN_SPEED,
   ISO_DX,
   ISO_DY,
   faceDirWorld,
@@ -63,12 +64,14 @@ import {
   epMaxFor,
   slowFactorAt,
   SLOW_FACTOR,
+  FLEE_SLOW_FACTOR,
+  provokedChaseSpeed,
   rollDrops,
   LEVEL_CAP,
   PLAYER_ATTACK_MS,
-  AGGRO_RADIUS_WU,
+  PROVOKE_RADIUS_WU,
   CHASE_SPEED_WU,
-  CHASE_LEASH_WU,
+  ESCAPE_RADIUS_WU,
   ORBIT_SPEED_WU,
   MONSTER_DIE_MS,
   MONSTER_RESPAWN_MS,
@@ -79,7 +82,7 @@ import {
   DROP_SCATTER_WU,
   DROP_TTL_MS,
   PICKUP_RADIUS_WU,
-  DRAG_DROP_MAX_WU,
+  DROP_SPACING_WU,
   INV_MAX_STACK,
   INV_MAX_SLOTS,
 } from "@nangijala/shared";
@@ -376,10 +379,10 @@ export class WorldRoom extends Room<WorldState> {
       client.send("inv", { items: player.inv });
     });
 
-    // DROP an inventory item on the ground (backpack drag-out). The client
-    // sends the world point it was released at; the server clamps it to a
-    // short reach around the player and snaps to standable ground, so items
-    // can't be flung across the map or into water/walls.
+    // DROP an inventory item on the ground (backpack drag-out). Placement is
+    // ALWAYS a pseudo-random scatter around the PLAYER (maintainer
+    // 2026-08-05), spaced off items already lying there — the release point
+    // only expresses "onto the ground", never a throw.
     this.onMessage("drop", (client, message: { slot?: number; item?: string; wx?: number; wy?: number }) => {
       const player = this.state.players.get(client.sessionId);
       if (!player || player.dead) return;
@@ -396,19 +399,10 @@ export class WorldRoom extends Room<WorldState> {
         client.send("inv", { items: player.inv }); // heal the stale grid now
         return;
       }
-      let wx = typeof message?.wx === "number" && isFinite(message.wx) ? message.wx : player.x;
-      let wy = typeof message?.wy === "number" && isFinite(message.wy) ? message.wy : player.y;
-      const dx = wx - player.x;
-      const dy = wy - player.y;
-      const d = Math.hypot(dx, dy);
-      if (d > DRAG_DROP_MAX_WU) {
-        wx = player.x + (dx / d) * DRAG_DROP_MAX_WU;
-        wy = player.y + (dy / d) * DRAG_DROP_MAX_WU;
-      }
       const item = entry.item;
       entry.n--;
       if (entry.n <= 0) player.inv.splice(slot, 1);
-      this.spawnDrop(item, wx, wy, player.elev);
+      this.spawnDrop(item, player.x, player.y, player.elev);
       client.send("inv", { items: player.inv });
     });
 
@@ -572,6 +566,8 @@ export class WorldRoom extends Room<WorldState> {
         m.nextMoveAt = now + Math.floor(this.monsterRng() * 600);
         const stats = monsterStatsFor(m.kind);
         m.hp = m.hpMax = stats.max_hp;
+        m.level = stats.level;
+        m.aggro = stats.aggro_radius_wu;
         const mid = `${z.zone.id}#${n}`;
         m.orbitSign = idSalt(mid) & 1 ? 1 : -1; // circling handedness varies per monster
         this.state.monsters.set(mid, m);
@@ -698,13 +694,23 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     const now = Date.now();
+    // Who is being HUNTED by a monster they provoked? Those players carry the
+    // persistent flee slow until the escape line is crossed (the hunter
+    // disengages) — one monster pass here, consumed in the player loop below.
+    const hunted = new Set<string>();
+    this.state.monsters.forEach((m: Monster) => {
+      if (m.provoked && m.targetSid && (m.mstate === "chase" || m.mstate === "combat"))
+        hunted.add(m.targetSid);
+    });
     this.state.players.forEach((player, id) => {
       const jumping = now < player.jumpUntil;
       player.jumping = jumping;
 
-      // The hit stagger: a synced speed factor the client prediction mirrors
-      // (shared slowFactorAt — both sides multiply stepMovement's speedScale).
-      player.slow = player.dead ? 1 : slowFactorAt(player.lastHitAt, now);
+      // The hit stagger + the flee slow: ONE synced factor the client
+      // prediction mirrors (both sides multiply stepMovement's speedScale).
+      player.slow = player.dead
+        ? 1
+        : Math.min(slowFactorAt(player.lastHitAt, now), hunted.has(id) ? FLEE_SLOW_FACTOR : 1);
       // A corpse doesn't walk: swallow queued input while dead (the client
       // freezes its own input too; this is the authoritative guard). Ack the
       // dropped seqs — un-acked entries would sit in the client's pending
@@ -932,10 +938,22 @@ export class WorldRoom extends Room<WorldState> {
             this.hurtPlayer(tp, damageRoll(stats.damage, idSalt(m.areaId), m.actionSeq), now);
           }
         } else {
-          // OUT OF REACH — the hunt. Direct drive at CHASE speed through the
-          // same collision pipeline as roam (wall-slide handles obstacles);
-          // 105 wu/s catches a hit-slowed runner and loses to a free one.
+          // OUT OF REACH — the hunt. Direct drive through the same collision
+          // pipeline as roam (wall-slide handles obstacles). UNPROVOKED
+          // (predator noticed you): constant 105 wu/s — an innocent sprinter
+          // (175) always pulls clear. PROVOKED (you started it): the monster
+          // tracks its victim's CURRENT possible speed and stays slightly
+          // above it, so running only postpones the next bite — escape is
+          // crossing the ESCAPE line, not winning a footrace.
           m.mstate = "chase";
+          let chaseWu = CHASE_SPEED_WU;
+          if (m.provoked) {
+            const victimWu =
+              (tp.moving ? (tp.running ? RUN_SPEED : WALK_SPEED) : 0) *
+              tp.slow *
+              surfaceAtWorld(grid, tp.x, tp.y).speed;
+            chaseWu = provokedChaseSpeed(victimWu);
+          }
           const sax = dxp - dyp; // world delta -> SCREEN input (iso projection)
           const say = (dxp + dyp) * (ISO_DY / ISO_DX);
           const slen = Math.hypot(sax, say) || 1;
@@ -948,7 +966,7 @@ export class WorldRoom extends Room<WorldState> {
             false,
             dt,
             makeBlockedElev(grid, ctx, () => m.elev),
-            surf2.speed * (CHASE_SPEED_WU / WALK_SPEED),
+            surf2.speed * (chaseWu / WALK_SPEED),
             true,
             this.worldW,
             this.worldH,
@@ -975,8 +993,13 @@ export class WorldRoom extends Room<WorldState> {
         return; // combat drive replaces roam entirely this tick
       }
 
-      // --- PROXIMITY AGGRO (predators: tuning aggro_radius_wu > 0) ---------
-      // Scanned ~2/s, not per tick; passive monsters only ever retaliate.
+      // --- PROXIMITY AGGRO -------------------------------------------------
+      // Scanned ~2/s, not per tick. Two ways in: a PREDATOR (tuning
+      // aggro_radius_wu > 0) notices anyone close — an UNPROVOKED chase the
+      // victim can simply outrun; and a SWORD-MARKED monster (a player's
+      // engage target — the attack icon hangs over it) aggros the moment that
+      // player closes inside max(its radius, PROVOKE_RADIUS) — a PROVOKED
+      // fight, passive kinds included: raising your sword IS the provocation.
       // Suppressed while walking home from a given-up chase: a predator that
       // just disengaged at the leash rim would otherwise re-aggro the same
       // out-of-reach player every 450ms in a chase/disengage yo-yo (each
@@ -984,25 +1007,31 @@ export class WorldRoom extends Room<WorldState> {
       if (now >= m.aggroCheckAt && !m.returning) {
         m.aggroCheckAt = now + 450;
         const stats = monsterStatsFor(m.kind);
-        if (stats.aggro_radius_wu > 0) {
-          let bestSid = "";
-          let bestD = stats.aggro_radius_wu;
-          this.state.players.forEach((p, sid) => {
-            if (p.dead) return;
-            const d = Math.hypot(p.x - m.x, p.y - m.y);
-            if (d < bestD && Math.abs(p.elev - m.elev) <= 2) {
-              bestD = d;
-              bestSid = sid;
-            }
-          });
-          if (bestSid) {
-            m.targetSid = bestSid;
-            m.mstate = "chase";
-            m.tripActive = false;
-            m.trip = null;
-            m.returning = false;
-            return;
+        let bestSid = "";
+        let bestD = Infinity;
+        let bestProvoked = false;
+        this.state.players.forEach((p, sid) => {
+          if (p.dead || Math.abs(p.elev - m.elev) > 2) return;
+          const marked = p.target === id;
+          const radius = marked
+            ? Math.max(stats.aggro_radius_wu, PROVOKE_RADIUS_WU)
+            : stats.aggro_radius_wu;
+          if (radius <= 0) return;
+          const d = Math.hypot(p.x - m.x, p.y - m.y);
+          if (d <= radius && d < bestD) {
+            bestD = d;
+            bestSid = sid;
+            bestProvoked = marked;
           }
+        });
+        if (bestSid) {
+          m.targetSid = bestSid;
+          m.provoked = bestProvoked;
+          m.mstate = "chase";
+          m.tripActive = false;
+          m.trip = null;
+          m.returning = false;
+          return;
         }
       }
 
@@ -1136,8 +1165,9 @@ export class WorldRoom extends Room<WorldState> {
   private storeFlushAt = 0;
   private leashBoxes = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
-  /** True while (x,y) is within CHASE_LEASH_WU of the zone's bounding box —
-   * the "how far from home a fight may spill" bound. Cheap: clamp + hypot. */
+  /** True while (x,y) is within ESCAPE_RADIUS_WU (~1.5 screens) of the zone's
+   * bounding box — the run-away line: a chase may spill this far from home,
+   * and a victim crossing it has SUCCESSFULLY escaped. Cheap: clamp + hypot. */
   private withinLeash(zone: ZoneRuntime, x: number, y: number): boolean {
     let box = this.leashBoxes.get(zone.zone.id);
     if (!box) {
@@ -1146,7 +1176,7 @@ export class WorldRoom extends Room<WorldState> {
     }
     const cx = clamp(x, box.x0, box.x1);
     const cy = clamp(y, box.y0, box.y1);
-    return Math.hypot(x - cx, y - cy) <= CHASE_LEASH_WU;
+    return Math.hypot(x - cx, y - cy) <= ESCAPE_RADIUS_WU;
   }
 
   /** End a monster's fight: clear the target and, if the chase carried it off
@@ -1154,6 +1184,7 @@ export class WorldRoom extends Room<WorldState> {
    * if no route exists, snap immediately — never leave a stray). */
   private disengageMonster(m: Monster, zone: ZoneRuntime, now: number) {
     m.targetSid = "";
+    m.provoked = false; // the hunt is over — the victim's flee slow lifts
     if (m.mstate !== "die") m.mstate = "roam";
     m.tripActive = false;
     m.trip = null;
@@ -1221,6 +1252,7 @@ export class WorldRoom extends Room<WorldState> {
     m.mstate = "die";
     m.moving = false;
     m.targetSid = "";
+    m.provoked = false;
     m.diedAt = now;
     killer.target = "";
     const stats = monsterStatsFor(m.kind);
@@ -1245,13 +1277,16 @@ export class WorldRoom extends Room<WorldState> {
     }
   }
 
-  /** Put one item on the ground near (x,y), scattered onto reachable ground.
-   * srcElev threads the dropper's layer through: a drop made ON a bridge deck
-   * stays on the deck (deck-aware elevation) instead of rendering in the
-   * water under the span. Placement prefers standable ground, then the deck
-   * layer, then the nearest standable cell — and only a corpse floating in
-   * open water (swim zones) keeps its exact spot, where swimmers can still
-   * grab it. */
+  /** Put one item on the ground near (x,y): a pseudo-random scatter that
+   * KEEPS ITS DISTANCE from items already lying there (maintainer 2026-08-05:
+   * "close and not on top of each other" — a pile of loot must read as
+   * distinct sprites). srcElev threads the dropper's layer through: a drop
+   * made ON a bridge deck stays on the deck (deck-aware elevation) instead of
+   * rendering in the water under the span. Placement prefers reachable ground
+   * clear of other drops (the ring grows as the ground crowds), then the
+   * best-spaced reachable point, then the nearest standable cell — and only a
+   * corpse floating in open water (swim zones) keeps its exact spot, where
+   * swimmers can still grab it. */
   private spawnDrop(item: string, x: number, y: number, srcElev = 0) {
     if (!item) return;
     const terr = this.terrain;
@@ -1262,20 +1297,30 @@ export class WorldRoom extends Room<WorldState> {
       !terr ||
       isStandableAtWorld(terr, px, py) ||
       resolveElevAt(terr, srcElev, px, py, ctx) > levelAtWorld(terr, px, py); // on a deck
+    const nearestDrop = (px: number, py: number) => {
+      let d = Infinity;
+      this.state.drops.forEach((g: GroundItem) => {
+        d = Math.min(d, Math.hypot(g.x - px, g.y - py));
+      });
+      return d;
+    };
+    let bestScore = -1; // the source point itself is only the last-resort fallback
     let placed = false;
-    for (let t = 0; t < 6; t++) {
+    for (let t = 0; t < 12 && !placed; t++) {
       const a = Math.random() * Math.PI * 2;
-      const r = Math.random() * DROP_SCATTER_WU;
+      const r = (0.35 + Math.random() * 0.65) * DROP_SCATTER_WU * (1 + t / 6);
       const cx = clamp(x + Math.cos(a) * r, 1, this.worldW - 1);
       const cy = clamp(y + Math.sin(a) * r, 1, this.worldH - 1);
-      if (ok(cx, cy)) {
+      if (!ok(cx, cy)) continue;
+      const score = nearestDrop(cx, cy);
+      if (score > bestScore) {
+        bestScore = score;
         gx = cx;
         gy = cy;
-        placed = true;
-        break;
       }
+      if (score >= DROP_SPACING_WU) placed = true;
     }
-    if (!placed && terr && !ok(gx, gy)) {
+    if (bestScore < 0 && terr && !ok(gx, gy)) {
       // All probes wet/blocked: take the nearest standable cell centre within
       // a short ring-scan before giving up to the open-water fallback.
       const c0 = Math.floor(gx / CELL_WU);
@@ -1322,6 +1367,8 @@ export class WorldRoom extends Room<WorldState> {
     m.nextMoveAt = now + 400;
     const stats = monsterStatsFor(m.kind);
     m.hp = m.hpMax = stats.max_hp;
+    m.level = stats.level;
+    m.aggro = stats.aggro_radius_wu;
     const id = `${areaId}#r${this.respawnCounter++}`;
     m.orbitSign = idSalt(id) & 1 ? 1 : -1;
     this.state.monsters.set(id, m);
@@ -1423,11 +1470,10 @@ export class WorldRoom extends Room<WorldState> {
         player.target = "";
         return;
       }
-      // RO: moving breaks the attack; the client re-engages on arrival.
-      if (player.moving) {
-        player.target = "";
-        return;
-      }
+      // RO: SWINGS require standing still — but the TARGET persists while
+      // moving (the attack icon hangs over it and approach-aggro reads it);
+      // ground taps / movement keys disengage explicitly from the client.
+      if (player.moving) return;
       const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
       const range = attackRange(PLAYER_BODY_RADIUS, rm);
       // A grace band past swing range: the monster's own circling must not
@@ -1443,9 +1489,12 @@ export class WorldRoom extends Room<WorldState> {
       if (face) player.dir = face;
       const dmg = damageRoll(playerAtk(player.level), idSalt(sid), player.actionSeq);
       m.hp = Math.max(0, m.hp - dmg);
-      // Retaliation: hitting anything wakes it (passive kinds included).
+      // Retaliation: hitting anything wakes it (passive kinds included) —
+      // and a fight the PLAYER started is PROVOKED: the hunter paces its
+      // victim and pins the flee slow on them until the escape line.
       if (!m.targetSid) {
         m.targetSid = sid;
+        m.provoked = true;
         m.mstate = "chase";
         m.tripActive = false;
         m.trip = null;

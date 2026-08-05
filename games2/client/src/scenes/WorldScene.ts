@@ -55,12 +55,13 @@ import {
   PICKUP_RADIUS_WU,
   attackRange,
   PLAYER_BODY_RADIUS,
+  PROVOKE_RADIUS_WU,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { colorForName } from "../placeholder";
-import { setBar, setLevel } from "../bars";
+import { setBar, setLevel, setTarget } from "../bars";
 import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -689,6 +690,10 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
+  private lastTargetSig = ""; // last engaged-monster line pushed to the target frame
+  private attackIcon?: Phaser.GameObjects.Image; // sword marker over the walk-to target
+  private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
+  private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
   private drops = new Map<
@@ -955,7 +960,10 @@ export class WorldScene extends Phaser.Scene {
           const mv = this.monsters.get(tgt.id)!;
           this.setMoveTarget(mv.fx, mv.fy, true);
           this.nextChaseRepathAt = 0;
-          this.nextEngageSendAt = 0;
+          // Tell the server NOW, not on arrival: the target persists while
+          // moving and the sword-marked monster aggros as we close in.
+          this.room?.send("engage", { id: tgt.id });
+          this.nextEngageSendAt = this.time.now + 700;
         }
         return; // no hold armed: the walk-to is driven by driveCombatIntent
       }
@@ -1042,6 +1050,7 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
     // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
     // game viewport itself gets the matching pixel frame overlay.
+    setTarget(null); // a fresh scene never inherits the old world's target frame
     this.hud = new HudBar({
       onLogout: () => this.logout(),
       // The Chat page's bottom input sends through the SAME rate-limited path
@@ -1100,6 +1109,10 @@ export class WorldScene extends Phaser.Scene {
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
+        // Aggro radii (combat round 2) — DEBUG rings, off by default: red =
+        // a predator's proximity radius, gold = the provoke radius on the
+        // sword-marked target.
+        { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
@@ -1851,9 +1864,28 @@ export class WorldScene extends Phaser.Scene {
           y: mv.fy,
           hp: (this.room?.state as any)?.monsters?.get(id)?.hp ?? null,
           hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
+          level: (this.room?.state as any)?.monsters?.get(id)?.level ?? null,
+          aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
           mstate: mv.mstate ?? "roam",
           hpBar: !!mv.hpBg?.visible,
         })),
+      // The three round-2 overlays, for the gate: is the sword marker up (and
+      // over whom), is the target frame DOM live, are the debug rings on.
+      targetOverlay: () => ({
+        icon: !!this.attackIcon?.visible,
+        engaged: this.engagedId,
+        frame: (() => {
+          const el = document.querySelector(".ml-target") as HTMLElement | null;
+          if (!el || el.style.display === "none") return null;
+          return {
+            name: el.querySelector(".ml-target-name")?.textContent ?? "",
+            num: el.querySelector(".ml-target-num")?.textContent ?? "",
+            fill: (el.querySelector(".ml-target-fill") as HTMLElement | null)?.style.width ?? "",
+          };
+        })(),
+        aggroRings: this.aggroRadiusOn,
+      }),
+      toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
         if (this.night && v !== undefined) this.night.glowFlip = v;
@@ -2289,20 +2321,111 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const now = this.time.now;
+    // Re-assert ~1/s the whole time we hold the intent — walking OR standing:
+    // the server keeps the target across movement now (the sword mark), so
+    // this only guards against ordering/reconnect losses.
+    if (now >= this.nextEngageSendAt) {
+      this.nextEngageSendAt = now + 700;
+      this.room.send("engage", { id: this.engagedId });
+    }
     const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
     const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
     if (dist <= range) {
       if (this.trip) this.clearMoveTarget(); // arrived: stand and fight
-      if (now >= this.nextEngageSendAt) {
-        // Re-assert ~1/s: the server clears the target whenever we move
-        // (RO: moving breaks the attack), so standing back in reach resumes.
-        this.nextEngageSendAt = now + 700;
-        this.room.send("engage", { id: this.engagedId });
-      }
     } else if (now >= this.nextChaseRepathAt) {
       this.nextChaseRepathAt = now + 300; // the target roams/circles — retarget
       this.setMoveTarget(mv.fx, mv.fy, true);
     }
+  }
+
+  /** The three engagement overlays, per frame after the monster loop:
+   * (1) the SWORD MARKER over the walk-to target — visible from the tap
+   * until the battle begins (in reach, or the monster is already fighting),
+   * gently bobbing above its head; (2) the TARGET FRAME (DOM, player-bar
+   * styling) with the monster's name, level and X/X HP; (3) the settings
+   * debug rings: every monster's aggro radius, plus the provoke radius on
+   * the sword-marked one. */
+  private updateTargetOverlays() {
+    const state = this.room?.state as any;
+    const mv = this.engagedId ? this.monsters.get(this.engagedId) : undefined;
+    const m = this.engagedId && state?.monsters ? state.monsters.get(this.engagedId) : undefined;
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+
+    // (1) The sword marker.
+    let iconOn = false;
+    if (mv && m && me && mv.mstate !== "die" && !mv.culled) {
+      const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
+      const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
+      const battleOn = dist <= range * 1.2 || mv.mstate === "combat";
+      if (!battleOn) {
+        iconOn = true;
+        if (!this.attackIcon && this.textures.exists("ui:attack-target")) {
+          this.attackIcon = this.add
+            .image(0, 0, "ui:attack-target")
+            .setOrigin(0.5, 1)
+            .setDepth(890_010);
+        } else if (!this.attackIcon && !this.load.isLoading()) {
+          this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
+          this.load.start();
+        }
+        if (this.attackIcon) {
+          const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
+          const bob = Math.sin(this.time.now / 260) * 2;
+          this.attackIcon.setPosition(mv.lx, top - 10 + bob).setVisible(true);
+        }
+      }
+    }
+    if (!iconOn) this.attackIcon?.setVisible(false);
+
+    // (2) The target frame (DOM — push only on change).
+    const sig = m && mv && mv.mstate !== "die"
+      ? `${m.kind}|${m.level}|${Math.ceil(m.hp)}|${m.hpMax}`
+      : "";
+    if (sig !== this.lastTargetSig) {
+      this.lastTargetSig = sig;
+      if (!sig) setTarget(null);
+      else {
+        const name = String(m.kind)
+          .split("_")
+          .map((w: string) => (w.match(/^\d+$/) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+          .join(" ");
+        setTarget({ name, level: m.level ?? 1, hp: Math.ceil(m.hp), hpMax: m.hpMax });
+      }
+    }
+
+    // (3) Aggro-radius debug rings.
+    if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
+    if (this.aggroGfx) {
+      this.aggroGfx.clear();
+      if (this.aggroRadiusOn && state?.monsters) {
+        state.monsters.forEach((sm: any, id: string) => {
+          if (sm.mstate === "die") return;
+          const marked = id === this.engagedId;
+          const r = marked ? Math.max(sm.aggro ?? 0, PROVOKE_RADIUS_WU) : (sm.aggro ?? 0);
+          if (r <= 0) return;
+          // A world-space circle projected point by point — correct in iso
+          // (an ellipse on screen) and following the ground under it.
+          const lift = (sm.elev ?? 0) * MAP_GEOMETRY.lh;
+          const pts: { x: number; y: number }[] = [];
+          for (let i = 0; i < 28; i++) {
+            const a = (i / 28) * Math.PI * 2;
+            const p = this.projectFlat(sm.x + Math.cos(a) * r, sm.y + Math.sin(a) * r);
+            pts.push({ x: p.x, y: p.y - lift });
+          }
+          this.aggroGfx!.lineStyle(1, marked ? 0xffd166 : 0xf25d5d, marked ? 0.9 : 0.55);
+          this.aggroGfx!.strokePoints(pts, true);
+        });
+      }
+    }
+  }
+
+  private toggleAggroRadius(on = !this.aggroRadiusOn) {
+    this.aggroRadiusOn = on;
+    try {
+      localStorage.setItem("ml-aggro-radius", on ? "1" : "0");
+    } catch {}
+    this.chat.addLog("—", `Aggro radius: ${on ? "on" : "off"}`);
+    return this.aggroRadiusOn;
   }
 
   /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
@@ -3413,6 +3536,10 @@ export class WorldScene extends Phaser.Scene {
       });
       this.monstersActive = active;
     }
+
+    // Sword marker + target frame + aggro-radius debug rings (all read the
+    // freshly-updated monster sprites above).
+    this.updateTargetOverlays();
 
     this.updateChaseCam(delta);
 

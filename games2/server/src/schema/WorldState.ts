@@ -137,6 +137,8 @@ export class Monster extends Schema {
   declare hpMax: number;
   declare mstate: string;
   declare actionSeq: number; // bumps per attack swing (client restarts the attack clip)
+  declare level: number; // tuning level — the target-frame HUD shows it in a fight
+  declare aggro: number; // aggro radius wu (0 = passive) — the settings debug overlay draws it
 
   // Server-only AI state (NOT synced). ------------------------------------
   areaId = ""; // which SpawnArea this monster roams inside
@@ -147,6 +149,8 @@ export class Monster extends Schema {
   nextMoveAt = 0; // Date.now() ms deadline: when paused, pick the next target after this
   // Server-only combat bookkeeping.
   targetSid = ""; // session id of the player this monster hunts ("" = none)
+  provoked = false; // this fight is the PLAYER's fault (retaliation / sword-marked
+  // approach) — provoked hunters track the victim's speed and force the flee-slow
   nextAttackAt = 0;
   aggroCheckAt = 0; // throttle the proximity scan (~2/s, not per tick)
   orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
@@ -165,6 +169,8 @@ export class Monster extends Schema {
     this.hpMax = 20;
     this.mstate = "roam";
     this.actionSeq = 0;
+    this.level = 1;
+    this.aggro = 0;
   }
 }
 
@@ -179,6 +185,8 @@ defineTypes(Monster, {
   hpMax: "number",
   mstate: "string",
   actionSeq: "number",
+  level: "number",
+  aggro: "number",
 });
 
 /**

@@ -92,6 +92,57 @@ test("a kited monster gives up at the leash and returns to roam", async () => {
   }
 });
 
+test("sword-marking provokes on approach; escaping lifts the flee slow", async () => {
+  const port = 2979;
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+      name: "Marker",
+      character: "default_boy",
+      world: "monster_demo",
+      monsterSeed: 4242,
+      monsterCount: 1,
+    });
+    for (const t of ["inv", "chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
+    await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000, "join");
+    const me = () => r1.state.players.get(r1.sessionId);
+
+    const frog = monsterByKind(r1, "mystical_frog");
+    assert.ok(frog, "monster_demo spawns a mystical_frog");
+    const frogId = frog!.id;
+    const f0 = r1.state.monsters.get(frogId);
+    assert.equal(f0.aggro, 0, "frogs are passive by tuning (synced for the debug rings)");
+    assert.ok(f0.level >= 1, "level is synced for the target frame");
+
+    // Mark it with the sword (engage) while standing INSIDE the provoke
+    // radius but OUTSIDE swing reach: the monster must come to us — no hit
+    // was ever landed, the mark alone provokes.
+    const fx = f0.x;
+    const fy = f0.y;
+    r1.send("teleport", { x: fx + 100, y: fy });
+    await new Promise((r) => setTimeout(r, 150));
+    r1.send("engage", { id: frogId });
+    await waitFor(() => {
+      const f = r1.state.monsters.get(frogId);
+      return !!f && (f.mstate === "chase" || f.mstate === "combat");
+    }, 4000, "marked frog aggros on approach");
+    // The hunt pins the flee slow on us (0.8, or 0.55 if a swing lands).
+    await waitFor(() => me().slow < 1, 2000, "hunted player carries the flee slow");
+
+    // ESCAPE: cross the run-away line — the frog gives up, the slow lifts.
+    r1.send("engage", { id: null });
+    r1.send("teleport", { x: 1600, y: 1600 });
+    await waitFor(() => r1.state.monsters.get(frogId)?.mstate === "roam", 15000, "give-up at the escape line");
+    await waitFor(() => me().slow === 1, 4000, "successful escape lifts the slow");
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
 test("progression is world-agnostic and one token means one live session", async () => {
   const port = 2980;
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });

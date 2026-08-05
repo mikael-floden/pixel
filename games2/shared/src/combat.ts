@@ -86,16 +86,17 @@ export const PLAYER_ATTACK_MS = 900; // unarmed swing cadence (ASPD-ish)
 export const MONSTER_ATTACK_MS = 1400; // default; per-monster override via tuning
 export const PLAYER_BODY_R = 9; // mirror of PLAYER_BODY_RADIUS (avoid the ./monsters cycle)
 
-// --- the hit stagger (the "hard to escape" half) ----------------------------
+// --- the hit stagger + the flee slow (the "hard to escape" half) ------------
 
 // Each hit taken sets the victim's speed factor to SLOW_FACTOR for SLOW_MS
-// (refreshed, not stacked). Tuned against real speeds: slowed run =
-// 175·0.55 ≈ 96 wu/s, which is BELOW chase speed (105), so while a monster
-// keeps landing hits you cannot outrun it — survive 1.5s without a hit and
-// full run (175) pulls away. That is the maintainer's "hard to escape because
-// the monster will chase you and each hit will slow you down", made concrete.
+// (refreshed, not stacked). On top of it, a player being hunted by a monster
+// THEY provoked carries the persistent FLEE_SLOW_FACTOR for the whole hunt
+// (maintainer 2026-08-05: "The players movement speed should lowered until
+// the player has successfully run away"). The two combine by min() — a hit
+// mid-flight briefly deepens the slow, then the flee slow resumes.
 export const SLOW_FACTOR = 0.55;
 export const SLOW_MS = 1500;
+export const FLEE_SLOW_FACTOR = 0.8;
 
 /** The movement speed factor for a victim whose last hit landed at `hitAt`
  * (same clock as `now`). Used IDENTICALLY by the server integration and the
@@ -106,9 +107,35 @@ export function slowFactorAt(hitAt: number, now: number): number {
 
 // --- monster brain ----------------------------------------------------------
 
-export const AGGRO_RADIUS_WU = 6 * CELL_WU; // aggressive monsters lock on inside this
-export const CHASE_SPEED_WU = 105; // > slowed run (96), < full run (175)
-export const CHASE_LEASH_WU = 10 * CELL_WU; // max distance beyond the ZONE before giving up
+// A sword-MARKED monster (the player clicked attack on it) aggros the moment
+// the player closes inside this radius — passive kinds included: raising your
+// sword at something IS the provocation. Predators' own proximity radii come
+// from tuning and stack via max().
+export const PROVOKE_RADIUS_WU = 4 * CELL_WU;
+
+// UNPROVOKED chases (a predator noticed you) run at this constant: below full
+// run (175), so an innocent passer-by can always sprint clear.
+export const CHASE_SPEED_WU = 105;
+
+/** PROVOKED hunts (you started it) are personal: the monster moves always
+ * SLIGHTLY FASTER than its victim currently can (maintainer: "a movement
+ * speed always slightly greater than the player"), so running only delays
+ * the next bite — escape comes from crossing the ESCAPE line, not from
+ * outpacing. Floor so it closes on a standing victim, cap for sanity well
+ * above any real player speed. */
+export const CHASE_GAIN = 1.12;
+export const CHASE_MIN_WU = 60;
+export const CHASE_MAX_WU = 220;
+export function provokedChaseSpeed(victimSpeedWu: number): number {
+  return Math.min(CHASE_MAX_WU, Math.max(CHASE_MIN_WU, victimSpeedWu * CHASE_GAIN));
+}
+
+// The RUN-AWAY / ESCAPE RADIUS (maintainer: "~1½ screen in size"): the camera
+// frames ~520 world-px of world regardless of viewport (WorldScene zoomFor),
+// so 1.5 screens ≈ 780wu. A chase follows its victim this far beyond the home
+// ZONE and no further — crossing the line IS the successful escape: the
+// monster gives up, walks home, and the flee slow lifts.
+export const ESCAPE_RADIUS_WU = 780;
 export const MONSTER_RESPAWN_MS = 12_000;
 export const MONSTER_DIE_MS = 1_100; // corpse lingers (die clip) before removal + drops
 
@@ -131,10 +158,10 @@ export const EP_REGEN_FRAC_PER_S = 0.08;
 
 // --- drops / pickup ---------------------------------------------------------
 
-export const DROP_SCATTER_WU = 26; // items land scattered around the corpse
+export const DROP_SCATTER_WU = 26; // items land scattered around the corpse/player
+export const DROP_SPACING_WU = 24; // keep ground items at least this far apart (readability)
 export const DROP_TTL_MS = 90_000; // ground items despawn (RO-style)
 export const PICKUP_RADIUS_WU = 40; // how close the body must be to grab
-export const DRAG_DROP_MAX_WU = 2.5 * CELL_WU; // backpack drag-out placement cap
 export const INV_MAX_STACK = 99;
 export const INV_MAX_SLOTS = 30;
 

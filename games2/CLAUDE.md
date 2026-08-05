@@ -769,28 +769,51 @@ visible head/shoulders are ABOVE the surface).
   hitSeq (hurt flinch + damage float), dead (die clip holds → respawn snap).
 - **Monster brain states** (Monster.mstate, server-only fields beside it):
   roam (the shipped wander) → chase → combat → die. PASSIVE BY DEFAULT: the
-  tuning default aggro_radius_wu is 0 — everything retaliates when hit, only
+  tuning default aggro_radius_wu is 0 — everything retaliates when hit; only
   predators (saber/night_beast/diablos/snow_demon/salamanders/masked/malformed,
-  128-160wu) proximity-aggro (~2 scans/s). ESCAPE MATH is load-bearing: each
-  hit taken sets the victim's synced `slow` to 0.55 for 1.5s, and slowed run
-  (96wu/s) < CHASE_SPEED (105) < free run (175) — you cannot outrun a monster
-  that keeps landing hits, you CAN once you break contact for 1.5s. The slow
-  multiplies stepMovement's speedScale on BOTH sides (WorldRoom ~:598, the
-  stepLocal closure in WorldScene) — mirror or rubber-band. IN-FIGHT CIRCLING
-  (maintainer's idea): waiting on its cooldown the monster strafes tangentially
-  (ORBIT_SPEED 24, per-monster handedness from an id hash) holding ~0.8 reach,
-  and the stationary player's DISPLAYED facing tracks the target — so the
-  attack/angry directions sweep for both bodies. Chase may leave the zone
-  polygon: containment switches to a LEASH box (zone bbox + 10 cells) and the
-  roam snap-back disciplines only mstate=roam; disengage walks home via a
-  legal out-of-zone trip (m.returning, aggro-scan suppressed meanwhile). THE
-  GIVE-UP IS THE REJECTED STEP: chase movement is leash-gated, so the monster
-  reaches the rim but never crosses it — a "give up when beyond the leash"
-  position check is provably dead code (pre-deploy review 2026-08-05: every
-  fight-and-flee wedged a monster at the rim in chase, forever). A chase ends
-  when (a) its contained() step is rejected at the rim, or (b) the victim is
-  past the leash AND out of reach (covers a chaser wall-wedged INSIDE the
-  leash box). combat.review.test.ts kites a frog and asserts the give-up.
+  64-96wu after round 2's "smaller" pass) proximity-aggro (~2 scans/s). A
+  SWORD-MARKED monster (a player's engage target) also aggros when that player
+  closes inside max(its radius, PROVOKE_RADIUS 4 cells) — raising your sword
+  IS the provocation, passive kinds included; `player.target` persists while
+  MOVING now (swings still require standing), which is what the approach scan
+  reads. Monster.level + Monster.aggro are synced (target frame + debug rings).
+- **ESCAPE MATH, round 2 (maintainer 2026-08-05) — two chase kinds** via the
+  server-only `m.provoked` flag: UNPROVOKED (a predator noticed you) chases at
+  the constant 105 — an innocent full run (175) always pulls clear, a
+  hit-slowed one (96) does not. PROVOKED (retaliation or the sword mark — YOU
+  started it) is personal: chase speed = provokedChaseSpeed(victim's current
+  possible speed) — always ~12% above whatever the victim can do right now
+  (floor 60 closes on a stander), so running never opens the gap; AND the
+  victim carries the persistent FLEE_SLOW_FACTOR 0.8 for the whole hunt (the
+  synced `slow` = min(hit-slow 0.55/1.5s, flee 0.8) — the client predicts from
+  the synced field, pending inputs carry their factor). The way OUT is the
+  RUN-AWAY LINE: ESCAPE_RADIUS_WU 780 ≈ 1.5 screens (camera frames ~520wu,
+  zoomFor) beyond the home ZONE bbox — crossing it makes the hunter give up,
+  walk home (m.returning, aggro-scan suppressed), and the flee slow lifts.
+  IN-FIGHT CIRCLING (maintainer's idea): waiting on its cooldown the monster
+  strafes tangentially (ORBIT_SPEED 24, per-monster handedness from an id
+  hash) holding ~0.8 reach, and the stationary player's DISPLAYED facing
+  tracks the target — so the attack/angry directions sweep for both bodies.
+  THE GIVE-UP IS THE REJECTED STEP: chase movement is leash-gated (withinLeash
+  = zone bbox + ESCAPE_RADIUS), so the monster reaches the rim but never
+  crosses it — a "give up when beyond the leash" position check is provably
+  dead code (pre-deploy review 2026-08-05: every fight-and-flee wedged a
+  monster at the rim in chase, forever). A chase ends when (a) its contained()
+  step is rejected at the rim, or (b) the victim is past the line AND out of
+  reach (covers a chaser wall-wedged INSIDE the box). combat.review.test.ts
+  kites a frog, asserts the give-up, the approach-provocation and the slow
+  lifting on escape.
+- **Round-2 UI**: the SWORD MARKER (ui2/icon-attack-target.webp — the
+  maintainer's upload flipped horizontally, lossless) bobs over the engaged
+  monster from the tap until the battle begins (in reach ×1.2, or the monster
+  turns combat), Phaser image at depth 890_010; the TARGET FRAME (bars.ts
+  setTarget) is a top-centre DOM chip in the player-bar language — name ·
+  LEVEL n, red gauge, "X/X HP" — driven per-frame on change from the synced
+  monster. ITS CLASSES ARE ITS OWN (.ml-target*): verify-bars counts .ml-bars
+  === 2 and .ml-bar-row === 3, so never reuse those in new HUD chrome. The
+  "aggro radius" settings switch (debug, off by default, ml-aggro-radius in
+  localStorage) draws each monster's synced radius as a projectFlat-sampled
+  ring (red; gold provoke ring on the marked target).
 - **Monster combat clips**: attack/angry/die strips (525 files, ~3.1MB)
   background-load in the SAME deferred batch as the player's action states —
   boot stays walk+idle (the loading-time work must not regress). The COMPLETE
@@ -806,26 +829,29 @@ visible head/shoulders are ABOVE the surface).
   detached sprite 450ms on onRemove. Small hp bar floats over a WOUNDED
   monster only (890_000 depth, culled with the body).
 - **Loot**: on the corpse sweep the tuning loot table rolls per entry
-  (rollDrops, deterministic from id+diedAt), scattered onto STANDABLE ground
-  near the corpse (deck-aware: the dropper's elev threads through spawnDrop so
-  a bridge drop stays ON the deck; last resort ring-scans the nearest
-  standable cell — only open-water corpses keep their spot, where swimmers can
-  grab). GroundItems sync in state.drops, despawn after 90s. Item sprites are
-  uniform `items/<id>/sprite.webp` 48×48 (verified across all 105) — the
-  client lazy-loads per KIND, no manifest fetch. TAP an item to fetch it (walk
-  + grab), or the PICKUP button beside jump / the F key (nearest within 5
-  cells; the gamepad button synthesizes F exactly like jump→SPACE). Server
-  validates PICKUP_RADIUS_WU + the elev band; the client's pickup intent
-  RETRIES (~400ms) until the drop vanishes or 6s pass — a single
-  fire-and-forget send loses the predicted-vs-server position race on laggy
-  links. BACKPACK (hud.ts): server-owned slots render in the 5-col grid; DRAG
-  a slot out over the game view to drop it — pointer-captured ghost (the
-  bird-slider pattern; Phaser never sees the gesture), released client coords
-  → getWorldPoint → "drop" {slot,item,wx,wy}; the server clamps to 2.5 cells,
-  verifies the ITEM ID (slot indices go stale in flight when a stack empties)
-  and rate-caps pickup/drop at 150ms. An "inv" refresh mid-drag cancels the
-  gesture (renderInventory would orphan the ghost). INV_MAX_SLOTS 30, stacks
-  of 99.
+  (rollDrops, deterministic from id+diedAt). PLACEMENT (round 2, maintainer:
+  "close and not on top of each other") is a pseudo-random scatter around the
+  corpse/player that keeps DROP_SPACING_WU 24 from items already lying there
+  (candidates scored by nearest-drop distance, the ring grows as the ground
+  crowds, best-spaced wins when nothing clears) — deck-aware (the dropper's
+  elev threads through spawnDrop so a bridge drop stays ON the deck), last
+  resort ring-scans the nearest standable cell; only open-water corpses keep
+  their spot, where swimmers can grab. GroundItems sync in state.drops,
+  despawn after 90s. Item sprites are uniform `items/<id>/sprite.webp` 48×48
+  (verified across all 105) — the client lazy-loads per KIND, no manifest
+  fetch. TAP an item to fetch it (walk + grab), or the PICKUP button beside
+  jump / the F key (nearest within 5 cells; the gamepad button synthesizes F
+  exactly like jump→SPACE). Server validates PICKUP_RADIUS_WU + the elev
+  band; the client's pickup intent RETRIES (~400ms) until the drop vanishes
+  or 6s pass — a single fire-and-forget send loses the predicted-vs-server
+  position race on laggy links. BACKPACK (hud.ts): server-owned slots render
+  in the 5-col grid; DRAG a slot out over the game view to drop it —
+  pointer-captured ghost (the bird-slider pattern; Phaser never sees the
+  gesture); the release point only means "onto the ground" — the server
+  ALWAYS scatters near the player, verifies the ITEM ID (slot indices go
+  stale in flight when a stack empties) and rate-caps pickup/drop at 150ms.
+  An "inv" refresh mid-drag cancels the gesture (renderInventory would
+  orphan the ghost). INV_MAX_SLOTS 30, stacks of 99.
 - **Monster stats come from the LIVE TUNING channel** — the wiki agent's
   document (live/tuning/monsters.json, format @1), adopted exactly as they
   requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.

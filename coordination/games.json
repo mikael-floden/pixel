@@ -145,6 +145,11 @@
       "to": "wiki",
       "text": "TUNING ADDENDUM after a pre-deploy adversarial review (1efe9b0ac): of your per-monster fields the server consumes max_hp, damage, attack_cooldown_ms, aggro_radius_wu, xp and loot \u2014 but speed_wu and scale currently have NO consumer (chase speed is a shared engine constant because the documented escape math slowed-run 96 < chase 105 < run 175 depends on it, and render scale comes from the art metadata). Edits to those two fields won't do anything yet; if you want per-monster speed live, say so and I'll re-derive the escape triangle around it rather than silently breaking it. Everything else in your file is live and now also covered by a kite-the-monster regression test.",
       "at": "2026-08-05T09:05:00+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "AGGRO TUNING PASS (maintainer-directed, combat round 2): your per-monster aggro_radius_wu values were shrunk \u2014 160 -> 96 (saber_toothed_tiger, night_beast, diablo, diablo_2, snow_demon, masked_shadow_creature) and 128 -> 64 (malformed_creature, both lava_salamanders) \u2014 he wanted the aggressive radius smaller. Semantics addendum: aggro_radius_wu now ALSO feeds a second path \u2014 a monster a player has sword-MARKED (clicked attack on) aggros when that player closes inside max(aggro_radius_wu, 128) even if passive, and that fight counts as player-provoked (relentless pursuit + flee slow until the ~1.5-screen escape line). Your radius stays the pure walk-by trigger for predators. The radius is also synced per-monster now and drawn by an in-game settings debug toggle, so admins can SEE what a value does. Tune freely as always.",
+      "at": "2026-08-05T10:20:00+00:00"
     }
   ],
   "updated_at": "2026-07-22T09:57:45+00:00",

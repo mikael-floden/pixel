@@ -3,8 +3,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   xpToNext, hpMaxFor, epMaxFor, playerAtk, damageRoll, unarmedClip, idSalt,
-  attackRange, slowFactorAt, rollDrops, SLOW_FACTOR, SLOW_MS,
-  CHASE_SPEED_WU, RUN_SPEED, mix32,
+  attackRange, slowFactorAt, rollDrops, SLOW_FACTOR, SLOW_MS, FLEE_SLOW_FACTOR,
+  CHASE_SPEED_WU, RUN_SPEED, WALK_SPEED, mix32, provokedChaseSpeed,
+  ESCAPE_RADIUS_WU, PROVOKE_RADIUS_WU, CELL_WU,
 } from "@nangijala/shared";
 
 test("progression curves are sane and monotonic", () => {
@@ -41,9 +42,24 @@ test("unarmedClip is deterministic and actually mixes kick and punch", () => {
   assert.deepEqual([...seen].sort(), ["kick", "punch"], "both moves appear over 40 swings");
 });
 
-test("the escape math holds: slowed run < chase < full run", () => {
-  assert.ok(RUN_SPEED * SLOW_FACTOR < CHASE_SPEED_WU, "cannot outrun while slowed");
-  assert.ok(CHASE_SPEED_WU < RUN_SPEED, "full run escapes");
+test("the escape math holds for both chase kinds", () => {
+  // UNPROVOKED (a predator noticed you): constant chase an innocent full run
+  // always beats — but a hit-slowed runner does not.
+  assert.ok(RUN_SPEED * SLOW_FACTOR < CHASE_SPEED_WU, "cannot outrun a predator while hit-slowed");
+  assert.ok(CHASE_SPEED_WU < RUN_SPEED, "an innocent full run escapes a predator");
+  // PROVOKED (you started it): the hunter paces its victim — ALWAYS slightly
+  // faster at every reachable player speed, walking, fleeing or standing.
+  for (let v = 0; v <= RUN_SPEED; v += 5) {
+    assert.ok(provokedChaseSpeed(v) > v, `provoked hunter outpaces victim at ${v} wu/s`);
+  }
+  const fleeing = RUN_SPEED * FLEE_SLOW_FACTOR; // the fastest a hunted player can go
+  assert.ok(provokedChaseSpeed(fleeing) > fleeing, "fleeing at full flee speed never opens the gap");
+  assert.ok(provokedChaseSpeed(0) >= 55, "closes on a standing victim");
+  // The escape line is the way out: ~1.5 screens (camera frames ~520wu).
+  assert.ok(ESCAPE_RADIUS_WU > 700 && ESCAPE_RADIUS_WU < 900, "escape radius ≈ 1.5 × 520wu screens");
+  assert.ok(PROVOKE_RADIUS_WU >= 3 * CELL_WU && PROVOKE_RADIUS_WU <= 6 * CELL_WU, "provoke radius is a few cells");
+  assert.ok(FLEE_SLOW_FACTOR > SLOW_FACTOR && FLEE_SLOW_FACTOR < 1, "flee slow is milder than the hit stagger");
+  assert.ok(WALK_SPEED * FLEE_SLOW_FACTOR > 0, "hunted walking still moves");
 });
 
 test("slowFactorAt applies inside the window and expires after", () => {
