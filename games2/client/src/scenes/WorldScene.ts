@@ -131,6 +131,14 @@ const ANIM_FPS: Record<string, number> = {
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
 const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
+// The marked monster's 1px target border: 4 sides + 4 DIAGONALS (a
+// side-only ring breaks apart wherever the art steps diagonally, which
+// pixel art does constantly), each one art pixel out from the body.
+const RING_OFFSETS: Array<[number, number]> = [
+  [-1, 0], [1, 0], [0, -1], [0, 1],
+  [-1, -1], [1, -1], [-1, 1], [1, 1],
+];
+const TARGET_RING_COLOR = 0x8e2222; // a bit dark red (maintainer round 9)
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -698,9 +706,8 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
-  private attackIcon?: Phaser.GameObjects.Image; // sword marker over the walk-to target
-  private attackIconQueued = false; // its texture load has been queued
-  private pickupIcon?: Phaser.GameObjects.Image; // hand marker over the item being fetched
+  private targetRing: Phaser.GameObjects.Sprite[] = []; // 8 offset silhouettes = the 1px target border
+  private pickupIcon?: Phaser.GameObjects.Image; // hand marker under the item being fetched
   private pickupIconQueued = false;
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
@@ -708,7 +715,16 @@ export class WorldScene extends Phaser.Scene {
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
   private drops = new Map<
     string,
-    { img: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; wx: number; wy: number; item: string; bornAt: number }
+    {
+      img: Phaser.GameObjects.Image;
+      shadow: Phaser.GameObjects.Image;
+      wx: number;
+      wy: number;
+      item: string;
+      bornAt: number;
+      baseY: number; // resting screen y + depth in the WORLD layer: the pick-up
+      baseDepth: number; // marker lifts the item out of it and must put it back
+    }
   >();
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
   // Grave crosses (objects/grave_cross): appear where a monster died, hold on
@@ -1902,19 +1918,23 @@ export class WorldScene extends Phaser.Scene {
           hpBarText:
             mv.lvText?.visible && mv.hpText?.visible ? `${mv.lvText.text}|${mv.hpText.text}` : null,
         })),
-      // The round-2 overlays, for the gate: is the sword marker up (and over
-      // whom), are the debug rings on. (The in-fight hp/level readout is per
-      // monster — monsterInfo().hpBarText.)
+      // The target overlays, for the gate: the marked monster's 1px border,
+      // the pick-up hand, whether a walk-to beacon is up, the debug rings.
+      // (The in-fight hp/level readout is per monster — monsterInfo().)
       targetOverlay: () => ({
-        icon: !!this.attackIcon?.visible,
+        icon: this.targetRing.some((s) => s.visible), // the border ring
+        ringTint: this.targetRing[0]?.tintTopLeft ?? null,
         hand: !!this.pickupIcon?.visible,
+        handUnderItem: !!(
+          this.pickupIcon?.visible &&
+          this.pendingPickupId &&
+          this.drops.get(this.pendingPickupId) &&
+          this.drops.get(this.pendingPickupId)!.img.depth > this.pickupIcon.depth
+        ),
         beacon: !!this.tapMarker,
         engaged: this.engagedId,
         pendingPickup: this.pendingPickupId,
         aggroRings: this.aggroRadiusOn,
-        // load-path introspection (a wedged loader once ate the icon)
-        iconTex: this.textures.exists("ui:attack-target"),
-        iconQueued: this.attackIconQueued,
         loaderState: this.load.state,
       }),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
@@ -2296,7 +2316,16 @@ export class WorldScene extends Phaser.Scene {
     // flash); join-inherited ones (the state flood right after bind) start
     // the clock at join — their flash can come late, and the server's sweep
     // is the ground truth either way.
-    const rec = { img, shadow, wx: g.x, wy: g.y, item: g.item, bornAt: this.time.now };
+    const rec = {
+      img,
+      shadow,
+      wx: g.x,
+      wy: g.y,
+      item: g.item,
+      bornAt: this.time.now,
+      baseY: y - 7,
+      baseDepth: y,
+    };
     this.drops.set(id, rec);
     this.withItemTexture(g.item, (key) => {
       if (this.drops.get(id) !== rec) return; // picked up before the art landed
@@ -2416,40 +2445,74 @@ export class WorldScene extends Phaser.Scene {
     const m = this.engagedId && state?.monsters ? state.monsters.get(this.engagedId) : undefined;
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
 
-    // (1) The sword marker.
-    let iconOn = false;
-    if (mv && m && me && mv.mstate !== "die" && !mv.culled) {
+    // (1) The TARGET BORDER (maintainer round 9, replacing the sword icon):
+    // a 1-MONSTER-PIXEL dark red outline hugging the marked monster's own
+    // silhouette. Eight offset silhouette copies (the 4 sides + the 4
+    // DIAGONALS, so the border stays connected across the diagonal steps
+    // pixel art is drawn with) sit one pixel out, just BEHIND the body —
+    // the body itself covers their interior, leaving exactly a 1px ring.
+    // Monster sprites draw at scale 1 (see addMonster), so one art pixel is
+    // one screen pixel; the copies still mirror scale/flip/origin/frame
+    // every frame so a re-scaled or flipped strip can never desync.
+    let ringOn = false;
+    if (mv && m && me && mv.mstate !== "die" && !mv.culled && mv.sprite.visible) {
       const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
       const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
       const battleOn = dist <= range * 1.2 || mv.mstate === "combat";
       if (!battleOn) {
-        iconOn = true;
-        if (!this.attackIcon && this.textures.exists("ui:attack-target")) {
-          this.attackIcon = this.add
-            .image(0, 0, "ui:attack-target")
-            .setOrigin(0.5, 0.5)
-            .setDepth(900_001.9); // above darkness + lit copies — lighting never dims it
-        } else if (!this.attackIcon && !this.attackIconQueued) {
-          this.attackIconQueued = true; // appending to a busy loader is fine
-          this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
-          this.load.start();
+        ringOn = true;
+        if (!this.targetRing.length) {
+          for (let i = 0; i < RING_OFFSETS.length; i++) {
+            this.targetRing.push(this.add.sprite(0, 0, mv.sprite.texture.key).setVisible(false));
+          }
         }
-        if (this.attackIcon) {
-          // Round 8: HALFWAY between the body centre and the hp bar — the
-          // marker reads as "this one", clear of both the art and the bar.
-          // (bar sits at top - 8; centre was top + 0.5h.)
-          const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
-          const bob = Math.sin(this.time.now / 260) * 2;
-          this.attackIcon.setPosition(mv.lx, top + mv.sprite.displayHeight * 0.25 - 4 + bob).setVisible(true);
+        const sp = mv.sprite;
+        // WHICH LAYER: night crushes a dark red drawn down in the world
+        // layer to near-black (measured), so when this body has a LIT COPY
+        // above the darkness overlay the ring rides just under THAT — crisp
+        // at any hour, with the lit copy still covering its interior. With
+        // no lit copy (shader off / bright day) the world layer is right and
+        // dimming is a non-issue.
+        const lit = mv.lit?.visible ? mv.lit : null;
+        // -1e-6, not a fat epsilon: litDepth packs bodies 1e-5 apart, so a
+        // bigger step would sink the ring behind a NEIGHBOUR's lit copy.
+        const ringDepth = lit ? lit.depth - 1e-6 : sp.depth - 0.01;
+        // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
+        // applyObjectLights syncs lit copies LATER in the frame, so its x/y
+        // is one frame stale — on a hopping monster that lag smeared the
+        // ring several px to one side instead of hugging the silhouette.
+        // (The lit copy lands on the sprite's position anyway.)
+        const rx = sp.x;
+        const ry = sp.y;
+        // Match the layer's own alpha — the lit copy is faded by depth fog,
+        // and an opaque ring behind a translucent body bleeds red THROUGH it
+        // (it read as a thick smear instead of a 1px edge).
+        const ringAlpha = lit ? lit.alpha : sp.alpha;
+        for (let i = 0; i < RING_OFFSETS.length; i++) {
+          const [ox, oy] = RING_OFFSETS[i];
+          this.targetRing[i]
+            .setTexture(sp.texture.key, sp.frame.name)
+            .setOrigin(sp.originX, sp.originY)
+            .setScale(sp.scaleX, sp.scaleY)
+            .setFlipX(sp.flipX)
+            .setAlpha(ringAlpha)
+            // setTintFill, NOT setTint: a multiply tint would leave the
+            // monster's own shading in the border (black pixels stay black).
+            // Fill paints the whole silhouette one flat colour.
+            .setTintFill(TARGET_RING_COLOR)
+            .setPosition(rx + ox * sp.scaleX, ry + oy * sp.scaleY)
+            .setDepth(ringDepth)
+            .setVisible(true);
         }
       }
     }
-    if (!iconOn) this.attackIcon?.setVisible(false);
+    if (!ringOn) for (const s of this.targetRing) s.setVisible(false);
 
-    // (1b) The PICK-UP HAND over the item we are fetching (maintainer round
-    // 8): it REPLACES the walk-to beacon for item taps — same "this is the
-    // target" language as the sword, unlit like it (the ground beacon is
-    // suppressed at the setMoveTarget call sites).
+    // (1b) The PICK-UP HAND, CENTRED ON and drawn UNDER the item we are
+    // fetching (maintainer rounds 8-9): the loot sits in the open palm, so
+    // the hand replaces the walk-to beacon AND the item's ground shadow.
+    // Both the hand and the item ride ABOVE the darkness overlay while
+    // targeted — the pair is a marker, and markers are never dimmed.
     let handOn = false;
     const pd = this.pendingPickupId ? this.drops.get(this.pendingPickupId) : undefined;
     if (pd && pd.img.visible) {
@@ -2457,22 +2520,35 @@ export class WorldScene extends Phaser.Scene {
       if (!this.pickupIcon && this.textures.exists("ui:pickup-target")) {
         this.pickupIcon = this.add
           .image(0, 0, "ui:pickup-target")
-          .setOrigin(0.5, 1)
-          .setDepth(900_001.9); // unlit, exactly like the sword marker
+          .setOrigin(0.5, 0.5)
+          .setDepth(900_001.88); // unlit, and just UNDER the item it holds
       } else if (!this.pickupIcon && !this.pickupIconQueued) {
         this.pickupIconQueued = true;
         this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));
         this.load.start();
       }
       if (this.pickupIcon) {
-        // Hovering just ABOVE the item so the loot itself stays readable.
-        const bob = Math.sin(this.time.now / 260) * 2;
-        this.pickupIcon
-          .setPosition(pd.img.x, pd.img.y - pd.img.displayHeight * 0.5 - 2 + bob)
-          .setVisible(true);
+        // The spawn TOSS owns y while it runs — never fight a live tween.
+        const tossing = this.tweens.isTweening(pd.img);
+        const bob = tossing ? 0 : Math.sin(this.time.now / 260) * 2;
+        if (!tossing) pd.img.setPosition(pd.img.x, pd.baseY + bob);
+        this.pickupIcon.setPosition(pd.img.x, pd.img.y).setVisible(true);
+        // Lift the item onto the palm: unlit, one hair above the hand, and
+        // its ground shadow off (the palm is what it rests on now).
+        pd.img.setDepth(900_001.89);
+        pd.shadow.setVisible(false);
       }
     }
     if (!handOn) this.pickupIcon?.setVisible(false);
+    // Any drop that is NOT the current target keeps its ordinary world-layer
+    // depth, position and shadow (a target can change or be picked up).
+    for (const [id, rec] of this.drops) {
+      if (handOn && id === this.pendingPickupId && this.pickupIcon) continue;
+      if (rec.img.depth !== rec.baseDepth) {
+        rec.img.setPosition(rec.img.x, rec.baseY).setDepth(rec.baseDepth);
+        rec.shadow.setVisible(true);
+      }
+    }
 
     // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
@@ -5328,14 +5404,10 @@ export class WorldScene extends Phaser.Scene {
       });
       queued++;
     }
-    // …and the two TARGET MARKERS (<1 KB each): preloading kills the race
-    // where a marked monster charges in and the walk-to window closes before
-    // a lazy first-engage load can land.
-    if (!this.textures.exists("ui:attack-target") && !this.attackIconQueued) {
-      this.attackIconQueued = true;
-      this.load.image("ui:attack-target", withV("/ui2/icon-attack-target.webp"));
-      queued++;
-    }
+    // …and the PICK-UP HAND (<1 KB): preloading kills the race where a lazy
+    // first-tap load lands after the walk-to window has already closed. (The
+    // monster marker needs no asset since round 9 — it is drawn from the
+    // monster's own silhouette.)
     if (!this.textures.exists("ui:pickup-target") && !this.pickupIconQueued) {
       this.pickupIconQueued = true;
       this.load.image("ui:pickup-target", withV("/ui2/icon-pickup-target.webp"));

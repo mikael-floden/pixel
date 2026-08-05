@@ -928,6 +928,19 @@ export class WorldRoom extends Room<WorldState> {
           return;
         }
         const range = attackRange(rm, PLAYER_BODY_RADIUS);
+        // DE-AGGRO BY DISTANCE (maintainer round 9: "aggro monsters should
+        // also stop chasing if the player runs away too far"). The leash box
+        // below is measured from the monster's HOME ZONE, and a big zone's
+        // bbox can be most of the map — a predator that noticed you at the
+        // edge of a huge zone would follow far past any sane give-up point.
+        // This rule is measured monster-to-victim instead, so ~1.5 screens
+        // of daylight ends ANY hunt regardless of zone size. (A provoked
+        // hunter paces its victim and never falls this far behind unless
+        // terrain has genuinely stopped it — where giving up is also right.)
+        if (dist > ESCAPE_RADIUS_WU) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
         // Give up when the VICTIM has escaped past the leash and is out of
         // reach: the chase may not follow there, so it cannot be won — and a
         // terrain-wedged chaser (a lake inside the leash box) must not stand

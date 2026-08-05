@@ -229,6 +229,74 @@ test("dropping a stack drops exactly the asked-for count (clamped to what is hel
   }
 });
 
+test("a PREDATOR that aggros on proximity also gives up once you outrun it", async () => {
+  // Round 9 (maintainer): "aggro monsters should ALSO stop chasing if the
+  // player runs away too far". The zone-box leash could not promise that —
+  // it is measured from the monster's HOME ZONE, and a big zone's bbox is
+  // most of the map — so distance monster-to-victim is now its own give-up
+  // rule. Here the hunt is UNPROVOKED (no hit is ever landed; the predator
+  // notices us through its tuning aggro radius).
+  const port = 2977; // 2978-2981 are taken inside this very file — grep before picking
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+      name: "Sprinter",
+      character: "default_boy",
+      world: "monster_demo",
+      monsterSeed: 4242,
+      monsterCount: 1,
+    });
+    for (const t of ["inv", "chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
+    await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000, "join");
+    const me = () => r1.state.players.get(r1.sessionId);
+
+    const cat = monsterByKind(r1, "saber_toothed_tiger");
+    assert.ok(cat, "monster_demo spawns a saber_toothed_tiger");
+    const tid = cat!.id;
+    assert.ok(r1.state.monsters.get(tid).aggro > 0, "and it is a predator (tuning aggro radius)");
+
+    // Walk into its aggro radius and let it notice us — no attack, no mark.
+    const walkIn = setInterval(() => {
+      const mm = r1.state.monsters.get(tid);
+      if (mm && !me().dead) r1.send("teleport", { x: mm.x + 60, y: mm.y });
+    }, 150);
+    try {
+      await waitFor(() => {
+        const s = r1.state.monsters.get(tid)?.mstate;
+        return s === "chase" || s === "combat";
+      }, 8000, "the predator aggros on proximity");
+    } finally {
+      clearInterval(walkIn);
+    }
+    assert.equal(me().hitSeq, 0, "we never traded blows — this hunt is unprovoked");
+
+    // Now outrun it: park well past ESCAPE_RADIUS_WU (780wu ≈ 1.5 screens).
+    const mm = r1.state.monsters.get(tid);
+    const far = { x: Math.min(mm.x + 1200, 1700), y: Math.min(mm.y + 1200, 1700) };
+    const flee = setInterval(() => {
+      if (!me().dead) r1.send("teleport", far);
+    }, 300);
+    try {
+      await waitFor(() => {
+        const f = r1.state.monsters.get(tid);
+        return !f || f.mstate === "roam" || f.mstate === "die";
+      }, 20000, "the hunt ends at distance");
+    } finally {
+      clearInterval(flee);
+    }
+    // …and it stays given up while we are far away.
+    await new Promise((r) => setTimeout(r, 1200));
+    const end = r1.state.monsters.get(tid);
+    assert.ok(!end || end.mstate === "roam" || end.mstate === "die", "no re-aggro from across the map");
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
 test("progression is world-agnostic and one token means one live session", async () => {
   const port = 2980;
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });

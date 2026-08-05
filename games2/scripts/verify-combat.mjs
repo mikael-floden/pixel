@@ -82,11 +82,16 @@ try {
   await page.waitForTimeout(250);
   await page.evaluate((fid) => window.__ml.engage(fid), frogPick.id);
   await page.waitForFunction(
-    () => window.__ml.targetOverlay().icon === true,
+    () => {
+      const t = window.__ml.targetOverlay();
+      return t.icon === true && t.beacon === false;
+    },
     undefined,
     { timeout: 8000, polling: 150 },
   );
-  ok("sword marker over the walk-to target");
+  const ringTint = await page.evaluate(() => window.__ml.targetOverlay().ringTint);
+  if (ringTint !== 0x8e2222) fail(`target border tint is ${ringTint?.toString(16)} (want 8e2222)`);
+  ok("1px dark-red target border on the marked monster, no walk-to beacon");
   await page.waitForFunction(
     (fid) => {
       const f = window.__ml.monsterInfo().find((m) => m.id === fid);
@@ -144,8 +149,8 @@ try {
   if (!(blood >= 1)) fail(`no blood spatter played during the fight (count ${blood})`);
   ok(`blood spatters played (${blood})`);
   const afterKill = await page.evaluate(() => window.__ml.targetOverlay());
-  if (afterKill.icon) fail(`sword marker must clear after the kill: ${JSON.stringify(afterKill)}`);
-  ok("sword marker clears when the fight ends");
+  if (afterKill.icon) fail(`target border must clear after the kill: ${JSON.stringify(afterKill)}`);
+  ok("target border clears when the fight ends");
 
   // The grave cross rises where it fell: appears after the corpse fade, plays
   // the 16-frame SOUTH clip once and HOLDS on the last frame.
@@ -226,12 +231,12 @@ try {
   await page.waitForFunction(
     () => {
       const t = window.__ml.targetOverlay();
-      return t.hand === true && t.beacon === false;
+      return t.hand === true && t.beacon === false && t.handUnderItem === true;
     },
     undefined,
     { timeout: 8000, polling: 120 },
   );
-  ok("pick-up hand marker shown over the item, no walk-to beacon");
+  ok("pick-up hand centred UNDER the item, no walk-to beacon");
 
   // Pickup: probe = the button path (walk-to + grab). Backpack DOM follows.
   await page.evaluate(() => {
