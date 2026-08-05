@@ -1512,12 +1512,15 @@ visible head/shoulders are ABOVE the surface).
   and resumes where it left off. Audition without hunting for the trigger:
   `__ml.audioBed("cave")`, `__ml.audioBed()` to release, `__ml.audioField()` for
   what the score is reading. Gate: `scripts/verify-beds.mjs` (dev stack).
-- **COMBAT SFX ARE MUTED** (maintainer 2026-08-05: "a lot of crappy sound when
-  fighting monsters ... get rid of it. Will add it back with good soundeffects").
-  KEEP EMITTING `tool.sword_swing` and `combat.hit_taken` — the call sites are
-  deliberately untouched; the composer decides what a semantic event sounds
-  like, and those two currently play nothing (`MUTED_EVENTS` in
-  `composer/engine/api.ts`). `item.get`/`progress.level_up` still sound.
+- **A SOUND PLAYS ONLY WHEN IT WAS ASKED FOR** (maintainer 2026-08-05: "I don't
+  tell you to add dumb sound"). Every audio event the combat/loot work
+  introduced — `tool.sword_swing`, `combat.hit_taken`, `item.get`,
+  `progress.level_up` — is MUTED (`MUTED_EVENTS` in `composer/engine/api.ts`).
+  KEEP EMITTING THEM: the call sites are deliberately untouched, because the
+  composer is what decides whether an event makes a sound. **If you add a
+  feature that emits audio, add its event name to `MUTED_EVENTS` in the same
+  change** — the maintainer hears it and asks for it before it ever plays.
+  Gate: `scripts/verify-quiet.mjs`.
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
   It follows whichever score is playing (context bed or catalog track), and the

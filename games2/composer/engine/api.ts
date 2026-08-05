@@ -109,23 +109,39 @@ const NIGHT_MUSIC_DB = -5;
 /**
  * SEMANTIC EVENTS THE COMPOSER CURRENTLY PLAYS NOTHING FOR.
  *
- * The combat system emits a swing on EVERY attack and a hit on every blow, and
- * with the catalog stand-ins behind them that reads as constant noise the
- * moment a fight starts — the maintainer's verdict, 2026-08-05: "a lot of
- * crappy sound when fighting monsters ... get rid of it. Will add it back with
- * good sound effects once I find time to iterate on it."
+ * This is EVERY sound the combat/loot work (410a17f8e) started emitting. None
+ * of it was asked for, and behind catalog stand-ins it reads as noise —
+ * maintainer 2026-08-05: "I don't tell you to add dumb sound."
+ *
+ *   tool.sword_swing    every attack swing
+ *   combat.hit_taken    every blow landed on you
+ *   item.get            every pickup
+ *   progress.level_up   a room BROADCAST — it fired for every player's level,
+ *                       not just yours, so a busy world chimed constantly
+ *
+ * I muted the first two on the first pass and kept the last two, having decided
+ * for myself that loot and progression were not "fight noise". That judgment
+ * was not mine to make: the rule is that a sound goes in when it is ASKED for.
+ * Anything a future feature starts emitting belongs here until the maintainer
+ * has heard it and wants it.
  *
  * Muted HERE, in the composer, and NOT by deleting the game's call sites: the
  * game emitting semantic events is the right architecture (games2/CLAUDE.md
  * tells the game agents to emit them and not to remove gameAudio calls), and
  * the composer is the one who decides what a semantic event sounds like — in
- * this case, nothing, until there is foley worth playing. Deleting this set's
- * entries is the whole of "turn them back on".
+ * this case, nothing, until there is foley the maintainer has approved.
+ * Deleting an entry here is the whole of "turn it back on".
  *
- * NOT muted, because they are not fight noise: `item.get` (loot pickup) and
- * `progress.level_up`.
+ * Everything NOT listed predates this work and was approved in its own round:
+ * the jump/fall voice grunts, the UI press/release clicks, the chat notify,
+ * thunder, and the arrival star chime.
  */
-const MUTED_EVENTS = new Set<string>(["tool.sword_swing", "combat.hit_taken"]);
+const MUTED_EVENTS = new Set<string>([
+  "tool.sword_swing",
+  "combat.hit_taken",
+  "item.get",
+  "progress.level_up",
+]);
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
