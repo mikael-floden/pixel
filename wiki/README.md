@@ -320,6 +320,33 @@ and are **admin-only** (maintainer 2026-07-30: "I don't even know what a
 default_boy is"). Players get `Human · Male` under the thumbnail and the
 hero's story beside it.
 
+### NPCs are second, and nameless on purpose
+
+`characters2/npcs/` (191 tag-driven mirrors, landed 2026-08-01) join the
+same `characters` domain array with `kind: "npc"`, but the page is about the
+**playable cast foremost** (maintainer 2026-08-01): heroes keep their big
+cards on top, NPCs sit below in their own clearly secondary block — half-size
+portrait-only tiles under an "NPCs · count" heading.
+
+- **Every NPC is a "Villager."** Their PixelLab names are prompt junk
+  ("No boots, no gloves, (copy 5)") — characters2's own README says so — and
+  folder keys are hash prefixes. Both are the `default_boy` class of fact:
+  admin-only, never shown to players. The lore agent can give an NPC a real
+  identity later via `lore.json` (`loreDesc` wins wherever it exists).
+- **‹ › pages within the group.** A hero pages among the 2 heroes, an NPC
+  among the 191 NPCs — otherwise the Villagers bury the cast between Man and
+  Woman.
+- **Global search**: players never see NPC rows (191 identical "Villager"
+  hits would drown everything); the admin finds them by folder key or
+  PixelLab name, each hit labelled `Villager · <key>`.
+- The nav/start-page count stays **heroes only**; the NPC block carries its
+  own count. `counts.npcs` exists separately in data.json.
+- No Movement-sounds panel on NPC pages — that kit follows the player.
+- Feedback ids are the repo path (`characters2/npcs/<key>`), so review works
+  exactly like everything else.
+- Verified layout-safe: the shared characters stage box (112×113 @ 2x) and
+  scale did not move when the 191 joined the measurement set.
+
 That copy is the characters agent's to author, in
 **`characters2/metadata.json`** (`characters2-metadata@1`, keyed by folder
 id: `display_name` `species` `sex` `lore`); their `sync.py` also merges the
