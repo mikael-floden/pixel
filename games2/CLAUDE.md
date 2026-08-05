@@ -859,11 +859,19 @@ visible head/shoulders are ABOVE the surface).
   targetOverlay().rings/itemRing/itemRingTint. (The retired marker art —
   the sword icons of rounds 2-8 and the round-8/9 pick-up hand — lives in
   git history.) The in-fight readout lives ON
-  the monster (maintainer: keep it SMALL, only the LEVEL, no name — he
-  rejected a separate top-centre frame): updateMonsterHpBar draws a slim
-  player-style bar (76×6 dark track, red fill — sized so "Lv N" LEFT-aligned
-  and "hp/max" RIGHT-aligned keep a middle gap even at 4-digit HP), shown
-  while wounded, in combat, or my engaged target. Bar, texts and the target
+  the monster (maintainer: keep it SMALL — he rejected a separate top-centre
+  frame): updateMonsterHpBar draws a slim player-style bar (76×6 dark track,
+  red fill) in a THREE-LINE stack (2026-08-05) — the monster's NAME
+  left-aligned OVER the bar, then the bar, then "Lv N" left-aligned and
+  "hp/max" right-aligned UNDER it, sharing one line with a middle gap that
+  survives 4-digit HP (what the bar's width is sized for). All three hang off
+  the BAR's own edges, so the lines share a left margin and the stack stays
+  centred on the body. Rounds 5-9 had Lv/hp ON the bar's line and NO name —
+  the name is the maintainer's later call, and it needed that line freed.
+  The name is the ROSTER's display name (monsters.json `name` — "Dewling",
+  not forest_poring), resolved ONCE in addMonster onto mv.label: this runs
+  per monster per frame, and a manifest scan here would be 24 finds × 160
+  monsters × 60fps. Shown while wounded, in combat, or my engaged target. Bar, texts and the target
   borders live ABOVE the darkness overlay (depths 900_001.44-1.9 — under the
   damage floats at 900_002), so day/night/shadow never touch them — combat
   UI at 890k was dimming with the world. When adding HUD chrome NEVER reuse

@@ -104,7 +104,32 @@ try {
     (fid) => window.__ml.monsterInfo().find((m) => m.id === fid)?.hpBarText,
     frogPick.id,
   );
-  ok(`monster fight bar reads "${barText}" (level + X/X, no name)`);
+  ok(`monster fight bar reads "${barText}" (level + X/X)`);
+  // THREE LINES (maintainer 2026-08-05): the NAME left-aligned OVER the bar,
+  // then the bar, then "Lv N" left-aligned and "hp/max" right-aligned UNDER
+  // it. All three hang off the bar's own edges.
+  const ro = await page.evaluate(
+    (fid) => window.__ml.monsterInfo().find((m) => m.id === fid)?.readout,
+    frogPick.id,
+  );
+  if (!ro) fail("no three-line readout on the engaged monster");
+  else {
+    const [barX, barY, barW] = ro.bar;
+    const left = barX - barW / 2;
+    const right = barX + barW / 2;
+    ro.name[0] && ro.name[0] !== "mystical_frog" && Math.abs(ro.name[1] - left) <= 1 && ro.name[2] < barY
+      ? ok(`monster NAME "${ro.name[0]}" left-aligned over the bar (the roster's display name, not the id)`)
+      : fail(`name line wrong: ${JSON.stringify(ro.name)} vs bar ${JSON.stringify(ro.bar)}`);
+    /^Lv \d+$/.test(ro.lv[0]) && Math.abs(ro.lv[1] - left) <= 1 && ro.lv[2] > barY
+      ? ok(`"${ro.lv[0]}" left-aligned UNDER the bar`)
+      : fail(`level line wrong: ${JSON.stringify(ro.lv)} vs bar ${JSON.stringify(ro.bar)}`);
+    /^\d+\/\d+$/.test(ro.hp[0]) && Math.abs(ro.hp[1] - right) <= 1 && ro.hp[2] > barY
+      ? ok(`"${ro.hp[0]}" right-aligned UNDER the bar, on the level's line`)
+      : fail(`hp line wrong: ${JSON.stringify(ro.hp)} vs bar ${JSON.stringify(ro.bar)}`);
+    ro.lv[2] === ro.hp[2]
+      ? ok("…level and hp share one line")
+      : fail(`level y ${ro.lv[2]} != hp y ${ro.hp[2]}`);
+  }
   // The aggro-radius debug toggle flips through the settings probe.
   const rings = await page.evaluate(() => {
     const on = window.__ml.toggleAggroRadius(true);

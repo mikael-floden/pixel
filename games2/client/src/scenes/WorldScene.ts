@@ -543,8 +543,10 @@ interface MonsterAvatar {
   combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
   hpBg?: Phaser.GameObjects.Rectangle;
   hpFill?: Phaser.GameObjects.Rectangle;
-  lvText?: Phaser.GameObjects.Text; // "Lv N" — left-aligned on the bar
-  hpText?: Phaser.GameObjects.Text; // "hp/max" — right-aligned on the bar
+  nameText?: Phaser.GameObjects.Text; // display name — left-aligned OVER the bar
+  lvText?: Phaser.GameObjects.Text; // "Lv N" — left-aligned UNDER the bar
+  hpText?: Phaser.GameObjects.Text; // "hp/max" — right-aligned UNDER the bar
+  label?: string; // manifest display name ("Dewling"), resolved once at spawn
   lastHp?: number;
 }
 
@@ -1921,6 +1923,17 @@ export class WorldScene extends Phaser.Scene {
           hpBar: !!mv.hpBg?.visible,
           hpBarText:
             mv.lvText?.visible && mv.hpText?.visible ? `${mv.lvText.text}|${mv.hpText.text}` : null,
+          // the three-line readout, for the gate: name OVER the bar, Lv + hp
+          // UNDER it (each as [text, x, y] so the alignment is checkable)
+          readout:
+            mv.hpBg?.visible && mv.nameText && mv.lvText && mv.hpText
+              ? {
+                  name: [mv.nameText.text, Math.round(mv.nameText.x), Math.round(mv.nameText.y)],
+                  lv: [mv.lvText.text, Math.round(mv.lvText.x), Math.round(mv.lvText.y)],
+                  hp: [mv.hpText.text, Math.round(mv.hpText.x), Math.round(mv.hpText.y)],
+                  bar: [Math.round(mv.hpBg.x), Math.round(mv.hpBg.y), Math.round(mv.hpBg.width)],
+                }
+              : null,
         })),
       // The target overlays, for the gate: the red monster borders (engaged +
       // hunters), the blue item border, whether a walk-to beacon is up, the
@@ -2287,6 +2300,10 @@ export class WorldScene extends Phaser.Scene {
    * frame as the initial texture. No label/torch/footstep machinery. */
   private addMonster(id: string, m: any) {
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
+    // The roster's own display name ("Dewling" for forest_poring) — resolved
+    // HERE, once, because updateMonsterHpBar runs per monster per frame and a
+    // manifest scan there would be 24 finds × 160 monsters × 60fps.
+    const label = def?.name || m.kind;
     const f0 = this.projectFlat(m.x, m.y);
     const elev0 = (m.elev ?? f0.lvl) * MAP_GEOMETRY.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
@@ -2319,6 +2336,7 @@ export class WorldScene extends Phaser.Scene {
       sprite,
       shadow,
       kind: m.kind,
+      label,
       lx: p0.x,
       ly: p0.y,
       lyFlat: f0.y,
@@ -2749,6 +2767,7 @@ export class WorldScene extends Phaser.Scene {
     mv.lit?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
+    mv.nameText?.destroy();
     mv.lvText?.destroy();
     mv.hpText?.destroy();
     if (mv.mstate === "die" && mv.sprite.visible && !mv.culled) {
@@ -2868,12 +2887,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** The slim in-fight readout floating over a monster, styled after the
-   * player's own HP bar (round 5): "Lv N" LEFT-aligned on the bar, "hp/max"
-   * RIGHT-aligned, a clear gap between them even at 4-digit HP — the bar is
-   * sized for that layout. Level only, no name. Drawn ABOVE the darkness
-   * overlay (900_000) and the lit copies, UNDER the damage floats (900_002):
-   * day, night and shadow never touch it. Shown while the monster is
-   * wounded, in combat, or MY engaged target. */
+   * player's own HP bar. THREE LINES (maintainer 2026-08-05): the monster's
+   * NAME left-aligned OVER the bar, then the bar, then "Lv N" left-aligned
+   * and "hp/max" right-aligned UNDER it — a clear gap between the two even
+   * at 4-digit HP, which is what the bar's width is sized for. (Rounds 5-9
+   * kept Lv/hp on the bar's own line with no name at all; the name is his
+   * call to add now, and it needed that line freed up.) Drawn ABOVE the
+   * darkness overlay (900_000) and the lit copies, UNDER the damage floats
+   * (900_002): day, night and shadow never touch it. Shown while the monster
+   * is wounded, in combat, or MY engaged target. */
   private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
     const inFight =
       m.hpMax > 0 &&
@@ -2882,6 +2904,7 @@ export class WorldScene extends Phaser.Scene {
     if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
+      mv.nameText?.setVisible(false);
       mv.lvText?.setVisible(false);
       mv.hpText?.setVisible(false);
       return;
@@ -2897,8 +2920,11 @@ export class WorldScene extends Phaser.Scene {
       };
       mv.hpBg = this.add.rectangle(0, 0, W, 6, 0x10101c, 0.85).setDepth(900_001.5).setOrigin(0.5, 0.5);
       mv.hpFill = this.add.rectangle(0, 0, W - 2, 4, 0xf25d5d, 1).setDepth(900_001.6).setOrigin(0, 0.5);
-      mv.lvText = this.add.text(0, 0, "", style).setOrigin(0, 1).setDepth(900_001.7).setResolution(2);
-      mv.hpText = this.add.text(0, 0, "", style).setOrigin(1, 1).setDepth(900_001.7).setResolution(2);
+      // name ABOVE (origin bottom-left), Lv + hp BELOW (origin top-left /
+      // top-right) — the bar's own line is the name's now.
+      mv.nameText = this.add.text(0, 0, "", style).setOrigin(0, 1).setDepth(900_001.7).setResolution(2);
+      mv.lvText = this.add.text(0, 0, "", style).setOrigin(0, 0).setDepth(900_001.7).setResolution(2);
+      mv.hpText = this.add.text(0, 0, "", style).setOrigin(1, 0).setDepth(900_001.7).setResolution(2);
     }
     const frac = Math.max(0, Math.min(1, m.hp / m.hpMax));
     const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 8;
@@ -2907,12 +2933,17 @@ export class WorldScene extends Phaser.Scene {
       .setPosition(mv.lx - (W - 2) / 2, topY)
       .setVisible(true)
       .setSize(Math.max(1, (W - 2) * frac), 4);
+    const name = mv.label ?? mv.kind;
     const lv = `Lv ${m.level ?? 1}`;
     const hp = `${Math.ceil(m.hp)}/${m.hpMax}`;
+    if (mv.nameText!.text !== name) mv.nameText!.setText(name);
     if (mv.lvText!.text !== lv) mv.lvText!.setText(lv);
     if (mv.hpText!.text !== hp) mv.hpText!.setText(hp);
-    mv.lvText!.setPosition(mv.lx - W / 2, topY - 3).setVisible(true);
-    mv.hpText!.setPosition(mv.lx + W / 2, topY - 3).setVisible(true);
+    // All three hang off the BAR's own edges, so the three lines share one
+    // left margin and the stack stays centred on the monster.
+    mv.nameText!.setPosition(mv.lx - W / 2, topY - 5).setVisible(true);
+    mv.lvText!.setPosition(mv.lx - W / 2, topY + 5).setVisible(true);
+    mv.hpText!.setPosition(mv.lx + W / 2, topY + 5).setVisible(true);
   }
 
   /** A small rising damage number (world-space, above the night overlay). */

@@ -138,6 +138,11 @@
       "to": "games",
       "text": "Small touch in YOUR main.ts (maintainer request, standing grant): the 'New version out <sha>' banner now sits at top:98px (was 74 \u2014 clear of the stat chips) and wears var(--ink) text + var(--border) border instead of the accent pair. His words: it should not be orange, use the default near-black text. Same element, same behaviour, only the pill's look/placement. Nothing else in main.ts touched this round.",
       "at": "2026-08-05T22:35:17+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Monster in-fight readout restyled in YOUR WorldScene.ts (maintainer request, standing grant): it is a THREE-LINE stack now \u2014 the monster's NAME left-aligned OVER the hp bar, then the bar, then 'Lv N' left-aligned and 'hp/max' right-aligned UNDER it (they used to share the bar's own line, and there was no name \u2014 his call to add it, and it needed that line freed). The name is the roster display name from monsters.json (mv.label, resolved ONCE in addMonster \u2014 updateMonsterHpBar runs per monster per frame, so no manifest scan there). monsterInfo() gained a 'readout' field ({name,lv,hp,bar} each as [text,x,y]) and verify-combat asserts the alignment. hpBarText is unchanged, so your existing checks still read. 140/140 tests, typecheck clean, verify-combat ALL OK.",
+      "at": "2026-08-05T23:16:17+00:00"
     }
   ],
   "notes_to_games_agent": [
