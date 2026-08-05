@@ -61,6 +61,16 @@ const FLAP_COUNTS: readonly (readonly number[])[] = Array.from(
   { length: TYPES },
   (_, t) => flapframes.critters[`bird${t + 1}` as keyof typeof flapframes.critters].count,
 );
+// Per-frame flap interval, shared by the ground flock and the migratory groups
+// (they had two copies of the same literal). 25% SLOWER than the first culled
+// build (maintainer 2026-08-05): 15-21ms x 4/3 -> 20-28ms, the same wingbeat
+// stretched over 4/3 the time. A facing's cycle is count x this, and the cull
+// left counts between 6 and 16 frames, so a wingbeat now runs ~0.16-0.45s
+// depending on which way the bird faces.
+// These are REAL ms per frame since the accumulator fix in runtime/flap.ts —
+// anything under a frame time (~16.7ms) would silently pin to one frame per
+// tick and stop responding to changes here.
+const FLAP_MS: [number, number] = [20, 28];
 const BIRD_SCALE = 0.6; // 34px art → a small-but-readable bird in the flock
 const BIRD_ALPHA = 0.95;
 const DIR_STICK = 110; // ms an adjacent-sector heading flip must hold before the sprite turns
@@ -297,7 +307,7 @@ export function birdsFeature(): AmbientFeature {
         wander: rnd() * Math.PI * 2,
         dir: dir0,
         dirHoldT: 0,
-        flapMs: 15 + rnd() * 6, // per-frame; a full wingbeat ≈ 0.25-0.35s (2× the first cut)
+        flapMs: FLAP_MS[0] + rnd() * (FLAP_MS[1] - FLAP_MS[0]),
         flapT: rnd() * 200,
         frames: FLAP_COUNTS[type],
         // Desync the flock's wingbeats — within THIS facing's kept count, or the
@@ -419,7 +429,7 @@ export function birdsFeature(): AmbientFeature {
         wander: 0,
         dir: dir0,
         dirHoldT: 0,
-        flapMs: 15 + rnd() * 6,
+        flapMs: FLAP_MS[0] + rnd() * (FLAP_MS[1] - FLAP_MS[0]),
         flapT: rnd() * 200,
         frames: FLAP_COUNTS[type],
         frame: Math.floor(rnd() * FLAP_COUNTS[type][dir0]),
