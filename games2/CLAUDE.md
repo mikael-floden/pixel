@@ -1458,8 +1458,24 @@ visible head/shoulders are ABOVE the surface).
   `ambient/thunder` are the audio agent's wiring; **don't remove them**, and
   emit new semantic events (`gameAudio.event("item.get")` etc.,
   names from `sounds/bindings.json`) when adding gameplay that should sound.
+- **THE CONTEXT SCORE (2026-08-05)**: the music is now SIX situational beds —
+  `battle`, `cave`, `home`, `town`, `night`, `adventure` — cross-faded by what
+  the player is doing (`composer/engine/contextMusic.ts`). Battle reads the
+  monster brain's own `mstate` (`chase`/`combat`); a ROAMING monster scores zero
+  however close, so the score reacts to real fights only. Cave reads world@2
+  deck slabs overhead; home reads the spawn bonfire; town reads road/farm tiles.
+  Selection is PURE and TESTED (`composer/engine/bedSelect.ts`,
+  `composer/test/bedSelect.test.ts`): priority + Schmitt-trigger hysteresis so a
+  boundary can't dither, PLACE BEATS TIME (a town at night is still a town), and
+  a fallback chain so an un-generated bed degrades to the catalog track instead
+  of silence. Every bed is loudness-matched (−18 LUFS) with measured loop points
+  and resumes where it left off. Audition without hunting for the trigger:
+  `__ml.audioBed("cave")`, `__ml.audioBed()` to release, `__ml.audioField()` for
+  what the score is reading. Gate: `scripts/verify-beds.mjs` (dev stack).
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
+  It follows whichever score is playing (context bed or catalog track), and the
+  context beds carry MEASURED key + tempo so tonal-SFX scale-snap keeps working.
 - QA: `__ml.audio()` state probe; `scripts/verify-audio.mjs` (needs the dev
   stack) checks contracts→engine→footsteps→clock→ambience end to end.
 
