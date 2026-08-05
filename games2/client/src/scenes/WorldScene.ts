@@ -635,6 +635,18 @@ export class WorldScene extends Phaser.Scene {
   // would eat whole frames on phones; each replan schedules the next at
   // cost×8, floored at 50ms).
   private holdPointerId: number | null = null;
+  /** A HUD modal (the drop-quantity dialog) owns the screen: the world
+   * ignores pointer input entirely. NOT decorative — Phaser's window-level
+   * listeners deliberately process events whose target is NOT the canvas
+   * (TouchManager.onTouchStartWindow), so a tap on a DOM overlay reaches the
+   * scene and armed a walk-to trip THROUGH the dialog (maintainer 2026-08-05:
+   * cancelling a drop ran the player to where he tapped). */
+  private uiLocked = false;
+  /** …and the tap that CLOSES a modal must not become a trip either: the
+   * close handler runs on the element, Phaser's window listener runs after it
+   * in the same dispatch, so the lock is lifted a beat later than it is
+   * released. */
+  private uiLockLiftAt = 0;
   private holdGround: { x: number; y: number; lvl: number } | null = null;
   private holdRepathAt = 0;
   private keysActive = false;
@@ -986,6 +998,9 @@ export class WorldScene extends Phaser.Scene {
     // stops retargeting — the trip finishes at the last touched point.
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
+      // A HUD modal is up (or just closed under this very gesture): the world
+      // takes no input at all — no trip, no engage, no fetch.
+      if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
       // TAP TARGETS outrank ground movement (RO: click a monster to fight it,
       // click an item to fetch it). Hit-tested against the drawn art boxes in
@@ -1123,7 +1138,14 @@ export class WorldScene extends Phaser.Scene {
       onUiLock: (locked) => {
         // …and never hand the keys back to a chat box that is still typing.
         this.input.keyboard!.enabled = !locked && !this.chat?.open;
-        if (!locked) return;
+        this.uiLocked = locked;
+        // Lift the pointer lock a beat AFTER the modal closes: the tap that
+        // dismissed it is still being dispatched, and Phaser's window-level
+        // listener sees it after the DOM handler that closed the dialog.
+        if (!locked) {
+          this.uiLockLiftAt = performance.now() + 150;
+          return;
+        }
         this.input.keyboard!.resetKeys();
         this.dropHold();
         this.clearMoveTarget();

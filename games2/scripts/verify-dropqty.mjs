@@ -359,21 +359,45 @@ try {
       : fail(`"${junk}" moved the amount to ${back}, want 4`);
   }
 
-  // ---- 6. tapping OUTSIDE closes it and hands movement back (no cancel button) ----
-  await page.evaluate(() => {
-    const b = document.querySelector(".ml-qty-back").getBoundingClientRect();
-    document.querySelector(".ml-qty-back").dispatchEvent(
-      new PointerEvent("pointerdown", { bubbles: true, clientX: b.left + 8, clientY: b.top + 8 }),
-    );
+  // ---- 6. tapping OUTSIDE closes it and hands movement back (no cancel
+  //         button) — and the CANCEL TAP MUST NOT BECOME A WALK-TO
+  //         (maintainer 2026-08-05: "press outside the dialog and the player
+  //         will run to that location"). Phaser's window-level listeners
+  //         process events whose target is not the canvas, so a DOM overlay
+  //         tap reached the world's tap-to-move. Driven with a REAL mouse
+  //         gesture over the game view, and the player must not budge. ----
+  const before = await page.evaluate(() => {
+    const m = window.__ml.me();
+    return { x: m.x, y: m.y };
   });
-  await page.waitForTimeout(150);
+  const spot = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const px = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
+    return {
+      x: (px("--gv-left") + window.innerWidth - px("--gv-right")) / 2,
+      y: (window.innerHeight - px("--hud-h")) * 0.2, // well inside the world
+    };
+  });
+  await page.mouse.move(spot.x, spot.y);
+  await page.mouse.down();
+  await page.mouse.up();
+  await page.waitForTimeout(1200); // long enough for a trip to visibly start
   const afterCancel = await page.evaluate(() => ({
     open: !!document.querySelector(".ml-qty-back"),
     walk: window.__ml.canWalk(),
+    target: window.__ml.target?.() ?? null,
+    me: (() => {
+      const m = window.__ml.me();
+      return { x: m.x, y: m.y };
+    })(),
   }));
   !afterCancel.open && afterCancel.walk
     ? ok("a tap outside the card closes the dialog and unfreezes the player")
-    : fail(`after tapping outside: ${JSON.stringify(afterCancel)}`);
+    : fail(`after tapping outside: ${JSON.stringify({ open: afterCancel.open, walk: afterCancel.walk })}`);
+  const drift = Math.hypot(afterCancel.me.x - before.x, afterCancel.me.y - before.y);
+  drift < 4 && !afterCancel.target
+    ? ok(`…and the cancel tap did NOT become a walk-to (drift ${drift.toFixed(1)}wu, no trip target)`)
+    : fail(`cancelling the drop walked the player: drift ${drift.toFixed(1)}wu, target ${JSON.stringify(afterCancel.target)}`);
 
   // ---- 7. drop closes it too (the server's own clamping is unit-tested) ----
   await dragSlotOut();

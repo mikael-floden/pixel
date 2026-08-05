@@ -1086,12 +1086,23 @@ export class HudBar {
     });
     card.append(head, dropB);
     back.appendChild(card);
-    // A tap OUTSIDE the card is the CANCEL (maintainer: no close button) —
-    // and either way the backdrop is the event target, so Phaser never sees a
-    // pointer while the dialog is up. Removing the card blurs the number box
-    // with it, so the phone keyboard leaves too.
+    // A tap OUTSIDE the card is the CANCEL (maintainer: no close button).
+    // Removing the card blurs the number box with it, so the phone keyboard
+    // leaves too. preventDefault on the BACKDROP's own events (never the
+    // card's — that would eat the buttons' clicks on touch) is the first of
+    // two layers keeping that tap out of the world: Phaser's window-level
+    // listeners process events whose target is not the canvas, but skip any
+    // that are defaultPrevented. The second layer is WorldScene's uiLock,
+    // which also covers taps on the card itself.
+    const swallow = (e: Event) => {
+      if (e.target === back && e.cancelable) e.preventDefault();
+    };
+    back.addEventListener("touchstart", swallow, { passive: false });
+    back.addEventListener("mousedown", swallow);
     back.addEventListener("pointerdown", (e) => {
-      if (e.target === back) close();
+      if (e.target !== back) return;
+      if (e.cancelable) e.preventDefault();
+      close();
     });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

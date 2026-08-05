@@ -972,10 +972,20 @@ visible head/shoulders are ABOVE the surface).
   tried first and rejected: a dialog that jumps out from under your finger is
   worse than the few px it buys, so the drop dialog's box deliberately does
   NOT register with mountChatKeyboardLift). MOVEMENT IS FROZEN while
-  it's open, both halves: the full-screen backdrop swallows every tap before
-  Phaser sees it, and `HudActions.onUiLock` disables Phaser's keyboard (which
-  the analog stick synthesizes into), resets held keys and drops any trip or
-  hold in flight. SERVER: `"drop"` takes an `n`, clamped to `1..entry.n` — a
+  it's open, and the halves are worth knowing because the obvious one is a
+  LIE: a DOM overlay does NOT keep pointers away from Phaser. Its
+  window-level listeners deliberately process events whose target is not the
+  canvas (TouchManager.onTouchStartWindow), so a tap on the backdrop reached
+  the world's tap-to-move and CANCELLING A DROP RAN THE PLAYER TO WHERE YOU
+  TAPPED (maintainer 2026-08-05). So: `HudActions.onUiLock` disables Phaser's
+  keyboard (which the analog stick synthesizes into), resets held keys, drops
+  any trip or hold in flight, AND sets `uiLocked` — the scene's pointerdown
+  returns early while a modal is up. The lock LIFTS 150ms LATE (uiLockLiftAt),
+  because the tap that closes the dialog is still being dispatched: the DOM
+  handler that closes it runs before Phaser's window listener sees the same
+  event. Belt and braces, the backdrop also preventDefault()s its OWN events
+  (never the card's — that would eat the buttons' clicks on touch), which
+  Phaser skips. SERVER: `"drop"` takes an `n`, clamped to `1..entry.n` — a
   client can never drop what it does not hold — and the 150ms item cadence is
   charged PER ITEM (+20ms each) so one tap can't put a 99-stack on the ground
   6.7×/s. Gates: `scripts/verify-dropqty.mjs` (badges, both orientations, the
