@@ -69,16 +69,23 @@ try {
     let prev = "";
     for (let i = 0; i < 40; i++) {
       await page.waitForTimeout(150);
-      const now = await page.evaluate(() =>
-        ["ml-bars-l", "ml-bars-r", "ml-clock", "ml-pad-stick"]
+      const now = await page.evaluate(() => {
+        // A rotation FLIP pins the chrome at its OLD spot for up to ~1.3s
+        // (armFlipGlide) — pinned frames are perfectly stable, so geometry
+        // equality alone would return mid-pin. Any live pin transform keeps
+        // the poll going until the glide has cleared it.
+        const pinned = [...document.querySelectorAll(".ml-bars-l,.ml-bars-r,.ml-clock,.ml-chatlog,.ml-pad-stick,.ml-pad-blur")]
+          .some((e) => e.style.transform);
+        if (pinned) return `pinned-${Math.random()}`;
+        return ["ml-bars-l", "ml-bars-r", "ml-clock", "ml-pad-stick"]
           .map((c) => {
             const e = document.querySelector("." + c);
             if (!e) return "-";
             const r = e.getBoundingClientRect();
             return `${Math.round(r.left)},${Math.round(r.top)}`;
           })
-          .join("|"),
-      );
+          .join("|");
+      });
       if (now === prev) return;
       prev = now;
     }
@@ -469,6 +476,64 @@ try {
   g.stick.l > 393 * 0.5 && g.jump.r < 393 * 0.5
     ? ok("right-handed portrait: stick right / jump left (the original spots)")
     : fail(`stick ${JSON.stringify(g.stick)} jump ${JSON.stringify(g.jump)}`);
+
+  // ---- 4b. the TWO-PHASE rotation FLIP (maintainer 2026-08-05 round 2:
+  //          "wait for the frame buffer to re-initialize at the old position
+  //          and make the animation smooth once the laggy stuff has finished
+  //          reloading"). Rotating portrait -> landscape, the clock pill must
+  //          (a) PIN: hold its OLD on-screen spot via a transform while the
+  //          canvas takes its new size, then (b) GLIDE: clear the transform
+  //          under a transform-only transition into the new anchor. A rAF
+  //          observer armed BEFORE the rotation watches every frame. ----
+  await page.evaluate(() => {
+    const el = document.querySelector(".ml-clock");
+    const oldLeft = el.getBoundingClientRect().left;
+    window.__flip = new Promise((res) => {
+      const out = { oldLeft: Math.round(oldLeft), pinSeen: false, pinHeld: null,
+        glideSeen: false, glideProp: "", finalLeft: null, w: 0, timedOut: false };
+      const t0 = performance.now();
+      let clearAt = 0;
+      const tick = () => {
+        const tf = el.style.transform;
+        const r = el.getBoundingClientRect();
+        if (tf) {
+          out.pinSeen = true;
+          if (out.pinHeld === null) out.pinHeld = Math.abs(r.left - oldLeft) <= 3;
+          clearAt = 0;
+        } else if (out.pinSeen && !clearAt) clearAt = performance.now();
+        if (el.classList.contains("ml-glide")) {
+          out.glideSeen = true;
+          out.glideProp = getComputedStyle(el).transitionProperty;
+        }
+        const now = performance.now();
+        if ((clearAt && now - clearAt > 600) || now - t0 > 6000) {
+          out.timedOut = now - t0 > 6000 && !clearAt;
+          out.finalLeft = Math.round(r.left);
+          out.w = Math.round(r.width);
+          res(out);
+        } else requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  });
+  await page.setViewportSize({ width: 851, height: 393 });
+  const flip = await page.evaluate(() => window.__flip);
+  flip.pinSeen && flip.pinHeld === true
+    ? ok(`rotation pins the pill at its old spot while the canvas re-initializes (left ${flip.oldLeft})`)
+    : fail(`no pin phase on rotation: ${JSON.stringify(flip)}`);
+  flip.glideSeen && /transform/.test(flip.glideProp)
+    ? ok(`…then glides in on a transform-only transition (${flip.glideProp})`)
+    : fail(`no transform glide after the pin: ${JSON.stringify(flip)}`);
+  !flip.timedOut && Math.abs(flip.finalLeft + flip.w - (851 - 10)) <= 2
+    ? ok(`…and lands on the landscape anchor (right edge ${flip.finalLeft + flip.w})`)
+    : fail(`flip never settled on the anchor: ${JSON.stringify(flip)}`);
+  // back to portrait for the help-chip section (and let ITS flip finish too)
+  await page.setViewportSize({ width: 393, height: 851 });
+  await settle();
+  await page.waitForFunction(
+    () => document.querySelector(".ml-clock").style.transform === "",
+    null, { timeout: 8000, polling: 100 },
+  );
 
   // ---- 5. help chip: dismiss is forever ----
   const before = await page.evaluate(() => {

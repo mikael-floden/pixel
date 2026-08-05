@@ -1845,14 +1845,36 @@ visible head/shoulders are ABOVE the surface).
   backpack -> rotate -> gamepad repro is pinned frame-by-frame in the
   gate). The position glide is
   .anim-GATED and fires ONLY on a handedness change while the page is
-  visible; ROTATION SNAPS (maintainer 2026-08-05, twice refined: first
-  "not when clicking from and to the game-controller page", then "the
-  UI animation feels laggy when switching orientation" — the glide ran
-  against the canvas resize and the OS's own rotation animation).
-  applyLayout mirrors that for the anchor chrome with a transient
-  :root.ml-noanim (~400ms, transition:none!important on
-  bars/clock/chatlog/chatinput) around every ml-land flip, so the
-  handedness glide survives and rotation is instant.
+  visible (maintainer 2026-08-05, twice refined: first "not when
+  clicking from and to the game-controller page", then "the UI
+  animation feels laggy when switching orientation" — a glide that runs
+  DURING the rotation fights the canvas resize and the OS's own
+  rotation animation).
+  ROTATION IS A TWO-PHASE FLIP (maintainer, round 3 the same day — the
+  plain snap still "felt laggy"; his ask: "wait for the frame buffer to
+  re-initialize at the old position and make the animation smooth once
+  the laggy stuff has finished reloading"). hud.ts armFlipGlide():
+  (1) PIN — the classes/vars snap immediately (the canvas MUST resize
+  right away; that IS the heavy part) under :root.ml-noanim, while every
+  corner-chrome element (bars chips, clock pill, chat overlay, ghost
+  stick + blur disc — FLIP_CHROME) gets a translate() holding it at its
+  OLD on-screen spot, applied pre-paint so nothing flashes; (2) GLIDE —
+  a rAF loop watches frame deltas, and once two consecutive frames come
+  in under ~34ms (cap 900ms) the transforms clear under a
+  transform-ONLY transition (.ml-glide, 320ms) — compositor work, no
+  layout/paint, so it stays smooth right after the resize. TWO traps,
+  both hit live: the OLD positions CANNOT be measured at resize-event
+  time (the browser applies the new viewport BEFORE the event fires, so
+  right/bottom-anchored fixed elements have already been dragged along
+  with their edges — the pill measured at left −24px); they come from a
+  ROLLING SNAPSHOT (flipRects, 400ms interval + post-glide refresh) —
+  which itself must SKIP any tick landing in the
+  viewport-resized-but-vars-not-yet gap (the same chimera, seen from
+  the other side). And the gate's settle() treats any live pin
+  transform as "not settled": pinned frames are perfectly stable, so
+  geometry equality alone returns mid-pin. Gate section 4b
+  (verify-landscape) watches one rotation frame-by-frame — pin at the
+  old spot, transform-only transition, landing on the anchor.
   LANDSCAPE COLUMN SIZING (same round, from device screenshots): tabs
   keep their full 56px in landscape — the global ≤640px-HEIGHT rule was
   written for short PORTRAIT phones but every landscape phone is under
