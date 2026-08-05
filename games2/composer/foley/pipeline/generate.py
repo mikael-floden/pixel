@@ -389,8 +389,8 @@ SETS: dict[str, dict] = {
     },
     "monster_hit": {
         "brief": (
-            "a single soft squashy impact, a hand slapping a plump jelly "
-            "creature, one muted bouncy wet thwack, round and rubbery"
+            "one deep muted squash, a heavy soft hand pressing fast into "
+            "thick dough, a single low dull bassy thump, round and rubbery"
         ),
         "duration_s": 0.6,
         "variants": IMPACT_VARIANTS,
@@ -422,9 +422,9 @@ SETS: dict[str, dict] = {
     },
     "cross_rise": {
         "brief": (
-            "a small wooden post rising up out of loose garden soil, dry "
-            "earth crumbling and trickling off wood, ending with one firm "
-            "wooden settle into the ground"
+            "heavy damp garden soil shifting low and deep as a wooden post "
+            "pushes slowly upward, a dull earthy rumble of soft dirt clumps, "
+            "ending in one low muffled wooden settle"
         ),
         "duration_s": 1.2,
         "variants": SETTLE_VARIANTS,
@@ -442,9 +442,9 @@ SETS: dict[str, dict] = {
     },
     "item_pickup": {
         "brief": (
-            "a single quick pick-up of a small treasure from the ground, a "
-            "soft leather pouch grab with one tiny warm wooden clink, brisk "
-            "and satisfying"
+            "one quick soft grab of a small cloth pouch off the ground, a "
+            "low dull leather pat with one muted round wooden tap, warm and "
+            "dark and satisfying"
         ),
         "duration_s": 0.6,
         "variants": IMPACT_VARIANTS,
@@ -454,8 +454,8 @@ SETS: dict[str, dict] = {
     },
     "item_drop": {
         "brief": (
-            "a small pouch dropping onto packed dirt ground, one soft warm "
-            "thump with a tiny tumble and settle"
+            "a small heavy beanbag landing on soft earth, one single low "
+            "dull deep thump, muffled and dark, dead ground"
         ),
         "duration_s": 0.6,
         "variants": IMPACT_VARIANTS,
