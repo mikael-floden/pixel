@@ -1532,7 +1532,9 @@ function injectStyles() {
      2026-08-05): a hair above centre, which keeps the number box clear of
      the phone's number keyboard WITHOUT the card jumping when it opens —
      a lift that moves the dialog under your finger is worse than the few
-     px it saves. Horizontally it is centred between the gv insets. */
+     px it saves. Horizontally it is centred between the gv insets.
+     LANDSCAPE takes 40%: the view is ~393px tall there and the keyboard
+     eats a bigger share of it, so the card needs the extra step up. */
   .ml-qty{position:absolute;
     left:calc(var(--gv-left,0px) + (100vw - var(--gv-left,0px) - var(--gv-right,0px)) / 2);
     top:calc((100dvh - var(--hud-h,0px)) * .45);
@@ -1541,6 +1543,7 @@ function injectStyles() {
     box-sizing:border-box;display:flex;flex-direction:column;gap:10px;
     background:var(--bg);border:1px solid var(--border);border-radius:14px;
     padding:14px;box-shadow:var(--shadow)}
+  :root.ml-land .ml-qty{top:calc((100dvh - var(--hud-h,0px)) * .4)}
   /* ONE row: item + count LEFT, the two steppers together RIGHT (maintainer:
      "the + and minus buttons should be left aligned on the right side. The
      ×1 of 5 input should be left aligned on the left side") */

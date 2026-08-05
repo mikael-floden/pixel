@@ -402,9 +402,15 @@ try {
     const gvL = g.gv.l;
     const gvR = g.vw - g.gv.r;
     const cx = (g.card.l + g.card.r) / 2;
+    const cy = (g.card.t + g.card.b) / 2;
     Math.abs(cx - (gvL + gvR) / 2) <= 3 && g.card.l > gvL && g.card.b <= g.vh
       ? ok(`landscape card centred in the game view (${Math.round(cx)} of ${gvL}..${gvR}), clear of the menu column`)
       : fail(`landscape card ${JSON.stringify(g.card)} vs game view ${gvL}..${gvR}`);
+    // …and a step HIGHER than portrait's 45% — the keyboard takes a bigger
+    // share of a ~393px-tall view (maintainer 2026-08-05).
+    Math.abs(cy - (g.vh - g.gv.hud) * 0.4) <= 3
+      ? ok(`landscape card at 40% of the view height (y ${Math.round(cy)} of ${g.vh})`)
+      : fail(`landscape card at y ${cy}, want ${Math.round((g.vh - g.gv.hud) * 0.4)}`);
     g.card.h <= g.vh - 20
       ? ok(`card fits the short viewport (${g.card.h}px of ${g.vh})`)
       : fail(`card ${g.card.h}px tall on a ${g.vh}px viewport`);

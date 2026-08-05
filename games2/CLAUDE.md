@@ -906,7 +906,8 @@ visible head/shoulders are ABOVE the surface).
   `color-mix` of the theme's own `--bg` brightened the light theme, which
   read as the dialog lighting the room). The card is absolutely placed off
   `--gv-left/--gv-right/--hud-h`: horizontally centred in the game view,
-  vertically at **45%** of its height. That 5% is the whole
+  vertically at **45%** of its height (**40%** in landscape, where the view is
+  ~393px tall and the keyboard eats a bigger share). That step up is the whole
   number-keyboard story — it keeps the box above the keys in both
   orientations WITHOUT the card moving when they open (a `.ml-kb-up` lift was
   tried first and rejected: a dialog that jumps out from under your finger is
