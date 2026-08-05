@@ -616,7 +616,9 @@ const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? `
 const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
 /** Authored in characters2/metadata.json; the placeholder only runs for a
  *  hero the characters agent has not written up yet. */
-const heroLore = (c) => c.loreDesc ?? c.lore ?? "One of the heroes you can set out as. Their story has not been written down yet — the chroniclers of Nangijala are still at work.";
+const heroLore = (c) => c.loreDesc ?? c.lore ?? (c.kind === "npc"
+  ? "One of the folk of Nangijala. Who they are — a name, a home, a grudge — has not been written down yet."
+  : "One of the heroes you can set out as. Their story has not been written down yet — the chroniclers of Nangijala are still at work.");
 /** A lore paragraph that always occupies the height of the LONGEST lore in
  *  its domain, so paging next/next/next can't move the animation viewer
  *  below it (maintainer 2026-07-30: "the animation preview jumps up and
@@ -1256,20 +1258,40 @@ function viewMonster(id) {
 
 /* --- characters --- */
 function viewCharacters() {
-  const list = state.data.domains.characters.filter((c) => matches(state.query, c.id, c.name));
+  const all = state.data.domains.characters;
+  const heroes = all.filter((c) => c.kind !== "npc" && matches(state.query, c.id, c.name));
+  // Every NPC is named "Villager" (their PixelLab names are prompt junk —
+  // characters2's own README), so players match them only on that word; the
+  // admin can also hit the folder key and the raw PixelLab name.
+  const npcs = all.filter((c) => c.kind === "npc" &&
+    matches(state.query, c.name, ...(state.admin ? [c.id, c.pixellabName] : [])));
   return h("div", {},
     sectionHead("characters"),
     h("p", { class: "muted" }, state.admin
       ? "The heroes from characters2 — every game state, all 8 directions."
       : "The heroes you can play as — every move, seen from all 8 sides."),
-    h("div", { class: "grid" }, ...list.map((c) =>
+    h("div", { class: "grid" }, ...heroes.map((c) =>
       h("a", { class: "card", href: `#/characters/${c.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
         h("div", { class: "card-name" }, c.name),
         // What the hero IS, not what the folder is called.
         h("div", { class: "card-sub" }, heroKind(c)),
         state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
-        h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))));
+        h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))),
+    // --- NPCs: deliberately SECOND and visually smaller (maintainer
+    // 2026-08-01: "player selectable Characters foremost ... its own clear
+    // secondary/less important section"). Portrait-only tiles: 191 cards all
+    // captioned "Villager" would be noise, the faces ARE the content.
+    npcs.length ? h("div", { class: "npc-block" },
+      h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
+      h("p", { class: "muted" }, state.admin
+        ? "The tag-driven NPC mirror. Names are PixelLab prompt junk, so players see every one as a Villager — review and prune from here."
+        : "The folk you will meet along the way. You cannot set out as one of them."),
+      h("div", { class: "grid npc-grid" }, ...npcs.map((c) =>
+        h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
+          h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+          state.admin ? h("div", { class: "card-sub" }, c.id.replace(/^npc-/, "")) : null,
+          h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)))))) : null);
 }
 function viewCharacter(id) {
   const c = state.data.domains.characters.find((x) => x.id === id);
@@ -1285,8 +1307,14 @@ function viewCharacter(id) {
   renderFacet();
   // The character's sounds (e.g. jump) live in the sounds domain — link them in.
   const related = state.data.domains.sounds.filter((s) => ["movement"].includes(s.category));
+  // Paging stays INSIDE the group: ‹ › from a hero walks the heroes, from an
+  // NPC walks the NPCs — 191 Villagers between Man and Woman would bury the
+  // playable cast the page is foremost about. Same group feeds the lore
+  // reserve, so the viewer's height is constant within what you can page to.
+  const isNpc = c.kind === "npc";
+  const group = state.data.domains.characters.filter((x) => (x.kind === "npc") === isNpc);
   return h("div", {},
-    crumbRow("#/characters", `← ${label("characters")}`, "characters", state.data.domains.characters, c.id),
+    crumbRow("#/characters", `← ${label("characters")}`, "characters", group, c.id),
     h("div", { class: "detail-head" },
       // Species/sex rides under the thumbnail, exactly like a monster's level
       // chip — it balances the two columns (maintainer 2026-07-30).
@@ -1296,16 +1324,20 @@ function viewCharacter(id) {
       h("div", { class: "meta" },
         h("h1", {}, c.name),
         // Folder id, frame size and state count are PIPELINE facts — admin
-        // only (maintainer 2026-07-30). Players get the hero's story, which
-        // the characters agent authors in characters2/metadata.json.
-        state.admin ? h("p", { class: "muted" }, `${c.id} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`) : null,
-        loreSlot(heroLore(c), state.data.domains.characters.map(heroLore)),
+        // only (maintainer 2026-07-30). The NPC's PixelLab name is the same
+        // class of fact: prompt junk a player must never meet.
+        state.admin ? h("p", { class: "muted" }, `${c.id}${c.pixellabName ? ` · “${c.pixellabName}”` : ""} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`) : null,
+        // Deduped: the 191 NPCs share one placeholder, and the reserve only
+        // needs each DISTINCT height once, not 191 copies of the same ghost.
+        loreSlot(heroLore(c), [...new Set(group.map(heroLore))]),
         feedbackRow("characters", c.path))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
-    h("div", { class: "panel" },
+    // Movement sounds are the PLAYER's kit — jump, footsteps, splash follow
+    // the hero you steer. An NPC just stands there; no sounds panel.
+    isNpc ? null : h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Movement sounds ", h("span", { class: "pill" }, "from the sounds agent — jump, footsteps, splash")),
       muteGameBtn(),
       ...related.map((s) => h("div", {},
@@ -2046,7 +2078,16 @@ function viewSearch() {
   const d = state.data.domains;
   const hits = [];
   d.monsters.forEach((m) => matches(q, m.id, m.name) && hits.push(["monsters", m.name, `#/monsters/${m.id}`, m.preview]));
-  d.characters.forEach((c) => matches(q, c.id, c.name) && hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]));
+  // Heroes search by name; NPCs are 191 identical "Villager"s, so they stay
+  // out of GLOBAL search for players (the Characters page lists them all) and
+  // surface for the admin by folder key / PixelLab name, labelled by key so
+  // the hits are tellable-apart.
+  d.characters.forEach((c) => {
+    if (c.kind === "npc") {
+      if (state.admin && matches(q, c.id, c.pixellabName))
+        hits.push(["characters", `Villager · ${c.id.replace(/^npc-/, "")}`, `#/characters/${c.id}`, c.preview]);
+    } else if (matches(q, c.id, c.name)) hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
+  });
   d.tiles.forEach((t) => matches(q, t.id, t.name, t.description) && hits.push(["tiles", t.name, `#/tiles/${t.id}`, t.groups[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null]));
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
   d.sounds.forEach((s) => matches(q, s.id, s.name, s.description, s.usage) && hits.push(["sounds", s.name, "#/sounds", null]));

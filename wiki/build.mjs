@@ -265,6 +265,7 @@ function buildCharacters() {
     }
     chars.push({
       id,
+      kind: "hero",
       name: meta.display_name ?? HERO_NAMES[id] ?? titleCase(id),
       species: meta.species ?? null,
       sex: meta.sex ?? null,
@@ -272,6 +273,47 @@ function buildCharacters() {
       path: `characters2/humans/${id}`,
       preview: art(`characters2/humans/${id}/base/south`),
       baseStrip: art(`characters2/humans/${id}/base/preview`),
+      frameW, frameH,
+      animations: anims,
+    });
+  }
+  // --- NPCs (characters2/npcs/, tag-driven mirror; landed 2026-08-01) -------
+  // Same array, kind:"npc": the page splits on it, and everything shared —
+  // routing, feedback, the animation player, lore joins — keeps working with
+  // one code path. Folders are keyed by the PixelLab id's first 8 hex chars
+  // because the NPC NAMES ARE PROMPT JUNK ("No boots, no gloves, (copy 5)") —
+  // the characters2 README says so outright. So players see none of them:
+  // every NPC is a "Villager" until someone authors a real name; the PixelLab
+  // name rides along for the admin, who reviews these. States are discovered
+  // from the folders on disk — NPCs are not in animation_map.json.
+  const npcBase = join(ROOT, "characters2", "npcs");
+  for (const key of listDirs(npcBase)) {
+    const cj = readJson(join(npcBase, key, "character.json"));
+    if (!cj) continue;
+    const size = cj.size;
+    const frameW = Array.isArray(size) ? size[0] : size?.width ?? 112;
+    const frameH = Array.isArray(size) ? size[1] : size?.height ?? 112;
+    const anims = {};
+    for (const folder of listDirs(join(npcBase, key, "animations"))) {
+      const dirs = {};
+      for (const dir of DIRS) {
+        const frameDir = join(npcBase, key, "animations", folder, dir);
+        const frames = listFiles(frameDir, artRe("\\d+")).length;
+        if (frames) dirs[dir] = { frames, framesDir: `characters2/npcs/${key}/animations/${folder}/${dir}`, ...frameNaming(frameDir) };
+      }
+      if (Object.keys(dirs).length) anims[folder] = { folder, dirs };
+    }
+    chars.push({
+      id: `npc-${key}`,
+      kind: "npc",
+      name: "Villager",
+      pixellabName: cj.name ?? null,             // admin-only display
+      species: "Human",
+      sex: null,
+      lore: null,
+      path: `characters2/npcs/${key}`,
+      preview: art(`characters2/npcs/${key}/base/south`),
+      baseStrip: art(`characters2/npcs/${key}/base/preview`),
       frameW, frameH,
       animations: anims,
     });
@@ -850,7 +892,11 @@ const data = {
   loreMeta,
   counts: {
     monsters: monsters?.length ?? 0,
-    characters: characters?.length ?? 0,
+    // Heroes and NPCs counted apart: the nav and start tile stay about the
+    // PLAYABLE cast (maintainer 2026-08-01 — "player selectable Characters
+    // foremost"); the NPC block carries its own count in its heading.
+    characters: characters?.filter((c) => c.kind !== "npc").length ?? 0,
+    npcs: characters?.filter((c) => c.kind === "npc").length ?? 0,
     tile_types: tiles?.length ?? 0,
     tiles: tiles?.reduce((n, t) => n + t.tileCount, 0) ?? 0,
     objects: objects?.length ?? 0,

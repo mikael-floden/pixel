@@ -631,3 +631,16 @@ button.drop-row {
 .story-who { min-width: 0; }
 .story-name { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.2; }
 .story-what { font-size: 12.5px; }
+
+/* --- NPCs: the SECONDARY block on the Characters page (maintainer
+   2026-08-01: heroes foremost, NPCs "in its own clear secondary/less
+   important section"). Half-size portrait tiles, no captions — all 191 are
+   named "Villager", so the faces are the content and a caption per card
+   would just repeat one word down the page. */
+.npc-block { margin-top: 26px; }
+.npc-block h2 { display: flex; align-items: center; }
+.npc-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
+.npc-grid .npc-card { padding: 6px; gap: 4px; border-radius: 9px; }
+.npc-grid .npc-card .thumb { height: 72px; border-radius: 6px; }
+.npc-grid .npc-card .card-sub { font-size: 10.5px; text-align: center; }
+.npc-grid .card-badges { justify-content: center; }
