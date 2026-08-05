@@ -137,8 +137,14 @@ function showUpdateBanner(sha: string) {
   // zoom compensation). QUIET, not orange (maintainer 2026-08-05): the
   // default ink + a plain border — the accent pair read as an alert for what
   // is only an FYI — and it sits a step lower, clear of the stat chips.
+  // …and it hangs off the chips' MEASURED heights (bars.ts publishes
+  // --bars-l-h / --bars-r-h from ResizeObservers) + the project's 10px
+  // margin, so it clears them on a device whose font metrics make the chips
+  // taller. It is CENTRED, so it can pass under either one — hence the max()
+  // of both, not just the right chip's. The 78px fallbacks are this phone's
+  // left-chip height, used on the select screen where there are no chips.
   el.style.cssText =
-    "position:fixed;top:98px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:calc(max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:9px 16px;border-radius:10px;" +
     "background:var(--surface, #fff);color:var(--ink, #1f1e1a);" +
     "border:1px solid var(--border, #e6e2d7);font:600 13.5px var(--sans, sans-serif);" +

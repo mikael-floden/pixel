@@ -96,17 +96,23 @@ export function mountBars() {
   rootR.appendChild(goldRow);
 
   document.body.append(root, rootR);
-  // Publish the RIGHT chip's height so the time-of-day pill can park directly
-  // under it in right-handed landscape (clock.ts reads --bars-r-h). Measured,
-  // not assumed: the chip's height moves with the theme's font metrics, the
-  // gold row and the >=700px row-width tier.
-  if ("ResizeObserver" in window)
-    new ResizeObserver(() =>
-      document.documentElement.style.setProperty(
-        "--bars-r-h",
-        `${Math.round(rootR!.getBoundingClientRect().height)}px`,
-      ),
-    ).observe(rootR);
+  // Publish BOTH chips' heights: the time-of-day pill parks directly under
+  // the RIGHT one in right-handed landscape (clock.ts reads --bars-r-h), and
+  // the update banner — centred, so it can pass under EITHER — clears the
+  // TALLER of the two (main.ts). Measured, not assumed: a chip's height moves
+  // with the theme's font metrics, the gold row and the >=700px row tier, and
+  // the left chip (two stat rows) is normally the taller.
+  if ("ResizeObserver" in window) {
+    const publish = (el: HTMLElement, name: string) =>
+      new ResizeObserver(() =>
+        document.documentElement.style.setProperty(
+          name,
+          `${Math.round(el.getBoundingClientRect().height)}px`,
+        ),
+      ).observe(el);
+    publish(rootR, "--bars-r-h");
+    publish(root, "--bars-l-h");
+  }
   renderGold();
   renderLevel();
 
