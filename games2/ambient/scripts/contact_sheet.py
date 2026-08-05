@@ -18,6 +18,7 @@ because one sheet with every critter exceeds the chat upload's pixel limit.
 
     python games2/ambient/scripts/contact_sheet.py [outdir] [--zoom N] [--per-part N]
     python games2/ambient/scripts/contact_sheet.py out --only bat
+    python games2/ambient/scripts/contact_sheet.py out --original  # for a NEW cull round
 """
 import os
 import sys
@@ -28,6 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 AMBIENT = os.path.dirname(HERE)
 BIRD_ART = os.path.join(AMBIENT, "birds", "art")
 BAT_ART = os.path.join(AMBIENT, "bats", "art")
+ORIG_ART = os.path.join(AMBIENT, "art-original")
 FRAME = 34  # critters.ts FRAME_W / FRAME_H
 NFRAMES = 16  # critters.ts FLY_FRAMES
 IMG_EXTS = ("png", "webp")  # art domains are mid-migration; try both
@@ -66,8 +68,26 @@ def _fly(dirpath):
     return None
 
 
-def critters():
-    """Every flyer packing the shared 16x8 sheet: the 8 birds, then the bat."""
+def critters(original=False):
+    """Every flyer packing the shared 16x8 sheet: the 8 birds, then the bat.
+
+    original=True reads art-original/ — the UNCULLED 16-frame sheets. Use that
+    for a new culling round: the numbers written on those sheets are the ones
+    cull.json speaks, so a frame named there can be dropped verbatim. The
+    SHIPPED sheets have been repacked (kept frames slid left), so F5 on a culled
+    sheet is a different frame than F5 on the original.
+    """
+    if original:
+        out = []
+        for d in sorted(glob.glob(os.path.join(ORIG_ART, "bird*")),
+                        key=lambda p: int(os.path.basename(p)[4:])):
+            p = _fly(d)
+            if p:
+                out.append((os.path.basename(d), p))
+        p = _fly(os.path.join(ORIG_ART, "bat"))
+        if p:
+            out.append(("bat", p))
+        return out
     out = []
     for d in sorted(glob.glob(os.path.join(BIRD_ART, "bird*")),
                     key=lambda p: int(os.path.basename(p)[4:])):
@@ -131,6 +151,7 @@ def main():
     if "--per-part" in args:
         per_part = int(args[args.index("--per-part") + 1])
     only = args[args.index("--only") + 1].split(",") if "--only" in args else None
+    original = "--original" in args
     skip = {"--zoom", "--per-part", "--only"}
     pos, i = [], 0
     while i < len(args):
@@ -142,7 +163,7 @@ def main():
         i += 1
     outdir = pos[0] if pos else HERE
 
-    cl = critters()
+    cl = critters(original)
     if only:
         cl = [(n, p) for n, p in cl if n in only]
     if not cl:
@@ -158,13 +179,14 @@ def main():
         im = Image.new("RGB", (w, h), BG)
         d = ImageDraw.Draw(im)
         names = ", ".join(n for n, _ in group)
-        d.text((PAD, 14), f"AMBIENT FLYERS — fly frames — part {pi}/{len(parts)}  ({names})",
+        d.text((PAD, 14), f"AMBIENT FLYERS — fly frames{' — ORIGINAL (uncut)' if original else ' — CULLED (shipping)'}"
+               f" — part {pi}/{len(parts)}  ({names})",
                font=font(26, True), fill=INK)
         y = TITLE_H
         for b in blocks:
             im.paste(b, (PAD, y))
             y += b.height + GAP
-        out = os.path.join(outdir, f"ambient-fly-frames-part{pi}.png")
+        out = os.path.join(outdir, f"ambient-fly-frames-{'original' if original else 'culled'}-part{pi}.png")
         im.save(out)
         written.append((out, im.size))
         print(f"part {pi}: {names}  -> {out}  {im.size[0]}x{im.size[1]}")

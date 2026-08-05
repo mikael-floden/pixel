@@ -198,6 +198,33 @@ mist pass, lit copies) and too risky for the ambient layer, which must never
 break the game. `rainbow/` removed the same day (maintainer's call). Both
 live in git history.
 
+## Flap-frame cull (birds + bat)
+
+The 8 birds and the bat share one sheet layout: 16 flap frames × 8 facings at
+34px. Not every frame is good — the maintainer reviews them and names the ones
+to drop (wings tucked, poses that read wrong). That review is DATA, not a
+one-off edit:
+
+- `art-original/` — the pristine 16-frame sheets, never touched, plus
+  `cull.json`: the frames to drop per critter per facing, in **original**
+  1-based F numbers. Keeping both is what lets a future AUTOMATIC frame-picker
+  be scored (input = the originals, expected output = cull.json).
+- `scripts/cull_frames.py` — applies it. Repacks each row with the kept frames
+  slid LEFT and the tail transparent, and writes `runtime/flapframes.json`
+  (per-facing counts + which original frame sits in each slot). Idempotent, and
+  `--check` verifies the shipped art still matches without writing.
+- `scripts/contact_sheet.py` — the review sheets. Plain run renders the SHIPPING
+  (culled) art; **`--original` renders the uncut sheets, and those are the ones
+  to name frames on** — a culled sheet has been repacked, so its F5 is not the
+  original F5.
+
+The runtime keeps the sheet 16 wide and reads the per-facing count, so
+`flyFrame()` and every call site are unchanged. The one rule: **never index past
+a facing's count** — those cells are transparent padding and the creature blinks
+out. `flyCell()` clamps at the draw site so that is structurally impossible;
+`server/test/flapcull.test.ts` gates the arithmetic and the art, and
+`scripts/verify-flapcull.mjs` gates the whole chain end to end in a browser.
+
 ## QA
 
 `node ambient/scripts/verify-ambient.mjs` against a running dev stack
