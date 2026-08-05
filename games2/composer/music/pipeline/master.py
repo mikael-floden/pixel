@@ -44,9 +44,19 @@ import numpy as np
 
 def sniff_container(b: bytes) -> str:
     """The API may DELIVER a container it wasn't asked for with a 200 OK, so
-    never trust the requested format — sniff the bytes (music domain lesson)."""
+    never trust the requested format — sniff the bytes (music domain lesson).
+
+    Ogg and MP4 are here because we now SHIP those: without them a delivery
+    copy fell through to the raw-PCM branch and got read as s16le, which does
+    not fail — it silently reports a 1.7 MB opus file as 9.8 seconds of
+    clipping noise. Anything that reads our own output (`adopt`, QA) would have
+    believed it."""
     if b[:4] == b"RIFF":
         return "wav"
+    if b[:4] == b"OggS":
+        return "ogg"
+    if len(b) > 8 and b[4:8] == b"ftyp":
+        return "m4a"
     if b[:3] == b"ID3" or (len(b) > 1 and b[0] == 0xFF and (b[1] & 0xE0) == 0xE0):
         return "mp3"
     return "pcm"
@@ -99,8 +109,8 @@ def decode(audio: bytes, sr_hint: int = 44100,
     kind = sniff_container(audio)
     if kind == "wav":
         y, sr = _decode_wav_bytes(audio)
-    elif kind == "mp3":
-        y, sr = _decode_via_ffmpeg(audio, ".mp3")
+    elif kind in ("mp3", "ogg", "m4a"):
+        y, sr = _decode_via_ffmpeg(audio, f".{kind}")
     else:
         # Raw s16le. Channel count is inferred from the length we asked for
         # (music_v1 delivers stereo natively).

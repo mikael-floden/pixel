@@ -317,11 +317,26 @@ def compose(session: requests.Session, *, prompt: str | None = None,
 # ---------------------------------------------------------------- scoring
 
 def score_candidate(card: dict, loop: dict, want_s: float, is_battle: bool) -> tuple[float, list[str]]:
-    """Rank a take the way the maintainer would judge it, using measured
-    proxies. Returns (score, reasons-it-is-bad). Hard faults score ~0 — a bed
-    with three seconds of silence at the front is not "slightly worse", it is
-    unusable, and the maintainer rejected exactly that once."""
+    """Rank a take the way the maintainer would judge it, using measured proxies.
+    Returns (score, reasons-it-is-bad).
+
+    DISQUALIFY before you rank. The first battle run shipped a 0.07-SECOND file
+    because the additive score handed a degenerate take 42 points for the things
+    it trivially "passed" — no lead-in and no silence are free when there is no
+    audio — while the two real 90 s takes were dragged below it by a fade-out
+    penalty. A take that is not a track cannot be compared to one that is, so
+    those cases now score a hard zero instead of competing.
+    """
     bad: list[str] = []
+
+    # --- hard disqualifiers: not a usable track at all ---------------------
+    if card["duration_s"] < 0.6 * want_s:
+        return 0.0, [f"TRUNCATED ({card['duration_s']:.2f}s of {want_s:.0f}s)"]
+    if card["lufs"] <= -50:
+        return 0.0, [f"SILENT ({card['lufs']} LUFS)"]
+    if card["silence_frac"] > 0.5:
+        return 0.0, [f"MOSTLY SILENT ({card['silence_frac']:.0%})"]
+
     s = 0.0
 
     # A late start is the one fault the maintainer has explicitly rejected.
@@ -346,9 +361,12 @@ def score_candidate(card: dict, loop: dict, want_s: float, is_battle: bool) -> t
     if not 6.0 <= crest <= 20.0:
         bad.append(f"odd dynamics (crest {crest:.1f} dB)")
 
-    # Brightness — the composer's own foley lesson. A bed lives for hours under
-    # SFX; battle is allowed more edge than the quiet beds.
-    hi = 4200.0 if is_battle else 3400.0
+    # Brightness — the composer's own foley lesson, RE-CALIBRATED FOR MUSIC.
+    # The foley thresholds (3400 Hz) flagged all five beds at 5800-6800 Hz,
+    # which is simply where a real orchestra with strings, cymbals and bells
+    # sits — a footstep and a full mix are not the same measurement. These
+    # marks catch a genuinely shrill bed without condemning every take.
+    hi = 6800.0 if is_battle else 5200.0
     cen = card["centroid_hz"]
     s += 12.0 if cen <= hi else 6.0 if cen <= hi * 1.35 else 0.0
     if cen > hi * 1.35:
@@ -366,10 +384,18 @@ def score_candidate(card: dict, loop: dict, want_s: float, is_battle: bool) -> t
     if ratio < 0.85:
         bad.append(f"short ({card['duration_s']:.0f}s of {want_s:.0f}s)")
 
-    # A bed that fades out at the end cannot loop.
+    # A fade-out at the very END only matters if we would ever REACH it. We
+    # loop at measured points well inside the track, so a tail the loop never
+    # plays is cosmetic — this used to be a flat ×0.5 and it halved both real
+    # battle takes (whose endings fade) below a broken 0.07 s file. It now
+    # applies only when the seam is too weak to rely on, i.e. when playback
+    # really would run to the end.
     if card["tail_rms_ratio"] < 0.35:
-        s *= 0.5
-        bad.append(f"fades out (tail {card['tail_rms_ratio']:.2f})")
+        if loop["score"] < 0.8:
+            s *= 0.5
+            bad.append(f"fades out with no usable loop (tail {card['tail_rms_ratio']:.2f})")
+        else:
+            bad.append(f"fades out at the end, loop avoids it (tail {card['tail_rms_ratio']:.2f})")
     return round(s, 2), bad
 
 

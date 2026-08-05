@@ -1,8 +1,13 @@
 """Validate the composer's music DSP against known references."""
+import os
 import sys
+
 import numpy as np
 
-sys.path.insert(0, "/home/user/pixel/games2/composer/music/pipeline")
+# Next to the modules under test, wherever the repo is checked out (this used
+# to be an absolute path that only worked by luck: a script's own directory is
+# already on sys.path, so the dead entry was simply ignored).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import master as M
 
 SR = 44100
@@ -10,7 +15,7 @@ fails = []
 
 
 def check(name, got, lo, hi):
-    ok = lo <= got <= hi
+    ok = (got == lo) if (lo == hi and isinstance(lo, str)) else (lo <= got <= hi)
     print(f"{'PASS' if ok else 'FAIL'}  {name:38} {got!r}  expected [{lo}, {hi}]")
     if not ok:
         fails.append(name)
@@ -81,6 +86,43 @@ card = M.measure(bed.astype(np.float32), SR)
 print("      measure card:", card)
 check("measure: duration", card["duration_s"], 11.9, 12.1)
 check("measure: stereo_corr sane", abs(card["stereo_corr"]) <= 1.0, True, True)
+
+# --- container sniffing: our OWN delivery formats must be recognised -------
+# An unrecognised container fell through to the raw-PCM branch, which does not
+# fail — it reads a 1.7 MB opus file as ~10 s of clipping noise.
+check("sniff wav", M.sniff_container(b"RIFF....WAVEfmt "), "wav", "wav")
+check("sniff ogg", M.sniff_container(b"OggS\x00\x02\x00\x00"), "ogg", "ogg")
+check("sniff m4a", M.sniff_container(b"\x00\x00\x00\x20ftypM4A "), "m4a", "m4a")
+check("sniff mp3 (ID3)", M.sniff_container(b"ID3\x04\x00\x00\x00"), "mp3", "mp3")
+check("sniff mp3 (sync)", M.sniff_container(b"\xff\xfb\x90\x00"), "mp3", "mp3")
+check("sniff raw pcm", M.sniff_container(b"\x01\x00\x02\x00\x03\x00"), "pcm", "pcm")
+
+# --- candidate scoring: a degenerate take must never win --------------------
+# THE REAL REGRESSION: the first battle run shipped a 0.07 s file. The additive
+# score gave it 42 points for what it trivially "passed" (no lead-in and no
+# silence are free when there is no audio) while a flat fade-out penalty halved
+# both genuine 90 s takes below it.
+import generate as G
+
+BROKEN = dict(duration_s=0.07, lufs=-70.0, true_peak_dbtp=6.15, lead_in_s=0.0,
+              tail_rms_ratio=1.0, crest_db=4.13, centroid_hz=7812.4,
+              stereo_corr=0.424, silence_frac=0.0)
+REAL = dict(duration_s=89.95, lufs=-10.41, true_peak_dbtp=-0.2, lead_in_s=0.0,
+            tail_rms_ratio=0.0, crest_db=13.57, centroid_hz=6741.4,
+            stereo_corr=0.27, silence_frac=0.038)
+broken_score = G.score_candidate(BROKEN, {"score": 0.0}, 90, True)[0]
+real_score = G.score_candidate(REAL, {"score": 0.9541}, 90, True)[0]
+print(f"      broken 0.07s take scores {broken_score}, real 90s take scores {real_score}")
+check("truncated take is disqualified", broken_score, 0.0, 0.0)
+check("real take beats the broken one", real_score > broken_score, True, True)
+check("silent take is disqualified",
+      G.score_candidate({**REAL, "lufs": -70.0}, {"score": 0.95}, 90, True)[0], 0.0, 0.0)
+check("mostly-silent take is disqualified",
+      G.score_candidate({**REAL, "silence_frac": 0.8}, {"score": 0.95}, 90, True)[0], 0.0, 0.0)
+# A fade-out only counts against a take we would actually play to the end.
+faded_loopable = G.score_candidate(REAL, {"score": 0.95}, 90, True)[0]
+faded_unloopable = G.score_candidate(REAL, {"score": 0.5}, 90, True)[0]
+check("fade-out is forgiven when the loop avoids it", faded_loopable > faded_unloopable, True, True)
 
 print()
 print("FAILURES:", fails if fails else "none")
