@@ -1694,11 +1694,15 @@ visible head/shoulders are ABOVE the surface).
   the locked-page mental model; the real re-layout keeps every icon and
   all text upright, which is the intent (a sideways backpack is not a
   backpack), and the gate PINS transform:none on them. GAMEPAD: in
-  landscape the stick leaves the page and FLOATS over the game view on
-  the thumb's side (position:fixed, z 4 — UNDER the chat overlay's z 5
-  per the maintainer; hidden with the page when another tab is up), the
-  jump button stays in the menu column under the other thumb; portrait
-  mirrors the stick/jump fractions by hand. A ONE-TIME help chip on the
+  landscape the stick leaves the page and FLOATS in the game view's
+  very BOTTOM CORNER on the thumb's side (10px insets), GHOSTED at 0.25
+  alpha and BEHIND the corner chrome — position:fixed, z 4, under the
+  chat overlay (5) and the pill/chips (8), all of which are
+  pointer-events:none so the thumb steers straight through them; hidden
+  with the page when another tab is up. Jump + pick up stay in the menu
+  column under the other thumb, and the vertical tab strip is CENTERED
+  (equal top/bottom gaps — maintainer 2026-08-05). Portrait mirrors the
+  stick/jump/pick-up fractions by hand. A ONE-TIME help chip on the
   gamepad page points at Settings → controls; the × dismisses it forever
   (`ml-hand-help`), it's an absolute overlay so it can never move the
   controls, and its BODY is pointer-events:none so it can't eat their

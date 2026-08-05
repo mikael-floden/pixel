@@ -1243,7 +1243,7 @@ function injectStyles() {
   :root.ml-land.ml-lh .ml-hud{left:auto;right:0;
     border-right:none;border-left:1px solid var(--border)}
   :root.ml-land .ml-tabrow{flex-direction:column;flex:none;width:72px;height:auto;
-    padding:12px 8px;gap:6px;order:2;justify-content:flex-start;
+    padding:12px 8px;gap:6px;order:2;justify-content:center;
     border-bottom:none;border-left:1px solid var(--border)}
   :root.ml-land.ml-lh .ml-tabrow{order:0;border-left:none;border-right:1px solid var(--border)}
   :root.ml-land .ml-tab{flex:0 0 auto;width:100%}

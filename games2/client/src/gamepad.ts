@@ -177,18 +177,21 @@ export function mountGamepadStick(page: HTMLElement) {
     const pickD = Math.round(jumpD * 0.72);
     const land = document.documentElement.classList.contains("ml-land");
     if (land) {
-      // LANDSCAPE: the stick leaves the page and FLOATS over the game view on
-      // the thumb's side of the SCREEN (position:fixed escapes the page box;
-      // an unselected gamepad tab still hides it — display:none up the tree).
-      // z-index 4 keeps it under the chat overlay (z 5) per the maintainer,
-      // and under the pill (8) and chips (8); it still sits over the canvas.
-      // Jump + pick up stay IN the menu column under the other thumb, side by
-      // side on the midline (no hand mirror inside the column — it is under
-      // the free thumb either way).
+      // LANDSCAPE: the stick leaves the page and FLOATS in the game view's
+      // very bottom corner on the thumb's side, GHOSTED at 0.25 alpha
+      // (maintainer 2026-08-05: "75% transparency… behind any chat text or
+      // time-of-day pill") — position:fixed escapes the page box; an
+      // unselected gamepad tab still hides it (display:none up the tree).
+      // z-index 4 keeps it UNDER the chat overlay (5), the pill and the
+      // chips (8); chat lines and the pill are pointer-events:none, so the
+      // thumb steers straight through them. Jump + pick up stay IN the menu
+      // column under the other thumb, side by side on the midline (no hand
+      // mirror inside the column — it is under the free thumb either way).
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
-      pad.style.left = `${leftHand ? 24 : window.innerWidth - 24 - well}px`;
-      pad.style.top = `${Math.round(window.innerHeight * 0.56 - well / 2)}px`;
+      pad.style.opacity = "0.25";
+      pad.style.left = `${leftHand ? 10 : window.innerWidth - 10 - well}px`;
+      pad.style.top = `${window.innerHeight - 10 - well}px`;
       jump.style.width = jump.style.height = `${jumpD}px`;
       jump.style.left = `${Math.round(page.clientWidth * 0.32 - jumpD / 2)}px`;
       jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
@@ -204,6 +207,7 @@ export function mountGamepadStick(page: HTMLElement) {
     } else {
       pad.style.position = "";
       pad.style.zIndex = "";
+      pad.style.opacity = "";
       pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
       pad.style.top = `${Math.round(midY - well / 2)}px`;
       jump.style.width = jump.style.height = `${jumpD}px`;
@@ -349,7 +353,7 @@ function injectStyles() {
   .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface-2);border:1px solid var(--border-strong);
     box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
-    transition:left .25s ease,top .25s ease;
+    transition:left .25s ease,top .25s ease,opacity .25s ease;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */

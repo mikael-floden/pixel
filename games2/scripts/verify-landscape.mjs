@@ -110,6 +110,12 @@ try {
         hud: r(".ml-hud"),
         tabrow: r(".ml-tabrow"),
         tab0: r(".ml-tab"),
+        tabFirst: r(".ml-tab:first-child"),
+        tabLast: r(".ml-tab:last-child"),
+        stickOp: (() => {
+          const e = document.querySelector(".ml-pad-stick");
+          return e ? getComputedStyle(e).opacity : null;
+        })(),
         pages: r(".ml-pages"),
         barsL: r(".ml-bars-l"),
         barsR: r(".ml-bars-r"),
@@ -147,6 +153,11 @@ try {
   g.tabrow.h > g.tabrow.w && Math.abs(g.tabrow.r - g.hud.r) <= 2 && g.tabrow.l > g.pages.l
     ? ok(`tab strip is vertical on the game-view edge (x ${g.tabrow.l}..${g.tabrow.r})`)
     : fail(`tabrow ${JSON.stringify(g.tabrow)} vs hud ${JSON.stringify(g.hud)} pages ${JSON.stringify(g.pages)}`);
+  // …and the buttons are vertically CENTERED: same distance to the screen's
+  // top and bottom edges (maintainer 2026-08-05).
+  Math.abs(g.tabFirst.t - (g.vh - g.tabLast.b)) <= 3
+    ? ok(`tab buttons vertically centered (top gap ${g.tabFirst.t}, bottom gap ${g.vh - g.tabLast.b})`)
+    : fail(`tabs not centered: top gap ${g.tabFirst.t} vs bottom gap ${g.vh - g.tabLast.b}`);
   const icon = await page.evaluate(() => {
     const i = document.querySelector(".ml-tab-icon");
     const r = i.getBoundingClientRect();
@@ -172,9 +183,24 @@ try {
   g.stickPos === "fixed" && g.stickZ === "4"
     ? ok("stick floats (fixed, z 4 — under the chat overlay's z 5)")
     : fail(`stick pos=${g.stickPos} z=${g.stickZ}`);
-  g.stick.l > g.game.l && Math.abs(851 - 24 - g.stick.r) <= 2
-    ? ok(`stick on the RIGHT side of the game view (x ${g.stick.l}..${g.stick.r})`)
-    : fail(`stick ${JSON.stringify(g.stick)}`);
+  g.stick.l > g.game.l && Math.abs(851 - 10 - g.stick.r) <= 2 && Math.abs(g.vh - 10 - g.stick.b) <= 2
+    ? ok(`stick in the game view's bottom-RIGHT corner (x ${g.stick.l}..${g.stick.r}, b ${g.stick.b})`)
+    : fail(`stick ${JSON.stringify(g.stick)} want r=${851 - 10}, b=${g.vh - 10}`);
+  Math.abs(parseFloat(g.stickOp) - 0.25) <= 0.01
+    ? ok(`stick ghosted at 0.25 alpha (${g.stickOp})`)
+    : fail(`stick opacity ${g.stickOp}, want 0.25`);
+  // behind the corner chrome: chat text (5) and the pill (8) draw OVER the
+  // ghost stick (4) — and both are pointer-events:none, so the thumb still
+  // steers straight through them.
+  const zOrder = await page.evaluate(() => ({
+    pill: getComputedStyle(document.querySelector(".ml-clock")).zIndex,
+    pillPe: getComputedStyle(document.querySelector(".ml-clock")).pointerEvents,
+    chat: getComputedStyle(document.querySelector(".ml-chatlog")).zIndex,
+    chatPe: getComputedStyle(document.querySelector(".ml-chatlog")).pointerEvents,
+  }));
+  +zOrder.pill > 4 && +zOrder.chat > 4 && zOrder.pillPe === "none" && zOrder.chatPe === "none"
+    ? ok(`chat (z ${zOrder.chat}) and pill (z ${zOrder.pill}) draw over the stick, taps pass through`)
+    : fail(`z/pe order wrong: ${JSON.stringify(zOrder)}`);
   g.jump.vis && g.jump.r < g.hud.r && g.jump.l > g.hud.l - 2
     ? ok(`jump stays in the menu column under the other thumb (x ${g.jump.l}..${g.jump.r})`)
     : fail(`jump ${JSON.stringify(g.jump)} vs hud ${JSON.stringify(g.hud)}`);
@@ -195,7 +221,7 @@ try {
   const sc = { x: (g.stick.l + g.stick.r) / 2, y: (g.stick.t + g.stick.b) / 2 };
   await page.mouse.move(sc.x, sc.y);
   await page.mouse.down();
-  await page.mouse.move(sc.x + 90, sc.y, { steps: 4 });
+  await page.mouse.move(sc.x - 90, sc.y, { steps: 4 }); // leftward — the corner stick has no room to the right
   await page.waitForTimeout(700);
   await page.mouse.up();
   const p1 = await page.evaluate(() => {
@@ -215,7 +241,9 @@ try {
   g.tabrow.h > g.tabrow.w && Math.abs(g.tabrow.l - g.hud.l) <= 2 && g.tabrow.r < g.pages.l + 2
     ? ok("tab strip flipped to the column's game-view (left) edge")
     : fail(`tabrow ${JSON.stringify(g.tabrow)} pages ${JSON.stringify(g.pages)}`);
-  Math.abs(g.stick.l - 24) <= 2 ? ok(`stick on the LEFT (x=${g.stick.l})`) : fail(`stick ${JSON.stringify(g.stick)}`);
+  Math.abs(g.stick.l - 10) <= 2 && Math.abs(g.vh - 10 - g.stick.b) <= 2
+    ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
+    : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);
   Math.abs(851 - menuW - 10 - g.clock.r) <= 2
     ? ok(`clock pill hugs the game view's right edge (${g.clock.r})`)
