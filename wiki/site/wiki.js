@@ -1872,30 +1872,35 @@ function sfxLayerRow(ev, layer) {
       jitTxt ? h("span", { class: "pill", title: "Random pitch on every play (already scaled by the engine's gentleness ×0.35)" }, `pitch jitter ${jitTxt}`) : null,
       layer.gainJitterDb ? h("span", { class: "pill", title: "Random volume on every play (gentled)" }, `vol ±${stFmt(Math.abs(layer.gainJitterDb[1]))} dB`) : null,
       layer.lowpassHz ? h("span", { class: "pill", title: "Fixed tone shaping" }, `lowpass ${layer.lowpassHz} Hz`) : null,
-      // The weight pill must not lie (maintainer 2026-08-05: "Confirm lists 4
-      // different sounds but always sounds the same"): when the composer PINS
-      // the primary take, the other recordings exist but the game never plays
-      // them for this event — say so, never "equal 1/n".
-      h("span", { class: "pill muted-pill", title: /primary/.test(layer.pick ?? "")
-          ? "The composer pinned the primary take for this event — the other recordings exist but are never played here"
+      // A pinned event HAS one sound (maintainer 2026-08-06: "the UI event
+      // only has that one single sound" — the composer's engine carries the
+      // whole set with a pin flag, but that is plumbing, not the binding).
+      // So the pill says "1 take"; the set's spare recordings show only in
+      // the admin's library, plus a one-line admin note below.
+      h("span", { class: "pill muted-pill", title: /primary/.test(layer.pick ?? "") && n > 1
+          ? `Bound to the primary take; the ${n - 1} other recording(s) of this set are unbound (see All sounds)`
           : n > 1 ? "Each play picks a take at random, never the same one twice in a row" : "One recording" },
-        /primary/.test(layer.pick ?? "") && n > 1 ? `always take 1 (of ${n})` : n > 1 ? `${n} takes · equal 1/${n}` : "1 take"),
+        /primary/.test(layer.pick ?? "") || n === 1 ? "1 take" : `${n} takes · equal 1/${n}`),
       layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
   ];
   const pinned = /primary/.test(layer.pick ?? "");
-  for (const [i, t] of layer.takes.entries()) {
-    // A pinned event plays ONLY take 1 in the game — so a player is shown
-    // only take 1; the rest exist for the admin, marked as never played.
-    if (pinned && i > 0 && !state.admin) continue;
+  // A pinned event lists ONE take, for everyone — the event is bound to one
+  // single sound; the set's other recordings are unbound and belong in the
+  // library, not on the event (maintainer 2026-08-06).
+  const bound = pinned ? layer.takes.slice(0, 1) : layer.takes;
+  for (const t of bound) {
     const [dom, fid] = sfxTakeFb(layer, t);
     rows.push(h("div", { class: "take-row sfx-take" },
       h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
       h("span", { class: "take-name muted" }, t.name),
       t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
-      pinned && i > 0 ? h("span", { class: "pill warn", title: "Exists in the library; this event never plays it" }, "not played") : null,
       h("span", { class: "spacer" }),
       state.admin ? starsWidget(dom, fid) : null,
       state.admin ? verdictWidget(dom, fid) : null));
+  }
+  if (pinned && layer.takes.length > 1 && state.admin) {
+    rows.push(h("p", { class: "muted sfx-unbound-note" },
+      `${layer.takes.length - 1} more recording(s) of this set exist, unbound to any event — audition them under All sounds.`));
   }
   return h("div", { class: "sfx-layer" }, ...rows);
 }
