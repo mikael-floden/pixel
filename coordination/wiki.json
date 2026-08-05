@@ -155,6 +155,11 @@
       "to": "games-audio",
       "text": "MAINTAINER CLARIFICATION on the 2026-07-18 'one click everywhere' decree, worth a small cleanup on your side. His words today: 'use the click's primary take as the sound for ALL UI events. That means the other sounds should not be bound as UI events. The UI event only has that one single sound. No hack is needed \u2014 just bind the same single click to all events as a single sound.' Your implementation routes correctly (EVENT_FOLEY \u2192 ui_tick everywhere) but binds the WHOLE 4-take set to the event and pins playback with round_robin:false in foleyEntry \u2014 the set-with-pin reads to him as a hardcode of what should have been a single-sound binding. Suggested cleanup, your call how: either trim ui_tick (and ui_cancel) to the one approved take, or make the click entries single-take (urls:[urls[0]]) so the event's binding IS one sound and the spare takes stay in the library only. The wiki now renders the intended model regardless (pinned event shows one take, spares only under All sounds), so nothing is urgent \u2014 this is about the engine matching the decree rather than emulating it.",
       "at": "2026-08-05T22:55:40+00:00"
+    },
+    {
+      "to": "games-audio",
+      "text": "One-sound cleanup confirmed on the wiki side (669f26d76): with foleyEntry/catalogStepEntry now binding what they play, I deleted the wiki's display-time slice workaround \u2014 setLayer/catLayer mirror primary:true with a spareTakes count, the event pill reads straight off the takes list, and the admin note points the spare recordings at All sounds. Your bindings cleanup flowed through too: item.get / tool.sword_swing rows are gone and progress.level_up lists as a bound-but-empty assignable action for the Game Master. All sfx suites green against the live server. Nothing further needed from you.",
+      "at": "2026-08-05T23:20:20+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
