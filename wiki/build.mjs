@@ -846,9 +846,25 @@ function buildSfx(soundEntries) {
   const emitted = new Set();
   for (const f of [...walkTs(join(GAMES2, "client", "src")), ...walkTs(join(comp ?? "", "engine"))]) {
     const src = (() => { try { return readFileSync(f, "utf8"); } catch { return ""; } })();
-    for (const m of src.matchAll(/gameAudio\.event\(\s*["']([^"']+)["']/g)) emitted.add(m[1]);
-    for (const m of src.matchAll(/audio\.event\(\s*["']([^"']+)["']/g)) emitted.add(m[1]);
+    // COMMENTS ARE NOT CALL SITES: api.ts's own doc header shows
+    // `audio.event("ui.confirm")` as an example, which made a never-fired
+    // event read as live to players (maintainer 2026-08-05). Filtered per
+    // LINE — a whole-file comment strip is a trap, because one unmatched
+    // /* inside a string or regex literal swallows real code after it.
+    for (const line of src.split("\n")) {
+      const t = line.trimStart();
+      if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
+      for (const m of line.matchAll(/(?:gameAudio|audio)\.event\(\s*["']([^"']+)["']/g)) {
+        if (line.slice(0, m.index).includes("//")) continue;
+        emitted.add(m[1]);
+      }
+    }
   }
+  // Sounds the ENGINE drives without a semantic event() call — the ambience
+  // beds (region changes via setEnv) and the water-entry splash (avatarFrame).
+  // They play in the real game every session; hiding them from players as
+  // "never fired" would be the opposite of the truth.
+  const ENGINE_DRIVEN = new Set(["player.water_enter"]);
 
   // ---- assemble the events ----
   const events = [];
@@ -903,7 +919,7 @@ function buildSfx(soundEntries) {
       for (const [region, soundId] of Object.entries(ev.ambience_by_region)) {
         const l = catLayer(soundId, { bus: ev.bus ?? "ambience" });
         events.push({ id: `ambience.${region}`, group: "Ambience", name: `Ambience · ${titleCase(region)}`,
-          bus: ev.bus ?? "ambience", duck: false, emitted: emitted.has(id), bound: true,
+          bus: ev.bus ?? "ambience", duck: false, emitted: true, bound: true,   // engine-driven: plays whenever you are in the region
           note: "loops while you are in the region; night adds crickets, rain adds rain",
           sounds: l ? [l] : [] });
       }
@@ -917,14 +933,13 @@ function buildSfx(soundEntries) {
       sounds = l ? [l] : [];
       note = "composer takeover: every UI event plays the approved click";
     } else if (id === "player.jump") {
-      sounds = jumpVoiceLayers(JUMP_VOICE, setLayer, engine);
-      note = "a vocal effort per character — the catalog jump sound is NOT played";
+      continue;                                   // per-character events, added below
     } else {
       const l = catLayer(ev.sound, { bus: ev.bus ?? "sfx" });
       sounds = l ? [l] : [];
     }
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
-      bus: ev.bus ?? "sfx", duck: !!ev.duck, emitted: emitted.has(id), bound: true, note, sounds });
+      bus: ev.bus ?? "sfx", duck: !!ev.duck, emitted: emitted.has(id) || ENGINE_DRIVEN.has(id), bound: true, note, sounds });
   }
   // Emitted but never bound (and not a composer takeover): a SILENT event.
   for (const id of emitted) {
@@ -934,9 +949,8 @@ function buildSfx(soundEntries) {
       const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, pick: "primary take only", usedBy: id });
       sounds = l ? [l] : []; bound = true;
       note = "composer takeover: every UI event plays the approved click";
-    } else if (id === "player.fall") {
-      sounds = jumpVoiceLayers(JUMP_VOICE, setLayer, engine); bound = true;
-      note = "same grunt as the jump, when a fall starts (0.28 s of dedupe between them)";
+    } else if (id === "player.fall" || id === "player.jump") {
+      continue;                                   // per-character events, added below
     }
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: "sfx", duck: false, emitted: true, bound, note, sounds });
@@ -982,6 +996,29 @@ function buildSfx(soundEntries) {
   if (thunder) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
 
+  // Jump and Fall are PER-CHARACTER (maintainer 2026-08-05): the game routes
+  // the grunt by who you play — one voice each, never both at once. So they
+  // are SCOPED events, one per hero, listed on that hero's page rather than
+  // under Sound Effects. `scope` is the type the maintainer asked for: an
+  // event either belongs to an entity or it is generic.
+  for (const [uid, cfg] of Object.entries(JUMP_VOICE)) {
+    if (!cfg?.set) continue;
+    const voice = (extra) => {
+      const l = setLayer(cfg.set, {
+        rate: Number(cfg.rate) || 2, trimDb: engine.voiceGainDb,
+        pick: "round-robin, never the same twice",
+        voiceRate: Number(cfg.rate) || 2, usedBy: `player.jump@${uid}`, ...extra,
+      });
+      return l ? [l] : [];
+    };
+    events.push({ id: `player.jump@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Jump",
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: "their own voice — the takes are authored at half speed, ×2 is the true pitch", sounds: voice({}) });
+    events.push({ id: `player.fall@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Fall",
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: "the same grunt when a fall starts (0.28 s of dedupe against the jump)", sounds: voice({}) });
+  }
+  for (const e of events) if (!("scope" in e)) e.scope = null;
   events.sort((a, b) => a.group.localeCompare(b.group) || a.id.localeCompare(b.id));
 
   // Which catalog sounds an event references — feeds the used/unused pill on

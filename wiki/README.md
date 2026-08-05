@@ -426,6 +426,24 @@ to replace the parsing.
   `live/tuning/sfx_requests.json` (`pixel-wiki-sfx-requests@1`, server key
   `tuning/sfx_requests`): pick a sound, set pitch / volume dB / max random
   pitch, note. The composer agent consumes and deletes entries it acted on.
+- **Events have a TYPE** (maintainer 2026-08-05): `scope` is either null
+  (generic — listed under Sound Effects) or `{domain, id}` (entity-owned —
+  listed on that entity's page). Jump and Fall are scoped per hero: the game
+  routes the grunt by who you play, one voice each, never both at once.
+  Entity pages render scoped events with `entitySoundsCard()` — the same
+  cards, engine, stars and request form as the Sound Effects page — and the
+  Game Master gets an "Assign a sound" card on every creature/hero/prop:
+  pick one of the page's game ACTIONS (its animation states) and a sound;
+  the request id is `<domain>.<id>.<action>/<stamp>`.
+- **Players hear only what the game plays.** An event must have a sound AND
+  be fired by game code (`emitted` — call sites scanned per LINE, because a
+  whole-file comment strip once ate real code after an unmatched `/*`, and
+  api.ts's doc header lists `audio.event("ui.confirm")` as an example).
+  Engine-driven sounds with no `.event()` call — the ambience beds, the
+  water-entry splash — are marked emitted by hand. Where the composer PINS
+  the primary take (the UI click), players see only take 1 and the pill
+  says "always take 1 (of 4)" — never "equal 1/4"; the admin sees the other
+  takes flagged "not played".
 - The composer's foley takes are served at `/assets/composer/foley/…`
   (Dockerfile copies them; dev falls back to `games2/composer/foley`).
 

@@ -1,8 +1,8 @@
 // The Sound Effects page: event-centric, admin-gated, and the mirrored engine
 // must compute EXACTLY what the game's one-shot player computes.
 import { createRequire } from "node:module";
-const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 import { readFileSync } from "node:fs";
+const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const D = JSON.parse(readFileSync("/home/user/pixel/wiki/site/data.json", "utf8"));
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: ["--autoplay-policy=no-user-gesture-required"] });
 const p = await (await b.newContext({ viewport: { width: 426, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
@@ -15,8 +15,11 @@ const sfx = D.sfx;
 ok(sfx.events.length >= 40, `event table built (${sfx.events.length} events)`);
 const grass = sfx.events.find((e) => e.id === "footsteps.grass");
 ok(grass.sounds.length === 2, "grass footstep = grass set + dirt layered under");
-const jump = sfx.events.find((e) => e.id === "player.jump");
-ok(jump.sounds.length === 2 && jump.sounds.every((l) => l.voiceRate === 2), "jump = both characters' voices at ×2");
+const jumpBoy = sfx.events.find((e) => e.id === "player.jump@default_boy");
+ok(jumpBoy?.scope?.id === "default_boy" && jumpBoy.sounds.length === 1 && jumpBoy.sounds[0].voiceRate === 2,
+  "jump is PER CHARACTER — the boy's event carries only his voice at ×2");
+ok(sfx.events.filter((e) => e.scope).length === 4, "four scoped events: jump+fall per hero");
+ok(!sfx.events.some((e) => !e.scope && /^player\.(jump|fall)$/.test(e.id)), "no generic jump/fall left");
 
 // ---------- player view
 await p.goto(W + "#/sounds", { waitUntil: "load" });
@@ -33,6 +36,9 @@ const player = await p.evaluate(() => ({
 }));
 console.log("player:", JSON.stringify(player));
 ok(player.cards > 0 && player.aGrass, `players see the events (${player.cards})`);
+const pTitles = await p.evaluate(() => [...document.querySelectorAll(".sfx-event .panel-title")].map((x) => x.textContent));
+ok(!pTitles.some((t) => /Jump|Fall/.test(t)), "jump/fall live on the hero pages, not here");
+ok(!pTitles.some((t) => /Chest|Potion|Confirm|Cancel/.test(t)), "players see nothing the game does not fire");
 ok(player.silent === 0 && !player.lib && player.stars === 0 && player.addForms === 0 && player.notFired === 0,
   "players see NO silent events, no library, no stars, no add forms, no pipeline pills");
 ok(player.groups.includes("Movement") && player.groups.includes("Interface"), "grouped by kind of moment");
@@ -58,15 +64,21 @@ ok(gp && gp.rate === 0.95 && gp.lowpassHz === 3600 && gp.db === expG,
 ok(dp && Math.abs(dp.db - expD) <= Math.abs(dLayer.gainJitterDb?.[1] ?? 0) + 0.01,
   `dirt-under layer lands at ${expD} dB ± gentled jitter (got ${dp?.db})`);
 
+// the hero's OWN page carries the jump/fall cards, one voice, same engine
+await p.goto(W + "#/characters/default_boy", { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const heroCards = await p.evaluate(() => [...document.querySelectorAll(".sfx-event .panel-title")].map((x) => x.textContent.replace(/▶?\s*/, "").trim()));
+ok(heroCards.some((t) => /^Jump/.test(t)) && heroCards.some((t) => /^Fall/.test(t)), `the hero page carries Jump and Fall (${heroCards.join(", ")})`);
 const jumpPlay = await p.evaluate(async () => {
   window.__sfxPlays.length = 0;
-  const card = [...document.querySelectorAll(".sfx-event")].find((c) => /^Jump/.test(c.querySelector(".panel-title").textContent.replace(/^▶?\s*/, "")));
-  card.querySelector(".play-event").click();
-  await new Promise((r) => setTimeout(r, 900));
+  [...document.querySelectorAll(".sfx-event")].find((c) => /Jump/.test(c.querySelector(".panel-title").textContent)).querySelector(".play-event").click();
+  await new Promise((r) => setTimeout(r, 800));
   return window.__sfxPlays.slice();
 });
-ok(jumpPlay.length === 2 && jumpPlay.every((x) => x.rate === 2), `jump voices play at exactly ×2 (${jumpPlay.map((x) => x.rate)})`);
-ok(jumpPlay.every((x) => x.db === +(eng.voiceGainDb + eng.busDb.sfx).toFixed(2)), `voice level = ${eng.voiceGainDb} + sfx bus (${jumpPlay.map((x) => x.db)})`);
+ok(jumpPlay.length === 1 && /jump_voice_boy/.test(jumpPlay[0].file), `HIS voice alone plays (${jumpPlay.map((x) => x.file.split("/").pop())})`);
+ok(jumpPlay[0].rate === 2 && jumpPlay[0].db === +(eng.voiceGainDb + eng.busDb.sfx).toFixed(2), `at ×2, ${eng.voiceGainDb} + sfx bus dB (${jumpPlay[0].rate}, ${jumpPlay[0].db})`);
+await p.goto(W + "#/sounds", { waitUntil: "load" });
+await p.waitForTimeout(1500);
 
 // ---------- admin: silent events, library, sliders, requests
 if (!process.env.WIKI_ADMIN_PASSWORD) { console.log("(WIKI_ADMIN_PASSWORD unset — admin half skipped)"); await b.close(); console.log(fails.length ? `\n${fails.length} FAILURES` : "\nALL SFX CHECKS PASSED (player half)"); process.exit(fails.length ? 1 : 0); }

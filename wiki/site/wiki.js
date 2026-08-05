@@ -1314,6 +1314,9 @@ function viewMonster(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Stats"),
       statsEditor(m.id)),
+    // This creature's own sound events (none in the game yet — the Game
+    // Master can assign one to any of its actions from here).
+    entitySoundsCard("monsters", m),
     // The long story, last on the page ALWAYS — the pager is the only control
     // above variable-height content, so nothing may be appended below it.
     storyCard({ label: "The story", art: refPic(m), name: m.name, paras: m.loreStory, related: m.loreRelated }));
@@ -1412,8 +1415,9 @@ function viewCharacter(id) {
   };
   player.onStateChange = renderFacet;
   renderFacet();
-  // The character's sounds (e.g. jump) live in the sounds domain — link them in.
-  const related = state.data.domains.sounds.filter((s) => ["movement"].includes(s.category));
+  // (the old Movement-sounds panel listed catalog takes; the entity card
+  //  below replaces it with the character's OWN sound events, played by the
+  //  mirrored engine — maintainer 2026-08-05)
   // Paging stays INSIDE the group: ‹ › from a hero walks the heroes, from an
   // NPC walks the NPCs — 191 Villagers between Man and Woman would bury the
   // playable cast the page is foremost about. Same group feeds the lore
@@ -1448,14 +1452,9 @@ function viewCharacter(id) {
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
-    // Movement sounds are the PLAYER's kit — jump, footsteps, splash follow
-    // the hero you steer. An NPC just stands there; no sounds panel.
-    isNpc ? null : h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Movement sounds ", h("span", { class: "pill" }, "from the sounds agent — jump, footsteps, splash")),
-      muteGameBtn(),
-      ...related.map((s) => h("div", {},
-        h("h3", { style: "margin-top:10px" }, s.name, " ", h("span", { class: "pill" }, s.category)),
-        ...s.takes.map((t) => takeRow("sounds", s.path, t))))),
+    // The character's OWN sound events — their jump/fall voice today — with
+    // the same cards, engine and admin features as the Sound Effects page.
+    entitySoundsCard("characters", c),
     storyCard({ label: heroStoryTitle(c), art: refPic(c), name: c.name, paras: c.loreStory, related: c.loreRelated }));   // always last
 }
 
@@ -1729,6 +1728,7 @@ function viewObject(id) {
         loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
     hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."),
+    entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last
 }
 
@@ -1872,16 +1872,27 @@ function sfxLayerRow(ev, layer) {
       jitTxt ? h("span", { class: "pill", title: "Random pitch on every play (already scaled by the engine's gentleness ×0.35)" }, `pitch jitter ${jitTxt}`) : null,
       layer.gainJitterDb ? h("span", { class: "pill", title: "Random volume on every play (gentled)" }, `vol ±${stFmt(Math.abs(layer.gainJitterDb[1]))} dB`) : null,
       layer.lowpassHz ? h("span", { class: "pill", title: "Fixed tone shaping" }, `lowpass ${layer.lowpassHz} Hz`) : null,
-      h("span", { class: "pill muted-pill", title: n > 1 ? "Each play picks a take at random, never the same one twice in a row" : "One recording" },
-        n > 1 ? `${n} takes · equal 1/${n}` : "1 take"),
+      // The weight pill must not lie (maintainer 2026-08-05: "Confirm lists 4
+      // different sounds but always sounds the same"): when the composer PINS
+      // the primary take, the other recordings exist but the game never plays
+      // them for this event — say so, never "equal 1/n".
+      h("span", { class: "pill muted-pill", title: /primary/.test(layer.pick ?? "")
+          ? "The composer pinned the primary take for this event — the other recordings exist but are never played here"
+          : n > 1 ? "Each play picks a take at random, never the same one twice in a row" : "One recording" },
+        /primary/.test(layer.pick ?? "") && n > 1 ? `always take 1 (of ${n})` : n > 1 ? `${n} takes · equal 1/${n}` : "1 take"),
       layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
   ];
+  const pinned = /primary/.test(layer.pick ?? "");
   for (const [i, t] of layer.takes.entries()) {
+    // A pinned event plays ONLY take 1 in the game — so a player is shown
+    // only take 1; the rest exist for the admin, marked as never played.
+    if (pinned && i > 0 && !state.admin) continue;
     const [dom, fid] = sfxTakeFb(layer, t);
     rows.push(h("div", { class: "take-row sfx-take" },
       h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
       h("span", { class: "take-name muted" }, t.name),
       t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
+      pinned && i > 0 ? h("span", { class: "pill warn", title: "Exists in the library; this event never plays it" }, "not played") : null,
       h("span", { class: "spacer" }),
       state.admin ? starsWidget(dom, fid) : null,
       state.admin ? verdictWidget(dom, fid) : null));
@@ -1999,14 +2010,74 @@ function sfxAllSounds() {
     h("p", { class: "muted" }, "Every recording in the library, used or not, played raw — voices at their honest 2×. The sliders audition pitch, volume and a max random pitch without touching the game."),
     ...rows);
 }
+/* --- an ENTITY's sounds: the same cards, the same engine, the same admin
+   features as the Sound Effects page — scoped to the one entity (maintainer
+   2026-08-05). A hero shows their Jump and Fall (their OWN voice, routed by
+   character in the game); a monster or prop with no sound yet shows nothing
+   to players and an assign card to the Game Master. */
+function entityAddCard(domain, ent) {
+  const actions = Object.keys(ent.animations ?? {});
+  if (!actions.length) return null;
+  const evId = () => `${domain}.${ent.id}.${act.value}`;
+  const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
+  const sel = h("select", { class: "sfx-pick" },
+    ...state.data.domains.sounds.map((s2) => h("option", { value: `cat:${s2.id}` }, `${s2.name} (catalog)`)),
+    ...Object.keys(state.data.sfx.composerSets).map((set) => h("option", { value: `set:${set}` }, `${set} (composer)`)));
+  const num = (val, min, max, step, title) => h("input", { type: "number", value: String(val), min: String(min), max: String(max), step: String(step), title, class: "sfx-num" });
+  const pitch = num(1, 0.25, 4, 0.05, "pitch (playbackRate)");
+  const vol = num(0, -24, 12, 1, "volume trim, dB");
+  const rnd = num(0, 0, 6, 0.1, "max random pitch, semitones");
+  const note = h("input", { type: "text", placeholder: "note to the composer (optional)", class: "sfx-note" });
+  const btn = h("button", { class: "ghost-btn", onclick: () => {
+    setSfxRequest(`${evId()}/${Date.now().toString(36)}`, {
+      event: evId(), scope: { domain, id: ent.id }, action: act.value,
+      sound: sel.value.replace(/^cat:/, "").replace(/^set:/, "composer/"),
+      pitch: Number(pitch.value) || 1, volume_db: Number(vol.value) || 0,
+      max_random_pitch_semis: Number(rnd.value) || 0,
+      note: note.value.trim() || undefined, requested_at: new Date().toISOString(),
+    });
+    toast("Request queued — Save sends it to the composer.");
+    route();
+  } }, "Request this sound");
+  const pending = Object.entries(state.tuning.sfx_requests?.requests ?? {})
+    .filter(([, r]) => r?.scope?.domain === domain && r?.scope?.id === ent.id);
+  return h("div", { class: "panel sfx-entity-add" },
+    h("div", { class: "panel-title" }, "Assign a sound ", h("span", { class: "pill" }, "Game Master")),
+    h("p", { class: "muted", style: "margin:0 0 6px" }, "Pick one of this page's game actions and the sound it should play — the composer agent wires it into the engine."),
+    h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), sel),
+    h("div", { class: "sfx-add-row" },
+      h("label", { class: "muted" }, "pitch ", pitch),
+      h("label", { class: "muted" }, "vol dB ", vol),
+      h("label", { class: "muted" }, "±pitch ", rnd)),
+    h("div", { class: "sfx-add-row" }, note, btn),
+    ...pending.map(([id, r]) => h("div", { class: "take-row sfx-req" },
+      h("span", { class: "pill warn" }, "requested"),
+      h("span", { class: "take-name" }, `${stateLabel(r.action ?? "")}: ${r.sound} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "spacer" }),
+      h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))));
+}
+function entitySoundsCard(domain, ent) {
+  const evs = (state.data.sfx?.events ?? [])
+    .filter((e) => e.scope && e.scope.domain === domain && e.scope.id === ent.id)
+    .filter((e) => state.admin || (e.sounds.length && e.emitted));
+  const kids = evs.map((e) => sfxEventCard(e));
+  if (state.admin) { const add = entityAddCard(domain, ent); if (add) kids.push(add); }
+  if (!kids.length) return null;
+  return h("div", { class: "sfx-entity" }, ...kids);
+}
 function viewSounds() {
   const q = state.query;
   const sfx = state.data.sfx;
   if (!sfx?.events?.length) return h("div", {}, sectionHead("sounds"), h("p", { class: "muted" }, "No sound-event table in this build."));
-  let events = sfx.events.filter((e) => matches(q, e.id, e.name, e.group, ...e.sounds.map((l) => l.label)));
-  // Players hear what IS — only events with an active sound. The silent ones
-  // (and everything editable) are the Game Master's view.
-  if (!state.admin) events = events.filter((e) => e.sounds.length);
+  // Entity-SCOPED events (a hero's jump, one day a monster's roar) live on
+  // that entity's page, not here — this page is the GENERIC soundscape.
+  let events = sfx.events.filter((e) => !e.scope)
+    .filter((e) => matches(q, e.id, e.name, e.group, ...e.sounds.map((l) => l.label)));
+  // Players hear what IS IN THE GAME: an event must have a sound AND be fired
+  // by game code. Wired-but-never-fired bindings (chest_open, potions…) were
+  // audible here before — "sounds I have never heard inside the game"
+  // (maintainer 2026-08-05). The admin keeps seeing everything, flagged.
+  if (!state.admin) events = events.filter((e) => e.sounds.length && e.emitted);
   const groups = [...new Set(events.map((e) => e.group))];
   const ORDER = ["Movement", "Interface", "Items", "Tools", "Combat", "Progress", "World", "Weather", "Ambience", "System"];
   groups.sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
