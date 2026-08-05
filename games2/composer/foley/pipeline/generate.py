@@ -466,6 +466,141 @@ SETS: dict[str, dict] = {
 }
 
 
+# ---- ROUND 6 (maintainer 2026-08-05): "10 different sound ALTERNATIVES per
+# action, not one" — each action gets sibling sets, each a genuinely DIFFERENT
+# concept (material, weight, style: realistic foley / cartoon / retro-arcade),
+# not articulation shades of one idea. One take each: the Game Master picks the
+# winner by ear in the wiki, so my selection gates would only narrow variety —
+# judges are deliberately OFF here. When an alternative WINS assignment, a
+# follow-up run gives that one set its 4-take round-robin variation.
+# (suffix, brief, duration_s, max_ms or None)
+ALTERNATIVES: dict[str, list[tuple]] = {
+    "hit_taken": [
+        ("slap", "a single sharp open-hand slap on a leather saddle, one quick stinging smack", 0.6, 450),
+        ("whump", "one very deep heavy pillow whump, a big soft cushion struck hard, low and bassy", 0.6, 550),
+        ("crack", "a single dry crack of a thin wooden stick snapping in two, short and clean", 0.6, 400),
+        ("wet", "one wet heavy smack, a thick slab of dough slapped onto a wooden table", 0.6, 500),
+        ("hollow", "a single hollow knock on a large empty wooden barrel, one deep round boom", 0.7, 600),
+        ("gut", "one deep visceral body blow, a heavy boxing-bag hit with a low soft push of air", 0.7, 600),
+        ("drum", "a single deep hit on a big low floor tom drum, one warm dark boom", 0.7, 650),
+        ("retro", "a single retro arcade video game hit sound, one short low chunky 8-bit style impact blip", 0.5, None),
+        ("double", "a quick double thump, two fast soft hits right after each other on a padded vest", 0.7, None),
+    ],
+    "kick": [
+        ("heavy", "one heavy powerful kick whoosh, a big deep swing of air ending in a solid low thump", 0.7, 600),
+        ("whip", "a single fast thin whip crack of air, one sharp quick swish", 0.5, 400),
+        ("double", "two very fast short air swishes right after each other, light and quick", 0.6, None),
+        ("cloth", "one fast kick with heavy fabric, a big coat sleeve swinging hard through air, a deep flutter", 0.6, 550),
+        ("low", "a single low sweeping leg kick, a broad slow whoosh of air close to the ground", 0.8, None),
+        ("retro", "a single retro arcade whoosh, one short stylized video game swing sound, low and round", 0.5, None),
+        ("bamboo", "one swing of a light bamboo stick through air, a clean airy swish with a faint woody whistle", 0.6, 500),
+        ("dummy", "a fast kick landing on a straw training dummy, a whoosh ending in a dry fibrous thwack", 0.7, 600),
+        ("snap", "one crisp towel snap, a quick fabric crack, tight and short", 0.5, 400),
+    ],
+    "punch": [
+        ("jab", "one quick light jab thud on a padded training mitt, short and snappy", 0.5, 400),
+        ("heavy", "a single enormous heavy punch on a big sandbag, very deep, bassy and powerful", 0.7, 600),
+        ("smack", "one flat palm smack on a solid wooden table, dry and tight", 0.5, 400),
+        ("clay", "a single wet punch into thick soft clay, a dense moist thud", 0.6, 500),
+        ("miss", "a fast punch whoosh through empty air, one short sharp swish", 0.5, 400),
+        ("knock", "one dry knuckle rap on a solid oak door, a firm woody knock", 0.5, 400),
+        ("glove", "a classic boxing glove hit on a heavy leather bag, round and full", 0.6, 500),
+        ("retro", "a single retro arcade punch, a chunky low 8-bit style thwack", 0.5, None),
+        ("blanket", "a deep punch into a stack of folded blankets, extremely muffled and soft", 0.6, 550),
+    ],
+    "monster_hit": [
+        ("jelly", "one big wobbly jelly smack, a springy gelatinous boing with a soft wet tap", 0.7, 600),
+        ("splat", "a single juicy splat, a ripe tomato hitting a wooden board, wet and pulpy", 0.6, 500),
+        ("bounce", "one rubber ball bounce thump on packed dirt, round and bouncy", 0.6, 500),
+        ("balloon", "a single thump on a big inflated balloon, hollow, rubbery and deep", 0.6, 550),
+        ("squeak", "one quick rubber squeak with a soft thump, a rubber toy squeezed hard", 0.6, 500),
+        ("slosh", "a single heavy slosh thump, a half-full water bag struck once, deep and liquid", 0.7, 600),
+        ("leaves", "one soft crunchy impact, a fist into a pile of dry leaves, a muffled crackle", 0.6, 550),
+        ("retro", "a single retro arcade enemy-hit blip, a short chunky low 8-bit style impact", 0.5, None),
+        ("pillow", "one fast deep pillow punch, very soft and muffled with a slight fluff of air", 0.6, 550),
+    ],
+    "monster_die": [
+        ("deflate", "a single balloon deflating fast, a comic shrinking squeal of air dropping away", 1.2, None),
+        ("bubble", "one big fat bubble bursting in thick mud, a deep gloopy bloop", 0.8, 700),
+        ("poof", "a single soft dust poof, a gentle puff of air into flour, airy and round", 0.8, None),
+        ("splat", "one heavy wet splat collapsing into a soft liquid slump, gloopy and thick", 1.0, None),
+        ("pop", "a single quick cork pop with a tiny airy fizz right after", 0.7, None),
+        ("retro", "a classic retro arcade enemy-defeated sound, a short descending chunky 8-bit style tumble", 0.8, None),
+        ("squelch", "one long slow squelch, thick wet mud sinking under a boot, dark and gooey", 1.1, None),
+        ("boing", "a springy cartoon boing that drops in pitch and lands with a tiny soft thump", 1.0, None),
+        ("vanish", "a quick soft whoosh of air being pulled away, ending in one gentle pat", 0.9, None),
+    ],
+    "player_die": [
+        ("heartbeat", "two slow deep heartbeat thumps that fade away, dark and low", 1.6, None),
+        ("bell", "a single distant low church bell toll, soft, dark and solemn", 1.6, None),
+        ("sigh", "a long soft airy gust of wind sinking downward and fading out, breathy and low", 1.5, None),
+        ("slump", "a heavy body slump onto packed earth with one final dull settle, very low", 1.2, None),
+        ("drumfall", "a slow soft drum roll on a deep low tom fading down to silence", 1.5, None),
+        ("retro", "a classic retro arcade player-defeat sound, a short sad descending chunky 8-bit style phrase", 1.2, None),
+        ("gong", "one soft muted gong hit, deep and dark, fading slowly", 1.6, None),
+        ("wind", "a cold low hollow wind gust passing once and fading out, empty and calm", 1.6, None),
+        ("echo", "one heavy final thud with a soft distant echo, very deep and slow", 1.2, None),
+    ],
+    "cross_rise": [
+        ("creak", "old wood creaking slowly upward once, a low woody groan ending in a firm settle", 1.2, None),
+        ("stone", "a heavy flat stone sliding slowly over gravel, a low grinding rumble ending with a thump", 1.2, None),
+        ("roots", "thick roots and damp soil pulling softly apart, slow low earthy tears", 1.2, None),
+        ("hum", "a single soft low reverent hum swelling gently and settling, warm and calm", 1.3, None),
+        ("chime", "one slow dark wooden wind-chime knock with a soft earthy thump underneath", 1.0, None),
+        ("retro", "a short retro arcade rising sweep, low and chunky 8-bit style, ending cleanly", 0.8, None),
+        ("drumroll", "a soft quick low drum roll swelling once, warm and round, with a final tap", 1.0, None),
+        ("dig", "a shovel of loose dirt turning over once, a soft heavy soil flump", 0.9, 800),
+        ("shimmer", "a soft magical shimmer swelling low and warm, gentle and round, with a muffled settle", 1.2, None),
+    ],
+    "cross_sink": [
+        ("slide", "a heavy wooden post sliding down through gravel once, a low grinding descent ending buried", 1.2, None),
+        ("swallow", "soft deep mud swallowing a stone with one slow heavy glug", 1.0, None),
+        ("creak", "old wood groaning slowly downward once, a descending woody creak ending muffled", 1.2, None),
+        ("drumdown", "a soft low drum roll fading downward and stopping with a muffled pat", 1.1, None),
+        ("retro", "a short retro arcade falling sweep, low and chunky 8-bit style, ending softly", 0.8, None),
+        ("sand", "a thick stream of heavy sand pouring onto cloth briefly, deep and soft, then stopping", 1.1, None),
+        ("bury", "one deep final thump followed by soft soil patted down twice", 1.1, None),
+        ("wind", "a low hollow wind sinking away into silence, dark and calm", 1.4, None),
+        ("shimmer", "a soft magical shimmer descending, warm and low, fading with a final muffled tap", 1.2, None),
+    ],
+    "item_pickup": [
+        ("coin", "a single small coin dropping into a soft leather pouch, one gentle muted clink", 0.5, 450),
+        ("pluck", "one warm round pluck on a thick low harp string, soft and full", 0.6, None),
+        ("cork", "a single tiny soft cork pop, small and cute and quick", 0.5, 400),
+        ("zip", "one quick short zip of a small bag closing, fast and light", 0.5, 400),
+        ("blip", "a single cheerful retro arcade pickup blip, one short rising chunky 8-bit style note", 0.5, None),
+        ("cloth", "a quick soft cloth rustle of grabbing a small bundle, warm and quiet", 0.5, 450),
+        ("woodtap", "one small round knock on a little wooden box, warm and tight", 0.5, 400),
+        ("plip", "a single tiny water plip, one small round droplet note, clean and cute", 0.5, None),
+        ("bell", "one tiny soft muted hand-bell ding, gentle and warm", 0.6, None),
+    ],
+    "item_drop": [
+        ("sack", "a heavy little grain sack landing on packed earth, one deep dull flump", 0.6, 550),
+        ("block", "a small wooden block dropping on a plank floor with one little bounce, a warm double knock", 0.7, 600),
+        ("jingle", "a small coin pouch landing on the ground with one soft muffled jingle", 0.6, 550),
+        ("mudplop", "a small stone landing in soft mud, one deep wet plop", 0.6, 500),
+        ("blip", "a single retro arcade drop blip, one short falling chunky 8-bit style note", 0.5, None),
+        ("leather", "a folded leather belt dropping onto a wooden table, one soft heavy slap", 0.6, 500),
+        ("book", "a small thick book landing flat on a rug, one deep muffled whump", 0.6, 550),
+        ("basket", "an apple dropping into a woven basket, a soft round knock and settle", 0.7, 600),
+        ("bloop", "a small stone dropping into a bucket of water, one deep round bloop", 0.6, 550),
+    ],
+}
+for _action, _alts in ALTERNATIVES.items():
+    for _suffix, _brief, _dur, _trim in _alts:
+        _spec: dict = {
+            "brief": _brief,
+            "style": "clean close-miked foley, natural, one isolated sound",
+            "duration_s": _dur,
+            "variants": ["standard take"],
+            "takes": 1,
+            "pool": 1,
+        }
+        if _trim:
+            _spec["max_ms"] = _trim
+        SETS[f"{_action}_{_suffix}"] = _spec
+
+
 # ---- minimal decode + mastering (port of the sound domain's recipe) ----
 
 def _ffmpeg_decode(raw: bytes) -> np.ndarray:
