@@ -131,14 +131,12 @@ const ANIM_FPS: Record<string, number> = {
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
 const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
-// The marked monster's 1px target border: 4 sides + 4 DIAGONALS (a
-// side-only ring breaks apart wherever the art steps diagonally, which
-// pixel art does constantly), each one art pixel out from the body.
-const RING_OFFSETS: Array<[number, number]> = [
-  [-1, 0], [1, 0], [0, -1], [0, 1],
-  [-1, -1], [1, -1], [-1, 1], [1, 1],
-];
-const TARGET_RING_COLOR = 0x8e2222; // a bit dark red (maintainer round 9)
+// The marked monster's 1px target border colour (maintainer round 9: "a bit
+// dark red"). The border itself is a GENERATED outline texture — see
+// ringTextureFor: 4-NEIGHBOUR dilation only, so a diagonal silhouette step
+// yields single diagonally-touching border pixels, the way pixel art draws
+// its own outlines (round 10: the 8-direction offset-copy ring read THICK).
+const TARGET_RING_COLOR = 0x8e2222;
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -706,7 +704,7 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
-  private targetRing: Phaser.GameObjects.Sprite[] = []; // 8 offset silhouettes = the 1px target border
+  private targetRingImg?: Phaser.GameObjects.Image; // the marked monster's generated 1px outline
   private pickupIcon?: Phaser.GameObjects.Image; // hand marker under the item being fetched
   private pickupIconQueued = false;
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
@@ -1922,8 +1920,8 @@ export class WorldScene extends Phaser.Scene {
       // the pick-up hand, whether a walk-to beacon is up, the debug rings.
       // (The in-fight hp/level readout is per monster — monsterInfo().)
       targetOverlay: () => ({
-        icon: this.targetRing.some((s) => s.visible), // the border ring
-        ringTint: this.targetRing[0]?.tintTopLeft ?? null,
+        icon: !!this.targetRingImg?.visible, // the border ring
+        ringTint: this.targetRingImg?.visible ? TARGET_RING_COLOR : null,
         hand: !!this.pickupIcon?.visible,
         handUnderItem: !!(
           this.pickupIcon?.visible &&
@@ -1937,6 +1935,38 @@ export class WorldScene extends Phaser.Scene {
         aggroRings: this.aggroRadiusOn,
         loaderState: this.load.state,
       }),
+      // Debug: the generated outline image's live state (round-10 border QA).
+      ringInfo: () => {
+        const img = this.targetRingImg;
+        if (!img) return null;
+        const tex = this.textures.get(img.texture.key);
+        const src = tex?.getSourceImage() as HTMLCanvasElement | undefined;
+        let filled = -1;
+        try {
+          const c = src?.getContext?.("2d");
+          if (c && src) {
+            const d = c.getImageData(0, 0, src.width, src.height).data;
+            filled = 0;
+            for (let i = 3; i < d.length; i += 4) if (d[i] > 0) filled++;
+          }
+        } catch {
+          /* not a canvas source */
+        }
+        return {
+          key: img.texture.key,
+          visible: img.visible,
+          x: img.x,
+          y: img.y,
+          depth: img.depth,
+          originX: img.originX,
+          originY: img.originY,
+          scaleX: img.scaleX,
+          alpha: img.alpha,
+          texW: src?.width ?? null,
+          texH: src?.height ?? null,
+          filled,
+        };
+      },
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
@@ -2433,6 +2463,61 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** The marked monster's 1px OUTLINE texture for its current frame, built
+   * on first sight and cached in the texture manager: the frame is drawn
+   * into a canvas padded 1px on every side, its alpha read back, and a
+   * TARGET_RING_COLOR pixel painted at every transparent pixel that has a
+   * solid 4-NEIGHBOUR (N/S/E/W — never diagonals: side-dilation leaves
+   * single diagonally-touching pixels across the art's diagonal steps, the
+   * thin connected border pixel art itself outlines with; 8-way dilation
+   * doubles up there and reads thick — maintainer round 10). The pad is
+   * symmetric, so a setFlipX mirror still lines up with the mirrored art.
+   * ~1 tiny canvas per (strip, frame) actually marked — trivial memory. */
+  private ringTextureFor(sp: Phaser.GameObjects.Sprite): string | null {
+    const frame = sp.frame;
+    const key = `ring:${sp.texture.key}|${frame.name}`;
+    if (this.textures.exists(key)) return key;
+    const fw = frame.cutWidth;
+    const fh = frame.cutHeight;
+    if (!fw || !fh) return null;
+    const w = fw + 2;
+    const h = fh + 2;
+    const cnv = document.createElement("canvas");
+    cnv.width = w;
+    cnv.height = h;
+    const ctx = cnv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(frame.source.image as CanvasImageSource, frame.cutX, frame.cutY, fw, fh, 1, 1, fw, fh);
+    const a = ctx.getImageData(0, 0, w, h).data;
+    // Solid = the art's own opacity threshold; soft anti-alias fringes on
+    // generated strips stay outside the border.
+    const solid = (x: number, y: number) =>
+      x >= 0 && y >= 0 && x < w && y < h && a[(y * w + x) * 4 + 3] >= 128;
+    const out = ctx.createImageData(w, h);
+    const od = out.data;
+    const r = (TARGET_RING_COLOR >> 16) & 0xff;
+    const g = (TARGET_RING_COLOR >> 8) & 0xff;
+    const b = TARGET_RING_COLOR & 0xff;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (solid(x, y)) continue;
+        if (solid(x - 1, y) || solid(x + 1, y) || solid(x, y - 1) || solid(x, y + 1)) {
+          const i = (y * w + x) * 4;
+          od[i] = r;
+          od[i + 1] = g;
+          od[i + 2] = b;
+          od[i + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+    // NEAREST explicitly: addCanvas does not inherit pixelArt's default the
+    // way loaded textures do, and LINEAR smears the 1px outline into a soft
+    // translucent halo at any fractional camera zoom (measured).
+    this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    return key;
+  }
+
   /** The engagement overlays, per frame after the monster loop: (1) the
    * SWORD MARKER over the walk-to target — visible from the tap until the
    * battle begins (in reach, or the monster is already fighting), gently
@@ -2445,68 +2530,54 @@ export class WorldScene extends Phaser.Scene {
     const m = this.engagedId && state?.monsters ? state.monsters.get(this.engagedId) : undefined;
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
 
-    // (1) The TARGET BORDER (maintainer round 9, replacing the sword icon):
-    // a 1-MONSTER-PIXEL dark red outline hugging the marked monster's own
-    // silhouette. Eight offset silhouette copies (the 4 sides + the 4
-    // DIAGONALS, so the border stays connected across the diagonal steps
-    // pixel art is drawn with) sit one pixel out, just BEHIND the body —
-    // the body itself covers their interior, leaving exactly a 1px ring.
-    // Monster sprites draw at scale 1 (see addMonster), so one art pixel is
-    // one screen pixel; the copies still mirror scale/flip/origin/frame
-    // every frame so a re-scaled or flipped strip can never desync.
+    // (1) The TARGET BORDER (maintainer rounds 9-10, replacing the sword
+    // icon): a 1-MONSTER-PIXEL dark red outline hugging the marked monster's
+    // own silhouette. It is a GENERATED texture (ringTextureFor): the current
+    // frame's alpha is read back and a border pixel is painted at every
+    // TRANSPARENT pixel with a solid 4-NEIGHBOUR — sides only, never
+    // diagonals, so a diagonal silhouette step gets single diagonally-
+    // touching border pixels, exactly how pixel art draws its own outlines
+    // (round 10: dilating diagonally too doubled up on every step and the
+    // border read THICK). And it is drawn ABOVE the darkness overlay and
+    // every lit copy at FULL alpha, whatever the hour — the mark is UI, and
+    // lighting/shadow/fog must never touch it (round 10; round 9 matched the
+    // body's layer + alpha, which dimmed the red with the world). An outline
+    // has no interior, so nothing bleeds through the body it surrounds.
     let ringOn = false;
     if (mv && m && me && mv.mstate !== "die" && !mv.culled && mv.sprite.visible) {
       const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
       const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
       const battleOn = dist <= range * 1.2 || mv.mstate === "combat";
       if (!battleOn) {
-        ringOn = true;
-        if (!this.targetRing.length) {
-          for (let i = 0; i < RING_OFFSETS.length; i++) {
-            this.targetRing.push(this.add.sprite(0, 0, mv.sprite.texture.key).setVisible(false));
-          }
-        }
         const sp = mv.sprite;
-        // WHICH LAYER: night crushes a dark red drawn down in the world
-        // layer to near-black (measured), so when this body has a LIT COPY
-        // above the darkness overlay the ring rides just under THAT — crisp
-        // at any hour, with the lit copy still covering its interior. With
-        // no lit copy (shader off / bright day) the world layer is right and
-        // dimming is a non-issue.
-        const lit = mv.lit?.visible ? mv.lit : null;
-        // -1e-6, not a fat epsilon: litDepth packs bodies 1e-5 apart, so a
-        // bigger step would sink the ring behind a NEIGHBOUR's lit copy.
-        const ringDepth = lit ? lit.depth - 1e-6 : sp.depth - 0.01;
-        // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
-        // applyObjectLights syncs lit copies LATER in the frame, so its x/y
-        // is one frame stale — on a hopping monster that lag smeared the
-        // ring several px to one side instead of hugging the silhouette.
-        // (The lit copy lands on the sprite's position anyway.)
-        const rx = sp.x;
-        const ry = sp.y;
-        // Match the layer's own alpha — the lit copy is faded by depth fog,
-        // and an opaque ring behind a translucent body bleeds red THROUGH it
-        // (it read as a thick smear instead of a 1px edge).
-        const ringAlpha = lit ? lit.alpha : sp.alpha;
-        for (let i = 0; i < RING_OFFSETS.length; i++) {
-          const [ox, oy] = RING_OFFSETS[i];
-          this.targetRing[i]
-            .setTexture(sp.texture.key, sp.frame.name)
-            .setOrigin(sp.originX, sp.originY)
+        const ringKey = this.ringTextureFor(sp);
+        if (ringKey) {
+          ringOn = true;
+          if (!this.targetRingImg) {
+            this.targetRingImg = this.add.image(0, 0, ringKey).setVisible(false);
+          }
+          // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
+          // applyObjectLights syncs lit copies LATER in the frame, so its
+          // x/y is one frame stale — on a hopping monster that lag smeared
+          // the ring sideways instead of hugging the silhouette.
+          // The outline canvas is the frame padded 1px on every side, so the
+          // origin shifts by that pad to keep the art aligned under the
+          // sprite's own origin (which the walk shift[] moves per frame).
+          const fw = sp.frame.cutWidth;
+          const fh = sp.frame.cutHeight;
+          this.targetRingImg
+            .setTexture(ringKey)
+            .setOrigin((sp.originX * fw + 1) / (fw + 2), (sp.originY * fh + 1) / (fh + 2))
             .setScale(sp.scaleX, sp.scaleY)
             .setFlipX(sp.flipX)
-            .setAlpha(ringAlpha)
-            // setTintFill, NOT setTint: a multiply tint would leave the
-            // monster's own shading in the border (black pixels stay black).
-            // Fill paints the whole silhouette one flat colour.
-            .setTintFill(TARGET_RING_COLOR)
-            .setPosition(rx + ox * sp.scaleX, ry + oy * sp.scaleY)
-            .setDepth(ringDepth)
+            .setPosition(sp.x, sp.y)
+            .setAlpha(1)
+            .setDepth(900_001.45) // above every lit copy, below the hp bar
             .setVisible(true);
         }
       }
     }
-    if (!ringOn) for (const s of this.targetRing) s.setVisible(false);
+    if (!ringOn) this.targetRingImg?.setVisible(false);
 
     // (1b) The PICK-UP HAND, CENTRED ON and drawn UNDER the item we are
     // fetching (maintainer rounds 8-9): the loot sits in the open palm, so

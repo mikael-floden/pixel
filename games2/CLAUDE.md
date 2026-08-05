@@ -824,16 +824,28 @@ visible head/shoulders are ABOVE the surface).
   beacon: monster taps, chase repaths and item walk-tos all pass
   showMarker=false to setMoveTarget — the ground beacon is for plain ground
   taps only. MONSTER = a 1-ART-PIXEL dark red (0x8e2222) BORDER on the marked
-  body, not an icon (round 9): eight silhouette copies of the monster's own
-  current frame, setTintFill'd, offset one pixel on the 4 sides AND the 4
-  DIAGONALS (a side-only ring breaks wherever pixel art steps diagonally),
-  drawn just behind the body so only the 1px rim shows. Two traps paid for in
-  screenshots: position the copies from the LIVE sprite, never from
-  `mv.lit` — lit copies sync later in the frame, so a hopping monster smeared
-  the ring sideways; and match the layer's ALPHA — an opaque ring behind a
-  fog-faded body bleeds red through it. Layer: under the lit copy when one is
-  visible (a dark red down in the world layer is crushed to black at night),
-  else just behind the world sprite. ITEM = the HAND (ui2/icon-pickup-target
+  body, not an icon (rounds 9-10): a GENERATED outline texture per (strip,
+  frame) — ringTextureFor reads the frame's alpha into a 1px-padded canvas
+  and paints a border pixel at every transparent pixel with a solid
+  4-NEIGHBOUR. SIDES ONLY, never diagonals: side-dilation leaves single
+  diagonally-touching pixels across the art's diagonal steps, the thin
+  connected border pixel art itself outlines with — round 10 killed the
+  previous 8-offset-silhouette-copies approach because dilating diagonally
+  too doubled the border at every step and it read THICK. Drawn as ONE image
+  at depth 900_001.45 (above the darkness overlay and every lit copy, below
+  the hp bar) at FULL alpha whatever the hour — round 10's other half: the
+  mark is UI and lighting/shadow/fog never touch it (round 9 matched the
+  body's layer+alpha, which dimmed the red with the world; an outline has no
+  interior, so nothing bleeds through the body). Three traps paid for in
+  screenshots: position from the LIVE sprite, never from `mv.lit` — lit
+  copies sync later in the frame, so a hopping monster smeared the ring
+  sideways; shift the origin by the 1px pad ((originX·fw+1)/(fw+2)) so the
+  outline tracks the per-frame walk shift[]; and set the canvas texture's
+  filter to NEAREST explicitly — addCanvas does not inherit pixelArt's
+  default, and LINEAR smears the 1px line into a soft halo at fractional
+  camera zoom (measured: zero exact-tint pixels on screen). Probe:
+  `__ml.ringInfo()` (texture key/dims/filled px + live image state). ITEM =
+  the HAND (ui2/icon-pickup-target
   .webp, the maintainer's art, preloaded in the deferred batch), centred ON
   the item and drawn UNDER it, both lifted above the lighting overlay and the
   item's ground shadow hidden — the loot sits in the open palm, unlit. Restore
