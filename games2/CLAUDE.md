@@ -1689,6 +1689,10 @@ visible head/shoulders are ABOVE the surface).
   `combat.cross_off`, `player.die`, `item.pickup`, `item.drop`. Gate:
   `scripts/verify-quiet.mjs` (source check: the can-sound surface must not
   grow without approval; the assignable actions must keep being emitted).
+- **Background**: hidden page → master ducks to 50% and the score keeps
+  looping (native-loop handoff in `composer/engine/music.ts` — background
+  timer throttling used to kill the crossfade scheduler). Gate:
+  `scripts/verify-background.mjs`.
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
   It follows whichever score is playing (context bed or catalog track), and the

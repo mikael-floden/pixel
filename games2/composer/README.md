@@ -86,6 +86,20 @@ events; the game never plays unapproved audio. The machinery:
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, and every assignable action must stay emitted.
 
+### Background behavior (maintainer 2026-08-05)
+
+- **Hidden page → master ducks to 50%** (`BACKGROUND_DUCK`, context.ts) and
+  eases back on return — every bus together; the deploy chime stays audible.
+- **The score keeps looping in background.** The crossfade scheduler is
+  setTimeout-armed and background tabs throttle/freeze timers — the music
+  died the moment its pass ended. While hidden, MusicDirector hands the score
+  to ONE native-looping source (`loopStart/loopEnd` at the measured points,
+  zero JS, immune to throttling), with a click-free handoff at the pass's own
+  fade-out; on return the scheduler resumes at the position the loop reached.
+  Title theme + night bed already loop natively and never had the bug. Gate:
+  `scripts/verify-background.mjs` (covers both the early return AND the real
+  handoff-then-return leg).
+
 ### ENFORCE UNMODIFIED AUDIO (Settings switch)
 
 The maintainer's A/B test switch (requested 2026-07-18, exactly for cases

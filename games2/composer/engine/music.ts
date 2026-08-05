@@ -38,6 +38,21 @@ export class MusicDirector implements MusicalContext {
   private playing = false;
   private targetLevel = 1; // 0..1 — enable × night dip, eased in WebAudio
 
+  // BACKGROUND MODE (maintainer 2026-08-05: "the music suddenly stops ... it
+  // should keep playing in a loop as long as the page is open"). The crossfade
+  // loop above is re-armed by setTimeout, and background tabs throttle or
+  // freeze timers — so the pass ended and the re-arm never came. While the
+  // page is hidden the score runs on ONE native-looping source instead
+  // (loopStart/loopEnd at the measured points): sample-accurate, zero JS,
+  // immune to throttling. The seam is a hard wrap rather than a crossfade,
+  // but the loop points were CHOSEN for seam similarity and nobody is
+  // A/B-ing seams from another tab. On return the crossfade scheduler takes
+  // back over at the position the native loop reached.
+  private bgSrc: AudioBufferSourceNode | null = null;
+  private bgGain: GainNode | null = null;
+  private bgStartCtx = 0;
+  private bgStartPos = 0;
+
   constructor(
     private graph: AudioGraph,
     private buffers: BufferCache,
@@ -45,6 +60,10 @@ export class MusicDirector implements MusicalContext {
     this.volume = graph.ctx.createGain();
     this.volume.gain.value = 1;
     this.volume.connect(graph.musicDuck);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) this.enterBackgroundLoop();
+      else this.exitBackgroundLoop();
+    });
   }
 
   /** Load + start the default background track (lazy — the score is a few
@@ -82,12 +101,15 @@ export class MusicDirector implements MusicalContext {
   }
 
   /** Start one pass of the loop at ctx time `when`; arm the next pass to
-   * begin cf seconds before this one ends, fading equal-power. */
-  private schedulePass(when: number, first: boolean): void {
+   * begin cf seconds before this one ends, fading equal-power. `fromPos`
+   * resumes mid-song (the return from the background native loop); passes
+   * armed from here always restart at the loop start as before. */
+  private schedulePass(when: number, first: boolean, fromPos?: number): void {
     const buf = this.buffer;
-    if (!buf || !this.playing) return;
+    if (!buf || this.bgSrc || !this.playing) return;
     const { start, end, cf } = this.loopPoints();
-    const span = Math.max(1, end - start);
+    const from = fromPos != null && fromPos >= start && fromPos < end - 1 ? fromPos : start;
+    const span = Math.max(1, end - from);
     const ctx = this.graph.ctx;
 
     const src = ctx.createBufferSource();
@@ -106,7 +128,7 @@ export class MusicDirector implements MusicalContext {
     g.gain.setValueAtTime(1, tEnd - cf);
     g.gain.exponentialRampToValueAtTime(0.0001, tEnd);
 
-    src.start(when, start, span);
+    src.start(when, from, span);
     src.onended = () => {
       g.disconnect();
       this.live = this.live.filter((s) => s !== src);
@@ -115,7 +137,7 @@ export class MusicDirector implements MusicalContext {
 
     // Clock: this pass owns the musical "now" from `when` onward.
     this.segStartCtx = when;
-    this.segStartPos = start;
+    this.segStartPos = from;
 
     // Next pass begins cf before this one ends; arm its scheduling a
     // LOOKAHEAD ahead of that so timer jitter can never gap the loop.
@@ -123,6 +145,96 @@ export class MusicDirector implements MusicalContext {
     const armInMs = Math.max(50, (nextWhen - LOOKAHEAD_S - this.graph.now) * 1000);
     if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(() => this.schedulePass(nextWhen, false), armInMs);
+  }
+
+  /** HIDDEN: retire the timer and hand the score to a native-looping source.
+   * The handoff is click-free: the CURRENT pass keeps playing and fades out
+   * on its own scheduled envelope, and the native source starts exactly where
+   * the NEXT pass would have (tEnd − cf, at the loop start), fading in over
+   * the same crossfade — the seam the scheduler would have made, made once. */
+  private enterBackgroundLoop(): void {
+    const buf = this.buffer;
+    if (!buf || !this.playing || this.bgSrc) return;
+    const { start, end, cf } = this.loopPoints();
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+    const ctx = this.graph.ctx;
+    const now = this.graph.now;
+    // When the pass that is playing right now ends (its envelope already
+    // fades to silence there). If the timer was throttled past it, start at
+    // once — a moment of silence already happened; end it.
+    const tEnd = this.segStartCtx + (end - this.segStartPos);
+    const when = Math.max(now + 0.03, tEnd - cf);
+    const fadeIn = Math.max(0.1, Math.min(cf, 2));
+
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    src.loopStart = start;
+    src.loopEnd = end;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(1, when + fadeIn);
+    src.connect(g);
+    g.connect(this.volume);
+    src.start(when, start);
+    this.bgSrc = src;
+    this.bgGain = g;
+    this.bgStartCtx = when;
+    this.bgStartPos = start;
+  }
+
+  /** VISIBLE again: fade the native loop out and resume the crossfade
+   * scheduler from the position the loop has reached — the song continues,
+   * it does not restart (the maintainer's standing rule for every bed). */
+  private exitBackgroundLoop(): void {
+    const src = this.bgSrc;
+    const g = this.bgGain;
+    if (!src || !g) return;
+    this.bgSrc = null;
+    this.bgGain = null;
+    const nowEarly = this.graph.now;
+    if (nowEarly < this.bgStartCtx - 0.05) {
+      // Returned before the handoff even fired: the original pass is still
+      // sounding. Cancel the scheduled native source and re-arm the next
+      // pass exactly where the handoff would have been.
+      try {
+        src.stop();
+      } catch {
+        /* not started */
+      }
+      g.disconnect();
+      // Re-arm THROUGH THE TIMER, like every normal pass: calling
+      // schedulePass directly with a far-future `when` makes it claim the
+      // musical clock now (segStartCtx in the future → negative position —
+      // the second gate run caught exactly that, pos 4.7 → −112.6).
+      if (this.playing) {
+        const armInMs = Math.max(50, (this.bgStartCtx - LOOKAHEAD_S - nowEarly) * 1000);
+        if (this.timer) clearTimeout(this.timer);
+        this.timer = setTimeout(() => this.schedulePass(this.bgStartCtx, false), armInMs);
+      }
+      return;
+    }
+    const { start, end, cf } = this.loopPoints();
+    const span = Math.max(1, end - start);
+    const now = this.graph.now;
+    const elapsed = Math.max(0, now - this.bgStartCtx);
+    const pos = start + ((((this.bgStartPos - start + elapsed) % span) + span) % span);
+    const fade = Math.max(0.2, Math.min(cf, 2));
+    g.gain.cancelScheduledValues(now);
+    g.gain.setValueAtTime(Math.max(0.0001, g.gain.value), now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + fade);
+    setTimeout(() => {
+      try {
+        src.stop();
+      } catch {
+        /* never started / already stopped */
+      }
+      g.disconnect();
+    }, fade * 1000 + 150);
+    if (this.playing) this.schedulePass(now + 0.02, false, pos);
   }
 
   /** 0..1 target level (user music toggle × night dip). Mood changes ease
@@ -137,6 +249,16 @@ export class MusicDirector implements MusicalContext {
   /** Song position in seconds (within the current loop pass). */
   position(): number {
     if (!this.playing) return 0;
+    if (this.bgSrc && this.graph.now >= this.bgStartCtx) {
+      // Native background loop RUNNING: wrap elapsed time into the window.
+      // Before bgStartCtx the handoff is only SCHEDULED — the current pass is
+      // still sounding and still owns the clock (the first gate run caught
+      // position() freezing for the whole pre-handoff stretch).
+      const { start, end } = this.loopPoints();
+      const span = Math.max(1, end - start);
+      const elapsed = this.graph.now - this.bgStartCtx;
+      return start + ((((this.bgStartPos - start + elapsed) % span) + span) % span);
+    }
     return this.segStartPos + (this.graph.now - this.segStartCtx);
   }
 
@@ -214,6 +336,9 @@ export class MusicDirector implements MusicalContext {
       level: this.targetLevel,
       scale: this.scalePitchClasses(),
       liveSources: this.live.length,
+      backgroundLoop: !!this.bgSrc,
+      backgroundRunning: !!this.bgSrc && this.graph.now >= this.bgStartCtx,
+      loop: this.loopPoints(),
     };
   }
 }

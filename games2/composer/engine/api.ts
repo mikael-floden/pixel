@@ -1213,6 +1213,10 @@ export class GameAudio {
       foley: composerFoleySurfaces(),
       mode: this.mode,
       underwater: this.underwater,
+      // Background behavior (maintainer 2026-08-05): master ducks to 0.5
+      // hidden, and music.backgroundLoop shows the native-loop handoff.
+      master: this.graph ? Math.round(this.graph.master.gain.value * 1000) / 1000 : null,
+      hidden: typeof document !== "undefined" ? document.hidden : false,
       music: this.graph ? this.music.debug() : null,
       beds: this.beds?.debug() ?? null,
       ambience: this.ambience?.debug() ?? null,

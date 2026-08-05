@@ -14,6 +14,9 @@ import { dbToGain } from "./catalog";
 
 export type BusName = "music" | "sfx" | "ui" | "ambience";
 
+// Half volume while the page is backgrounded (maintainer 2026-08-05).
+const BACKGROUND_DUCK = 0.5;
+
 const DEFAULT_BUS_DB: Record<BusName, number> = {
   // Sound-side recommendation (bindings.json) tuned by ear: music is a bed,
   // ambience sits far back, one-shots read clearly over both.
@@ -82,10 +85,16 @@ export class AudioGraph {
       document.addEventListener(ev, unlock, { capture: true, passive: true });
     }
     // Some browsers re-suspend when the tab backgrounds; resume on return.
+    // BACKGROUND DUCK (maintainer 2026-08-05): while the page is hidden the
+    // whole mix drops to half volume — audible from another tab, politely
+    // quieter — and eases back up on return. Applied at the MASTER so every
+    // bus (music, sfx, ui, ambience) ducks together; the deploy chime stays
+    // hearable at 50%, which is the point of the number.
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden && this.unlocked && this.ctx.state === "suspended") {
         void this.ctx.resume();
       }
+      this.master.gain.setTargetAtTime(document.hidden ? BACKGROUND_DUCK : 1, this.now, 0.25);
     });
   }
 
