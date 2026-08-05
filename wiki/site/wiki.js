@@ -870,7 +870,10 @@ function resolveRef(ref) {
   if (!domain || !id) return null;
   if (domain === "lore")       { const e = loreById(id);      return e  && { href: `#/lore/${e.id}`,       name: e.name,        art: loreIcon(e, 48),    where: chipText(e) }; }
   if (domain === "monsters")   { const m = monsterById(id);   return m  && { href: `#/monsters/${m.id}`,   name: m.name,        art: refPic(m),          where: label("monsters") }; }
-  if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: label("characters") }; }
+  // A person's context is their RACE, not the section they live under
+  // (maintainer 2026-08-05): Jehanne reads as "Human", the way a URL
+  // /races/human/<id> would. Everything else names its section.
+  if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: c.species || label("characters") }; }
   if (domain === "items")      { const it = itemById(id);     return it && { href: `#/items/${it.id}`,     name: itemLabel(it), art: itemSprite(it, 48), where: label("items") }; }
   if (domain === "objects")    { const o = objectById(id);    return o  && { href: `#/objects/${o.id}`,    name: o.name,        art: refPic(o),          where: label("objects") }; }
   if (domain === "tiles")      { const t = tileTypeById(id);  return t  && { href: `#/tiles/${t.id}`,      name: t.name,        art: h("span", { class: "item-icon item-noart" }), where: label("tiles") }; }
@@ -1418,7 +1421,10 @@ function viewCharacter(id) {
   const isNpc = c.kind === "npc";
   const group = state.data.domains.characters.filter((x) => (x.kind === "npc") === isNpc);
   return h("div", {},
-    crumbRow("#/characters", `← ${label("characters")}`, "characters", group, c.id),
+    // Back-link names the RACE, not the section — the page reads as if it
+    // sat at /races/human/<id> (maintainer 2026-08-05). It still LEADS to
+    // the Races page; there is no per-race route to lead to.
+    crumbRow("#/characters", `← ${c.species || label("characters")}`, "characters", group, c.id),
     h("div", { class: "detail-head" },
       // Species/sex rides under the thumbnail, exactly like a monster's level
       // chip — it balances the two columns (maintainer 2026-07-30).
