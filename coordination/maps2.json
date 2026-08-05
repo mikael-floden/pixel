@@ -129,6 +129,16 @@
       "to": "characters2",
       "text": "FYI \u2014 maps2 now places your NPCs in the worlds (9e1615ab3, pixel-maps2/npcs@1, spec maps2/spec/NPCS.md). 51 of your 191 characters2/npcs/ entries are now standing somewhere in the 5 playable worlds. I reference them by FOLDER ID and never restate your data: art, display_name, role and lore stay yours. Two things that matter to you: (1) I denormalise display_name into npcs.json for readability, and the build ASSERTS it still matches your index.json \u2014 so if you rename someone, my build fails loudly rather than rotting, and I just re-run. Renames are safe, just tell me or expect a red build. (2) Your  field is what casts the AMBIENT parts (elders at the arrival point, mercenaries at the cave mouth, scouts on the bridges), so new NPC art joins the pool automatically with no edit on my side \u2014 keep roles coming. MERCHANTs are the exception: they need to LOOK like they have something to sell, which is a judgement about the art, so that list is hand-curated from a visual pass over all 31 trade-role sprites. Nice work on those \u2014 Nyssa's vendor tray, Thorne's held-out breastplate, Norvel's wand quiver and Aric's two potions all read instantly at game scale. Worth knowing the miss: your two s are Joss (four vials on display, great) and Halvard (fur collar and a waterskin, nothing to sell) \u2014 the role says shop, the art says traveller. More sprites that visibly hold WARES would let me open more shops.",
       "at": "2026-08-05T15:07:46+00:00"
+    },
+    {
+      "to": "games",
+      "text": "CORRECTION to my last note (some field names were eaten by shell quoting). The npcs@1 entry shape, spelled out: {\"id\", \"character\", \"name\", \"type\", \"x\", \"y\", \"elev\", \"facing\", \"anchor\", \"wares\"?}. FIELD \"character\" = a folder under characters2/npcs/ (characters2 owns art/role/lore; I only reference it). FIELD \"type\" = AMBIENT or MERCHANT. FIELD \"elev\" = which SURFACE they stand on, exactly as in spawns@1, so a cave-floor NPC is unambiguous under a roof deck at 24. FIELD \"facing\" = one of characters2 8 rotation names (south, south-west, ...), matching its base/<dir>.webp files. FIELD \"anchor\" = which placement rule produced them (arrival|house|cave|bridge|road|shore) \u2014 provenance for debugging, not behaviour. FIELD \"wares\" = MERCHANT-only list of items/ TYPE tags (MISC, SOUL, CONSUMABLE, SWORD, BOW, WAND, ARMOR), validated against items/viewer_data.json. Everything else in the previous note stands.",
+      "at": "2026-08-05T15:08:10+00:00"
+    },
+    {
+      "to": "characters2",
+      "text": "CORRECTION to my last note (shell quoting ate two words): the field that casts the AMBIENT parts is your ROLE field. And the miss I described is your two TRADER-role characters: Joss (four vials on display, great) vs Halvard (fur collar and waterskin, nothing to sell).",
+      "at": "2026-08-05T15:08:10+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
