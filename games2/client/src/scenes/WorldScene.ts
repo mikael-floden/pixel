@@ -359,6 +359,10 @@ const OCC_CULL_PAD = OCC_STEP + 64 + 200;
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
+// Battle music (composer): a monster inside this radius (world units, 32/cell
+// — so ~5 cells) counts as "on me". Deliberately close: monsters roam freely
+// and the score must not go to battle for a donkey wandering past.
+const THREAT_NEAR_WU = 170;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
@@ -1545,6 +1549,12 @@ export class WorldScene extends Phaser.Scene {
       audio: () => gameAudio.debug(),
       audioClock: () => gameAudio.clock(),
       audioEvent: (name: string) => gameAudio.event(name),
+      // Force a music bed to audition it: __ml.audioBed("battle"); no argument
+      // hands control back to the situation. Returns what is playing + which
+      // beds are actually bundled.
+      audioBed: (name?: string) => gameAudio.auditionBed(name ?? null),
+      // What the context score is reading from the world right now.
+      audioField: () => this.sampleAudioField(),
       audioPure: () => {
         gameAudio.togglePure();
         this.hud?.refreshSettings();
@@ -2498,8 +2508,10 @@ export class WorldScene extends Phaser.Scene {
    * fractions (0..1) of forest / water / town cells in earshot, plus
    * campfire proximity. Sampled by the composer at ~4 Hz — keep it cheap
    * (a 15×15 cell window ≈ 225 string checks). */
-  private sampleAudioField(): { forest: number; water: number; town: number; fire: number } {
-    const none = { forest: 0, water: 0, town: 0, fire: 0 };
+  private sampleAudioField(): {
+    forest: number; water: number; town: number; fire: number; cave: number; threat: number;
+  } {
+    const none = { forest: 0, water: 0, town: 0, fire: 0, cave: 0, threat: 0 };
     const g = this.terrain;
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!g || !me) return none;
@@ -2509,13 +2521,24 @@ export class WorldScene extends Phaser.Scene {
     let forest = 0;
     let water = 0;
     let town = 0;
+    let roofed = 0;
     let n = 0;
+    // My own surface height, in LEVELS — the same px→level basis the lit copy
+    // and torch use. A deck only counts as a roof when it is above ME, so
+    // walking ACROSS a bridge (deck == my own surface) is never "in a cave".
+    const myLevel = Math.max(0, me.elev / MAP_GEOMETRY.lh);
     for (let r = cr - R; r <= cr + R; r++) {
       if (r < 0 || r >= g.height) continue;
       for (let c = cc - R; c <= cc + R; c++) {
         if (c < 0 || c >= g.width) continue;
         n++;
-        const t = g.type[r * g.width + c];
+        const i = r * g.width + c;
+        // Roofed: a world@2 deck slab overhead (cave ceiling, house roof, the
+        // span you are walking UNDER). 1.5 levels of clearance keeps a deck at
+        // my own height — the bridge I am standing on — out of the count.
+        const dk = g.deck?.[i] ?? -1;
+        if (dk >= 0 && dk > myLevel + 1.5) roofed++;
+        const t = g.type[i];
         if (!t) continue;
         if (
           t.includes("tree") || t.includes("forest") || t === "jungle" || t === "mushroom_grove"
@@ -2535,7 +2558,29 @@ export class WorldScene extends Phaser.Scene {
       const d = Math.hypot(me.fx / CELL_WU - this.campfire.col, me.fy / CELL_WU - this.campfire.row);
       fire = Math.max(0, 1 - d / 7);
     }
-    return { forest: frac(forest), water: frac(water), town: frac(town), fire };
+    // THREAT — how surrounded am I, for the battle bed. Distance to the nearest
+    // monster, softened by how many others are also close, so one grazing
+    // donkey is not a battle but three closing monsters are. Monsters roam
+    // freely today (no combat brain yet), so this is deliberately CLOSE-range:
+    // the music should mean "they are on me", not "one exists on this map".
+    let threat = 0;
+    if (this.monsters.size) {
+      const mx = me.fx;
+      const my = me.fy;
+      let nearest = Infinity;
+      let close = 0;
+      this.monsters.forEach((mv) => {
+        const d = Math.hypot(mv.fx - mx, mv.fy - my);
+        if (d < nearest) nearest = d;
+        if (d < THREAT_NEAR_WU) close++;
+      });
+      const near = Math.max(0, 1 - nearest / THREAT_NEAR_WU);
+      threat = Math.min(1, near * (1 + 0.35 * Math.max(0, close - 1)));
+    }
+    return {
+      forest: frac(forest), water: frac(water), town: frac(town), fire,
+      cave: frac(roofed), threat,
+    };
   }
 
   /** The connection died: freeze input, rejoin in place (immediately when

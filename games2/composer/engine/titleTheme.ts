@@ -6,7 +6,11 @@
  * Safari/iOS (ogg/opus does not). Empty until generated → the callers no-op.
  *
  *  title.mp3  the character-select login theme (startTitleTheme)
- *  night.mp3  the mystical night overworld bed (cross-faded in at night)
+ *
+ * The WORLD beds (night/town/cave/home/battle/adventure) moved to
+ * contextMusic.ts, which selects them by situation and reads their measured
+ * loop points + loudness trim from music/tracks.json. Only the title theme —
+ * approved, and on its own screen — still lives here.
  */
 
 import { withAudioV } from "./assetver";
@@ -34,10 +38,4 @@ export function titleThemeUrl(): string | null {
   if (named) return withAudioV(named);
   const keys = Object.keys(files).sort().filter((k) => !/night/i.test(k));
   return keys[0] ? withAudioV(files[keys[0]]) : null;
-}
-
-/** The mystical night-bed URL, or null if not generated yet. */
-export function nightMusicUrl(): string | null {
-  const url = byName("night", "mystic", "nocturne");
-  return url ? withAudioV(url) : null;
 }

@@ -13,9 +13,11 @@ import { Bindings, Catalog, SoundEntry, dbToGain, loadCatalog, soundUrl } from "
 import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
-import { OneShotPlayer, PlayOpts } from "./oneshot";
+import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces } from "./foley";
-import { titleThemeUrl, nightMusicUrl } from "./titleTheme";
+import { titleThemeUrl } from "./titleTheme";
+import { ContextMusic, hasBed } from "./contextMusic";
+import { BED_MIN_HOLD_S, BED_NAMES, BedName, desiredBed, resolveBed } from "./bedSelect";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -60,6 +62,12 @@ export interface FieldSample {
   water: number;
   town: number;
   fire: number;
+  /** 0..1 — how enclosed the player is (under a deck / inside the mountain).
+   * Drives the cave bed. Optional: absent reads as "outdoors". */
+  cave?: number;
+  /** 0..1 — how close/numerous the nearest monsters are. Drives the battle
+   * bed. Optional: absent reads as "nothing nearby". */
+  threat?: number;
 }
 
 // Footfall cadence fallback: distance between footfalls in world units —
@@ -89,12 +97,15 @@ const SWIM_EXIT_DB = -4;
 // The character-select TITLE THEME plays on the music bus (respects the music
 // toggle); trimmed a touch so it sits under the SFX, never blaring on load.
 const TITLE_THEME_DB = -4;
-// The mystical NIGHT bed: a second looping music layer cross-faded IN as the
-// sun sets and OUT at dawn (maintainer 2026-07-19). It loops CONTINUOUSLY —
-// never stopped on the day/night flip — so each night you hear a different
-// stretch, not just its opening. Level at full night; the day score fades to
-// a low floor so the night bed takes over.
+// HISTORICAL — the mystical NIGHT bed's approved level (maintainer 2026-07-19).
+// Night is now one of the CONTEXT BEDS, and this number is what contextMusic's
+// WORLD_BED_DB was derived from: night.mp3 measures -16.79 LUFS and played at
+// -5 dB, so normalising every bed to -18 LUFS and playing at -3.8 dB reproduces
+// exactly this perceived loudness. Kept as that derivation's paper trail.
 const NIGHT_MUSIC_DB = -5;
+
+// The context-score thresholds, fallback chain and hold time live in
+// bedSelect.ts as pure functions — see test/bedSelect.test.ts.
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -218,11 +229,16 @@ export class GameAudio {
   private titleSrc: AudioBufferSourceNode | null = null;
   private titleGain: GainNode | null = null;
   private titleLoading = false;
-  // Night music bed (in-world): a second looping layer, cross-faded by the sun.
-  private nightWanted = false;
-  private nightSrc: AudioBufferSourceNode | null = null;
-  private nightGain: GainNode | null = null;
-  private nightLoading = false;
+  // The CONTEXT SCORE (contextMusic.ts): one bed per situation — battle, cave,
+  // home, town, night, adventure — cross-faded as the player moves through the
+  // world. Replaces the single night-bed layer. Until the beds are generated
+  // `resolveBed` finds nothing and the sound-domain catalog bed keeps playing,
+  // exactly as before.
+  private beds: ContextMusic | null = null;
+  private bedWanted = false;
+  private bedNow: BedName | null = null;
+  private bedSince = 0;
+  private bedOverride: BedName | null = null;
   private storm = false;
   private musicToggleFast = false;
   private mode = "overworld";
@@ -266,7 +282,17 @@ export class GameAudio {
     }
     this.buffers = new BufferCache(this.graph.ctx);
     this.music = new MusicDirector(this.graph, this.buffers);
-    this.oneShots = new OneShotPlayer(this.graph, this.buffers, this.music);
+    this.beds = new ContextMusic(this.graph, this.buffers);
+    // Tonal SFX snap to whichever score is actually playing — the context bed
+    // when one is up, the catalog track otherwise. Without this delegation the
+    // scale-snap and beat-quantize would go dead the moment the context score
+    // took over from the catalog bed.
+    const musical: MusicalContext = {
+      scalePitchClasses: () => this.beds?.scalePitchClasses() ?? this.music.scalePitchClasses(),
+      nextBeatIn: (maxWaitS: number) =>
+        this.beds?.activeBed() ? this.beds.nextBeatIn(maxWaitS) : this.music.nextBeatIn(maxWaitS),
+    };
+    this.oneShots = new OneShotPlayer(this.graph, this.buffers, musical);
     this.oneShots.pure = this.pureOn;
     this.applySfxMute();
 
@@ -305,42 +331,49 @@ export class GameAudio {
   /** The world is live — bring the score in (and retire the title theme). */
   startMusic(): void {
     this.musicWanted = true;
-    this.nightWanted = true; // arm the night bed; slowTick cross-fades it
+    this.bedWanted = true; // arm the context score; slowTick picks the bed
     this.stopTitleTheme();
-    this.ensureNightMusic();
     if (this.catalog && this.graph) void this.music.start(this.catalog.music);
   }
 
-  private ensureNightMusic(): void {
-    if (!this.graph || !this.graph.running || this.nightSrc || this.nightLoading || !this.nightWanted) return;
-    const url = nightMusicUrl();
-    if (!url) return; // not generated yet
-    if (!this.nightGain) {
-      this.nightGain = this.graph.ctx.createGain();
-      this.nightGain.gain.value = 0.0001;
-      this.nightGain.connect(this.graph.bus("music"));
-    }
-    this.nightLoading = true;
-    void this.buffers.get(url).then((buf) => {
-      this.nightLoading = false;
-      if (!buf || !this.graph || !this.nightGain || this.nightSrc || !this.nightWanted) return;
-      const src = this.graph.ctx.createBufferSource();
-      src.buffer = buf;
-      src.loop = true; // loops FOREVER — never restarted on the day/night flip
-      src.connect(this.nightGain);
-      // Start anywhere in the bed so it isn't always heard from its opening.
-      src.start(this.graph.now, 0);
-      this.nightSrc = src;
-    });
+  /** AUDITION a bed in-game (`__ml.audioBed("cave")`), overriding the
+   * situation until released with no argument. This is how the maintainer
+   * judges a new track without hunting the map for the place that triggers it.
+   * Returns the bed list so the console call is self-documenting. */
+  auditionBed(name?: string | null): { playing: BedName | null; available: BedName[]; all: BedName[] } {
+    const match = BED_NAMES.find((n) => n === name) ?? null;
+    this.bedOverride = match;
+    if (!match) this.bedSince = 0; // let the situation retake it immediately
+    this.slowTick();
+    return {
+      playing: this.beds?.activeBed() ?? null,
+      available: BED_NAMES.filter((n) => hasBed(n)),
+      all: [...BED_NAMES],
+    };
   }
 
-  /** Cross-fade the night bed by how dark it is (0 day → 1 night); silent when
-   * music is off or in pure mode. Called from slowTick with the live sun. */
-  private applyNightLevel(night: number, tauS: number): void {
-    if (!this.nightGain || !this.graph) return;
-    const amt = this.pureOn ? 0 : Math.min(1, Math.max(0, night));
-    const target = this.musicOn && this.nightWanted ? dbToGain(NIGHT_MUSIC_DB) * amt : 0;
-    this.nightGain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, tauS);
+  /** Pick + apply the context bed. Battle may interrupt immediately; every
+   * other change waits out BED_MIN_HOLD_S so a bed always gets to be music
+   * rather than a fragment. */
+  private updateBeds(field: FieldSample, sun: number, level: number): boolean {
+    if (!this.beds || !this.bedWanted) return false;
+    const want =
+      this.bedOverride ??
+      resolveBed(desiredBed({ ...field, sun }, this.bedNow), (n) => hasBed(n));
+    const now = this.graph ? this.graph.now : 0;
+    const held = now - this.bedSince;
+    const urgent = want === "battle" || this.bedNow === null;
+    if (want !== this.bedNow && (urgent || held >= BED_MIN_HOLD_S)) {
+      this.bedNow = want;
+      this.bedSince = now;
+      this.beds.setContext(want);
+    }
+    this.beds.setLevel(level);
+    // Report AUDIBLE, not merely wanted: a bed is a ~1 MB fetch the first time
+    // its context comes up, and silencing the catalog bed the instant we chose
+    // one would leave a hole of silence until it decoded. The catalog keeps
+    // playing and cross-fades out the moment the bed is really up.
+    return this.beds.activeBed() !== null;
   }
 
   /** Start the character-select TITLE THEME (composer-generated, looping on the
@@ -859,7 +892,8 @@ export class GameAudio {
         nextBeatIn: 0, section: null, intensity: 0, scale: null,
       };
     }
-    return this.music.clock();
+    // Whichever score is live owns the clock.
+    return this.beds?.activeBed() ? this.beds.clock() : this.music.clock();
   }
 
   // ---- modes (mixing scenes) ----
@@ -936,22 +970,26 @@ export class GameAudio {
       fire_crackle: field.fire,
     });
 
-    // DAY/NIGHT MUSIC CROSS-FADE (maintainer 2026-07-19: "more mystical bg
-    // music during night"). When a night bed exists the DAY score fades to a
-    // low floor at night while the mystical NIGHT bed cross-fades UP, so nights
-    // belong to the night track — which loops CONTINUOUSLY (a new stretch each
-    // cycle, never just its opening). Without a night bed yet, keep the old
-    // gentle dip so nights aren't silent. Pure mode freezes at the authored
-    // score. The toggle snaps; mood changes keep the slow ease.
+    // THE SCORE. The context beds (battle/cave/home/town/night/adventure) are
+    // the score whenever one is available for the situation; the sound-domain
+    // catalog bed is the fallback that plays when it is not (which is exactly
+    // the old behaviour, so nothing regresses before the beds are generated).
+    // Pure mode freezes at the authored level. The toggle snaps; mood changes
+    // keep the slow ease.
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
-    const nightAmt = Math.min(1, Math.max(0, 1 - sun));
-    const haveNight = !!this.nightGain || !!nightMusicUrl();
-    const dayFloor = haveNight ? 0.12 : 0.45;
-    const dayLevel = this.pureOn ? 1 : (dayFloor + (1 - dayFloor) * sun) * modeMul;
     const tau = this.musicToggleFast ? 0.06 : 0.4;
-    this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
-    if (this.nightWanted) this.ensureNightMusic(); // covers the async unlock/load
-    this.applyNightLevel(nightAmt, tau);
+    const bedLevel = this.pureOn ? 1 : this.musicOn ? modeMul : 0;
+    const onBed = this.updateBeds(field, sun, bedLevel);
+
+    if (onBed) {
+      // A context bed owns the music bus — retire the catalog bed under it.
+      this.music.setLevel(0, tau);
+    } else {
+      // No bed for this situation: the catalog track keeps the old day/night
+      // dip so nights are moodier but never silent.
+      const dayLevel = this.pureOn ? 1 : (0.45 + 0.55 * sun) * modeMul;
+      this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
+    }
     this.musicToggleFast = false;
   }
 
@@ -1045,8 +1083,10 @@ export class GameAudio {
       mode: this.mode,
       underwater: this.underwater,
       music: this.graph ? this.music.debug() : null,
+      beds: this.beds?.debug() ?? null,
       ambience: this.ambience?.debug() ?? null,
       env: { ...this.env },
+      field: this.fieldSampler?.() ?? null,
     };
   }
 }
