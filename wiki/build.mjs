@@ -722,6 +722,296 @@ function buildWorldUsage() {
   };
 }
 
+/* ------------------------------------------------- sfx: the game's EVENTS
+   The Sound Effects page is organized by IN-GAME EVENT (maintainer
+   2026-08-05): what triggers a sound, which sounds play (layered, or
+   alternating takes), and with exactly which processing. The authority is
+   the COMPOSER's engine (games2/composer/engine/api.ts + oneshot.ts) — the
+   sound domain's bindings.json is only its input — so this builder derives
+   the table from the same sources the engine compiles from:
+
+   - sounds/bindings.json events[]  (the catalog bindings)
+   - gameAudio.event("...") call sites in the game client (what is EMITTED —
+     an emitted event with no sound is a real, listable thing)
+   - the composer's own takeover tables, parsed out of api.ts (EVENT_FOLEY,
+     the JUMP_VOICE sets, the FOOTSTEP_* routing/trim/layer tables)
+
+   The parse is a DRIFT SENTINEL like the sidecar one: the composer owns
+   those constants and edits them freely, so every regex miss is collected
+   and printed loudly rather than silently shipping a stale event table.
+   (Board request filed for a published composer/events.json to replace the
+   parsing; until then the wiki reads the truth out of the source.) */
+const sfxDrift = [];
+function tsScalar(src, name, dflt) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*(-?\\d+(?:\\.\\d+)?)`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return dflt; }
+  return Number(m[1]);
+}
+function tsRecord(src, name) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*\\{([\\s\\S]*?)\\};`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return null; }
+  const body = m[1].replace(/\/\/[^\n]*/g, "");
+  const out = {};
+  const entry = /(?:"([^"]+)"|([$\w.]+))\s*:\s*(?:"([^"]+)"|(-?\d+(?:\.\d+)?)|(\{[^{}]*\}))/g;
+  for (let e; (e = entry.exec(body)); ) {
+    const key = e[1] ?? e[2];
+    if (e[3] != null) out[key] = e[3];
+    else if (e[4] != null) out[key] = Number(e[4]);
+    else {
+      const inner = {};
+      const sub = /([$\w]+)\s*:\s*(?:"([^"]+)"|(-?\d+(?:\.\d+)?))/g;
+      for (let s; (s = sub.exec(e[5])); ) inner[s[1]] = s[2] ?? Number(s[3]);
+      out[key] = inner;
+    }
+  }
+  if (!Object.keys(out).length) sfxDrift.push(`const ${name} parsed empty`);
+  return out;
+}
+/** The composer source, wherever this build runs: repo (games2/composer) or
+ *  the Docker image (/assets/composer — Dockerfile copies foley/ there; the
+ *  engine sources are only in the repo, so inside Docker the parse would come
+ *  up empty. The committed data.json is built in-repo, and Docker's rebuild
+ *  keeps the committed sfx block when the sources are absent — see below). */
+function composerDir() {
+  for (const p of [join(GAMES2, "composer"), join(ROOT, "composer")]) if (isDir(p)) return p;
+  return null;
+}
+function buildSfx(soundEntries) {
+  const cat = readJson(join(ROOT, "sounds", "viewer_data.json"))?.sounds ?? [];
+  const catById = new Map(cat.map((s) => [s.id, s]));
+  const bindings = readJson(join(ROOT, "sounds", "bindings.json")) ?? {};
+  const comp = composerDir();
+  const apiSrc = comp ? (() => { try { return readFileSync(join(comp, "engine", "api.ts"), "utf8"); } catch { return ""; } })() : "";
+  const oneSrc = comp ? (() => { try { return readFileSync(join(comp, "engine", "oneshot.ts"), "utf8"); } catch { return ""; } })() : "";
+  if (!apiSrc) {
+    // No engine source to read (the Docker rebuild): keep the committed table.
+    const prev = readJson(OUT)?.sfx ?? readJson(join(WIKI_DIR, "site", "data.json"))?.sfx;
+    if (prev) return prev;
+    sfxDrift.push("composer engine sources unavailable and no committed sfx to keep");
+    return null;
+  }
+
+  // ---- engine constants the wiki's player mirrors (each pinned to source) --
+  const gentleM = oneSrc.match(/const gentle = sound\.urls \? 1 : ([\d.]+)/);
+  if (!gentleM) sfxDrift.push("gentle factor not found in oneshot.ts");
+  if (!/gainDb: \(opts\.gainDb \?\? 0\) - 12,/.test(apiSrc)) sfxDrift.push("the −12 dB EVENT_FOLEY trim moved in api.ts");
+  const engine = {
+    gentle: gentleM ? Number(gentleM[1]) : 0.35,
+    debounceMs: 30,
+    busDb: { ui: -12, sfx: -14, music: -20, ambience: -24, ...(bindings.buses ?? {}) },
+    uiTrimDb: -12,
+    voiceGainDb: tsScalar(apiSrc, "JUMP_VOICE_GAIN_DB", -12),
+    stepBaseDb: -8,
+    walkPenaltyDb: tsScalar(apiSrc, "WALK_PENALTY_DEFAULT_DB", -3),
+    runBonusDb: 0.8,
+    wetStepRate: tsScalar(apiSrc, "WET_STEP_RATE", 1.15),
+  };
+  if (!/gainDb: -8 \+ \(FOOTSTEP_TRIM_DB/.test(apiSrc)) sfxDrift.push("the −8 dB step base moved in api.ts");
+
+  // ---- composer takeover tables ----
+  const EVENT_FOLEY = tsRecord(apiSrc, "GameAudio\\.EVENT_FOLEY|EVENT_FOLEY") ?? {};
+  const FOOT_SETS = tsRecord(apiSrc, "FOOTSTEP_SETS") ?? {};
+  const FOOT_CAT = tsRecord(apiSrc, "FOOTSTEP_CATALOG") ?? {};
+  const FOOT_TRIM = tsRecord(apiSrc, "FOOTSTEP_TRIM_DB") ?? {};
+  const FOOT_LP = tsRecord(apiSrc, "FOOTSTEP_LOWPASS_HZ") ?? {};
+  const FOOT_RATE = tsRecord(apiSrc, "FOOTSTEP_RATE") ?? {};
+  const FOOT_LAYER = tsRecord(apiSrc, "FOOTSTEP_LAYER") ?? {};
+  const JUMP_VOICE = tsRecord(apiSrc, "JUMP_VOICE") ?? {};
+  const footDefault = apiSrc.match(/const FOOTSTEP_DEFAULT = "([^"]+)"/)?.[1] ?? (sfxDrift.push("FOOTSTEP_DEFAULT not found"), "stone");
+
+  // ---- composer's own foley sets (takes on disk, served at /assets/composer) --
+  const foleyDir = comp ? join(comp, "foley") : null;
+  const foleyMeta = foleyDir ? readJson(join(foleyDir, "foley.json")) ?? {} : {};
+  const composerSets = {};
+  for (const [set, meta] of Object.entries(foleyMeta)) {
+    if (!meta?.takes) continue;
+    composerSets[set] = {
+      takes: meta.takes.map((t, i) => ({
+        name: t.split("/").pop(),
+        file: `composer/foley/${t}`,
+        dur: meta.durations_s?.[i] ?? null,
+      })),
+      voice: set.startsWith("jump_voice"),
+      usedBy: [],
+    };
+  }
+  const useSet = (set, why) => { const s = composerSets[set]; if (s && !s.usedBy.includes(why)) s.usedBy.push(why); };
+
+  // ---- what the game actually EMITS (an event nobody emits is "wired, not
+  //      fired"; an emitted event with no sound is "silent") ----
+  const emitted = new Set();
+  for (const f of [...walkTs(join(GAMES2, "client", "src")), ...walkTs(join(comp ?? "", "engine"))]) {
+    const src = (() => { try { return readFileSync(f, "utf8"); } catch { return ""; } })();
+    for (const m of src.matchAll(/gameAudio\.event\(\s*["']([^"']+)["']/g)) emitted.add(m[1]);
+    for (const m of src.matchAll(/audio\.event\(\s*["']([^"']+)["']/g)) emitted.add(m[1]);
+  }
+
+  // ---- assemble the events ----
+  const events = [];
+  const GROUPS = { ui: "Interface", item: "Items", tool: "Tools", player: "Movement", footsteps: "Movement", combat: "Combat", progress: "Progress", consume: "World", container: "World", door: "World", region: "Ambience", ambience: "Ambience", weather: "Weather", system: "System" };
+  const nice = (id) => titleCase(id.replace(/^[a-z]+\./, "").replace(/[._]/g, " "));
+  const catLayer = (soundId, over = {}) => {
+    const s = catById.get(soundId);
+    if (!s) return null;
+    const g = engine.gentle;
+    const v = s.variation ?? {};
+    return {
+      source: "catalog", soundId, label: s.name ?? soundId,
+      takes: (s.takes?.length ? s.takes : [s.file]).map((t) => ({ name: t.split("/").pop(), file: `sounds/${t}` })),
+      pick: v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
+      rate: over.rate ?? 1,
+      mixGainDb: s.mix_gain_db ?? 0,
+      trimDb: over.trimDb ?? 0,
+      bus: over.bus ?? "sfx",
+      jitterSemis: v.pitch_jitter_semitones ? v.pitch_jitter_semitones.map((x) => +(x * g).toFixed(2)) : null,
+      gainJitterDb: v.gain_jitter_db ? v.gain_jitter_db.map((x) => +(x * g).toFixed(2)) : null,
+      lowpassHz: over.lowpassHz ?? null,
+      layerNote: over.layerNote ?? null,
+      voiceRate: null,
+      loop: !!s.loop,
+    };
+  };
+  const setLayer = (set, over = {}) => {
+    const cs = composerSets[set];
+    if (!cs) return null;
+    useSet(set, over.usedBy ?? "event");
+    return {
+      source: "composer", set, label: `${set} (composer)`,
+      takes: cs.takes,
+      pick: over.pick ?? "round-robin, never the same twice",
+      rate: over.rate ?? 1,
+      mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",
+      // Composer sets carry no catalog variation block: the engine's jitter
+      // comes from the entry the composer builds (small, authored ranges).
+      jitterSemis: over.jitterSemis ?? null,
+      gainJitterDb: null,
+      lowpassHz: over.lowpassHz ?? null,
+      layerNote: over.layerNote ?? null,
+      voiceRate: over.voiceRate ?? null,
+      loop: false,
+    };
+  };
+
+  for (const ev of bindings.events ?? []) {
+    const id = ev.event;
+    if (id === "player.footstep") continue;           // replaced by the real per-surface routing below
+    if (ev.ambience_by_region) {
+      for (const [region, soundId] of Object.entries(ev.ambience_by_region)) {
+        const l = catLayer(soundId, { bus: ev.bus ?? "ambience" });
+        events.push({ id: `ambience.${region}`, group: "Ambience", name: `Ambience · ${titleCase(region)}`,
+          bus: ev.bus ?? "ambience", duck: false, emitted: emitted.has(id), bound: true,
+          note: "loops while you are in the region; night adds crickets, rain adds rain",
+          sounds: l ? [l] : [] });
+      }
+      continue;
+    }
+    // The composer's takeovers beat the catalog binding, exactly as in api.ts.
+    let sounds = [];
+    let note = null;
+    if (EVENT_FOLEY[id]) {
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, pick: "primary take only", usedBy: id });
+      sounds = l ? [l] : [];
+      note = "composer takeover: every UI event plays the approved click";
+    } else if (id === "player.jump") {
+      sounds = jumpVoiceLayers(JUMP_VOICE, setLayer, engine);
+      note = "a vocal effort per character — the catalog jump sound is NOT played";
+    } else {
+      const l = catLayer(ev.sound, { bus: ev.bus ?? "sfx" });
+      sounds = l ? [l] : [];
+    }
+    events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
+      bus: ev.bus ?? "sfx", duck: !!ev.duck, emitted: emitted.has(id), bound: true, note, sounds });
+  }
+  // Emitted but never bound (and not a composer takeover): a SILENT event.
+  for (const id of emitted) {
+    if (events.some((e) => e.id === id)) continue;
+    let sounds = [], note = null, bound = false;
+    if (EVENT_FOLEY[id]) {
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, pick: "primary take only", usedBy: id });
+      sounds = l ? [l] : []; bound = true;
+      note = "composer takeover: every UI event plays the approved click";
+    } else if (id === "player.fall") {
+      sounds = jumpVoiceLayers(JUMP_VOICE, setLayer, engine); bound = true;
+      note = "same grunt as the jump, when a fall starts (0.28 s of dedupe between them)";
+    }
+    events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
+      bus: "sfx", duck: false, emitted: true, bound, note, sounds });
+  }
+  // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
+  // surface resolves to a composer set or a catalog sound, with per-surface
+  // trim / lowpass / rate, and grass ALSO layers dirt underneath at −6 dB
+  // relative to what dirt itself plays at.
+  const surfaces = [...new Set(["grass", "dirt", "sand", "snow", "stone", "wood", "ice", "swamp", ...Object.keys(FOOT_SETS), ...Object.keys(FOOT_CAT)])].sort();
+  for (const surf of surfaces) {
+    const layers = [];
+    const level = (s) => engine.stepBaseDb + (Number(FOOT_TRIM[s]) || 0);
+    const one = (s, extraDb, layerNote) => {
+      const catId = FOOT_CAT[s];
+      if (catId) return catLayer(catId, { trimDb: level(s) + extraDb, layerNote, usedBy: `footsteps.${s}` });
+      const set = FOOT_SETS[s] ?? footDefault;
+      return setLayer(set, {
+        trimDb: level(s) + extraDb,
+        lowpassHz: FOOT_LP[s] != null ? Number(FOOT_LP[s]) : null,
+        rate: FOOT_RATE[s] != null ? Number(FOOT_RATE[s]) : 1,
+        layerNote, usedBy: `footsteps.${s}`,
+      });
+    };
+    const main = one(surf, 0, null);
+    if (main) layers.push(main);
+    const lay = FOOT_LAYER[surf];
+    if (lay?.surface) {
+      const under = one(lay.surface, Number(lay.relDb) || 0, `layered under, at ${lay.surface}'s own level ${lay.relDb} dB`);
+      if (under) layers.push(under);
+    }
+    events.push({ id: `footsteps.${surf}`, group: "Movement", name: `Footsteps · ${titleCase(surf)}`,
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: `walk ${engine.walkPenaltyDb} dB, run +${engine.runBonusDb} dB on the base; both feet alternate with the gait`,
+      sounds: layers });
+  }
+  // The wet shoreline step and the composer's own flourishes.
+  const wet = catLayer("splash", { rate: engine.wetStepRate, layerNote: "the water-exit splash, pitched brighter" });
+  if (wet) events.push({ id: "footsteps.wet", group: "Movement", name: "Footsteps · Wet shoreline", bus: "sfx", duck: false, emitted: true, bound: true, note: null, sounds: [wet] });
+  const star = catLayer("gem_pickup", { trimDb: -10 });
+  if (star) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
+    note: "played on the music's beat, in the track's key (scale-snapped)", sounds: [star] });
+  const thunder = setLayer("thunder", { trimDb: 6, pick: "primary take every strike", usedBy: "weather.thunder" });
+  if (thunder) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
+    note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
+
+  events.sort((a, b) => a.group.localeCompare(b.group) || a.id.localeCompare(b.id));
+
+  // Which catalog sounds an event references — feeds the used/unused pill on
+  // the admin's all-sounds list (markSoundUsage already covers bindings; this
+  // adds the composer-side routes like sand→jump).
+  if (soundEntries?.length) {
+    const byId = new Map(soundEntries.map((s) => [s.id, s]));
+    for (const e of events) for (const l of e.sounds) if (l.source === "catalog") {
+      const s = byId.get(l.soundId);
+      if (s && !(s.usedBy ?? (s.usedBy = [])).includes(e.id)) s.usedBy.push(e.id);
+    }
+  }
+  return { engine, events, composerSets };
+}
+/** The per-character jump/fall voice layers — both characters' sets, each at
+ *  its authored rate (2.0: the takes are recorded at half speed; see the
+ *  composer README's ⭐ lesson). */
+function jumpVoiceLayers(JUMP_VOICE, setLayer, engine) {
+  const out = [];
+  for (const [uid, cfg] of Object.entries(JUMP_VOICE)) {
+    if (!cfg?.set) continue;
+    const l = setLayer(cfg.set, {
+      rate: Number(cfg.rate) || 2,
+      trimDb: engine.voiceGainDb,
+      pick: "round-robin, never the same twice",
+      voiceRate: Number(cfg.rate) || 2,
+      layerNote: `${uid}'s voice — picked by character, not at random`,
+      usedBy: "player.jump",
+    });
+    if (l) out.push(l);
+  }
+  return out;
+}
+
 // ------------------------------------------------ audio usage (in game?)
 // A sound is IN THE GAME when something references it: a semantic event in
 // sounds/bindings.json (including its per-surface / per-region / layer maps)
@@ -890,6 +1180,7 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 }
 const world = buildWorldUsage();
 markSoundUsage(sounds);
+const sfx = buildSfx(sounds);
 markMusicUsage(music);
 const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
 // Both directions of "who drops what", precomputed from the SEEDED tuning so
@@ -918,6 +1209,9 @@ const data = {
   generated_at: new Date().toISOString(),
   git_sha: gitSha(),
   root_hint: "asset paths are relative to the directory that serves the domains (/assets in the game, the repo root locally)",
+  // The in-game sound EVENTS (see buildSfx): what triggers a sound, what
+  // plays, with which processing — derived from the composer's own engine.
+  sfx,
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
@@ -970,6 +1264,11 @@ console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added
 // The build carries on regardless — resolving keeps every page correct — but a
 // stale sidecar is a real fault at its SOURCE, and silence is what let the last
 // one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
+if (sfxDrift.length) {
+  console.warn(`[wiki] WARNING: ${sfxDrift.length} sfx-parse miss(es) — the composer's engine moved; the event table may be stale:`);
+  for (const x of sfxDrift) console.warn(`         ${x}`);
+  console.warn("       Update buildSfx() in wiki/build.mjs to match games2/composer/engine.");
+}
 if (staleSidecar.length) {
   const gone = staleSidecar.filter((x) => x.endsWith("GONE"));
   console.warn(`[wiki] WARNING: ${staleSidecar.length} stale path(s) in the committed sidecars, resolved on the fly:`);

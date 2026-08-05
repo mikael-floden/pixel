@@ -126,6 +126,15 @@ function setCacheHeaders(res: express.Response, path: string) {
 }
 
 if (serveClient) {
+  // The composer's own foley takes, for the wiki's sound-event page. Only
+  // foley/ is exposed — the engine sources stay private. In the image the
+  // Dockerfile copies them to /assets/composer/foley; a repo checkout serves
+  // them straight from games2/composer/foley (second mount = dev fallback).
+  app.use(
+    "/assets/composer/foley",
+    express.static(join(ASSETS_ROOT, "composer", "foley"), { maxAge: "1h", setHeaders: setCacheHeaders }),
+    express.static(join(GAME_ROOT, "composer", "foley"), { maxAge: "1h", setHeaders: setCacheHeaders }),
+  );
   for (const domain of ASSET_DOMAINS) {
     app.use(
       `/assets/${domain}`,

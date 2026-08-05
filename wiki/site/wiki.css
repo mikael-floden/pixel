@@ -655,3 +655,25 @@ button.drop-row {
 .npc-role { font-size: 10.5px; }
 /* The trade under an NPC's name on its own page — a subtitle, not a heading. */
 .npc-trade { font-size: 13px; margin: -2px 0 2px; }
+
+/* --- Sound EVENTS (maintainer 2026-08-05): the unit is the in-game moment,
+   its layers beneath it, the Game Master's raw library at the bottom. */
+.sfx-event .play-event { margin-right: 4px; }
+.sfx-layer { border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
+.sfx-layer-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sfx-take { margin-left: 22px; }
+.sfx-req { background: color-mix(in srgb, var(--warn, #b58900) 8%, transparent); border-radius: 6px; }
+.sfx-add { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
+.sfx-add-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.sfx-add-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
+.sfx-pick { max-width: 46%; }
+.sfx-num { width: 62px; }
+.sfx-note { flex: 1; min-width: 140px; }
+.sfx-lib { margin-top: 26px; }
+.sfx-lib-row { border-top: 1px solid var(--border); padding: 8px 0; }
+.sfx-lib-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sfx-lib-ctl { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 2px; }
+.sfx-lib-ctl label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.sfx-lib-ctl input[type="range"] { width: 96px; }
+.sfx-val { min-width: 46px; text-align: right; font-size: 12px; }
+.muted-pill { opacity: 0.75; }

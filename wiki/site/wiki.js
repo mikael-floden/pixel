@@ -24,7 +24,7 @@ const stripExt = (rel) => rel.replace(/\.(png|webp)$/i, "");
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"];
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
@@ -164,7 +164,10 @@ const FILE_FOR = (key) => key.startsWith("feedback/")
 // The current local value of one touched id inside a file (null = deleted).
 function valueOf(key, id) {
   const doc = FILE_FOR(key).get() ?? {};
-  const bucket = key.startsWith("feedback/") ? doc.entries : key === "tuning/monsters" ? doc.monsters : doc.overrides;
+  const bucket = key.startsWith("feedback/") ? doc.entries
+    : key === "tuning/monsters" ? doc.monsters
+    : key === "tuning/sfx_requests" ? doc.requests
+    : doc.overrides;
   const v = bucket?.[id];
   return v === undefined ? null : v;
 }
@@ -1639,6 +1642,97 @@ function viewObject(id) {
 // (maintainer 2026-07-30). Only meaningful inside the game's wiki drawer —
 // the parent (wikipanel.ts) flips gameAudio and RESTORES the player's real
 // settings when the drawer closes, so this is never a persistent choice.
+/* --- the game's SOUND ENGINE, mirrored -------------------------------------
+   Playing a sound event here must sound EXACTLY like it does in the game
+   (maintainer 2026-08-05), so this is a faithful mirror of the composer's
+   one-shot player — games2/composer/engine/oneshot.ts — using the SAME data
+   (the catalog, the composer's foley sets, and the engine constants build.mjs
+   reads out of the composer's own source, drift-guarded):
+
+   - take pick: round-robin, never the same take twice (oneshot.pickTake);
+     "primary take only" where the composer pins one (pure-mode/EVENT_FOLEY).
+   - pitch: 2^(semis/12) × the layer's rate. The jitter ranges in data.json
+     are ALREADY scaled by the engine's gentleness factor (×0.35) at build.
+   - gain: mix_gain_db + event trim + the bus fader, ± gentled gain jitter.
+   - per-layer lowpass (grass's hi-hat shave), 30 ms retrigger debounce.
+   - NOT mirrored, honestly: scale-snap (needs the running score), pan and
+     distance (needs a world position), beat quantize. Those apply on top in
+     the game; everything the maintainer tunes per sound is identical here.
+
+   BufferSource, never HTMLAudio: an <audio> el pitch-PRESERVES on rate
+   change by default — 2× would speed a voice up without raising it, which is
+   exactly the wrong sound for the half-speed-authored vocal takes. */
+const sfxPlays = [];                                // test/debug: what actually played
+window.__sfxPlays = sfxPlays;
+const sfxEngine = {
+  ctx: null, buffers: new Map(), lastTake: new Map(), lastAt: new Map(),
+  ac() { return (this.ctx ??= new (window.AudioContext || window.webkitAudioContext)()); },
+  async buffer(rel) {
+    if (this.buffers.has(rel)) return this.buffers.get(rel);
+    const p = fetch(assetUrl(rel)).then((r) => r.arrayBuffer()).then((b) => this.ac().decodeAudioData(b)).catch(() => null);
+    this.buffers.set(rel, p);
+    return p;
+  },
+  pickTake(key, takes, primaryOnly) {
+    if (primaryOnly || takes.length === 1) return 0;
+    const last = this.lastTake.get(key) ?? -1;
+    let idx = Math.floor(Math.random() * takes.length);
+    if (idx === last) idx = (idx + 1) % takes.length;   // oneshot.pickFrom, verbatim
+    this.lastTake.set(key, idx);
+    return idx;
+  },
+  /** One LAYER of an event, with the engine's whole chain. */
+  async playLayer(layer, over = {}) {
+    const eng = state.data.sfx?.engine ?? {};
+    const key = layer.set ?? layer.soundId;
+    const now = performance.now();
+    if (now - (this.lastAt.get(key) ?? -1e9) < (eng.debounceMs ?? 30)) return;  // oneshot.play debounce
+    this.lastAt.set(key, now);
+    const idx = this.pickTake(key, layer.takes, /primary/.test(layer.pick ?? ""));
+    const take = layer.takes[idx];
+    const buf = await this.buffer(take.file);
+    if (!buf) { toast(`Could not load ${take.name}`); return; }
+    const ctx = this.ac();
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const semis = layer.jitterSemis ? rand(layer.jitterSemis[0], layer.jitterSemis[1]) : 0;
+    const rate = Math.pow(2, semis / 12) * (layer.rate ?? 1) * (over.rate ?? 1);
+    let db = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (eng.busDb?.[layer.bus] ?? 0) + (over.gainDb ?? 0);
+    if (layer.gainJitterDb) db += rand(layer.gainJitterDb[0], layer.gainJitterDb[1]);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+    let head = src;
+    if (layer.lowpassHz) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = layer.lowpassHz;
+      head.connect(lp); head = lp;
+    }
+    const g = ctx.createGain();
+    g.gain.value = Math.pow(10, db / 20);           // catalog.dbToGain
+    head.connect(g); g.connect(ctx.destination);
+    src.start();
+    sfxPlays.push({ file: take.file, rate: +rate.toFixed(4), db: +db.toFixed(2), lowpassHz: layer.lowpassHz ?? null });
+  },
+  /** The whole EVENT: every layer at once — that is what the game does
+   *  (grass footstep = the grass set AND dirt underneath, same instant). */
+  playEvent(ev) { for (const l of ev.sounds) void this.playLayer(l); },
+  /** The admin's all-sounds list: raw file, or the audition sliders. */
+  async rawOrAudition(file, { rate = 1, gainDb = 0, maxSemis = 0 } = {}) {
+    const buf = await this.buffer(file);
+    if (!buf) { toast("Could not load the take"); return; }
+    const ctx = this.ac();
+    const semis = maxSemis ? (Math.random() * 2 - 1) * maxSemis : 0;
+    const r = rate * Math.pow(2, semis / 12);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.playbackRate.value = r;
+    const g = ctx.createGain();
+    g.gain.value = Math.pow(10, gainDb / 20);
+    src.connect(g); g.connect(ctx.destination);
+    src.start();
+    sfxPlays.push({ file, rate: +r.toFixed(4), db: +gainDb.toFixed(2), lowpassHz: null, raw: true });
+  },
+};
+
 // A full-page wiki tab has no game to mute → no button.
 let gameMuted = false;
 function muteGameBtn() {
@@ -1653,28 +1747,184 @@ function muteGameBtn() {
   render();
   return btn;
 }
+/* --- Sound Effects, organized by IN-GAME EVENT (maintainer 2026-08-05) ----
+   The unit is the EVENT that triggers sound — "Footsteps · Grass", "Jump" —
+   not the audio file. An event can layer several sounds at once (grass +
+   dirt underneath) or alternate takes; ▶ on the event plays exactly what
+   the game plays, ▶ on a row plays that one sound alone, both through the
+   mirrored engine above. Players see only events that make sound; the
+   silent events, the stars, the add-a-sound requests and the raw all-sounds
+   list at the bottom are the Game Master's. */
+const stFmt = (x) => (Number.isInteger(x) ? String(x) : x.toFixed(2).replace(/0$/, ""));
+function sfxTakeFb(layer, take) {
+  // Stars flow to the agent that OWNS the take: catalog takes to the sounds
+  // agent (the ids it already consumes), composer takes to the composer.
+  if (layer.source === "composer") return ["composer", take.file.replace(/\.\w+$/, "")];
+  return ["sounds", take.file.replace(/\.\w+$/, "")];
+}
+function sfxLayerRow(ev, layer) {
+  const totalDb = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (state.data.sfx.engine.busDb?.[layer.bus] ?? 0);
+  const jit = layer.jitterSemis;
+  const jitTxt = jit ? (Math.abs(jit[0]) === Math.abs(jit[1]) ? `±${stFmt(Math.abs(jit[1]))} st` : `${stFmt(jit[0])}…${stFmt(jit[1])} st`) : null;
+  const n = layer.takes.length;
+  const rows = [
+    h("div", { class: "sfx-layer-head" },
+      h("button", { class: "play-btn", "aria-label": "play this sound alone", onclick: () => void sfxEngine.playLayer(layer) }, "▶"),
+      h("span", { class: "take-name" }, layer.label),
+      layer.voiceRate ? h("span", { class: "pill ok", title: "The vocal takes are authored at half speed — 2× is the true voice" }, `voice ×${stFmt(layer.voiceRate)}`) : null,
+      layer.rate !== 1 && !layer.voiceRate ? h("span", { class: "pill", title: "playbackRate — pitch and speed together" }, `pitch ×${stFmt(layer.rate)}`) : null,
+      h("span", { class: "pill", title: `mix ${stFmt(layer.mixGainDb ?? 0)} dB + event ${stFmt(layer.trimDb ?? 0)} dB + ${layer.bus} bus ${stFmt(state.data.sfx.engine.busDb?.[layer.bus] ?? 0)} dB` }, `${totalDb > 0 ? "+" : ""}${stFmt(totalDb)} dB`),
+      jitTxt ? h("span", { class: "pill", title: "Random pitch on every play (already scaled by the engine's gentleness ×0.35)" }, `pitch jitter ${jitTxt}`) : null,
+      layer.gainJitterDb ? h("span", { class: "pill", title: "Random volume on every play (gentled)" }, `vol ±${stFmt(Math.abs(layer.gainJitterDb[1]))} dB`) : null,
+      layer.lowpassHz ? h("span", { class: "pill", title: "Fixed tone shaping" }, `lowpass ${layer.lowpassHz} Hz`) : null,
+      h("span", { class: "pill muted-pill", title: n > 1 ? "Each play picks a take at random, never the same one twice in a row" : "One recording" },
+        n > 1 ? `${n} takes · equal 1/${n}` : "1 take"),
+      layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
+  ];
+  for (const [i, t] of layer.takes.entries()) {
+    const [dom, fid] = sfxTakeFb(layer, t);
+    rows.push(h("div", { class: "take-row sfx-take" },
+      h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
+      h("span", { class: "take-name muted" }, t.name),
+      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
+      h("span", { class: "spacer" }),
+      state.admin ? starsWidget(dom, fid) : null,
+      state.admin ? verdictWidget(dom, fid) : null));
+  }
+  return h("div", { class: "sfx-layer" }, ...rows);
+}
+function setSfxRequest(id, val) {
+  const doc = state.tuning.sfx_requests ?? (state.tuning.sfx_requests = { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} });
+  if (val === null) delete doc.requests[id];
+  else doc.requests[id] = val;
+  doc.updated_at = new Date().toISOString();
+  touch("tuning/sfx_requests", id);
+  markDirty("tuning/sfx_requests");
+}
+function sfxAddForm(ev) {
+  const opts = [
+    ...state.data.domains.sounds.map((s) => h("option", { value: `cat:${s.id}` }, `${s.name} (catalog)`)),
+    ...Object.keys(state.data.sfx.composerSets).map((set) => h("option", { value: `set:${set}` }, `${set} (composer)`)),
+  ];
+  const sel = h("select", { class: "sfx-pick" }, ...opts);
+  const num = (val, min, max, step, title) => h("input", { type: "number", value: String(val), min: String(min), max: String(max), step: String(step), title, class: "sfx-num" });
+  const pitch = num(1, 0.25, 4, 0.05, "pitch (playbackRate)");
+  const vol = num(0, -24, 12, 1, "volume trim, dB");
+  const rnd = num(0, 0, 6, 0.1, "max random pitch, semitones");
+  const note = h("input", { type: "text", placeholder: "note to the composer (optional)", class: "sfx-note" });
+  const btn = h("button", { class: "ghost-btn", onclick: () => {
+    const id = `${ev.id}/${Date.now().toString(36)}`;
+    setSfxRequest(id, {
+      event: ev.id, sound: sel.value.replace(/^cat:/, "").replace(/^set:/, "composer/"),
+      pitch: Number(pitch.value) || 1, volume_db: Number(vol.value) || 0,
+      max_random_pitch_semis: Number(rnd.value) || 0,
+      note: note.value.trim() || undefined, requested_at: new Date().toISOString(),
+    });
+    toast("Request queued — Save sends it to the composer.");
+    route();
+  } }, "Request this sound");
+  return h("div", { class: "sfx-add" },
+    h("div", { class: "muted", style: "font-size:12.5px" }, "Add a sound to this event — the composer agent wires it in:"),
+    h("div", { class: "sfx-add-row" }, sel,
+      h("label", { class: "muted" }, "pitch ", pitch),
+      h("label", { class: "muted" }, "vol dB ", vol),
+      h("label", { class: "muted" }, "±pitch ", rnd)),
+    h("div", { class: "sfx-add-row" }, note, btn));
+}
+function sfxEventCard(ev) {
+  const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
+  return h("div", { class: "panel sfx-event" },
+    h("div", { class: "panel-title" },
+      ev.sounds.length ? h("button", { class: "play-btn play-event", "aria-label": "play the event as the game plays it",
+        onclick: () => sfxEngine.playEvent(ev) }, "▶") : null,
+      ev.name,
+      state.admin ? h("span", { class: "pill" }, ev.id) : null,
+      state.admin ? h("span", { class: "pill" }, `${ev.bus} bus`) : null,
+      ev.duck ? h("span", { class: "pill", title: "The music dips while this plays" }, "ducks music") : null,
+      ev.sounds.length > 1 ? h("span", { class: "pill ok", title: "All of these play at the same time" }, `${ev.sounds.length} layered`) : null,
+      !ev.sounds.length ? h("span", { class: "pill warn" }, "no sound yet") : null,
+      state.admin && ev.bound && !ev.emitted ? h("span", { class: "pill", title: "Wired to a sound, but no game code fires this event yet" }, "not fired yet") : null),
+    ev.note ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.note) : null,
+    ...ev.sounds.map((l) => sfxLayerRow(ev, l)),
+    ...reqs.map(([id, r]) => h("div", { class: "take-row sfx-req" },
+      h("span", { class: "pill warn" }, "requested"),
+      h("span", { class: "take-name" }, `${r.sound} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "spacer" }),
+      h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))),
+    state.admin ? sfxAddForm(ev) : null);
+}
+/** The Game Master's raw library: EVERY take, used or not, played raw —
+ *  except voices, whose honest raw is 2× (authored at half speed) — with
+ *  audition sliders for pitch / volume / max random pitch. */
+function sfxAllSounds() {
+  const rows = [];
+  const slider = (min, max, step, val, unit, title) => {
+    const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
+    const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title });
+    inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+    return { inp, out, get: () => Number(inp.value) };
+  };
+  const entryRow = (name, sub, takes, { voice = false, usedBy = [] } = {}) => {
+    const pitch = slider(0.25, 4, 0.05, voice ? 2 : 1, "×", "pitch");
+    const vol = slider(-24, 12, 1, 0, " dB", "volume");
+    const rnd = slider(0, 6, 0.1, 0, " st", "max random pitch");
+    rows.push(h("div", { class: "sfx-lib-row" },
+      h("div", { class: "sfx-lib-head" },
+        h("span", { class: "take-name" }, name),
+        h("span", { class: "pill" }, sub),
+        voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — raw playback is 2×" }, "voice · raw ×2") : null,
+        usedBy.length
+          ? h("span", { class: "pill ok", title: usedBy.join(", ") }, `used · ${usedBy.length} event${usedBy.length > 1 ? "s" : ""}`)
+          : h("span", { class: "pill warn", title: "No event or routing references this — auditionable, not played by the game" }, "unused")),
+      h("div", { class: "sfx-lib-ctl" },
+        h("label", { class: "muted" }, "pitch ", pitch.inp, pitch.out),
+        h("label", { class: "muted" }, "vol ", vol.inp, vol.out),
+        h("label", { class: "muted" }, "±pitch ", rnd.inp, rnd.out)),
+      ...takes.map((t) => h("div", { class: "take-row sfx-take" },
+        h("button", { class: "play-btn", "aria-label": "play raw with the sliders", onclick: () =>
+          void sfxEngine.rawOrAudition(t.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() }) }, "▶"),
+        h("span", { class: "take-name muted" }, t.name),
+        h("span", { class: "spacer" }),
+        starsWidget(t.dom, t.fid), verdictWidget(t.dom, t.fid)))));
+  };
+  for (const s of state.data.domains.sounds) {
+    entryRow(s.name, s.category, s.takes.map((t) => ({
+      name: t.id, file: t.files.m4a ?? t.files.ogg ?? t.files.wav,
+      dom: "sounds", fid: `${s.path}/${t.id}`.replace(/\.\w+$/, ""),
+    })), { usedBy: s.usedBy ?? [] });
+  }
+  for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
+    entryRow(set, "composer", cs.takes.map((t) => ({
+      name: t.name, file: t.file,
+      dom: "composer", fid: t.file.replace(/\.\w+$/, ""),
+    })), { voice: cs.voice, usedBy: cs.usedBy ?? [] });
+  }
+  return h("div", { class: "sfx-lib" },
+    h("h2", {}, "All sounds ", h("span", { class: "pill" }, "Game Master")),
+    h("p", { class: "muted" }, "Every recording in the library, used or not, played raw — voices at their honest 2×. The sliders audition pitch, volume and a max random pitch without touching the game."),
+    ...rows);
+}
 function viewSounds() {
   const q = state.query;
-  const list = state.data.domains.sounds.filter((s) => matches(q, s.id, s.name, s.category, s.description, s.usage));
-  const cats = [...new Set(list.map((s) => s.category))].sort();
+  const sfx = state.data.sfx;
+  if (!sfx?.events?.length) return h("div", {}, sectionHead("sounds"), h("p", { class: "muted" }, "No sound-event table in this build."));
+  let events = sfx.events.filter((e) => matches(q, e.id, e.name, e.group, ...e.sounds.map((l) => l.label)));
+  // Players hear what IS — only events with an active sound. The silent ones
+  // (and everything editable) are the Game Master's view.
+  if (!state.admin) events = events.filter((e) => e.sounds.length);
+  const groups = [...new Set(events.map((e) => e.group))];
+  const ORDER = ["Movement", "Interface", "Items", "Tools", "Combat", "Progress", "World", "Weather", "Ambience", "System"];
+  groups.sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
   return h("div", {},
     sectionHead("sounds"),
     h("p", { class: "muted" }, state.admin
-      ? "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."
-      : "Every sound of the world — press ▶ to listen. The chosen pill marks what the game currently plays."),
+      ? "Every in-game sound EVENT: ▶ plays it exactly as the game does (same engine, same processing). Rate takes, withdraw or file add-a-sound requests, and audition the raw library at the bottom."
+      : "What the world sounds like, by the moment that triggers it — ▶ plays it exactly as it plays in the game."),
     muteGameBtn(),
-    ...cats.map((cat) => h("div", {},
-      h("h2", {}, cat, " ", h("span", { class: "pill" }, String(list.filter((s) => s.category === cat).length))),
-      ...list.filter((s) => s.category === cat).map((s) =>
-        h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, s.name,
-            h("span", { class: "pill" }, fmtDur(s.duration_s)),
-            s.loop ? h("span", { class: "pill" }, "loop") : null,
-            usePill(s.usedBy, "No game event or composer lookup references this sound yet"),
-            h("span", { class: "spacer" }),
-            starsWidget("sounds", s.path), verdictWidget("sounds", s.path)),
-          h("p", { class: "muted", style: "margin:0 0 6px" }, `${s.description}${s.usage ? ` — ${s.usage}` : ""}`),
-          ...s.takes.map((t) => takeRow("sounds", s.path, t)))))));
+    ...groups.map((g) => h("div", {},
+      h("h2", {}, g, " ", h("span", { class: "pill" }, String(events.filter((e) => e.group === g).length))),
+      ...events.filter((e) => e.group === g).map((e) => sfxEventCard(e)))),
+    state.admin ? sfxAllSounds() : null);
 }
 
 /* --- music --- */
@@ -2186,16 +2436,18 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, ...fbs] = apiState
-    ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants),
+  const [monTune, constTune, sfxReq, ...fbs] = apiState
+    ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
         fetchJson(new URL("live/tuning/constants.json", ROOT)),
+        fetchJson(new URL("live/tuning/sfx_requests.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
+  state.tuning.sfx_requests = sfxReq ?? { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });
@@ -2211,6 +2463,8 @@ function buildKnownIds() {
   (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
   d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(stripExt(`${g.dir}/${f}`)))); });
   d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
+  // Composer foley takes (feedback domain "composer") — ids are file paths.
+  Object.values(state.data.sfx?.composerSets ?? {}).forEach((cs) => cs.takes.forEach((t) => add(t.file.replace(/\.\w+$/, ""))));
 }
 
 function initChrome() {

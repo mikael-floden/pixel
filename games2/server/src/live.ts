@@ -35,11 +35,14 @@ const RAW_BASE = process.env.LIVE_RAW_BASE || `https://raw.githubusercontent.com
 const GH_API = process.env.LIVE_GH_API || "https://api.github.com";
 const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"] as const;
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",
   "tuning/constants.json": "tuning/constants",
+  // The Game Master's "add this sound to that event" requests, written by the
+  // wiki, consumed by the composer (games-audio) agent. See live/README.md.
+  "tuning/sfx_requests.json": "tuning/sfx_requests",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -53,6 +56,7 @@ type Doc = Record<string, unknown> & {
 const emptyDoc = (key: string): Doc => {
   if (key === "tuning/monsters") return { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
+  if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -272,7 +276,10 @@ async function ghCommitDelta(rel: string, key: string, delta: Record<string, unk
 // Apply a per-entry delta {id: value|null} to a COPY of the given doc.
 function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc {
   const next: Doc = JSON.parse(JSON.stringify(cur));
-  const bucket = key.startsWith("feedback/") ? "entries" : key === "tuning/monsters" ? "monsters" : "overrides";
+  const bucket = key.startsWith("feedback/") ? "entries"
+    : key === "tuning/monsters" ? "monsters"
+    : key === "tuning/sfx_requests" ? "requests"
+    : "overrides";
   const map = (next[bucket] ?? {}) as Record<string, unknown>;
   for (const [id, value] of Object.entries(delta)) {
     if (id === "__proto__" || id === "constructor" || id === "prototype") continue;
@@ -296,7 +303,7 @@ export function registerLiveRoutes(app: express.Application): void {
     }
     res.json({
       fetched_at: fetchedAt,
-      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants") },
+      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"), sfx_requests: docs.get("tuning/sfx_requests") },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
   });

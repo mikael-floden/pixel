@@ -1,0 +1,6 @@
+{
+  "format": "pixel-wiki-sfx-requests@1",
+  "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
+  "updated_at": "2026-08-05T19:38:35.644237+00:00",
+  "requests": {}
+}

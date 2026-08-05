@@ -11,7 +11,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = process.env.ASSETS_ROOT || resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters", "items", "lore", "wiki", "live",
+  "sounds", "music", "monsters", "items", "lore", "wiki", "live", "composer",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
@@ -42,7 +42,11 @@ function serveAssets(): Plugin {
         const rel = normalize(decodeURIComponent(req.url.slice("/assets/".length)));
         const domain = rel.split(/[\\/]/)[0];
         if (rel.startsWith("..") || !ASSET_DOMAINS.has(domain)) return next();
-        const file = join(REPO_ROOT, rel);
+        // composer/foley lives under games2/ in the repo (only the takes are
+        // served; the engine sources are not assets).
+        const file = domain === "composer" && rel.startsWith("composer/foley")
+          ? join(REPO_ROOT, "games2", rel)
+          : join(REPO_ROOT, rel);
         if (!existsSync(file) || !statSync(file).isFile()) return next();
         res.setHeader("Content-Type", TYPES[extname(file)] || "application/octet-stream");
         createReadStream(file).pipe(res);

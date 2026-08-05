@@ -30,6 +30,8 @@ COPY monsters/ /assets/monsters/
 COPY items/ /assets/items/
 COPY lore/ /assets/lore/
 COPY wiki/ /assets/wiki/
+# The composer's foley takes only — the wiki's sound-event page plays them.
+COPY games2/composer/foley/ /assets/composer/foley/
 # live/ = runtime tuning/feedback state. The baked copy is only the BOOT
 # FALLBACK — the server fetches the current live/** from GitHub main at boot
 # and on every live-notify ping (pushes to live/** do NOT redeploy).

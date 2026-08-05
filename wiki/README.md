@@ -388,6 +388,42 @@ movement** at every width (was 70px at 426px). Objects too (was 38px). Below
 wrapping for the 6 monsters whose `angry` falls back to idle (`angry (→idle)`
 is a wider label) — not the header.
 
+## Sound Effects are EVENTS, played by the game's own engine
+
+The Sound Effects page is organized by **in-game event** (maintainer
+2026-08-05) — "Footsteps · Grass", "Jump" — not by audio file. `buildSfx()`
+in build.mjs derives the table from the same sources the composer's engine
+compiles from: `sounds/bindings.json`, the `gameAudio.event("…")` call sites,
+and the composer's own takeover tables **parsed out of
+games2/composer/engine/api.ts** (EVENT_FOLEY, JUMP_VOICE, the FOOTSTEP_*
+routing/trim/layer maps) with a drift sentinel that warns loudly on any
+regex miss. A board request stands for a published `composer/events.json`
+to replace the parsing.
+
+- **Playback mirrors games2/composer/engine/oneshot.ts exactly** — take
+  round-robin that never repeats, pitch 2^(semis/12)×rate with the jitter
+  ranges pre-gentled (×0.35) at build, gain = mix + event trim + bus fader
+  ± gentled jitter, per-layer lowpass, the 30 ms debounce. BufferSource on
+  purpose: HTMLAudio pitch-preserves on rate change, which is exactly the
+  wrong sound for the half-speed-authored voice takes (raw voice = ×2).
+  Not mirrored, honestly: scale-snap, pan/distance, beat quantize — they
+  need the running game. check-sfx.mjs asserts the computed rate/dB/lowpass
+  per layer against the data.
+- **An event's ▶ plays every layer at once** (grass = the grass set AND
+  dirt underneath at −6 dB relative); each row's ▶ plays that sound alone.
+- **Players see only events that make sound.** Silent events, "not fired
+  yet" pills, stars, the add-a-sound form and the raw all-sounds library
+  are Game-Master-only.
+- **Stars** go to the take's OWNER: catalog takes → `feedback/sounds.json`,
+  composer takes → `feedback/composer.json` (new domain, ids
+  `composer/foley/<set>/<take>`).
+- **Add-a-sound requests** ride the normal save path into
+  `live/tuning/sfx_requests.json` (`pixel-wiki-sfx-requests@1`, server key
+  `tuning/sfx_requests`): pick a sound, set pitch / volume dB / max random
+  pitch, note. The composer agent consumes and deletes entries it acted on.
+- The composer's foley takes are served at `/assets/composer/foley/…`
+  (Dockerfile copies them; dev falls back to `games2/composer/foley`).
+
 ## Tuning files
 
 - `live/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster
