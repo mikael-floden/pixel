@@ -188,6 +188,37 @@ try {
   slots.cols === 3 && slots.slotW >= 55
     ? ok(`backpack is 3 wide x 5 tall in landscape (slots ${slots.slotW}px)`)
     : fail(`backpack grid ${JSON.stringify(slots)}, want 3 columns of >=55px`);
+  // …and every row FITS — no "ugly 1px scroll" (maintainer): the grid's
+  // width cap is height-derived, so the page never scrolls.
+  const bpScroll = await page.evaluate(() => {
+    const pg = document.querySelector('.ml-page[data-page="backpack"]');
+    return pg.scrollHeight - pg.clientHeight;
+  });
+  bpScroll <= 0
+    ? ok("backpack page has no scroll (grid height-fit)")
+    : fail(`backpack page scrolls by ${bpScroll}px`);
+  // MAP at the portrait size (maintainer: "the map should look the same
+  // size" — sized to the short viewport side, sides clipped evenly).
+  await page.evaluate(() => document.querySelector('[data-tab="map"]').click());
+  await page.waitForFunction(() => {
+    const f = document.querySelector(".ml-map-frame");
+    return f && !f.hidden && f.getBoundingClientRect().width > 2;
+  }, null, { timeout: 15000, polling: 150 });
+  const map = await page.evaluate(() => {
+    const f = document.querySelector(".ml-map-frame").getBoundingClientRect();
+    const w = document.querySelector(".ml-map").getBoundingClientRect();
+    return { fw: Math.round(f.width), ww: Math.round(w.width), clippedL: Math.round(w.left - f.left) };
+  });
+  Math.abs(map.fw - (393 - 32)) <= 2 && map.fw > map.ww && map.clippedL > 2
+    ? ok(`map keeps its portrait size (${map.fw}px frame in a ${map.ww}px page, ${map.clippedL}px clipped per side)`)
+    : fail(`map ${JSON.stringify(map)}, want frame ~${393 - 32}px, clipped evenly`);
+  // NIGHT OVERLAY BLEED: the light/fog quads overshoot the screen (~1% per
+  // side, spanScale) so no edge pixel is ever left unshaded ("thin bright
+  // line on the edge of the screen", device screenshot).
+  const ni = await page.evaluate(() => window.__ml.nightInfo());
+  ni.overlayW > ni.canvasW + 2 && ni.overlayH > ni.canvasH + 2
+    ? ok(`light overlay bleeds past every edge (${Math.round(ni.overlayW)}x${Math.round(ni.overlayH)} over ${ni.canvasW}x${ni.canvasH})`)
+    : fail(`overlay does not cover the screen edges: ${JSON.stringify(ni)}`);
   // CHAT float stays INSIDE the game view: focus the Chat page's input and
   // the keyboard-floated box must start at the game view's left edge, not 10.
   await page.evaluate(() => document.querySelector('[data-tab="chat"]').click());

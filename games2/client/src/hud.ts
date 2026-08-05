@@ -403,7 +403,16 @@ export class HudBar {
     const box = els.wrap.getBoundingClientRect();
     if (!nw || !nh || box.width < 2 || box.height < 2) return;
     const ar = nw / nh;
-    let w = box.width, h = w / ar;
+    // LANDSCAPE (maintainer 2026-08-05: "the map should look the same size"
+    // as portrait): size it as if the page were still the PORTRAIT page —
+    // the short viewport side minus the page margins — and let the sides
+    // overflow. The frame stays == the image box, so the "you are here"
+    // dot's percent offsets keep landing on the right pixel; .ml-map is
+    // overflow:hidden + centred, so the overhang clips evenly left and
+    // right — and an iso minimap's left/right margins are open water.
+    const land = document.documentElement.classList.contains("ml-land");
+    let w = land ? Math.min(window.innerWidth, window.innerHeight) - 32 : box.width;
+    let h = w / ar;
     if (h > box.height) { h = box.height; w = h * ar; }
     els.frame.style.width = `${Math.floor(w)}px`;
     els.frame.style.height = `${Math.floor(h)}px`;
@@ -1289,8 +1298,12 @@ function injectStyles() {
   /* the backpack turns its grid on its side with the layout (maintainer
      2026-08-05: rows & cols switch — 3 wide × 5 tall): five 1fr columns in
      the narrow menu column made ~33px slots; three make them page-filling.
-     The cap keeps tablet columns from ballooning the cells. */
-  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);max-width:320px}
+     The width cap is HEIGHT-derived so all 5 rows always fit WITHOUT the
+     ugly 1px scroll (same maintainer, next round): slot = (100dvh − 72px)/5
+     — 72 = the page's 26px padding + 4×10px gaps + slack — and grid width =
+     3 slots + 2 gaps. The 320px cap keeps tablet columns from ballooning. */
+  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);
+    max-width:min(320px, calc((100dvh - 72px)*0.6 + 20px))}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the

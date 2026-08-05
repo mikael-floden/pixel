@@ -1214,7 +1214,16 @@ export class NightLights {
   // reproduce — let the tester find the correct combo on THEIR machine.
   fieldFlip = 0; // gradient ground-truth: this stack needs NO y-inversion
   overlayFlip = false; // additionally mirror the composited image
-  spanScale = 1; // field world-span multiplier around the view centre
+  // Field world-span multiplier around the view centre. 1.02 since
+  // 2026-08-05: the overlays are drawn scale invZoom*k while uCam spans k×
+  // the camera view — the two stretches cancel, so the world→screen mapping
+  // is IDENTICAL to k=1 (screen-left still lands exactly on worldView.x; the
+  // verify scripts' calibrated samples are untouched) but the drawn quad
+  // overshoots the screen by ~1% per side. Without the bleed, fractional
+  // camera zooms leave the quad a sub-pixel short of an edge, and on a
+  // high-DPR phone that showed as a 1px UNSHADED bright line at the screen
+  // edge at night (maintainer, device screenshot).
+  spanScale = 1.02;
   testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
 
   constructor(
@@ -1949,10 +1958,16 @@ export class NightLights {
     // camera view (× spanScale) and the field maps 1:1 to what the camera shows.
     const zoom = cam.zoom || 1;
     const invZoom = 1 / zoom;
-    this.overlay?.setScale(invZoom);
-    this.mistOverlay?.setScale(invZoom);
-    this.depthFogOverlay?.setScale(invZoom);
-    const k = this.spanScale;
+    // ×k: the drawn quad grows with the field window (see spanScale) — the
+    // stretches cancel, the mapping stays exact, and the quad bleeds past
+    // every screen edge so rounding can never expose an unshaded line.
+    // TEST PATTERNS opt out (k = 1): the raw-field readbacks (nightCal
+    // patterns ≥3, the glow-seams scan) treat canvas pixels as field texels
+    // 1:1, and the 2% stretch resamples rows into phantom straight seams.
+    const k = this.testPattern >= 3 ? 1 : this.spanScale;
+    this.overlay?.setScale(invZoom * k);
+    this.mistOverlay?.setScale(invZoom * k);
+    this.depthFogOverlay?.setScale(invZoom * k);
     const wv = cam.worldView;
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;

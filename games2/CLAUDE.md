@@ -1403,6 +1403,15 @@ visible head/shoulders are ABOVE the surface).
   its `demo` room + `buildDemoWorld`, per-cell glow floors/pools for v1
   categories, `analyze-emission.mjs`, `demo-shots.mjs`, `verify-emission*`,
   and `tile-bases.json`. History in git if the techniques are needed again.)
+- The light/mist/depth-fog overlay quads BLEED ~1% past every screen edge
+  (nightlight.ts spanScale = 1.02, overlays drawn at invZoom*k while uCam
+  spans k× the view — the stretches cancel, so the world→screen mapping is
+  EXACT and every calibrated sample is unchanged): without the bleed,
+  fractional camera zooms left the quad a sub-pixel short of an edge, which
+  on a high-DPR phone read as a 1px UNSHADED bright line at night
+  (maintainer device screenshot, 2026-08-05). TEST PATTERNS (nightCal ≥3)
+  render with k=1: the raw-field readbacks treat canvas pixels as field
+  texels 1:1, and the stretch resamples rows into phantom straight seams.
 - Debug: `__ml.nightCal(flip,span,test)` drives the field test patterns
   (gradient/grid/uv/classification/raw field — headless probes only; the
   old [6]-[9] calibration keys are retired);
@@ -1778,7 +1787,13 @@ visible head/shoulders are ABOVE the surface).
   BACKPACK grid turns with the layout (3 wide × 5 tall via
   :root.ml-land .ml-slots, capped 320px); and the keyboard-floated Chat
   page input takes the gv insets so it floats INSIDE the game view
-  instead of spanning the whole screen. A ONE-TIME help chip on the
+  instead of spanning the whole screen. The backpack grid's width cap is
+  HEIGHT-derived (calc((100dvh − 72px)*0.6 + 20px)) so all five rows fit
+  without the "ugly 1px scroll"; the MAP sizes itself to the SHORT
+  viewport side minus margins in landscape — the same size portrait
+  gives it — and .ml-map's overflow:hidden clips the open-water sides
+  evenly (the frame stays == the image box, so the you-are-here dot's
+  percent offsets keep landing true). A ONE-TIME help chip on the
   gamepad page points at Settings → controls; the × dismisses it forever
   (`ml-hand-help`), it's an absolute overlay so it can never move the
   controls, and its BODY is pointer-events:none so it can't eat their
