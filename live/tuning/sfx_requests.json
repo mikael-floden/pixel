@@ -1,6 +1,16 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T09:45:00.000Z",
-  "requests": {}
+  "updated_at": "2026-08-06T06:46:06.593Z",
+  "requests": {
+    "combat.cross_on/msh5jsje": {
+      "event": "combat.cross_on",
+      "sound": "composer/cross_on_peat",
+      "take": "composer/foley/cross_on_peat/cross_on_peat__take01.wav",
+      "pitch": 1,
+      "volume_db": -6,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T06:46:02.042Z"
+    }
+  }
 }
