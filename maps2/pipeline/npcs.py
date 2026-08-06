@@ -55,9 +55,12 @@ written, so a terrain change breaks the BUILD rather than stranding somebody:
      beneath it unless you are already under it — `baseUnderDeckOpen`). A shop
      you cannot walk to is not a shop.
   3. NOT ON THE SPAWN CELL and not crowding it — you arrive into open ground.
-  4. NO TWO SPRITES OVERLAP on screen — measured in iso screen space, not grid
+  4. NEVER IN A DOORWAY — stand NEXT to an opening, never in front of it. Both
+     the grid lane through it AND the iso SCREEN strip it is seen through, the
+     latter measured from the OPENING itself (see doorway()).
+  5. NO TWO SPRITES OVERLAP on screen — measured in iso screen space, not grid
      distance, because (x+2,y+2) draws directly below (x,y).
-  5. REFERENCES RESOLVE — the character exists in characters2, its art is on
+  6. REFERENCES RESOLVE — the character exists in characters2, its art is on
      disk, `name` still matches characters2' display_name (so a rename upstream
      fails loudly instead of rotting), and every ware is a real items/ TYPE.
 
@@ -92,7 +95,8 @@ NO_NPC_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test",
 
 WALK_CLIMB = 1          # games2/shared/src/index.ts — passive step up
 # Personal space, measured on SCREEN rather than on the grid — see apart().
-SEP_COL = 2             # cells apart in (x-y): side by side, 64px of screen x
+SEP_COL = 3             # cells apart in (x-y): side by side, 96px of screen x —
+                        # 2 (64px) still leaves two 112px sprites shoulder-to-shoulder
 SEP_ROW = 6             # or in (x+y): one clearly behind the other, 90px of y
 SPAWN_CLEAR = 2         # keep this many cells clear around the arrival point
 SEARCH_R = 14           # how far from an anchor focus a placement may slide
@@ -351,6 +355,34 @@ def hidden(w, x, y):
     return False
 
 
+# A PORTAL is a door, a cave mouth or a bridge head — somewhere with exactly one
+# way through. Standing in the opening is the rudest thing generated placement
+# can do, and "in the opening" has two separate meanings that must both be kept
+# clear, because keeping only the grid one clear is what put a shopkeeper in the
+# maintainer's front door:
+DOOR_COLS = 1           # SCREEN: cells within this many (x-y) columns of the
+                        # portal are the same 32px-wide strip of screen. A
+                        # south-facing door at (201,117) is blocked on screen by
+                        # (202,118) — one step TOWARD CAMERA, identical (x-y).
+DOOR_DEPTH = 4          # ...for this many (x+y) rows in front of it
+DOOR_LANE = 2           # GRID: cells straight out along the passage itself
+
+
+def doorway(x, y, ports):
+    """Is this cell in a portal's opening — either the screen strip you see the
+    door through, or the passage you physically walk out of?
+
+    Being NEXT to a door is fine and is what we want; being in it is not."""
+    for (px, py), _step, (ax, ay) in ports:
+        dcol, drow = (x - y) - (px - py), (x + y) - (px + py)
+        if abs(dcol) <= DOOR_COLS and 0 <= drow <= DOOR_DEPTH:
+            return True                       # standing in the visible opening
+        for k in range(0, DOOR_LANE + 1):
+            if (x, y) == (px + ax * k, py + ay * k):
+                return True                   # standing in the passage itself
+    return False
+
+
 def chokepoint(w, x, y, reach):
     """Is this cell the only way through — a doorway, a bridge end, a cave mouth?
 
@@ -373,6 +405,66 @@ def road_graph(w):
             if w.m(x, y) == ROAD_MAT and w.base_ok(x, y)}
 
 
+def portals(w, reach):
+    """Every one-way-through opening in the world, as (outside cell, outward
+    axis): house doorsteps, cave mouths, bridge heads.
+
+    Shared by anchors() — which uses them as the place worth standing NEAR —
+    and by doorway(), which keeps the opening itself clear. One definition, so
+    the two can never disagree about where a door is."""
+    def walkable(c):
+        return w.inside(*c) and w.base_ok(*c) and (c[0], c[1], "base") in reach
+
+    out = []
+    seen = set()
+
+    def add(opening, step):
+        """`opening` is the hole itself — the gap in the wall, the cave-floor
+        cell at the mouth, the last plank of the span. That is what the player
+        SEES through and walks through, so it is what the clearance is measured
+        from; measuring from the step outside it is off by one column and lets a
+        sprite clip the edge of the doorway. `step` is the ground just outside,
+        which is where the anchor puts people."""
+        ax = (step[0] - opening[0], step[1] - opening[1])
+        if (opening, step) not in seen:
+            seen.add((opening, step))
+            out.append((opening, step, ax))
+
+    # buildings: the gap in the raised wall ring
+    for lvl, cells in w.roofs:
+        foot = set(cells)
+        for c in sorted(foot):
+            if not walkable(c):
+                continue
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (c[0] + dx, c[1] + dy)
+                if n in foot or not walkable(n):
+                    continue
+                if abs(w.base(*n) - w.base(*c)) <= WALK_CLIMB:
+                    add(c, n)
+    # the cave mouth
+    for c in sorted(w.cave):
+        if not walkable(c):
+            continue
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (c[0] + dx, c[1] + dy)
+            if n in w.cave or not walkable(n):
+                continue
+            if abs(w.base(*n) - w.base(*c)) <= WALK_CLIMB:
+                add(c, n)
+    # bridge heads — a span is a chokepoint everybody crosses
+    for lvl, cells in w.bridges:
+        cs = set(cells)
+        for c in sorted(cs):
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (c[0] + dx, c[1] + dy)
+                if n in cs or not walkable(n):
+                    continue
+                if abs(w.base(*n) - lvl) <= WALK_CLIMB:
+                    add(c, n)
+    return out
+
+
 def anchors(w, reach):
     """Landmarks worth standing at, derived from the terrain alone.
 
@@ -385,53 +477,31 @@ def anchors(w, reach):
     def walkable(c):
         return w.base_ok(*c) and (c[0], c[1], "base") in reach
 
-    # a BUILDING (`kind:"roof"`): its DOORWAY. The door is the one gap in the
-    # raised wall ring, so it shows up as an exterior cell you can walk to that
-    # is also a level step away from a walkable cell of the footprint. NPCs
-    # gather outside it — the house belongs to whoever lives there.
+    # Landmarks worth standing NEAR are the portals — doorstep, cave mouth,
+    # bridge head — grouped by which kind of opening they are. The focus is the
+    # opening; spot_near() then places BESIDE it, never in it (see doorway()).
+    ports = portals(w, reach)
+    pset = {step for _op, step, _a in ports}
     for lvl, cells in sorted(w.roofs, key=lambda r: (-len(r[1]), sorted(r[1])[0])):
         foot = set(cells)
-        door = []
-        for (x, y) in sorted(foot):
-            if not walkable((x, y)):
-                continue
-            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                n = (x + dx, y + dy)
-                if n in foot or not w.inside(*n) or not walkable(n):
-                    continue
-                if abs(w.base(*n) - w.base(x, y)) <= WALK_CLIMB:
-                    door.append(n)
+        door = [c for c in pset
+                if any((c[0] + dx, c[1] + dy) in foot
+                       for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
         if door:   # the doorstep nearest the arrival point is the front door
             out.append(("house", min(door, key=lambda c: _d(c, w.spawn))))
 
-    # THE CAVE MOUTH: the cave is sealed under its own roof slab, so the only
-    # cells where inside meets outside AT A WALKABLE STEP are the mouth. Anchor
-    # OUTSIDE it — the last shop before you go down, not the first shop after.
-    mouth = []
-    for (x, y) in sorted(w.cave):
-        if not walkable((x, y)):
-            continue
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            n = (x + dx, y + dy)
-            if n in w.cave or not w.inside(*n) or not walkable(n):
-                continue
-            if abs(w.base(*n) - w.base(x, y)) <= WALK_CLIMB:
-                mouth.append(n)
+    mouth = [c for c in pset
+             if any((c[0] + dx, c[1] + dy) in w.cave
+                    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
     if mouth:
         out.append(("cave", min(mouth, key=lambda c: _d(c, w.spawn))))
 
-    # the biggest BRIDGE span — anchored at the END, not on the deck: a span is
-    # a chokepoint everybody crosses, which is exactly why you do not stand in
-    # the middle of it.
     if w.bridges:
         lvl, cells = max(w.bridges, key=lambda b: (len(b[1]), b[0]))
-        ends = []
-        for (x, y) in sorted(cells):
-            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                n = (x + dx, y + dy)
-                if n not in cells and w.inside(*n) and walkable(n) \
-                        and abs(w.base(*n) - lvl) <= WALK_CLIMB:
-                    ends.append(n)
+        cs = set(cells)
+        ends = [c for c in pset
+                if any((c[0] + dx, c[1] + dy) in cs
+                       for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
         if ends:
             out.append(("bridge", min(ends, key=lambda c: _d(c, w.spawn))))
 
@@ -469,7 +539,7 @@ def anchors(w, reach):
 
 # -- placement -----------------------------------------------------------------
 
-def spot_near(w, focus, reach, taken, band, approach=()):
+def spot_near(w, focus, reach, taken, band, approach=(), ports=()):
     """First legal standing spot at/around `focus`, ringing outward so the same
     terrain always yields the same placement.
 
@@ -495,6 +565,8 @@ def spot_near(w, focus, reach, taken, band, approach=()):
             if _d((x, y), w.spawn) <= SPAWN_CLEAR:
                 continue
             if chokepoint(w, x, y, reach):
+                continue
+            if doorway(x, y, ports):
                 continue
             if hidden(w, x, y):
                 continue
@@ -560,6 +632,7 @@ def build(w):
     idx = roster()
     types = item_types()
     reach = walk_reach(w)
+    ports = portals(w, reach)
     anch = anchors(w, reach)
     # where people come FROM: the arrival point and the road network. NPCs turn
     # to face it, so the world greets the player rather than ignoring them.
@@ -568,7 +641,7 @@ def build(w):
 
     def place(kind, focus, cid, ntype, wares=None):
         band = w.deck.get(focus, w.base(*focus)) if w.inside(*focus) else 0
-        spot = spot_near(w, focus, reach, taken, band, approach)
+        spot = spot_near(w, focus, reach, taken, band, approach, ports)
         if spot is None:
             return False
         x, y = spot
@@ -616,6 +689,7 @@ def validate(w, npcs, idx=None, types=None, reach=None):
     idx = idx if idx is not None else roster()
     types = types if types is not None else item_types()
     reach = reach if reach is not None else walk_reach(w)
+    ports = portals(w, reach)
     seen_ids, spots = set(), []
     for n in npcs:
         tag = f"{w.name}/{n['id']}"
@@ -642,6 +716,10 @@ def validate(w, npcs, idx=None, types=None, reach=None):
         assert not chokepoint(w, x, y, reach), \
             (f"{tag}: ({x},{y}) is a chokepoint — {n['name']} is blocking the "
              f"only way through (a doorway, a bridge end, the cave mouth)")
+        assert not doorway(x, y, ports), (
+            f"{tag}: ({x},{y}) is IN a doorway/cave mouth/bridge head — "
+            f"{n['name']} is blocking the way in. Stand NEXT to an opening, "
+            f"never in front of it.")
         assert not hidden(w, x, y), \
             (f"{tag}: ({x},{y}) is hidden from the camera — {n['name']} stands "
              f"behind a wall or cliff and the player would never see them")

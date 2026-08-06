@@ -105,19 +105,35 @@ change breaks the **build** rather than stranding somebody in the deployed game.
    ground under a deck). *A shop you cannot walk to is not a shop.*
 3. **Never in a chokepoint.** Detected by counting runs of open ground around
    the 8 neighbours: two or more runs means the space on either side of you
-   only connects *through* you. This is what keeps a shopkeeper out of the
-   front door, the bridge end and the cave mouth.
-4. **Never hidden from the camera.** Derived from the painter order `(x+y, y)`
+   only connects *through* you.
+4. **Never in a doorway — stand NEXT to an opening, never in front of it.**
+   (Maintainer, 2026-08-05: *"Did you have to block both the entrance to the
+   house and to the cave with your NPCs? Why can't they stand next to instead
+   of in front the door/entrance?"*) A **portal** is a door, a cave mouth or a
+   bridge head, and "in the opening" has **two** meanings that must both be
+   kept clear:
+   - the **grid lane** — the cells straight out along the passage; and
+   - the **screen strip** — cells within `DOOR_COLS` of the opening's `(x−y)`
+     and in front of it. This is the one that actually bit: the house door at
+     `(201,117)` and a shopkeeper at `(202,118)` have the *identical* screen
+     column `(201−117) = (202−118) = 84`, so he stood squarely in the opening
+     while the grid lane `x=201` was perfectly clear.
+
+   Clearance is measured from the **opening itself** — the gap in the wall, the
+   cave-floor cell at the mouth — not from the step outside it. Measuring from
+   the step is off by one column and lets a sprite clip the edge of the door.
+5. **Never hidden from the camera.** Derived from the painter order `(x+y, y)`
    rather than guessed — which catches the non-obvious case of equal `x+y` with
    greater `y`, i.e. one step round the side of a building. An NPC nobody can
    see is worse than no NPC.
-5. **Never overlapping another sprite**, measured in **screen** space, not grid
+6. **Never overlapping another sprite**, measured in **screen** space, not grid
    space: iso puts `(x+2, y+2)` directly below `(x, y)` with 60px between them,
-   so plain grid distance happily stacks two sprites into one blob.
-6. **Not on or crowding the arrival point** — you land in open ground.
-7. **References resolve**: the character exists in characters2, its art is on
+   so plain grid distance happily stacks two sprites into one blob. Side by
+   side needs 3 columns (96px) — 2 leaves them shoulder-to-shoulder.
+7. **Not on or crowding the arrival point** — you land in open ground.
+8. **References resolve**: the character exists in characters2, its art is on
    disk, `name` still matches upstream, and every ware is a real `items/` TYPE.
-8. **Indoors is off limits** — the house belongs to whoever lives there; the
+9. **Indoors is off limits** — the house belongs to whoever lives there; the
    market forms outside the door. (The cave is explicitly *not* indoors.)
 
 `prop_demo`, `trans_demo`, `glow_test`, `occlusion_test` and `monster_demo` ship
