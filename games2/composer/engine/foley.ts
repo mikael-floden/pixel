@@ -35,6 +35,24 @@ export function composerFoley(surface: string): string[] | null {
   return takes && takes.length > 0 ? takes.map(withAudioV) : null;
 }
 
+/** ONE named take of a set, stamped like composerFoley's urls. `take` may be
+ * the file stem ("punch__take02"), the bare number ("take02", "2", 2), or the
+ * filename — the wiki picks a RECORDING now, not a set, and this is the one
+ * place that resolves whichever way it spells it. Returns null when the set or
+ * the take is not bundled, so an assignment for a deleted take goes silent
+ * rather than quietly playing a different recording. */
+export function composerFoleyTake(set: string, take: string | number): string | null {
+  const rows = composerFoleyTakes().get(set);
+  if (!rows?.length) return null;
+  const want = String(take).trim().replace(/\.wav$/i, "");
+  const hit =
+    rows.find((r) => r.name.replace(/\.wav$/i, "") === want) ??
+    rows.find((r) => r.name.replace(/\.wav$/i, "").endsWith(`__${want}`)) ??
+    // a bare index: "3" / 3 means the THIRD take, 1-based like the filenames
+    (/^\d+$/.test(want) ? rows[Number(want) - 1] : undefined);
+  return hit ? withAudioV(hit.url) : null;
+}
+
 export function composerFoleySurfaces(): string[] {
   return [...bySurface.keys()];
 }

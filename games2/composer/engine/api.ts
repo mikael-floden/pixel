@@ -14,7 +14,7 @@ import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
-import { composerFoley, composerFoleySurfaces } from "./foley";
+import { composerFoley, composerFoleySurfaces, composerFoleyTake } from "./foley";
 import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
 import { ContextMusic, hasBed } from "./contextMusic";
 import { BED_MIN_HOLD_S, BED_NAMES, BedName, desiredBed, resolveBed } from "./bedSelect";
@@ -128,17 +128,56 @@ const BINDINGS_APPROVED = new Set<string>([
 
 /** One wiki assignment: `sound` is a catalog id or "composer/<set>". The
  * pitch/volume/jitter fields mirror pixel-wiki-sfx-requests@1 verbatim so a
- * request wires in as data, not as new code. */
+ * request wires in as data, not as new code.
+ *
+ * A SET IS NOT A SOUND (maintainer 2026-08-06, and the wiki fixed its picker
+ * the same day: it "was listing sets, not recordings … with no way to pick
+ * take 2"). A ten-take set played round-robin is ten different sounds on one
+ * event, which is only what he meant if he picked the set. So an assignment
+ * may name ONE recording, and this engine accepts every spelling the picker
+ * might send rather than making the format a negotiation:
+ *   "composer/punch"                  → the whole set, round-robin
+ *   "composer/punch/punch__take02"    → that recording only
+ *   "composer/punch#take02"           → that recording only
+ *   "composer/punch" + take: "take02" → that recording only
+ *   … and `take` may be a bare index (2 = the second take).
+ * A take that is not bundled resolves to SILENCE, never to a different
+ * recording — a deleted take must not quietly become its neighbour. */
 interface EventAssignment {
   sound: string;
+  take?: string | number;
   pitch?: number; // playbackRate multiplier
   volume_db?: number;
   max_random_pitch_semis?: number;
   bus?: BusName;
 }
 /** Filled ONLY from the Game Master's wiki requests — never by the composer's
- * own taste. Empty means every assignable event is silent. */
-const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {};
+ * own taste. Empty means every assignable event is silent.
+ *
+ * Wired 2026-08-06 from live/tuning/sfx_requests.json, entries then deleted
+ * per the contract. Every set he picked here holds exactly ONE take, so these
+ * are unambiguous even though they were chosen with the old set-level picker.
+ * ONE CLICK EVERYWHERE still holds — it is just his new click now (ui_click_bead
+ * on every UI event, the dedicated ui_click_latch on release). */
+const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {
+  "item.drop": { sound: "composer/dirt", pitch: 1.35, volume_db: -8, max_random_pitch_semis: 0.4 },
+  "ui.press": { sound: "composer/ui_click_bead" },
+  "ui.release": { sound: "composer/ui_click_latch" },
+  "ui.cursor_move": { sound: "composer/ui_click_bead" },
+  "ui.confirm": { sound: "composer/ui_click_bead" },
+  "ui.cancel": { sound: "composer/ui_click_bead" },
+  "ui.error": { sound: "composer/ui_click_bead" },
+  "combat.punch": { sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 },
+  "combat.kick": { sound: "hit_hurt" },
+};
+
+/** Split a wiki `sound` id into its set and (optional) chosen recording. */
+function splitComposerId(id: string, take?: string | number): { set: string; take?: string | number } {
+  const body = id.slice("composer/".length);
+  const cut = body.search(/[#/]/);
+  if (cut >= 0) return { set: body.slice(0, cut), take: body.slice(cut + 1) };
+  return { set: body, take };
+}
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -547,8 +586,12 @@ export class GameAudio {
       const gainDb = (opts.gainDb ?? 0) + (assigned.volume_db ?? 0);
       const j = assigned.max_random_pitch_semis ?? 0;
       if (assigned.sound.startsWith("composer/")) {
-        const set = assigned.sound.slice("composer/".length);
-        const urls = composerFoley(set);
+        const { set, take } = splitComposerId(assigned.sound, assigned.take);
+        // One chosen recording plays ALONE; a whole set rotates. Binding the
+        // url list IS how many sounds the event has — never a set of ten with
+        // rotation switched off (maintainer 2026-08-05).
+        const one = take === undefined ? null : composerFoleyTake(set, take);
+        const urls = take === undefined ? composerFoley(set) : one ? [one] : null;
         if (urls) {
           this.oneShots.play(
             {
