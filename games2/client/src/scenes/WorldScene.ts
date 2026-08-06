@@ -3752,7 +3752,12 @@ export class WorldScene extends Phaser.Scene {
           av.actionKey = "die";
           av.actionUntil = nowMs + 10_000; // held below while dead anyway
           const spD = this.avatarSpatial(id);
-          gameAudio.event("player.die", { pan: spD.pan, dist: spD.dist });
+          // `voice` carries WHOSE death this is, exactly as the jump grunt
+          // does — the maintainer wants the die sound to be the character's
+          // own male/female voice, and an event that does not say which
+          // character died can never route to one. Silent either way: nothing
+          // is assigned to player.die yet.
+          gameAudio.event("player.die", { pan: spD.pan, dist: spD.dist, voice: av.character });
         }
       }
       if ((player.hitSeq ?? 0) !== (av.lastHitSeq ?? 0)) {

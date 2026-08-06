@@ -79,6 +79,21 @@ PRESS_VARIANTS = [
     "slightly quicker press",
 ]
 
+# Ten different KINDS of vocal death, one per take, so the maintainer can pick
+# a TYPE rather than a shade (his "the sound should also change type").
+DEATH_TYPES = [
+    "a short sharp cry cut off suddenly",
+    "a long falling wail sinking downward",
+    "a pained groan trailing away",
+    "a sharp gasp as the breath is knocked out, then quiet",
+    "a defeated sigh, giving up",
+    "a strained grunt going down hard",
+    "a soft whimper fading to nothing",
+    "a startled shout, caught by surprise",
+    "a slow shuddering exhale, the last breath",
+    "a weak breathless cough",
+]
+
 # Each SET is one folder under foley/. Footstep set names match
 # shared/SURFACES `sound` ids exactly; ui_* sets override the catalog's UI
 # event sounds (engine/api.ts COMPOSER_EVENT_FOLEY). Maintainer QA
@@ -162,10 +177,19 @@ SETS: dict[str, dict] = {
     # No max_ms (a grunt's vowel IS the sound — transient-tightening would cut
     # it) and no judge (measurable gates can't grade a voice; ears decide via
     # /#foley). A small POSITIVE brief per the negative-prompt-backfire lesson.
-    # ⭐ VOICE PLAYBACK LESSON (2026-07-25): these vocal takes come out authored
-    # at HALF speed — the engine plays them at RATE 2.0 (JUMP_VOICE in
-    # engine/api.ts) to get the true normal voice. Don't chase "normal pitch"
-    # by re-briefing; 2× is the baseline.
+    # ⭐ VOICE PLAYBACK LESSON (2026-07-25), CORRECTED 2026-08-06: these takes
+    # play at RATE 2.0 in the engine (JUMP_VOICE in engine/api.ts) and that is
+    # what gives the true normal voice — the maintainer's ear was right. The
+    # REASON was wrong: nothing is "authored at half speed". The raw pcm_*
+    # payload is multi-channel and _decode used to read it byte-blind as mono,
+    # interleaving the channels into one stream at twice the length and an
+    # octave down. See _fit_channels, which now collapses it at decode time.
+    # THIS SET AND EVERY SET ABOVE PREDATE THAT FIX, so their files really are
+    # 2x long and an octave low and the engine's rate 2.0 is still exactly
+    # right for them. DO NOT "tidy up" JUMP_VOICE's rate. Sets generated AFTER
+    # the fix are true-speed and must play at 1.0 — mixing the two rates up is
+    # the one way to make this worse, so a post-fix voice set says so on its
+    # own spec.
     # The avatar is female (maintainer 2026-07-19: round-1 came back a male
     # orc grunt — "she is a girl you know"). CAREFUL: "young girl / small
     # girl / little girl" wording gets HARD-BLOCKED by ElevenLabs moderation
@@ -277,6 +301,51 @@ SETS: dict[str, dict] = {
         "judge": "wet",
         "ref": "sounds/movement/splash/splash__take01.wav",
         "pool": 12,
+    },
+    # ---- THE PLAYER'S OWN DEATH VOICE (maintainer 2026-08-06: "create the die
+    # sound by using the male/female voice … the sound should also change type
+    # … generate lots of different takes for both man and female, I don't know
+    # which one will be best"). Round 6 already spent ten foley concepts on
+    # player_die and lost all ten; his answer is that the moment belongs to the
+    # character, not to a prop, which is the same instinct that made the jump
+    # grunt work.
+    #
+    # "CHANGE TYPE" IS THE BRIEF: the ten variants below are ten different
+    # KINDS of vocal death — a cry cut off, a falling wail, a groan, a knocked-
+    # out gasp, a defeated sigh, a strained grunt, a whimper, a startled shout,
+    # a last shuddering breath, a weak cough — not ten readings of one cry. With
+    # no judge (measurable gates cannot grade a voice) the candidates ship in
+    # generation order, so take01..take10 ARE variants 1..10 in the order
+    # written here, and he can pick a TYPE by number in the wiki.
+    #
+    # TRUE SPEED. These are the first voice sets generated after the
+    # _fit_channels decode fix, so the files are the real voice at the real
+    # pitch: they audition correctly in the wiki at rate 1.0 and must be played
+    # at 1.0. The jump sets predate the fix and keep their 2.0 — see the note
+    # on jump_voice. Same moderation rule as the jump voices: "young WOMAN" /
+    # "young MAN", never boy/girl (child-voice ToS block), and positive wording
+    # throughout.
+    "die_voice": {
+        "brief": (
+            "a young woman's final vocal cry as she is defeated and falls, one "
+            "short isolated human voice, an adventure heroine's voice"
+        ),
+        "style": "clean close-miked dry vocal, a single isolated female voice",
+        "duration_s": 1.2,
+        "variants": DEATH_TYPES,
+        "takes": 10,
+        "pool": 10,
+    },
+    "die_voice_boy": {
+        "brief": (
+            "a young man's final vocal cry as he is defeated and falls, one "
+            "short isolated human voice, a youthful heroic adventurer's voice"
+        ),
+        "style": "clean close-miked dry vocal, a single isolated male voice",
+        "duration_s": 1.2,
+        "variants": DEATH_TYPES,
+        "takes": 10,
+        "pool": 10,
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
@@ -700,6 +769,169 @@ for _suffix, _brief, _trim in UI_CLICKS:
     }
 
 
+# ---- ROUND 10 (maintainer 2026-08-06): "It feels like I have nothing to
+# select from! Generate more!!!" He is right, and the audit says exactly where:
+# item.pickup had ZERO candidates, item.drop / cross on / cross off /
+# monster_hit had ONE each and monster_die two — because round 6 offered ten
+# apiece and he rejected all but one, and rounds 7-9 refilled only the actions
+# he named at the time. Ten fresh concepts for every thin action, plus ten more
+# kick and ten more punch on top of round 7's, plus the button DOWN and button
+# UP families he asked for by name.
+# Same contract as every alternatives round: one take, no gates, played nowhere
+# until he assigns it in the wiki. No arcade, nothing musical in the impacts,
+# and no brief repeats a concept from rounds 6-7 (the rejected list lives above).
+ROUND10: dict[str, list[tuple]] = {
+    # PICKING AN ITEM UP — the empty one, so it gets the widest spread: what
+    # the item is lifted OUT OF, and what it is made of.
+    "item_pickup": [
+        ("grass", "a small object plucked up out of grass, a soft leafy rustle and lift", 0.6, 550),
+        ("gravel", "a small object lifted off gravel with a short stony scrape", 0.5, 450),
+        ("chain", "a small chain lifted from the ground, links sliding together", 0.6, 500),
+        ("paper", "a folded sheet of paper picked up, a crisp dry crinkle", 0.6, 500),
+        ("glass", "a small glass vial lifted off a stone slab, one light clink", 0.5, 450),
+        ("wet", "a small object lifted out of shallow water, a quick drip and suck", 0.6, 550),
+        ("straw", "something pulled out of a straw basket, a dry fibrous shuffle", 0.6, 550),
+        ("twig", "a dry twig snapped off and taken, one tiny crisp snap", 0.5, 400),
+        ("purse", "a leather purse lifted, a soft creak with the contents shifting", 0.6, 550),
+        ("sand", "a small object brushed up out of fine sand, a soft grainy sweep", 0.6, 550),
+    ],
+    # DROPPING ONE — what it lands ON, and how heavy it is.
+    "item_drop": [
+        ("clay", "a clay cup set down hard on stone, one dull round knock", 0.6, 500),
+        ("earth", "a heavy pouch dropping onto packed earth, one deep dull thud", 0.6, 550),
+        ("metalring", "a metal ring landing on stone, one bright roll and settle", 0.8, 700),
+        ("puddle", "a small object dropped into a shallow puddle, a short flat splash", 0.6, 550),
+        ("hay", "something dropped into a pile of loose straw, a soft dry rustle", 0.6, 550),
+        ("slate", "a flat slate dropping onto slate, one hard clack", 0.5, 450),
+        ("leaves", "something dropped into dry leaves, a papery crunch", 0.6, 550),
+        ("rope", "a coil of rope dropping onto boards, a heavy soft flop", 0.6, 550),
+        ("bounce", "a small hard object bouncing twice on a wooden floor and settling", 0.8, 700),
+        ("pebbles", "a handful of small stones landing on gravel, a scattering patter", 0.7, 600),
+    ],
+    # THE GRAVE CROSS RISING at the death spot — earth giving way, something
+    # heavy coming up through it. Deliberately not the rejected creak/hum/dig.
+    "cross_rise": [
+        ("earthpush", "packed soil pushing apart from below as something heavy rises through it", 1.2, None),
+        ("rootsnap", "thin roots tearing one after another as something lifts free", 1.1, None),
+        ("gravelshed", "grit and small stones cascading off something rising out of the ground", 1.1, None),
+        ("breath", "a long slow cold draw of air rising upward, hollow and empty", 1.3, None),
+        ("cloth", "heavy damp cloth drawn slowly upward, a soft dragging rasp", 1.2, None),
+        ("iron", "an iron post rising up through soil, a low grinding metal scrape", 1.2, None),
+        ("water", "water draining off something lifting out of wet ground", 1.2, None),
+        ("settle", "a slow heavy rise ending in one firm settle into place", 1.1, None),
+        ("drone", "a deep quiet drone rising and stopping clean", 1.3, None),
+        ("crackle", "dry earth crust cracking open along a slow line", 1.1, None),
+    ],
+    # THE CROSS SINKING AWAY a minute later — the ground taking it back.
+    "cross_sink": [
+        ("mud", "thick mud closing over something sinking, a slow gloopy seal", 1.2, None),
+        ("crumble", "dry soil crumbling inward and filling a hole", 1.1, None),
+        ("drain", "water draining away down a hole, a low gurgle", 1.2, None),
+        ("iron", "an iron post grinding downward into soil, a low metal scrape", 1.2, None),
+        ("cloth", "heavy cloth sliding down and settling flat", 1.1, None),
+        ("breathout", "a long slow cold exhale sinking downward and fading", 1.3, None),
+        ("dronedown", "a deep quiet drone falling away and stopping", 1.3, None),
+        ("gravelfill", "gravel pouring in to fill a gap in the ground", 1.1, None),
+        ("thud", "a slow descent ending in one deep muffled thud", 1.1, None),
+        ("hush", "everything going quiet at once, a soft drop in air pressure", 1.2, None),
+    ],
+    # TEN MORE KICKS, none repeating round 7's ten.
+    "kick": [
+        ("barrel", "a boot into an empty wooden barrel, a big hollow drum boom", 0.7, 650),
+        ("crate", "a boot splintering a thin wooden crate slat, one dry crack", 0.6, 500),
+        ("bucket", "a metal bucket kicked over and skidding, a clattering roll", 0.8, 700),
+        ("sack", "a boot into a heavy grain sack, one dull deep flump", 0.6, 550),
+        ("mud", "a kick through thick mud, a heavy wet squelch and spray", 0.7, 600),
+        ("water", "a boot kicking through shallow water, a broad splash", 0.7, 600),
+        ("snowbank", "a boot ploughing into deep snow, a muffled compressive crunch", 0.7, 600),
+        ("rope", "a boot into a hanging coil of rope, a heavy fibrous thud", 0.6, 550),
+        ("treetrunk", "a boot against a solid tree trunk, a dull woody thock with a shiver of leaves", 0.7, 600),
+        ("leafpile", "a kick sweeping through a pile of dry leaves, a big scattering crunch", 0.7, 600),
+    ],
+    # TEN MORE PUNCHES, none repeating round 7's ten.
+    "punch": [
+        ("mud", "a fist driven into thick wet mud, a deep sucking splat", 0.6, 550),
+        ("hay", "a fist into a tight hay bale, a dry compressed crunch", 0.6, 550),
+        ("bread", "a fist into a big loaf of bread, a soft crusty crush", 0.6, 500),
+        ("shield", "a bare fist on a wooden shield, a hollow woody bang", 0.6, 550),
+        ("chainmail", "a fist against chain mail, a soft thud inside ringing links", 0.6, 550),
+        ("cuirass", "a fist on a leather cuirass, a broad creaking slap", 0.6, 500),
+        ("treetrunk", "a bare fist against a tree trunk, a dull woody knock", 0.5, 450),
+        ("strawdummy", "a fist into a straw training dummy, a fibrous thwack", 0.6, 500),
+        ("gravelbag", "a fist into a bag of gravel, a dense grinding crunch", 0.6, 550),
+        ("chest", "a fist on a wooden chest lid, a tight boxy boom", 0.6, 550),
+    ],
+    # HITTING A MONSTER — soft strange bodies, not human ones.
+    "monster_hit": [
+        ("mudsmack", "a fist into wet clay mud, a thick wet smack", 0.6, 550),
+        ("gourd", "a hollow dry gourd struck once, a woody pock", 0.6, 500),
+        ("bristle", "a hit into stiff bristles, a coarse scratchy compression", 0.6, 550),
+        ("sap", "a sticky wet impact with a tacky pull afterwards", 0.7, 600),
+        ("shell", "a hard shell struck once, a bright hollow tap", 0.5, 450),
+        ("fungus", "a big soft mushroom cap crushed, a wet muted pop", 0.6, 550),
+        ("moss", "a hit into thick damp moss, a soft spongy compress", 0.6, 550),
+        ("stonebody", "a fist on solid rock, a hard dead knock", 0.5, 450),
+        ("seedpod", "a dry seed pod burst open, a crisp scattering crack", 0.6, 500),
+        ("tar", "a heavy impact into thick tar, a slow sticky thud", 0.7, 650),
+    ],
+    # A MONSTER DYING — the body going away, ten ways.
+    "monster_die": [
+        ("crumble", "a body crumbling into dry dust and falling apart", 1.0, None),
+        ("shellcrack", "a hard shell cracking open and collapsing inward", 0.9, None),
+        ("drip", "a slow wet collapse dripping away to nothing", 1.1, None),
+        ("hiss", "a long escaping hiss sinking away to silence", 1.0, None),
+        ("slump", "a heavy wet slump settling flat and still", 0.9, None),
+        ("shatter", "brittle crystal shattering and tinkling down", 1.0, None),
+        ("sizzle", "a wet sizzle fading out, water dying on hot stone", 1.0, None),
+        ("suck", "a soft inward suck of air and it is gone", 0.8, None),
+        ("twigs", "a dry crunching collapse, a nest of twigs giving way", 0.9, None),
+        ("gurgle", "a low wet gurgle sinking away", 1.0, None),
+    ],
+}
+for _action, _alts in ROUND10.items():
+    ALTERNATIVES.setdefault(_action, []).extend(_alts)
+
+# BUTTON DOWN and BUTTON UP as their OWN families (maintainer 2026-08-06:
+# "Didn't you create at least 10 button down and 10 button up?" — round 9's ten
+# spanned both halves in one family, which is not the same as ten of each). Each
+# pair below is the SAME mechanism heard from both ends, so a down and an up can
+# be chosen from one material and actually sound like one button: the down is
+# the sharp, decisive half; the up is the softer, duller release.
+UI_DOWN: list[tuple] = [
+    ("spring", "a stiff spring compressing to a hard stop, one tight metallic click", 250),
+    ("plunger", "a plunger pushed firmly down, one sealed thunk", 300),
+    ("tumbler", "a lock tumbler turning one notch, a precise mechanical clack", 250),
+    ("dome", "a metal dome switch collapsing under a thumb, one crisp bright snap", 220),
+    ("stone", "a small stone pressed down into its socket, one dry click", 250),
+    ("stamp", "a rubber stamp pressed onto paper, one firm damp tap", 300),
+    ("lever", "a small lever thrown down, one solid mechanical clunk", 300),
+    ("shutter", "a camera shutter firing, one clean mechanical snip", 220),
+    ("nail", "a nail tapped once into wood, one bright short tick", 220),
+    ("clamp", "a small clamp closing tight, one compressed click", 250),
+]
+UI_UP: list[tuple] = [
+    ("spring", "a compressed spring extending back, one soft muted release", 300),
+    ("plunger", "a plunger lifting off with a soft airy unseal", 300),
+    ("tumbler", "a lock tumbler settling back, one low soft tick", 300),
+    ("dome", "a metal dome popping back up, one light dull tap", 250),
+    ("stone", "a small stone lifted out of its socket, a soft dry scrape", 300),
+    ("stamp", "a rubber stamp peeled up off paper, a soft tacky lift", 350),
+    ("lever", "a small lever returning to rest, one muffled wooden clunk", 350),
+    ("shutter", "a camera shutter closing back, one soft mechanical settle", 300),
+    ("felt", "a felt-padded key rising back, an almost silent muted thud", 350),
+    ("clamp", "a small clamp releasing, one soft rebound tap", 300),
+]
+for _fam, _list in (("ui_down", UI_DOWN), ("ui_up", UI_UP)):
+    for _suffix, _brief, _trim in _list:
+        SETS[f"{_fam}_{_suffix}"] = {
+            "brief": _brief,
+            "style": "clean close-miked foley, dry studio, one isolated tactile click",
+            "duration_s": 0.5,  # API minimum
+            "variants": ["standard take"],
+            "takes": 1,
+            "max_ms": _trim,
+        }
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
@@ -1001,6 +1233,48 @@ def _write_wav(x: np.ndarray, path: Path) -> float:
     return round(x.size / SR, 3)
 
 
+def _fit_channels(x: np.ndarray, duration_s: float, fmt: str) -> np.ndarray:
+    """Collapse a multi-channel raw-PCM payload that _decode read byte-blind.
+
+    The pcm_* response has NO header, so _decode interprets the bytes as one
+    mono stream. When the API actually sends STEREO, that read INTERLEAVES L
+    and R into a single signal: exactly twice as long, every frequency an
+    octave down, and nothing above half the true Nyquist. Measured across every
+    set whose length is not cut in post, the decoded audio is 2.00x the
+    duration we asked for — every single time — while `ui_tick`, the one set
+    that fell back to the mp3 path (ffmpeg, `-ac 1`), is the only one carrying
+    real energy above 12 kHz.
+
+    THIS IS WHAT THE "vocal takes are authored at HALF SPEED, play them at RATE
+    2.0" note was really seeing. It is not the model's authoring; it is this
+    decode. The maintainer's ear was right (2.0 does give the true voice) and
+    the diagnosis was wrong, which is why the compensation lived in the ENGINE
+    and only for voices, while every other set quietly shipped an octave low.
+
+    We do not have to be certain WHICH explanation is true, and that is the
+    nice part: if the payload is stereo, averaging adjacent samples is the mono
+    downmix; if it really were half-speed mono, averaging adjacent samples is
+    decimation by two with anti-aliasing — i.e. exactly the rate-2.0 the
+    maintainer approved. Both readings want the same operation. And we never
+    have to GUESS the channel count, because we know what length we asked for.
+
+    Only the raw-pcm branch can be wrong this way; ffmpeg paths already forced
+    mono. Anything that is not a clean 2x or 4x is left alone and reported.
+    """
+    if not fmt.startswith("pcm_") or x.size == 0:
+        return x
+    ratio = (x.size / SR) / max(duration_s, 1e-6)
+    k = int(round(ratio))
+    if k < 2:
+        return x
+    if k not in (2, 4) or abs(ratio - k) > 0.25:
+        print(f"  NOTE: decoded {ratio:.2f}x the requested length — not a clean "
+              f"channel count, leaving the payload alone")
+        return x
+    n = (x.size // k) * k
+    return x[:n].reshape(-1, k).mean(axis=1).astype(np.float32)
+
+
 def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.ndarray:
     # Lossless first (Pro tier); compressed fallback keeps free tiers
     # working. output_format goes in the QUERY STRING — in the body the API
@@ -1020,7 +1294,7 @@ def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.n
             timeout=120,
         )
         if r.ok:
-            return _decode(r.content, fmt)
+            return _fit_channels(_decode(r.content, fmt), duration_s, fmt)
         if r.status_code not in (400, 402, 403):  # format/tier issues → fallback
             r.raise_for_status()
     # Both formats failed: surface the API's reason (quota/credits exhausted
