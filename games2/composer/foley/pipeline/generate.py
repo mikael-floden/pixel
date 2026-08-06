@@ -643,6 +643,57 @@ ROUND7: dict[str, list[tuple]] = {
 for _action, _alts in ROUND7.items():
     ALTERNATIVES.setdefault(_action, []).extend(_alts)
 
+# ---- ROUND 9 (maintainer 2026-08-06): "Generate more button click/press/
+# release sounds. Need like 10 to pick from." Ten tactile MECHANISMS, one per
+# set — the variety is in what physically makes the click (spring, plastic,
+# metal catch, stone, leather, wood, cork, flint), not in shading one click ten
+# ways. Nothing musical and nothing arcade: the catalog UI sounds were rejected
+# for sounding "like a piano, not like buttons" (2026-07-18) and every `retro`
+# alternative lost in round 6.
+#
+# TWO deliberate differences from the ui_tick/ui_confirm briefs above:
+#   1. PURELY POSITIVE wording. Those two are the most negative briefs in this
+#      file ("no resonance, no ring, no echo, NOT musical, no chime, no piano,
+#      no tone, no wooden knock") — they predate the backfire lesson the sand
+#      set taught and the old thunder brief confirmed in the wild. Naming the
+#      thing you do not want is how you get it. The anti-piano job belongs to
+#      the `click` GATE, which measures tonality and is prompt-independent.
+#   2. A POOL of 3 with that gate on, unlike rounds 6-8's one-shot
+#      alternatives. The gate cannot narrow variety here: variety lives ACROSS
+#      the ten briefs, and the judge only picks the least ringy of three
+#      renditions of ONE concept. Ranking is RANK["click"] — lowest tonality
+#      wins, which is exactly his complaint expressed as a number.
+#
+# PRESS vs RELEASE: the game's tactile pair wants a sharp DOWN and a duller UP,
+# and `ui.release` has been silent since ui_cancel was rejected. So the ten
+# span both halves on purpose — switch/latch/clasp/flint/pebble read as the
+# down-stroke, leather/cork/woodpeg/keycap as the up. Which is which is HIS
+# call in the wiki; nothing here is wired.
+UI_CLICKS: list[tuple] = [
+    ("switch", "a small toggle switch flicking over, one crisp mechanical snap", 250),
+    ("keycap", "a mechanical keyboard key bottoming out, one firm plastic thock", 300),
+    ("latch", "a small metal latch dropping into its catch, one tight clean clack", 250),
+    ("pebble", "one small smooth pebble tapped once against another, a bright dry tick", 220),
+    ("leather", "a stiff leather cover pressed down under a thumb, one soft creaking tap", 350),
+    ("woodpeg", "a wooden peg pushed home into a hole in a plank, one warm dry knock", 300),
+    ("clasp", "the metal clasp on a book snapping shut, one small bright click", 250),
+    ("cork", "a cork stopper pressed into a bottle neck, one soft muted pop", 300),
+    ("flint", "a piece of flint struck once against steel, one sharp gritty tick", 220),
+    ("bead", "a wooden abacus bead sliding one notch along its wire, one small warm click", 250),
+]
+for _suffix, _brief, _trim in UI_CLICKS:
+    SETS[f"ui_click_{_suffix}"] = {
+        "brief": _brief,
+        "style": "clean close-miked foley, dry studio, one isolated tactile click",
+        "duration_s": 0.5,  # API minimum — 0.4 gets a 400 (run 2)
+        "variants": ["standard take"],
+        "takes": 1,
+        "max_ms": _trim,
+        "judge": "click",
+        "pool": 3,
+    }
+
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
