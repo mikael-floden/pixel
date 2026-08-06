@@ -5,16 +5,18 @@ maintainer has had to say more than once.
 
 ## ALWAYS REPORT THE SHA — AS THE FIRST LINE, IN PLAIN TEXT
 
-**Every time you push, the reply's FIRST line is the SHA.** Format, exactly:
+**Every time you push, the reply's FIRST line is the SHA, and the SHA is
+BOLD.** Format, exactly — this line is markdown, not a code block:
 
-```
-SHA: 28fe1d0f1 — composer: cross_on plays his peat pick
-```
+SHA: \*\*28fe1d0f1\*\* — composer: cross_on plays his peat pick
 
-Plain text. No bold, no backticks, no table, nothing above it — not a heading,
-not a sentence of context. If a push carried several commits, one such line
-each. If a generator bot committed the actual output, its SHA goes on its own
-line too and is labelled as the one holding the files.
+Which renders as: SHA: **28fe1d0f1** — composer: cross_on plays his peat pick
+
+NEVER put it in a code block or inline backticks — a fenced block renders in a
+small monospace face and he read it as "extra small". Bold, full size, first
+line, nothing above it. One such line per commit. If a generator bot committed
+the actual output, its SHA gets its own line, labelled as the one holding the
+files.
 
 > "Please how many times do I have to tell you. Always write the sha after you
 > push." — 2026-08-06
