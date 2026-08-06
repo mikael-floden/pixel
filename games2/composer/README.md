@@ -122,6 +122,23 @@ events; the game never plays unapproved audio. The machinery:
   real thing that is not what makes a click good to him. A pool + judge buys
   more attempts and a deterministic tie-break, nothing more, and its verdict
   is not worth passing on as a quality signal.
+- ⭐ **LESSON — the "game from the 90ths" defect was the DECODE, and here is
+  how far the fix actually goes** (maintainer 2026-08-06). Every take in the
+  library arrived at exactly 2.00x the requested length and carried aliasing
+  junk in its top octaves; `_generate` now picks the delivered format BY
+  RESULT (first rung whose decoded length matches what was asked for) and
+  `_decode` resamples any raw pcm rate that is not ours. Lengths are now
+  1.00x and the junk is gone. **Do not over-claim what that bought**: an
+  earlier note here said `ui_tick` was "the one full-band set" — it was not,
+  its apparent 16-24 kHz energy WAS the aliasing artifact, and collapsing the
+  file makes it vanish. Measured after the fix: both pcm rungs still return
+  the wrong length, `mp3_44100_192` wins, and the ceiling moved ~16 kHz ->
+  ~19 kHz (ui_down_dome's 16-20 kHz band went 8.4e-08 -> 5.4e-03 on the same
+  brief). But IMPACT sets did not move at all: punch_anvil and thunder are
+  ~100% below 4 kHz in both renders. **That residue is the MODEL, not the
+  pipeline** — an anvil punch that ships no metallic ring was never given one
+  to ship. The lever for a dull impact is the BRIEF (ask for the bright half
+  of the sound out loud), not another decode change.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, every assignable action must stay emitted, and
   every foley set an active route names must EXIST (deleting a rejected set
