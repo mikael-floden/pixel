@@ -42,7 +42,9 @@ export function thunderFeature(): AmbientFeature {
       peakSum += peak;
       t += 90 + rnd() * 180;
     }
-    // The rumble: composer delays it 1-2.5s after the light (distant storm).
+    // The crack lands WITH the light, not after it (maintainer 2026-08-06:
+    // "synced to the white flash … that's the point"). The composer used to
+    // delay it 1-2.5 s for distant-storm realism; that read as silence.
     gameAudio.thunder(Math.min(1, peakSum * 1.8));
   };
 

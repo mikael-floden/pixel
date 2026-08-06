@@ -211,6 +211,12 @@ const JUMP_VOICE_MIN_GAP_S = 0.28;
 // −12 dB ≈ quarter amplitude (maintainer 2026-07-19: "lower by 50%" twice —
 // first −6, then "lower again"). A static level balance → pure mode too.
 const JUMP_VOICE_GAIN_DB = -12;
+// Thunder from a strike directly overhead (maintainer 2026-08-06: "the exact
+// high loud thunder after a lightning strike close by … immediate and loud").
+// Takes master at -1 dBFS and the sfx bus is -14 dB, so +14 dB here puts the
+// crack at roughly full scale on the master — the limiter (-8 dB threshold,
+// 12:1) turns the overshoot into punch instead of clipping.
+const THUNDER_GAIN_DB = 14;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -664,8 +670,15 @@ export class GameAudio {
     if (!this.ready()) return;
     const own = composerFoley("thunder");
     if (!own) return;
-    this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
-      gainDb: 6 * Math.min(1, strength),
+    // ROTATE, not the primary take: he asked for "a group with several
+    // sounds" and the old click profile played take01 on every single strike.
+    // LOUD: a strike this close is the loudest one-shot in the game, so the
+    // level is set to land near full scale after the -14 dB sfx bus and let
+    // the master limiter shape the transient, rather than sitting politely
+    // under the music. Near-center pan and no delay — the crack belongs ON
+    // the white flash, which is the entire point of the sound.
+    this.oneShots.play(this.foleyEntry("thunder", own, "rotate"), "sfx", {
+      gainDb: THUNDER_GAIN_DB * Math.min(1, strength),
       pan: (Math.random() - 0.5) * 0.16,
     });
   }
@@ -944,7 +957,7 @@ export class GameAudio {
    * sound for clicks and steps alike — no take rotation; repeat plays get
    * only barely-perceptible micro-jitter (steps a touch more than clicks,
    * so a walk doesn't read as a machine gun). */
-  private foleyEntry(set: string, urls: string[], profile: "step" | "click" | "voice"): SoundEntry {
+  private foleyEntry(set: string, urls: string[], profile: "step" | "click" | "voice" | "rotate"): SoundEntry {
     let e = this.foleyCache.get(set);
     if (!e) {
       const step = profile === "step";
@@ -952,7 +965,10 @@ export class GameAudio {
       // exact same waveform every jump reads as robotic — real games (OoT's
       // Link) rotate a few efforts. Round-robin, no immediate repeat, plus a
       // natural pitch spread (a voice never lands twice at the same pitch).
+      // `rotate` is the same deal for a non-vocal set the maintainer asked to
+      // hear as a GROUP: thunder ("a group with several sounds", 2026-08-06).
       const voice = profile === "voice";
+      const many = voice || profile === "rotate";
       // ONE SOUND MEANS ONE SOUND (maintainer 2026-08-05). Steps and clicks
       // play the set's APPROVED PRIMARY take and only that, so the entry binds
       // that one url — it does not carry every take and then switch rotation
@@ -961,7 +977,7 @@ export class GameAudio {
       // contract below is now the plain one for every profile; how many sounds
       // an event has is expressed by the URL LIST, which is the honest place
       // for it. Audibly identical: the same primary file plays as before.
-      const takes = voice ? urls : urls.slice(0, 1);
+      const takes = many ? urls : urls.slice(0, 1);
       e = {
         id: `composer_foley_${set}`,
         category: voice ? "movement" : step ? "movement" : "ui",

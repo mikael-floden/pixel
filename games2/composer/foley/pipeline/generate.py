@@ -280,25 +280,52 @@ SETS: dict[str, dict] = {
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
-    # LIKED (maintainer 2026-07-18, once playback was synced to the flash
-    # and levelled up) — FROZEN like stone; keep this brief verbatim if it
-    # ever must rerun. NOTE the measured caveat for future big sounds: these
-    # takes are ~100% sub-150 Hz (mid_peak_db very low) — inaudible on the
-    # smallest speakers; the `boom` gate exists for when that matters.
+    # ROUND 8 (maintainer 2026-08-06). The previous set was briefed as
+    # DISTANT ROLLING thunder "from a storm beyond the horizon" — 6-second
+    # rolls, ~100% of their energy below 150 Hz — and he rejected all four in
+    # the wiki. His words for what it actually has to be: "the exact high
+    # loud thunder after a lightning strike CLOSE BY … synced to the white
+    # flash … the sound needs to be immediate and loud", and "a group with
+    # several sounds, but they should not be long".
+    #
+    # That is four separate requirements and each one is enforced somewhere:
+    #   · CLOSE, not distant → the brief is a crack directly overhead, and
+    #     `boom` floors mid_peak_db so a sub-150 Hz roll a phone speaker
+    #     cannot reproduce is disqualified rather than merely ranked last.
+    #   · SHORT → max_ms trims to 1.4 s measured FROM THE CRACK, so a
+    #     candidate that rambles gets its crack cut out of the ramble.
+    #   · IMMEDIATE → the crack must land at the very start of the file or
+    #     the sync is lost no matter how well the engine times the call, so
+    #     attack_ms is now a HARD gate (<= 60 ms), not a ranking preference.
+    #   · SEVERAL SOUNDS → six takes, and the engine rotates them (the old
+    #     set had four takes and the click profile played take01 every single
+    #     strike, so he heard one thunder, forever).
+    # Purely positive wording, including about the rain: the old brief said
+    # "no rain, no wind" and he reported hearing rain — the negative-prompt
+    # backfire, in the wild.
     "thunder": {
         "brief": (
-            "distant rolling thunder from a storm beyond the horizon: a deep "
-            "natural low-frequency rumble rolling and echoing across a wide "
-            "open valley sky, real outdoor storm recording, no rain, no wind"
+            "an extremely close lightning strike directly overhead: one "
+            "instant deafening thunder crack, a sharp explosive splitting "
+            "snap with a hard short rumble right behind it"
         ),
-        "duration_s": 6.0,
-        "takes": 4,
+        "style": (
+            "high-fidelity outdoor storm recording, one single isolated close "
+            "thunder crack, immediate and very loud"
+        ),
+        "duration_s": 2.5,
+        "takes": 6,
         "variants": [
-            "one long slow roll fading out",
-            "a double rumble with a late soft tail",
-            "slightly closer, a low crack then a long roll",
-            "very far away, soft and very deep",
+            "one sharp splitting crack right overhead",
+            "a harder deeper detonation with more low-end punch",
+            "a brighter tearing crack, fast and electric",
+            "a heavy close blast with a short rolling tail",
+            "a tight fast crack, almost a gunshot snap",
+            "a wide powerful boom straight overhead",
         ],
+        "max_ms": 1400,
+        "judge": "boom",
+        "pool": 18,
     },
     # ---- UI buttons. ROUND 3: "wooden button" briefs FAILED twice — wood
     # resonates, resonance is pitch, pitch reads as piano. The mechanisms
@@ -758,6 +785,13 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
     "boom": {
         "mid_peak_db": (-28.0, 0.0, 3),
         "crest": (2.5, 99.0, 1),
+        # ROUND 8: the crack has to land WITH the white flash, so a late
+        # peak is a disqualification and not a ranking nudge. _tighten
+        # anchors the cut 30 ms before the loudest sample and _master trims
+        # in further, so a healthy candidate measures a handful of ms here;
+        # anything past 60 ms means the loudest moment is NOT the crack
+        # (a swell, a second rumble) and the sync would be lost.
+        "attack_ms": (0.0, 60.0, 5),
     },
     # Granular steps (sand/gravel): the enemy is a sharp metallic SPIKE.
     # Sand is a SOFT crunch — low crest (a spike reads as a metallic tick;
