@@ -562,6 +562,22 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 
 /* ---- spawn-zone map (monster pages) ---- */
 .zone-map-wrap { overflow-x: auto; }
+/* An NPC is a POINT on the map, and the mark is an overlay rather than paint:
+   the minimap is ~1800px wide and shows at ~330 on a phone, so anything drawn
+   into the canvas shrinks to a speck. In percent it holds its size and stays
+   crisp on every screen. The halo says APPROXIMATE — the maintainer's own
+   framing: an NPC who walks will not be on that exact tile. */
+.npc-map-wrap { position: relative; display: inline-block; max-width: 100%; }
+.npc-spot {
+  position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px;
+  border-radius: 999px; background: var(--accent); border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+.npc-spot::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px;
+  margin: -23px 0 0 -23px; border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 70%);
+}
 .zone-map {
   image-rendering: auto;   /* a downscaled world overview, not 1:1 pixel art */
   max-width: 100%; height: auto; display: block;
@@ -670,6 +686,14 @@ button.drop-row {
 .npc-role { font-size: 10.5px; }
 /* The trade under an NPC's name on its own page — a subtitle, not a heading. */
 .npc-trade { font-size: 13px; margin: -2px 0 2px; }
+/* The few NPCs maps2 actually stands in the world, marked ON the portrait so
+   the tile keeps its fixed two text lines (a third would re-flow all 191). */
+.npc-grid .npc-card { position: relative; }
+.npc-placed {
+  position: absolute; top: 10px; right: 10px; width: 9px; height: 9px;
+  border-radius: 999px; background: var(--accent); border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
 
 /* --- Sound EVENTS (maintainer 2026-08-05): the unit is the in-game moment,
    its layers beneath it, the Game Master's raw library at the bottom. */

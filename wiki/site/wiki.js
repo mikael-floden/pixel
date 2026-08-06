@@ -539,6 +539,9 @@ const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().inc
 const worldInfo = () => state.data.world ?? null;
 const tileUses = (rel) => worldInfo()?.tiles?.[rel] ?? 0;
 const monsterSpawns = (id) => worldInfo()?.monsters?.[id] ?? null;
+/** Where maps2 stands this NPC in the game's default world (npcs@1), keyed by
+ *  the characters2 folder id — the same id this build uses. */
+const npcPlacements = (id) => worldInfo()?.npcs?.[id] ?? null;
 // "Referenced by the game" — bindings.json events / composer lookups for
 // sounds, the director's chosen bed for music (see build.mjs).
 function usePill(usedBy, whatUnused) {
@@ -1323,12 +1326,65 @@ function viewMonster(id) {
 }
 
 /* --- characters --- */
+/** "Where you'll find them": the same world minimap the creatures use, with
+ *  this NPC's standing spot marked (maintainer 2026-08-06). Deliberately an
+ *  APPROXIMATE mark, not a pin: maps2 gives an exact cell, but an NPC who can
+ *  walk will not be standing on that exact tile when you arrive — so the spot
+ *  is a soft halo the size of a short wander, with a hard dot at its centre
+ *  for "this is the place". Points, not spans: a person is one cell.
+ *  Projection is the zone map's own affine, so both maps agree by
+ *  construction. */
+function npcMapPanel(c) {
+  const wm = worldInfo()?.map;
+  const spots = wm?.npcs?.[c.id];
+  if (!wm?.proj || !spots?.length) return null;
+  const P = wm.proj;
+  // Cell → minimap px, at the diamond's CENTRE (+tile/2, +dy): where the feet
+  // of a body standing in that cell are drawn.
+  const at = (x, y, lv) => [
+    P.s * (P.ox + (x - y) * P.dx + P.tile / 2) + P.offx,
+    P.s * (P.oy + (x + y) * P.dy - lv * P.levelPx + P.dy) + P.offy,
+  ];
+  // The mark is a CSS overlay in PERCENT, not painted into a canvas: this map
+  // is 1800px wide and shows at ~330 on a phone, so a canvas-drawn dot shrinks
+  // to a speck exactly where it matters most. In percent it keeps its size on
+  // every screen, and stays crisp.
+  const marks = spots.map((sp) => {
+    const [x, y] = at(sp.x, sp.y, sp.elev ?? 0);
+    return h("span", {
+      class: "npc-spot", title: `${sp.name || c.name}${sp.anchor ? ` — ${ANCHOR_WHERE[sp.anchor] ?? sp.anchor}` : ""}`,
+      style: `left:${(x / wm.mapW * 100).toFixed(3)}%; top:${(y / wm.mapH * 100).toFixed(3)}%`,
+    });
+  });
+  const one = spots[0];
+  const where = ANCHOR_WHERE[one.anchor] ?? (one.anchor ? `near the ${one.anchor}` : "in the world");
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "Where you'll find them ",
+      h("span", { class: "pill" }, where),
+      spots.length > 1 ? h("span", { class: "pill" }, `${spots.length} spots`) : null),
+    h("div", { class: "zone-map-wrap npc-map-wrap" },
+      h("img", { class: "zone-map", src: assetUrl(wm.minimap), alt: `${worldInfo()?.name ?? "the world"} map`, loading: "lazy" }),
+      ...marks),
+    h("p", { class: "muted", style: "margin:8px 0 0" },
+      "Roughly here — they keep to this part of the world, but they do not stand on one tile all day.",
+      state.admin ? ` (${spots.map((x) => `${x.id || "?"} @ ${x.x},${x.y}${x.elev ? ` lv${x.elev}` : ""}`).join(" · ")})` : ""));
+}
+/** maps2' placement anchors, said the way a player would say them. */
+const ANCHOR_WHERE = {
+  arrival: "at the arrival point", house: "in the market", cave: "at the cave mouth",
+  bridge: "at the bridge", road: "on the road", shore: "on the shore",
+};
 const npcCard = (c) => h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
   h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
   // Real names (characters2 2026-08-01), said QUIETLY: one line of name, one
   // muted line of trade, both truncating — a tile that grows a second line
   // re-flows the whole grid and the block stops reading as secondary.
   h("div", { class: "npc-name" }, c.name),
+  // A dot on the tile marks the handful who actually stand in the world —
+  // without it they are unfindable among 191 (it rides ON the thumbnail, so
+  // the tile keeps its two text lines and the grid never re-flows).
+  npcPlacements(c.id)?.length
+    ? h("span", { class: "npc-placed", title: "Stands in the world" }) : null,
   c.role ? h("div", { class: "npc-role muted" }, c.role) : null,
   state.admin ? h("div", { class: "card-sub" }, c.id) : null,
   h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)));
@@ -1440,6 +1496,19 @@ function viewCharacter(id) {
         // The trade, quietly, under the name. Every NPC has one, so the line
         // is there on all 191 and paging cannot shift the viewer below it.
         c.role ? h("div", { class: "npc-trade muted" }, c.role) : null,
+        // In the world, and what they are there for. A MERCHANT's wares come
+        // straight from maps2' placement (validated against items/ TYPE tags),
+        // so this says what you can actually buy from them.
+        (() => {
+          const sp = npcPlacements(c.id);
+          if (!sp?.length) return null;
+          const merchant = sp.find((x) => x.type === "MERCHANT");
+          const wares = [...new Set(sp.flatMap((x) => x.wares ?? []))].map((w) => w.toLowerCase());
+          return h("div", { class: "spawn-line" },
+            h("span", { class: "pill ok", title: "maps2 stands this character in the game's world" },
+              merchant ? "merchant in the world" : "in the world"),
+            wares.length ? h("span", { class: "pill", title: "The item types they deal in" }, `sells ${wares.join(", ")}`) : null);
+        })(),
         // Folder id, frame size and state count are PIPELINE facts — admin
         // only (maintainer 2026-07-30). The NPC's PixelLab name is the same
         // class of fact: prompt junk a player must never meet.
@@ -1452,6 +1521,8 @@ function viewCharacter(id) {
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
+    // Standing in the world? Then the map showing roughly where.
+    npcMapPanel(c),
     // The character's OWN sound events — their jump/fall voice today — with
     // the same cards, engine and admin features as the Sound Effects page.
     entitySoundsCard("characters", c),

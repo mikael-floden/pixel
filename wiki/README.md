@@ -258,6 +258,26 @@ id. `build.mjs` emits `data.json` `world`:
   bbox to the PNG's opaque bbox — it refuses to write if the x/y scales
   disagree or if zones project off the drawn map, so a silently-misaligned
   overlay can't ship.
+- `npcs[<characters2 folder id>] = [{id, name, type, anchor, x, y, elev,
+  wares}]` — the cast maps2 stands in the world (`maps2/worlds/<w>/npcs.json`,
+  `pixel-maps2/npcs@1`), keyed by the same folder id this build uses for an
+  NPC, so the join needs no translation table. An NPC who is placed gets a
+  **"Where you'll find them"** panel (maintainer 2026-08-06) — the creatures'
+  own world minimap with their standing spot on it — plus an "in the world"
+  chip, a merchant's wares, and a dot on their tile in the Races grid so the
+  placed handful are findable among 191.
+  - A person is a POINT, not a zone, and the mark is a **CSS overlay in
+    percent**, not paint: the minimap is ~1800px wide and displays at ~330 on
+    a phone, so a canvas-drawn dot shrinks to a speck exactly where it matters
+    most. Percent holds its size on every screen and stays crisp. The
+    projection is the zone map's own affine (cell → diamond CENTRE, `+tile/2`,
+    `+dy`), so the two maps agree by construction — `check-npcmap.mjs`
+    recomputes it from the data and compares against the rendered mark.
+  - It is deliberately **approximate** — the maintainer's framing: an NPC who
+    can walk will not be on that exact tile when you arrive. Hence a soft halo
+    around the dot and "Roughly here…" under the map, never a pin.
+  - maps2' `anchor` is provenance, so the panel says it the way a player would
+    ("in the market", "at the cave mouth") via `ANCHOR_WHERE`.
 
 Audio "used" is **referenced by the game**, not merely present:
 

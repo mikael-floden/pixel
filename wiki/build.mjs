@@ -748,18 +748,28 @@ function buildWorldUsage() {
     m.spawned += Number(z.num) || 0;
     m.zones += 1;
   }
-  // Spawn zones projected onto the world's minimap (wiki/world_map.json,
-  // written by wiki/tools/world-map.py) — the monster pages' "where it
-  // lives" map. Only used when it describes THIS world.
+  // NPCs: maps2 stands a cast in the world (npcs@1) and keys each one by the
+  // characters2 FOLDER id, which is exactly this build's NPC id — so the join
+  // needs no translation table.
+  const npcs = {};
+  for (const n of readJson(join(dir, "npcs.json"))?.npcs ?? []) {
+    if (!n?.character) continue;
+    (npcs[n.character] ??= []).push({ id: n.id ?? "", type: n.type ?? "", anchor: n.anchor ?? "", wares: n.wares ?? [] });
+  }
+  // Spawn zones and the NPC cast projected onto the world's minimap
+  // (wiki/world_map.json, written by wiki/tools/world-map.py) — the monster
+  // pages' "where it lives" map and the NPC pages' "where you'll find them".
+  // Only used when it describes THIS world.
   const wm = readJson(join(ROOT, "wiki", "world_map.json"));
   const map = wm?.world === name
-    ? { minimap: reArt(wm.minimap), mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj, monsters: wm.monsters ?? {} }
+    ? { minimap: reArt(wm.minimap), mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj,
+        monsters: wm.monsters ?? {}, npcs: wm.npcs ?? {} }
     : null;
 
   return {
     name, w: world.size?.w ?? null, h: world.size?.h ?? null,
     cells, props, distinctTiles: Object.keys(tiles).length,
-    tiles, monsters, map,
+    tiles, monsters, npcs, map,
   };
 }
 
