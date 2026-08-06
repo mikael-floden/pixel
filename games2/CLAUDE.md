@@ -1210,6 +1210,20 @@ side collision just like monsters").
   `monsterDodge` near-list at NPC_BODY_RADIUS, so the INPUT slips around them
   and the server integrates the identical deflected vector (no rubber-band).
   They are not in the collision grid and not in findPath.
+- **LOADING: standing art at BOOT, idle frames FIRST in the deferred batch**
+  (maintainer 2026-08-06: "the loading restarts just before the game loads and
+  once loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
+  mistake — spawnNpcs fetched the placement in create() and then started its
+  OWN loader run, which re-fired the scene loader's progress events the
+  loading overlay is driven by (the bar restarted) and delivered the art after
+  the world was already up (the pop-in). Now: main.ts fetches the placement at
+  boot beside the world; `preloadNpcArt` queues one standing image per
+  DISTINCT placed character into the boot batch (measured: 0 bar restarts, 0ms
+  between the world appearing and the NPCs being drawn); and the idle FRAMES
+  go into the deferred batch — but FIRST in it. Queued last they landed 18.3s
+  in, behind ~800 action-state frames and every monster combat strip, so a
+  town stood frozen; first, they arrive in 0.2s. **Never put the idle frames
+  in the boot batch** — that is the loading-bar regression.
 - The idle clip is registered LAZILY, per NPC, once its frame textures exist
   — NOT on a one-shot loader COMPLETE. A world queues ~20 NPCs back to back,
   so COMPLETE fires between batches while later files are still pending and a
@@ -2154,6 +2168,24 @@ side collision just like monsters").
   its final value (:root.ml-noanim pins the anchor transitions off for
   the whole flip); the HANDEDNESS glide stays (anchor transitions + the
   gamepad's .anim) — nothing else moves during a hand switch.
+  **A TAP MUST STILL LAND WHERE YOU TAPPED AFTER A ROTATION** (maintainer
+  2026-08-06). Phaser derives its pointer mapping — `displayScale` — from
+  `canvasBounds`, filled from getBoundingClientRect() during ITS own resize
+  pass. main.ts's fitCanvas sets the canvas CSS size AFTER that pass, so the
+  cached bounds kept the PRE-rotation size: measured in landscape, the real
+  canvas 526x393 against bounds still reading the portrait 393x526, giving
+  displayScale 2.677/1.494 where the truth is 2.0/2.0 — every tap scaled by
+  that error, ~98wu off in landscape and ~134wu after rotating back (0.0 in
+  all three states now). fitCanvas calls `updateBounds()` and recomputes
+  `displayScale` with Phaser's own formula (ScaleManager.js ~line 976,
+  `baseSize / canvasBounds`). **Do NOT "fix" this with `scale.refresh()`**: in
+  RESIZE mode its updateScale() re-derives gameSize/baseSize/canvas.width from
+  the PARENT, throwing away the deliberate resolution scaling (a 393x526 box
+  backed by 786x1052). fitCanvas also runs on `ml-hand`, because handedness
+  MOVES the game view without resizing it — the ResizeObserver never fires and
+  only the bounds POSITION goes stale. Gate: section 4e of verify-landscape
+  (tap your own feet through portrait → landscape → portrait; the walk target
+  must stay on you).
   What the flip machinery (hud.ts beginFlip) DOES own is the HEAVY part
   (rounds 3-4, from his frozen mid-rotation screenshots): a real
   rotation restages the viewport several times, and a full scale.resize
