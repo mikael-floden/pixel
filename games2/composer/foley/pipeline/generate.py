@@ -1283,6 +1283,60 @@ for _suffix, _brief, _dur, _trim in CROSS_ON_R15:
         "pool": 1,
     }
 
+# ---- ROUND 16 (maintainer 2026-08-06): "Generate 20 girl die in different
+# styles and 20 die boy (also different styles)."
+#
+# The SAME twenty styles for both voices, deliberately. He is choosing a death
+# cry for each hero and the useful comparison is like-for-like: die_girl_wail
+# next to die_boy_wail tells him whether he wants a wail at all, and then which
+# voice sells it. Twenty unrelated ideas per gender would make that impossible.
+#
+# The variety is the PERFORMANCE, not the timbre — a gasp, a defiant shout, a
+# resigned sigh and a comic squeak are four different deaths, and which one the
+# game wants is a tone decision only he can make. So the list spans quiet to
+# loud and dignified to cartoon rather than clustering on "scream".
+#
+# Wording is deliberately restrained (collapses / gives out / falls), because
+# the generator's moderation refuses graphic phrasing outright — a refused
+# brief costs the whole take. Adults only, for the same reason: child-voice
+# wording is blocked (learned when die_voice_boy was first written).
+DIE_STYLES: list[tuple] = [
+    ("gasp", "a sharp startled gasp, then nothing", 1.0),
+    ("cryout", "one short cry, cut off abruptly", 1.0),
+    ("wail", "a long falling wail fading away to nothing", 2.2),
+    ("groan", "a low pained groan sinking away", 1.6),
+    ("whimper", "a small broken whimper trailing off", 1.4),
+    ("defiant", "a defiant shout that breaks and stops short", 1.4),
+    ("yelp", "a startled high yelp, very brief", 0.8),
+    ("winded", "all the air driven out at once in a voiceless huff", 1.0),
+    ("sigh", "a long resigned sigh, letting go", 2.0),
+    ("sob", "one choked sob, swallowed halfway", 1.2),
+    ("scream", "a short scream falling in pitch as it fades", 1.6),
+    ("softoh", "a quiet surprised oh, almost gentle", 1.0),
+    ("grunt", "one hard grunt and then silence", 0.8),
+    ("rattle", "a slow rattling exhale, the last breath going out", 2.0),
+    ("inhale", "a sharp inhale caught in the throat, then silence", 1.0),
+    ("operatic", "a theatrical operatic falling cry, grand and drawn out", 2.2),
+    ("comic", "a comic exaggerated cartoon squeak of defeat", 0.9),
+    ("stoic", "one short controlled grunt, no drama at all", 0.8),
+    ("moan", "a drawn out weary moan giving way", 1.8),
+    ("call", "a wordless call out to someone, fading as it goes", 2.0),
+]
+DIE_VOICES = [
+    ("girl", "a young woman"),
+    ("boy", "an adult man"),
+]
+for _who, _person in DIE_VOICES:
+    for _suffix, _perf, _dur in DIE_STYLES:
+        SETS[f"die_{_who}_{_suffix}"] = {
+            "brief": f"{_person} collapsing: {_perf}",
+            "style": "clean close-miked human vocalisation, one isolated voice, dry, no words, no music",
+            "duration_s": _dur,
+            "variants": ["standard take"],
+            "takes": 1,
+            "pool": 1,
+        }
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
