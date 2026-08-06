@@ -3474,64 +3474,64 @@
     ],
     "features": [
       {
-        "mid_peak_db": -10.4,
+        "mid_peak_db": -7.9,
         "duration_s": 1.4,
         "attack_ms": 30.0,
-        "tail_ratio": 0.055,
-        "tonality": 0.583,
-        "crest": 5.03,
-        "centroid_hz": 977,
-        "mid_ratio": 0.681
+        "tail_ratio": 0.282,
+        "tonality": 0.53,
+        "crest": 3.22,
+        "centroid_hz": 994,
+        "mid_ratio": 0.712
       },
       {
-        "mid_peak_db": -10.4,
+        "mid_peak_db": -8.1,
         "duration_s": 1.4,
         "attack_ms": 30.0,
-        "tail_ratio": 0.218,
-        "tonality": 0.423,
-        "crest": 4.63,
-        "centroid_hz": 1008,
-        "mid_ratio": 0.814
+        "tail_ratio": 0.518,
+        "tonality": 0.371,
+        "crest": 2.75,
+        "centroid_hz": 1602,
+        "mid_ratio": 0.778
       },
       {
-        "mid_peak_db": -10.8,
+        "mid_peak_db": -8.5,
         "duration_s": 1.4,
         "attack_ms": 30.0,
-        "tail_ratio": 0.043,
-        "tonality": 0.732,
-        "crest": 4.51,
-        "centroid_hz": 1913,
-        "mid_ratio": 0.497
+        "tail_ratio": 0.032,
+        "tonality": 0.401,
+        "crest": 4.22,
+        "centroid_hz": 2773,
+        "mid_ratio": 0.733
       },
       {
-        "mid_peak_db": -11.4,
+        "mid_peak_db": -9.6,
         "duration_s": 1.4,
-        "attack_ms": 8.8,
-        "tail_ratio": 0.101,
-        "tonality": 0.519,
-        "crest": 5.13,
-        "centroid_hz": 1528,
-        "mid_ratio": 0.614
+        "attack_ms": 30.0,
+        "tail_ratio": 0.102,
+        "tonality": 0.246,
+        "crest": 5.05,
+        "centroid_hz": 1345,
+        "mid_ratio": 0.883
       },
       {
-        "mid_peak_db": -11.8,
+        "mid_peak_db": -10.0,
         "duration_s": 1.4,
-        "attack_ms": 25.9,
-        "tail_ratio": 0.276,
-        "tonality": 0.48,
-        "crest": 5.31,
-        "centroid_hz": 1294,
-        "mid_ratio": 0.837
+        "attack_ms": 30.0,
+        "tail_ratio": 0.283,
+        "tonality": 0.465,
+        "crest": 4.25,
+        "centroid_hz": 997,
+        "mid_ratio": 0.787
       },
       {
-        "mid_peak_db": -13.0,
+        "mid_peak_db": -10.7,
         "duration_s": 1.4,
-        "attack_ms": 14.7,
-        "tail_ratio": 0.355,
-        "tonality": 0.512,
-        "crest": 5.61,
-        "centroid_hz": 1356,
-        "mid_ratio": 0.799
+        "attack_ms": 30.0,
+        "tail_ratio": 0.1,
+        "tonality": 0.295,
+        "crest": 5.66,
+        "centroid_hz": 1629,
+        "mid_ratio": 0.827
       }
     ],
     "qa": {
@@ -3544,261 +3544,276 @@
       {
         "file": "thunder/pool/thunder__cand01.wav",
         "passed_gates": true,
-        "rank": 2.14,
+        "rank": 1.64,
         "features": {
-          "mid_peak_db": -10.4,
+          "mid_peak_db": -7.9,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.055,
-          "tonality": 0.583,
-          "crest": 5.03,
-          "centroid_hz": 977,
-          "mid_ratio": 0.681
+          "tail_ratio": 0.282,
+          "tonality": 0.53,
+          "crest": 3.22,
+          "centroid_hz": 994,
+          "mid_ratio": 0.712
         }
       },
       {
         "file": "thunder/pool/thunder__cand02.wav",
         "passed_gates": true,
-        "rank": 2.14,
+        "rank": 1.68,
         "features": {
-          "mid_peak_db": -10.4,
+          "mid_peak_db": -8.1,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.218,
-          "tonality": 0.423,
-          "crest": 4.63,
-          "centroid_hz": 1008,
-          "mid_ratio": 0.814
+          "tail_ratio": 0.518,
+          "tonality": 0.371,
+          "crest": 2.75,
+          "centroid_hz": 1602,
+          "mid_ratio": 0.778
         }
       },
       {
         "file": "thunder/pool/thunder__cand03.wav",
         "passed_gates": true,
-        "rank": 2.22,
+        "rank": 1.76,
         "features": {
-          "mid_peak_db": -10.8,
+          "mid_peak_db": -8.5,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.043,
-          "tonality": 0.732,
-          "crest": 4.51,
-          "centroid_hz": 1913,
-          "mid_ratio": 0.497
+          "tail_ratio": 0.032,
+          "tonality": 0.401,
+          "crest": 4.22,
+          "centroid_hz": 2773,
+          "mid_ratio": 0.733
         }
       },
       {
         "file": "thunder/pool/thunder__cand04.wav",
         "passed_gates": true,
-        "rank": 2.3,
+        "rank": 1.98,
         "features": {
-          "mid_peak_db": -11.4,
+          "mid_peak_db": -9.6,
           "duration_s": 1.4,
-          "attack_ms": 8.8,
-          "tail_ratio": 0.101,
-          "tonality": 0.519,
-          "crest": 5.13,
-          "centroid_hz": 1528,
-          "mid_ratio": 0.614
+          "attack_ms": 30.0,
+          "tail_ratio": 0.102,
+          "tonality": 0.246,
+          "crest": 5.05,
+          "centroid_hz": 1345,
+          "mid_ratio": 0.883
         }
       },
       {
         "file": "thunder/pool/thunder__cand05.wav",
         "passed_gates": true,
-        "rank": 2.41,
+        "rank": 2.06,
         "features": {
-          "mid_peak_db": -11.8,
+          "mid_peak_db": -10.0,
           "duration_s": 1.4,
-          "attack_ms": 25.9,
-          "tail_ratio": 0.276,
-          "tonality": 0.48,
-          "crest": 5.31,
-          "centroid_hz": 1294,
-          "mid_ratio": 0.837
+          "attack_ms": 30.0,
+          "tail_ratio": 0.283,
+          "tonality": 0.465,
+          "crest": 4.25,
+          "centroid_hz": 997,
+          "mid_ratio": 0.787
         }
       },
       {
         "file": "thunder/pool/thunder__cand06.wav",
         "passed_gates": true,
-        "rank": 2.63,
+        "rank": 2.2,
         "features": {
-          "mid_peak_db": -13.0,
+          "mid_peak_db": -10.7,
           "duration_s": 1.4,
-          "attack_ms": 14.7,
-          "tail_ratio": 0.355,
-          "tonality": 0.512,
-          "crest": 5.61,
-          "centroid_hz": 1356,
-          "mid_ratio": 0.799
+          "attack_ms": 30.0,
+          "tail_ratio": 0.1,
+          "tonality": 0.295,
+          "crest": 5.66,
+          "centroid_hz": 1629,
+          "mid_ratio": 0.827
         }
       },
       {
         "file": "thunder/pool/thunder__cand07.wav",
         "passed_gates": true,
-        "rank": 2.7,
+        "rank": 2.4,
         "features": {
-          "mid_peak_db": -13.2,
+          "mid_peak_db": -11.8,
           "duration_s": 1.4,
-          "attack_ms": 30.0,
-          "tail_ratio": 0.16,
-          "tonality": 0.686,
-          "crest": 5.54,
-          "centroid_hz": 1412,
-          "mid_ratio": 0.562
+          "attack_ms": 22.2,
+          "tail_ratio": 0.24,
+          "tonality": 0.366,
+          "crest": 5.76,
+          "centroid_hz": 1109,
+          "mid_ratio": 0.815
         }
       },
       {
         "file": "thunder/pool/thunder__cand08.wav",
         "passed_gates": true,
-        "rank": 2.74,
+        "rank": 2.72,
         "features": {
-          "mid_peak_db": -13.4,
+          "mid_peak_db": -13.3,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.158,
-          "tonality": 0.385,
-          "crest": 7.29,
-          "centroid_hz": 1063,
-          "mid_ratio": 0.838
+          "tail_ratio": 0.217,
+          "tonality": 0.519,
+          "crest": 6.05,
+          "centroid_hz": 2172,
+          "mid_ratio": 0.652
         }
       },
       {
         "file": "thunder/pool/thunder__cand09.wav",
         "passed_gates": true,
-        "rank": 2.75,
+        "rank": 2.84,
         "features": {
-          "mid_peak_db": -13.7,
+          "mid_peak_db": -13.9,
           "duration_s": 1.4,
-          "attack_ms": 5.8,
-          "tail_ratio": 0.205,
-          "tonality": 0.461,
-          "crest": 6.68,
-          "centroid_hz": 1126,
-          "mid_ratio": 0.722
+          "attack_ms": 30.0,
+          "tail_ratio": 0.353,
+          "tonality": 0.589,
+          "crest": 5.43,
+          "centroid_hz": 972,
+          "mid_ratio": 0.708
         }
       },
       {
         "file": "thunder/pool/thunder__cand10.wav",
         "passed_gates": true,
-        "rank": 2.76,
+        "rank": 2.87,
         "features": {
-          "mid_peak_db": -13.5,
-          "duration_s": 1.4,
-          "attack_ms": 30.0,
-          "tail_ratio": 0.069,
-          "tonality": 0.728,
-          "crest": 6.97,
-          "centroid_hz": 834,
-          "mid_ratio": 0.69
+          "mid_peak_db": -14.1,
+          "duration_s": 1.394,
+          "attack_ms": 23.6,
+          "tail_ratio": 0.117,
+          "tonality": 0.699,
+          "crest": 5.47,
+          "centroid_hz": 2710,
+          "mid_ratio": 0.406
         }
       },
       {
         "file": "thunder/pool/thunder__cand11.wav",
         "passed_gates": true,
-        "rank": 3.06,
+        "rank": 2.88,
         "features": {
-          "mid_peak_db": -15.0,
+          "mid_peak_db": -14.1,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.452,
-          "tonality": 0.496,
-          "crest": 6.68,
-          "centroid_hz": 1026,
-          "mid_ratio": 0.77
+          "tail_ratio": 0.137,
+          "tonality": 0.491,
+          "crest": 8.23,
+          "centroid_hz": 940,
+          "mid_ratio": 0.836
         }
       },
       {
         "file": "thunder/pool/thunder__cand12.wav",
         "passed_gates": true,
-        "rank": 3.2,
+        "rank": 2.93,
         "features": {
-          "mid_peak_db": -15.7,
+          "mid_peak_db": -14.5,
           "duration_s": 1.4,
-          "attack_ms": 30.0,
-          "tail_ratio": 0.118,
-          "tonality": 0.627,
-          "crest": 7.2,
-          "centroid_hz": 1216,
-          "mid_ratio": 0.522
+          "attack_ms": 16.8,
+          "tail_ratio": 0.309,
+          "tonality": 0.375,
+          "crest": 7.14,
+          "centroid_hz": 1155,
+          "mid_ratio": 0.741
         }
       },
       {
         "file": "thunder/pool/thunder__cand13.wav",
         "passed_gates": true,
-        "rank": 3.22,
+        "rank": 2.96,
         "features": {
-          "mid_peak_db": -15.8,
+          "mid_peak_db": -14.5,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.217,
-          "tonality": 0.632,
-          "crest": 8.32,
-          "centroid_hz": 1263,
-          "mid_ratio": 0.681
+          "tail_ratio": 0.038,
+          "tonality": 0.364,
+          "crest": 8.9,
+          "centroid_hz": 1011,
+          "mid_ratio": 0.803
         }
       },
       {
         "file": "thunder/pool/thunder__cand14.wav",
         "passed_gates": true,
-        "rank": 3.31,
+        "rank": 3.24,
         "features": {
-          "mid_peak_db": -16.5,
+          "mid_peak_db": -15.9,
           "duration_s": 1.4,
-          "attack_ms": 2.7,
-          "tail_ratio": 0.627,
-          "tonality": 0.151,
-          "crest": 7.23,
-          "centroid_hz": 1436,
-          "mid_ratio": 0.843
+          "attack_ms": 30.0,
+          "tail_ratio": 0.431,
+          "tonality": 0.316,
+          "crest": 7.74,
+          "centroid_hz": 990,
+          "mid_ratio": 0.773
         }
       },
       {
         "file": "thunder/pool/thunder__cand15.wav",
         "passed_gates": true,
-        "rank": 3.48,
+        "rank": 3.36,
         "features": {
-          "mid_peak_db": -17.1,
+          "mid_peak_db": -16.5,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.079,
-          "tonality": 0.191,
-          "crest": 12.59,
-          "centroid_hz": 2134,
-          "mid_ratio": 0.893
+          "tail_ratio": 0.15,
+          "tonality": 0.567,
+          "crest": 9.18,
+          "centroid_hz": 1384,
+          "mid_ratio": 0.607
         }
       },
       {
         "file": "thunder/pool/thunder__cand16.wav",
         "passed_gates": true,
-        "rank": 3.72,
+        "rank": 3.54,
         "features": {
-          "mid_peak_db": -18.3,
+          "mid_peak_db": -17.4,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.258,
-          "tonality": 0.534,
-          "crest": 11.47,
-          "centroid_hz": 1098,
-          "mid_ratio": 0.771
+          "tail_ratio": 0.205,
+          "tonality": 0.444,
+          "crest": 10.63,
+          "centroid_hz": 1251,
+          "mid_ratio": 0.813
         }
       },
       {
         "file": "thunder/pool/thunder__cand17.wav",
         "passed_gates": true,
-        "rank": 3.88,
+        "rank": 3.8,
         "features": {
-          "mid_peak_db": -19.1,
+          "mid_peak_db": -18.7,
           "duration_s": 1.4,
           "attack_ms": 30.0,
-          "tail_ratio": 0.221,
-          "tonality": 0.449,
-          "crest": 12.45,
-          "centroid_hz": 794,
-          "mid_ratio": 0.838
+          "tail_ratio": 0.254,
+          "tonality": 0.337,
+          "crest": 12.68,
+          "centroid_hz": 843,
+          "mid_ratio": 0.854
+        }
+      },
+      {
+        "file": "thunder/pool/thunder__cand18.wav",
+        "passed_gates": true,
+        "rank": 3.86,
+        "features": {
+          "mid_peak_db": -19.0,
+          "duration_s": 1.4,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.173,
+          "tonality": 0.663,
+          "crest": 9.13,
+          "centroid_hz": 1413,
+          "mid_ratio": 0.385
         }
       }
     ],
     "brief": "an extremely close lightning strike directly overhead: one instant deafening thunder crack, a sharp explosive splitting snap with a hard short rumble right behind it",
-    "generated_at": "2026-08-06T03:30:31+00:00",
+    "generated_at": "2026-08-06T03:40:37+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "ui_click_switch": {
@@ -7015,14 +7030,14 @@
     ],
     "features": [
       {
-        "mid_peak_db": -31.4,
+        "mid_peak_db": -27.0,
         "duration_s": 0.22,
-        "attack_ms": 30.0,
+        "attack_ms": 20.5,
         "tail_ratio": 0.0,
-        "tonality": 0.229,
-        "crest": 25.87,
-        "centroid_hz": 6516,
-        "mid_ratio": 0.604
+        "tonality": 0.627,
+        "crest": 15.84,
+        "centroid_hz": 7228,
+        "mid_ratio": 0.635
       }
     ],
     "qa": {
@@ -7033,7 +7048,7 @@
     },
     "pool_candidates": [],
     "brief": "a metal dome switch collapsing under a thumb, one crisp bright snap",
-    "generated_at": "2026-08-06T03:25:04+00:00",
+    "generated_at": "2026-08-06T03:40:47+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "ui_down_stone": {
@@ -7161,18 +7176,18 @@
       "ui_down_nail/ui_down_nail__take01.wav"
     ],
     "durations_s": [
-      0.215
+      0.22
     ],
     "features": [
       {
-        "mid_peak_db": -23.5,
-        "duration_s": 0.215,
-        "attack_ms": 25.4,
+        "mid_peak_db": -27.1,
+        "duration_s": 0.22,
+        "attack_ms": 9.5,
         "tail_ratio": 0.0,
-        "tonality": 0.704,
-        "crest": 9.85,
-        "centroid_hz": 2312,
-        "mid_ratio": 0.549
+        "tonality": 0.894,
+        "crest": 5.53,
+        "centroid_hz": 3277,
+        "mid_ratio": 0.076
       }
     ],
     "qa": {
@@ -7183,7 +7198,7 @@
     },
     "pool_candidates": [],
     "brief": "a nail tapped once into wood, one bright short tick",
-    "generated_at": "2026-08-06T03:25:21+00:00",
+    "generated_at": "2026-08-06T03:40:51+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "ui_down_clamp": {
@@ -8479,14 +8494,14 @@
     ],
     "features": [
       {
-        "mid_peak_db": -14.8,
+        "mid_peak_db": -14.7,
         "duration_s": 0.5,
-        "attack_ms": 15.4,
+        "attack_ms": 16.4,
         "tail_ratio": 0.0,
-        "tonality": 0.862,
-        "crest": 5.43,
-        "centroid_hz": 1281,
-        "mid_ratio": 0.745
+        "tonality": 0.883,
+        "crest": 4.97,
+        "centroid_hz": 1451,
+        "mid_ratio": 0.647
       }
     ],
     "qa": {
@@ -8497,7 +8512,7 @@
     },
     "pool_candidates": [],
     "brief": "a bare fist landing on an iron anvil, a hard dead ring",
-    "generated_at": "2026-08-06T03:31:54+00:00",
+    "generated_at": "2026-08-06T03:40:56+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "punch_waterskin": {
@@ -8678,6 +8693,36 @@
     "pool_candidates": [],
     "brief": "a fist into a big mass of dough, a soft airy squelch",
     "generated_at": "2026-08-06T03:32:17+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_sink_gravelfill": {
+    "takes": [
+      "cross_sink_gravelfill/cross_sink_gravelfill__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -26.5,
+        "duration_s": 1.098,
+        "attack_ms": 290.4,
+        "tail_ratio": 0.377,
+        "tonality": 0.056,
+        "crest": 8.88,
+        "centroid_hz": 8696,
+        "mid_ratio": 0.091
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "gravel pouring in to fill a gap in the ground",
+    "generated_at": "2026-08-06T03:40:42+00:00",
     "model_id": "eleven_text_to_sound_v2"
   }
 }
