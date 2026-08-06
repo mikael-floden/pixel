@@ -85,6 +85,38 @@ for (const [where, hash] of [["a monster page", MONSTER], ["the Sound Effects pa
   ok(after.bar.every((x) => x.w >= 95), `and wide (widths ${after.bar.map((x) => x.w).join("/")})`);
   ok(new Set(after.bar.map((x) => x.top)).size === 1, "on ONE row — the bar must never wrap");
 
+  // The audition sliders, checked here because this is the gate that always
+  // runs with the picker open (check-takes needs the admin password and skips
+  // wherever it is absent — which is where a regression would hide).
+  // "random pitch" is a RANGE either side of the pitch, so its readout must
+  // say so: 6 st alone reads as "six semitones up" (maintainer 2026-08-06,
+  // "it says 6st and not ± amount"). Zero stays plain — "±0" is nonsense.
+  const ctls = await wiki().evaluate(async () => {
+    const d = document.querySelector("dialog.sfx-picker");
+    const row = [...d.querySelectorAll(".picker-ctl")].find((c) => /random/.test(c.textContent));
+    const inp = row.querySelector("input"), out = row.querySelector(".sfx-val");
+    const readouts = {};
+    for (const v of ["0", "0.4", "6"]) { inp.value = v; inp.dispatchEvent(new Event("input")); readouts[v] = out.textContent; }
+    // …and it must actually reach the audition: six presses, six pitches.
+    inp.value = "6"; inp.dispatchEvent(new Event("input"));
+    window.__sfxPlays.length = 0;
+    for (let i = 0; i < 6; i++) { d.querySelector(".picker-play").click(); await new Promise((r) => setTimeout(r, 240)); }
+    const absolute = {};
+    for (const c of d.querySelectorAll(".picker-ctl")) {
+      const l = c.querySelector("span").textContent;
+      if (!/random/.test(l)) absolute[l] = c.querySelector(".sfx-val").textContent;
+    }
+    return { readouts, absolute, rates: window.__sfxPlays.map((x) => x.rate) };
+  });
+  console.log("  sliders:", JSON.stringify(ctls));
+  ok(ctls.readouts["6"] === "±6 st" && ctls.readouts["0.4"] === "±0.4 st",
+    `random pitch reads as a ± range (${ctls.readouts["6"]}, ${ctls.readouts["0.4"]})`);
+  ok(ctls.readouts["0"] === "0 st", `and zero stays plain (${ctls.readouts["0"]})`);
+  ok(Object.values(ctls.absolute).every((v) => !v.includes("±")),
+    `while pitch and volume stay absolute (${Object.values(ctls.absolute).join(", ")})`);
+  ok(new Set(ctls.rates).size === ctls.rates.length && ctls.rates.length === 6,
+    `and Play honours it — ${new Set(ctls.rates).size}/${ctls.rates.length} distinct pitches`);
+
   await closePicker();
   ok((await mutes()).at(-1) === false, `closing gives the game back (${JSON.stringify(await mutes())})`);
 }

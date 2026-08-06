@@ -1134,15 +1134,25 @@ function buildSfx(soundEntries) {
     const over = {
       trimDb: a.volume_db ?? 0,
       rate: a.pitch ?? 1,
-      jitterSemis: a.max_random_pitch_semis
-        ? [-Math.abs(a.max_random_pitch_semis), Math.abs(a.max_random_pitch_semis)].map((x) => +(x * engine.gentle).toFixed(2))
-        : null,
       bus: a.bus ?? "sfx", usedBy: id, assigned: true,
     };
     if (String(a.sound).startsWith("composer/")) {
       const { set, take } = splitComposerId(a.sound, a.take);
-      return setLayer(set, { ...over, take: take ?? null, primary: take == null });
+      // NOT GENTLED. oneshot.ts:135 is `gentle = sound.urls ? 1 : 0.35`, and
+      // the engine's assigned-composer branch builds its entry WITH `urls`,
+      // so the full ±j is applied. Scaling by 0.35 here (as the catalog path
+      // rightly does) made the card understate the Game Master's own setting
+      // by 65% — item.drop read ±0.14 st while the game plays ±0.4.
+      const j = Math.abs(a.max_random_pitch_semis ?? 0);
+      return setLayer(set, { ...over, take: take ?? null, primary: take == null,
+        jitterSemis: j ? [-j, j] : null });
     }
+    // A CATALOG assignment carries no jitter of its own: the engine plays the
+    // catalog entry as-is (`oneShots.play(snd, …)` with only rate/gainDb), so
+    // `max_random_pitch_semis` is silently IGNORED for these and the sound's
+    // own variation — gentled at 0.35, since a catalog entry has no `urls` —
+    // is the truth. catLayer already computes exactly that. Reported to
+    // games-audio 2026-08-06.
     return catLayer(a.sound, { ...over, take: a.take ?? null, primary: a.take == null });
   };
   /** What the game ACTUALLY plays for this event, and why. */

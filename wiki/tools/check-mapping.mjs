@@ -87,7 +87,22 @@ for (const [id, a] of Object.entries(ASSIGN)) {
     const t = e.sounds.find((l) => setOf(l) === want)?.trimDb;
     ok(Math.abs((t ?? 0) - a.volume_db) < 1e-6, `  …at the assigned volume ${a.volume_db} dB (${t})`);
   }
+  // RANDOM PITCH IS NOT GENTLED for a composer assignment. oneshot.ts:135 is
+  // `gentle = sound.urls ? 1 : 0.35`, and the engine's assigned-composer
+  // branch builds its entry WITH urls — so the full ±j plays. The wiki scaled
+  // it by 0.35 like the catalog path and showed the Game Master 65% less than
+  // his own setting (item.drop read ±0.14 st against a played ±0.4).
+  if (a.max_random_pitch_semis != null && String(a.sound).startsWith("composer/")) {
+    const j = Math.abs(a.max_random_pitch_semis);
+    const got = e.sounds.find((l) => setOf(l) === want)?.jitterSemis;
+    ok(!!got && Math.abs(Math.abs(got[1]) - j) < 1e-6,
+      `  …with the assigned random pitch ±${j} st, ungentled (${got ? `±${Math.abs(got[1])}` : "none"})`);
+  }
 }
+// The gentle constant is what makes the rule above non-obvious — pin it, so a
+// change on the composer's side surfaces here rather than as a quiet 65% drift.
+ok(/const gentle = sound\.urls \? 1 : 0\.35;/.test(readFileSync(join(ROOT, "games2/composer/engine/oneshot.ts"), "utf8")),
+  "the gentle rule is still `sound.urls ? 1 : 0.35` (urls ⇒ full jitter)");
 
 // ---- 2. NOTHING is shown as bound that the engine would not play ---------
 // The whole "the wiki shows old mappings" class lives here: a library

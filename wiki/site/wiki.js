@@ -2225,16 +2225,23 @@ function openSoundPicker({ title, forWhat, onPick }) {
   // The audition controls: pitch, volume, max random pitch — the SAME three
   // numbers the request carries, so what you hear is what you ask for.
   // Volume's normal value is 0 dB = exactly as recorded (maintainer).
-  const ctl = (min, max, step, val, unit, label, hint) => {
-    const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
+  // `signed` marks a control whose number is a RANGE either side of the
+  // pitch, not an absolute setting: it reads "±6 st", because 6 st alone says
+  // "six semitones up" and that is not what it does (maintainer 2026-08-06:
+  // "random pitch do work but it says 6st and not ± amount"). Zero stays a
+  // plain "0 st" — "±0" is a contradiction, and 0 means never varies.
+  const ctl = (min, max, step, val, unit, label, hint, signed = false) => {
+    const show = (v) => `${signed && v > 0 ? "±" : ""}${stFmt(v)}${unit}`;
+    const out = h("code", { class: "sfx-val" }, show(val));
     const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title: hint });
-    inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+    inp.addEventListener("input", () => { out.textContent = show(Number(inp.value)); });
     return { row: h("label", { class: "picker-ctl" }, h("span", {}, label), inp, out), inp,
-      get: () => Number(inp.value), set: (v) => { inp.value = String(v); out.textContent = `${stFmt(v)}${unit}`; } };
+      get: () => Number(inp.value), set: (v) => { inp.value = String(v); out.textContent = show(v); } };
   };
   const pitch = ctl(0.25, 4, 0.05, 1, "×", "pitch", "Speed and pitch together — 1× is the recording as it is");
   const vol = ctl(-24, 12, 1, 0, " dB", "volume", "0 dB is the recording as it is; negative is quieter");
-  const rnd = ctl(0, 6, 0.1, 0, " st", "random pitch", "Each play lands within this many semitones of the pitch above — 0 means always identical");
+  const rnd = ctl(0, 6, 0.1, 0, " st", "random pitch",
+    "Each play lands within this many semitones EITHER SIDE of the pitch above — 0 means always identical", true);
   const note = h("input", { type: "text", class: "picker-note", placeholder: "note to the composer (optional)" });
   const assign = h("button", { class: "primary-btn" }, "Assign this sound");
   const play = () => {
