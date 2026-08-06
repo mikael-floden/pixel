@@ -504,7 +504,11 @@ const SECTIONS = {
   // count noun, which is exactly where it never collided with "creatures".
   characters: { label: "Races",         noun: "characters", icon: "characters",
                 count: (d) => (d.counts.characters ?? 0) + (d.counts.npcs ?? 0) },
-  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles, navCount: (d) => d.counts.tile_types },
+  // World counted its 8 TERRAIN TYPES in the nav while its card counted all
+  // 4,372 tiles — one section quietly measuring itself two ways (maintainer
+  // 2026-08-06: "use it in the menu as well"). One count per section now, and
+  // `navCount` went with it: tiles was its only user.
+  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
@@ -538,7 +542,7 @@ function renderNav() {
     const s = SECTIONS[slug];
     if (s.adminOnly && !state.admin) continue;
     rows.push(h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
-      s.label, h("span", { class: "count" }, String((s.navCount ?? s.count)(state.data) || ""))));
+      s.label, h("span", { class: "count" }, String(s.count(state.data) || ""))));
   }
   $("#nav").replaceChildren(...rows);
 }

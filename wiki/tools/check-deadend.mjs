@@ -107,6 +107,33 @@ else {
   ok(flagged.every((x) => /no story yet/.test(x.text)), "the flag says why");
 }
 
+// ONE COUNT PER SECTION. The nav and the start-page tile must agree: World
+// counted its 8 terrain TYPES in the sidebar while its card counted all 4,372
+// tiles, so the same section reported two different sizes depending on where
+// you looked (maintainer 2026-08-06). A `navCount` override existed for
+// exactly that one section; it is gone, and this keeps it gone.
+await p.goto(`${W}#/`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+const counts = await p.evaluate(() => {
+  const nav = {};
+  for (const a of document.querySelectorAll("#nav a")) {
+    const c = a.querySelector(".count");
+    if (!c || !c.textContent.trim()) continue;
+    nav[a.textContent.replace(c.textContent, "").trim()] = c.textContent.trim();
+  }
+  const start = {};
+  for (const a of document.querySelectorAll("#content a")) {
+    const m = a.textContent.replace(/\s+/g, " ").trim().match(/^(.+?)(\d[\d,]*) \w+$/);
+    if (m) start[m[1].trim()] = m[2];
+  }
+  return { nav, start };
+});
+const mismatch = Object.keys(counts.start).filter((k) => counts.nav[k] !== undefined && counts.nav[k] !== counts.start[k]);
+console.log("counts:", JSON.stringify(counts.nav));
+ok(Object.keys(counts.start).length > 4, `the start page tiles carry counts (${Object.keys(counts.start).length})`);
+ok(mismatch.length === 0,
+  `every section reports the SAME number in the menu and on its card${mismatch.length ? ` — ${mismatch.map((k) => `${k}: nav ${counts.nav[k]} vs card ${counts.start[k]}`).join("; ")}` : ""}`);
+
 console.log("page errors:", errs.length ? errs : "none");
 await b.close();
 console.log(fails.length ? `\n${fails.length} FAILURES` : "\nALL DEAD-END CHECKS PASSED");

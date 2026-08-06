@@ -54,6 +54,13 @@ inner topic with the lore agent's "people" entry as its description; NPCs page
 Add a section to that table and the nav, the start page, the headings, the
 back-links and the search results all follow.
 
+**One count per section.** World used to report its 8 terrain TYPES in the nav
+and all 4,372 tiles on its card — the same section measuring itself two ways
+depending on where you looked (maintainer 2026-08-06: "4372 is a bigger number
+and sounds better, use it in the menu as well"). The `navCount` override that
+allowed it is gone; tiles was its only user. `check-deadend.mjs` reads the nav
+and the start-page tiles and fails on any section where the two disagree.
+
 **The icons are the maintainer's own pixel art** (`site/icons/*.png`): 48×48,
 authored 1×, hard alpha, 21-57 colours. They are drawn at **whole multiples
 of 48 only** — 96px on the start-page tiles, 48px beside a section heading —
