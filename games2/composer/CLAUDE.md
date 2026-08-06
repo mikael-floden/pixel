@@ -3,14 +3,28 @@
 Domain notes live in `README.md`. This file is only for the things the
 maintainer has had to say more than once.
 
-## ALWAYS REPORT THE SHA
+## ALWAYS REPORT THE SHA — AS THE FIRST LINE, IN PLAIN TEXT
 
-**Every time you push, write the commit SHA in your reply to him.** Short SHA
-is fine; if a push contains several commits, list them all. Do this without
-being asked, in the same message that reports the work — not as a follow-up.
+**Every time you push, the reply's FIRST line is the SHA.** Format, exactly:
+
+```
+SHA: 28fe1d0f1 — composer: cross_on plays his peat pick
+```
+
+Plain text. No bold, no backticks, no table, nothing above it — not a heading,
+not a sentence of context. If a push carried several commits, one such line
+each. If a generator bot committed the actual output, its SHA goes on its own
+line too and is labelled as the one holding the files.
 
 > "Please how many times do I have to tell you. Always write the sha after you
-> push." — 2026-08-06, after several pushes reported with no SHA
+> push." — 2026-08-06
+>
+> "How many times do I have to tell you to write the sha" — 2026-08-06, on a
+> reply that DID open with the SHA, in bold inside backticks.
+
+The second complaint is the instructive one: the SHA was present and he still
+could not find it. Dressed-up formatting and a SHA buried under a summary both
+read as absent. Lead with the bare line, then report the work.
 
 He tracks work by SHA. A reply that says "pushed to main" makes him go and
 look it up, which is why he keeps asking. If a generator bot's commit carries
