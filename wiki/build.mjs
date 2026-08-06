@@ -1025,6 +1025,13 @@ function buildSfx(soundEntries) {
           }));
       })(),
       voice: set.startsWith("jump_voice"),
+      // When the composer generated this set — the ONLY real "date added" in
+      // the project, and it is per SET, so every take and candidate in the
+      // folder shares it. The sound catalog carries no timestamp anywhere
+      // (checked: neither viewer_data.json nor any metadata.json), so those
+      // sort last rather than being given a made-up date. File mtimes are NOT
+      // a substitute: a fresh clone and the Docker build stamp them all alike.
+      added: meta.generated_at ?? null,
       usedBy: [],
     };
   }

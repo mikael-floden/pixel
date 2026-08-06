@@ -117,6 +117,47 @@ for (const [where, hash] of [["a monster page", MONSTER], ["the Sound Effects pa
   ok(new Set(ctls.rates).size === ctls.rates.length && ctls.rates.length === 6,
     `and Play honours it — ${new Set(ctls.rates).size}/${ctls.rates.length} distinct pitches`);
 
+  // SORT, and the rule the whole dialog is built around: the transport bar
+  // must be in the SAME PLACE after every interaction (maintainer 2026-08-06,
+  // asking for the sort — "in a way I can still click next next next without
+  // the button moving"). The list's height is fixed in CSS and the sort
+  // toggle is its own fixed row, so nothing here can shift it; this measures
+  // that rather than trusting it.
+  const sort = await wiki().evaluate(async () => {
+    const d = document.querySelector("dialog.sfx-picker");
+    const barY = () => Math.round(d.querySelector(".picker-play").getBoundingClientRect().top);
+    const heads = () => [...d.querySelectorAll(".picker-group")].map((x) => x.textContent);
+    const names = () => [...d.querySelectorAll(".picker-row .take-name")].map((x) => x.textContent);
+    const ys = [barY()];
+    const byAction = heads().slice(0, 2);
+    d.querySelector("[data-mode=newest]").click(); await new Promise((r) => setTimeout(r, 250));
+    ys.push(barY());
+    const newestHeads = heads(), newestFirst = names().slice(0, 2);
+    for (let i = 0; i < 8; i++) {          // next next next next…
+      d.querySelector(".picker-bar .ghost-btn:last-child").click();
+      await new Promise((r) => setTimeout(r, 120));
+      ys.push(barY());
+    }
+    const s = d.querySelector("input[type=search]");        // a search down to ~nothing
+    s.value = "zzzznope"; s.dispatchEvent(new Event("input")); await new Promise((r) => setTimeout(r, 200));
+    ys.push(barY());
+    const emptyRows = names().length;
+    s.value = ""; s.dispatchEvent(new Event("input")); await new Promise((r) => setTimeout(r, 200));
+    d.querySelector("[data-mode=action]").click(); await new Promise((r) => setTimeout(r, 250));
+    ys.push(barY());
+    return { ys, byAction, newestHeads, newestFirst, emptyRows, backToAction: heads().slice(0, 2) };
+  });
+  console.log("  sort:", JSON.stringify({ ...sort, newestHeads: sort.newestHeads.slice(0, 3) }));
+  ok(new Set(sort.ys).size === 1,
+    `the Play button NEVER moves — sort toggle, 8× Next, an empty search, back again (y=${[...new Set(sort.ys)].join("/")})`);
+  ok(sort.emptyRows === 0, "an empty search leaves no rows (and still does not move it)");
+  ok(/^(Today|Yesterday|\d+ days ago|[A-Z])/.test(sort.newestHeads[0] ?? ""),
+    `newest-first groups by day (${sort.newestHeads.slice(0, 3).join(" · ")})`);
+  ok(/original sound library/.test(sort.newestHeads.at(-1) ?? ""),
+    `and the undated catalog sorts LAST, never interleaved (${sort.newestHeads.at(-1)})`);
+  ok(JSON.stringify(sort.byAction) === JSON.stringify(sort.backToAction),
+    `toggling back restores the action grouping (${sort.backToAction.join(", ")})`);
+
   await closePicker();
   ok((await mutes()).at(-1) === false, `closing gives the game back (${JSON.stringify(await mutes())})`);
 }

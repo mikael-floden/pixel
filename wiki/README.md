@@ -590,6 +590,25 @@ to replace the parsing.
     this is pure client logic, and a real login would only make the gate skip
     wherever the password is absent, which is exactly where a regression would
     slip through. Verified to fail (9 assertions) with the stop call removed.
+- **Sort: by action, or newest first** (maintainer 2026-08-06, "in a way I can
+  still click next next next without the button moving"). A two-button toggle
+  under the search box.
+  - The date is the composer's own per-SET `generated_at` from `foley.json`, so
+    a set's takes and its pool candidates share one date. **The sound catalog
+    carries no timestamp anywhere** — not in `viewer_data.json`, not in any
+    `metadata.json` — so those sort LAST under "Older — the original sound
+    library" rather than being given an invented date. **File mtimes are not a
+    substitute**: a fresh clone and the Docker build stamp every file alike.
+  - Newest-first reuses the existing sticky group headers, grouping by DAY
+    ("Today", "Yesterday", "3 days ago", then the date). That answers "what did
+    the composer make this morning" in one tap and adds NO per-row markup, so
+    it cannot disturb the row layout.
+  - **The transport bar cannot move**, which is the rule the dialog is built
+    around: the list's height is fixed in CSS and the toggle is its own
+    fixed-height row, so sorting, searching to zero results and stepping all
+    leave it exactly where it was. `check-audiostop.mjs` measures the Play
+    button's y through a sort toggle, 8× Next, an empty search and a toggle
+    back, and asserts a single distinct value.
 - **Prev / Play / Next are thumb-sized** (maintainer 2026-08-06). They are the
   work of the dialog — you hammer Next/Play down 281 sounds hunting for the
   right one — so they are 46px tall and share the row `flex: 1` instead of

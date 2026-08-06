@@ -786,6 +786,16 @@ input[type="range"] { accent-color: var(--accent); }
 .picker-row .play-btn { pointer-events: none; flex: none; }
 .picker-row.sel { background: var(--accent-soft); }
 .picker-row.sel .take-name { color: var(--accent-ink); font-weight: 600; }
+/* The sort toggle. Its own fixed-height row ABOVE the list, so it can never
+   change size with the list's contents — the bar below stays put whichever
+   order you choose and however few rows a search leaves. */
+.picker-sort { display: flex; gap: 6px; margin-top: 8px; }
+.picker-sort-btn {
+  flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;
+  border: 1px solid var(--border); border-radius: 9px;
+  background: transparent; color: var(--muted);
+}
+.picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
 /* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
    height change here shifts every control — Next must be where it was after
    you press Next. */

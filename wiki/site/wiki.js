@@ -2190,7 +2190,7 @@ function sfxLibraryList() {
       name: `${set} ${t.name}`, label,
       group: g === "Other" ? "Other composer sounds" : titleish(g),
       sub: cs.voice ? "voice" : "foley", file: t.file, dur: t.dur ?? null,
-      voice: !!cs.voice, used: bound.has(t.file),
+      voice: !!cs.voice, used: bound.has(t.file), added: cs.added ?? null,
     });
     cs.takes.forEach((t, i) => row(t, `set:${set}#${i}`,
       cs.takes.length > 1 ? `${flavour} · take ${i + 1}` : flavour));
@@ -2206,7 +2206,7 @@ function sfxLibraryList() {
       label: s.takes.length > 1 ? `${s.name} · take ${i + 1}` : s.name,
       group: `Catalog · ${titleish(s.category ?? "sounds")}`, sub: s.category,
       file: audioCandidates(t), dur: t.dur ?? s.duration_s ?? null,
-      voice: false, used: bound.has(t.files.wav),
+      voice: false, used: bound.has(t.files.wav), added: null,
     }));
   }
   return out;
@@ -2228,6 +2228,55 @@ function openSoundPicker({ title, forWhat, onPick }) {
   let list = all, sel = 0;
   const search = h("input", { type: "search", class: "picker-search", placeholder: `Search ${all.length} sounds…`, autocomplete: "off" });
   const listEl = h("div", { class: "picker-list" });
+  // SORT: by action (the folder grouping) or newest first (maintainer
+  // 2026-08-06). `added` is the composer's own per-SET `generated_at`, so a
+  // set's takes and its pool candidates share one date. Newest-first reuses
+  // the existing sticky group headers, grouping by DAY — "Today",
+  // "Yesterday", then the date — so "what did he generate this morning" is
+  // one tap, and no new per-row markup can disturb the layout.
+  let sortMode = "action";
+  const dayLabel = (iso) => {
+    if (!iso) return "Older — the original sound library";
+    const d = new Date(iso);
+    if (Number.isNaN(+d)) return "Undated";
+    const midnight = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+    const days = Math.round((midnight(new Date()) - midnight(d)) / 86400000);
+    if (days === 0) return "Today";
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days} days ago`;
+    return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  };
+  const sortRow = h("div", { class: "picker-sort" });
+  const setSort = (m) => {
+    sortMode = m;
+    for (const b of sortRow.children) b.classList.toggle("sel", b.dataset.mode === m);
+    relist();
+  };
+  sortRow.append(
+    h("button", { class: "picker-sort-btn sel", type: "button", "data-mode": "action",
+      title: "Grouped by the action they were made for — kicks together, footsteps together",
+      onclick: () => setSort("action") }, "by action"),
+    h("button", { class: "picker-sort-btn", type: "button", "data-mode": "newest",
+      title: "Most recently generated first, grouped by the day the composer made them",
+      onclick: () => setSort("newest") }, "newest first"));
+  /** Filter + sort + regroup. The list's height is FIXED in CSS, so whatever
+   *  this produces — 281 rows, 3 rows, none — the Prev/Play/Next bar below it
+   *  never moves. That is the rule this dialog is built around. */
+  const relist = () => {
+    const q = search.value.trim().toLowerCase();
+    const hit = q ? all.filter((it) => `${it.name} ${it.kind} ${it.sub}`.toLowerCase().includes(q)) : all;
+    if (sortMode === "newest") {
+      // Undated (the original catalog) sorts LAST, never interleaved into the
+      // dated run — an unknown date is not a recent one.
+      list = hit.slice()
+        .sort((a, b) => (b.added ?? "").localeCompare(a.added ?? "") || a.name.localeCompare(b.name))
+        .map((it) => ({ ...it, group: dayLabel(it.added) }));
+    } else {
+      list = hit;
+    }
+    sel = 0;
+    paint();
+  };
   // The audition controls: pitch, volume, max random pitch — the SAME three
   // numbers the request carries, so what you hear is what you ask for.
   // Volume's normal value is 0 dB = exactly as recorded (maintainer).
@@ -2294,11 +2343,7 @@ function openSoundPicker({ title, forWhat, onPick }) {
     if (it?.voice && pitch.get() === 1) pitch.set(2);
     if (it && !it.voice && pitch.get() === 2) pitch.set(1);
   };
-  search.addEventListener("input", () => {
-    const q = search.value.trim().toLowerCase();
-    list = q ? all.filter((it) => `${it.name} ${it.kind} ${it.sub}`.toLowerCase().includes(q)) : all;
-    sel = 0; paint();
-  });
+  search.addEventListener("input", relist);
   // `autofocus` + tabindex on the DIALOG is the standards-blessed way to stop
   // showModal() from focusing the first field (and popping the keyboard):
   // showModal focuses the autofocus element when there is one.
@@ -2306,6 +2351,7 @@ function openSoundPicker({ title, forWhat, onPick }) {
     h("h3", {}, title),
     h("p", { class: "muted picker-for" }, forWhat),
     search,
+    sortRow,
     listEl,
     // Nothing in this row may change size as you step: the modal is centred,
     // so a line that wraps on a long name moves every button under your
