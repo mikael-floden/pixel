@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T01:50:21.700Z",
+  "updated_at": "2026-08-06T02:03:04.184Z",
   "requests": {
     "item.drop/msguljrm": {
       "event": "item.drop",
@@ -58,6 +58,22 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T01:48:40.852Z"
+    },
+    "combat.punch/msgvek45": {
+      "event": "combat.punch",
+      "sound": "composer/punch",
+      "pitch": 0.9,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0.2,
+      "requested_at": "2026-08-06T02:02:01.685Z"
+    },
+    "combat.kick/msgvftz0": {
+      "event": "combat.kick",
+      "sound": "hit_hurt",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T02:03:01.116Z"
     }
   }
 }
