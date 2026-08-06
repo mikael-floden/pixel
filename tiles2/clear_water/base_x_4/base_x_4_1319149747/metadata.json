@@ -98,7 +98,45 @@
       "index": 10,
       "file": "tile_10.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 11.2,
+            "y": 80.8,
+            "r": 2.0,
+            "color": [
+              0.601,
+              0.473,
+              0.169
+            ],
+            "s": 0.708,
+            "dir": "up"
+          },
+          {
+            "x": 31.0,
+            "y": 74.8,
+            "r": 2.0,
+            "color": [
+              0.836,
+              0.748,
+              0.274
+            ],
+            "s": 0.854,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 11,
@@ -145,6 +183,18 @@
             "dir": "up"
           },
           {
+            "x": 29.8,
+            "y": 65.7,
+            "r": 2.0,
+            "color": [
+              0.623,
+              0.297,
+              0.236
+            ],
+            "s": 0.622,
+            "dir": "up"
+          },
+          {
             "x": 41.2,
             "y": 66.2,
             "r": 2.0,
@@ -154,18 +204,6 @@
               0.29
             ],
             "s": 0.679,
-            "dir": "up"
-          },
-          {
-            "x": 29.2,
-            "y": 66.2,
-            "r": 2.0,
-            "color": [
-              0.472,
-              0.164,
-              0.174
-            ],
-            "s": 0.526,
             "dir": "up"
           }
         ]
@@ -207,7 +245,7 @@
       ]
     }
   ],
-  "emissive_tiles": 2,
+  "emissive_tiles": 3,
   "generated_at": "2026-07-06T18:13:36+00:00",
   "processing": {
     "neutralize_outline": true,
@@ -219,7 +257,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "clear_water",

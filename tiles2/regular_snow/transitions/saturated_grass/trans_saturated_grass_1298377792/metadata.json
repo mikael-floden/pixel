@@ -641,8 +641,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.945,
-        "regular_snow": 0.055
+        "saturated_grass": 0.942,
+        "regular_snow": 0.058
       },
       "edges": {
         "NE": {
@@ -709,10 +709,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to snow with a small detail"
+      "features": [],
+      "description": "saturated grass blending to snow"
     },
     {
       "index": 9,
@@ -1031,8 +1029,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.949,
-        "regular_snow": 0.051
+        "saturated_grass": 0.948,
+        "regular_snow": 0.052
       },
       "edges": {
         "NE": {
@@ -1188,8 +1186,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.969,
-        "regular_snow": 0.031
+        "saturated_grass": 0.955,
+        "regular_snow": 0.045
       },
       "edges": {
         "NE": {
@@ -1255,9 +1253,10 @@
       },
       "features": [
         "accent",
+        "flowers",
         "pebbles"
       ],
-      "description": "saturated grass with a small detail, pebbles"
+      "description": "saturated grass with a small detail, small flowers, pebbles"
     }
   ],
   "generated_at": "2026-07-05T09:28:55+00:00",
@@ -1272,7 +1271,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

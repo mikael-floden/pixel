@@ -95,10 +95,25 @@ def _dark_kwargs(t, hs):
     #000000 in transitions. For such a material we (a) claim its saturated near-black
     pixels via `dark_include`, and (b) floor them to a charcoal `dark_min_value` so it
     reads as DARK GREY volcanic rock, not pitch black. Bright materials are unaffected."""
+    out = {"max_value": _light_ceiling(t, hs)}
     if t and float(t.get("value", 255)) < hs.get("dark_material_value", 50):
-        return {"min_value": hs.get("dark_min_value", 38),
-                "dark_include": hs.get("dark_include", 46)}
-    return {"min_value": hs.get("min_value", 0), "dark_include": 0}
+        out.update(min_value=hs.get("dark_min_value", 38),
+                   dark_include=hs.get("dark_include", 46))
+    else:
+        out.update(min_value=hs.get("min_value", 0), dark_include=0)
+    return out
+
+
+def _light_ceiling(t, hs):
+    """Brightness above which a pixel is a LIGHT SOURCE (fire, embers, a lantern),
+    not the terrain material — so harmonize leaves its colour alone. Measured from the
+    material's own RAW lit range; None (no ceiling) once it would land past white,
+    which is what keeps bright materials like snow and ice unaffected."""
+    if not t:
+        return None
+    margin = hs.get("light_source_margin", 80)
+    ceil = float(t.get("select_value", t.get("value", 255))) + margin
+    return None if ceil >= 255 else ceil
 
 
 def _palette_target(rgb):

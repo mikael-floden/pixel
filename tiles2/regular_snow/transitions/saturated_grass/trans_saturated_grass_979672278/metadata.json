@@ -1032,8 +1032,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.724,
-        "saturated_grass": 0.276
+        "regular_snow": 0.726,
+        "saturated_grass": 0.274
       },
       "edges": {
         "NE": {
@@ -1272,7 +1272,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

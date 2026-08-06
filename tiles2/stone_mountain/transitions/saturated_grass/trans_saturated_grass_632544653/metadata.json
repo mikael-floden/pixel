@@ -1060,8 +1060,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.996,
-        "stone_mountain": 0.004
+        "saturated_grass": 0.995,
+        "stone_mountain": 0.005
       },
       "edges": {
         "NE": {
@@ -1214,8 +1214,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.229,
-        "saturated_grass": 0.771
+        "stone_mountain": 0.261,
+        "saturated_grass": 0.739
       },
       "edges": {
         "NE": {
@@ -1223,14 +1223,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SE": {
@@ -1301,7 +1302,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

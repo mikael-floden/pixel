@@ -105,15 +105,39 @@
         "anim": "pulse",
         "sources": [
           {
-            "x": 35.0,
-            "y": 58.0,
+            "x": 30.6,
+            "y": 47.1,
             "r": 2.0,
             "color": [
-              0.366,
-              0.183,
-              0.11
+              0.564,
+              0.281,
+              0.129
             ],
-            "s": 0.506,
+            "s": 0.607,
+            "dir": "up"
+          },
+          {
+            "x": 27.6,
+            "y": 56.6,
+            "r": 2.0,
+            "color": [
+              0.697,
+              0.422,
+              0.193
+            ],
+            "s": 0.708,
+            "dir": "up"
+          },
+          {
+            "x": 35.4,
+            "y": 40.2,
+            "r": 2.0,
+            "color": [
+              0.552,
+              0.257,
+              0.077
+            ],
+            "s": 0.584,
             "dir": "up"
           }
         ]
@@ -126,7 +150,45 @@
       "index": 6,
       "file": "tile_06.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "saturated_grass",
+        "color": [
+          0.4,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 23.9,
+            "y": 41.5,
+            "r": 2.9,
+            "color": [
+              0.571,
+              0.588,
+              0.223
+            ],
+            "s": 0.755,
+            "dir": "up"
+          },
+          {
+            "x": 36.6,
+            "y": 53.0,
+            "r": 2.0,
+            "color": [
+              0.601,
+              0.617,
+              0.236
+            ],
+            "s": 0.773,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 7,
@@ -206,6 +268,18 @@
         "sources": [
           {
             "x": 30.5,
+            "y": 57.0,
+            "r": 2.0,
+            "color": [
+              0.444,
+              0.203,
+              0.098
+            ],
+            "s": 0.531,
+            "dir": "up"
+          },
+          {
+            "x": 30.5,
             "y": 60.8,
             "r": 2.0,
             "color": [
@@ -214,6 +288,18 @@
               0.109
             ],
             "s": 0.542,
+            "dir": "up"
+          },
+          {
+            "x": 31.5,
+            "y": 30.5,
+            "r": 2.0,
+            "color": [
+              0.653,
+              0.442,
+              0.218
+            ],
+            "s": 0.714,
             "dir": "up"
           }
         ]
@@ -335,7 +421,7 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 6,
+  "emissive_tiles": 7,
   "generated_at": "2026-07-06T18:06:06+00:00",
   "processing": {
     "neutralize_outline": true,
@@ -347,7 +433,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "saturated_grass",

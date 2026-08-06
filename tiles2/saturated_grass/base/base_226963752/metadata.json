@@ -462,9 +462,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "flowers"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass with a small detail, small flowers"
     },
     {
       "index": 6,
@@ -688,9 +689,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "flowers"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass with a small detail, small flowers"
     },
     {
       "index": 9,
@@ -991,9 +993,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "flowers"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass with a small detail, small flowers"
     },
     {
       "index": 13,
@@ -1235,7 +1238,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": false,
