@@ -4560,5 +4560,215 @@
     "brief": "a wooden abacus bead sliding one notch along its wire, one small warm click",
     "generated_at": "2026-08-06T01:37:48+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "item_pickup_grass": {
+    "takes": [
+      "item_pickup_grass/item_pickup_grass__take01.wav"
+    ],
+    "durations_s": [
+      0.55
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.2,
+        "duration_s": 0.55,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.001,
+        "tonality": 0.309,
+        "crest": 8.15,
+        "centroid_hz": 7269,
+        "mid_ratio": 0.087
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small object plucked up out of grass, a soft leafy rustle and lift",
+    "generated_at": "2026-08-06T02:07:31+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "item_pickup_gravel": {
+    "takes": [
+      "item_pickup_gravel/item_pickup_gravel__take01.wav"
+    ],
+    "durations_s": [
+      0.45
+    ],
+    "features": [
+      {
+        "mid_peak_db": -16.9,
+        "duration_s": 0.45,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.091,
+        "crest": 7.34,
+        "centroid_hz": 4032,
+        "mid_ratio": 0.923
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small object lifted off gravel with a short stony scrape",
+    "generated_at": "2026-08-06T02:07:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "item_pickup_chain": {
+    "takes": [
+      "item_pickup_chain/item_pickup_chain__take01.wav"
+    ],
+    "durations_s": [
+      0.462
+    ],
+    "features": [
+      {
+        "mid_peak_db": -40.4,
+        "duration_s": 0.462,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.733,
+        "crest": 5.92,
+        "centroid_hz": 9928,
+        "mid_ratio": 0.003
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small chain lifted from the ground, links sliding together",
+    "generated_at": "2026-08-06T02:07:35+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "item_pickup_glass": {
+    "takes": [
+      "item_pickup_glass/item_pickup_glass__take01.wav"
+    ],
+    "durations_s": [
+      0.45
+    ],
+    "features": [
+      {
+        "mid_peak_db": -25.3,
+        "duration_s": 0.45,
+        "attack_ms": 2.5,
+        "tail_ratio": 0.001,
+        "tonality": 0.874,
+        "crest": 8.36,
+        "centroid_hz": 6200,
+        "mid_ratio": 0.172
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small glass vial lifted off a stone slab, one light clink",
+    "generated_at": "2026-08-06T02:07:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "monster_hit_fungus": {
+    "takes": [
+      "monster_hit_fungus/monster_hit_fungus__take01.wav"
+    ],
+    "durations_s": [
+      0.495
+    ],
+    "features": [
+      {
+        "mid_peak_db": -31.6,
+        "duration_s": 0.495,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.216,
+        "crest": 39.99,
+        "centroid_hz": 4981,
+        "mid_ratio": 0.839
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big soft mushroom cap crushed, a wet muted pop",
+    "generated_at": "2026-08-06T02:08:21+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "monster_hit_moss": {
+    "takes": [
+      "monster_hit_moss/monster_hit_moss__take01.wav"
+    ],
+    "durations_s": [
+      0.55
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.4,
+        "duration_s": 0.55,
+        "attack_ms": 3.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.891,
+        "crest": 5.04,
+        "centroid_hz": 1703,
+        "mid_ratio": 0.097
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a hit into thick damp moss, a soft spongy compress",
+    "generated_at": "2026-08-06T02:08:22+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "monster_hit_stonebody": {
+    "takes": [
+      "monster_hit_stonebody/monster_hit_stonebody__take01.wav"
+    ],
+    "durations_s": [
+      0.45
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.0,
+        "duration_s": 0.45,
+        "attack_ms": 10.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.236,
+        "crest": 11.51,
+        "centroid_hz": 1074,
+        "mid_ratio": 0.886
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a fist on solid rock, a hard dead knock",
+    "generated_at": "2026-08-06T02:08:25+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
