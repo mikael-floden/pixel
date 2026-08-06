@@ -1176,6 +1176,7 @@ function buildSfx(soundEntries) {
       note: ev?.sound ? `the sound library suggests “${ev.sound}”, but nothing plays until you assign a sound here` : null };
   };
 
+  const droppedDead = [];   // bindings.json rows no code fires — see below
   for (const ev of bindings.events ?? []) {
     const id = ev.event;
     if (id === "player.footstep") continue;           // replaced by the real per-surface routing below
@@ -1191,6 +1192,21 @@ function buildSfx(soundEntries) {
     }
     if (id === "player.jump") continue;              // per-character events, added below
     const r = resolveEvent(id, ev);
+    // A NAME IN THE LIBRARY IS NOT A MOMENT IN THE GAME (maintainer
+    // 2026-08-06, on combat.enemy_defeat: "Please remove … This is madness").
+    // sounds/bindings.json carries rows the game never emits — older or
+    // aspirational spellings like `combat.enemy_defeat` (the game fires
+    // `combat.monster_die`), plus tools and containers no code has yet. They
+    // rendered as ordinary empty cards, indistinguishable from a live event
+    // waiting for a sound: 16 of the 23 assignable-looking cards were ones
+    // where auditioning, picking and assigning buys you silence and no
+    // explanation. If nothing fires it and nothing is bound to it, it is not
+    // a card — it is a line in somebody else's file.
+    //
+    // ANYTHING BOUND STILL SHOWS, even when nothing fires it: that is the
+    // red "not fired yet" case, and hiding it would strand a sound the Game
+    // Master assigned with no way to see or unbind it.
+    if (!r.bound && !emitted.has(id) && !ENGINE_DRIVEN.has(id)) { droppedDead.push(id); continue; }
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
       emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
@@ -1324,7 +1340,13 @@ function buildSfx(soundEntries) {
       if (s && !(s.usedBy ?? (s.usedBy = [])).includes(e.id)) s.usedBy.push(e.id);
     }
   }
-  return { engine, events, composerSets };
+  // Not a warning — dropping these is correct. But say it out loud, because
+  // the list IS the sounds agent's stale-binding report, and the day one of
+  // them starts being emitted it should reappear on the page by itself.
+  if (droppedDead.length) {
+    console.log(`[wiki] ${droppedDead.length} bindings.json event(s) hidden — nothing in the game fires them: ${droppedDead.join(", ")}`);
+  }
+  return { engine, events, composerSets, hiddenDeadEvents: droppedDead };
 }
 /** The per-character jump/fall voice layers — both characters' sets, each at
  *  its authored rate (2.0: the takes are recorded at half speed; see the

@@ -617,9 +617,27 @@ to replace the parsing.
     separate `take`), and `pickTake()` resolves it the way the engine does —
     a take that is not there is **silence, never a neighbouring recording**,
     or a deleted take would quietly become a different sound.
-  - An unapproved suggestion is still listed, but as **"no sound yet"** with a
-    note naming what the library offers and why nothing plays. Dropping it
-    entirely would lose a useful hint; showing it as bound is the bug.
+  - An unapproved suggestion for an event the game DOES fire is still listed,
+    as **"no sound yet"** with a note naming what the library offers and why
+    nothing plays.
+- **A NAME IN THE LIBRARY IS NOT A MOMENT IN THE GAME.** `sounds/bindings.json`
+  carries 16 rows nothing in the game emits — older spellings
+  (`combat.enemy_defeat`, when the game fires `combat.monster_die`) and tools,
+  containers and doors no code has yet. They rendered as ordinary empty cards,
+  indistinguishable from a live event waiting for a sound, so **16 of the 23
+  assignable-looking cards were ones where auditioning, picking and assigning
+  buys you silence and no explanation** (maintainer 2026-08-06, on being shown
+  the enemy_defeat/monster_die pair: "Please remove … This is madness").
+  An event now earns a card by being **fired** or by having a sound **bound**.
+  - **Anything bound is always listed, even when nothing fires it** — that is
+    the red "not fired yet" chip. Hiding it would strand a sound the Game
+    Master assigned with no way to see or unbind it. Verified both ways: the
+    16 vanish, and assigning to one brings its card straight back.
+  - The build **prints the hidden list every run**, so it doubles as a
+    staleness report for the sounds agent (told 2026-08-06), and the day one
+    of them starts being emitted it reappears on the page by itself.
+  - `sfx.hiddenDeadEvents` carries the list; `check-mapping.mjs` asserts no
+    card is both unfired and unbound, and that nothing hidden is assigned.
   - The same pass found a third stale mapping: `weather.thunder` is played
     through `foleyEntry(…, "rotate")`, which binds EVERY url, but the wiki
     pinned it to `primary` and said "1 take" while the game rotated all six.

@@ -138,6 +138,23 @@ ok(driven.every((e) => /^(footsteps|ambience|player|progress|weather)\./.test(e.
 
 // ---- 3. an unapproved suggestion reads as SILENT, and says why -----------
 const bindings = JSON.parse(readFileSync(join(ROOT, "sounds/bindings.json"), "utf8"));
+// ---- 3a. NO DEAD CARDS. A name in sounds/bindings.json is not a moment in
+// the game: 16 of its rows are older spellings (combat.enemy_defeat, when the
+// game fires combat.monster_die) or tools and containers no code has yet.
+// Listed, they were indistinguishable from a live event waiting for a sound —
+// audition, pick, assign, hear silence, no explanation (maintainer 2026-08-06:
+// "Please remove … This is madness"). An event earns a card by being FIRED or
+// by having a sound BOUND; anything else is a line in somebody else's file.
+const dead = D.sfx.events.filter((e) => !e.bound && !e.emitted).map((e) => e.id);
+ok(dead.length === 0, `every card is either fired by the game or has a sound bound${dead.length ? ` — ${dead.length} dead: ${dead.slice(0, 8).join(", ")}` : ""}`);
+// The safety valve: BOUND-but-unfired must still be listed, or a sound the
+// Game Master assigned would vanish with no way to see or unbind it. That is
+// the red "not fired yet" chip, and hiding it would be the worse bug.
+const hidden = new Set(D.sfx.hiddenDeadEvents ?? []);
+ok(![...hidden].some((id) => ASSIGN[id]), `nothing hidden is actually assigned (${hidden.size} hidden)`);
+ok(!hidden.has("combat.monster_die"), "the event the game really fires on a monster death is still listed");
+ok(hidden.has("combat.enemy_defeat") || !(bindings.events ?? []).some((b) => b.event === "combat.enemy_defeat"),
+  "and its dead twin combat.enemy_defeat is not");
 const suggested = (bindings.events ?? []).filter((b) => b.sound && !APPROVED.has(b.event) && !ASSIGN[b.event] && !FOLEY?.[b.event]);
 const wrong = suggested.map((b) => byId.get(b.event)).filter((e) => e && e.bound).map((e) => e.id);
 ok(wrong.length === 0, `library suggestions are not dressed up as bindings (${suggested.length} suggestions, ${wrong.length} wrongly bound)`);
