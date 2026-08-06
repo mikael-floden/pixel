@@ -72,6 +72,7 @@ import {
   PROVOKE_RADIUS_WU,
   CHASE_SPEED_WU,
   ESCAPE_RADIUS_WU,
+  MAX_CHASE_WU,
   ORBIT_SPEED_WU,
   ORBIT_FLIP_MEAN_S,
   MONSTER_DIE_MS,
@@ -1211,9 +1212,11 @@ export class WorldRoom extends Room<WorldState> {
   private storeFlushAt = 0;
   private leashBoxes = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
-  /** True while (x,y) is within ESCAPE_RADIUS_WU (~0.75 screens) of the zone's
-   * bounding box — the run-away line: a chase may spill this far from home,
-   * and a victim crossing it has SUCCESSFULLY escaped. Cheap: clamp + hypot. */
+  /** True while (x,y) is within MAX_CHASE_WU (~1.5 screens) of the zone's
+   * bounding box — the LEASH: a chase may spill this far from home and no
+   * further, whatever the victim does. Separate from ESCAPE_RADIUS_WU, which
+   * ends a hunt on monster-to-victim daylight (~0.75 screens). Cheap: clamp
+   * + hypot. */
   private withinLeash(zone: ZoneRuntime, x: number, y: number): boolean {
     let box = this.leashBoxes.get(zone.zone.id);
     if (!box) {
@@ -1222,7 +1225,7 @@ export class WorldRoom extends Room<WorldState> {
     }
     const cx = clamp(x, box.x0, box.x1);
     const cy = clamp(y, box.y0, box.y1);
-    return Math.hypot(x - cx, y - cy) <= ESCAPE_RADIUS_WU;
+    return Math.hypot(x - cx, y - cy) <= MAX_CHASE_WU;
   }
 
   /** End a monster's fight: clear the target and, if the chase carried it off

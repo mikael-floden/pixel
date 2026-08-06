@@ -1,0 +1,4020 @@
+{
+  "generatedFrom": "characters2/npcs",
+  "directions": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "npcs": [
+    {
+      "id": "029c4198",
+      "name": "Aeliana",
+      "role": "elder_scholar",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/029c4198/base/south.webp",
+        "south-west": "/assets/characters2/npcs/029c4198/base/south-west.webp",
+        "west": "/assets/characters2/npcs/029c4198/base/west.webp",
+        "north-west": "/assets/characters2/npcs/029c4198/base/north-west.webp",
+        "north": "/assets/characters2/npcs/029c4198/base/north.webp",
+        "north-east": "/assets/characters2/npcs/029c4198/base/north-east.webp",
+        "east": "/assets/characters2/npcs/029c4198/base/east.webp",
+        "south-east": "/assets/characters2/npcs/029c4198/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "037403c5",
+      "name": "Astrid",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/037403c5/base/south.webp",
+        "south-west": "/assets/characters2/npcs/037403c5/base/south-west.webp",
+        "west": "/assets/characters2/npcs/037403c5/base/west.webp",
+        "north-west": "/assets/characters2/npcs/037403c5/base/north-west.webp",
+        "north": "/assets/characters2/npcs/037403c5/base/north.webp",
+        "north-east": "/assets/characters2/npcs/037403c5/base/north-east.webp",
+        "east": "/assets/characters2/npcs/037403c5/base/east.webp",
+        "south-east": "/assets/characters2/npcs/037403c5/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "05e26d78",
+      "name": "Aldric",
+      "role": "ranger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/05e26d78/base/south.webp",
+        "south-west": "/assets/characters2/npcs/05e26d78/base/south-west.webp",
+        "west": "/assets/characters2/npcs/05e26d78/base/west.webp",
+        "north-west": "/assets/characters2/npcs/05e26d78/base/north-west.webp",
+        "north": "/assets/characters2/npcs/05e26d78/base/north.webp",
+        "north-east": "/assets/characters2/npcs/05e26d78/base/north-east.webp",
+        "east": "/assets/characters2/npcs/05e26d78/base/east.webp",
+        "south-east": "/assets/characters2/npcs/05e26d78/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "06e4eb08",
+      "name": "Aurelia",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/06e4eb08/base/south.webp",
+        "south-west": "/assets/characters2/npcs/06e4eb08/base/south-west.webp",
+        "west": "/assets/characters2/npcs/06e4eb08/base/west.webp",
+        "north-west": "/assets/characters2/npcs/06e4eb08/base/north-west.webp",
+        "north": "/assets/characters2/npcs/06e4eb08/base/north.webp",
+        "north-east": "/assets/characters2/npcs/06e4eb08/base/north-east.webp",
+        "east": "/assets/characters2/npcs/06e4eb08/base/east.webp",
+        "south-east": "/assets/characters2/npcs/06e4eb08/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "08868a13",
+      "name": "Alaric",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/08868a13/base/south.webp",
+        "south-west": "/assets/characters2/npcs/08868a13/base/south-west.webp",
+        "west": "/assets/characters2/npcs/08868a13/base/west.webp",
+        "north-west": "/assets/characters2/npcs/08868a13/base/north-west.webp",
+        "north": "/assets/characters2/npcs/08868a13/base/north.webp",
+        "north-east": "/assets/characters2/npcs/08868a13/base/north-east.webp",
+        "east": "/assets/characters2/npcs/08868a13/base/east.webp",
+        "south-east": "/assets/characters2/npcs/08868a13/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "099a60c4",
+      "name": "Belisandra",
+      "role": "ranger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/099a60c4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/099a60c4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/099a60c4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/099a60c4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/099a60c4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/099a60c4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/099a60c4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/099a60c4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "0bfa79e4",
+      "name": "Benedict",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/0bfa79e4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/0bfa79e4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/0bfa79e4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/0bfa79e4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/0bfa79e4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/0bfa79e4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/0bfa79e4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/0bfa79e4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "0c5bf15b",
+      "name": "Bran",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/0c5bf15b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/0c5bf15b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/0c5bf15b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/0c5bf15b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/0c5bf15b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/0c5bf15b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/0c5bf15b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/0c5bf15b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "0cd17da1",
+      "name": "Cedric",
+      "role": "ranger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/0cd17da1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/0cd17da1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/0cd17da1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/0cd17da1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/0cd17da1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/0cd17da1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/0cd17da1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/0cd17da1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "0de0a838",
+      "name": "Branwen",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/0de0a838/base/south.webp",
+        "south-west": "/assets/characters2/npcs/0de0a838/base/south-west.webp",
+        "west": "/assets/characters2/npcs/0de0a838/base/west.webp",
+        "north-west": "/assets/characters2/npcs/0de0a838/base/north-west.webp",
+        "north": "/assets/characters2/npcs/0de0a838/base/north.webp",
+        "north-east": "/assets/characters2/npcs/0de0a838/base/north-east.webp",
+        "east": "/assets/characters2/npcs/0de0a838/base/east.webp",
+        "south-east": "/assets/characters2/npcs/0de0a838/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "0e3159f2",
+      "name": "Corvin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/0e3159f2/base/south.webp",
+        "south-west": "/assets/characters2/npcs/0e3159f2/base/south-west.webp",
+        "west": "/assets/characters2/npcs/0e3159f2/base/west.webp",
+        "north-west": "/assets/characters2/npcs/0e3159f2/base/north-west.webp",
+        "north": "/assets/characters2/npcs/0e3159f2/base/north.webp",
+        "north-east": "/assets/characters2/npcs/0e3159f2/base/north-east.webp",
+        "east": "/assets/characters2/npcs/0e3159f2/base/east.webp",
+        "south-east": "/assets/characters2/npcs/0e3159f2/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "10e6d06a",
+      "name": "Brynhild",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/10e6d06a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/10e6d06a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/10e6d06a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/10e6d06a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/10e6d06a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/10e6d06a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/10e6d06a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/10e6d06a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "132ebccb",
+      "name": "Caladria",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/132ebccb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/132ebccb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/132ebccb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/132ebccb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/132ebccb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/132ebccb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/132ebccb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/132ebccb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "133f3ebf",
+      "name": "Coralie",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/133f3ebf/base/south.webp",
+        "south-west": "/assets/characters2/npcs/133f3ebf/base/south-west.webp",
+        "west": "/assets/characters2/npcs/133f3ebf/base/west.webp",
+        "north-west": "/assets/characters2/npcs/133f3ebf/base/north-west.webp",
+        "north": "/assets/characters2/npcs/133f3ebf/base/north.webp",
+        "north-east": "/assets/characters2/npcs/133f3ebf/base/north-east.webp",
+        "east": "/assets/characters2/npcs/133f3ebf/base/east.webp",
+        "south-east": "/assets/characters2/npcs/133f3ebf/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "145ae83e",
+      "name": "Cressida",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/145ae83e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/145ae83e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/145ae83e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/145ae83e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/145ae83e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/145ae83e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/145ae83e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/145ae83e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "153228b2",
+      "name": "Dagny",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/153228b2/base/south.webp",
+        "south-west": "/assets/characters2/npcs/153228b2/base/south-west.webp",
+        "west": "/assets/characters2/npcs/153228b2/base/west.webp",
+        "north-west": "/assets/characters2/npcs/153228b2/base/north-west.webp",
+        "north": "/assets/characters2/npcs/153228b2/base/north.webp",
+        "north-east": "/assets/characters2/npcs/153228b2/base/north-east.webp",
+        "east": "/assets/characters2/npcs/153228b2/base/east.webp",
+        "south-east": "/assets/characters2/npcs/153228b2/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "156387fc",
+      "name": "Doran",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/156387fc/base/south.webp",
+        "south-west": "/assets/characters2/npcs/156387fc/base/south-west.webp",
+        "west": "/assets/characters2/npcs/156387fc/base/west.webp",
+        "north-west": "/assets/characters2/npcs/156387fc/base/north-west.webp",
+        "north": "/assets/characters2/npcs/156387fc/base/north.webp",
+        "north-east": "/assets/characters2/npcs/156387fc/base/north-east.webp",
+        "east": "/assets/characters2/npcs/156387fc/base/east.webp",
+        "south-east": "/assets/characters2/npcs/156387fc/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "17b18aa3",
+      "name": "Dahlia",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/17b18aa3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/17b18aa3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/17b18aa3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/17b18aa3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/17b18aa3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/17b18aa3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/17b18aa3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/17b18aa3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "1a46f1d0",
+      "name": "Dunstan",
+      "role": "priest",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/1a46f1d0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/1a46f1d0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/1a46f1d0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/1a46f1d0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/1a46f1d0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/1a46f1d0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/1a46f1d0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/1a46f1d0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "1ae46939",
+      "name": "Delphine",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/1ae46939/base/south.webp",
+        "south-west": "/assets/characters2/npcs/1ae46939/base/south-west.webp",
+        "west": "/assets/characters2/npcs/1ae46939/base/west.webp",
+        "north-west": "/assets/characters2/npcs/1ae46939/base/north-west.webp",
+        "north": "/assets/characters2/npcs/1ae46939/base/north.webp",
+        "north-east": "/assets/characters2/npcs/1ae46939/base/north-east.webp",
+        "east": "/assets/characters2/npcs/1ae46939/base/east.webp",
+        "south-east": "/assets/characters2/npcs/1ae46939/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "1c07da8b",
+      "name": "Edmund",
+      "role": "mercenary",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/1c07da8b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/1c07da8b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/1c07da8b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/1c07da8b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/1c07da8b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/1c07da8b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/1c07da8b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/1c07da8b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "1df98a67",
+      "name": "Eirwen",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/1df98a67/base/south.webp",
+        "south-west": "/assets/characters2/npcs/1df98a67/base/south-west.webp",
+        "west": "/assets/characters2/npcs/1df98a67/base/west.webp",
+        "north-west": "/assets/characters2/npcs/1df98a67/base/north-west.webp",
+        "north": "/assets/characters2/npcs/1df98a67/base/north.webp",
+        "north-east": "/assets/characters2/npcs/1df98a67/base/north-east.webp",
+        "east": "/assets/characters2/npcs/1df98a67/base/east.webp",
+        "south-east": "/assets/characters2/npcs/1df98a67/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "1f1a322d",
+      "name": "Elowen",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/1f1a322d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/1f1a322d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/1f1a322d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/1f1a322d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/1f1a322d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/1f1a322d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/1f1a322d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/1f1a322d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "21dacf15",
+      "name": "Ewan",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/21dacf15/base/south.webp",
+        "south-west": "/assets/characters2/npcs/21dacf15/base/south-west.webp",
+        "west": "/assets/characters2/npcs/21dacf15/base/west.webp",
+        "north-west": "/assets/characters2/npcs/21dacf15/base/north-west.webp",
+        "north": "/assets/characters2/npcs/21dacf15/base/north.webp",
+        "north-east": "/assets/characters2/npcs/21dacf15/base/north-east.webp",
+        "east": "/assets/characters2/npcs/21dacf15/base/east.webp",
+        "south-east": "/assets/characters2/npcs/21dacf15/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "22ac7ea8",
+      "name": "Fendrel",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/22ac7ea8/base/south.webp",
+        "south-west": "/assets/characters2/npcs/22ac7ea8/base/south-west.webp",
+        "west": "/assets/characters2/npcs/22ac7ea8/base/west.webp",
+        "north-west": "/assets/characters2/npcs/22ac7ea8/base/north-west.webp",
+        "north": "/assets/characters2/npcs/22ac7ea8/base/north.webp",
+        "north-east": "/assets/characters2/npcs/22ac7ea8/base/north-east.webp",
+        "east": "/assets/characters2/npcs/22ac7ea8/base/east.webp",
+        "south-east": "/assets/characters2/npcs/22ac7ea8/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2320d1ec",
+      "name": "Faylin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2320d1ec/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2320d1ec/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2320d1ec/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2320d1ec/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2320d1ec/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2320d1ec/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2320d1ec/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2320d1ec/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "232ed8e1",
+      "name": "Fenwick",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/232ed8e1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/232ed8e1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/232ed8e1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/232ed8e1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/232ed8e1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/232ed8e1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/232ed8e1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/232ed8e1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "27c54d9a",
+      "name": "Garrick",
+      "role": "crusader",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/27c54d9a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/27c54d9a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/27c54d9a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/27c54d9a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/27c54d9a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/27c54d9a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/27c54d9a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/27c54d9a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2927d08e",
+      "name": "Gareth",
+      "role": "mercenary",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2927d08e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2927d08e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2927d08e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2927d08e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2927d08e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2927d08e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2927d08e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2927d08e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2a900d84",
+      "name": "Fiora",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2a900d84/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2a900d84/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2a900d84/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2a900d84/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2a900d84/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2a900d84/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2a900d84/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2a900d84/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2aa29f42",
+      "name": "Hadrian",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2aa29f42/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2aa29f42/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2aa29f42/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2aa29f42/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2aa29f42/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2aa29f42/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2aa29f42/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2aa29f42/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2bbbc78b",
+      "name": "Giselle",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2bbbc78b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2bbbc78b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2bbbc78b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2bbbc78b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2bbbc78b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2bbbc78b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2bbbc78b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2bbbc78b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "2f7f1de9",
+      "name": "Halvard",
+      "role": "trader",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/2f7f1de9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/2f7f1de9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/2f7f1de9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/2f7f1de9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/2f7f1de9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/2f7f1de9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/2f7f1de9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/2f7f1de9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "30e99a5c",
+      "name": "Gwendra",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/30e99a5c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/30e99a5c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/30e99a5c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/30e99a5c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/30e99a5c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/30e99a5c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/30e99a5c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/30e99a5c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "315a0711",
+      "name": "Halvora",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/315a0711/base/south.webp",
+        "south-west": "/assets/characters2/npcs/315a0711/base/south-west.webp",
+        "west": "/assets/characters2/npcs/315a0711/base/west.webp",
+        "north-west": "/assets/characters2/npcs/315a0711/base/north-west.webp",
+        "north": "/assets/characters2/npcs/315a0711/base/north.webp",
+        "north-east": "/assets/characters2/npcs/315a0711/base/north-east.webp",
+        "east": "/assets/characters2/npcs/315a0711/base/east.webp",
+        "south-east": "/assets/characters2/npcs/315a0711/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "322b59b7",
+      "name": "Isen",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/322b59b7/base/south.webp",
+        "south-west": "/assets/characters2/npcs/322b59b7/base/south-west.webp",
+        "west": "/assets/characters2/npcs/322b59b7/base/west.webp",
+        "north-west": "/assets/characters2/npcs/322b59b7/base/north-west.webp",
+        "north": "/assets/characters2/npcs/322b59b7/base/north.webp",
+        "north-east": "/assets/characters2/npcs/322b59b7/base/north-east.webp",
+        "east": "/assets/characters2/npcs/322b59b7/base/east.webp",
+        "south-east": "/assets/characters2/npcs/322b59b7/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "336ef6e1",
+      "name": "Hestia",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/336ef6e1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/336ef6e1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/336ef6e1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/336ef6e1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/336ef6e1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/336ef6e1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/336ef6e1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/336ef6e1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "33e73b65",
+      "name": "Ingrid",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/33e73b65/base/south.webp",
+        "south-west": "/assets/characters2/npcs/33e73b65/base/south-west.webp",
+        "west": "/assets/characters2/npcs/33e73b65/base/west.webp",
+        "north-west": "/assets/characters2/npcs/33e73b65/base/north-west.webp",
+        "north": "/assets/characters2/npcs/33e73b65/base/north.webp",
+        "north-east": "/assets/characters2/npcs/33e73b65/base/north-east.webp",
+        "east": "/assets/characters2/npcs/33e73b65/base/east.webp",
+        "south-east": "/assets/characters2/npcs/33e73b65/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3433e558",
+      "name": "Isolde",
+      "role": "mage",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3433e558/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3433e558/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3433e558/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3433e558/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3433e558/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3433e558/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3433e558/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3433e558/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "344f219e",
+      "name": "Jorunn",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/344f219e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/344f219e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/344f219e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/344f219e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/344f219e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/344f219e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/344f219e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/344f219e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "34db9f94",
+      "name": "Juniper",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/34db9f94/base/south.webp",
+        "south-west": "/assets/characters2/npcs/34db9f94/base/south-west.webp",
+        "west": "/assets/characters2/npcs/34db9f94/base/west.webp",
+        "north-west": "/assets/characters2/npcs/34db9f94/base/north-west.webp",
+        "north": "/assets/characters2/npcs/34db9f94/base/north.webp",
+        "north-east": "/assets/characters2/npcs/34db9f94/base/north-east.webp",
+        "east": "/assets/characters2/npcs/34db9f94/base/east.webp",
+        "south-east": "/assets/characters2/npcs/34db9f94/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "361637b3",
+      "name": "Ivar",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/361637b3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/361637b3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/361637b3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/361637b3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/361637b3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/361637b3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/361637b3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/361637b3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3749cceb",
+      "name": "Joric",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3749cceb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3749cceb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3749cceb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3749cceb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3749cceb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3749cceb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3749cceb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3749cceb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3a5f7dc9",
+      "name": "Kaelith",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3a5f7dc9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3a5f7dc9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3a5f7dc9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3a5f7dc9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3a5f7dc9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3a5f7dc9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3a5f7dc9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3a5f7dc9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3c685943",
+      "name": "Kestrel",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3c685943/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3c685943/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3c685943/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3c685943/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3c685943/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3c685943/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3c685943/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3c685943/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3df342a4",
+      "name": "Jorund",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3df342a4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3df342a4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3df342a4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3df342a4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3df342a4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3df342a4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3df342a4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3df342a4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3f8216f3",
+      "name": "Kaelen",
+      "role": "wizard",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3f8216f3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3f8216f3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3f8216f3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3f8216f3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3f8216f3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3f8216f3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3f8216f3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3f8216f3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "3fcd3aa0",
+      "name": "Kelric",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/3fcd3aa0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/3fcd3aa0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/3fcd3aa0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/3fcd3aa0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/3fcd3aa0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/3fcd3aa0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/3fcd3aa0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/3fcd3aa0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "4075559c",
+      "name": "Leofric",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/4075559c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/4075559c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/4075559c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/4075559c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/4075559c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/4075559c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/4075559c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/4075559c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "4076c78c",
+      "name": "Liriel",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/4076c78c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/4076c78c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/4076c78c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/4076c78c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/4076c78c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/4076c78c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/4076c78c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/4076c78c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "40926bec",
+      "name": "Lysandra",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/40926bec/base/south.webp",
+        "south-west": "/assets/characters2/npcs/40926bec/base/south-west.webp",
+        "west": "/assets/characters2/npcs/40926bec/base/west.webp",
+        "north-west": "/assets/characters2/npcs/40926bec/base/north-west.webp",
+        "north": "/assets/characters2/npcs/40926bec/base/north.webp",
+        "north-east": "/assets/characters2/npcs/40926bec/base/north-east.webp",
+        "east": "/assets/characters2/npcs/40926bec/base/east.webp",
+        "south-east": "/assets/characters2/npcs/40926bec/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "43d6f3bb",
+      "name": "Maeve",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/43d6f3bb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/43d6f3bb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/43d6f3bb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/43d6f3bb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/43d6f3bb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/43d6f3bb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/43d6f3bb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/43d6f3bb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "463bd73e",
+      "name": "Lucan",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/463bd73e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/463bd73e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/463bd73e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/463bd73e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/463bd73e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/463bd73e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/463bd73e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/463bd73e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "46a3faf7",
+      "name": "Morwenna",
+      "role": "scout",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/46a3faf7/base/south.webp",
+        "south-west": "/assets/characters2/npcs/46a3faf7/base/south-west.webp",
+        "west": "/assets/characters2/npcs/46a3faf7/base/west.webp",
+        "north-west": "/assets/characters2/npcs/46a3faf7/base/north-west.webp",
+        "north": "/assets/characters2/npcs/46a3faf7/base/north.webp",
+        "north-east": "/assets/characters2/npcs/46a3faf7/base/north-east.webp",
+        "east": "/assets/characters2/npcs/46a3faf7/base/east.webp",
+        "south-east": "/assets/characters2/npcs/46a3faf7/base/south-east.webp"
+      },
+      "idleAnim": null,
+      "idle": {}
+    },
+    {
+      "id": "46afacd4",
+      "name": "Magnus",
+      "role": "tinker",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/46afacd4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/46afacd4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/46afacd4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/46afacd4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/46afacd4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/46afacd4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/46afacd4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/46afacd4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "47a8ba6a",
+      "name": "Merrick",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/47a8ba6a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/47a8ba6a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/47a8ba6a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/47a8ba6a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/47a8ba6a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/47a8ba6a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/47a8ba6a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/47a8ba6a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "4dc79e26",
+      "name": "Nerys",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/4dc79e26/base/south.webp",
+        "south-west": "/assets/characters2/npcs/4dc79e26/base/south-west.webp",
+        "west": "/assets/characters2/npcs/4dc79e26/base/west.webp",
+        "north-west": "/assets/characters2/npcs/4dc79e26/base/north-west.webp",
+        "north": "/assets/characters2/npcs/4dc79e26/base/north.webp",
+        "north-east": "/assets/characters2/npcs/4dc79e26/base/north-east.webp",
+        "east": "/assets/characters2/npcs/4dc79e26/base/east.webp",
+        "south-east": "/assets/characters2/npcs/4dc79e26/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "4fbb5507",
+      "name": "Nolan",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/4fbb5507/base/south.webp",
+        "south-west": "/assets/characters2/npcs/4fbb5507/base/south-west.webp",
+        "west": "/assets/characters2/npcs/4fbb5507/base/west.webp",
+        "north-west": "/assets/characters2/npcs/4fbb5507/base/north-west.webp",
+        "north": "/assets/characters2/npcs/4fbb5507/base/north.webp",
+        "north-east": "/assets/characters2/npcs/4fbb5507/base/north-east.webp",
+        "east": "/assets/characters2/npcs/4fbb5507/base/east.webp",
+        "south-east": "/assets/characters2/npcs/4fbb5507/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5049d563",
+      "name": "Norvel",
+      "role": "wandmonger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5049d563/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5049d563/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5049d563/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5049d563/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5049d563/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5049d563/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5049d563/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5049d563/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "50e73cc3",
+      "name": "Orin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/50e73cc3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/50e73cc3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/50e73cc3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/50e73cc3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/50e73cc3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/50e73cc3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/50e73cc3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/50e73cc3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "51be6251",
+      "name": "Nyssa",
+      "role": "quartermaster",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/51be6251/base/south.webp",
+        "south-west": "/assets/characters2/npcs/51be6251/base/south-west.webp",
+        "west": "/assets/characters2/npcs/51be6251/base/west.webp",
+        "north-west": "/assets/characters2/npcs/51be6251/base/north-west.webp",
+        "north": "/assets/characters2/npcs/51be6251/base/north.webp",
+        "north-east": "/assets/characters2/npcs/51be6251/base/north-east.webp",
+        "east": "/assets/characters2/npcs/51be6251/base/east.webp",
+        "south-east": "/assets/characters2/npcs/51be6251/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5450b73a",
+      "name": "Ondine",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5450b73a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5450b73a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5450b73a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5450b73a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5450b73a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5450b73a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5450b73a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5450b73a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "54bead23",
+      "name": "Osric",
+      "role": "blacksmith",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/54bead23/base/south.webp",
+        "south-west": "/assets/characters2/npcs/54bead23/base/south-west.webp",
+        "west": "/assets/characters2/npcs/54bead23/base/west.webp",
+        "north-west": "/assets/characters2/npcs/54bead23/base/north-west.webp",
+        "north": "/assets/characters2/npcs/54bead23/base/north.webp",
+        "north-east": "/assets/characters2/npcs/54bead23/base/north-east.webp",
+        "east": "/assets/characters2/npcs/54bead23/base/east.webp",
+        "south-east": "/assets/characters2/npcs/54bead23/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "54dcc3cf",
+      "name": "Perrin",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/54dcc3cf/base/south.webp",
+        "south-west": "/assets/characters2/npcs/54dcc3cf/base/south-west.webp",
+        "west": "/assets/characters2/npcs/54dcc3cf/base/west.webp",
+        "north-west": "/assets/characters2/npcs/54dcc3cf/base/north-west.webp",
+        "north": "/assets/characters2/npcs/54dcc3cf/base/north.webp",
+        "north-east": "/assets/characters2/npcs/54dcc3cf/base/north-east.webp",
+        "east": "/assets/characters2/npcs/54dcc3cf/base/east.webp",
+        "south-east": "/assets/characters2/npcs/54dcc3cf/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "54fd0406",
+      "name": "Piers",
+      "role": "craftsman",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/54fd0406/base/south.webp",
+        "south-west": "/assets/characters2/npcs/54fd0406/base/south-west.webp",
+        "west": "/assets/characters2/npcs/54fd0406/base/west.webp",
+        "north-west": "/assets/characters2/npcs/54fd0406/base/north-west.webp",
+        "north": "/assets/characters2/npcs/54fd0406/base/north.webp",
+        "north-east": "/assets/characters2/npcs/54fd0406/base/north-east.webp",
+        "east": "/assets/characters2/npcs/54fd0406/base/east.webp",
+        "south-east": "/assets/characters2/npcs/54fd0406/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "55e13b12",
+      "name": "Orlaith",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/55e13b12/base/south.webp",
+        "south-west": "/assets/characters2/npcs/55e13b12/base/south-west.webp",
+        "west": "/assets/characters2/npcs/55e13b12/base/west.webp",
+        "north-west": "/assets/characters2/npcs/55e13b12/base/north-west.webp",
+        "north": "/assets/characters2/npcs/55e13b12/base/north.webp",
+        "north-east": "/assets/characters2/npcs/55e13b12/base/north-east.webp",
+        "east": "/assets/characters2/npcs/55e13b12/base/east.webp",
+        "south-east": "/assets/characters2/npcs/55e13b12/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "574e09ee",
+      "name": "Petra",
+      "role": "priestess",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/574e09ee/base/south.webp",
+        "south-west": "/assets/characters2/npcs/574e09ee/base/south-west.webp",
+        "west": "/assets/characters2/npcs/574e09ee/base/west.webp",
+        "north-west": "/assets/characters2/npcs/574e09ee/base/north-west.webp",
+        "north": "/assets/characters2/npcs/574e09ee/base/north.webp",
+        "north-east": "/assets/characters2/npcs/574e09ee/base/north-east.webp",
+        "east": "/assets/characters2/npcs/574e09ee/base/east.webp",
+        "south-east": "/assets/characters2/npcs/574e09ee/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "576ae558",
+      "name": "Quilla",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/576ae558/base/south.webp",
+        "south-west": "/assets/characters2/npcs/576ae558/base/south-west.webp",
+        "west": "/assets/characters2/npcs/576ae558/base/west.webp",
+        "north-west": "/assets/characters2/npcs/576ae558/base/north-west.webp",
+        "north": "/assets/characters2/npcs/576ae558/base/north.webp",
+        "north-east": "/assets/characters2/npcs/576ae558/base/north-east.webp",
+        "east": "/assets/characters2/npcs/576ae558/base/east.webp",
+        "south-east": "/assets/characters2/npcs/576ae558/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "59804e61",
+      "name": "Quintus",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/59804e61/base/south.webp",
+        "south-west": "/assets/characters2/npcs/59804e61/base/south-west.webp",
+        "west": "/assets/characters2/npcs/59804e61/base/west.webp",
+        "north-west": "/assets/characters2/npcs/59804e61/base/north-west.webp",
+        "north": "/assets/characters2/npcs/59804e61/base/north.webp",
+        "north-east": "/assets/characters2/npcs/59804e61/base/north-east.webp",
+        "east": "/assets/characters2/npcs/59804e61/base/east.webp",
+        "south-east": "/assets/characters2/npcs/59804e61/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "59c404c0",
+      "name": "Rhiannon",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/59c404c0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/59c404c0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/59c404c0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/59c404c0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/59c404c0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/59c404c0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/59c404c0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/59c404c0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5bb3e38a",
+      "name": "Roderick",
+      "role": "wandmonger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5bb3e38a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5bb3e38a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5bb3e38a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5bb3e38a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5bb3e38a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5bb3e38a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5bb3e38a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5bb3e38a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5bb6845a",
+      "name": "Rowena",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5bb6845a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5bb6845a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5bb6845a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5bb6845a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5bb6845a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5bb6845a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5bb6845a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5bb6845a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5dfae4ac",
+      "name": "Sable",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5dfae4ac/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5dfae4ac/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5dfae4ac/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5dfae4ac/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5dfae4ac/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5dfae4ac/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5dfae4ac/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5dfae4ac/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "5f04787d",
+      "name": "Saoirse",
+      "role": "elder_scholar",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/5f04787d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/5f04787d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/5f04787d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/5f04787d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/5f04787d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/5f04787d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/5f04787d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/5f04787d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6090847f",
+      "name": "Selene",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6090847f/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6090847f/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6090847f/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6090847f/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6090847f/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6090847f/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6090847f/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6090847f/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "625a5ad5",
+      "name": "Rurik",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/625a5ad5/base/south.webp",
+        "south-west": "/assets/characters2/npcs/625a5ad5/base/south-west.webp",
+        "west": "/assets/characters2/npcs/625a5ad5/base/west.webp",
+        "north-west": "/assets/characters2/npcs/625a5ad5/base/north-west.webp",
+        "north": "/assets/characters2/npcs/625a5ad5/base/north.webp",
+        "north-east": "/assets/characters2/npcs/625a5ad5/base/north-east.webp",
+        "east": "/assets/characters2/npcs/625a5ad5/base/east.webp",
+        "south-east": "/assets/characters2/npcs/625a5ad5/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "632b524a",
+      "name": "Sigurd",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/632b524a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/632b524a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/632b524a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/632b524a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/632b524a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/632b524a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/632b524a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/632b524a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6414acdc",
+      "name": "Stellan",
+      "role": "herbalist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6414acdc/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6414acdc/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6414acdc/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6414acdc/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6414acdc/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6414acdc/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6414acdc/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6414acdc/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "645f1252",
+      "name": "Thorne",
+      "role": "armorer",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/645f1252/base/south.webp",
+        "south-west": "/assets/characters2/npcs/645f1252/base/south-west.webp",
+        "west": "/assets/characters2/npcs/645f1252/base/west.webp",
+        "north-west": "/assets/characters2/npcs/645f1252/base/north-west.webp",
+        "north": "/assets/characters2/npcs/645f1252/base/north.webp",
+        "north-east": "/assets/characters2/npcs/645f1252/base/north-east.webp",
+        "east": "/assets/characters2/npcs/645f1252/base/east.webp",
+        "south-east": "/assets/characters2/npcs/645f1252/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "646b922c",
+      "name": "Sigrun",
+      "role": "weaponsmith",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/646b922c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/646b922c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/646b922c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/646b922c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/646b922c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/646b922c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/646b922c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/646b922c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "64cb8c45",
+      "name": "Torvald",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/64cb8c45/base/south.webp",
+        "south-west": "/assets/characters2/npcs/64cb8c45/base/south-west.webp",
+        "west": "/assets/characters2/npcs/64cb8c45/base/west.webp",
+        "north-west": "/assets/characters2/npcs/64cb8c45/base/north-west.webp",
+        "north": "/assets/characters2/npcs/64cb8c45/base/north.webp",
+        "north-east": "/assets/characters2/npcs/64cb8c45/base/north-east.webp",
+        "east": "/assets/characters2/npcs/64cb8c45/base/east.webp",
+        "south-east": "/assets/characters2/npcs/64cb8c45/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6a31a859",
+      "name": "Ulfar",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6a31a859/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6a31a859/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6a31a859/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6a31a859/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6a31a859/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6a31a859/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6a31a859/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6a31a859/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6b47a2f2",
+      "name": "Ulric",
+      "role": "noble",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6b47a2f2/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6b47a2f2/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6b47a2f2/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6b47a2f2/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6b47a2f2/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6b47a2f2/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6b47a2f2/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6b47a2f2/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6bb1eb5a",
+      "name": "Solveig",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6bb1eb5a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6bb1eb5a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6bb1eb5a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6bb1eb5a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6bb1eb5a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6bb1eb5a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6bb1eb5a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6bb1eb5a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "6c4124c7",
+      "name": "Tamsin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/6c4124c7/base/south.webp",
+        "south-west": "/assets/characters2/npcs/6c4124c7/base/south-west.webp",
+        "west": "/assets/characters2/npcs/6c4124c7/base/west.webp",
+        "north-west": "/assets/characters2/npcs/6c4124c7/base/north-west.webp",
+        "north": "/assets/characters2/npcs/6c4124c7/base/north.webp",
+        "north-east": "/assets/characters2/npcs/6c4124c7/base/north-east.webp",
+        "east": "/assets/characters2/npcs/6c4124c7/base/east.webp",
+        "south-east": "/assets/characters2/npcs/6c4124c7/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "707b12c6",
+      "name": "Thalia",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/707b12c6/base/south.webp",
+        "south-west": "/assets/characters2/npcs/707b12c6/base/south-west.webp",
+        "west": "/assets/characters2/npcs/707b12c6/base/west.webp",
+        "north-west": "/assets/characters2/npcs/707b12c6/base/north-west.webp",
+        "north": "/assets/characters2/npcs/707b12c6/base/north.webp",
+        "north-east": "/assets/characters2/npcs/707b12c6/base/north-east.webp",
+        "east": "/assets/characters2/npcs/707b12c6/base/east.webp",
+        "south-east": "/assets/characters2/npcs/707b12c6/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "70cb0df3",
+      "name": "Vance",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/70cb0df3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/70cb0df3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/70cb0df3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/70cb0df3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/70cb0df3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/70cb0df3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/70cb0df3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/70cb0df3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "71e84aee",
+      "name": "Ulrika",
+      "role": "wandmonger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/71e84aee/base/south.webp",
+        "south-west": "/assets/characters2/npcs/71e84aee/base/south-west.webp",
+        "west": "/assets/characters2/npcs/71e84aee/base/west.webp",
+        "north-west": "/assets/characters2/npcs/71e84aee/base/north-west.webp",
+        "north": "/assets/characters2/npcs/71e84aee/base/north.webp",
+        "north-east": "/assets/characters2/npcs/71e84aee/base/north-east.webp",
+        "east": "/assets/characters2/npcs/71e84aee/base/east.webp",
+        "south-east": "/assets/characters2/npcs/71e84aee/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7361a787",
+      "name": "Undine",
+      "role": "mage",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7361a787/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7361a787/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7361a787/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7361a787/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7361a787/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7361a787/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7361a787/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7361a787/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "739823e5",
+      "name": "Verena",
+      "role": "herbalist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/739823e5/base/south.webp",
+        "south-west": "/assets/characters2/npcs/739823e5/base/south-west.webp",
+        "west": "/assets/characters2/npcs/739823e5/base/west.webp",
+        "north-west": "/assets/characters2/npcs/739823e5/base/north-west.webp",
+        "north": "/assets/characters2/npcs/739823e5/base/north.webp",
+        "north-east": "/assets/characters2/npcs/739823e5/base/north-east.webp",
+        "east": "/assets/characters2/npcs/739823e5/base/east.webp",
+        "south-east": "/assets/characters2/npcs/739823e5/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "73b4c380",
+      "name": "Vesper",
+      "role": "squire",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/73b4c380/base/south.webp",
+        "south-west": "/assets/characters2/npcs/73b4c380/base/south-west.webp",
+        "west": "/assets/characters2/npcs/73b4c380/base/west.webp",
+        "north-west": "/assets/characters2/npcs/73b4c380/base/north-west.webp",
+        "north": "/assets/characters2/npcs/73b4c380/base/north.webp",
+        "north-east": "/assets/characters2/npcs/73b4c380/base/north-east.webp",
+        "east": "/assets/characters2/npcs/73b4c380/base/east.webp",
+        "south-east": "/assets/characters2/npcs/73b4c380/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "764ce978",
+      "name": "Willa",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/764ce978/base/south.webp",
+        "south-west": "/assets/characters2/npcs/764ce978/base/south-west.webp",
+        "west": "/assets/characters2/npcs/764ce978/base/west.webp",
+        "north-west": "/assets/characters2/npcs/764ce978/base/north-west.webp",
+        "north": "/assets/characters2/npcs/764ce978/base/north.webp",
+        "north-east": "/assets/characters2/npcs/764ce978/base/north-east.webp",
+        "east": "/assets/characters2/npcs/764ce978/base/east.webp",
+        "south-east": "/assets/characters2/npcs/764ce978/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "797a3769",
+      "name": "Varek",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/797a3769/base/south.webp",
+        "south-west": "/assets/characters2/npcs/797a3769/base/south-west.webp",
+        "west": "/assets/characters2/npcs/797a3769/base/west.webp",
+        "north-west": "/assets/characters2/npcs/797a3769/base/north-west.webp",
+        "north": "/assets/characters2/npcs/797a3769/base/north.webp",
+        "north-east": "/assets/characters2/npcs/797a3769/base/north-east.webp",
+        "east": "/assets/characters2/npcs/797a3769/base/east.webp",
+        "south-east": "/assets/characters2/npcs/797a3769/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7a779de1",
+      "name": "Wendell",
+      "role": "elder",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7a779de1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7a779de1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7a779de1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7a779de1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7a779de1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7a779de1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7a779de1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7a779de1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7aee0d5c",
+      "name": "Wynne",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7aee0d5c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7aee0d5c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7aee0d5c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7aee0d5c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7aee0d5c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7aee0d5c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7aee0d5c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7aee0d5c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7b48a943",
+      "name": "Wystan",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7b48a943/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7b48a943/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7b48a943/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7b48a943/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7b48a943/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7b48a943/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7b48a943/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7b48a943/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7cc957bc",
+      "name": "Yrsa",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7cc957bc/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7cc957bc/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7cc957bc/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7cc957bc/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7cc957bc/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7cc957bc/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7cc957bc/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7cc957bc/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7ccd28f9",
+      "name": "Yorick",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7ccd28f9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7ccd28f9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7ccd28f9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7ccd28f9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7ccd28f9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7ccd28f9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7ccd28f9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7ccd28f9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7e210294",
+      "name": "Ysolde",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7e210294/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7e210294/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7e210294/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7e210294/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7e210294/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7e210294/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7e210294/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7e210294/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7e448dd4",
+      "name": "Zephyrine",
+      "role": "armorer",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7e448dd4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7e448dd4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7e448dd4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7e448dd4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7e448dd4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7e448dd4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7e448dd4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7e448dd4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "7ff0e603",
+      "name": "Emrys",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/7ff0e603/base/south.webp",
+        "south-west": "/assets/characters2/npcs/7ff0e603/base/south-west.webp",
+        "west": "/assets/characters2/npcs/7ff0e603/base/west.webp",
+        "north-west": "/assets/characters2/npcs/7ff0e603/base/north-west.webp",
+        "north": "/assets/characters2/npcs/7ff0e603/base/north.webp",
+        "north-east": "/assets/characters2/npcs/7ff0e603/base/north-east.webp",
+        "east": "/assets/characters2/npcs/7ff0e603/base/east.webp",
+        "south-east": "/assets/characters2/npcs/7ff0e603/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8057365b",
+      "name": "Alenka",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8057365b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8057365b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8057365b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8057365b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8057365b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8057365b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8057365b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8057365b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 9
+      }
+    },
+    {
+      "id": "80a4f48d",
+      "name": "Faelan",
+      "role": "mercenary",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/80a4f48d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/80a4f48d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/80a4f48d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/80a4f48d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/80a4f48d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/80a4f48d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/80a4f48d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/80a4f48d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "85e251ac",
+      "name": "Godwin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/85e251ac/base/south.webp",
+        "south-west": "/assets/characters2/npcs/85e251ac/base/south-west.webp",
+        "west": "/assets/characters2/npcs/85e251ac/base/west.webp",
+        "north-west": "/assets/characters2/npcs/85e251ac/base/north-west.webp",
+        "north": "/assets/characters2/npcs/85e251ac/base/north.webp",
+        "north-east": "/assets/characters2/npcs/85e251ac/base/north-east.webp",
+        "east": "/assets/characters2/npcs/85e251ac/base/east.webp",
+        "south-east": "/assets/characters2/npcs/85e251ac/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "87f03f15",
+      "name": "Brida",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/87f03f15/base/south.webp",
+        "south-west": "/assets/characters2/npcs/87f03f15/base/south-west.webp",
+        "west": "/assets/characters2/npcs/87f03f15/base/west.webp",
+        "north-west": "/assets/characters2/npcs/87f03f15/base/north-west.webp",
+        "north": "/assets/characters2/npcs/87f03f15/base/north.webp",
+        "north-east": "/assets/characters2/npcs/87f03f15/base/north-east.webp",
+        "east": "/assets/characters2/npcs/87f03f15/base/east.webp",
+        "south-east": "/assets/characters2/npcs/87f03f15/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "882897c9",
+      "name": "Calla",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/882897c9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/882897c9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/882897c9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/882897c9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/882897c9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/882897c9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/882897c9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/882897c9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "89bc7848",
+      "name": "Doreth",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/89bc7848/base/south.webp",
+        "south-west": "/assets/characters2/npcs/89bc7848/base/south-west.webp",
+        "west": "/assets/characters2/npcs/89bc7848/base/west.webp",
+        "north-west": "/assets/characters2/npcs/89bc7848/base/north-west.webp",
+        "north": "/assets/characters2/npcs/89bc7848/base/north.webp",
+        "north-east": "/assets/characters2/npcs/89bc7848/base/north-east.webp",
+        "east": "/assets/characters2/npcs/89bc7848/base/east.webp",
+        "south-east": "/assets/characters2/npcs/89bc7848/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8a5ab860",
+      "name": "Elspeth",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8a5ab860/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8a5ab860/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8a5ab860/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8a5ab860/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8a5ab860/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8a5ab860/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8a5ab860/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8a5ab860/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 9
+      }
+    },
+    {
+      "id": "8c41be1e",
+      "name": "Hearn",
+      "role": "veteran",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8c41be1e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8c41be1e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8c41be1e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8c41be1e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8c41be1e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8c41be1e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8c41be1e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8c41be1e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8cbbc14d",
+      "name": "Freya",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8cbbc14d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8cbbc14d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8cbbc14d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8cbbc14d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8cbbc14d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8cbbc14d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8cbbc14d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8cbbc14d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8e0868a3",
+      "name": "Gilda",
+      "role": "scout",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8e0868a3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8e0868a3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8e0868a3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8e0868a3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8e0868a3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8e0868a3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8e0868a3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8e0868a3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8e4a0119",
+      "name": "Hedda",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8e4a0119/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8e4a0119/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8e4a0119/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8e4a0119/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8e4a0119/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8e4a0119/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8e4a0119/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8e4a0119/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8e85c378",
+      "name": "Ilva",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8e85c378/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8e85c378/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8e85c378/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8e85c378/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8e85c378/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8e85c378/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8e85c378/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8e85c378/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "8edafae9",
+      "name": "Jessa",
+      "role": "scout",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/8edafae9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/8edafae9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/8edafae9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/8edafae9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/8edafae9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/8edafae9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/8edafae9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/8edafae9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9125ab82",
+      "name": "Karis",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9125ab82/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9125ab82/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9125ab82/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9125ab82/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9125ab82/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9125ab82/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9125ab82/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9125ab82/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "91d660b6",
+      "name": "Ansel",
+      "role": "scholar",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/91d660b6/base/south.webp",
+        "south-west": "/assets/characters2/npcs/91d660b6/base/south-west.webp",
+        "west": "/assets/characters2/npcs/91d660b6/base/west.webp",
+        "north-west": "/assets/characters2/npcs/91d660b6/base/north-west.webp",
+        "north": "/assets/characters2/npcs/91d660b6/base/north.webp",
+        "north-east": "/assets/characters2/npcs/91d660b6/base/north-east.webp",
+        "east": "/assets/characters2/npcs/91d660b6/base/east.webp",
+        "south-east": "/assets/characters2/npcs/91d660b6/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9265c326",
+      "name": "Baldric",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9265c326/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9265c326/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9265c326/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9265c326/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9265c326/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9265c326/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9265c326/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9265c326/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "95139e2b",
+      "name": "Lunette",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/95139e2b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/95139e2b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/95139e2b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/95139e2b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/95139e2b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/95139e2b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/95139e2b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/95139e2b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9618e856",
+      "name": "Conrad",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9618e856/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9618e856/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9618e856/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9618e856/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9618e856/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9618e856/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9618e856/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9618e856/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 4
+      }
+    },
+    {
+      "id": "96332a0b",
+      "name": "Mirabel",
+      "role": "herbalist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/96332a0b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/96332a0b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/96332a0b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/96332a0b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/96332a0b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/96332a0b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/96332a0b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/96332a0b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "96f8bdbe",
+      "name": "Drogan",
+      "role": "craftsman",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/96f8bdbe/base/south.webp",
+        "south-west": "/assets/characters2/npcs/96f8bdbe/base/south-west.webp",
+        "west": "/assets/characters2/npcs/96f8bdbe/base/west.webp",
+        "north-west": "/assets/characters2/npcs/96f8bdbe/base/north-west.webp",
+        "north": "/assets/characters2/npcs/96f8bdbe/base/north.webp",
+        "north-east": "/assets/characters2/npcs/96f8bdbe/base/north-east.webp",
+        "east": "/assets/characters2/npcs/96f8bdbe/base/east.webp",
+        "south-east": "/assets/characters2/npcs/96f8bdbe/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "98b28003",
+      "name": "Neve",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/98b28003/base/south.webp",
+        "south-west": "/assets/characters2/npcs/98b28003/base/south-west.webp",
+        "west": "/assets/characters2/npcs/98b28003/base/west.webp",
+        "north-west": "/assets/characters2/npcs/98b28003/base/north-west.webp",
+        "north": "/assets/characters2/npcs/98b28003/base/north.webp",
+        "north-east": "/assets/characters2/npcs/98b28003/base/north-east.webp",
+        "east": "/assets/characters2/npcs/98b28003/base/east.webp",
+        "south-east": "/assets/characters2/npcs/98b28003/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9a3c0591",
+      "name": "Orsa",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9a3c0591/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9a3c0591/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9a3c0591/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9a3c0591/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9a3c0591/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9a3c0591/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9a3c0591/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9a3c0591/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9c957649",
+      "name": "Pell",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9c957649/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9c957649/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9c957649/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9c957649/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9c957649/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9c957649/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9c957649/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9c957649/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9d27b2cb",
+      "name": "Rosalind",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9d27b2cb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9d27b2cb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9d27b2cb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9d27b2cb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9d27b2cb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9d27b2cb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9d27b2cb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9d27b2cb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9d43267a",
+      "name": "Sorcha",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9d43267a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9d43267a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9d43267a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9d43267a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9d43267a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9d43267a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9d43267a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9d43267a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9df99f0f",
+      "name": "Elric",
+      "role": "veteran",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9df99f0f/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9df99f0f/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9df99f0f/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9df99f0f/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9df99f0f/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9df99f0f/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9df99f0f/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9df99f0f/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "9f44a548",
+      "name": "Ferrant",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/9f44a548/base/south.webp",
+        "south-west": "/assets/characters2/npcs/9f44a548/base/south-west.webp",
+        "west": "/assets/characters2/npcs/9f44a548/base/west.webp",
+        "north-west": "/assets/characters2/npcs/9f44a548/base/north-west.webp",
+        "north": "/assets/characters2/npcs/9f44a548/base/north.webp",
+        "north-east": "/assets/characters2/npcs/9f44a548/base/north-east.webp",
+        "east": "/assets/characters2/npcs/9f44a548/base/east.webp",
+        "south-east": "/assets/characters2/npcs/9f44a548/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "a075e097",
+      "name": "Talvi",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/a075e097/base/south.webp",
+        "south-west": "/assets/characters2/npcs/a075e097/base/south-west.webp",
+        "west": "/assets/characters2/npcs/a075e097/base/west.webp",
+        "north-west": "/assets/characters2/npcs/a075e097/base/north-west.webp",
+        "north": "/assets/characters2/npcs/a075e097/base/north.webp",
+        "north-east": "/assets/characters2/npcs/a075e097/base/north-east.webp",
+        "east": "/assets/characters2/npcs/a075e097/base/east.webp",
+        "south-east": "/assets/characters2/npcs/a075e097/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "a6d7323d",
+      "name": "Gunnar",
+      "role": "wanderer",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/a6d7323d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/a6d7323d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/a6d7323d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/a6d7323d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/a6d7323d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/a6d7323d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/a6d7323d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/a6d7323d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "a9d23d20",
+      "name": "Ursa",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/a9d23d20/base/south.webp",
+        "south-west": "/assets/characters2/npcs/a9d23d20/base/south-west.webp",
+        "west": "/assets/characters2/npcs/a9d23d20/base/west.webp",
+        "north-west": "/assets/characters2/npcs/a9d23d20/base/north-west.webp",
+        "north": "/assets/characters2/npcs/a9d23d20/base/north.webp",
+        "north-east": "/assets/characters2/npcs/a9d23d20/base/north-east.webp",
+        "east": "/assets/characters2/npcs/a9d23d20/base/east.webp",
+        "south-east": "/assets/characters2/npcs/a9d23d20/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "aada4995",
+      "name": "Hewe",
+      "role": "shaman",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/aada4995/base/south.webp",
+        "south-west": "/assets/characters2/npcs/aada4995/base/south-west.webp",
+        "west": "/assets/characters2/npcs/aada4995/base/west.webp",
+        "north-west": "/assets/characters2/npcs/aada4995/base/north-west.webp",
+        "north": "/assets/characters2/npcs/aada4995/base/north.webp",
+        "north-east": "/assets/characters2/npcs/aada4995/base/north-east.webp",
+        "east": "/assets/characters2/npcs/aada4995/base/east.webp",
+        "south-east": "/assets/characters2/npcs/aada4995/base/south-east.webp"
+      },
+      "idleAnim": null,
+      "idle": {}
+    },
+    {
+      "id": "ace1d328",
+      "name": "Ingvar",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ace1d328/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ace1d328/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ace1d328/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ace1d328/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ace1d328/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ace1d328/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ace1d328/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ace1d328/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "afc4c8f0",
+      "name": "Jarl",
+      "role": "scribe",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/afc4c8f0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/afc4c8f0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/afc4c8f0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/afc4c8f0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/afc4c8f0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/afc4c8f0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/afc4c8f0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/afc4c8f0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 9
+      }
+    },
+    {
+      "id": "b2ce042f",
+      "name": "Veya",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b2ce042f/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b2ce042f/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b2ce042f/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b2ce042f/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b2ce042f/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b2ce042f/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b2ce042f/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b2ce042f/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "b320e2a0",
+      "name": "Wilda",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b320e2a0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b320e2a0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b320e2a0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b320e2a0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b320e2a0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b320e2a0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b320e2a0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b320e2a0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 9
+      }
+    },
+    {
+      "id": "b4380254",
+      "name": "Ylva",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b4380254/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b4380254/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b4380254/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b4380254/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b4380254/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b4380254/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b4380254/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b4380254/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "b4f63304",
+      "name": "Ziva",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b4f63304/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b4f63304/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b4f63304/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b4f63304/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b4f63304/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b4f63304/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b4f63304/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b4f63304/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "b7403ff5",
+      "name": "Kendrick",
+      "role": "elder",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b7403ff5/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b7403ff5/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b7403ff5/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b7403ff5/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b7403ff5/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b7403ff5/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b7403ff5/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b7403ff5/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "b7d4a155",
+      "name": "Lambert",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b7d4a155/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b7d4a155/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b7d4a155/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b7d4a155/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b7d4a155/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b7d4a155/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b7d4a155/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b7d4a155/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "b9022df0",
+      "name": "Adela",
+      "role": "champion",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/b9022df0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/b9022df0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/b9022df0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/b9022df0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/b9022df0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/b9022df0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/b9022df0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/b9022df0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "bc127806",
+      "name": "Berenice",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/bc127806/base/south.webp",
+        "south-west": "/assets/characters2/npcs/bc127806/base/south-west.webp",
+        "west": "/assets/characters2/npcs/bc127806/base/west.webp",
+        "north-west": "/assets/characters2/npcs/bc127806/base/north-west.webp",
+        "north": "/assets/characters2/npcs/bc127806/base/north.webp",
+        "north-east": "/assets/characters2/npcs/bc127806/base/north-east.webp",
+        "east": "/assets/characters2/npcs/bc127806/base/east.webp",
+        "south-east": "/assets/characters2/npcs/bc127806/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "bd52422b",
+      "name": "Clove",
+      "role": "rogue",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/bd52422b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/bd52422b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/bd52422b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/bd52422b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/bd52422b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/bd52422b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/bd52422b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/bd52422b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "be4adda2",
+      "name": "Danica",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/be4adda2/base/south.webp",
+        "south-west": "/assets/characters2/npcs/be4adda2/base/south-west.webp",
+        "west": "/assets/characters2/npcs/be4adda2/base/west.webp",
+        "north-west": "/assets/characters2/npcs/be4adda2/base/north-west.webp",
+        "north": "/assets/characters2/npcs/be4adda2/base/north.webp",
+        "north-east": "/assets/characters2/npcs/be4adda2/base/north-east.webp",
+        "east": "/assets/characters2/npcs/be4adda2/base/east.webp",
+        "south-east": "/assets/characters2/npcs/be4adda2/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "bf8e1592",
+      "name": "Emeline",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/bf8e1592/base/south.webp",
+        "south-west": "/assets/characters2/npcs/bf8e1592/base/south-west.webp",
+        "west": "/assets/characters2/npcs/bf8e1592/base/west.webp",
+        "north-west": "/assets/characters2/npcs/bf8e1592/base/north-west.webp",
+        "north": "/assets/characters2/npcs/bf8e1592/base/north.webp",
+        "north-east": "/assets/characters2/npcs/bf8e1592/base/north-east.webp",
+        "east": "/assets/characters2/npcs/bf8e1592/base/east.webp",
+        "south-east": "/assets/characters2/npcs/bf8e1592/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c03197a9",
+      "name": "Maddox",
+      "role": "enchanter",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c03197a9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c03197a9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c03197a9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c03197a9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c03197a9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c03197a9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c03197a9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c03197a9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c2865e9e",
+      "name": "Nyle",
+      "role": "ranger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c2865e9e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c2865e9e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c2865e9e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c2865e9e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c2865e9e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c2865e9e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c2865e9e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c2865e9e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c38d4c77",
+      "name": "Fenna",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c38d4c77/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c38d4c77/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c38d4c77/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c38d4c77/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c38d4c77/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c38d4c77/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c38d4c77/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c38d4c77/base/south-east.webp"
+      },
+      "idleAnim": null,
+      "idle": {}
+    },
+    {
+      "id": "c405e504",
+      "name": "Odric",
+      "role": "blacksmith",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c405e504/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c405e504/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c405e504/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c405e504/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c405e504/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c405e504/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c405e504/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c405e504/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c496ddda",
+      "name": "Padrig",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c496ddda/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c496ddda/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c496ddda/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c496ddda/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c496ddda/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c496ddda/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c496ddda/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c496ddda/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c4ab827c",
+      "name": "Greta",
+      "role": "sorceress",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c4ab827c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c4ab827c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c4ab827c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c4ab827c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c4ab827c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c4ab827c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c4ab827c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c4ab827c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 9
+      }
+    },
+    {
+      "id": "c4c62cc8",
+      "name": "Hallis",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c4c62cc8/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c4c62cc8/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c4c62cc8/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c4c62cc8/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c4c62cc8/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c4c62cc8/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c4c62cc8/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c4c62cc8/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c654e8f3",
+      "name": "Rannulf",
+      "role": "elder",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c654e8f3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c654e8f3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c654e8f3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c654e8f3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c654e8f3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c654e8f3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c654e8f3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c654e8f3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "c735c3ae",
+      "name": "Idony",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/c735c3ae/base/south.webp",
+        "south-west": "/assets/characters2/npcs/c735c3ae/base/south-west.webp",
+        "west": "/assets/characters2/npcs/c735c3ae/base/west.webp",
+        "north-west": "/assets/characters2/npcs/c735c3ae/base/north-west.webp",
+        "north": "/assets/characters2/npcs/c735c3ae/base/north.webp",
+        "north-east": "/assets/characters2/npcs/c735c3ae/base/north-east.webp",
+        "east": "/assets/characters2/npcs/c735c3ae/base/east.webp",
+        "south-east": "/assets/characters2/npcs/c735c3ae/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ca8ba35a",
+      "name": "Selwyn",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ca8ba35a/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ca8ba35a/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ca8ba35a/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ca8ba35a/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ca8ba35a/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ca8ba35a/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ca8ba35a/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ca8ba35a/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "cce72fbe",
+      "name": "Tarrin",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/cce72fbe/base/south.webp",
+        "south-west": "/assets/characters2/npcs/cce72fbe/base/south-west.webp",
+        "west": "/assets/characters2/npcs/cce72fbe/base/west.webp",
+        "north-west": "/assets/characters2/npcs/cce72fbe/base/north-west.webp",
+        "north": "/assets/characters2/npcs/cce72fbe/base/north.webp",
+        "north-east": "/assets/characters2/npcs/cce72fbe/base/north-east.webp",
+        "east": "/assets/characters2/npcs/cce72fbe/base/east.webp",
+        "south-east": "/assets/characters2/npcs/cce72fbe/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "cfe826c1",
+      "name": "Jehanne",
+      "role": "priestess",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/cfe826c1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/cfe826c1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/cfe826c1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/cfe826c1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/cfe826c1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/cfe826c1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/cfe826c1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/cfe826c1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d0982ee3",
+      "name": "Ulfgar",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d0982ee3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d0982ee3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d0982ee3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d0982ee3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d0982ee3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d0982ee3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d0982ee3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d0982ee3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d1020720",
+      "name": "Kirsa",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d1020720/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d1020720/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d1020720/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d1020720/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d1020720/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d1020720/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d1020720/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d1020720/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d1ab6124",
+      "name": "Linnea",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d1ab6124/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d1ab6124/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d1ab6124/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d1ab6124/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d1ab6124/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d1ab6124/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d1ab6124/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d1ab6124/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d1ad97d9",
+      "name": "Mabon",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d1ad97d9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d1ad97d9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d1ad97d9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d1ad97d9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d1ad97d9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d1ad97d9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d1ad97d9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d1ad97d9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d202d60d",
+      "name": "Vidar",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d202d60d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d202d60d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d202d60d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d202d60d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d202d60d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d202d60d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d202d60d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d202d60d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d31e56df",
+      "name": "Nadia",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d31e56df/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d31e56df/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d31e56df/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d31e56df/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d31e56df/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d31e56df/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d31e56df/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d31e56df/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d441c2b3",
+      "name": "Wulfric",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d441c2b3/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d441c2b3/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d441c2b3/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d441c2b3/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d441c2b3/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d441c2b3/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d441c2b3/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d441c2b3/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d68d299e",
+      "name": "Yarrow",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d68d299e/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d68d299e/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d68d299e/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d68d299e/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d68d299e/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d68d299e/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d68d299e/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d68d299e/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d762a9f7",
+      "name": "Aric",
+      "role": "alchemist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d762a9f7/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d762a9f7/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d762a9f7/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d762a9f7/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d762a9f7/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d762a9f7/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d762a9f7/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d762a9f7/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d7baab04",
+      "name": "Borin",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d7baab04/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d7baab04/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d7baab04/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d7baab04/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d7baab04/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d7baab04/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d7baab04/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d7baab04/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d8366e6d",
+      "name": "Oriane",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d8366e6d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d8366e6d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d8366e6d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d8366e6d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d8366e6d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d8366e6d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d8366e6d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d8366e6d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "d8798343",
+      "name": "Perrine",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/d8798343/base/south.webp",
+        "south-west": "/assets/characters2/npcs/d8798343/base/south-west.webp",
+        "west": "/assets/characters2/npcs/d8798343/base/west.webp",
+        "north-west": "/assets/characters2/npcs/d8798343/base/north-west.webp",
+        "north": "/assets/characters2/npcs/d8798343/base/north.webp",
+        "north-east": "/assets/characters2/npcs/d8798343/base/north-east.webp",
+        "east": "/assets/characters2/npcs/d8798343/base/east.webp",
+        "south-east": "/assets/characters2/npcs/d8798343/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "da550591",
+      "name": "Runa",
+      "role": "commoner",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/da550591/base/south.webp",
+        "south-west": "/assets/characters2/npcs/da550591/base/south-west.webp",
+        "west": "/assets/characters2/npcs/da550591/base/west.webp",
+        "north-west": "/assets/characters2/npcs/da550591/base/north-west.webp",
+        "north": "/assets/characters2/npcs/da550591/base/north.webp",
+        "north-east": "/assets/characters2/npcs/da550591/base/north-east.webp",
+        "east": "/assets/characters2/npcs/da550591/base/east.webp",
+        "south-east": "/assets/characters2/npcs/da550591/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "daa24e06",
+      "name": "Sibylla",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/daa24e06/base/south.webp",
+        "south-west": "/assets/characters2/npcs/daa24e06/base/south-west.webp",
+        "west": "/assets/characters2/npcs/daa24e06/base/west.webp",
+        "north-west": "/assets/characters2/npcs/daa24e06/base/north-west.webp",
+        "north": "/assets/characters2/npcs/daa24e06/base/north.webp",
+        "north-east": "/assets/characters2/npcs/daa24e06/base/north-east.webp",
+        "east": "/assets/characters2/npcs/daa24e06/base/east.webp",
+        "south-east": "/assets/characters2/npcs/daa24e06/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "dd26a4d5",
+      "name": "Thora",
+      "role": "warrior",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/dd26a4d5/base/south.webp",
+        "south-west": "/assets/characters2/npcs/dd26a4d5/base/south-west.webp",
+        "west": "/assets/characters2/npcs/dd26a4d5/base/west.webp",
+        "north-west": "/assets/characters2/npcs/dd26a4d5/base/north-west.webp",
+        "north": "/assets/characters2/npcs/dd26a4d5/base/north.webp",
+        "north-east": "/assets/characters2/npcs/dd26a4d5/base/north-east.webp",
+        "east": "/assets/characters2/npcs/dd26a4d5/base/east.webp",
+        "south-east": "/assets/characters2/npcs/dd26a4d5/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "deeb1f8d",
+      "name": "Valda",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/deeb1f8d/base/south.webp",
+        "south-west": "/assets/characters2/npcs/deeb1f8d/base/south-west.webp",
+        "west": "/assets/characters2/npcs/deeb1f8d/base/west.webp",
+        "north-west": "/assets/characters2/npcs/deeb1f8d/base/north-west.webp",
+        "north": "/assets/characters2/npcs/deeb1f8d/base/north.webp",
+        "north-east": "/assets/characters2/npcs/deeb1f8d/base/north-east.webp",
+        "east": "/assets/characters2/npcs/deeb1f8d/base/east.webp",
+        "south-east": "/assets/characters2/npcs/deeb1f8d/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "e11fe41b",
+      "name": "Caedmon",
+      "role": "blacksmith",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/e11fe41b/base/south.webp",
+        "south-west": "/assets/characters2/npcs/e11fe41b/base/south-west.webp",
+        "west": "/assets/characters2/npcs/e11fe41b/base/west.webp",
+        "north-west": "/assets/characters2/npcs/e11fe41b/base/north-west.webp",
+        "north": "/assets/characters2/npcs/e11fe41b/base/north.webp",
+        "north-east": "/assets/characters2/npcs/e11fe41b/base/north-east.webp",
+        "east": "/assets/characters2/npcs/e11fe41b/base/east.webp",
+        "south-east": "/assets/characters2/npcs/e11fe41b/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "e4c27192",
+      "name": "Duncan",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/e4c27192/base/south.webp",
+        "south-west": "/assets/characters2/npcs/e4c27192/base/south-west.webp",
+        "west": "/assets/characters2/npcs/e4c27192/base/west.webp",
+        "north-west": "/assets/characters2/npcs/e4c27192/base/north-west.webp",
+        "north": "/assets/characters2/npcs/e4c27192/base/north.webp",
+        "north-east": "/assets/characters2/npcs/e4c27192/base/north-east.webp",
+        "east": "/assets/characters2/npcs/e4c27192/base/east.webp",
+        "south-east": "/assets/characters2/npcs/e4c27192/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "e606ccca",
+      "name": "Wrenna",
+      "role": "herbalist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/e606ccca/base/south.webp",
+        "south-west": "/assets/characters2/npcs/e606ccca/base/south-west.webp",
+        "west": "/assets/characters2/npcs/e606ccca/base/west.webp",
+        "north-west": "/assets/characters2/npcs/e606ccca/base/north-west.webp",
+        "north": "/assets/characters2/npcs/e606ccca/base/north.webp",
+        "north-east": "/assets/characters2/npcs/e606ccca/base/north-east.webp",
+        "east": "/assets/characters2/npcs/e606ccca/base/east.webp",
+        "south-east": "/assets/characters2/npcs/e606ccca/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "e6d16208",
+      "name": "Eadric",
+      "role": "craftsman",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/e6d16208/base/south.webp",
+        "south-west": "/assets/characters2/npcs/e6d16208/base/south-west.webp",
+        "west": "/assets/characters2/npcs/e6d16208/base/west.webp",
+        "north-west": "/assets/characters2/npcs/e6d16208/base/north-west.webp",
+        "north": "/assets/characters2/npcs/e6d16208/base/north.webp",
+        "north-east": "/assets/characters2/npcs/e6d16208/base/north-east.webp",
+        "east": "/assets/characters2/npcs/e6d16208/base/east.webp",
+        "south-east": "/assets/characters2/npcs/e6d16208/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "e7eea1d6",
+      "name": "Ynes",
+      "role": "archer",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/e7eea1d6/base/south.webp",
+        "south-west": "/assets/characters2/npcs/e7eea1d6/base/south-west.webp",
+        "west": "/assets/characters2/npcs/e7eea1d6/base/west.webp",
+        "north-west": "/assets/characters2/npcs/e7eea1d6/base/north-west.webp",
+        "north": "/assets/characters2/npcs/e7eea1d6/base/north.webp",
+        "north-east": "/assets/characters2/npcs/e7eea1d6/base/north-east.webp",
+        "east": "/assets/characters2/npcs/e7eea1d6/base/east.webp",
+        "south-east": "/assets/characters2/npcs/e7eea1d6/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ea75a6d9",
+      "name": "Fulk",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ea75a6d9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ea75a6d9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ea75a6d9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ea75a6d9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ea75a6d9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ea75a6d9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ea75a6d9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ea75a6d9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ec0703bb",
+      "name": "Zaida",
+      "role": "herbalist",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ec0703bb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ec0703bb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ec0703bb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ec0703bb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ec0703bb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ec0703bb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ec0703bb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ec0703bb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ec151c9c",
+      "name": "Gervase",
+      "role": "villager",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ec151c9c/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ec151c9c/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ec151c9c/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ec151c9c/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ec151c9c/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ec151c9c/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ec151c9c/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ec151c9c/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ed3639f7",
+      "name": "Alowyn",
+      "role": "artisan",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ed3639f7/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ed3639f7/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ed3639f7/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ed3639f7/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ed3639f7/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ed3639f7/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ed3639f7/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ed3639f7/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "ef25b1f0",
+      "name": "Bettany",
+      "role": "scribe",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/ef25b1f0/base/south.webp",
+        "south-west": "/assets/characters2/npcs/ef25b1f0/base/south-west.webp",
+        "west": "/assets/characters2/npcs/ef25b1f0/base/west.webp",
+        "north-west": "/assets/characters2/npcs/ef25b1f0/base/north-west.webp",
+        "north": "/assets/characters2/npcs/ef25b1f0/base/north.webp",
+        "north-east": "/assets/characters2/npcs/ef25b1f0/base/north-east.webp",
+        "east": "/assets/characters2/npcs/ef25b1f0/base/east.webp",
+        "south-east": "/assets/characters2/npcs/ef25b1f0/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f0ff21e9",
+      "name": "Cerys",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f0ff21e9/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f0ff21e9/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f0ff21e9/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f0ff21e9/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f0ff21e9/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f0ff21e9/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f0ff21e9/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f0ff21e9/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f29f8573",
+      "name": "Harlan",
+      "role": "barbarian",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f29f8573/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f29f8573/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f29f8573/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f29f8573/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f29f8573/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f29f8573/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f29f8573/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f29f8573/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f4085dbb",
+      "name": "Drusa",
+      "role": "champion",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f4085dbb/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f4085dbb/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f4085dbb/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f4085dbb/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f4085dbb/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f4085dbb/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f4085dbb/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f4085dbb/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f55448d4",
+      "name": "Ivo",
+      "role": "ranger",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f55448d4/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f55448d4/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f55448d4/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f55448d4/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f55448d4/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f55448d4/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f55448d4/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f55448d4/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f6606d69",
+      "name": "Joss",
+      "role": "trader",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f6606d69/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f6606d69/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f6606d69/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f6606d69/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f6606d69/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f6606d69/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f6606d69/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f6606d69/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f7a50048",
+      "name": "Enid",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f7a50048/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f7a50048/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f7a50048/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f7a50048/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f7a50048/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f7a50048/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f7a50048/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f7a50048/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "f91671c1",
+      "name": "Fenella",
+      "role": "knight",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/f91671c1/base/south.webp",
+        "south-west": "/assets/characters2/npcs/f91671c1/base/south-west.webp",
+        "west": "/assets/characters2/npcs/f91671c1/base/west.webp",
+        "north-west": "/assets/characters2/npcs/f91671c1/base/north-west.webp",
+        "north": "/assets/characters2/npcs/f91671c1/base/north.webp",
+        "north-east": "/assets/characters2/npcs/f91671c1/base/north-east.webp",
+        "east": "/assets/characters2/npcs/f91671c1/base/east.webp",
+        "south-east": "/assets/characters2/npcs/f91671c1/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-still-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    },
+    {
+      "id": "fe776461",
+      "name": "Kestor",
+      "role": "mercenary",
+      "frameW": 112,
+      "frameH": 112,
+      "base": {
+        "south": "/assets/characters2/npcs/fe776461/base/south.webp",
+        "south-west": "/assets/characters2/npcs/fe776461/base/south-west.webp",
+        "west": "/assets/characters2/npcs/fe776461/base/west.webp",
+        "north-west": "/assets/characters2/npcs/fe776461/base/north-west.webp",
+        "north": "/assets/characters2/npcs/fe776461/base/north.webp",
+        "north-east": "/assets/characters2/npcs/fe776461/base/north-east.webp",
+        "east": "/assets/characters2/npcs/fe776461/base/east.webp",
+        "south-east": "/assets/characters2/npcs/fe776461/base/south-east.webp"
+      },
+      "idleAnim": "custom-calm-stili-idle-breathing",
+      "idle": {
+        "south": 5
+      }
+    }
+  ]
+}

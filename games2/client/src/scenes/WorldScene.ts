@@ -62,6 +62,7 @@ import {
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
+import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
 import { setBar, setLevel } from "../bars";
 import { gameAudio } from "../../../composer/index";
@@ -164,6 +165,15 @@ const GAIT_HOP_EASE = 10; // hop-offset smoothing (per second) — no pops on fr
 // the exact frame the hand closes on it. How near that spot counts as
 // "standing on it" — the autopilot's own arrival tolerance is a few wu, so a
 // tighter number would just stall the grab.
+// NPCs stand around town breathing. The generated idle is short and would
+// read as a room full of metronomes if every one of them looped it back to
+// back (maintainer 2026-08-06: "I want a more calm idle … freeze on the first
+// frame for a pseudo-random duration between 0.1s and 5s so they don't repeat
+// the idle animation too often and too regularly"). So each NPC plays its clip
+// ONCE, then holds frame 0 for a fresh random pause before the next one.
+const NPC_HOLD_MIN_MS = 100;
+const NPC_HOLD_MAX_MS = 5000;
+const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collision)
 const GRAB_ALIGN_WU = 10;
 /** Frame index out of a character frame's texture key (f:<uid>:<state>:<dir>:<n>). */
 const frameIndexOf = (key?: string): number => {
@@ -590,6 +600,31 @@ interface MonsterAvatar {
   hopOff?: number; // current mean-zero ground-track offset (screen px)
 }
 
+/** A placed NPC. Client-only decor with NO server state: maps2' npcs.json says
+ * where it stands and which way it faces, characters2 says what it looks like.
+ * Satisfies BodyVisual, so it renders through the exact same depth / nadir
+ * shadow / lit-copy path as players and monsters. */
+interface NpcAvatar {
+  sprite: Phaser.GameObjects.Sprite;
+  shadow: Phaser.GameObjects.Image;
+  lx: number;
+  lyFlat: number;
+  ly: number;
+  elev: number;
+  fx: number; // flat world position (fixed — they never walk)
+  fy: number;
+  lit?: Phaser.GameObjects.Sprite;
+  coverY?: number;
+  surfLevel?: number;
+  charId: string;
+  name: string;
+  type: string;
+  dir: string;
+  animKey: string | null; // the idle clip for THIS facing, when the art has one
+  holdUntil: number; // frame-0 pause deadline — the "calm idle" (see NPC_HOLD_*)
+  culled?: boolean;
+}
+
 /** The common body-visual subset the SHARED render helpers operate on —
  * occluder-aware depth (resolveBodyDepth), landing-ground shadow
  * (placeBodyShadow) and the lit copy (syncLitCopy). Avatar and MonsterAvatar
@@ -624,6 +659,12 @@ export class WorldScene extends Phaser.Scene {
   private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
   private monsterManifest: MonsterManifest | null = null;
+  private npcManifest: NpcManifest | null = null;
+  /** Placed NPCs, rendered through the SAME body pipeline as players and
+   * monsters (depth, nadir shadow, lit copy). Client-only decor: they have no
+   * server state at all — position and facing come straight from maps2' file. */
+  private npcs = new Map<string, NpcAvatar>();
+  private npcQueued = false;
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
   // later the maps agent owns real areas). World-anchored via this.project.
   private spawnAreaGfx?: Phaser.GameObjects.Graphics;
@@ -871,6 +912,7 @@ export class WorldScene extends Phaser.Scene {
   init() {
     this.manifest = this.registry.get("manifest") as Manifest;
     this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
+    this.npcManifest = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
@@ -978,6 +1020,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
+    // The world's people (maps2 npcs.json). AFTER the world/projection exist —
+    // projectFlat is meaningless in init(), and the registry's "world" key is
+    // the parsed World OBJECT; the id lives in "worldName".
+    void this.spawnNpcs();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
@@ -2144,6 +2190,26 @@ export class WorldScene extends Phaser.Scene {
           drops: this.drops.size,
         };
       },
+      // The world's NPCs (round 16): placement, art state and the calm-idle
+      // clock, for the gate.
+      npcInfo: () =>
+        [...this.npcs.entries()].map(([id, n]) => ({
+          id,
+          charId: n.charId,
+          name: n.name,
+          type: n.type,
+          dir: n.dir,
+          x: Math.round(n.fx),
+          y: Math.round(n.fy),
+          culled: !!n.culled,
+          hasAnim: !!n.animKey,
+          playing: n.sprite.anims.isPlaying,
+          holdMs: n.holdUntil ? Math.max(0, Math.round(n.holdUntil - this.time.now)) : 0,
+          tex: n.sprite.texture.key,
+          depth: +n.sprite.depth.toFixed(1),
+          shadow: n.shadow.visible,
+          lit: !!n.lit?.visible,
+        })),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
@@ -3464,6 +3530,151 @@ export class WorldScene extends Phaser.Scene {
     return cur + (want - cur) * Math.min(1, dt * GAIT_HOP_EASE);
   }
 
+  /** Spawn the world's NPCs (maps2 npcs.json). Art loads lazily per character:
+   * a world places a couple of dozen people out of a 191-strong roster, so
+   * pulling the whole catalog would be pure waste. Nothing here touches the
+   * server — NPCs are client-side decor. */
+  private async spawnNpcs() {
+    if (this.npcQueued || !this.npcManifest) return;
+    this.npcQueued = true;
+    const placed = await loadNpcPlacement(this.worldName);
+    if (!placed.length || !this.scene.isActive()) return;
+    const byId = new Map(this.npcManifest.npcs.map((d) => [d.id, d]));
+    for (const p of placed) {
+      const def = byId.get(p.character);
+      if (def) this.addNpc(p, def);
+    }
+  }
+
+  private addNpc(p: NpcPlacement, def: NpcDef) {
+    const dir = DIRECTIONS.includes(p.facing as never) ? p.facing : DEFAULT_DIRECTION;
+    // maps2 gives a TILE cell; bodies stand at the cell CENTRE like everything
+    // else that is placed by cell (the campfire, spawn scatter).
+    const fx = (p.x + 0.5) * CELL_WU;
+    const fy = (p.y + 0.5) * CELL_WU;
+    const g = this.projectFlat(fx, fy);
+    const elev = (p.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+    const shadow = this.add
+      .image(g.x, g.y - elev, SHADOW_TEX)
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(34, 14)
+      .setAlpha(0.5);
+    const sprite = this.add.sprite(g.x, g.y - elev, PLACEHOLDER_TEX).setOrigin(0.5, 0.9);
+    const npc: NpcAvatar = {
+      sprite,
+      shadow,
+      lx: g.x,
+      lyFlat: g.y,
+      ly: g.y - elev,
+      elev,
+      fx,
+      fy,
+      charId: def.id,
+      name: p.name || def.name,
+      type: p.type,
+      dir,
+      animKey: null,
+      holdUntil: 0,
+      surfLevel: p.elev ?? g.lvl,
+    };
+    this.npcs.set(p.id, npc);
+    this.loadNpcArt(npc, def);
+  }
+
+  /** Lazy art for ONE npc: the static rotation for its facing always, plus the
+   * idle clip when the art ships one for that direction. The generated idle is
+   * SOUTH-ONLY today, so most NPCs correctly stand still on their rotation —
+   * when characters2 generates the rest they animate with no client change. */
+  private loadNpcArt(npc: NpcAvatar, def: NpcDef) {
+    const baseUrl = def.base[npc.dir] ?? def.base[DEFAULT_DIRECTION];
+    const baseKey = `npc:${def.id}:${npc.dir}`;
+    const frames = def.idle?.[npc.dir] ?? 0;
+    const animKey = `npcanim:${def.id}:${npc.dir}`;
+    const setStill = () => {
+      if (this.textures.exists(baseKey)) npc.sprite.setTexture(baseKey);
+    };
+    if (!this.textures.exists(baseKey) && baseUrl) {
+      this.load.image(baseKey, withV(baseUrl));
+      this.load.once(`filecomplete-image-${baseKey}`, setStill);
+    } else setStill();
+    if (frames > 0 && def.idleAnim) {
+      const keys: string[] = [];
+      for (let i = 0; i < frames; i++) {
+        const k = `npcf:${def.id}:${npc.dir}:${i}`;
+        keys.push(k);
+        if (!this.textures.exists(k)) {
+          this.load.image(
+            k,
+            withV(`/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${npc.dir}/${i}.webp`),
+          );
+        }
+      }
+      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        if (!keys.every((k) => this.textures.exists(k))) return;
+        if (!this.anims.exists(animKey)) {
+          this.anims.create({
+            key: animKey,
+            frames: keys.map((k) => ({ key: k })),
+            frameRate: ANIM_FPS.idle ?? 6,
+            repeat: 0, // ONE pass, then the calm hold (stepNpcs)
+          });
+        }
+        npc.animKey = animKey;
+      });
+    }
+    this.load.start();
+  }
+
+  /** Per frame: place every NPC through the shared body pipeline and drive the
+   * CALM IDLE — play the clip once, then freeze on frame 0 for a fresh random
+   * 0.1-5s pause, so a street full of people never breathes in unison or
+   * loops often enough to read as a machine. Off-screen bodies are parked
+   * exactly like culled monsters (no depth ray, no shadow, no lit copy). */
+  private stepNpcs() {
+    if (!this.npcs.size) return;
+    const cam = this.cameras.main.worldView;
+    const now = this.time.now;
+    for (const npc of this.npcs.values()) {
+      const sp = npc.sprite;
+      const halfW = Math.max(sp.displayWidth, 40) * 0.5;
+      const on =
+        npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
+        npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
+        npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
+      if (!on) {
+        if (!npc.culled) {
+          npc.culled = true;
+          sp.setVisible(false);
+          npc.shadow.setVisible(false);
+          npc.lit?.setVisible(false);
+          sp.anims.pause();
+        }
+        continue;
+      }
+      if (npc.culled) {
+        npc.culled = false;
+        sp.setVisible(true);
+        npc.shadow.setVisible(true);
+        sp.anims.resume();
+      }
+      sp.x = npc.lx;
+      sp.y = npc.ly;
+      // THE CALM IDLE: a finished (or never started) clip parks on frame 0
+      // until its own random deadline passes, then plays once more.
+      if (npc.animKey && !sp.anims.isPlaying) {
+        if (!npc.holdUntil) {
+          npc.holdUntil = now + NPC_HOLD_MIN_MS + Math.random() * (NPC_HOLD_MAX_MS - NPC_HOLD_MIN_MS);
+        } else if (now >= npc.holdUntil) {
+          npc.holdUntil = 0;
+          sp.play(npc.animKey);
+        }
+      }
+      this.resolveBodyDepth(npc, npc.surfLevel ?? 0);
+      this.placeBodyShadow(npc, npc.elev, 0, 34, 14);
+    }
+  }
+
   /** Stereo position of an avatar relative to the camera view — pan (-1..1)
    * and distance (0 at centre, 1 at the edge of earshot) for the composer's
    * spatialized one-shots. The local player is always centred. */
@@ -4447,6 +4658,9 @@ export class WorldScene extends Phaser.Scene {
       this.monstersActive = active;
     }
 
+    // The world's people: placed by maps2, drawn through the shared body
+    // pipeline, breathing on their own calm clocks.
+    this.stepNpcs();
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.updateTargetOverlays();
@@ -4907,7 +5121,7 @@ export class WorldScene extends Phaser.Scene {
     // slips around a prop corner. Applies to keys AND the autopilot; the
     // deflected vector is what gets predicted AND sent, so the server
     // integrates the same move and nothing rubber-bands.
-    if ((ax !== 0 || ay !== 0) && this.monsters.size) {
+    if ((ax !== 0 || ay !== 0) && (this.monsters.size || this.npcs.size)) {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
       if (me) {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
@@ -4917,6 +5131,15 @@ export class WorldScene extends Phaser.Scene {
         this.monsters.forEach((mv, id) => {
           if (Math.abs(mv.fx - me.fx) < 140 && Math.abs(mv.fy - me.fy) < 140)
             near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
+        });
+        // NPCs get the SAME faked collision (maintainer 2026-08-06). They are
+        // client-side decor with no server body, so — exactly like monsters —
+        // the INPUT slips around them rather than the grid blocking: you walk
+        // around the shopkeeper instead of through her, and the server
+        // integrates the identical deflected vector, so nothing rubber-bands.
+        this.npcs.forEach((npc, id) => {
+          if (Math.abs(npc.fx - me.fx) < 140 && Math.abs(npc.fy - me.fy) < 140)
+            near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
         });
         const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
         if (dodge) {

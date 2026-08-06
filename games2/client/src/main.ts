@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
+import { loadNpcManifest } from "./npcManifest";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
@@ -184,6 +185,12 @@ async function boot() {
     console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
     return null;
   });
+  // NPC catalog (characters2/npcs) — same contract: optional, and a failure
+  // just means the world's people do not render.
+  const npcManifest = await loadNpcManifest().catch((e) => {
+    console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
+    return null;
+  });
   // The art agents periodically reset/regenerate the roster, so it can be empty.
   // Never dead-end the player: fall back to a built-in "Wanderer" so the shared
   // world is always joinable (the world scene draws it procedurally).
@@ -303,6 +310,7 @@ async function boot() {
 
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
+  game.registry.set("npcManifest", npcManifest);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

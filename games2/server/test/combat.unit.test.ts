@@ -5,7 +5,7 @@ import {
   xpToNext, hpMaxFor, epMaxFor, playerAtk, damageRoll, unarmedClip, idSalt,
   attackRange, slowFactorAt, rollDrops, SLOW_FACTOR, SLOW_MS, FLEE_SLOW_FACTOR,
   CHASE_SPEED_WU, RUN_SPEED, WALK_SPEED, mix32, provokedChaseSpeed,
-  ESCAPE_RADIUS_WU, PROVOKE_RADIUS_WU, CELL_WU,
+  ESCAPE_RADIUS_WU, MAX_CHASE_WU, PROVOKE_RADIUS_WU, CELL_WU,
 } from "@nangijala/shared";
 
 test("progression curves are sane and monotonic", () => {
@@ -61,6 +61,11 @@ test("the escape math holds for both chase kinds", () => {
   // …but still comfortably beyond the provocation range, or a marked monster
   // would aggro and give up in the same breath instead of committing to a hunt.
   assert.ok(ESCAPE_RADIUS_WU > 2.5 * PROVOKE_RADIUS_WU, "escape line is well outside the provoke radius");
+  // TWO rules, deliberately different distances (maintainer 2026-08-06):
+  // give up on 0.75 screens of daylight, but never chase past 1.5 screens
+  // from home however close the victim stays.
+  assert.ok(MAX_CHASE_WU > 700 && MAX_CHASE_WU < 900, "max chase ≈ 1.5 × 520wu screens");
+  assert.ok(MAX_CHASE_WU > ESCAPE_RADIUS_WU, "the leash reaches farther than the give-up distance");
   assert.ok(PROVOKE_RADIUS_WU >= 3 * CELL_WU && PROVOKE_RADIUS_WU <= 6 * CELL_WU, "provoke radius is a few cells");
   assert.ok(FLEE_SLOW_FACTOR > SLOW_FACTOR && FLEE_SLOW_FACTOR < 1, "flee slow is milder than the hit stagger");
   assert.ok(WALK_SPEED * FLEE_SLOW_FACTOR > 0, "hunted walking still moves");

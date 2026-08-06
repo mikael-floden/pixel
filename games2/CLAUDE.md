@@ -1127,6 +1127,53 @@ visible head/shoulders are ABOVE the surface).
   verify-bars asserts the REAL level-1 stats (40/40 HP, 20/20 EP, 0/50 XP)
   after waiting out the join race; verify-gamepad expects Jump+Pick up+Walk.
 
+## NPCs (maps2 placement + characters2 art, client-side decor)
+
+The maps2 agent places people (`maps2/worlds/<name>/npcs.json`,
+`pixel-maps2/npcs@1`, spec `maps2/spec/NPCS.md`); characters2 owns who they
+are (`characters2/npcs/<id>/`). The game just draws them (maintainer
+2026-08-06: "we just have to draw them at the current location and play the
+idle animation … rendered similar to monsters/players and have faked client
+side collision just like monsters").
+
+- **NO SERVER STATE AT ALL.** NPCs are client-side decor: the placement file
+  says where they stand and which way they face, and that is the whole truth.
+  Nothing is synced, nothing is validated, and they cost the room nothing.
+- `scripts/build-npcs-manifest.mjs` -> `client/public/npcs.json`: per NPC
+  character, the frame size, the eight static `base/<dir>` rotations, and the
+  idle clip's frame count PER DIRECTION. Art loads LAZILY per character — a
+  world places ~20 people out of a 191-strong roster, so fetching the catalog
+  would be pure waste.
+- **THE IDLE IS SOUTH-ONLY** (measured: 188 of 191 characters ship a 5-frame
+  idle, all of them for `south` alone). So an NPC facing any other way
+  correctly stands on its static rotation. `idle` is keyed per direction
+  precisely so the other seven appear with NO client change the day
+  characters2 generates them — do not hardcode "south" anywhere.
+- **THE CALM IDLE** (maintainer: "since the NPCs will at some point fill an
+  entire city I want a more calm idle … freeze on the first frame for a
+  pseudo-random duration between 0.1s and 5s so they don't repeat the idle
+  animation too often and too regularly"): the clip is created with
+  `repeat: 0` and `stepNpcs` plays it ONCE, then parks on frame 0 until a
+  fresh random NPC_HOLD_MIN_MS..NPC_HOLD_MAX_MS deadline passes. Each NPC
+  rolls its own, so a street never breathes in unison. Measured on
+  the_island2: parked ~78% of samples, 16 distinct hold buckets.
+- Rendering goes through the SAME shared body pipeline as players and
+  monsters (`resolveBodyDepth` + `placeBodyShadow` + the lit copy) — an
+  NpcAvatar satisfies BodyVisual. Never hand-roll a second path here; that
+  mistake already cost the monsters a round of terrace-tile overdraw and
+  detached shadows. Off-screen NPCs park exactly like culled monsters.
+- **FAKED CLIENT-SIDE COLLISION**, the monster pattern: NPCs join the same
+  `monsterDodge` near-list at NPC_BODY_RADIUS, so the INPUT slips around them
+  and the server integrates the identical deflected vector (no rubber-band).
+  They are not in the collision grid and not in findPath.
+- Gate: `scripts/verify-npcs.mjs` (dev stack, the_island2's 19 NPCs) — every
+  placed NPC spawns at its cell facing as placed, on-screen ones carry a
+  sorted depth + ground shadow, the idle is measurably calm and its holds
+  measurably vary. Probe: `__ml.npcInfo()`.
+- TRAPS: the registry's `world` key holds the parsed World OBJECT (the id is
+  `worldName`), and spawning must happen in `create()` — `projectFlat` is
+  meaningless in `init()`.
+
 ## Depth-fog on BODIES (syncLitCopy)
 
 - Monsters and remote players are COLOURED by the elevation depth-fog like

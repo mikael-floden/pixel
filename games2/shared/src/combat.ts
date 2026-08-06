@@ -143,6 +143,16 @@ export function provokedChaseSpeed(victimSpeedWu: number): number {
 // by running — it opens when the monster stops at its LEASH. Shortening the
 // give-up distance alone would barely change how long a hunt lasts.
 export const ESCAPE_RADIUS_WU = 390;
+
+// MAX CHASE — how far a hunt may travel from home, "regardless of how close
+// it is" (maintainer 2026-08-06: "the aggro should stop at 0.75 screen and max
+// chase is 1.5 screens"). These are TWO different rules and were briefly one
+// constant: ESCAPE_RADIUS_WU is measured monster-to-VICTIM and ends a hunt
+// when the player has opened that much daylight; this one is measured from the
+// monster's HOME ZONE and stops the chase once it has strayed this far, even
+// if the victim is right next to it. A hunter therefore cannot be walked
+// across the map by a player who keeps just inside the give-up distance.
+export const MAX_CHASE_WU = 780; // ~1.5 screens (camera frames ~520wu)
 export const MONSTER_RESPAWN_MS = 12_000;
 export const MONSTER_DIE_MS = 1_100; // corpse lingers (die clip) before removal + drops
 
