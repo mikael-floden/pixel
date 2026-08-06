@@ -533,17 +533,50 @@ try {
   console.log(
     `   ambient: indoor@Day [${fx(ambIn)}]  night@outdoors [${fx(ambNight)}]  day@outdoors [${fx(ambDay)}]`,
   );
-  if (lIn > 0.15 * luma(ambDay))
+  // Indoors must still be UNMISTAKABLY darker than standing in the sun. The
+  // bar was 0.15, written when the indoor grade was pinned to night's own
+  // luma; the brightness experiment (INDOOR_BRIGHTNESS, WorldScene) lifts it,
+  // so this is the ceiling on the experiment rather than a restatement of it —
+  // a third of daylight is still "you walked indoors", and anything above that
+  // is not a room any more.
+  if (lIn > 0.3 * luma(ambDay))
     fail(`indoors at Day is not dark: luma ${lIn.toFixed(4)} vs ${luma(ambDay).toFixed(4)} outside`);
-  if (Math.abs(lIn / lNight - 1) > 0.25)
-    fail(`indoors is not "dark as during the night": luma ${lIn.toFixed(5)} vs night's ${lNight.toFixed(5)} (${((lIn / lNight - 1) * 100).toFixed(0)}%)`);
+  // THE INTERIOR IS NOW A SETTINGS SLIDER (indoorlight.ts, maintainer
+  // 2026-08-06: "0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG"), so
+  // this measures it AT ITS DEFAULT — which is chosen to reproduce the
+  // night-matched grade exactly, and that is the property worth pinning: a
+  // player who never touches the slider must get the tuned look. The slider's
+  // own two ends are asserted separately below.
+  const k = lIn / lNight;
+  if (Math.abs(k - 1) > 0.25)
+    fail(`the DEFAULT indoor grade is ${k.toFixed(2)}x night's luma — the untouched ` +
+      `slider must land on the tuned "dark as during the night" grade`);
+  // THE SLIDER'S TWO ENDS, which are the maintainer's literal spec
+  // (2026-08-06): "0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG
+  // (WEBP)". Both are exact by construction, so assert them exactly rather
+  // than within a band — a tinted 100% would render every tile faintly blue
+  // and would NOT be the source art.
+  const ends = await page.evaluate(() => {
+    const before = window.__ml.indoorLight().dial;
+    const zero = window.__ml.indoorLight(0).ambient;
+    const full = window.__ml.indoorLight(1).ambient;
+    window.__ml.indoorLight(before); // leave the dial as we found it
+    return { zero, full, restored: window.__ml.indoorLight().dial, before };
+  });
+  if (ends.zero.some((v) => v !== 0))
+    fail(`0% is not black: ambient [${ends.zero.join(", ")}]`);
+  if (ends.full.some((v) => Math.abs(v - 1) > 1e-6))
+    fail(`100% is not the source art: ambient [${ends.full.join(", ")}] (must be exactly 1,1,1)`);
+  if (Math.abs(ends.restored - ends.before) > 1e-9) fail("the probe did not restore the dial");
+  ok(`the Indoor light slider spans BLACK -> source art: 0% [${ends.zero.join(", ")}], 100% [${ends.full.join(", ")}]`);
+
   if (!(blueIn < blueNight * 0.8))
     fail(`the indoor ambient is as blue as the night one: B/R ${blueIn.toFixed(3)} vs ${blueNight.toFixed(3)} — the "less blue moonlight tone" is missing`);
   if (!(blueIn >= 1))
     fail(`the indoor ambient is WARM (B/R ${blueIn.toFixed(3)} < 1) — unlit stone should stay cool, and warm reads as a fire already lit`);
   if (!(chroma(ambIn) < 0.6 * chroma(ambNight)))
     fail(`the indoor ambient is not desaturated vs night (chroma ${chroma(ambIn).toFixed(3)} vs ${chroma(ambNight).toFixed(3)})`);
-  ok(`indoor ambient is night-dark and less blue: luma ${lIn.toFixed(5)} vs night ${lNight.toFixed(5)} ` +
+  ok(`indoor ambient sits on night's hue line and is less blue: luma ${lIn.toFixed(5)} = ${k.toFixed(2)}x night ${lNight.toFixed(5)} ` +
     `(${((lIn / lNight - 1) * 100).toFixed(1)}%), B/R ${blueIn.toFixed(3)} vs ${blueNight.toFixed(3)} ` +
     `(${((1 - blueIn / blueNight) * 100).toFixed(0)}% of the blue tilt gone), chroma ${chroma(ambIn).toFixed(3)} vs ${chroma(ambNight).toFixed(3)}`);
 

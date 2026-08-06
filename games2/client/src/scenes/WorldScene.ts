@@ -66,6 +66,7 @@ import {
   DROP_FLASH_MS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
+import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
@@ -596,8 +597,16 @@ const HALF_R = "ml-half-R";
  * fully neutral reads as flat grey and going warm reads as if a fire were
  * already lit, which would pre-empt "it's up to each individual room to place
  * lights". TUNE ALONG [0.09 − k·0.015, 0.090, 0.09 + k·0.050]: k=1 is Night
- * itself, k=0.28 is this. Every point on that line holds luma within 1%. */
-const INDOOR_AMBIENT: [number, number, number] = [0.086, 0.09, 0.104];
+ * itself, k=0.28 is this. Every point on that line holds luma within 1%.
+ *
+ * THE BRIGHTNESS IS NOW A SETTINGS SLIDER (maintainer 2026-08-06: "a slider on
+ * the settings page … 0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG").
+ * indoorlight.ts owns the dial and derives the triple from it, keeping the hue
+ * above as RATIOS so moving the slider changes brightness and nothing else —
+ * until the very top, where the tint fades out so 100% is exactly [1,1,1] (a
+ * tinted 100% would render every tile faintly blue and would not be the source
+ * art). The dial defaults to 0.104, which reproduces the triple this comment
+ * derives, so the shipped look is unchanged until someone drags it. */
 
 /** Time constant of the indoor LIGHT cross-fade (seconds). The geometry snaps
  * — a half-faded roof is just a wrong roof — but the grade must not, or a
@@ -1532,6 +1541,13 @@ export class WorldScene extends Phaser.Scene {
        * `elev` is the RESOLVED SURFACE LEVEL fed to the module; `renderedLvl`
        * is the WRONG basis (`elev px / lh`) printed beside it, because the two
        * disagree exactly when it matters — while swimming and mid-fall. */
+      // The Settings "Indoor light" dial (indoorlight.ts). No arg reads it;
+      // a number 0..1 drives it, so a gate can walk both ends without a
+      // pointer drag. Returns the dial AND the ambient triple it resolves to.
+      indoorLight: (v?: number) => {
+        if (typeof v === "number") setIndoorLight(v);
+        return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
+      },
       indoor: () => {
         const s = this.indoorSpace;
         const av = this.avatars.get(this.room?.sessionId ?? "");
@@ -5141,11 +5157,15 @@ export class WorldScene extends Phaser.Scene {
       // grade there would ease FROM it toward the next phase and pop bright)
       // and `__ml.timeOfDay()` / verify-timecycle read it.
       const iF = this.indoorMix;
+      // The interior target is READ PER FRAME from the Settings slider — it is
+      // a live tuning dial, so a drag has to show while you stand in the room.
+      // Cheap: three multiplies, no allocation beyond the triple itself.
+      const indoorTarget = indoorAmbient();
       const ambEff = this.curAmbient.map((v, i) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
         const outdoor = clouded * (1 - this.curPrecipDim);
-        return outdoor + (INDOOR_AMBIENT[i] - outdoor) * iF;
+        return outdoor + (indoorTarget[i] - outdoor) * iF;
       }) as [number, number, number];
       // …and the SKY terms have to go with it, or the roof we just deleted
       // stops being the only thing keeping the room dark:

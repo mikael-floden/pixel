@@ -19,6 +19,7 @@ import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
+import { indoorLight, setIndoorLight } from "./indoorlight";
 import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
@@ -810,6 +811,16 @@ export class HudBar {
       });
     }).observe(row, { childList: true });
 
+    // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
+    // 2026-08-06: "a slider on the settings page … 0% = BLACK, 100% = THE TILE
+    // WILL LOOK JUST LIKE THE PNG"). Lives on the Settings page proper, NOT in
+    // the Ambient-effects section below — that section is the ambient agent's
+    // and is built lazily from its registry. indoorlight.ts owns the value and
+    // its persistence; the scene listens for "ml-indoor-light".
+    wrap.appendChild(
+      pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
+    );
+
     // Ambient-effect checklist: one checkbox row per effect (+ an AUTO row).
     // Rows are built lazily once window.__mlAmbient is up (tickAmbient); the
     // whole section stays hidden until then, so an absent/failed ambient layer
@@ -1238,6 +1249,75 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     if (Math.abs(p - 0.5) < 0.03) p = 0.5; // soft detent → exactly 1×
     render(p);
     set(toV(p));
+  };
+  let dragging = false;
+  track.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    knob.classList.add("grabbing");
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture unsupported — moves still work via the track listener */
+    }
+    applyP(clientToP(e.clientX));
+    e.preventDefault();
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging) applyP(clientToP(e.clientX));
+  });
+  for (const ev of ["pointerup", "pointercancel"] as const)
+    track.addEventListener(ev, (e) => {
+      if (!dragging) return;
+      dragging = false;
+      knob.classList.remove("grabbing");
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch {
+        /* nothing captured */
+      }
+    });
+
+  render(curP);
+  return wrap;
+}
+
+/** A Settings slider on a LINEAR 0-100% axis — same wiki look and the same
+ * pointer-capture drag as birdSlider above, but no log axis and no detent.
+ * Split out rather than generalising birdSlider: that one's log scale, its 1x
+ * detent and its "×N" formatting are its whole point, and folding two axes into
+ * one function would make both harder to read than the ~30 duplicated lines. */
+function pctSlider(labelText: string, get: () => number, set: (v: number) => void): HTMLElement {
+  const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  const wrap = mk("div", "ml-amb-slider");
+  const head = mk("div", "ml-amb-slider-head");
+  const label = mk("span", "ml-amb-slider-label");
+  label.textContent = labelText;
+  const valEl = mk("span", "ml-amb-slider-val");
+  head.append(label, valEl);
+  const track = mk("div", "ml-slider");
+  const fill = mk("div", "ml-slider-fill");
+  const knob = mk("div", "ml-slider-knob");
+  track.append(fill, knob);
+  wrap.append(head, track);
+
+  let curP = clamp01(get());
+  const render = (p: number) => {
+    curP = p;
+    fill.style.width = `${(p * 100).toFixed(2)}%`;
+    const trackW = track.clientWidth;
+    const kw = knob.offsetWidth || 22;
+    knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
+    valEl.textContent = `${Math.round(p * 100)}%`;
+  };
+  new ResizeObserver(() => render(curP)).observe(track);
+
+  const clientToP = (clientX: number) => {
+    const rect = track.getBoundingClientRect();
+    return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : curP;
+  };
+  const applyP = (p: number) => {
+    render(p);
+    set(p);
   };
   let dragging = false;
   track.addEventListener("pointerdown", (e) => {
