@@ -230,11 +230,22 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   // FOUR candidates inside one minute — "a group with several sounds"
   // (2026-08-06) delivered as an assignment rather than as a set. All four are
   // POOL files, which is why take lookup now searches the pool too.
-  // HIS DEATH CRY FOR THE BOY — the assignment the per-voice `@<uid>` spelling
-  // was added for. The GIRL has none right now: he unbound die_voice from her
-  // on 2026-08-06 (feedback/bindings.json), so she dies silently until he
-  // picks from the forty new die_girl_* / die_boy_* styles.
-  "player.die@default_boy": [{ sound: "composer/die_voice_boy", take: "die_voice_boy__take06" }],
+  // THREE cries each, rotating — a death you hear more than once should not be
+  // the same performance every time. He assigned these in one sitting (three
+  // girl, two boy) and unbound nothing, so die_voice_boy__take06 stays: he has
+  // shown he unbinds what he does not want, and silently dropping a pick he
+  // kept would be the engine deciding for him.
+  "player.die@default_boy": [
+    { sound: "composer/die_voice_boy", take: "die_voice_boy__take06" },
+    { sound: "composer/die_boy_grunt", take: "die_boy_grunt__take01" },
+    { sound: "composer/die_boy_rattle", take: "die_boy_rattle__take01" },
+  ],
+  // Her first cries since die_voice was unbound. inhale carries his 0.9 pitch.
+  "player.die@default_girl": [
+    { sound: "composer/die_girl_gasp", take: "die_girl_gasp__take01" },
+    { sound: "composer/die_girl_groan", take: "die_girl_groan__take01" },
+    { sound: "composer/die_girl_inhale", take: "die_girl_inhale__take01", pitch: 0.9 },
+  ],
   // First per-monster assignments. The id is `monsters.<kind>.<action>`, built
   // from data in WorldScene rather than written as a literal anywhere.
   "monsters.forest_poring_2.walk": [{ sound: "composer/mon_forest_poring_walk", take: "mon_forest_poring_walk__take01" }],

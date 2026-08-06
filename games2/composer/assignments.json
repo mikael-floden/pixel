@@ -78,6 +78,29 @@
       {
         "sound": "composer/die_voice_boy",
         "take": "die_voice_boy__take06"
+      },
+      {
+        "sound": "composer/die_boy_grunt",
+        "take": "die_boy_grunt__take01"
+      },
+      {
+        "sound": "composer/die_boy_rattle",
+        "take": "die_boy_rattle__take01"
+      }
+    ],
+    "player.die@default_girl": [
+      {
+        "sound": "composer/die_girl_gasp",
+        "take": "die_girl_gasp__take01"
+      },
+      {
+        "sound": "composer/die_girl_groan",
+        "take": "die_girl_groan__take01"
+      },
+      {
+        "sound": "composer/die_girl_inhale",
+        "take": "die_girl_inhale__take01",
+        "pitch": 0.9
       }
     ],
     "monsters.forest_poring_2.walk": [
