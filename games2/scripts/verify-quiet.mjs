@@ -16,6 +16,7 @@
 //
 // Runs with no browser and no dev stack: node scripts/verify-quiet.mjs
 import { readFileSync, readdirSync, statSync } from "fs";
+import { spawnSync } from "child_process";
 import { join } from "path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -122,6 +123,21 @@ for (const n of REQUIRED_ACTIONS) {
 for (const n of REQUIRED_APPROVED) {
   if (!emitted.has(n)) fail(`approved "${n}" is no longer emitted — approved audio was lost`);
 }
+// ---- the published assignments manifest is in sync -----------------------
+// composer/assignments.json is how ANY other tool learns what an assigned
+// event really plays. The wiki parses api.ts for EVENT_FOLEY and bindings but
+// NOT for EVENT_ASSIGNMENTS, so before this file existed its sound card showed
+// `ui.press` playing ui_tick and `ui.release` playing nothing, while the engine
+// played the maintainer's ui_click_bead / ui_click_latch — indistinguishable
+// from his assignments having been reverted. A stale manifest would recreate
+// exactly that, so it fails the gate rather than drifting quietly.
+{
+  const r = spawnSync(process.execPath, [join(ROOT, "scripts", "build-assignments.mjs"), "--check"], { encoding: "utf8" });
+  const out = (r.stdout ?? "").trim();
+  if (r.status !== 0) fail(out || "composer/assignments.json is stale — run: node scripts/build-assignments.mjs");
+  else console.log(out);
+}
+
 // ---- the per-monster state events exist (games-audio 2026-08-06) ----------
 // These are the ONE family that cannot be emitted as literal names: the id is
 // `monsters.<kind>.<action>` over 24 roster kinds x 4 animation states, so it
