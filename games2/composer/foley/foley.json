@@ -11604,5 +11604,605 @@
     "brief": "an ash demon striking with a roaring snarl and a burst of flame",
     "generated_at": "2026-08-06T04:15:20+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_hymn": {
+    "takes": [
+      "level_up_hymn/level_up_hymn__take01.wav"
+    ],
+    "durations_s": [
+      2.221
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.4,
+        "duration_s": 2.221,
+        "attack_ms": 918.5,
+        "tail_ratio": 0.746,
+        "tonality": 0.517,
+        "crest": 4.3,
+        "centroid_hz": 1140,
+        "mid_ratio": 0.989
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "low men's voices holding one solemn note, then opening upward together into a bright wide chord in a stone cathedral",
+    "generated_at": "2026-08-06T05:31:32+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_glassbloom": {
+    "takes": [
+      "level_up_glassbloom/level_up_glassbloom__take01.wav"
+    ],
+    "durations_s": [
+      2.404
+    ],
+    "features": [
+      {
+        "mid_peak_db": -8.2,
+        "duration_s": 2.404,
+        "attack_ms": 1225.5,
+        "tail_ratio": 0.728,
+        "tonality": 0.987,
+        "crest": 5.03,
+        "centroid_hz": 7126,
+        "mid_ratio": 0.988
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a single glass harmonica tone blooming out of silence, swelling wide and pure and holding, no melody",
+    "generated_at": "2026-08-06T05:31:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_sunrise": {
+    "takes": [
+      "level_up_sunrise/level_up_sunrise__take01.wav"
+    ],
+    "durations_s": [
+      2.404
+    ],
+    "features": [
+      {
+        "mid_peak_db": -6.9,
+        "duration_s": 2.404,
+        "attack_ms": 1365.2,
+        "tail_ratio": 0.826,
+        "tonality": 0.942,
+        "crest": 3.12,
+        "centroid_hz": 1096,
+        "mid_ratio": 0.857
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a wide warm orchestral swell, soft strings underneath opening out into one clear sustained horn",
+    "generated_at": "2026-08-06T05:31:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_fiddle": {
+    "takes": [
+      "level_up_fiddle/level_up_fiddle__take01.wav"
+    ],
+    "durations_s": [
+      1.386
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.9,
+        "duration_s": 1.386,
+        "attack_ms": 1034.7,
+        "tail_ratio": 0.79,
+        "tonality": 0.788,
+        "crest": 7.06,
+        "centroid_hz": 3322,
+        "mid_ratio": 0.933
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a quick folk fiddle flourish dancing upward and stopping dead on the top note, bright and confident",
+    "generated_at": "2026-08-06T05:31:47+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_tambourine": {
+    "takes": [
+      "level_up_tambourine/level_up_tambourine__take01.wav"
+    ],
+    "durations_s": [
+      1.49
+    ],
+    "features": [
+      {
+        "mid_peak_db": -37.2,
+        "duration_s": 1.49,
+        "attack_ms": 140.7,
+        "tail_ratio": 0.123,
+        "tonality": 0.476,
+        "crest": 12.96,
+        "centroid_hz": 10079,
+        "mid_ratio": 0.009
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a bright tambourine shake bursting into a short round of happy hand claps, then silence",
+    "generated_at": "2026-08-06T05:31:52+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_panpipes": {
+    "takes": [
+      "level_up_panpipes/level_up_panpipes__take01.wav"
+    ],
+    "durations_s": [
+      2.013
+    ],
+    "features": [
+      {
+        "mid_peak_db": -5.6,
+        "duration_s": 2.013,
+        "attack_ms": 458.5,
+        "tail_ratio": 0.661,
+        "tonality": 0.992,
+        "crest": 2.47,
+        "centroid_hz": 2072,
+        "mid_ratio": 1.0
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a breathy pan pipe call of two notes, answered a moment later by the same two notes higher and softer",
+    "generated_at": "2026-08-06T05:31:57+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_hurdygurdy": {
+    "takes": [
+      "level_up_hurdygurdy/level_up_hurdygurdy__take01.wav"
+    ],
+    "durations_s": [
+      1.777
+    ],
+    "features": [
+      {
+        "mid_peak_db": -8.2,
+        "duration_s": 1.777,
+        "attack_ms": 74.3,
+        "tail_ratio": 0.546,
+        "tonality": 0.95,
+        "crest": 3.36,
+        "centroid_hz": 532,
+        "mid_ratio": 1.0
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a hurdy-gurdy drone brightening and blooming into one warm major chord, earthy and folk",
+    "generated_at": "2026-08-06T05:32:02+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_kalimba": {
+    "takes": [
+      "level_up_kalimba/level_up_kalimba__take01.wav"
+    ],
+    "durations_s": [
+      2.013
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.4,
+        "duration_s": 2.013,
+        "attack_ms": 2.9,
+        "tail_ratio": 0.005,
+        "tonality": 0.992,
+        "crest": 6.79,
+        "centroid_hz": 964,
+        "mid_ratio": 1.0
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a few soft kalimba notes climbing gently, the last one left alone to ring out and fade",
+    "generated_at": "2026-08-06T05:32:07+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_dulcimer": {
+    "takes": [
+      "level_up_dulcimer/level_up_dulcimer__take01.wav"
+    ],
+    "durations_s": [
+      1.641
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.6,
+        "duration_s": 1.641,
+        "attack_ms": 165.5,
+        "tail_ratio": 0.036,
+        "tonality": 0.343,
+        "crest": 10.07,
+        "centroid_hz": 5629,
+        "mid_ratio": 0.69
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a hammered dulcimer cascade tumbling quickly upward and shimmering away into nothing",
+    "generated_at": "2026-08-06T05:32:12+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_koto": {
+    "takes": [
+      "level_up_koto/level_up_koto__take01.wav"
+    ],
+    "durations_s": [
+      1.777
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.1,
+        "duration_s": 1.777,
+        "attack_ms": 33.0,
+        "tail_ratio": 0.051,
+        "tonality": 0.647,
+        "crest": 11.42,
+        "centroid_hz": 3706,
+        "mid_ratio": 0.977
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a koto swept fast upward then landing hard on one low warm note that rings and settles",
+    "generated_at": "2026-08-06T05:32:17+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_nylon": {
+    "takes": [
+      "level_up_nylon/level_up_nylon__take01.wav"
+    ],
+    "durations_s": [
+      2.013
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.3,
+        "duration_s": 2.013,
+        "attack_ms": 8.2,
+        "tail_ratio": 0.129,
+        "tonality": 0.747,
+        "crest": 13.47,
+        "centroid_hz": 1048,
+        "mid_ratio": 0.815
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "gentle nylon guitar harmonics arpeggiating slowly upward, unhurried and tender, not triumphant",
+    "generated_at": "2026-08-06T05:32:22+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_ocarina": {
+    "takes": [
+      "level_up_ocarina/level_up_ocarina__take01.wav"
+    ],
+    "durations_s": [
+      1.621
+    ],
+    "features": [
+      {
+        "mid_peak_db": -7.1,
+        "duration_s": 1.621,
+        "attack_ms": 718.2,
+        "tail_ratio": 0.661,
+        "tonality": 0.972,
+        "crest": 2.64,
+        "centroid_hz": 689,
+        "mid_ratio": 1.0
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "three clear round ocarina notes rising simply, the last one held steady and warm",
+    "generated_at": "2026-08-06T05:32:27+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_horn": {
+    "takes": [
+      "level_up_horn/level_up_horn__take01.wav"
+    ],
+    "durations_s": [
+      2.193
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.1,
+        "duration_s": 2.193,
+        "attack_ms": 123.2,
+        "tail_ratio": 0.717,
+        "tonality": 0.969,
+        "crest": 3.59,
+        "centroid_hz": 1641,
+        "mid_ratio": 0.999
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a warm hunting horn calling two lifting notes from far across open country, wide natural air around it",
+    "generated_at": "2026-08-06T05:32:32+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_reed": {
+    "takes": [
+      "level_up_reed/level_up_reed__take01.wav"
+    ],
+    "durations_s": [
+      2.013
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.3,
+        "duration_s": 2.013,
+        "attack_ms": 482.9,
+        "tail_ratio": 0.904,
+        "tonality": 0.353,
+        "crest": 7.03,
+        "centroid_hz": 8262,
+        "mid_ratio": 0.107
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft double reed swelling slowly from nothing into a warm blooming held tone, earthy, no melody",
+    "generated_at": "2026-08-06T05:32:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_emberrise": {
+    "takes": [
+      "level_up_emberrise/level_up_emberrise__take01.wav"
+    ],
+    "durations_s": [
+      1.492
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.5,
+        "duration_s": 1.492,
+        "attack_ms": 551.0,
+        "tail_ratio": 0.872,
+        "tonality": 0.534,
+        "crest": 8.23,
+        "centroid_hz": 460,
+        "mid_ratio": 0.713
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft warm whoosh of air rising upward and blooming into a gentle shimmering ring",
+    "generated_at": "2026-08-06T05:32:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_waterbloom": {
+    "takes": [
+      "level_up_waterbloom/level_up_waterbloom__take01.wav"
+    ],
+    "durations_s": [
+      1.581
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.4,
+        "duration_s": 1.581,
+        "attack_ms": 247.3,
+        "tail_ratio": 0.337,
+        "tonality": 0.17,
+        "crest": 10.89,
+        "centroid_hz": 4730,
+        "mid_ratio": 0.804
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "water swelling upward and opening into a bright sparkling resolve, liquid and clean",
+    "generated_at": "2026-08-06T05:32:47+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_growth": {
+    "takes": [
+      "level_up_growth/level_up_growth__take01.wav"
+    ],
+    "durations_s": [
+      1.957
+    ],
+    "features": [
+      {
+        "mid_peak_db": -28.2,
+        "duration_s": 1.957,
+        "attack_ms": 906.6,
+        "tail_ratio": 0.776,
+        "tonality": 0.079,
+        "crest": 12.72,
+        "centroid_hz": 8662,
+        "mid_ratio": 0.107
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "leaves and stems unfurling and growing fast, a green organic rustle settling onto one soft warm chord",
+    "generated_at": "2026-08-06T05:32:52+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_windgift": {
+    "takes": [
+      "level_up_windgift/level_up_windgift__take01.wav"
+    ],
+    "durations_s": [
+      1.777
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.8,
+        "duration_s": 1.777,
+        "attack_ms": 516.4,
+        "tail_ratio": 0.663,
+        "tonality": 0.662,
+        "crest": 5.38,
+        "centroid_hz": 520,
+        "mid_ratio": 0.795
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a warm gust of wind rushing past and lifting away into one bright clear held tone",
+    "generated_at": "2026-08-06T05:32:58+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_chestlatch": {
+    "takes": [
+      "level_up_chestlatch/level_up_chestlatch__take01.wav"
+    ],
+    "durations_s": [
+      1.53
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.0,
+        "duration_s": 1.53,
+        "attack_ms": 1000.1,
+        "tail_ratio": 1.0,
+        "tonality": 0.493,
+        "crest": 27.81,
+        "centroid_hz": 4645,
+        "mid_ratio": 0.765
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy iron chest latch releasing with a solid clunk and the wooden lid lifting open, a soft warm tone glowing underneath",
+    "generated_at": "2026-08-06T05:33:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "level_up_forgequench": {
+    "takes": [
+      "level_up_forgequench/level_up_forgequench__take01.wav"
+    ],
+    "durations_s": [
+      1.926
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.3,
+        "duration_s": 1.926,
+        "attack_ms": 59.0,
+        "tail_ratio": 0.144,
+        "tonality": 0.138,
+        "crest": 5.94,
+        "centroid_hz": 4078,
+        "mid_ratio": 0.888
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "red hot steel plunged into water, a fierce hiss settling down into one low warm ring",
+    "generated_at": "2026-08-06T05:33:11+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
