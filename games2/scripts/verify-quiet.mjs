@@ -185,6 +185,28 @@ for (const e of bindingsJson.events ?? []) {
     console.log(`NOTE  "${e.event}" is bound with no sound and nothing emits it`);
 }
 
+// ---- AN EVENT IS SOMETHING THE GAME TRIGGERS -----------------------------
+// Maintainer 2026-08-06: "I'm going fucking crazy on events that exist, but
+// are not triggered in the game. That should not be possible. The definition
+// of an event is something that is triggered. Please remove all events that
+// are not yet triggered." An event with no sound is FINE and normal — that is
+// how he assigns one. An event no code fires is not an event at all: it fills
+// the wiki with moments that will never happen, and a sound assigned to one is
+// silently thrown away. This was 22 names deep in sounds/bindings.json.
+// A NOTE would not have held the line, so it FAILS.
+{
+  const knownNames = new Map(); // name -> where it is declared
+  const note = (n, where) => knownNames.set(n, [...(knownNames.get(n) ?? []), where]);
+  for (const e of bindingsJson.events ?? []) note(e.event, "sounds/bindings.json");
+  for (const n of eventFoley) note(n, "EVENT_FOLEY");
+  for (const n of assigned) note(n.split("@")[0], "EVENT_ASSIGNMENTS");
+  const orphans = [...knownNames].filter(([n]) => !emitted.has(n));
+  if (orphans.length)
+    for (const [n, where] of orphans)
+      fail(`event "${n}" is declared in ${[...new Set(where)].join(" + ")} but NOTHING TRIGGERS IT — an event is something the game fires; delete it or fire it`);
+  else console.log(`  every declared event is triggered (${knownNames.size} checked)`);
+}
+
 // An assignment for an event nobody fires is dead wiring — worth a loud note.
 // A voice-scoped id is checked on its base event; the scope is a call OPTION
 // (opts.voice), not part of the emitted name.

@@ -18,6 +18,7 @@ import { join } from "path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const OUT = join(ROOT, "composer", "assignments.json");
+const OUT_BEDS = join(ROOT, "composer", "ambience.json");
 const api = readFileSync(join(ROOT, "composer", "engine", "api.ts"), "utf8");
 
 const block = api.match(/const EVENT_ASSIGNMENTS: Record<string, EventAssignment\[\]> = \{([\s\S]*?)\n\};/);
@@ -75,16 +76,46 @@ const doc = {
   events,
 };
 
+// ---- the ambience BEDS the engine really mixes ---------------------------
+// Same rule as the assignments, applied to the continuous layer. The wiki used
+// to read its ambience rows out of sounds/bindings.json `region.enter`, whose
+// map named beds by REGION (cave, coast, plains, meadow) that the engine never
+// mixes — so the Game Master was rating and unbinding beds that could not play
+// (he rejected ambience.cave#cave_drips on 2026-08-06). That entry is gone now
+// because nothing triggers region.enter, and this is what replaces it: the bed
+// names read straight out of the engine's setTargets call, so a row can only
+// exist for something that actually plays.
+const beds = [...(api.match(/this\.ambience\.setTargets\(\{([\s\S]*?)\n\s*\}\);/)?.[1] ?? "")
+  .matchAll(/^\s*([a-z][\w]*)\s*:/gim)].map((m) => m[1]);
+if (!beds.length) {
+  console.log("FAIL  cannot read the ambience beds out of setTargets — fix the regex");
+  process.exit(1);
+}
+const bedDoc = {
+  format: "pixel-composer-ambience@1",
+  _comment:
+    "The looping ambience beds the composer's engine actually mixes, read out of setTargets in " +
+    "composer/engine/api.ts. Levels are continuous and driven by sun/weather/terrain, so there is no " +
+    "event to assign — but a bed CAN be rated or retired, and this is the only honest list of what is " +
+    "playable. A bed not named here does not play, whatever any other file suggests.",
+  beds,
+};
+
 const next = JSON.stringify(doc, null, 2) + "\n";
+const nextBeds = JSON.stringify(bedDoc, null, 2) + "\n";
 if (process.argv.includes("--check")) {
   let cur = "";
   try { cur = readFileSync(OUT, "utf8"); } catch { /* missing counts as stale */ }
-  if (cur !== next) {
-    console.log("FAIL  composer/assignments.json is stale — run: node scripts/build-assignments.mjs");
+  let curBeds = "";
+  try { curBeds = readFileSync(OUT_BEDS, "utf8"); } catch { /* missing counts as stale */ }
+  if (cur !== next || curBeds !== nextBeds) {
+    console.log("FAIL  composer/assignments.json or ambience.json is stale — run: node scripts/build-assignments.mjs");
     process.exit(1);
   }
-  console.log(`  assignments.json in sync (${Object.keys(events).length} assigned events)`);
+  console.log(`  assignments.json in sync (${Object.keys(events).length} assigned events, ${beds.length} ambience beds)`);
 } else {
   writeFileSync(OUT, next);
+  writeFileSync(OUT_BEDS, nextBeds);
   console.log(`assignments.json → ${Object.keys(events).length} events: ${Object.keys(events).join(", ")}`);
+  console.log(`ambience.json    → ${beds.length} beds: ${beds.join(", ")}`);
 }

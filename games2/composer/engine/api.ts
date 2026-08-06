@@ -193,10 +193,6 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   "item.drop": [{ sound: "composer/dirt", pitch: 1.35, volume_db: -8, max_random_pitch_semis: 0.4 }],
   "ui.press": [{ sound: "composer/ui_click_bead" }],
   "ui.release": [{ sound: "composer/ui_click_latch" }],
-  "ui.cursor_move": [{ sound: "composer/ui_click_bead" }],
-  "ui.confirm": [{ sound: "composer/ui_click_bead" }],
-  "ui.cancel": [{ sound: "composer/ui_click_bead" }],
-  "ui.error": [{ sound: "composer/ui_click_bead" }],
   "combat.punch": [{ sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 }],
   "combat.kick": [{ sound: "hit_hurt" }],
   // Her death cry, one named take, no jitter — exactly as he auditioned it.
@@ -631,10 +627,6 @@ export class GameAudio {
     // emitted, so the wiki can assign it whenever he picks a release sound.
     "ui.press": "ui_tick",
     // Legacy single-click events any game code may still emit.
-    "ui.cursor_move": "ui_tick",
-    "ui.confirm": "ui_tick",
-    "ui.cancel": "ui_tick",
-    "ui.error": "ui_tick",
   };
 
   /** Which of an event's assigned sounds plays this time. Round-robin, so N
@@ -797,25 +789,20 @@ export class GameAudio {
    *
    * The gain and the near-center pan stay HERE rather than coming from the
    * assignment: they are what puts the crack on the white flash, and they
-   * apply whichever recording he picks. */
+   * apply whichever recording he picks.
+   *
+   * NO SET FALLBACK (maintainer 2026-08-06, and this one was mine to fix:
+   * "I'm really mad of me having to unassign a list of crappy thunder I never
+   * mapped! I'm the one who map sound to events! NOT YOU!"). This used to
+   * rotate the whole foley/thunder set whenever no assignment existed, which
+   * put six recordings on weather.thunder that he never chose — and he then
+   * had to unbind all six by hand. Rotating a set IS mapping sounds to an
+   * event. An unassigned event is SILENT, with no exception for the set that
+   * happens to share the event's name. */
   thunder(strength = 1): void {
     if (!this.ready()) return;
-    const gainDb = THUNDER_GAIN_DB * Math.min(1, strength);
-    const pan = (Math.random() - 0.5) * 0.16;
-    if (EVENT_ASSIGNMENTS["weather.thunder"]?.length) {
-      this.event("weather.thunder", { gainDb, pan });
-      return;
-    }
-    const own = composerFoley("thunder");
-    if (!own) return;
-    // ROTATE, not the primary take: he asked for "a group with several
-    // sounds" and the old click profile played take01 on every single strike.
-    // LOUD: a strike this close is the loudest one-shot in the game, so the
-    // level is set to land near full scale after the -14 dB sfx bus and let
-    // the master limiter shape the transient, rather than sitting politely
-    // under the music. Near-center pan and no delay — the crack belongs ON
-    // the white flash, which is the entire point of the sound.
-    this.oneShots.play(this.foleyEntry("thunder", own, "rotate"), "sfx", {
+    if (!EVENT_ASSIGNMENTS["weather.thunder"]?.length) return;
+    this.event("weather.thunder", {
       gainDb: THUNDER_GAIN_DB * Math.min(1, strength),
       pan: (Math.random() - 0.5) * 0.16,
     });
