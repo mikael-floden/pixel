@@ -1223,6 +1223,66 @@ for _suffix, _brief, _dur, _trim in CROSS_ON_R14:
         "pool": 1,
     }
 
+# ---- ROUND 15 (maintainer 2026-08-06): "I need 30 new sounds. Same cross on.
+# Maybe a little dirt or grass or something. It's coming up from the ground.
+# Not to extreme. This sound is played after each enemy kill and is important."
+#
+# THE REPETITION IS THE BRIEF. This fires on EVERY kill, so it is heard more
+# than any other one-shot in the game — and a sound you hear a hundred times an
+# hour has to be modest or it turns into a headache. Round 14 chased the dry
+# CRACK of his cross_off and delivered sharp brittle transients; "not to
+# extreme" is him telling me that a hard crack per kill is too much. So:
+#   - SOFT and SHORT (0.5-0.9 s). No dramatic snap, no big spike, nothing that
+#     demands attention. It should read as texture, not as an event.
+#   - DIRT AND GRASS, which he asked for by name — loose topsoil, turf, grass,
+#     moss, leaf litter, straw, grit. Ground material, moving a little.
+#   - STILL A RISE. Something pushes up and the ground gives way over it.
+#   - Not the damp mud of the old cross_rise_* sets, and not round 14's
+#     brittle cracks either: this sits between them, which is where he pointed.
+CROSS_ON_R15: list[tuple] = [
+    ("sod", "a square of turf lifting free, fine roots parting softly under it", 0.8, None),
+    ("grasspart", "dry grass parting and springing back as something rises through it", 0.7, None),
+    ("dirtshrug", "loose dry dirt shrugging upward and sliding off in a small heap", 0.7, None),
+    ("turflift", "a patch of grassy turf easing up and settling back down, soft and low", 0.8, None),
+    ("mossgive", "a soft pad of moss giving way and lifting, damp fibres letting go quietly", 0.8, None),
+    ("leaflitter", "dry leaf litter stirring and sliding aside as the ground lifts under it", 0.7, None),
+    ("pineneedles", "a soft bed of dry pine needles shifting apart from below", 0.7, None),
+    ("strawpush", "loose straw pushed gently upward and spilling off to the sides", 0.7, None),
+    ("barkchips", "dry bark chips shifting and tumbling off a small rising mound", 0.8, None),
+    ("pebbleshift", "small pebbles rolling quietly off soil that is nudging upward", 0.8, None),
+    ("topsoil", "dry topsoil breaking apart softly in fine crumbs as something lifts", 0.7, None),
+    ("clod", "a clod of dry earth breaking loose and rolling gently away", 0.8, None),
+    ("rootlift", "fine roots stretching and letting go one by one, small and soft", 0.9, None),
+    ("grit", "dry grit sliding off a low mound and pattering down", 0.6, None),
+    ("loam", "soft dark loam parting quietly from underneath, earthy and low", 0.8, None),
+    ("thatch", "dry thatch and stalks lifting apart with a light papery rustle", 0.7, None),
+    ("chaff", "light dry chaff pushed up and drifting off, airy and thin", 0.6, None),
+    ("fernpush", "a low fern pushed up from beneath, fronds brushing and settling", 0.8, None),
+    ("peat", "dry crumbling peat opening softly, fibrous and muted", 0.8, None),
+    ("sandsift", "dry sand sifting off a small rise, a soft grainy whisper", 0.6, None),
+    ("gravelnudge", "fine gravel nudged upward and trickling back down, small and unhurried", 0.7, None),
+    ("twigmat", "a mat of small dry twigs lifting and crackling faintly, gentle not sharp", 0.7, None),
+    ("cloverpull", "low clover and its shallow roots pulling softly out of soft ground", 0.8, None),
+    ("dustpuff", "a soft puff of dry dust escaping as the ground opens a little", 0.6, None),
+    ("stonelip", "a small flat stone tipping up at one edge, grit sliding off it", 0.7, None),
+    ("earthsigh", "soil settling with a soft low exhale as something lifts beneath it", 0.9, None),
+    ("crumbfall", "small crumbs of dry soil breaking away and falling back down", 0.6, None),
+    ("weedroot", "a shallow weed and its root easing up out of loose dirt", 0.8, None),
+    ("moundgive", "a small dry sandy mound giving way softly from below", 0.7, None),
+    ("heather", "dry heather and low scrub brushing apart as the ground rises under it", 0.8, None),
+]
+for _suffix, _brief, _dur, _trim in CROSS_ON_R15:
+    SETS[f"cross_on_{_suffix}"] = {
+        "brief": _brief,
+        # "not to extreme" lives in the style too — it is the one instruction
+        # that has to survive every one of the thirty briefs.
+        "style": "clean close-miked foley, natural, one isolated sound, dry, soft and understated, gentle",
+        "duration_s": _dur,
+        "variants": ["standard take"],
+        "takes": 1,
+        "pool": 1,
+    }
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
