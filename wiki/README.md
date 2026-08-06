@@ -455,6 +455,30 @@ to replace the parsing.
   recorded** — and the request carries the numbers you auditioned with. The
   generic `dialog input` rule is scoped to `:not(.sfx-picker)`: it is the
   sign-in dialog's full-width stacked field and it wrecked these rows.
+- **The dialog's geometry is FIXED** (maintainer 2026-08-06: Next must be
+  where it was after you press Next). A modal is centred, so anything below
+  the list that changes height moves every control: the list has a fixed
+  `height` (not a max — a 3-result search used to shrink it and drag the
+  buttons up), the empty state renders INSIDE the list, the transport row is
+  `nowrap`, and the "Selected: …" line is gone — the accent-coloured row
+  already says which sound is selected.
+- **Opening the picker must not raise the keyboard** — only tapping the search
+  box may. `showModal()` focuses the first field by default, so the dialog
+  carries `autofocus`+`tabindex="-1"` and, because that attribute is not
+  honoured everywhere, takes the focus back by hand in the same task (no frame
+  for the keyboard to slide up in). A desktop — `(hover: hover) and (pointer:
+  fine)` — still focuses the search, where typing straight away is the point.
+  The dialog's own focus ring is suppressed: it is a container, not a control.
+- **One button, both places**: `assignSoundBtn()` renders "Assign a sound…" /
+  "Assign another sound…" on event cards and entity cards alike. Its chain is
+  an **inline SVG in `currentColor`**, not U+1F517 — that codepoint has emoji
+  presentation, so a phone draws it as a colour picture next to monochrome
+  text ("should not be a colored smiley").
+- The entity card is titled for what it MAKES — "New sound effect event" — and
+  its action `<select>` is styled as a wiki control (it was raw browser chrome
+  that ignored dark mode). Its width is capped in `em`, not `%`: a percentage
+  cap against a shrink-to-fit flex parent collapsed the box and "Idle"
+  rendered as "Idl".
 - **Grouped by action, and it lists EVERY composer set** — wired or not
   (their ask, 2026-08-05: they ship ~10 `<action>_<flavour>` alternatives per
   action and the winner gets wired afterwards). `composerGroups()` derives the

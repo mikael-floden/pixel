@@ -2124,7 +2124,6 @@ function openSoundPicker({ title, forWhat, onPick }) {
   const vol = ctl(-24, 12, 1, 0, " dB", "volume", "0 dB is the recording as it is; negative is quieter");
   const rnd = ctl(0, 6, 0.1, 0, " st", "random pitch", "Each play lands within this many semitones of the pitch above — 0 means always identical");
   const note = h("input", { type: "text", class: "picker-note", placeholder: "note to the composer (optional)" });
-  const chosen = h("span", { class: "picker-chosen muted" }, "");
   const assign = h("button", { class: "primary-btn" }, "Assign this sound");
   const play = () => {
     const it = list[sel];
@@ -2159,9 +2158,12 @@ function openSoundPicker({ title, forWhat, onPick }) {
       rowEls.push(row);
       kids.push(row);
     });
+    // The empty state lives INSIDE the list, whose height is fixed — nothing
+    // below the list may change height, or the modal re-centres and the
+    // buttons move out from under your finger.
+    if (!list.length) kids.push(h("div", { class: "picker-empty muted" }, "Nothing matches that search."));
     listEl.replaceChildren(...kids);
     const it = list[sel];
-    chosen.textContent = it ? `Selected: ${it.name}` : "Nothing matches that search";
     assign.disabled = !it;
     // A voice's honest playback is 2× — snap the slider when you land on one,
     // exactly like the raw library does, or every voice auditions wrong.
@@ -2173,16 +2175,22 @@ function openSoundPicker({ title, forWhat, onPick }) {
     list = q ? all.filter((it) => `${it.name} ${it.kind} ${it.sub}`.toLowerCase().includes(q)) : all;
     sel = 0; paint();
   });
-  const dlg = h("dialog", { class: "sfx-picker" },
+  // `autofocus` + tabindex on the DIALOG is the standards-blessed way to stop
+  // showModal() from focusing the first field (and popping the keyboard):
+  // showModal focuses the autofocus element when there is one.
+  const dlg = h("dialog", { class: "sfx-picker", tabindex: "-1", autofocus: "" },
     h("h3", {}, title),
     h("p", { class: "muted picker-for" }, forWhat),
     search,
     listEl,
+    // Nothing in this row may change size as you step: the modal is centred,
+    // so a line that wraps on a long name moves every button under your
+    // finger (maintainer 2026-08-06 — and the selected row is already marked
+    // in the accent colour, so naming it again was never needed).
     h("div", { class: "picker-bar" },
       h("button", { class: "ghost-btn", type: "button", onclick: () => move(-1) }, "← Prev"),
       h("button", { class: "ghost-btn picker-play", type: "button", onclick: play }, "▶ Play"),
-      h("button", { class: "ghost-btn", type: "button", onclick: () => move(1) }, "Next →"),
-      chosen),
+      h("button", { class: "ghost-btn", type: "button", onclick: () => move(1) }, "Next →")),
     h("div", { class: "picker-ctls" }, pitch.row, vol.row, rnd.row),
     note,
     h("div", { class: "dialog-row" },
@@ -2205,9 +2213,39 @@ function openSoundPicker({ title, forWhat, onPick }) {
   document.body.append(dlg);
   paint();
   dlg.showModal();
-  search.focus();
+  // NO autofocus on a touch device (maintainer 2026-08-06): focusing the
+  // search box makes the phone keyboard leap up over the list you opened the
+  // dialog to browse. The keyboard belongs to the moment you TAP the search
+  // box, not to opening the picker. A desktop keeps the focus — there the
+  // caret costs nothing and typing straight away is the point.
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    search.focus();
+  } else {
+    // The autofocus attribute above is the standard way to say this, but it is
+    // not honoured everywhere, so take the focus back by hand — synchronously,
+    // in the same task as showModal(), which is why the keyboard never gets a
+    // frame to slide up in.
+    document.activeElement?.blur?.();
+    dlg.focus();
+  }
   return dlg;
 }
+/** The chain, in the button's own ink. `h()` speaks HTML only, and an SVG
+ *  needs its own namespace, so the markup goes in as a static string. */
+function linkIcon() {
+  const s = h("span", { class: "ico-link", "aria-hidden": "true" });
+  s.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">'
+    + '<path d="M9.5 14.5 14.5 9.5"/>'
+    + '<path d="M12.4 6.6 14.2 4.8a3.9 3.9 0 0 1 5.5 5.5l-1.8 1.8"/>'
+    + '<path d="M11.6 17.4 9.8 19.2a3.9 3.9 0 0 1-5.5-5.5l1.8-1.8"/></svg>';
+  return s;
+}
+/** ONE button for both places (maintainer 2026-08-06: "the same button"): an
+ *  event card's card and an entity's assign card open the same picker and must
+ *  read the same. */
+const assignSoundBtn = (another, onclick) =>
+  h("button", { class: "ghost-btn sfx-add-open", onclick },
+    linkIcon(), " ", another ? "Assign another sound…" : "Assign a sound…");
 function sfxAddForm(ev) {
   const queue = (req) => {
     setSfxRequest(`${ev.id}/${Date.now().toString(36)}`, { event: ev.id, ...req, requested_at: new Date().toISOString() });
@@ -2215,11 +2253,11 @@ function sfxAddForm(ev) {
     route();
   };
   return h("div", { class: "sfx-add" },
-    h("button", { class: "ghost-btn sfx-add-open", onclick: () => openSoundPicker({
-      title: ev.sounds.length ? "Add another sound" : "Assign a sound",
+    assignSoundBtn(ev.sounds.length > 0, () => openSoundPicker({
+      title: ev.sounds.length ? "Assign another sound" : "Assign a sound",
       forWhat: `${ev.name} — plays when the game fires this moment. Listen your way down the list; the composer wires in what you pick.`,
       onPick: queue,
-    }) }, ev.sounds.length ? "+ Add another sound…" : "+ Assign a sound…"));
+    })));
 }
 function sfxEventCard(ev) {
   const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
@@ -2310,7 +2348,7 @@ function entityAddCard(domain, ent) {
   if (!actions.length) return null;
   const evId = () => `${domain}.${ent.id}.${act.value}`;
   const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
-  const btn = h("button", { class: "ghost-btn sfx-add-open", onclick: () => openSoundPicker({
+  const btn = assignSoundBtn(false, () => openSoundPicker({
     title: "Assign a sound",
     forWhat: `${ent.name ?? ent.id} — ${stateLabel(act.value)}. Listen your way down the list; the composer wires in what you pick.`,
     onPick: (req) => {
@@ -2321,12 +2359,14 @@ function entityAddCard(domain, ent) {
       toast("Request queued — Save sends it to the composer.");
       route();
     },
-  }) }, "+ Pick a sound…");
+  }));
   const pending = Object.entries(state.tuning.sfx_requests?.requests ?? {})
     .filter(([, r]) => r?.scope?.domain === domain && r?.scope?.id === ent.id);
   return h("div", { class: "panel sfx-entity-add" },
-    h("div", { class: "panel-title" }, "Assign a sound ", h("span", { class: "pill" }, "Game Master")),
-    h("p", { class: "muted", style: "margin:0 0 6px" }, "Pick one of this page's game actions and the sound it should play — the composer agent wires it into the engine."),
+    // This card MAKES an event — the cards above it are events that already
+    // exist — so it is titled for what it produces (maintainer 2026-08-06).
+    h("div", { class: "panel-title" }, "New sound effect event ", h("span", { class: "pill" }, "Game Master")),
+    h("p", { class: "muted", style: "margin:0 0 6px" }, "Assign a sound effect to a new event: pick one of this page's game actions and the sound it should play — the composer agent wires it into the engine."),
     h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), btn),
     ...pending.map(([id, r]) => h("div", { class: "take-row sfx-req" },
       h("span", { class: "pill warn" }, "requested"),

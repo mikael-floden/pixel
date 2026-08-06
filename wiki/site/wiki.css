@@ -705,7 +705,27 @@ button.drop-row {
 .sfx-add { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
 .sfx-add-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
 .sfx-add-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
-.sfx-pick { max-width: 46%; }
+/* The action dropdown is a wiki control, not browser chrome: unstyled, it
+   shipped as a bare grey box that ignored the dark theme entirely. Native
+   `appearance` is kept so the platform draws its own arrow and opens its own
+   picker — only the box is ours. */
+.sfx-pick {
+  /* Sized by its CONTENT, capped in em. The old `max-width: 46%` resolved
+     against a shrink-to-fit flex parent, so the box collapsed to ~85px and
+     "Idle" rendered as "Idl" — a percentage cap needs a parent with a width
+     of its own. `flex: none` keeps the row from squeezing it again. */
+  flex: none; max-width: 16em;
+  background: var(--bg); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 9px;
+  padding: 6px 8px; font: inherit; line-height: 1.3;
+}
+.sfx-pick:focus { outline: none; border-color: var(--accent); }
+/* A chain, drawn rather than typed: U+1F517 is an EMOJI codepoint, so a phone
+   renders it as a colour picture no matter what the text around it does
+   (maintainer 2026-08-06: "should not be a colored smiley"). An inline SVG in
+   currentColor is the same glyph in the button's own ink, on every device. */
+.ico-link { display: inline-flex; width: 15px; height: 15px; vertical-align: -2px; }
+.ico-link svg { width: 100%; height: 100%; display: block; }
 .sfx-note { flex: 1; min-width: 140px; }
 
 /* The audition sliders are wiki furniture, not browser chrome. */
@@ -715,6 +735,10 @@ input[type="range"] { accent-color: var(--accent); }
    (that is where the iterating happens); the transport, the three audition
    controls and the note sit under it, in rows, at their natural widths. */
 .sfx-picker { width: min(560px, calc(100vw - 24px)); max-width: none; padding: 18px; }
+/* The dialog itself takes focus on a touch device (that is how the keyboard is
+   kept down); it is a container, not a control, so it must not wear a focus
+   ring — the ring belongs to whatever you actually tap. */
+.sfx-picker:focus, .sfx-picker:focus-visible { outline: none; }
 .sfx-picker h3 { margin: 0 0 2px; }
 .picker-for { margin: 0 0 10px; font-size: 12.5px; }
 .sfx-picker input[type="search"], .sfx-picker .picker-note {
@@ -723,7 +747,9 @@ input[type="range"] { accent-color: var(--accent); }
 }
 .sfx-picker .picker-note { margin-top: 8px; }
 .picker-list {
-  margin-top: 8px; max-height: min(46vh, 340px); overflow-y: auto;
+  /* A FIXED height, not a max: a search that matches three sounds must not
+     shrink the list and drag every control up the screen with it. */
+  margin-top: 8px; height: min(46vh, 340px); overflow-y: auto;
   border: 1px solid var(--border); border-radius: 10px; background: var(--bg);
   -webkit-overflow-scrolling: touch;
 }
@@ -748,9 +774,12 @@ input[type="range"] { accent-color: var(--accent); }
 .picker-row .play-btn { pointer-events: none; flex: none; }
 .picker-row.sel { background: var(--accent-soft); }
 .picker-row.sel .take-name { color: var(--accent-ink); font-weight: 600; }
-.picker-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.picker-bar .ghost-btn { padding: 5px 12px; }
-.picker-chosen { font-size: 12.5px; margin-left: auto; }
+/* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
+   height change here shifts every control — Next must be where it was after
+   you press Next. */
+.picker-bar { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; margin-top: 10px; }
+.picker-bar .ghost-btn { padding: 5px 12px; flex: none; }
+.picker-empty { padding: 14px 10px; font-size: 13px; text-align: center; }
 .picker-ctls { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .picker-ctl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
 .picker-ctl > span:first-child { min-width: 84px; }
