@@ -105,7 +105,10 @@ ok(/unbind it on that event's card/.test(lib.intro), "and the section explains w
 await p.goto(W + "#/characters/default_boy", { waitUntil: "load" });
 await p.waitForTimeout(2200);
 const ent = await p.evaluate(() => {
-  const c = document.querySelector(".sfx-entity .sfx-event");
+  // A hero's card that HAS a binding. The first card is now Die, which for
+  // default_boy is deliberately empty (no death cry assigned yet), and an
+  // empty card has nothing to judge.
+  const c = [...document.querySelectorAll(".sfx-entity .sfx-event")].find((x) => x.querySelector(".sfx-bind-verdict"));
   return { binds: c.querySelectorAll(".sfx-bind-verdict").length,
     takes: c.querySelectorAll(".sfx-take").length,
     takeStars: c.querySelectorAll(".sfx-take .stars").length,

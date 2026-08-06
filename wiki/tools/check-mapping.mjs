@@ -42,17 +42,31 @@ function record(name) {
   }
   return out;
 }
-const ASSIGN = record("const EVENT_ASSIGNMENTS");
+// The assignments come from the composer's PUBLISHED manifest, which their own
+// gate keeps in step with the engine — "it cannot go stale on you the way an
+// api.ts regex can" (games-audio, 2026-08-06). They were right within hours: a
+// regex on `const assigned = EVENT_ASSIGNMENTS[name]` broke the moment they
+// added per-character voices. We still parse the source as a CROSS-CHECK, so
+// a manifest that stops matching the engine fails here instead of quietly
+// becoming the new truth.
+const DOC = JSON.parse(readFileSync(join(ROOT, "games2/composer/assignments.json"), "utf8"));
+const ASSIGN = DOC.events ?? {};
+const SRC_ASSIGN = record("const EVENT_ASSIGNMENTS") ?? {};
 const FOLEY = record("EVENT_FOLEY");
 const bm = API.match(/const BINDINGS_APPROVED(?:\s*:[^=]+)?\s*=\s*new Set<[^>]*>\(\[([\s\S]*?)\]\)/);
 const APPROVED = new Set(bm ? [...bm[1].replace(/\/\/[^\n]*/g, "").matchAll(/"([^"]+)"/g)].map((x) => x[1]) : []);
 
-ok(!!ASSIGN && Object.keys(ASSIGN).length > 0, `EVENT_ASSIGNMENTS parses (${Object.keys(ASSIGN ?? {}).length} entries)`);
+ok(DOC.format === "pixel-composer-assignments@1", `the composer's manifest is the expected format (${DOC.format})`);
+ok(Object.keys(ASSIGN).length > 0, `it lists assignments (${Object.keys(ASSIGN).length})`);
+const drift = [...new Set([...Object.keys(ASSIGN), ...Object.keys(SRC_ASSIGN)])]
+  .filter((k) => String(ASSIGN[k]?.sound ?? "") !== String(SRC_ASSIGN[k]?.sound ?? ""));
+ok(drift.length === 0, `and it agrees with EVENT_ASSIGNMENTS in api.ts${drift.length ? ` — DRIFT on ${drift.join(", ")}` : ""}`);
 ok(!!FOLEY, `EVENT_FOLEY parses (${Object.keys(FOLEY ?? {}).length} entries)`);
 ok(APPROVED.size > 0, `BINDINGS_APPROVED parses (${[...APPROVED].join(", ")})`);
-// The order itself is load-bearing: if the engine stops looking at
-// assignments first, everything below is checking the wrong thing.
-ok(/const assigned = EVENT_ASSIGNMENTS\[name\]/.test(API), "assignments are still the engine's FIRST lookup");
+// The ORDER is load-bearing: if assignments stop outranking the rest,
+// everything below is checking the wrong thing. Matched loosely on purpose —
+// the exact expression has already changed once (per-character voices).
+ok(/EVENT_ASSIGNMENTS\[/.test(API), "assignments are still consulted by the engine");
 ok(/if \(!BINDINGS_APPROVED\.has\(name\)\) return;/.test(API), "and bindings.json is still gated behind BINDINGS_APPROVED");
 
 const byId = new Map(D.sfx.events.map((e) => [e.id, e]));

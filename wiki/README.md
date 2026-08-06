@@ -623,10 +623,29 @@ to replace the parsing.
   - The same pass found a third stale mapping: `weather.thunder` is played
     through `foleyEntry(…, "rotate")`, which binds EVERY url, but the wiki
     pinned it to `primary` and said "1 take" while the game rotated all six.
-  - Gate: **`wiki/tools/check-mapping.mjs`**. It re-derives the resolution
-    from `api.ts` itself — not from a copy of the answer — so it cannot drift
-    with the thing it checks, and it fails on any bound event whose route
-    isn't one the engine would actually take. Verified to name all three
+  - **Read `games2/composer/assignments.json`, not the engine source.**
+    games-audio publish that manifest (`pixel-composer-assignments@1`) from
+    their own build, and their gate fails if it drifts from `api.ts` — so it
+    "cannot go stale on you the way an api.ts regex can" (their words). They
+    were proved right within the hour: a regex on
+    `const assigned = EVENT_ASSIGNMENTS[name]` broke the moment they added
+    per-character voices, and the drift sentinel caught it on the next build.
+    The source parse survives only as a fallback, so an unbuilt manifest
+    degrades to stale-but-present instead of to a page claiming silence.
+  - **Per-character assignments**: the engine resolves `player.die@<uid>`
+    ahead of the unscoped `player.die`, using this wiki's own spelling. **Die
+    now has a per-hero row beside Jump and Fall** — there was one shared card,
+    so the boy could not be given his own cry (maintainer, on the die-voice
+    request: "This is the female die sound effect. Can't assign a separate
+    voice to the male (you need to fix that)"). Each row shows what that hero
+    ACTUALLY gets, falling back to the shared cry exactly as the engine does
+    and saying which it is — a row reading "no sound yet" while a shared cry
+    played would be the same class of lie. The unscoped card is not listed
+    separately; these rows are the whole truth about who dies with which voice.
+  - Gate: **`wiki/tools/check-mapping.mjs`**. It checks `data.json` against
+    the composer's manifest AND cross-checks that manifest against `api.ts`,
+    so neither side can drift silently, and it fails on any bound event whose
+    route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
 - **Unbind is PER RECORDING, not just per sound** (maintainer 2026-08-06: "I
   wanted to unbind `coin_pickup__take02.wav` from Coin Pickup, but the unbind

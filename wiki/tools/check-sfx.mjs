@@ -18,7 +18,16 @@ ok(grass.sounds.length === 2, "grass footstep = grass set + dirt layered under")
 const jumpBoy = sfx.events.find((e) => e.id === "player.jump@default_boy");
 ok(jumpBoy?.scope?.id === "default_boy" && jumpBoy.sounds.length === 1 && jumpBoy.sounds[0].voiceRate === 2,
   "jump is PER CHARACTER — the boy's event carries only his voice at ×2");
-ok(sfx.events.filter((e) => e.scope).length === 4, "four scoped events: jump+fall per hero");
+// Jump + Fall + Die per hero. Die joined them 2026-08-06 (games-audio's ask,
+// quoting the maintainer: "Can't assign a separate voice to the male (you need
+// to fix that)") — there was ONE shared Die card, so the boy could not be
+// given his own death cry.
+const scoped = sfx.events.filter((e) => e.scope);
+ok(scoped.length === 6, `six scoped events: jump+fall+die per hero (${scoped.length})`);
+const die = sfx.events.filter((e) => e.id.startsWith("player.die@"));
+ok(die.length === 2 && die.every((e) => e.scope?.id), `Die is per hero (${die.map((e) => e.id).join(", ")})`);
+ok(!sfx.events.some((e) => e.id === "player.die" && !e.scope),
+  "and the old shared Die card is gone — the per-hero rows are the whole truth");
 ok(!sfx.events.some((e) => !e.scope && /^player\.(jump|fall)$/.test(e.id)), "no generic jump/fall left");
 
 // ---------- player view
