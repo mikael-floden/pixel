@@ -8724,5 +8724,2855 @@
     "brief": "gravel pouring in to fill a gap in the ground",
     "generated_at": "2026-08-06T03:40:42+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_idle": {
+    "takes": [
+      "mon_forest_poring_idle/mon_forest_poring_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.0,
+        "duration_s": 0.889,
+        "attack_ms": 369.8,
+        "tail_ratio": 0.208,
+        "tonality": 0.524,
+        "crest": 5.85,
+        "centroid_hz": 2208,
+        "mid_ratio": 0.998
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small soft gel blob settling, a faint wet wobble and squish",
+    "generated_at": "2026-08-06T04:02:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_walk": {
+    "takes": [
+      "mon_forest_poring_walk/mon_forest_poring_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.505
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.6,
+        "duration_s": 0.505,
+        "attack_ms": 28.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.555,
+        "crest": 23.81,
+        "centroid_hz": 5207,
+        "mid_ratio": 0.74
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small gel blob hopping once onto soft moss, a light wet plop",
+    "generated_at": "2026-08-06T04:02:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_angry": {
+    "takes": [
+      "mon_forest_poring_angry/mon_forest_poring_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.2,
+        "duration_s": 1.098,
+        "attack_ms": 29.6,
+        "tail_ratio": 0.33,
+        "tonality": 0.457,
+        "crest": 5.58,
+        "centroid_hz": 3536,
+        "mid_ratio": 0.955
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small gel blob quivering fast and tightening, an agitated wet trembling",
+    "generated_at": "2026-08-06T04:03:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_attack": {
+    "takes": [
+      "mon_forest_poring_attack/mon_forest_poring_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.0,
+        "duration_s": 0.811,
+        "attack_ms": 315.2,
+        "tail_ratio": 0.001,
+        "tonality": 0.543,
+        "crest": 6.26,
+        "centroid_hz": 2328,
+        "mid_ratio": 0.985
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small gel blob lunging with a sharp wet slap",
+    "generated_at": "2026-08-06T04:03:09+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_2_idle": {
+    "takes": [
+      "mon_forest_poring_2_idle/mon_forest_poring_2_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.5,
+        "duration_s": 0.889,
+        "attack_ms": 139.6,
+        "tail_ratio": 0.016,
+        "tonality": 0.522,
+        "crest": 4.71,
+        "centroid_hz": 2318,
+        "mid_ratio": 0.998
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a little leafy sprout-blob rustling gently in place",
+    "generated_at": "2026-08-06T04:03:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_2_walk": {
+    "takes": [
+      "mon_forest_poring_2_walk/mon_forest_poring_2_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.493
+    ],
+    "features": [
+      {
+        "mid_peak_db": -32.6,
+        "duration_s": 0.493,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.118,
+        "crest": 16.75,
+        "centroid_hz": 9160,
+        "mid_ratio": 0.117
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a leafy sprout-blob hopping once, a soft papery crunch and settle",
+    "generated_at": "2026-08-06T04:03:19+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_2_angry": {
+    "takes": [
+      "mon_forest_poring_2_angry/mon_forest_poring_2_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -8.6,
+        "duration_s": 1.098,
+        "attack_ms": 115.5,
+        "tail_ratio": 0.048,
+        "tonality": 0.527,
+        "crest": 4.36,
+        "centroid_hz": 2679,
+        "mid_ratio": 0.997
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a leafy sprout-blob shaking its leaves fast and angrily",
+    "generated_at": "2026-08-06T04:03:25+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_forest_poring_2_attack": {
+    "takes": [
+      "mon_forest_poring_2_attack/mon_forest_poring_2_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.2,
+        "duration_s": 0.811,
+        "attack_ms": 64.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.42,
+        "crest": 6.62,
+        "centroid_hz": 3175,
+        "mid_ratio": 0.975
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a leafy sprout-blob whipping forward, a quick leafy thwack",
+    "generated_at": "2026-08-06T04:03:30+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_poring_idle": {
+    "takes": [
+      "mon_ice_poring_idle/mon_ice_poring_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.8,
+        "duration_s": 0.889,
+        "attack_ms": 674.9,
+        "tail_ratio": 0.562,
+        "tonality": 0.331,
+        "crest": 11.85,
+        "centroid_hz": 6389,
+        "mid_ratio": 0.594
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small frozen gel blob creaking faintly, tiny ice crystals ticking",
+    "generated_at": "2026-08-06T04:03:34+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_poring_walk": {
+    "takes": [
+      "mon_ice_poring_walk/mon_ice_poring_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.6,
+        "duration_s": 0.6,
+        "attack_ms": 4.8,
+        "tail_ratio": 0.0,
+        "tonality": 0.363,
+        "crest": 23.63,
+        "centroid_hz": 6415,
+        "mid_ratio": 0.612
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frozen gel blob hopping once onto packed snow, a crisp crunch",
+    "generated_at": "2026-08-06T04:03:39+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_poring_angry": {
+    "takes": [
+      "mon_ice_poring_angry/mon_ice_poring_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.4,
+        "duration_s": 1.098,
+        "attack_ms": 140.8,
+        "tail_ratio": 0.146,
+        "tonality": 0.717,
+        "crest": 6.11,
+        "centroid_hz": 3136,
+        "mid_ratio": 0.987
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frozen gel blob cracking and grinding its ice angrily",
+    "generated_at": "2026-08-06T04:03:44+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_poring_attack": {
+    "takes": [
+      "mon_ice_poring_attack/mon_ice_poring_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.777
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.4,
+        "duration_s": 0.777,
+        "attack_ms": 52.1,
+        "tail_ratio": 0.011,
+        "tonality": 0.269,
+        "crest": 16.86,
+        "centroid_hz": 4877,
+        "mid_ratio": 0.808
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frozen gel blob striking, a brittle icy crack and shatter",
+    "generated_at": "2026-08-06T04:03:49+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_poring_idle": {
+    "takes": [
+      "mon_lava_poring_idle/mon_lava_poring_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.0,
+        "duration_s": 0.889,
+        "attack_ms": 63.5,
+        "tail_ratio": 0.055,
+        "tonality": 0.548,
+        "crest": 5.32,
+        "centroid_hz": 527,
+        "mid_ratio": 0.868
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a molten gel blob bubbling softly, a low lazy magma glop",
+    "generated_at": "2026-08-06T04:03:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_poring_walk": {
+    "takes": [
+      "mon_lava_poring_walk/mon_lava_poring_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -29.6,
+        "duration_s": 0.6,
+        "attack_ms": 12.8,
+        "tail_ratio": 0.0,
+        "tonality": 0.726,
+        "crest": 11.54,
+        "centroid_hz": 6706,
+        "mid_ratio": 0.095
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a molten blob hopping once onto hot stone, a thick wet sizzle",
+    "generated_at": "2026-08-06T04:03:58+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_poring_angry": {
+    "takes": [
+      "mon_lava_poring_angry/mon_lava_poring_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -7.1,
+        "duration_s": 1.098,
+        "attack_ms": 134.0,
+        "tail_ratio": 0.469,
+        "tonality": 0.721,
+        "crest": 2.81,
+        "centroid_hz": 1286,
+        "mid_ratio": 0.999
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a molten blob boiling up fast and spitting, an agitated hiss",
+    "generated_at": "2026-08-06T04:04:03+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_poring_attack": {
+    "takes": [
+      "mon_lava_poring_attack/mon_lava_poring_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -19.6,
+        "duration_s": 0.811,
+        "attack_ms": 12.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.273,
+        "crest": 10.51,
+        "centroid_hz": 4040,
+        "mid_ratio": 0.568
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a molten blob lashing out, a hot wet splat with a sharp sizzle",
+    "generated_at": "2026-08-06T04:04:08+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_water_poring_idle": {
+    "takes": [
+      "mon_water_poring_idle/mon_water_poring_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.9,
+        "duration_s": 0.889,
+        "attack_ms": 18.3,
+        "tail_ratio": 0.065,
+        "tonality": 0.528,
+        "crest": 8.03,
+        "centroid_hz": 947,
+        "mid_ratio": 0.967
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a water blob sloshing gently in place, soft liquid settling",
+    "generated_at": "2026-08-06T04:04:13+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_water_poring_walk": {
+    "takes": [
+      "mon_water_poring_walk/mon_water_poring_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.1,
+        "duration_s": 0.6,
+        "attack_ms": 4.7,
+        "tail_ratio": 0.0,
+        "tonality": 0.25,
+        "crest": 14.58,
+        "centroid_hz": 973,
+        "mid_ratio": 0.831
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a water blob hopping once, a round wet plop and splash",
+    "generated_at": "2026-08-06T04:04:18+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_water_poring_angry": {
+    "takes": [
+      "mon_water_poring_angry/mon_water_poring_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.1,
+        "duration_s": 1.098,
+        "attack_ms": 433.8,
+        "tail_ratio": 0.421,
+        "tonality": 0.174,
+        "crest": 5.73,
+        "centroid_hz": 1975,
+        "mid_ratio": 0.993
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a water blob churning fast, agitated sloshing and bubbling",
+    "generated_at": "2026-08-06T04:04:23+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_water_poring_attack": {
+    "takes": [
+      "mon_water_poring_attack/mon_water_poring_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.6,
+        "duration_s": 0.811,
+        "attack_ms": 13.5,
+        "tail_ratio": 0.002,
+        "tonality": 0.571,
+        "crest": 11.1,
+        "centroid_hz": 1945,
+        "mid_ratio": 0.446
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a water blob slamming forward, a big flat water slap",
+    "generated_at": "2026-08-06T04:04:28+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_butterfly_dragon_idle": {
+    "takes": [
+      "mon_butterfly_dragon_idle/mon_butterfly_dragon_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -25.3,
+        "duration_s": 0.889,
+        "attack_ms": 124.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.944,
+        "crest": 6.39,
+        "centroid_hz": 1968,
+        "mid_ratio": 0.051
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a large winged creature breathing softly, slow leathery wing flutter",
+    "generated_at": "2026-08-06T04:04:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_butterfly_dragon_walk": {
+    "takes": [
+      "mon_butterfly_dragon_walk/mon_butterfly_dragon_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.542
+    ],
+    "features": [
+      {
+        "mid_peak_db": -32.3,
+        "duration_s": 0.542,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.965,
+        "crest": 5.92,
+        "centroid_hz": 1556,
+        "mid_ratio": 0.015
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "one deep beat of big leathery wings pushing air downward",
+    "generated_at": "2026-08-06T04:04:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_butterfly_dragon_angry": {
+    "takes": [
+      "mon_butterfly_dragon_angry/mon_butterfly_dragon_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.9,
+        "duration_s": 1.098,
+        "attack_ms": 395.3,
+        "tail_ratio": 0.389,
+        "tonality": 0.69,
+        "crest": 4.6,
+        "centroid_hz": 2794,
+        "mid_ratio": 0.99
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a winged creature hissing and beating its wings fast, agitated",
+    "generated_at": "2026-08-06T04:04:43+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_butterfly_dragon_attack": {
+    "takes": [
+      "mon_butterfly_dragon_attack/mon_butterfly_dragon_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.5,
+        "duration_s": 0.811,
+        "attack_ms": 170.5,
+        "tail_ratio": 0.025,
+        "tonality": 0.598,
+        "crest": 5.67,
+        "centroid_hz": 2969,
+        "mid_ratio": 0.97
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a winged dragon lunging with a sharp hiss and a hard wing snap",
+    "generated_at": "2026-08-06T04:04:48+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mystical_frog_idle": {
+    "takes": [
+      "mon_mystical_frog_idle/mon_mystical_frog_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -16.7,
+        "duration_s": 0.889,
+        "attack_ms": 430.3,
+        "tail_ratio": 0.458,
+        "tonality": 0.52,
+        "crest": 7.38,
+        "centroid_hz": 1268,
+        "mid_ratio": 0.819
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big frog croaking low and slow, one wet resonant burp",
+    "generated_at": "2026-08-06T04:04:53+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mystical_frog_walk": {
+    "takes": [
+      "mon_mystical_frog_walk/mon_mystical_frog_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.8,
+        "duration_s": 0.6,
+        "attack_ms": 20.1,
+        "tail_ratio": 0.002,
+        "tonality": 0.555,
+        "crest": 13.68,
+        "centroid_hz": 2883,
+        "mid_ratio": 0.612
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big frog landing from a hop onto wet ground, a soft splat",
+    "generated_at": "2026-08-06T04:04:57+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mystical_frog_angry": {
+    "takes": [
+      "mon_mystical_frog_angry/mon_mystical_frog_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.4,
+        "duration_s": 1.098,
+        "attack_ms": 268.7,
+        "tail_ratio": 0.557,
+        "tonality": 0.644,
+        "crest": 7.79,
+        "centroid_hz": 2161,
+        "mid_ratio": 0.998
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big frog croaking fast and swelling, an agitated throaty rattle",
+    "generated_at": "2026-08-06T04:05:02+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mystical_frog_attack": {
+    "takes": [
+      "mon_mystical_frog_attack/mon_mystical_frog_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.4,
+        "duration_s": 0.811,
+        "attack_ms": 74.7,
+        "tail_ratio": 0.001,
+        "tonality": 0.587,
+        "crest": 10.58,
+        "centroid_hz": 1881,
+        "mid_ratio": 0.99
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big frog lunging with a snapping wet gulp",
+    "generated_at": "2026-08-06T04:05:07+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_hedgehog_idle": {
+    "takes": [
+      "mon_hedgehog_idle/mon_hedgehog_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -23.3,
+        "duration_s": 0.889,
+        "attack_ms": 14.2,
+        "tail_ratio": 0.225,
+        "tonality": 0.172,
+        "crest": 10.32,
+        "centroid_hz": 5811,
+        "mid_ratio": 0.392
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small spiny animal snuffling softly, quills shifting with a dry rustle",
+    "generated_at": "2026-08-06T04:05:12+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_hedgehog_walk": {
+    "takes": [
+      "mon_hedgehog_walk/mon_hedgehog_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.41
+    ],
+    "features": [
+      {
+        "mid_peak_db": -29.0,
+        "duration_s": 0.41,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.171,
+        "crest": 17.36,
+        "centroid_hz": 7627,
+        "mid_ratio": 0.347
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "small quick paws pattering over dry leaves, one light scuffle",
+    "generated_at": "2026-08-06T04:05:17+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_hedgehog_angry": {
+    "takes": [
+      "mon_hedgehog_angry/mon_hedgehog_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.4,
+        "duration_s": 1.098,
+        "attack_ms": 208.3,
+        "tail_ratio": 0.332,
+        "tonality": 0.244,
+        "crest": 4.78,
+        "centroid_hz": 4445,
+        "mid_ratio": 0.642
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small spiny animal huffing and rattling its quills fast, angry",
+    "generated_at": "2026-08-06T04:05:22+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_hedgehog_attack": {
+    "takes": [
+      "mon_hedgehog_attack/mon_hedgehog_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.809
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.5,
+        "duration_s": 0.809,
+        "attack_ms": 221.7,
+        "tail_ratio": 0.13,
+        "tonality": 0.44,
+        "crest": 4.73,
+        "centroid_hz": 3437,
+        "mid_ratio": 0.969
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small spiny animal lunging with a sharp squeal and a quill stab",
+    "generated_at": "2026-08-06T04:05:27+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_white_rabbit_idle": {
+    "takes": [
+      "mon_white_rabbit_idle/mon_white_rabbit_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.9,
+        "duration_s": 0.889,
+        "attack_ms": 169.4,
+        "tail_ratio": 0.323,
+        "tonality": 0.972,
+        "crest": 3.51,
+        "centroid_hz": 3669,
+        "mid_ratio": 0.049
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small animal breathing quickly, soft fur shifting, a faint nose twitch",
+    "generated_at": "2026-08-06T04:05:32+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_white_rabbit_walk": {
+    "takes": [
+      "mon_white_rabbit_walk/mon_white_rabbit_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.534
+    ],
+    "features": [
+      {
+        "mid_peak_db": -25.6,
+        "duration_s": 0.534,
+        "attack_ms": 22.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.804,
+        "crest": 13.12,
+        "centroid_hz": 3878,
+        "mid_ratio": 0.339
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a rabbit thumping once as it lands from a hop on soft earth",
+    "generated_at": "2026-08-06T04:05:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_white_rabbit_angry": {
+    "takes": [
+      "mon_white_rabbit_angry/mon_white_rabbit_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.7,
+        "duration_s": 1.098,
+        "attack_ms": 96.3,
+        "tail_ratio": 0.123,
+        "tonality": 0.788,
+        "crest": 6.77,
+        "centroid_hz": 2316,
+        "mid_ratio": 0.995
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small animal snarling and thumping the ground fast, agitated",
+    "generated_at": "2026-08-06T04:05:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_white_rabbit_attack": {
+    "takes": [
+      "mon_white_rabbit_attack/mon_white_rabbit_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.9,
+        "duration_s": 0.811,
+        "attack_ms": 375.4,
+        "tail_ratio": 0.235,
+        "tonality": 0.795,
+        "crest": 3.47,
+        "centroid_hz": 3416,
+        "mid_ratio": 0.957
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small fanged animal lunging with a sharp shriek and a bite snap",
+    "generated_at": "2026-08-06T04:05:47+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_malformed_creature_idle": {
+    "takes": [
+      "mon_malformed_creature_idle/mon_malformed_creature_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.4,
+        "duration_s": 0.889,
+        "attack_ms": 57.9,
+        "tail_ratio": 0.377,
+        "tonality": 0.719,
+        "crest": 4.5,
+        "centroid_hz": 1100,
+        "mid_ratio": 0.441
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a pale sickly creature breathing wetly and unevenly, a faint rattle",
+    "generated_at": "2026-08-06T04:05:52+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_malformed_creature_walk": {
+    "takes": [
+      "mon_malformed_creature_walk/mon_malformed_creature_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.2,
+        "duration_s": 0.6,
+        "attack_ms": 16.2,
+        "tail_ratio": 0.027,
+        "tonality": 0.164,
+        "crest": 12.85,
+        "centroid_hz": 4511,
+        "mid_ratio": 0.831
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an uneven dragging step of a malformed body over dirt, a scuffing lurch",
+    "generated_at": "2026-08-06T04:05:57+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_malformed_creature_angry": {
+    "takes": [
+      "mon_malformed_creature_angry/mon_malformed_creature_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.6,
+        "duration_s": 1.098,
+        "attack_ms": 241.6,
+        "tail_ratio": 0.127,
+        "tonality": 0.39,
+        "crest": 6.38,
+        "centroid_hz": 1790,
+        "mid_ratio": 0.981
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a malformed creature snarling low and wet, agitated and building",
+    "generated_at": "2026-08-06T04:06:02+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_malformed_creature_attack": {
+    "takes": [
+      "mon_malformed_creature_attack/mon_malformed_creature_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -7.7,
+        "duration_s": 0.811,
+        "attack_ms": 331.5,
+        "tail_ratio": 0.378,
+        "tonality": 0.61,
+        "crest": 2.79,
+        "centroid_hz": 2669,
+        "mid_ratio": 0.997
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a malformed creature lunging with a wet ragged shriek",
+    "generated_at": "2026-08-06T04:06:07+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_masked_shadow_creature_idle": {
+    "takes": [
+      "mon_masked_shadow_creature_idle/mon_masked_shadow_creature_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.3,
+        "duration_s": 0.889,
+        "attack_ms": 161.0,
+        "tail_ratio": 0.034,
+        "tonality": 0.739,
+        "crest": 4.8,
+        "centroid_hz": 2006,
+        "mid_ratio": 0.994
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a shadowy figure breathing shallow and hollow, cloth stirring faintly",
+    "generated_at": "2026-08-06T04:06:12+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_masked_shadow_creature_walk": {
+    "takes": [
+      "mon_masked_shadow_creature_walk/mon_masked_shadow_creature_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.369
+    ],
+    "features": [
+      {
+        "mid_peak_db": -18.1,
+        "duration_s": 0.369,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.162,
+        "crest": 7.05,
+        "centroid_hz": 5614,
+        "mid_ratio": 0.795
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft gliding footfall of a shadow figure, cloth and a whisper of air",
+    "generated_at": "2026-08-06T04:06:17+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_masked_shadow_creature_angry": {
+    "takes": [
+      "mon_masked_shadow_creature_angry/mon_masked_shadow_creature_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.9,
+        "duration_s": 1.098,
+        "attack_ms": 34.5,
+        "tail_ratio": 0.241,
+        "tonality": 0.605,
+        "crest": 3.9,
+        "centroid_hz": 2224,
+        "mid_ratio": 0.994
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a shadow figure hissing low through a mask, rising and menacing",
+    "generated_at": "2026-08-06T04:06:22+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_masked_shadow_creature_attack": {
+    "takes": [
+      "mon_masked_shadow_creature_attack/mon_masked_shadow_creature_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.8,
+        "duration_s": 0.811,
+        "attack_ms": 11.7,
+        "tail_ratio": 0.0,
+        "tonality": 0.865,
+        "crest": 6.25,
+        "centroid_hz": 385,
+        "mid_ratio": 0.753
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a shadow figure striking, a sharp hollow rasp and a fast cloth snap",
+    "generated_at": "2026-08-06T04:06:27+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_night_beast_idle": {
+    "takes": [
+      "mon_night_beast_idle/mon_night_beast_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.8,
+        "duration_s": 0.889,
+        "attack_ms": 231.0,
+        "tail_ratio": 0.044,
+        "tonality": 0.356,
+        "crest": 5.31,
+        "centroid_hz": 1210,
+        "mid_ratio": 0.922
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a large predator breathing deep and slow in the dark, a faint bone click",
+    "generated_at": "2026-08-06T04:06:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_night_beast_walk": {
+    "takes": [
+      "mon_night_beast_walk/mon_night_beast_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.561
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.5,
+        "duration_s": 0.561,
+        "attack_ms": 26.5,
+        "tail_ratio": 0.0,
+        "tonality": 0.895,
+        "crest": 8.77,
+        "centroid_hz": 1682,
+        "mid_ratio": 0.189
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy padded paw stepping down, a soft thud with a dry bone rattle",
+    "generated_at": "2026-08-06T04:06:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_night_beast_angry": {
+    "takes": [
+      "mon_night_beast_angry/mon_night_beast_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -16.9,
+        "duration_s": 1.098,
+        "attack_ms": 70.4,
+        "tail_ratio": 0.139,
+        "tonality": 0.573,
+        "crest": 7.16,
+        "centroid_hz": 728,
+        "mid_ratio": 0.52
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a large predator growling low and rising, dangerous and building",
+    "generated_at": "2026-08-06T04:06:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_night_beast_attack": {
+    "takes": [
+      "mon_night_beast_attack/mon_night_beast_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.2,
+        "duration_s": 0.811,
+        "attack_ms": 9.3,
+        "tail_ratio": 0.018,
+        "tonality": 0.273,
+        "crest": 4.54,
+        "centroid_hz": 1753,
+        "mid_ratio": 0.996
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a large predator lunging with a roaring snarl and a jaw snap",
+    "generated_at": "2026-08-06T04:06:50+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_idle": {
+    "takes": [
+      "mon_lava_salamander_idle/mon_lava_salamander_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -16.5,
+        "duration_s": 0.889,
+        "attack_ms": 82.8,
+        "tail_ratio": 0.315,
+        "tonality": 0.92,
+        "crest": 3.91,
+        "centroid_hz": 331,
+        "mid_ratio": 0.222
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big reptile breathing hot and slow, a soft ember crackle",
+    "generated_at": "2026-08-06T04:06:55+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_walk": {
+    "takes": [
+      "mon_lava_salamander_walk/mon_lava_salamander_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.533
+    ],
+    "features": [
+      {
+        "mid_peak_db": -18.7,
+        "duration_s": 0.533,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.235,
+        "crest": 9.92,
+        "centroid_hz": 2583,
+        "mid_ratio": 0.938
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy reptile foot on hot stone, a scraping step with a faint sizzle",
+    "generated_at": "2026-08-06T04:06:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_angry": {
+    "takes": [
+      "mon_lava_salamander_angry/mon_lava_salamander_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.0,
+        "duration_s": 1.098,
+        "attack_ms": 115.8,
+        "tail_ratio": 0.322,
+        "tonality": 0.361,
+        "crest": 4.02,
+        "centroid_hz": 4590,
+        "mid_ratio": 0.752
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big fire reptile hissing hard, embers popping angrily",
+    "generated_at": "2026-08-06T04:07:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_attack": {
+    "takes": [
+      "mon_lava_salamander_attack/mon_lava_salamander_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.5,
+        "duration_s": 0.811,
+        "attack_ms": 306.5,
+        "tail_ratio": 0.028,
+        "tonality": 0.455,
+        "crest": 5.0,
+        "centroid_hz": 2413,
+        "mid_ratio": 0.934
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big fire reptile lunging with a roaring hiss and a burst of flame",
+    "generated_at": "2026-08-06T04:07:12+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_2_idle": {
+    "takes": [
+      "mon_lava_salamander_2_idle/mon_lava_salamander_2_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -8.3,
+        "duration_s": 0.889,
+        "attack_ms": 314.9,
+        "tail_ratio": 0.32,
+        "tonality": 0.748,
+        "crest": 2.92,
+        "centroid_hz": 366,
+        "mid_ratio": 0.913
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a pale reptile breathing slow and rasping, scales shifting",
+    "generated_at": "2026-08-06T04:07:16+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_2_walk": {
+    "takes": [
+      "mon_lava_salamander_2_walk/mon_lava_salamander_2_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -16.6,
+        "duration_s": 0.6,
+        "attack_ms": 9.1,
+        "tail_ratio": 0.0,
+        "tonality": 0.104,
+        "crest": 8.09,
+        "centroid_hz": 3062,
+        "mid_ratio": 0.904
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy pale reptile foot scraping over gravel, one dragging step",
+    "generated_at": "2026-08-06T04:07:22+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_2_angry": {
+    "takes": [
+      "mon_lava_salamander_2_angry/mon_lava_salamander_2_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.5,
+        "duration_s": 1.098,
+        "attack_ms": 214.5,
+        "tail_ratio": 0.282,
+        "tonality": 0.216,
+        "crest": 6.12,
+        "centroid_hz": 2501,
+        "mid_ratio": 0.963
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a pale reptile rasping and snapping, agitated and rising",
+    "generated_at": "2026-08-06T04:07:27+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_lava_salamander_2_attack": {
+    "takes": [
+      "mon_lava_salamander_2_attack/mon_lava_salamander_2_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -6.3,
+        "duration_s": 0.811,
+        "attack_ms": 7.9,
+        "tail_ratio": 0.313,
+        "tonality": 0.203,
+        "crest": 2.15,
+        "centroid_hz": 2746,
+        "mid_ratio": 0.984
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a pale reptile lunging with a hard rasping snarl and a jaw snap",
+    "generated_at": "2026-08-06T04:07:32+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_crystal_golem_idle": {
+    "takes": [
+      "mon_ice_crystal_golem_idle/mon_ice_crystal_golem_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.8,
+        "duration_s": 0.889,
+        "attack_ms": 222.8,
+        "tail_ratio": 0.157,
+        "tonality": 0.933,
+        "crest": 4.4,
+        "centroid_hz": 2712,
+        "mid_ratio": 0.986
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a crystal body ticking and creaking faintly as ice settles",
+    "generated_at": "2026-08-06T04:07:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_crystal_golem_walk": {
+    "takes": [
+      "mon_ice_crystal_golem_walk/mon_ice_crystal_golem_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.485
+    ],
+    "features": [
+      {
+        "mid_peak_db": -33.5,
+        "duration_s": 0.485,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.219,
+        "crest": 34.25,
+        "centroid_hz": 7832,
+        "mid_ratio": 0.407
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy crystal foot planting on frozen ground, a hard crunch",
+    "generated_at": "2026-08-06T04:07:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_crystal_golem_angry": {
+    "takes": [
+      "mon_ice_crystal_golem_angry/mon_ice_crystal_golem_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.9,
+        "duration_s": 1.098,
+        "attack_ms": 300.6,
+        "tail_ratio": 0.318,
+        "tonality": 0.633,
+        "crest": 11.28,
+        "centroid_hz": 3441,
+        "mid_ratio": 0.964
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a crystal golem grinding and cracking its facets, building pressure",
+    "generated_at": "2026-08-06T04:07:47+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_ice_crystal_golem_attack": {
+    "takes": [
+      "mon_ice_crystal_golem_attack/mon_ice_crystal_golem_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.0,
+        "duration_s": 0.811,
+        "attack_ms": 46.9,
+        "tail_ratio": 0.0,
+        "tonality": 0.323,
+        "crest": 16.6,
+        "centroid_hz": 5361,
+        "mid_ratio": 0.51
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a crystal golem striking, a bright shattering crack of ice",
+    "generated_at": "2026-08-06T04:07:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_turtle_idle": {
+    "takes": [
+      "mon_stone_turtle_idle/mon_stone_turtle_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.8,
+        "duration_s": 0.889,
+        "attack_ms": 16.7,
+        "tail_ratio": 0.04,
+        "tonality": 0.477,
+        "crest": 5.2,
+        "centroid_hz": 1113,
+        "mid_ratio": 0.619
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a huge shelled creature breathing slow and deep, a faint stone grind",
+    "generated_at": "2026-08-06T04:07:58+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_turtle_walk": {
+    "takes": [
+      "mon_stone_turtle_walk/mon_stone_turtle_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.4,
+        "duration_s": 0.6,
+        "attack_ms": 5.3,
+        "tail_ratio": 0.001,
+        "tonality": 0.146,
+        "crest": 14.55,
+        "centroid_hz": 5475,
+        "mid_ratio": 0.489
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy turtle foot planting, a dull stone thud with a shell shift",
+    "generated_at": "2026-08-06T04:08:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_turtle_angry": {
+    "takes": [
+      "mon_stone_turtle_angry/mon_stone_turtle_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.5,
+        "duration_s": 1.098,
+        "attack_ms": 87.5,
+        "tail_ratio": 0.081,
+        "tonality": 0.676,
+        "crest": 5.55,
+        "centroid_hz": 1602,
+        "mid_ratio": 0.913
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a huge shelled creature huffing hard, stone grinding angrily",
+    "generated_at": "2026-08-06T04:08:08+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_turtle_attack": {
+    "takes": [
+      "mon_stone_turtle_attack/mon_stone_turtle_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.7,
+        "duration_s": 0.811,
+        "attack_ms": 4.1,
+        "tail_ratio": 0.0,
+        "tonality": 0.904,
+        "crest": 5.57,
+        "centroid_hz": 3137,
+        "mid_ratio": 0.099
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a huge shelled creature slamming its shell forward, a heavy stone crack",
+    "generated_at": "2026-08-06T04:08:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_tree_stump_idle": {
+    "takes": [
+      "mon_tree_stump_idle/mon_tree_stump_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.2,
+        "duration_s": 0.889,
+        "attack_ms": 150.5,
+        "tail_ratio": 0.142,
+        "tonality": 0.602,
+        "crest": 13.52,
+        "centroid_hz": 1441,
+        "mid_ratio": 0.996
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an old tree stump creaking faintly, dry wood settling",
+    "generated_at": "2026-08-06T04:08:19+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_tree_stump_walk": {
+    "takes": [
+      "mon_tree_stump_walk/mon_tree_stump_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -26.6,
+        "duration_s": 0.6,
+        "attack_ms": 2.9,
+        "tail_ratio": 0.02,
+        "tonality": 0.952,
+        "crest": 5.78,
+        "centroid_hz": 1360,
+        "mid_ratio": 0.06
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a wooden stump hopping once onto soil, a hollow woody thump",
+    "generated_at": "2026-08-06T04:08:23+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_tree_stump_angry": {
+    "takes": [
+      "mon_tree_stump_angry/mon_tree_stump_angry__take01.wav"
+    ],
+    "durations_s": [
+      0.822
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.6,
+        "duration_s": 0.822,
+        "attack_ms": 204.5,
+        "tail_ratio": 0.005,
+        "tonality": 0.572,
+        "crest": 10.77,
+        "centroid_hz": 1930,
+        "mid_ratio": 0.972
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an old stump groaning and splitting, wood straining angrily",
+    "generated_at": "2026-08-06T04:08:28+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_tree_stump_attack": {
+    "takes": [
+      "mon_tree_stump_attack/mon_tree_stump_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -29.1,
+        "duration_s": 0.811,
+        "attack_ms": 18.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.927,
+        "crest": 8.46,
+        "centroid_hz": 3805,
+        "mid_ratio": 0.043
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a tree stump swinging a branch, a hard woody crack and whoosh",
+    "generated_at": "2026-08-06T04:08:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_golem_idle": {
+    "takes": [
+      "mon_stone_golem_idle/mon_stone_golem_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.87
+    ],
+    "features": [
+      {
+        "mid_peak_db": -18.7,
+        "duration_s": 0.87,
+        "attack_ms": 443.0,
+        "tail_ratio": 0.218,
+        "tonality": 0.694,
+        "crest": 9.13,
+        "centroid_hz": 1138,
+        "mid_ratio": 0.716
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a mossy stone figure settling, a low grind with a soft moss rustle",
+    "generated_at": "2026-08-06T04:08:39+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_golem_walk": {
+    "takes": [
+      "mon_stone_golem_walk/mon_stone_golem_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.596
+    ],
+    "features": [
+      {
+        "mid_peak_db": -32.4,
+        "duration_s": 0.596,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.001,
+        "tonality": 0.963,
+        "crest": 6.05,
+        "centroid_hz": 2512,
+        "mid_ratio": 0.013
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a huge stone foot planting on rock, a deep grinding thud",
+    "generated_at": "2026-08-06T04:08:44+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_golem_angry": {
+    "takes": [
+      "mon_stone_golem_angry/mon_stone_golem_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.0,
+        "duration_s": 1.098,
+        "attack_ms": 261.2,
+        "tail_ratio": 0.08,
+        "tonality": 0.792,
+        "crest": 5.77,
+        "centroid_hz": 654,
+        "mid_ratio": 0.503
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a stone golem grinding its joints, low and building and angry",
+    "generated_at": "2026-08-06T04:08:49+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_stone_golem_attack": {
+    "takes": [
+      "mon_stone_golem_attack/mon_stone_golem_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.9,
+        "duration_s": 0.811,
+        "attack_ms": 19.7,
+        "tail_ratio": 0.001,
+        "tonality": 0.17,
+        "crest": 7.64,
+        "centroid_hz": 1408,
+        "mid_ratio": 0.888
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a stone golem slamming a rock fist down, a heavy grinding crash",
+    "generated_at": "2026-08-06T04:08:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_idle": {
+    "takes": [
+      "mon_diablo_idle/mon_diablo_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.8,
+        "duration_s": 0.889,
+        "attack_ms": 36.7,
+        "tail_ratio": 0.044,
+        "tonality": 0.457,
+        "crest": 5.08,
+        "centroid_hz": 2959,
+        "mid_ratio": 0.657
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an ash demon breathing hot and low, embers ticking softly",
+    "generated_at": "2026-08-06T04:08:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_walk": {
+    "takes": [
+      "mon_diablo_walk/mon_diablo_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -30.3,
+        "duration_s": 0.6,
+        "attack_ms": 9.8,
+        "tail_ratio": 0.007,
+        "tonality": 0.951,
+        "crest": 5.82,
+        "centroid_hz": 6924,
+        "mid_ratio": 0.02
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a cloven hoof striking scorched ground, a hard step with an ember hiss",
+    "generated_at": "2026-08-06T04:09:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_angry": {
+    "takes": [
+      "mon_diablo_angry/mon_diablo_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.1,
+        "duration_s": 1.098,
+        "attack_ms": 152.1,
+        "tail_ratio": 0.215,
+        "tonality": 0.27,
+        "crest": 5.29,
+        "centroid_hz": 3750,
+        "mid_ratio": 0.924
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an ash demon snarling low with a rising crackle of fire, menacing",
+    "generated_at": "2026-08-06T04:09:10+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_2_idle": {
+    "takes": [
+      "mon_diablo_2_idle/mon_diablo_2_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.3,
+        "duration_s": 0.889,
+        "attack_ms": 87.1,
+        "tail_ratio": 0.025,
+        "tonality": 0.533,
+        "crest": 4.16,
+        "centroid_hz": 1917,
+        "mid_ratio": 0.752
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a fire demon breathing deep, flames guttering softly",
+    "generated_at": "2026-08-06T04:09:18+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_2_walk": {
+    "takes": [
+      "mon_diablo_2_walk/mon_diablo_2_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -33.8,
+        "duration_s": 0.6,
+        "attack_ms": 18.1,
+        "tail_ratio": 0.0,
+        "tonality": 0.716,
+        "crest": 8.91,
+        "centroid_hz": 9407,
+        "mid_ratio": 0.021
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a heavy cloven hoof on hot stone, one hard step with a flame flare",
+    "generated_at": "2026-08-06T04:09:23+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_2_angry": {
+    "takes": [
+      "mon_diablo_2_angry/mon_diablo_2_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -6.9,
+        "duration_s": 1.098,
+        "attack_ms": 203.4,
+        "tail_ratio": 0.133,
+        "tonality": 0.546,
+        "crest": 2.84,
+        "centroid_hz": 2211,
+        "mid_ratio": 0.711
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a fire demon growling with fire building and roaring, angry",
+    "generated_at": "2026-08-06T04:09:28+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_2_attack": {
+    "takes": [
+      "mon_diablo_2_attack/mon_diablo_2_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -6.2,
+        "duration_s": 0.811,
+        "attack_ms": 3.2,
+        "tail_ratio": 0.045,
+        "tonality": 0.328,
+        "crest": 2.37,
+        "centroid_hz": 2167,
+        "mid_ratio": 0.771
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a fire demon striking with a deep roar and a hard flame burst",
+    "generated_at": "2026-08-06T04:09:34+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_snow_demon_idle": {
+    "takes": [
+      "mon_snow_demon_idle/mon_snow_demon_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.865
+    ],
+    "features": [
+      {
+        "mid_peak_db": -14.9,
+        "duration_s": 0.865,
+        "attack_ms": 198.1,
+        "tail_ratio": 0.086,
+        "tonality": 0.621,
+        "crest": 7.59,
+        "centroid_hz": 1553,
+        "mid_ratio": 0.999
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frost wraith breathing out cold, a thin hollow wind and ice ticking",
+    "generated_at": "2026-08-06T04:09:39+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_snow_demon_walk": {
+    "takes": [
+      "mon_snow_demon_walk/mon_snow_demon_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.489
+    ],
+    "features": [
+      {
+        "mid_peak_db": -18.3,
+        "duration_s": 0.489,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.271,
+        "crest": 9.09,
+        "centroid_hz": 3054,
+        "mid_ratio": 0.952
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a light step over deep snow, a muffled crunch with a cold gust",
+    "generated_at": "2026-08-06T04:09:44+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_snow_demon_angry": {
+    "takes": [
+      "mon_snow_demon_angry/mon_snow_demon_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -12.5,
+        "duration_s": 1.098,
+        "attack_ms": 50.1,
+        "tail_ratio": 0.185,
+        "tonality": 0.558,
+        "crest": 6.15,
+        "centroid_hz": 1397,
+        "mid_ratio": 1.0
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frost wraith shrieking softly and rising, cold and hateful",
+    "generated_at": "2026-08-06T04:09:49+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_snow_demon_attack": {
+    "takes": [
+      "mon_snow_demon_attack/mon_snow_demon_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.4,
+        "duration_s": 0.811,
+        "attack_ms": 94.8,
+        "tail_ratio": 0.033,
+        "tonality": 0.524,
+        "crest": 4.65,
+        "centroid_hz": 2795,
+        "mid_ratio": 0.991
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a frost wraith striking with a piercing icy shriek and a frozen crack",
+    "generated_at": "2026-08-06T04:09:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_dark_donkey_idle": {
+    "takes": [
+      "mon_dark_donkey_idle/mon_dark_donkey_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.6,
+        "duration_s": 0.889,
+        "attack_ms": 253.3,
+        "tail_ratio": 0.145,
+        "tonality": 0.802,
+        "crest": 4.73,
+        "centroid_hz": 1359,
+        "mid_ratio": 0.375
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a dark beast of burden snorting and huffing softly, harness leather creaking",
+    "generated_at": "2026-08-06T04:09:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_dark_donkey_walk": {
+    "takes": [
+      "mon_dark_donkey_walk/mon_dark_donkey_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.6
+    ],
+    "features": [
+      {
+        "mid_peak_db": -36.3,
+        "duration_s": 0.6,
+        "attack_ms": 3.0,
+        "tail_ratio": 0.001,
+        "tonality": 0.97,
+        "crest": 7.01,
+        "centroid_hz": 1628,
+        "mid_ratio": 0.01
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "one heavy hoof striking packed earth, a solid dull clop",
+    "generated_at": "2026-08-06T04:10:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_dark_donkey_angry": {
+    "takes": [
+      "mon_dark_donkey_angry/mon_dark_donkey_angry__take01.wav"
+    ],
+    "durations_s": [
+      0.972
+    ],
+    "features": [
+      {
+        "mid_peak_db": -11.6,
+        "duration_s": 0.972,
+        "attack_ms": 688.4,
+        "tail_ratio": 0.501,
+        "tonality": 0.767,
+        "crest": 4.1,
+        "centroid_hz": 945,
+        "mid_ratio": 0.999
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a dark mule braying low and angry, snorting hard and stamping",
+    "generated_at": "2026-08-06T04:10:11+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_dark_donkey_attack": {
+    "takes": [
+      "mon_dark_donkey_attack/mon_dark_donkey_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.8,
+        "duration_s": 0.811,
+        "attack_ms": 2.6,
+        "tail_ratio": 0.029,
+        "tonality": 0.951,
+        "crest": 5.24,
+        "centroid_hz": 284,
+        "mid_ratio": 0.074
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a dark mule kicking out with a harsh bray and a heavy hoof crack",
+    "generated_at": "2026-08-06T04:10:16+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_saber_toothed_tiger_idle": {
+    "takes": [
+      "mon_saber_toothed_tiger_idle/mon_saber_toothed_tiger_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.0,
+        "duration_s": 0.889,
+        "attack_ms": 126.0,
+        "tail_ratio": 0.002,
+        "tonality": 0.905,
+        "crest": 3.93,
+        "centroid_hz": 348,
+        "mid_ratio": 0.857
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big cat breathing deep and slow, a low resting rumble",
+    "generated_at": "2026-08-06T04:10:23+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_saber_toothed_tiger_walk": {
+    "takes": [
+      "mon_saber_toothed_tiger_walk/mon_saber_toothed_tiger_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.437
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.4,
+        "duration_s": 0.437,
+        "attack_ms": 25.8,
+        "tail_ratio": 0.0,
+        "tonality": 0.859,
+        "crest": 8.71,
+        "centroid_hz": 1633,
+        "mid_ratio": 0.375
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big cat paw padding down soft and heavy, a muffled thud",
+    "generated_at": "2026-08-06T04:10:28+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_saber_toothed_tiger_angry": {
+    "takes": [
+      "mon_saber_toothed_tiger_angry/mon_saber_toothed_tiger_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -7.3,
+        "duration_s": 1.098,
+        "attack_ms": 313.8,
+        "tail_ratio": 0.274,
+        "tonality": 0.874,
+        "crest": 3.06,
+        "centroid_hz": 540,
+        "mid_ratio": 0.975
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big cat growling low and rising into a snarl, dangerous",
+    "generated_at": "2026-08-06T04:10:34+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_saber_toothed_tiger_attack": {
+    "takes": [
+      "mon_saber_toothed_tiger_attack/mon_saber_toothed_tiger_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.1,
+        "duration_s": 0.811,
+        "attack_ms": 60.8,
+        "tail_ratio": 0.095,
+        "tonality": 0.825,
+        "crest": 4.17,
+        "centroid_hz": 926,
+        "mid_ratio": 0.971
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a big cat lunging with a roaring snarl and a heavy fanged snap",
+    "generated_at": "2026-08-06T04:10:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mammoth_idle": {
+    "takes": [
+      "mon_mammoth_idle/mon_mammoth_idle__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -26.1,
+        "duration_s": 0.889,
+        "attack_ms": 166.1,
+        "tail_ratio": 0.017,
+        "tonality": 0.973,
+        "crest": 3.93,
+        "centroid_hz": 250,
+        "mid_ratio": 0.017
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an enormous woolly beast breathing deep and slow, a faint low rumble",
+    "generated_at": "2026-08-06T04:10:43+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mammoth_walk": {
+    "takes": [
+      "mon_mammoth_walk/mon_mammoth_walk__take01.wav"
+    ],
+    "durations_s": [
+      0.584
+    ],
+    "features": [
+      {
+        "mid_peak_db": -39.5,
+        "duration_s": 0.584,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.952,
+        "crest": 5.75,
+        "centroid_hz": 150,
+        "mid_ratio": 0.003
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "one enormous foot planting on hard ground, a deep booming thud",
+    "generated_at": "2026-08-06T04:10:48+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mammoth_angry": {
+    "takes": [
+      "mon_mammoth_angry/mon_mammoth_angry__take01.wav"
+    ],
+    "durations_s": [
+      1.098
+    ],
+    "features": [
+      {
+        "mid_peak_db": -13.1,
+        "duration_s": 1.098,
+        "attack_ms": 55.8,
+        "tail_ratio": 0.113,
+        "tonality": 0.643,
+        "crest": 6.6,
+        "centroid_hz": 852,
+        "mid_ratio": 0.962
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an enormous beast trumpeting low and angry, huffing hard",
+    "generated_at": "2026-08-06T04:10:53+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_mammoth_attack": {
+    "takes": [
+      "mon_mammoth_attack/mon_mammoth_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -9.3,
+        "duration_s": 0.811,
+        "attack_ms": 159.8,
+        "tail_ratio": 0.004,
+        "tonality": 0.392,
+        "crest": 3.45,
+        "centroid_hz": 1036,
+        "mid_ratio": 0.686
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an enormous beast slamming its tusks forward with a trumpeting roar",
+    "generated_at": "2026-08-06T04:10:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
