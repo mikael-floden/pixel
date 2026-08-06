@@ -687,7 +687,9 @@ export class WorldScene extends Phaser.Scene {
    * monsters (depth, nadir shadow, lit copy). Client-only decor: they have no
    * server state at all — position and facing come straight from maps2' file. */
   private npcs = new Map<string, NpcAvatar>();
-  private npcQueued = false;
+  private npcPlacement: NpcPlacement[] = [];
+  /** NPC idle frames waiting for the DEFERRED batch (never the boot one). */
+  private npcIdleQueue: Array<{ key: string; url: string }> = [];
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
   // later the maps agent owns real areas). World-anchored via this.project.
   private spawnAreaGfx?: Phaser.GameObjects.Graphics;
@@ -936,6 +938,7 @@ export class WorldScene extends Phaser.Scene {
     this.manifest = this.registry.get("manifest") as Manifest;
     this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
     this.npcManifest = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
+    this.npcPlacement = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
@@ -968,6 +971,10 @@ export class WorldScene extends Phaser.Scene {
     this.load.on("progress", (f: number) => {
       if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * 0.85, "Loading art…");
     });
+    // The world's NPCs stand there from the first frame: their standing art
+    // joins THIS batch (one small image per distinct character) instead of
+    // starting a second loader run mid-create.
+    this.preloadNpcArt();
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
     // strips — load each frame as its own texture. BOOT loads only the
     // movement states (BOOT_ANIM_STATES); the 9 action states (~800 PNGs the
@@ -1046,7 +1053,7 @@ export class WorldScene extends Phaser.Scene {
     // The world's people (maps2 npcs.json). AFTER the world/projection exist —
     // projectFlat is meaningless in init(), and the registry's "world" key is
     // the parsed World OBJECT; the id lives in "worldName".
-    void this.spawnNpcs();
+    this.spawnNpcs();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
@@ -3644,15 +3651,33 @@ export class WorldScene extends Phaser.Scene {
    * a world places a couple of dozen people out of a 191-strong roster, so
    * pulling the whole catalog would be pure waste. Nothing here touches the
    * server — NPCs are client-side decor. */
-  private async spawnNpcs() {
-    if (this.npcQueued || !this.npcManifest) return;
-    this.npcQueued = true;
-    const placed = await loadNpcPlacement(this.worldName);
-    if (!placed.length || !this.scene.isActive()) return;
+  private spawnNpcs() {
+    if (!this.npcManifest || !this.npcPlacement.length) return;
     const byId = new Map(this.npcManifest.npcs.map((d) => [d.id, d]));
-    for (const p of placed) {
+    for (const p of this.npcPlacement) {
       const def = byId.get(p.character);
       if (def) this.addNpc(p, def);
+    }
+  }
+
+  /** Queue the placed NPCs' STANDING art in preload, so they are on screen the
+   * moment the world is — one small image per distinct character (a world
+   * places ~20 people, mostly different ones). Their idle FRAMES are NOT here:
+   * those ride the deferred batch after the join, and the calm idle hides that
+   * wait completely, because an NPC parks on the standing pose anyway. */
+  private preloadNpcArt() {
+    const man = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
+    const placed = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
+    if (!man || !placed.length) return;
+    const byId = new Map(man.npcs.map((d) => [d.id, d]));
+    const seen = new Set<string>();
+    for (const p of placed) {
+      const def = byId.get(p.character);
+      if (!def || seen.has(def.id)) continue;
+      seen.add(def.id);
+      const url = def.base[DEFAULT_DIRECTION];
+      const key = `npc:${def.id}:${DEFAULT_DIRECTION}`;
+      if (url && !this.textures.exists(key)) this.load.image(key, withV(url));
     }
   }
 
@@ -3711,27 +3736,24 @@ export class WorldScene extends Phaser.Scene {
    * SOUTH-ONLY today, so most NPCs correctly stand still on their rotation —
    * when characters2 generates the rest they animate with no client change. */
   private loadNpcArt(npc: NpcAvatar, def: NpcDef) {
-    const baseUrl = def.base[npc.dir] ?? def.base[DEFAULT_DIRECTION];
     const baseKey = `npc:${def.id}:${npc.dir}`;
     const frames = def.idle?.[npc.dir] ?? 0;
     const animKey = `npcanim:${def.id}:${npc.dir}`;
-    const setStill = () => {
-      if (this.textures.exists(baseKey)) npc.sprite.setTexture(baseKey);
-    };
-    if (!this.textures.exists(baseKey) && baseUrl) {
-      this.load.image(baseKey, withV(baseUrl));
-      this.load.once(`filecomplete-image-${baseKey}`, setStill);
-    } else setStill();
+    // The standing pose arrived with the BOOT batch (preloadNpcArt), so the
+    // NPC is drawn the instant the world is. Loading it lazily here is what
+    // restarted the loading bar and popped them in half a second late
+    // (maintainer 2026-08-06).
+    if (this.textures.exists(baseKey)) npc.sprite.setTexture(baseKey);
     if (frames > 0 && def.idleAnim) {
       const keys: string[] = [];
       for (let i = 0; i < frames; i++) {
         const k = `npcf:${def.id}:${npc.dir}:${i}`;
         keys.push(k);
         if (!this.textures.exists(k)) {
-          this.load.image(
-            k,
-            withV(`/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${npc.dir}/${i}.webp`),
-          );
+          this.npcIdleQueue.push({
+            key: k,
+            url: `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${npc.dir}/${i}.webp`,
+          });
         }
       }
       // Registered LAZILY by stepNpcs once every frame texture exists — NOT on
@@ -3742,7 +3764,6 @@ export class WorldScene extends Phaser.Scene {
       // monsters' single-call-site trap.
       npc.pendingAnim = { key: animKey, frames: keys };
     }
-    this.load.start();
   }
 
   /** Per frame: place every NPC through the shared body pipeline and drive the
@@ -6329,6 +6350,18 @@ export class WorldScene extends Phaser.Scene {
     if (this.deferredAnimsKicked) return;
     this.deferredAnimsKicked = true;
     let queued = 0;
+    // NPC IDLE FRAMES GO FIRST. They ride the deferred batch (never boot — a
+    // second loader run mid-create restarted the loading bar), but queued
+    // LAST they landed 18s in, behind ~800 action-state frames and every
+    // monster combat strip, so a town stood frozen the whole time. They are
+    // ~95 tiny images: first in the queue they arrive in a second or two, and
+    // the calm idle's frame-0 hold covers even that.
+    for (const f of this.npcIdleQueue) {
+      if (this.textures.exists(f.key)) continue;
+      this.load.image(f.key, withV(f.url));
+      queued++;
+    }
+    this.npcIdleQueue = [];
     for (const def of this.manifest.characters) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         if (BOOT_ANIM_STATES.includes(state)) continue;

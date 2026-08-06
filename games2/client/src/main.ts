@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
-import { loadNpcManifest } from "./npcManifest";
+import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
@@ -238,6 +238,16 @@ async function boot() {
   // The chosen isometric world (null if its world.json is missing; the world
   // scene then falls back to a plain ground).
   const world = await loadWorld(worldName);
+  // WHO stands where, fetched at BOOT alongside the world (maintainer
+  // 2026-08-06: "the loading restarts just before the game loads and once
+  // loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
+  // mistake: spawnNpcs used to fetch this in create() and then start its own
+  // loader batch, which re-fired the scene loader's progress events the
+  // loading overlay is driven by (the bar restarted) and only delivered the
+  // art after the world was already on screen (the pop-in). Fetched here, the
+  // placement is ready before the scene exists and the art rides the normal
+  // boot progress. Tiny file, and worlds without NPCs return [] instantly.
+  const npcPlacement = await loadNpcPlacement(worldName).catch(() => []);
 
   // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
   // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
@@ -301,16 +311,47 @@ async function boot() {
     if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
     cv.style.width = cssW + "px";
     cv.style.height = cssH + "px";
+    // TELL PHASER THE CANVAS MOVED/RESIZED (maintainer 2026-08-06: after
+    // switching orientation, tapping the map walked to a different spot).
+    // Phaser derives its pointer mapping — displayScale — from `canvasBounds`,
+    // which it fills from getBoundingClientRect() on ITS own resize pass. We
+    // set the canvas CSS size ourselves right here, AFTER that pass, so its
+    // cached bounds keep the pre-rotation SIZE: measured mid-flip in
+    // landscape, real canvas 526x393 but bounds still the portrait 393x526,
+    // giving displayScale 2.677/1.494 where the truth is 2.0/2.0. Every tap
+    // was then scaled by that error — ~98wu off in landscape, ~130wu after
+    // rotating back. updateBounds() re-reads the rect and recomputes the
+    // scale. refresh() is deliberately NOT used: in RESIZE mode its
+    // updateScale() re-derives gameSize/baseSize/canvas.width from the PARENT
+    // (ScaleManager.js, the RESIZE branch), which would throw away the
+    // resolution scaling this game applies on purpose — a 393x526 box backed
+    // by 786x1052. updateBounds() re-reads the rect but does NOT recompute
+    // displayScale (Phaser only does that inside refresh), so apply Phaser's
+    // own formula here, from the bounds it just corrected.
+    game.scale.updateBounds();
+    const cb = game.scale.canvasBounds;
+    if (cb.width > 0 && cb.height > 0) {
+      game.scale.displayScale.set(
+        game.scale.baseSize.width / cb.width,
+        game.scale.baseSize.height / cb.height,
+      );
+    }
   };
   game.events.once(Phaser.Core.Events.READY, fitCanvas);
   window.addEventListener("resize", fitCanvas);
   window.addEventListener("ml-flip-flush", fitCanvas);
+  // Handedness swaps the menu column left<->right: the game view MOVES but
+  // keeps its size, so the ResizeObserver never fires and only the bounds
+  // POSITION goes stale. Same fix, different trigger.
+  window.addEventListener("ml-hand", fitCanvas);
   const gameEl = document.getElementById("game");
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 
+  (window as any).__mlGame = game; // debug handle (scale-manager QA)
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("npcManifest", npcManifest);
+  game.registry.set("npcPlacement", npcPlacement);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

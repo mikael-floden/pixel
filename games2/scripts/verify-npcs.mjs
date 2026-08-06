@@ -108,14 +108,24 @@ try {
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
   // it must spend most of its time PARKED, and the pauses must vary — a fixed
   // cadence is exactly what the maintainer did not want.
+  // The idle FRAMES ride the deferred batch (after the join), so they can be
+  // seconds behind the standing art that ships with boot — deliberately: the
+  // calm idle's frame-0 hold makes the wait invisible. Wait for them.
+  const t0anim = Date.now();
+  const ready = await page
+    .waitForFunction(() => window.__ml.npcInfo().some((n) => n.hasAnim), undefined, {
+      timeout: 60000,
+      polling: 250,
+    })
+    .then(() => true)
+    .catch(() => false);
+  if (!ready) fail("no NPC ever got an idle clip (188 of 191 characters ship one)");
+  ok(`idle clips arrive with the deferred batch (${((Date.now() - t0anim) / 1000).toFixed(1)}s after join)`);
   const target = await page.evaluate(() => {
-    // teleport to the busiest cluster so several are on screen and un-culled
     const ns = window.__ml.npcInfo().filter((n) => n.hasAnim);
-    if (!ns.length) return null;
     window.__ml.teleport(Math.round(ns[0].x / 32), Math.round(ns[0].y / 32) + 2);
     return ns[0].id;
   });
-  if (!target) fail("no NPC with an idle clip (188 of 191 characters ship one)");
   await page.waitForTimeout(800);
   const holds = new Set();
   let playing = 0;

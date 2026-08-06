@@ -664,6 +664,54 @@ try {
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
   await settle();
 
+  // ---- 4e. TAP MAPPING SURVIVES ROTATION (maintainer 2026-08-06: "after
+  // switching between landscape and portrait mode clicking to walk on the map
+  // will make the player walk to a different coordinate I didn't click on").
+  // Phaser derives its pointer mapping from canvasBounds, which it fills on
+  // ITS resize pass — main.ts sets the canvas CSS size AFTER that, so the
+  // cached bounds kept the pre-rotation SIZE and displayScale was computed
+  // from it: measured 98wu off in landscape and 134wu after rotating back.
+  // Tested WITHOUT assuming any iso maths: tap exactly on the player's own
+  // drawn position, which must walk (almost) nowhere. The error IS the
+  // mapping error.
+  {
+    const tapOnSelf = async (label) => {
+      await settle();
+      const s = await page.evaluate(() => {
+        const me = window.__ml.myScreen();
+        const cv = document.querySelector("canvas");
+        const r = cv.getBoundingClientRect();
+        return {
+          sx: me.sx, sy: me.sy,
+          l: r.left, t: r.top, w: r.width, h: r.height,
+          bw: cv.width, bh: cv.height,
+          mex: window.__ml.me().x, mey: window.__ml.me().y,
+          scale: [window.__mlGame.scale.displayScale.x, window.__mlGame.scale.displayScale.y],
+        };
+      });
+      await page.mouse.click(s.l + s.sx * (s.w / s.bw), s.t + s.sy * (s.h / s.bh));
+      await page.waitForTimeout(450);
+      const t = await page.evaluate(() => window.__ml.target());
+      const err = t ? Math.hypot(t.x - s.mex, t.y - s.mey) : 0;
+      // displayScale must equal the REAL backing/CSS ratio, not a stale one.
+      const wantX = s.bw / s.w;
+      const wantY = s.bh / s.h;
+      if (Math.abs(s.scale[0] - wantX) > 0.02 || Math.abs(s.scale[1] - wantY) > 0.02)
+        fail(`${label}: displayScale ${s.scale.map((v) => v.toFixed(2))} != real ${wantX.toFixed(2)}/${wantY.toFixed(2)} — taps will land wrong`);
+      if (err > 24) fail(`${label}: tapping the player walked ${err.toFixed(0)}wu away — the tap landed somewhere else`);
+      ok(`${label}: a tap lands where you tapped (${err.toFixed(0)}wu off, displayScale ${s.scale[0].toFixed(2)}/${s.scale[1].toFixed(2)})`);
+    };
+    await page.setViewportSize({ width: 393, height: 851 });
+    await settle();
+    await tapOnSelf("portrait");
+    await page.setViewportSize({ width: 851, height: 393 });
+    await settle();
+    await tapOnSelf("landscape");
+    await page.setViewportSize({ width: 393, height: 851 });
+    await settle();
+    await tapOnSelf("back to portrait");
+  }
+
   // ---- 5. help chip: dismiss is forever ----
   const before = await page.evaluate(() => {
     const s = document.querySelector(".ml-pad-stick").getBoundingClientRect();
