@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "sounds",
-  "updated_at": "2026-08-05T23:58:54.194Z",
+  "updated_at": "2026-08-06T00:13:56.709Z",
   "entries": {
     "sounds/ui/coin_pickup/coin_pickup__take01": {
       "status": "rejected",
@@ -166,6 +166,180 @@
     "sounds/ambience/town_murmur/town_murmur": {
       "rating": 5,
       "updated_at": "2026-08-05T23:58:47.125Z",
+      "status": "approved"
+    },
+    "sounds/ambience/fire_crackle/fire_crackle": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:00:10.598Z"
+    },
+    "sounds/ambience/crickets_night/crickets_night": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:00:15.578Z"
+    },
+    "sounds/ambience/rain/rain": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:00:48.086Z"
+    },
+    "sounds/ambience/thunder_rumble/thunder_rumble__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:01:08.705Z"
+    },
+    "sounds/ambience/thunder_rumble/thunder_rumble__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:01:09.346Z"
+    },
+    "sounds/feedback/level_up/level_up__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:02.957Z"
+    },
+    "sounds/feedback/level_up/level_up__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:03.448Z"
+    },
+    "sounds/movement/footstep_sand/footstep_sand__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:28.076Z"
+    },
+    "sounds/movement/footstep_sand/footstep_sand__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:28.680Z"
+    },
+    "sounds/movement/footstep_sand/footstep_sand__take03": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:30.046Z"
+    },
+    "sounds/movement/footstep_sand/footstep_sand__take04": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:31.276Z"
+    },
+    "sounds/movement/footstep_sand/footstep_sand__take05": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:32.362Z"
+    },
+    "sounds/movement/footstep_snow/footstep_snow__take02": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:02:49.960Z",
+      "status": "approved"
+    },
+    "sounds/movement/footstep_snow/footstep_snow__take01": {
+      "rating": 3,
+      "updated_at": "2026-08-06T00:02:49.408Z",
+      "status": "approved"
+    },
+    "sounds/movement/footstep_snow/footstep_snow__take03": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:52.244Z"
+    },
+    "sounds/movement/footstep_snow/footstep_snow__take04": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:02:54.386Z"
+    },
+    "sounds/movement/footstep_snow/footstep_snow__take05": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:03:02.181Z"
+    },
+    "sounds/movement/footstep_stone/footstep_stone__take02": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:03:09.719Z"
+    },
+    "sounds/movement/footstep_stone/footstep_stone__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:03:11.034Z"
+    },
+    "sounds/movement/footstep_wood/footstep_wood__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:03:25.691Z"
+    },
+    "sounds/movement/footstep_wood/footstep_wood__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:03:26.199Z"
+    },
+    "sounds/movement/jump/jump__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:03:35.498Z"
+    },
+    "sounds/movement/jump/jump__take02": {
+      "status": "approved",
+      "updated_at": "2026-08-06T00:03:37.919Z",
+      "rating": 5
+    },
+    "sounds/movement/splash/splash__take01": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:03:44.514Z",
+      "status": "approved"
+    },
+    "sounds/movement/splash/splash__take02": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:03:49.649Z",
+      "status": "approved"
+    },
+    "sounds/movement/swim_stroke/swim_stroke": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:03:56.944Z",
+      "status": "approved"
+    },
+    "sounds/tool/sword_swing/sword_swing__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:20.491Z"
+    },
+    "sounds/tool/sword_swing/sword_swing__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:21.024Z"
+    },
+    "sounds/ui/error_buzz/error_buzz__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:31.893Z"
+    },
+    "sounds/ui/error_buzz/error_buzz__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:32.261Z"
+    },
+    "sounds/ui/item_get/item_get__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:41.699Z"
+    },
+    "sounds/ui/item_get/item_get__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:04:42.180Z"
+    },
+    "sounds/ui/menu_cancel/menu_cancel__take01": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:04:58.118Z",
+      "status": "approved"
+    },
+    "sounds/ui/menu_cancel/menu_cancel__take02": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:04:58.684Z",
+      "status": "approved"
+    },
+    "sounds/ui/menu_confirm/menu_confirm__take01": {
+      "rating": 3,
+      "updated_at": "2026-08-06T00:05:26.533Z",
+      "status": "approved"
+    },
+    "sounds/ui/menu_confirm/menu_confirm__take02": {
+      "rating": 2,
+      "updated_at": "2026-08-06T00:05:28.894Z",
+      "status": "approved"
+    },
+    "sounds/ui/menu_select/menu_select__take01": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:05:43.778Z",
+      "rating": 1
+    },
+    "sounds/ui/menu_select/menu_select__take02": {
+      "status": "rejected",
+      "updated_at": "2026-08-06T00:05:44.411Z",
+      "rating": 1
+    },
+    "sounds/ui/notification/notification__take01": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:05:54.360Z",
+      "status": "approved"
+    },
+    "sounds/ui/notification/notification__take02": {
+      "rating": 5,
+      "updated_at": "2026-08-06T00:05:54.886Z",
       "status": "approved"
     }
   }
