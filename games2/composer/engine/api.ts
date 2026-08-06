@@ -248,7 +248,11 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   ],
   // First per-monster assignments. The id is `monsters.<kind>.<action>`, built
   // from data in WorldScene rather than written as a literal anywhere.
-  "monsters.forest_poring_2.walk": [{ sound: "composer/mon_forest_poring_walk", take: "mon_forest_poring_walk__take01" }],
+  // WALK, not idle. The request was filed against `.idle` but its note said
+  // "Only use this walk sound", so the event and the words disagreed and I
+  // asked rather than guessed: he wants the bubble on WALK and nothing else
+  // there, so mon_forest_poring_walk is dropped and idle stays silent.
+  "monsters.forest_poring_2.walk": [{ sound: "composer/monster_die_bubble", take: "monster_die_bubble__take01" }],
   "monsters.forest_poring_2.attack": [{ sound: "composer/mon_lava_poring_attack", take: "mon_lava_poring_attack__take01" }],
   "weather.thunder": [
     { sound: "composer/thunder", take: "thunder__cand07" },
