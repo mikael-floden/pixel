@@ -124,7 +124,7 @@ function starsWidget(domain, id) {
   render();
   return wrap;
 }
-function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal" } = {}) {
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
@@ -134,10 +134,14 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
   const wrap = h("span", { class: "verdict" });
   const render = () => {
     const st = fb(domain, id).status;
-    wrap.replaceChildren(
-      h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
+    // NB: replaceChildren stringifies null into a literal "null" text node —
+    // the same trap h() guards against. Filter, never pass a bare null.
+    wrap.replaceChildren(...[
+      // rejectOnly: a per-take unbind on an already-narrow row, where the
+      // approval of the binding as a whole lives one row up.
+      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
       h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, reject),
-    );
+    ].filter(Boolean));
   };
   render();
   return wrap;
@@ -2006,7 +2010,14 @@ const audioCandidates = (t) => [t?.files?.ogg, t?.files?.m4a, t?.files?.wav].fil
  *  delete the sound … it just means I want to unbind it"). The file's own
  *  stars, approval and removal live in All sounds, where "remove" really does
  *  retire the recording. */
-const bindingId = (ev, layer) => `${ev.id}#${layer.source === "composer" ? `composer/${layer.set}` : layer.soundId}`;
+/** Which binding a verdict is about. Without a take it names the whole
+ *  LAYER — "this sound should not play at this moment". With one it names a
+ *  single RECORDING inside a multi-take binding: "Coin Pickup plays two
+ *  recordings and I only want take02 gone" (maintainer 2026-08-06). Both are
+ *  UNBIND, never delete — the file stays in the library either way. */
+const bindingId = (ev, layer, take) => take
+  ? `${ev.id}#${take.file}`
+  : `${ev.id}#${layer.source === "composer" ? `composer/${layer.set}` : layer.soundId}`;
 function sfxLayerRow(ev, layer) {
   const totalDb = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (state.data.sfx.engine.busDb?.[layer.bus] ?? 0);
   const jit = layer.jitterSemis;
@@ -2037,23 +2048,41 @@ function sfxLayerRow(ev, layer) {
   // not on each take. A take is a recording; judging it (and deleting it) is
   // the library's job. Here the question is only "is this the right sound for
   // this moment", and ✕ detaches it from this event, nothing more.
+  const multi = n > 1;
   if (state.admin) {
     const bid = bindingId(ev, layer);
     rows.push(h("div", { class: "take-row sfx-bind-verdict" },
-      h("span", { class: "muted", style: "font-size:12px" }, "this sound, for this event:"),
+      h("span", { class: "muted", style: "font-size:12px" }, multi ? "these sounds, for this event:" : "this sound, for this event:"),
       h("span", { class: "spacer" }),
       starsWidget("bindings", bid),
       verdictWidget("bindings", bid, {
-        reject: "✕ unbind",
-        rejectTitle: "Detach this sound from THIS event only — the recording stays in the library. To retire the recording itself, reject it under All sounds.",
+        reject: multi ? "✕ unbind all" : "✕ unbind",
+        rejectTitle: multi
+          ? `Detach all ${n} recordings from THIS event — they stay in the library. To drop just one, use the ✕ on its own row.`
+          : "Detach this sound from THIS event only — the recording stays in the library. To retire the recording itself, reject it under All sounds.",
         rejectedLabel: "to be unbound",
       })));
   }
   for (const t of layer.takes) {
+    // PER-RECORDING UNBIND (maintainer 2026-08-06: "I wanted to unbind
+    // coin_pickup__take02.wav from Coin Pickup, but the unbind is not on the
+    // sound itself … I don't want to delete the sound, just unbind it").
+    // An event that plays several recordings has several bindings, and the ✕
+    // has to sit on the one you want gone. Only when there IS a choice: with
+    // one take the layer's own ✕ already means exactly this, and two ✕ for a
+    // single action reads as two different powers.
+    const tid = bindingId(ev, layer, t);
+    const drop = multi && state.admin
+      ? verdictWidget("bindings", tid, {
+        reject: "✕ unbind", rejectOnly: true, rejectedLabel: "to be unbound",
+        rejectTitle: `Remove ONLY ${t.name} from this event — the other ${n - 1} recording(s) keep playing and the file stays in the library.`,
+      })
+      : null;
     rows.push(h("div", { class: "take-row sfx-take" },
       h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
       h("span", { class: "take-name muted" }, t.name),
-      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null));
+      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
+      drop));   // right-aligned by CSS margin — a spacer would force the wrap
   }
   if (layer.spareTakes > 0 && state.admin) {
     rows.push(h("p", { class: "muted sfx-unbound-note" },

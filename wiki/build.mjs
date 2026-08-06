@@ -874,6 +874,36 @@ function tsRecord(src, name) {
   if (!Object.keys(out).length) sfxDrift.push(`const ${name} parsed empty`);
   return out;
 }
+/** `new Set<string>([...])` in the engine source. */
+function tsSet(src, name) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*new Set<[^>]*>\\(\\[([\\s\\S]*?)\\]\\)`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return new Set(); }
+  return new Set([...m[1].replace(/\/\/[^\n]*/g, "").matchAll(/"([^"]+)"/g)].map((x) => x[1]));
+}
+/** The engine's own splitComposerId: an assignment may name a set OR one
+ *  recording inside it ("composer/punch", "composer/punch/punch__take02",
+ *  "composer/punch#take02", or a separate `take`). */
+function splitComposerId(id, take) {
+  const body = id.slice("composer/".length);
+  const cut = body.search(/[#/]/);
+  return cut >= 0 ? { set: body.slice(0, cut), take: body.slice(cut + 1) } : { set: body, take };
+}
+/** Resolve `take` against a layer's recordings, matching the engine: a bare
+ *  index is 1-based, a name matches with or without the `<set>__` prefix and
+ *  extension. A take that is NOT there resolves to SILENCE — never to a
+ *  neighbouring recording, or a deleted take would quietly become a different
+ *  sound (api.ts says so explicitly, and the wiki must show the same). */
+function pickTake(takes, take) {
+  if (take == null || take === "") return takes;
+  if (typeof take === "number") return takes[take - 1] ? [takes[take - 1]] : [];
+  const want = String(take).replace(/\.\w+$/, "");
+  if (/^\d+$/.test(want)) return takes[Number(want) - 1] ? [takes[Number(want) - 1]] : [];
+  const hit = takes.find((t) => {
+    const n = t.name.replace(/\.\w+$/, "");
+    return n === want || n.endsWith(`__${want}`) || t.file.replace(/\.\w+$/, "").endsWith(want);
+  });
+  return hit ? [hit] : [];
+}
 /** The composer source, wherever this build runs: repo (games2/composer) or
  *  the Docker image (/assets/composer — Dockerfile copies foley/ there; the
  *  engine sources are only in the repo, so inside Docker the parse would come
@@ -931,6 +961,12 @@ function buildSfx(soundEntries) {
 
   // ---- composer takeover tables ----
   const EVENT_FOLEY = tsRecord(apiSrc, "GameAudio\\.EVENT_FOLEY|EVENT_FOLEY") ?? {};
+  // The Game Master's own assignments — the engine's FIRST lookup, and the
+  // one this build used to miss entirely (see resolveEvent below).
+  const EVENT_ASSIGN = tsRecord(apiSrc, "EVENT_ASSIGNMENTS") ?? {};
+  const BIND_OK = tsSet(apiSrc, "BINDINGS_APPROVED");
+  if (!/const assigned = EVENT_ASSIGNMENTS\[name\]/.test(apiSrc)) sfxDrift.push("EVENT_ASSIGNMENTS is no longer the engine's first lookup");
+  if (!/if \(!BINDINGS_APPROVED\.has\(name\)\) return;/.test(apiSrc)) sfxDrift.push("the BINDINGS_APPROVED gate moved in api.ts");
   const FOOT_SETS = tsRecord(apiSrc, "FOOTSTEP_SETS") ?? {};
   const FOOT_CAT = tsRecord(apiSrc, "FOOTSTEP_CATALOG") ?? {};
   const FOOT_TRIM = tsRecord(apiSrc, "FOOTSTEP_TRIM_DB") ?? {};
@@ -1022,11 +1058,13 @@ function buildSfx(soundEntries) {
     const v = s.variation ?? {};
     const all = (s.takes?.length ? s.takes : [s.file]).map((t) =>
       ({ name: t.split("/").pop(), file: `sounds/${t}`, dur: wavDuration(join(ROOT, "sounds", t)) }));
+    // An assignment may name ONE recording; then that is the whole layer.
+    const chosen = over.take != null ? pickTake(all, over.take) : null;
     return {
       source: "catalog", soundId, label: s.name ?? soundId,
-      takes: over.primary ? all.slice(0, 1) : all,
-      spareTakes: over.primary ? all.length - 1 : 0,
-      pick: over.primary ? "the one bound take" : v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
+      takes: chosen ?? (over.primary ? all.slice(0, 1) : all),
+      spareTakes: all.length - (chosen ?? (over.primary ? all.slice(0, 1) : all)).length,
+      pick: chosen ? "the one chosen recording" : over.primary ? "the one bound take" : v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: s.mix_gain_db ?? 0,
       trimDb: over.trimDb ?? 0,
@@ -1043,13 +1081,15 @@ function buildSfx(soundEntries) {
     const cs = composerSets[set];
     if (!cs) return null;
     useSet(set, over.usedBy ?? "event");
+    const chosen = over.take != null ? pickTake(cs.takes, over.take) : null;
+    const takes = chosen ?? (over.primary ? cs.takes.slice(0, 1) : cs.takes);
     return {
       source: "composer", set, label: `${set} (composer)`,
-      takes: over.primary ? cs.takes.slice(0, 1) : cs.takes,
+      takes,
       // Everything else in the folder the Game Master could swap in — the
       // set's other takes AND its unpicked generation candidates.
-      spareTakes: (over.primary ? cs.takes.length - 1 : 0) + cs.alts.length,
-      pick: over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
+      spareTakes: cs.takes.length - takes.length + cs.alts.length,
+      pick: chosen ? "the one chosen recording" : over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",
       // Composer sets carry no catalog variation block: the engine's jitter
@@ -1061,6 +1101,57 @@ function buildSfx(soundEntries) {
       voiceRate: over.voiceRate ?? null,
       loop: false,
     };
+  };
+
+  // ---- THE ENGINE'S OWN RESOLUTION ORDER, mirrored exactly ---------------
+  // api.ts is SILENT BY DEFAULT (2026-08-05) and resolves an emitted event as:
+  //   1. EVENT_ASSIGNMENTS — what the Game Master assigned in the wiki
+  //   2. the voice branch + EVENT_FOLEY — approved in their own rounds
+  //   3. sounds/bindings.json — ONLY for the two BINDINGS_APPROVED events
+  //   4. otherwise SILENCE.
+  // This wiki read #2 and then fell through to bindings.json for EVERYTHING,
+  // which is two lies at once (maintainer 2026-08-06: "the wiki is showing old
+  // sound mappings not the one playing in the game"): every sound he had
+  // assigned was invisible — ui.press showed the old `ui_tick` when the game
+  // plays `ui_click_bead` — and dozens of unapproved library RECOMMENDATIONS
+  // rendered as bound sounds that the engine never plays at all. bindings.json
+  // is a suggestion; only these tables are the game.
+  const assignLayer = (id) => {
+    const a = EVENT_ASSIGN[id];
+    if (!a?.sound) return null;
+    const over = {
+      trimDb: a.volume_db ?? 0,
+      rate: a.pitch ?? 1,
+      jitterSemis: a.max_random_pitch_semis
+        ? [-Math.abs(a.max_random_pitch_semis), Math.abs(a.max_random_pitch_semis)].map((x) => +(x * engine.gentle).toFixed(2))
+        : null,
+      bus: a.bus ?? "sfx", usedBy: id, assigned: true,
+    };
+    if (String(a.sound).startsWith("composer/")) {
+      const { set, take } = splitComposerId(a.sound, a.take);
+      return setLayer(set, { ...over, take: take ?? null, primary: take == null });
+    }
+    return catLayer(a.sound, { ...over, take: a.take ?? null, primary: a.take == null });
+  };
+  /** What the game ACTUALLY plays for this event, and why. */
+  const resolveEvent = (id, ev) => {
+    const asg = assignLayer(id);
+    if (asg) return { sounds: [asg], bound: true, via: "assigned",
+      note: "assigned by the Game Master in the wiki" };
+    if (EVENT_FOLEY[id]) {
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
+      return { sounds: l ? [l] : [], bound: !!l, via: "foley",
+        note: "every UI event is bound to the approved click — one single sound" };
+    }
+    if (BIND_OK.has(id) && ev?.sound) {
+      const l = catLayer(ev.sound, { bus: ev.bus ?? "sfx" });
+      return { sounds: l ? [l] : [], bound: !!l, via: "bindings", note: null };
+    }
+    // A library suggestion the engine does NOT honour. Say so rather than
+    // dropping it — it tells the Game Master what is on offer, and why the
+    // event is still silent.
+    return { sounds: [], bound: false, via: null,
+      note: ev?.sound ? `the sound library suggests “${ev.sound}”, but nothing plays until you assign a sound here` : null };
   };
 
   for (const ev of bindings.events ?? []) {
@@ -1076,35 +1167,24 @@ function buildSfx(soundEntries) {
       }
       continue;
     }
-    // The composer's takeovers beat the catalog binding, exactly as in api.ts.
-    let sounds = [];
-    let note = null;
-    if (EVENT_FOLEY[id]) {
-      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
-      sounds = l ? [l] : [];
-      note = "every UI event is bound to the approved click — one single sound";
-    } else if (id === "player.jump") {
-      continue;                                   // per-character events, added below
-    } else {
-      const l = catLayer(ev.sound, { bus: ev.bus ?? "sfx" });
-      sounds = l ? [l] : [];
-    }
+    if (id === "player.jump") continue;              // per-character events, added below
+    const r = resolveEvent(id, ev);
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
-      bus: ev.bus ?? "sfx", duck: !!ev.duck, emitted: emitted.has(id) || ENGINE_DRIVEN.has(id), bound: true, note, sounds });
+      bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
+      emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
+      bound: r.bound, via: r.via, note: r.note, sounds: r.sounds });
   }
-  // Emitted but never bound (and not a composer takeover): a SILENT event.
-  for (const id of emitted) {
+  // Everything else the engine knows about: events the game EMITS, and events
+  // the Game Master has ASSIGNED (an assignment for an event no binding ever
+  // mentioned would otherwise never appear on this page at all).
+  for (const id of [...emitted, ...Object.keys(EVENT_ASSIGN)]) {
     if (events.some((e) => e.id === id)) continue;
-    let sounds = [], note = null, bound = false;
-    if (EVENT_FOLEY[id]) {
-      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
-      sounds = l ? [l] : []; bound = true;
-      note = "every UI event is bound to the approved click — one single sound";
-    } else if (id === "player.fall" || id === "player.jump") {
-      continue;                                   // per-character events, added below
-    }
+    if (id === "player.fall" || id === "player.jump") continue;   // per-character, below
+    const r = resolveEvent(id, null);
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
-      bus: "sfx", duck: false, emitted: true, bound, note, sounds });
+      bus: r.sounds[0]?.bus ?? "sfx", duck: false,
+      emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
+      bound: r.bound, via: r.via, note: r.note, sounds: r.sounds });
   }
   // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
   // surface resolves to a composer set or a catalog sound, with per-surface
@@ -1145,7 +1225,11 @@ function buildSfx(soundEntries) {
   const star = catLayer("gem_pickup", { trimDb: -10 });
   if (star) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "played on the music's beat, in the track's key (scale-snapped)", sounds: [star] });
-  const thunder = setLayer("thunder", { trimDb: 6, primary: true, usedBy: "weather.thunder" });
+  // ROTATE, not primary: api.ts plays thunder through foleyEntry(…, "rotate"),
+  // whose `many` branch binds EVERY url — the maintainer asked to hear thunder
+  // as "a group with several sounds". The wiki said "1 take" while the game
+  // rotated all six (found by check-mapping.mjs, 2026-08-06).
+  const thunder = setLayer("thunder", { trimDb: 6, usedBy: "weather.thunder", pick: "round-robin, never the same twice" });
   if (thunder) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
 

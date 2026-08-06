@@ -701,6 +701,14 @@ button.drop-row {
 .sfx-layer { border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
 .sfx-layer-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .sfx-take { margin-left: 22px; }
+/* The per-recording unbind. A filename like `notification__take01.wav` plus
+   its length plus the button will not fit one phone line, so the row wraps —
+   `margin-left:auto` keeps the button hard RIGHT on whichever line it lands
+   on, so it reads as belonging to the take above it instead of introducing
+   the one below. (A `.spacer` cannot do this: it sits on line 1 and leaves
+   the button left-aligned on line 2.) */
+.sfx-take .verdict { margin-left: auto; }
+.sfx-take .verdict button { padding: 3px 9px; font-size: 12px; }
 /* The BINDING's verdict — one row per attached sound, above its recordings,
    so "✕ unbind" can never be mistaken for "delete this file" (which lives in
    All sounds). Quietly inset like the takes it governs. */

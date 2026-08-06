@@ -54,6 +54,16 @@ paths** — changing monster stats or rating a sound never restarts the game.
   Retiring a recording is the file's own verdict in `sounds.json` /
   `composer.json`. **Consumed by the composer (games-audio) agent**, which
   removes the binding and deletes the handled entry.
+  - The right-hand side is a SOUND **or a single RECORDING** (maintainer
+    2026-08-06: "I wanted to unbind `coin_pickup__take02.wav` from Coin
+    Pickup, but the unbind is not on the sound itself"). An event that plays
+    several takes has several bindings, so the id can name the exact file:
+    `ui.notify#sounds/ui/notification/notification__take02.wav`,
+    `player.jump@default_girl#composer/foley/jump_voice/jump_voice__take03.wav`.
+    Rule of thumb: **contains a `/` or an extension → one recording; a bare
+    name or `composer/<set>` → the whole sound.** Unbinding one take leaves
+    the event playing the rest; the layer row's "unbind all" still emits the
+    old set-level id.
 
 ## Rules
 

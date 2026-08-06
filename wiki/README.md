@@ -597,6 +597,51 @@ to replace the parsing.
   because all three labels are fixed strings: the widths are decided by the
   dialog and cannot shift under your finger as you step, which is the rule
   `.picker-bar` exists to keep.
+- **THE EVENT TABLE MIRRORS THE ENGINE'S OWN RESOLUTION ORDER** — get this
+  wrong and the page lies about the game (maintainer 2026-08-06: "the wiki is
+  showing old sound mappings not the one playing in the game"). `api.ts` is
+  silent-by-default and resolves an emitted event as:
+  1. **`EVENT_ASSIGNMENTS`** — what the Game Master assigned in the wiki;
+  2. the voice branch + **`EVENT_FOLEY`**;
+  3. **`sounds/bindings.json`** — ONLY for the two ids in `BINDINGS_APPROVED`;
+  4. otherwise **silence**.
+  This build read #2 and then fell through to bindings.json for *everything*,
+  which was two lies at once: every sound he had assigned was invisible
+  (`ui.press` showed the retired `ui_tick` while the game plays
+  `ui_click_bead`; `ui.release` read "no sound yet" while the game plays
+  `ui_click_latch`), and ~18 unapproved library RECOMMENDATIONS rendered as
+  bound sounds the engine never plays — `item.coin_pickup` showed two takes
+  and is in fact silent. Each event now carries **`via`** (`assigned` /
+  `foley` / `bindings` / absent = engine-driven) so the route is inspectable.
+  - An assignment may name ONE recording (`composer/punch#take02`, or a
+    separate `take`), and `pickTake()` resolves it the way the engine does —
+    a take that is not there is **silence, never a neighbouring recording**,
+    or a deleted take would quietly become a different sound.
+  - An unapproved suggestion is still listed, but as **"no sound yet"** with a
+    note naming what the library offers and why nothing plays. Dropping it
+    entirely would lose a useful hint; showing it as bound is the bug.
+  - The same pass found a third stale mapping: `weather.thunder` is played
+    through `foleyEntry(…, "rotate")`, which binds EVERY url, but the wiki
+    pinned it to `primary` and said "1 take" while the game rotated all six.
+  - Gate: **`wiki/tools/check-mapping.mjs`**. It re-derives the resolution
+    from `api.ts` itself — not from a copy of the answer — so it cannot drift
+    with the thing it checks, and it fails on any bound event whose route
+    isn't one the engine would actually take. Verified to name all three
+    reported symptoms when pointed at the old data.
+- **Unbind is PER RECORDING, not just per sound** (maintainer 2026-08-06: "I
+  wanted to unbind `coin_pickup__take02.wav` from Coin Pickup, but the unbind
+  is not on the sound itself … I don't want to delete the sound, just unbind
+  it"). An event that plays several recordings has several bindings, so the ✕
+  has to sit on the one you want gone: every take row in a multi-take layer
+  carries its own `✕ unbind`, and the layer row's button becomes
+  `✕ unbind all`. `bindingId(ev, layer, take)` keys those verdicts
+  `<eventId>#<take file>` in the `bindings` feedback domain — still UNBIND,
+  never delete; the file lives on in the library either way.
+  - Only when there IS a choice. With a single take the layer's own ✕ already
+    means exactly this, and two ✕ for one action reads as two powers.
+  - The button is right-aligned by `margin-left:auto`, not a `.spacer`: at
+    phone width the row wraps, and a spacer leaves the button stranded
+    left-aligned on line 2 where it reads as belonging to the NEXT take.
 - **One sound at a time.** `sfxEngine.stop()` runs BEFORE the fetch and bumps
   a generation counter, so stepping to the next sound kills the previous one
   instantly and a slow take whose decode is still in flight never starts
