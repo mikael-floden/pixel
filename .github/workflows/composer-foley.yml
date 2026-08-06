@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       surfaces:
-        description: "Space-separated sets (empty = all: grass sand snow stone ice wood dirt swamp jump_voice jump_voice_boy thunder water_step ui_tick ui_confirm ui_cancel)"
+        description: "Space-separated set names from generate.py's SETS (empty = every set except the ones in REJECTED_SETS, which the Game Master has already turned down)"
         default: ""
 
 permissions:

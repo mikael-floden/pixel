@@ -89,6 +89,17 @@ events; the game never plays unapproved audio. The machinery:
   `item_drop_mudplop`, `kick_bamboo`, `level_up_choir`, `level_up_harp`,
   `monster_die_bubble`, `monster_die_splat`, `monster_hit_splat`) — kept and
   **unwired**: liking a sound is not assigning it.
+- **Round 7** (2026-08-06, "10 more level_up, taking_dmg, kick, punch and
+  die sound effects. All different vibes."): fifty fresh candidates, ten per
+  action, none repeating a round-6 brief and **none spent on arcade** — the
+  `retro` alternative lost 10 times out of 10, so that lane is closed. The
+  other read from his keep list: impacts want ORGANIC and PHYSICAL, the
+  level-up wants WARM ACOUSTIC, and bright struck metal (bells, chimes,
+  glockenspiel, gong) lost everywhere it was tried. player_die restarts from
+  scratch — round 6 spent all ten on one slow-solemn-fade idea and lost all
+  ten. `generate.py:REJECTED_SETS` keeps a bare run from resurrecting any of
+  it; naming a set on the command line still works, which is the deliberate
+  act.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, every assignable action must stay emitted, and
   every foley set an active route names must EXIST (deleting a rejected set
