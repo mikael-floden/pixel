@@ -1408,6 +1408,19 @@ def main() -> int:
             failed.append(name)
     print(f"generated: {', '.join(done) or 'none'}; failed: {', '.join(failed) or 'none'}")
     print(f"manifest → {manifest_path}")
+    # A RUN THAT MOSTLY FAILED MUST GO RED. `0 if done else 1` meant one
+    # surviving set out of a hundred still reported SUCCESS — which is exactly
+    # what happened on 2026-08-06: the API key began returning 401 seven sets
+    # into a 102-set round, 95 sets failed, the workflow went green, the bot
+    # committed the seven and dispatched a deploy, and the only way to notice
+    # was to count folders by hand. Whatever succeeded is still committed (a
+    # partial round is worth keeping), but the exit code now tells the truth.
+    if failed:
+        share = len(failed) / max(1, len(done) + len(failed))
+        print(f"FAILED {len(failed)}/{len(done) + len(failed)} sets ({share:.0%})")
+        if share > 0.10:
+            print("more than a tenth of the run failed — exiting non-zero so the run goes RED")
+            return 1
     return 0 if done else 1
 
 
