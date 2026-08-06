@@ -11574,5 +11574,35 @@
     "brief": "an enormous beast slamming its tusks forward with a trumpeting roar",
     "generated_at": "2026-08-06T04:10:59+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "mon_diablo_attack": {
+    "takes": [
+      "mon_diablo_attack/mon_diablo_attack__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -7.8,
+        "duration_s": 0.811,
+        "attack_ms": 265.6,
+        "tail_ratio": 0.03,
+        "tonality": 0.469,
+        "crest": 2.85,
+        "centroid_hz": 2431,
+        "mid_ratio": 0.73
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "an ash demon striking with a roaring snarl and a burst of flame",
+    "generated_at": "2026-08-06T04:15:20+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
