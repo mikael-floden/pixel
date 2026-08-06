@@ -26,7 +26,9 @@ if (!block) {
   process.exit(1);
 }
 const events = {};
-for (const m of block[1].matchAll(/"([a-z][\w.]*)"\s*:\s*\{([^}]*)\}/gi)) {
+// `@` is part of an id: the wiki scopes an event to one hero as
+// `player.jump@<uid>`, and the engine resolves that before the shared name.
+for (const m of block[1].matchAll(/"([a-z][\w.@]*)"\s*:\s*\{([^}]*)\}/gi)) {
   const [, id, body] = m;
   const entry = {};
   const str = (k) => body.match(new RegExp(`${k}:\\s*"([^"]*)"`))?.[1];

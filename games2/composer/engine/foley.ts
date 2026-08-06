@@ -44,7 +44,11 @@ export function composerFoley(surface: string): string[] | null {
 export function composerFoleyTake(set: string, take: string | number): string | null {
   const rows = composerFoleyTakes().get(set);
   if (!rows?.length) return null;
-  const want = String(take).trim().replace(/\.wav$/i, "");
+  // The wiki's request carries the EXACT recording path — its own board note:
+  // `take: composer/foley/ui_tick/ui_tick__take04.wav`. Accept that verbatim
+  // (a request should wire in as DATA, not as a transcription step) alongside
+  // a bare take name and a 1-based index.
+  const want = String(take).trim().replace(/^.*\//, "").replace(/\.wav$/i, "");
   const hit =
     rows.find((r) => r.name.replace(/\.wav$/i, "") === want) ??
     rows.find((r) => r.name.replace(/\.wav$/i, "").endsWith(`__${want}`)) ??

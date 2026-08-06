@@ -61,8 +61,14 @@ const names = (src) => [...src.matchAll(/["']([a-z][a-z0-9_.]*)["']\s*[,:\]]/gi)
 const bindingsApproved = names(block(/BINDINGS_APPROVED = new Set<string>\(\[[^\]]*\]/s, "BINDINGS_APPROVED"));
 const eventFoley = names(block(/EVENT_FOLEY: Record<string, string> = \{[^}]*\}/s, "EVENT_FOLEY"))
   .filter((n) => n.includes("."));
-const assignBlock = block(/const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = \{[^;]*\};/s, "EVENT_ASSIGNMENTS");
-const assigned = [...assignBlock.matchAll(/["']([a-z][a-z0-9_.]+)["']\s*:\s*\{/gi)].map((m) => m[1]);
+// Anchored on the closing `\n};` at column 0, NOT on "no semicolon until the
+// end": a `;` inside a COMMENT in the table truncated the match and blinded
+// this gate the first time a comment there used one. It failed loudly, which
+// is the point — but the fix belongs in the regex, not in the prose.
+const assignBlock = block(/const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = \{[\s\S]*?\n\};/s, "EVENT_ASSIGNMENTS");
+// `@<uid>` scopes an assignment to ONE character (the wiki's own spelling,
+// `player.jump@default_girl`); the event the game emits is the part before it.
+const assigned = [...assignBlock.matchAll(/["']([a-z][a-z0-9_.@]+)["']\s*:\s*\{/gi)].map((m) => m[1]);
 
 for (const n of [...bindingsApproved, ...eventFoley]) {
   if (!APPROVED_SOUNDING.has(n)) fail(`"${n}" can sound via ${bindingsApproved.includes(n) ? "bindings" : "EVENT_FOLEY"} but is not on the approved list`);
@@ -88,7 +94,7 @@ const foleySets = new Set(
 const routedSets = [
   ...Object.entries({ EVENT_FOLEY: /EVENT_FOLEY: Record<string, string> = \{[^}]*\}/s,
                       FOOTSTEP_SETS: /FOOTSTEP_SETS: Record<string, string> = \{[^}]*\}/s,
-                      JUMP_VOICE: /const JUMP_VOICE: Record<string, JumpVoiceCfg> = \{[^;]*\};/s })
+                      JUMP_VOICE: /const JUMP_VOICE: Record<string, JumpVoiceCfg> = \{[\s\S]*?\n\};/s })
     .flatMap(([label, re]) =>
       [...block(re, label).matchAll(/(?::|set:)\s*["']([^"']+)["']/g)].map((m) => [label, m[1]])),
   ["FOOTSTEP_DEFAULT", (api.match(/FOOTSTEP_DEFAULT = "([^"]+)"/) ?? [])[1]],
@@ -170,8 +176,11 @@ for (const e of bindingsJson.events ?? []) {
 }
 
 // An assignment for an event nobody fires is dead wiring — worth a loud note.
+// A voice-scoped id is checked on its base event; the scope is a call OPTION
+// (opts.voice), not part of the emitted name.
 for (const n of assigned) {
-  if (!emitted.has(n)) console.log(`NOTE  assignment for "${n}" but nothing emits it (dead wiring?)`);
+  const base = n.split("@")[0];
+  if (!emitted.has(base)) console.log(`NOTE  assignment for "${n}" but nothing emits it (dead wiring?)`);
 }
 
 console.log(failed ? `\nverify-quiet: ${failed} FAILURE(S)` : "\nverify-quiet: ALL OK");

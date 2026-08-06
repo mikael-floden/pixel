@@ -116,6 +116,22 @@ const NIGHT_MUSIC_DB = -5;
 //      (live/tuning/sfx_requests.json → wired here by the composer, the
 //      request entry then deleted). The Game Master's explicit choice, so it
 //      outranks everything.
+//
+// A REQUEST IS A MESSAGE, NOT A RECORD (maintainer 2026-08-06: "You consume
+// the request when you implement it … the request itself is not a ground
+// truth"). Consuming one is a SINGLE COMMIT that both wires it into the table
+// below and deletes the entry from sfx_requests.json — never one without the
+// other. Deleting first loses the ask with nothing to show for it; wiring
+// first leaves a request that the next run re-applies over a setting he has
+// since changed. After that commit the queue is empty by design, so NOTHING
+// can reconstruct the assignment from it: this table is the only record, and
+// it is published as composer/assignments.json for everything outside this
+// engine (scripts/build-assignments.mjs, kept honest by verify-quiet).
+// Anything reporting "what this event plays" reads THAT — never the request
+// queue, and never the layer underneath. Falling back to EVENT_FOLEY or
+// bindings.json for an ASSIGNED event is worse than showing nothing: it
+// displays an outranked sound as if it were live, which is exactly how his
+// ui.press/ui.release picks read as reverted on 2026-08-06.
 //   2. the jump/fall VOICE branch and EVENT_FOLEY — approved in their rounds.
 //   3. bindings.json — consulted ONLY for BINDINGS_APPROVED events.
 // Anything else is SILENT, deliberately: the game may emit any semantic event
@@ -154,6 +170,11 @@ interface EventAssignment {
 /** Filled ONLY from the Game Master's wiki requests — never by the composer's
  * own taste. Empty means every assignable event is silent.
  *
+ * THE RECORD OF EVERY ASSIGNMENT, because the request that created it was
+ * deleted in the same commit that added it here (see the consume-and-delete
+ * note above). Editing this table means re-running scripts/build-assignments.mjs
+ * so composer/assignments.json still matches; verify-quiet fails if it doesn't.
+ *
  * Wired 2026-08-06 from live/tuning/sfx_requests.json, entries then deleted
  * per the contract. Every set he picked here holds exactly ONE take, so these
  * are unambiguous even though they were chosen with the old set-level picker.
@@ -169,6 +190,13 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {
   "ui.error": { sound: "composer/ui_click_bead" },
   "combat.punch": { sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 },
   "combat.kick": { sound: "hit_hurt" },
+  // Her death cry, one named take, no jitter — exactly as he auditioned it.
+  // Scoped to the GIRL because he said so in the request's note; default_boy
+  // has no die assignment yet and is therefore silent, which is the right
+  // sound for a voice he has not chosen. He could not pick one: the wiki puts
+  // only Jump and Fall on the per-hero rows, so Die has a single shared card.
+  // Asked them for a Die row per hero (coordination/games-audio.json).
+  "player.die@default_girl": { sound: "composer/die_voice", take: "die_voice__take06" },
 };
 
 /** Split a wiki `sound` id into its set and (optional) chosen recording. */
@@ -580,7 +608,15 @@ export class GameAudio {
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
     // The Game Master's wiki assignment outranks every built-in route.
-    const assigned = EVENT_ASSIGNMENTS[name];
+    // A PER-CHARACTER assignment wins over the shared one: the wiki already
+    // scopes an event to a hero as `player.jump@<uid>`, so the same spelling
+    // gives each character their own death cry (maintainer 2026-08-06, on the
+    // die-voice request: "This is the female die sound effect. Can't assign a
+    // separate voice to the male (you need to fix that)"). Unscoped stays the
+    // everyone-sound; nothing is inherited, so an unassigned voice is silent.
+    const assigned =
+      (opts.voice ? EVENT_ASSIGNMENTS[`${name}@${opts.voice}`] : undefined) ??
+      EVENT_ASSIGNMENTS[name];
     if (assigned) {
       const rate = (opts.rate ?? 1) * (assigned.pitch ?? 1);
       const gainDb = (opts.gainDb ?? 0) + (assigned.volume_db ?? 0);

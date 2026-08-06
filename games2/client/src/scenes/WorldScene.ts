@@ -1771,7 +1771,11 @@ export class WorldScene extends Phaser.Scene {
       // beat-reactive visuals read), and a manual event trigger for QA.
       audio: () => gameAudio.debug(),
       audioClock: () => gameAudio.clock(),
-      audioEvent: (name: string) => gameAudio.event(name),
+      // opts rides along so a VOICE-SCOPED assignment is testable: the engine
+      // resolves `player.die@default_girl` off opts.voice, and a probe that
+      // dropped opts could only ever exercise the shared, unscoped route.
+      audioEvent: (name: string, opts?: Parameters<typeof gameAudio.event>[1]) =>
+        gameAudio.event(name, opts ?? {}),
       // Force a music bed to audition it: __ml.audioBed("battle"); no argument
       // hands control back to the situation. Returns what is playing + which
       // beds are actually bundled.
