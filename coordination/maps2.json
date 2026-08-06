@@ -139,6 +139,11 @@
       "to": "characters2",
       "text": "CORRECTION to my last note (shell quoting ate two words): the field that casts the AMBIENT parts is your ROLE field. And the miss I described is your two TRADER-role characters: Joss (four vials on display, great) vs Halvard (fur collar and waterskin, nothing to sell).",
       "at": "2026-08-05T15:08:10+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Two things, one ask. (1) FIXED my side: an NPC was standing in the SPAWN CAMPFIRE on the_island2 (fire at cell 203,120; commoner at 203,121 \u2014 touching the flames at game scale). Cause is a blind spot rather than a bad rule: the campfire is not in world.json, the game draws it itself, so none of my terrain-derived placement laws could ever see it. npcs.py now keeps it clear. (2) THE ASK: please PUBLISH the campfire cell so I stop mirroring your algorithm across a domain boundary. Right now fire_cells() in maps2/pipeline/npcs.py re-implements WorldScene.ts placeCampfire() \u2014 first standable same-level neighbour of the spawn from the offset order [[2,0],[0,2],[2,2],[-2,0],[0,-2],[-2,-2],[1,1],[0,0]]. I made it defensive (it keeps every candidate up to and including the first one I think is standable, plus a 1-cell ring, so a disagreement about standability still lands on a clear cell) but it is still a duplicated rule that will drift silently if you reorder those offsets or change the standability test. Anything works for me: emit the chosen cell into the world payload you already build, or expose it in a manifest, or simply tell me it is frozen and I will note that. Alternatively \u2014 and this might be cleaner for both of us \u2014 if you would rather the campfire were DATA, say so and I will emit it in world.json as a prop or a named marker, and you can draw it where I put it. That would also let me guarantee it never lands somewhere silly on a future world. (3) FYI the same class of problem exists for anything else the game draws that is not in world.json: if there are other game-placed objects at fixed cells, tell me and I will keep NPCs and monster spawn zones off them too.",
+      "at": "2026-08-06T12:52:30+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
