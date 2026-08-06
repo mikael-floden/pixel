@@ -49,18 +49,31 @@ function record(name) {
 // added per-character voices. We still parse the source as a CROSS-CHECK, so
 // a manifest that stops matching the engine fails here instead of quietly
 // becoming the new truth.
+// An event maps to a LIST — several assigned sounds rotate round-robin — and
+// it used to map to a single object THROUGH THE SAME `@1` format string. Both
+// the builder and this gate read only the object shape, so the day the list
+// landed every assignment silently became "no sound yet" on a page full of the
+// maintainer's own work. Normalise, and never assume the shape again.
+const asList = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 const DOC = JSON.parse(readFileSync(join(ROOT, "games2/composer/assignments.json"), "utf8"));
 const ASSIGN = DOC.events ?? {};
-const SRC_ASSIGN = record("const EVENT_ASSIGNMENTS") ?? {};
 const FOLEY = record("EVENT_FOLEY");
 const bm = API.match(/const BINDINGS_APPROVED(?:\s*:[^=]+)?\s*=\s*new Set<[^>]*>\(\[([\s\S]*?)\]\)/);
 const APPROVED = new Set(bm ? [...bm[1].replace(/\/\/[^\n]*/g, "").matchAll(/"([^"]+)"/g)].map((x) => x[1]) : []);
 
 ok(DOC.format === "pixel-composer-assignments@1", `the composer's manifest is the expected format (${DOC.format})`);
 ok(Object.keys(ASSIGN).length > 0, `it lists assignments (${Object.keys(ASSIGN).length})`);
-const drift = [...new Set([...Object.keys(ASSIGN), ...Object.keys(SRC_ASSIGN)])]
-  .filter((k) => String(ASSIGN[k]?.sound ?? "") !== String(SRC_ASSIGN[k]?.sound ?? ""));
-ok(drift.length === 0, `and it agrees with EVENT_ASSIGNMENTS in api.ts${drift.length ? ` — DRIFT on ${drift.join(", ")}` : ""}`);
+// NO REGEX RE-PARSE OF THE ASSIGNMENT TABLE. It was tried, and it broke twice
+// in one day — first on per-character voices, then on the value becoming a
+// LIST — which is exactly what games-audio warned about when they published
+// the manifest ("it cannot go stale on you the way an api.ts regex can").
+// Their own gate keeps the manifest in step with the engine; ours keeps the
+// PAGE in step with the manifest. What is checked here instead is
+// shape-agnostic: every event the manifest claims must at least exist as a
+// literal key in the engine source, which catches a manifest naming events
+// api.ts has never heard of without pretending to parse TypeScript.
+const unknown = Object.keys(ASSIGN).filter((id) => !API.includes(`"${id}"`));
+ok(unknown.length === 0, `every assigned event id appears in api.ts${unknown.length ? ` — unknown: ${unknown.join(", ")}` : ""}`);
 ok(!!FOLEY, `EVENT_FOLEY parses (${Object.keys(FOLEY ?? {}).length} entries)`);
 ok(APPROVED.size > 0, `BINDINGS_APPROVED parses (${[...APPROVED].join(", ")})`);
 // The ORDER is load-bearing: if assignments stop outranking the rest,
@@ -73,18 +86,29 @@ const byId = new Map(D.sfx.events.map((e) => [e.id, e]));
 const setOf = (l) => (l.source === "composer" ? l.set : l.soundId);
 
 // ---- 1. every assignment is shown, and shows the ASSIGNED sound ----------
-for (const [id, a] of Object.entries(ASSIGN)) {
+for (const [id, rawA] of Object.entries(ASSIGN)) {
+  const list = asList(rawA);
   const e = byId.get(id);
-  if (!e) { ok(false, `${id}: assigned to "${a.sound}" but the wiki does not list the event at all`); continue; }
-  const want = String(a.sound).replace(/^composer\//, "").split(/[#/]/)[0];
+  if (!e) { ok(false, `${id}: assigned to "${list.map((x) => x.sound).join(", ")}" but the wiki does not list the event at all`); continue; }
+  const wants = list.map((x) => String(x.sound).replace(/^composer\//, "").split(/[#/]/)[0]);
   const got = e.sounds.map(setOf);
-  ok(e.bound && got.includes(want), `${id} → ${want}${got.includes(want) ? "" : ` — WIKI SHOWS ${got.length ? got.join("+") : "nothing"}`}`);
+  ok(e.bound && wants.every((w) => got.includes(w)),
+    `${id} → ${wants.join(" + ")}${wants.every((w) => got.includes(w)) ? "" : ` — WIKI SHOWS ${got.length ? got.join("+") : "nothing"}`}`);
+  // Several assigned sounds ROTATE (one per trigger); layered sounds play
+  // together. Confusing them makes ▶ fire four thunder cracks at once.
+  if (list.length > 1) ok(e.rotates === true, `  …and its ${list.length} sounds are marked as taking turns, not layered`);
+  // Every assigned recording must actually resolve — the maintainer assigns
+  // POOL candidates now (weather.thunder is four), and a set-only take lookup
+  // resolved each to an empty layer: a card claiming a sound with nothing in it.
+  ok(e.sounds.every((l) => l.takes.length > 0),
+    `  …and every layer carries a real recording (${e.sounds.map((l) => l.takes.length).join("/")})`);
+  const a = list[0];
   if (a.pitch != null) {
-    const r = e.sounds.find((l) => setOf(l) === want)?.rate;
+    const r = e.sounds.find((l) => setOf(l) === wants[0])?.rate;
     ok(Math.abs((r ?? 1) - a.pitch) < 1e-6, `  …at the assigned pitch ×${a.pitch} (${r})`);
   }
   if (a.volume_db != null) {
-    const t = e.sounds.find((l) => setOf(l) === want)?.trimDb;
+    const t = e.sounds.find((l) => setOf(l) === wants[0])?.trimDb;
     ok(Math.abs((t ?? 0) - a.volume_db) < 1e-6, `  …at the assigned volume ${a.volume_db} dB (${t})`);
   }
   // RANDOM PITCH IS NOT GENTLED for a composer assignment. oneshot.ts:135 is
@@ -94,9 +118,9 @@ for (const [id, a] of Object.entries(ASSIGN)) {
   // his own setting (item.drop read ±0.14 st against a played ±0.4).
   if (a.max_random_pitch_semis != null && String(a.sound).startsWith("composer/")) {
     const j = Math.abs(a.max_random_pitch_semis);
-    const got = e.sounds.find((l) => setOf(l) === want)?.jitterSemis;
-    ok(!!got && Math.abs(Math.abs(got[1]) - j) < 1e-6,
-      `  …with the assigned random pitch ±${j} st, ungentled (${got ? `±${Math.abs(got[1])}` : "none"})`);
+    const gotJ = e.sounds.find((l) => setOf(l) === wants[0])?.jitterSemis;
+    ok(!!gotJ && Math.abs(Math.abs(gotJ[1]) - j) < 1e-6,
+      `  …with the assigned random pitch ±${j} st, ungentled (${gotJ ? `±${Math.abs(gotJ[1])}` : "none"})`);
   }
 }
 // The gentle constant is what makes the rule above non-obvious — pin it, so a
@@ -151,7 +175,7 @@ ok(dead.length === 0, `every card is either fired by the game or has a sound bou
 // Game Master assigned would vanish with no way to see or unbind it. That is
 // the red "not fired yet" chip, and hiding it would be the worse bug.
 const hidden = new Set(D.sfx.hiddenDeadEvents ?? []);
-ok(![...hidden].some((id) => ASSIGN[id]), `nothing hidden is actually assigned (${hidden.size} hidden)`);
+ok(![...hidden].some((id) => asList(ASSIGN[id]).length), `nothing hidden is actually assigned (${hidden.size} hidden)`);
 ok(!hidden.has("combat.monster_die"), "the event the game really fires on a monster death is still listed");
 ok(hidden.has("combat.enemy_defeat") || !(bindings.events ?? []).some((b) => b.event === "combat.enemy_defeat"),
   "and its dead twin combat.enemy_defeat is not");

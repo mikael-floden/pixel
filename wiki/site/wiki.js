@@ -1948,7 +1948,13 @@ const sfxEngine = {
    *  (grass footstep = the grass set AND dirt underneath, same instant). */
   playEvent(ev) {
     this.stop();                                    // the previous audition, not this event's own layers
-    for (const l of ev.sounds) void this.playLayer(l, { solo: false });
+    // TWO KINDS OF MULTI-SOUND EVENT, and they are opposites. A LAYERED event
+    // plays every sound at once (a grass footstep IS grass plus dirt
+    // underneath). Several ASSIGNED sounds ROTATE — one per trigger, the
+    // engine's round-robin — so playing them together would be four thunder
+    // cracks on top of each other, which is not a sound the game can make.
+    const list = ev.rotates ? [ev.sounds[Math.floor(Math.random() * ev.sounds.length)]] : ev.sounds;
+    for (const l of list) void this.playLayer(l, { solo: false });
   },
   /** The admin's all-sounds list: raw file, or the audition sliders. */
   async rawOrAudition(file, { rate = 1, gainDb = 0, maxSemis = 0 } = {}) {
@@ -2397,7 +2403,9 @@ function sfxEventCard(ev) {
       ev.name,
       state.admin ? h("span", { class: "pill" }, ev.id) : null,
       ev.duck ? h("span", { class: "pill", title: "The music dips while this plays" }, "ducks music") : null,
-      ev.sounds.length > 1 ? h("span", { class: "pill ok", title: "All of these play at the same time" }, `${ev.sounds.length} layered`) : null,
+      ev.sounds.length > 1 ? (ev.rotates
+        ? h("span", { class: "pill ok", title: "One of these plays each time, never the same one twice in a row — ▶ picks one, like the game does" }, `${ev.sounds.length} in rotation`)
+        : h("span", { class: "pill ok", title: "All of these play at the same time" }, `${ev.sounds.length} layered`)) : null,
       // The three states a Game Master needs at a glance: green = players
       // hear this, coral = nothing assigned, red = assigned but the game
       // never triggers it (maintainer 2026-08-06). Players only ever see

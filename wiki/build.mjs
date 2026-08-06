@@ -1053,7 +1053,12 @@ function buildSfx(soundEntries) {
   // beds (region changes via setEnv) and the water-entry splash (avatarFrame).
   // They play in the real game every session; hiding them from players as
   // "never fired" would be the opposite of the truth.
-  const ENGINE_DRIVEN = new Set(["player.water_enter"]);
+  // Fired by the engine through its OWN method, not a `gameAudio.event("…")`
+  // call site the emitted-scan can see: thunder() on every lightning strike,
+  // star() on every shooting star. They became assignable 2026-08-06, and
+  // without this they land on the assignment path and read "not fired yet" —
+  // claiming nobody can hear a sound the game plays on every storm.
+  const ENGINE_DRIVEN = new Set(["player.water_enter", "weather.thunder", "progress.star"]);
 
   // ---- assemble the events ----
   const events = [];
@@ -1093,14 +1098,21 @@ function buildSfx(soundEntries) {
     const cs = composerSets[set];
     if (!cs) return null;
     useSet(set, over.usedBy ?? "event");
-    const chosen = over.take != null ? pickTake(cs.takes, over.take) : null;
+    // THE POOL IS A SOURCE OF RECORDINGS, not just the selected takes — the
+    // engine's composerFoleyTake searches both, and the maintainer went
+    // straight for them once the picker listed them (weather.thunder is four
+    // pool candidates, cand07/08/09/17). Searching only `takes` resolved every
+    // one of those to an empty layer: the card would claim a sound while
+    // showing nothing under it.
+    const pickable = [...cs.takes, ...cs.alts];
+    const chosen = over.take != null ? pickTake(pickable, over.take) : null;
     const takes = chosen ?? (over.primary ? cs.takes.slice(0, 1) : cs.takes);
     return {
       source: "composer", set, label: `${set} (composer)`,
       takes,
       // Everything else in the folder the Game Master could swap in — the
       // set's other takes AND its unpicked generation candidates.
-      spareTakes: cs.takes.length - takes.length + cs.alts.length,
+      spareTakes: pickable.length - takes.length,
       pick: chosen ? "the one chosen recording" : over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",
@@ -1128,8 +1140,24 @@ function buildSfx(soundEntries) {
   // plays `ui_click_bead` — and dozens of unapproved library RECOMMENDATIONS
   // rendered as bound sounds that the engine never plays at all. bindings.json
   // is a suggestion; only these tables are the game.
-  const assignLayer = (id) => {
-    const a = EVENT_ASSIGN[id];
+  /** An event's assigned sounds. The manifest ships a LIST per event — several
+   *  assigned sounds ROTATE round-robin on that event, each keeping its own
+   *  pitch/volume/jitter — and it used to ship a single object, THROUGH THE
+   *  SAME `@1` format string. So accept both shapes, and shout when it is
+   *  neither: a shape this reader cannot parse must never quietly render as
+   *  "no sound yet" (maintainer 2026-08-06 — "WTF! … Who is undoing all my
+   *  work!" — an array-blind read wiped all 14 of his assignments off the page
+   *  while the game went on playing every one of them). Silent degradation to
+   *  "nothing is assigned" is the worst failure this page has. */
+  const assignList = (id) => {
+    const raw = EVENT_ASSIGN[id];
+    if (!raw) return [];
+    const arr = Array.isArray(raw) ? raw : [raw];
+    const good = arr.filter((a) => a && typeof a === "object" && typeof a.sound === "string");
+    if (good.length !== arr.length) sfxDrift.push(`assignments.json: ${id} carries an entry shape this build cannot read`);
+    return good;
+  };
+  const assignLayer = (a, id) => {
     if (!a?.sound) return null;
     const over = {
       trimDb: a.volume_db ?? 0,
@@ -1157,9 +1185,16 @@ function buildSfx(soundEntries) {
   };
   /** What the game ACTUALLY plays for this event, and why. */
   const resolveEvent = (id, ev) => {
-    const asg = assignLayer(id);
-    if (asg) return { sounds: [asg], bound: true, via: "assigned",
-      note: "assigned by the Game Master in the wiki" };
+    const asg = assignList(id).map((a) => assignLayer(a, id)).filter(Boolean);
+    if (asg.length) return { sounds: asg, bound: true, via: "assigned",
+      // Several assigned sounds ROTATE — one per trigger, never all at once.
+      // That is the opposite of a layered event (grass + dirt underneath play
+      // together), so the flag has to travel with the card or ▶ would fire
+      // four thunder cracks simultaneously.
+      rotates: asg.length > 1,
+      note: asg.length > 1
+        ? `assigned by the Game Master in the wiki — these ${asg.length} take turns, one per trigger`
+        : "assigned by the Game Master in the wiki" };
     if (EVENT_FOLEY[id]) {
       const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
       return { sounds: l ? [l] : [], bound: !!l, via: "foley",
@@ -1210,7 +1245,7 @@ function buildSfx(soundEntries) {
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
       emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
-      bound: r.bound, via: r.via, note: r.note, sounds: r.sounds });
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
   }
   // Everything else the engine knows about: events the game EMITS, and events
   // the Game Master has ASSIGNED (an assignment for an event no binding ever
@@ -1226,7 +1261,7 @@ function buildSfx(soundEntries) {
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? "sfx", duck: false,
       emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
-      bound: r.bound, via: r.via, note: r.note, sounds: r.sounds });
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
   }
   // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
   // surface resolves to a composer set or a catalog sound, with per-surface
@@ -1264,15 +1299,22 @@ function buildSfx(soundEntries) {
   // The wet shoreline step and the composer's own flourishes.
   const wet = catLayer("splash", { rate: engine.wetStepRate, primary: true, layerNote: "the water-exit splash, pitched brighter" });
   if (wet) events.push({ id: "footsteps.wet", group: "Movement", name: "Footsteps · Wet shoreline", bus: "sfx", duck: false, emitted: true, bound: true, note: null, sounds: [wet] });
+  // AN ASSIGNMENT OUTRANKS THESE HARDCODED ROUTES. Both thunder and the
+  // shooting star were engine-only when they were written here; the composer
+  // has since made them assignable, and the Game Master assigned thunder four
+  // pool candidates. Pushing our own card anyway gave TWO `weather.thunder`
+  // cards — his four candidates, and a stale one still claiming the six
+  // shipped takes. Whatever he assigned is the truth; skip ours.
+  const already = (id) => events.some((e) => e.id === id);
   const star = catLayer("gem_pickup", { trimDb: -10 });
-  if (star) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
+  if (star && !already("progress.star")) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "played on the music's beat, in the track's key (scale-snapped)", sounds: [star] });
   // ROTATE, not primary: api.ts plays thunder through foleyEntry(…, "rotate"),
   // whose `many` branch binds EVERY url — the maintainer asked to hear thunder
   // as "a group with several sounds". The wiki said "1 take" while the game
   // rotated all six (found by check-mapping.mjs, 2026-08-06).
   const thunder = setLayer("thunder", { trimDb: 6, usedBy: "weather.thunder", pick: "round-robin, never the same twice" });
-  if (thunder) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
+  if (thunder && !already("weather.thunder")) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
     note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
 
   // Jump and Fall are PER-CHARACTER (maintainer 2026-08-05): the game routes
@@ -1328,6 +1370,14 @@ function buildSfx(soundEntries) {
         : "no death cry yet; an unassigned voice stays silent rather than borrowing the other hero's" });
   }
   for (const e of events) if (!("scope" in e)) e.scope = null;
+  for (const e of events) if (!("rotates" in e)) e.rotates = false;
+  // EVERY ASSIGNMENT MUST HAVE LANDED. This is the check that would have
+  // caught the array change on the build that shipped it, instead of the
+  // maintainer finding a page full of "no sound yet" over work he had done.
+  // Cheap, total, and it does not care WHY an assignment failed to resolve.
+  const landed = new Set(events.filter((e) => e.via === "assigned").map((e) => e.id));
+  const lost = Object.keys(EVENT_ASSIGN).filter((id) => !landed.has(id));
+  if (lost.length) sfxDrift.push(`${lost.length} of ${Object.keys(EVENT_ASSIGN).length} assignment(s) did not reach the page: ${lost.join(", ")}`);
   events.sort((a, b) => a.group.localeCompare(b.group) || a.id.localeCompare(b.id));
 
   // Which catalog sounds an event references — feeds the used/unused pill on

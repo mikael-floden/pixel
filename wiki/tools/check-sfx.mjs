@@ -12,7 +12,10 @@ const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ")
 
 // ---------- data sanity
 const sfx = D.sfx;
-ok(sfx.events.length >= 40, `event table built (${sfx.events.length} events)`);
+// Floor, not a target: the composer deleted 22 bindings.json rows for events
+// the game never fires (2026-08-06), so the honest table is much smaller than
+// it was. What matters is that it is populated, not that it is long.
+ok(sfx.events.length >= 25, `event table built (${sfx.events.length} events)`);
 const grass = sfx.events.find((e) => e.id === "footsteps.grass");
 ok(grass.sounds.length === 2, "grass footstep = grass set + dirt layered under");
 const jumpBoy = sfx.events.find((e) => e.id === "player.jump@default_boy");
