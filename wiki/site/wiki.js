@@ -453,6 +453,16 @@ function playTake(files, btn) {
   btn.classList.add("playing"); btn.textContent = "⏸";
   a.onpause = a.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶"; if (playingBtn === btn) playingBtn = null; };
 }
+/** Silence everything the WIKI is playing. Two independent players live on
+ *  this page and stopping one leaves the other sounding: the WebAudio
+ *  auditions (sfxEngine) and this shared <audio> element, which carries music
+ *  beds and entity takes. Anything that takes over the screen — the picker,
+ *  a route change — has to cut both. */
+function stopAllAudio() {
+  sfxEngine.stop();
+  const a = audioEl();
+  if (a && !a.paused) a.pause();   // its onpause resets that row's ▶/⏸ button
+}
 function takeRow(domain, entityPath, take, extra = []) {
   const id = `${entityPath}/${take.id}`.replace(/\.(wav|ogg|m4a)$/, "");
   const row = h("div", { class: "take-row" });
@@ -1959,16 +1969,22 @@ const sfxEngine = {
 
 // A full-page wiki tab has no game to mute → no button.
 let gameMuted = false;
+const muteLabel = (on) => (on ? "🔊 Unmute the game" : "🔇 Mute the game while listening");
+/** The ONE place that flips the game's audio, so the button and the picker
+ *  can never disagree. Labels are refreshed by query rather than through the
+ *  button's own closure, because the picker mutes from outside that scope —
+ *  and a stale label is how someone ends up unable to get their game sound
+ *  back. */
+function setGameMuted(on) {
+  if (window.parent === window || on === gameMuted) return;
+  gameMuted = on;
+  window.parent.postMessage({ type: "wiki:muteGame", on }, location.origin);
+  for (const b of document.querySelectorAll(".mute-game")) b.textContent = muteLabel(on);
+}
 function muteGameBtn() {
   if (window.parent === window) return null;
-  const btn = h("button", { class: "ghost-btn mute-game" });
-  const render = () => { btn.textContent = gameMuted ? "🔊 Unmute the game" : "🔇 Mute the game while listening"; };
-  btn.addEventListener("click", () => {
-    gameMuted = !gameMuted;
-    window.parent.postMessage({ type: "wiki:muteGame", on: gameMuted }, location.origin);
-    render();
-  });
-  render();
+  const btn = h("button", { class: "ghost-btn mute-game" }, muteLabel(gameMuted));
+  btn.addEventListener("click", () => setGameMuted(!gameMuted));
   return btn;
 }
 /* --- Sound Effects, organized by IN-GAME EVENT (maintainer 2026-08-05) ----
@@ -2162,6 +2178,17 @@ function sfxLibraryList() {
 }
 const titleish = (s) => String(s).replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 function openSoundPicker({ title, forWhat, onPick }) {
+  // NOTHING MAY BE SOUNDING WHEN THE PICKER OPENS (maintainer 2026-08-06).
+  // The modal blocks every control that could stop it, and the game's own
+  // "🔇 Mute the game" button exists ONLY on the Sound Effects and Music
+  // pages — so a picker opened from a monster or character card had no way
+  // to reach it at all. Silence the wiki's two players AND the game.
+  stopAllAudio();
+  // Restore only what WE muted: the same contract the drawer keeps with the
+  // player's own switches (wikipanel.ts). If the Game Master had already hit
+  // Mute, closing the picker leaves the game quiet, as they asked.
+  const unmuteOnClose = !gameMuted;
+  setGameMuted(true);
   const all = sfxLibraryList();
   let list = all, sel = 0;
   const search = h("input", { type: "search", class: "picker-search", placeholder: `Search ${all.length} sounds…`, autocomplete: "off" });
@@ -2266,8 +2293,13 @@ function openSoundPicker({ title, forWhat, onPick }) {
     else if (e.key === "Enter" && e.target !== assign) { e.preventDefault(); assign.click(); }
   });
   // Closing must silence whatever is playing — a dialog that keeps sounding
-  // after it is gone is a sound you cannot stop.
-  dlg.addEventListener("close", () => { sfxEngine.stop(); dlg.remove(); });
+  // after it is gone is a sound you cannot stop. Fires for Cancel, Assign and
+  // Escape alike, so the game always gets its audio back the same way.
+  dlg.addEventListener("close", () => {
+    stopAllAudio();
+    if (unmuteOnClose) setGameMuted(false);
+    dlg.remove();
+  });
   document.body.append(dlg);
   paint();
   dlg.showModal();
@@ -2981,7 +3013,7 @@ function viewSearch() {
 /* ---------------------------------------------------------------- router */
 function route() {
   destroyPlayers();
-  const a = audioEl(); if (a && !a.paused) a.pause();
+  stopAllAudio();   // both players: a long audition used to survive the nav
   const hash = location.hash.replace(/^#\/?/, "");
   const [page, id, sub] = hash.split("/").map(decodeURIComponent);
   let view;

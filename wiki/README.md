@@ -565,6 +565,38 @@ to replace the parsing.
   `HIT TAKEN` header the rows read `armor` / `bass` / `coat` — the flavour is
   what you are choosing between, and repeating the action only truncated it;
   the full name stays in the tooltip, the "Selected:" line and the request.
+- **Opening the picker silences EVERYTHING** (maintainer 2026-08-06). A modal
+  `<dialog>` blocks the controls for every audible thing on the page, and
+  three independent sources can be sounding: `sfxEngine` (the WebAudio
+  auditions), the shared `#shared-audio` element (music beds and entity
+  takes), and **the game itself behind the drawer**. The last one was the real
+  hole: the "🔇 Mute the game" button exists only on the Sound Effects and
+  Music pages, but the picker also opens from monster and character cards —
+  so a Game Master auditioning from a creature page had no way to reach it at
+  all. `openSoundPicker()` now calls `stopAllAudio()` (both wiki players) and
+  `setGameMuted(true)`.
+  - **It restores only what IT muted**, the same contract the drawer keeps
+    with the player's own switches (`wikipanel.ts`): if Mute was already
+    pressed, closing the picker leaves the game quiet. Restore runs off the
+    dialog's `close` event, so Cancel, Assign and **Escape** all behave alike.
+  - `setGameMuted()` is the single place that flips it, and it re-labels every
+    `.mute-game` button **by query, not through the button's own closure** —
+    the picker mutes from outside that scope, and a stale label is how someone
+    ends up unable to get their game sound back.
+  - `route()` uses `stopAllAudio()` too; it used to pause only the `<audio>`
+    element, so a long WebAudio audition survived navigating away.
+  - Gate: **`wiki/tools/check-audiostop.mjs`**. It fakes admin at the network
+    layer instead of logging in — the picker is Game-Master-only but all of
+    this is pure client logic, and a real login would only make the gate skip
+    wherever the password is absent, which is exactly where a regression would
+    slip through. Verified to fail (9 assertions) with the stop call removed.
+- **Prev / Play / Next are thumb-sized** (maintainer 2026-08-06). They are the
+  work of the dialog — you hammer Next/Play down 281 sounds hunting for the
+  right one — so they are 46px tall and share the row `flex: 1` instead of
+  wearing the compact ghost-button padding. Equal flex is safe here precisely
+  because all three labels are fixed strings: the widths are decided by the
+  dialog and cannot shift under your finger as you step, which is the rule
+  `.picker-bar` exists to keep.
 - **One sound at a time.** `sfxEngine.stop()` runs BEFORE the fetch and bumps
   a generation counter, so stepping to the next sound kills the previous one
   instantly and a slow take whose decode is still in flight never starts

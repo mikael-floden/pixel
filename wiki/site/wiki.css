@@ -782,7 +782,17 @@ input[type="range"] { accent-color: var(--accent); }
    height change here shifts every control — Next must be where it was after
    you press Next. */
 .picker-bar { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; margin-top: 10px; }
-.picker-bar .ghost-btn { padding: 5px 12px; flex: none; }
+/* These three are the WORK of the dialog — you hammer Next/Play down a list of
+   281 sounds hunting for the right one — so they get real thumb-sized targets
+   rather than the compact ghost button (maintainer 2026-08-06). Equal `flex:1`
+   shares the row: all three labels are fixed strings, so the widths are
+   decided by the dialog and CANNOT shift under your finger as you step, which
+   is the rule this row exists to keep. */
+.picker-bar .ghost-btn {
+  flex: 1; min-height: 46px; padding: 11px 8px;
+  font-size: 15px; font-weight: 600; border-radius: 11px;
+}
+.picker-bar .picker-play { flex: 1.15; }   /* the one pressed most, a touch wider */
 .picker-empty { padding: 14px 10px; font-size: 13px; text-align: center; }
 .picker-ctls { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .picker-ctl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
