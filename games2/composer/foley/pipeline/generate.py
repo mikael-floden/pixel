@@ -660,9 +660,15 @@ for _action, _alts in ROUND7.items():
 #      the `click` GATE, which measures tonality and is prompt-independent.
 #   2. A POOL of 3 with that gate on, unlike rounds 6-8's one-shot
 #      alternatives. The gate cannot narrow variety here: variety lives ACROSS
-#      the ten briefs, and the judge only picks the least ringy of three
-#      renditions of ONE concept. Ranking is RANK["click"] — lowest tonality
-#      wins, which is exactly his complaint expressed as a number.
+#      the ten briefs, and the judge only picks among three renditions of ONE
+#      concept.
+#      CORRECTION, same day, after the takes landed: the reasoning above said
+#      the gate expresses his complaint as a number. IT DOES NOT — replaying
+#      his own kept/rejected UI verdicts through it shows it passes 7 of the 7
+#      takes he threw away (see the warning on GATES["click"]). The pool is
+#      still worth having, because three attempts beat one; the gate's verdict
+#      on these ten is not worth reporting to him, and four of them measure
+#      "failing" purely because a clasp and a cork ring by nature.
 #
 # PRESS vs RELEASE: the game's tactile pair wants a sharp DOWN and a duller UP,
 # and `ui.release` has been silent since ui_cancel was rejected. So the ten
@@ -825,6 +831,23 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
         "crest": (6.0, 99.0, 2),
         "tonality": (0.0, 0.95, 30),
     },
+    # ⚠️ THE CLICK GATE DOES NOT PREDICT THE MAINTAINER'S UI VERDICTS.
+    # Measured 2026-08-06 against every UI take he has ruled on, by playing
+    # his own kept/rejected lists back through this feature:
+    #   KEPT     0.238 0.276 0.429 (ui_tick) · 0.239 0.252 (ui_confirm)
+    #   REJECTED 0.000 0.268 0.340 0.352 (ui_cancel) · 0.250 0.251
+    #            (ui_confirm) · 0.397 (ui_tick)
+    # The two ranges OVERLAP almost entirely. This gate would have PASSED
+    # SEVEN OF SEVEN takes he threw away — including ui_cancel take01, which
+    # measures a perfect 0.000 and which he rejected anyway — while FAILING
+    # ui_tick take04, which he kept. Zero discriminating power on the only
+    # judgement that matters.
+    # This is the same lesson the `grain` gate learned about metal: tonality
+    # measures a real thing (piano-like ring) that simply is not what makes a
+    # click good or bad to him. So DO NOT use it to pick a UI candidate for
+    # him, and do not report its verdict as a quality signal — a pool + this
+    # judge gives the model more attempts and a deterministic tie-break, and
+    # that is ALL it gives. The ear decides; it always did.
     "click": {
         "tonality": (0.0, 0.40, 60),
         "tail_ratio": (0.0, 0.15, 40),

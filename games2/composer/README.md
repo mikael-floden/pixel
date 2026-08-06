@@ -111,6 +111,17 @@ events; the game never plays unapproved audio. The machinery:
   talked into the thing it is filtering. They are the first alternatives with a
   POOL (3) and a judge — the gate cannot narrow variety when variety lives
   across the ten briefs and the judge only picks among three renditions of one.
+- ⭐ **LESSON — the click gate does not predict his UI verdicts** (measured the
+  same day, by replaying every UI take he has ruled on back through the
+  feature). KEPT measure 0.238/0.276/0.429 (ui_tick) and 0.239/0.252
+  (ui_confirm); REJECTED measure 0.000/0.268/0.340/0.352 (ui_cancel),
+  0.250/0.251 (ui_confirm) and 0.397 (ui_tick). The ranges overlap almost
+  entirely: the gate would have **passed seven of the seven takes he threw
+  away** — including one measuring a perfect 0.000 — while failing one he
+  kept. Same shape as the `grain` gate's metal lesson: tonality measures a
+  real thing that is not what makes a click good to him. A pool + judge buys
+  more attempts and a deterministic tie-break, nothing more, and its verdict
+  is not worth passing on as a quality signal.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, every assignable action must stay emitted, and
   every foley set an active route names must EXIST (deleting a rejected set
