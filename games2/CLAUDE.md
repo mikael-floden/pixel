@@ -666,6 +666,57 @@ visible head/shoulders are ABOVE the surface).
   (players keep instant large turns for input feel). QA probe: 25s room
   sweep — all 24 kinds sampled playing idle when stopped, zero frozen,
   worst flip rate 0.76/s.
+- **GAIT SYNC — the walk clip is paced by DISTANCE, not by time** (maintainer
+  2026-08-05: monsters "either jump or the walk forward animation is limping
+  forward … adjust the position/velocity at certain times to sync with the
+  animation"). A monster's speed spans **42 wu/s roaming → 105 chasing → up
+  to 220 in a provoked hunt**, but every walk clip used to play ONE fixed
+  rate picked from the frame count alone (6 fps at ≤6 frames, 10 above), so
+  the feet could only track the ground at a single speed — measured, the old
+  rate was off by 0.30× (mammoth: legs churning 3.3× faster than the ground
+  moved) to 2.49× (hedgehog, skating) at ROAM, and 0.76×–6.22× at chase.
+  Now: `fps = frames × speed / gait.cycleWu`, so one cycle completes per
+  `cycleWu` of ground however fast the body is going.
+  - `gait.cycleWu` is emitted per kind by `build-monsters-manifest.mjs`,
+    derived from the art-measured body length (`0.9 × bodyW`, clamped
+    26–92wu). **Do NOT try to measure it from the art's foot excursion** —
+    that was tried and it does not work: the leading-contact swing is 1px on
+    a poring and 18px on a saber-tooth, uncorrelated with size, because half
+    the roster has no visible legs (blobs, monoliths, the tree stump). Body
+    length is the one signal every kind has, and stride ∝ body size is the
+    real biomechanics.
+  - The rate is clamped to **3–26 fps**: a mammoth may pace slowly but must
+    never freeze mid-stride, and a hunter sprinting at 195 wu/s would
+    otherwise demand ~108 fps of a 16-frame clip. When a clamp binds the
+    body does skate — that is the art's frame budget, not a bug, and the
+    gate only asserts cadence-true playback where the clamps are slack.
+  - Speed is measured from the body's OWN DRAWN motion (the eased screen
+    delta back-projected to world units, exactly like the player's `spdWu`),
+    so easing, water, the flee-slow and chases all pace continuously. The
+    same measurement yields `scrPerWu`, the local iso scale along the current
+    heading — which converts world-unit gait maths back to screen px free.
+  - **HOP TRAVEL** for kinds that genuinely leap: `gait.travel[]`, per-frame
+    ground-track weights (mean 1), integrated into a mean-zero lead/lag along
+    the heading so a frog covers its ground DURING the leap and stands still
+    while it gathers, instead of gliding evenly through a hop it is visibly
+    not making. Measured by the body's vertical MASS CENTROID rise over the
+    cycle ÷ figure height — **not** `air[]`, which under-reports a leap badly
+    because a frog's legs DANGLE and keep its lowest pixel low. Only kinds
+    over 15% rise ship a profile: water_poring .31, mystical_frog .27,
+    diablo .21; everything else is ≤ .12 and glides evenly, as before.
+    The offset is applied to the DRAWN anchor (sprite + shadow + lit copy),
+    never to `mv.lx` — that IS the ease state and would absorb the surge —
+    so it can never drift the body off its server position.
+  - TRAP, paid for once: Phaser's `timeScale` lives on the sprite's
+    ANIMATION STATE, not on the clip, so it survives every `play()`. Without
+    an explicit reset at the top of `playMonsterAnim`, a monster that broke
+    off a 3.5× chase swung, raged and DIED at 3.5× too.
+  - Gate: `scripts/verify-monstergait.mjs` (dev stack) — every kind ships a
+    measured stride, every sampled kind completes one cycle per that stride,
+    the cadence measurably rises when a monster starts hunting, combat clips
+    keep their authored rate, and the hop weights stay mean-1. Probes:
+    `__ml.monsterGait()` (live speed/base fps/timeScale/effective fps/
+    wuPerCycle/hopOff per body) and `__ml.monsterDefs()` (the manifest gait).
 - **CAMERA GATE on the body pipeline** (perf, 2026-07-31): the_island2 ships
   **160 monsters** and every one of them used to run the full shared body
   pipeline EVERY FRAME regardless of where the camera was — stableDir + anim

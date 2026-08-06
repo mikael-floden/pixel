@@ -53,6 +53,26 @@ const ANIM_MAP = (() => {
 // anchor and keeps the nadir shadow ON the ground (the bird pattern).
 const HOVER_PX = { butterfly_dragon: 12 };
 
+// GAIT SYNC (maintainer round 13: monsters "jump" or "limp forward" — the
+// walk clip must sync with the actual translation). The walk cycle is played
+// PER DISTANCE TRAVELLED, not per second: one full cycle every `cycleWu`
+// world units, so the same monster paces correctly at roam (42 wu/s), chase
+// (105) and a provoked hunt (up to 220) instead of playing one fixed rate at
+// all three. Stride length scales with body size in every real animal, and
+// bodyW is art-measured for every kind (including the legless blobs, whose
+// bounce arc scales the same way) — the art's own foot excursion does NOT
+// work here: it is 1px on a poring and 18px on a saber-tooth, uncorrelated
+// with size, because half the roster has no visible legs.
+const GAIT_BODY_FACTOR = 0.9; // cycle distance ≈ 0.9 × body length
+const GAIT_CYCLE_MIN_WU = 26; // small critters still cover ground per cycle
+const GAIT_CYCLE_MAX_WU = 92; // a mammoth's true stride would out-step its 4 frames
+// A hop's ground travel is concentrated in the airborne phase. Kinds under
+// this rise (body centroid travel / figure height) are ordinary walkers/
+// bobbers and get a perfectly even glide — measured: frog .24, water_poring
+// .28, diablo .21 hop; everything else <= .12.
+const GAIT_HOP_MIN_FRAC = 0.15;
+const GAIT_HOP_FLOOR = 0.18; // planted frames still creep (a dead stop stutters)
+
 /** Measure a monster's WALK art with a FULL pixel decode of every direction
  * strip. v2 — PER-DIRECTION ground data (maintainer 2026-07-30, round 2: the
  * pooled-p90 single anchor floated whole directions — strips differ in height
@@ -79,6 +99,8 @@ const HOVER_PX = { butterfly_dragon: 12 };
  * feet no longer deflate the shadow width). */
 function measureWalkArt(stripAbsPaths, framesByDir) {
   const ground = {}; // dir -> {f, cx, contact, sink, shift[], air[]}
+  const hopFracs = []; // per-dir body rise / figure height — is this a HOP?
+  const travels = []; // per-dir normalized travel weights (mean 1)
   let shadowW = 0; // ONE constant ellipse per monster (mean of per-dir widths)
   let shadowH = 0;
   const foots = [];
@@ -125,6 +147,20 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         }
       }
       if (bot < 0) continue;
+      // Vertical MASS centroid — the hop signal. The "lowest opaque pixel"
+      // (air[]) under-reports a leap badly: a frog's legs DANGLE, so its
+      // deepest pixel barely rises while the whole body is clearly airborne.
+      // The mass centroid rises with the body and is what a travel profile
+      // must key off.
+      let mSumY = 0;
+      let mTotY = 0;
+      for (let y = 0; y < H; y++) {
+        let cnt = 0;
+        for (let x = 0; x < fw; x++) if (data[(y * W + xBase + x) * 4 + 3] > 16) cnt++;
+        mSumY += y * cnt;
+        mTotY += cnt;
+      }
+      const massCy = mTotY ? mSumY / mTotY : bot;
       let contactW = 0;
       for (let y = bot - 2; y <= bot; y++) {
         const r = rows.get(y);
@@ -166,6 +202,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         bodyW,
         colMass,
         bottoms,
+        massCy,
       });
     }
     if (!frames.length) continue;
@@ -308,6 +345,33 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       air.push(Math.min(24, Math.max(0, contact.bot - fr.bot - 2)));
     }
     const figH = Math.max(...frames.map((s) => s.bot - s.top + 1));
+    // HOP PROFILE (maintainer round 13: "some monsters ... look like they
+    // jump ... should adjust the position/velocity at certain times to sync
+    // with the animation"). A hopper covers ground while AIRBORNE and stands
+    // still while gathering/landing, so a constant glide fights its own art.
+    // Per frame, airborne-ness = how far the body's mass centroid sits ABOVE
+    // the cycle's lowest (screen y grows downward, so lower cy = higher body).
+    // Emitted per direction as a normalized TRAVEL WEIGHT (mean 1) the client
+    // integrates into a mean-zero ground-track offset.
+    {
+      const cys = [];
+      for (let f = 0; f < n; f++) {
+        const fr = frames.find((s) => s.f === f);
+        cys.push(fr ? fr.massCy : null);
+      }
+      const known = cys.filter((v) => v !== null);
+      if (known.length > 1) {
+        const lo = Math.min(...known);
+        const hi = Math.max(...known);
+        hopFracs.push((hi - lo) / Math.max(1, figH));
+        const w = cys.map((v) => {
+          const air = v === null ? 0 : (hi - v) / Math.max(1e-6, hi - lo); // 0 planted … 1 peak
+          return GAIT_HOP_FLOOR + (1 - GAIT_HOP_FLOOR) * air;
+        });
+        const sum = w.reduce((a, b) => a + b, 0) || 1;
+        travels.push(w.map((v) => (v * n) / sum)); // mean 1
+      }
+    }
     ground[dir] = {
       f: +Math.min(1, (A.cyRow + 1) / H).toFixed(4),
       cx: +(A.cx / fw).toFixed(4),
@@ -372,10 +436,34 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
   foots.sort((a, b) => a - b);
   bodies.sort((a, b) => a - b);
   figHs.sort((a, b) => a - b);
+  // ONE gait per monster: the cycle distance from its body length, and — for
+  // a real hopper only — the averaged travel profile (the directions animate
+  // the same hop, so per-direction arrays would be noise, not signal).
+  const med = (a) => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)];
+  const bodyLen = bodies.length ? bodies[bodies.length - 1] : 0;
+  const gait = {
+    cycleWu: Math.round(
+      Math.min(GAIT_CYCLE_MAX_WU, Math.max(GAIT_CYCLE_MIN_WU, GAIT_BODY_FACTOR * bodyLen)),
+    ),
+  };
+  const hopFrac = hopFracs.length ? med(hopFracs) : 0;
+  gait.hopFrac = +hopFrac.toFixed(3);
+  if (hopFrac >= GAIT_HOP_MIN_FRAC && travels.length) {
+    const n = Math.max(...travels.map((t) => t.length));
+    const same = travels.filter((t) => t.length === n);
+    const avg = [];
+    for (let f = 0; f < n; f++) {
+      const v = same.reduce((a, t) => a + t[f], 0) / same.length;
+      avg.push(v);
+    }
+    const sum = avg.reduce((a, b) => a + b, 0) || 1;
+    gait.travel = avg.map((v) => +((v * n) / sum).toFixed(3)); // re-normalize, mean 1
+  }
   return {
     frameW,
     frameH,
     ground,
+    gait,
     shadowW,
     shadowH,
     // Pooled fallback (median of per-dir anchors) for defensive client code.
@@ -521,6 +609,10 @@ function scan() {
       // Art-measured shadow/anchor data (see measureWalkArt). `ground` is the
       // per-direction contract: {f: originY, cx: originX, contact: pause frame}.
       ground: walkArt?.ground,
+      // Gait contract (round 13): {cycleWu} = world units one walk cycle
+      // covers — the client plays the clip per DISTANCE, not per second;
+      // {travel} (hoppers only) = per-frame travel weights, mean 1.
+      gait: walkArt?.gait,
       // The IDLE state's own per-direction ground contract (its strips are
       // framed independently of walk). null → no idle art; the client parks
       // on the walk contact frame instead.

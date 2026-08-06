@@ -148,6 +148,17 @@ const RING_PAD = 2; // outline canvas pad = border width in art pixels
 // Tap hitboxes (maintainer round 12: taps kept missing small targets). World
 // px ≈ screen px at zoom 1; phones run integer zoom ≥1, so these are AT
 // LEAST fingertip-scale on every device.
+// MONSTER GAIT SYNC (maintainer round 13: monsters "jump" or the walk clip
+// "is limping forward" — the animation must sync with the actual movement).
+// A monster's speed spans 42 wu/s (roam) → 105 (chase) → 220 (a provoked
+// hunt), but every walk clip used to play ONE fixed rate (6 or 10 fps picked
+// from the frame count alone), so the feet could only match the ground at one
+// of those speeds. The clip is now paced by DISTANCE: one cycle per the
+// manifest's measured gait.cycleWu, i.e. fps = frames × speed / cycleWu.
+const GAIT_REF_WU = 42; // roam speed (WALK_SPEED × MONSTER_SPEED_SCALE) — the clips' base rate
+const GAIT_FPS_MIN = 3; // a heavy body may pace slowly, but never freeze mid-stride
+const GAIT_FPS_MAX = 26; // …nor blur at a provoked sprint
+const GAIT_HOP_EASE = 10; // hop-offset smoothing (per second) — no pops on frame changes
 const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
 const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
 const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
@@ -554,6 +565,18 @@ interface MonsterAvatar {
   hpText?: Phaser.GameObjects.Text; // "hp/max" — right-aligned UNDER the bar
   label?: string; // manifest display name ("Dewling"), resolved once at spawn
   lastHp?: number;
+  // GAIT SYNC (round 13). cycleWu = world units one walk cycle covers, so the
+  // clip is paced by DISTANCE travelled; travel[] = per-frame ground-track
+  // weights (mean 1) for real hoppers. spdWu/scrPerWu are measured from the
+  // body's own drawn motion each frame.
+  cycleWu?: number;
+  travel?: number[];
+  travelCum?: number[]; // prefix sums of travel/frames — the hop offset curve
+  spdWu?: number; // EMA of world speed (wu/s)
+  scrPerWu?: number; // EMA of drawn screen px per world unit (iso projection)
+  hdx?: number; // EMA of the drawn heading (screen unit vector)
+  hdy?: number;
+  hopOff?: number; // current mean-zero ground-track offset (screen px)
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -2031,6 +2054,46 @@ export class WorldScene extends Phaser.Scene {
           item: describe(this.itemRingImg),
         };
       },
+      // The loaded monster manifest's gait contract, per kind (round-13 QA).
+      monsterDefs: () =>
+        (this.monsterManifest?.monsters ?? []).map((d) => ({
+          id: d.id,
+          bodyW: d.bodyW ?? null,
+          frames: Object.values(d.animations?.[d.walkAnim] ?? {})[0] ?? 0,
+          gait: d.gait ?? null,
+        })),
+      // GAIT SYNC probe (round 13): per active monster, the measured drawn
+      // speed, the clip's base rate + live timeScale, and the resulting
+      // effective fps — so a gate can assert cadence-true playback (one walk
+      // cycle per gait.cycleWu of ground) instead of eyeballing a screenshot.
+      monsterGait: () =>
+        [...this.monsters.entries()]
+          .filter(([, mv]) => !mv.culled)
+          .map(([id, mv]) => {
+            const a = mv.sprite.anims;
+            const base = a.currentAnim?.frameRate ?? 0;
+            const frames = a.currentAnim?.getTotalFrames?.() ?? 0;
+            return {
+              id,
+              kind: mv.kind,
+              anim: a.getName() || null,
+              walking: a.getName() === monsterAnimKey(mv.kind, mv.walkKey, mv.dispDir),
+              spdWu: mv.spdWu !== undefined ? +mv.spdWu.toFixed(1) : null,
+              cycleWu: mv.cycleWu ?? null,
+              frames,
+              baseFps: +base.toFixed(2),
+              timeScale: +a.timeScale.toFixed(3),
+              fps: +(base * a.timeScale).toFixed(2),
+              // Ground covered per completed cycle — the invariant: ≈ cycleWu
+              // whenever the clamps are not binding.
+              wuPerCycle:
+                base * a.timeScale > 0 && frames
+                  ? +(((mv.spdWu ?? 0) * frames) / (base * a.timeScale)).toFixed(1)
+                  : null,
+              hop: !!mv.travel,
+              hopOff: mv.hopOff !== undefined ? +mv.hopOff.toFixed(2) : null,
+            };
+          }),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
@@ -2401,6 +2464,20 @@ export class WorldScene extends Phaser.Scene {
       idleKey: def?.idleAnim ?? undefined,
       ground: def?.ground,
       groundIdle: def?.groundIdle ?? undefined,
+      cycleWu: def?.gait?.cycleWu,
+      travel: def?.gait?.travel,
+      // Prefix sums of the travel weights: cum[i] = the fraction of the
+      // cycle's ground already covered when frame i STARTS. The hop offset is
+      // (cum − uniform progress) × cycleWu, which is 0 at both ends of the
+      // cycle — so the surge never accumulates into drift.
+      travelCum: def?.gait?.travel
+        ? (() => {
+            const t = def.gait!.travel!;
+            const cum = [0];
+            for (let i = 0; i < t.length; i++) cum.push(cum[i] + t[i] / t.length);
+            return cum;
+          })()
+        : undefined,
     };
     sprite.y = p0.y - mv.hoverPx;
     // Joining mid-fight must not replay a stale swing: start from the synced seq.
@@ -3065,6 +3142,11 @@ export class WorldScene extends Phaser.Scene {
     // large turns for input feel.
     const d = this.stableDir(mv, want, true);
     mv.mstate = mstate;
+    // Phaser's timeScale lives on the sprite's ANIMATION STATE, not on the
+    // clip, so it survives every play() — a monster that broke off a 3.5×
+    // chase would swing/die at 3.5× too. Reset to the authored rate here; the
+    // walk branch below re-applies the gait scale when it is actually walking.
+    mv.sprite.anims.timeScale = 1;
 
     // --- COMBAT CLIPS (attack / angry / die — deferred-loaded strips). The
     // anims.exists guards make every branch degrade to the walk-park below
@@ -3136,6 +3218,14 @@ export class WorldScene extends Phaser.Scene {
         mv.sprite.play(key, true);
         if (progress > 0) mv.sprite.anims.setProgress(progress);
       }
+      // CADENCE ∝ SPEED (round 13). The walk clip's base rate plants the gait
+      // at ROAM speed; a monster that breaks into a chase covers 2.5× the
+      // ground per second and must cycle 2.5× faster or its legs skate — the
+      // old fixed 6/10 fps could only be right at one speed, which is what
+      // read as "limping" / "jumping". Effective fps = frames × speed /
+      // cycleWu, clamped so a heavy body never freezes mid-stride and a
+      // provoked sprint never blurs. Idle keeps its own breathing rate.
+      mv.sprite.anims.timeScale = moving ? this.gaitScaleFor(mv) : 1;
     } else {
       // No idle art (legacy poring family): park on the walk strip's PLANTED
       // CONTACT FRAME (frame 0 is airborne for hop gaits — parked frogs
@@ -3144,6 +3234,52 @@ export class WorldScene extends Phaser.Scene {
       const sk = monsterSheetKey(mv.kind, mv.walkKey, d);
       if (this.textures.exists(sk)) mv.sprite.setTexture(sk, g?.contact ?? 0);
     }
+  }
+
+  /** Playback scale for a monster's WALK clip so the cycle completes once per
+   * `gait.cycleWu` of ground actually covered (round 13). The clip's base rate
+   * was authored for GAIT_REF_WU, so the scale is just speed/ref — with the
+   * effective fps clamped into a readable band (a mammoth paces slowly, but
+   * never freezes; a provoked hunter never blurs). Reads the body's OWN
+   * measured drawn speed, so easing, water, chases and the flee-slow all pace
+   * continuously with no per-state pops. */
+  private gaitScaleFor(mv: MonsterAvatar): number {
+    const base = mv.sprite.anims.currentAnim?.frameRate ?? 0;
+    if (!base) return 1;
+    const spd = mv.spdWu ?? GAIT_REF_WU;
+    const frames = mv.sprite.anims.currentAnim?.getTotalFrames?.() ?? 0;
+    const cycleWu = mv.cycleWu ?? 36;
+    const wantFps = frames > 0 ? (frames * spd) / cycleWu : base * (spd / GAIT_REF_WU);
+    return Phaser.Math.Clamp(wantFps, GAIT_FPS_MIN, GAIT_FPS_MAX) / base;
+  }
+
+  /** The hop's mean-zero ground-track offset in SCREEN px (round 13), eased so
+   * a frame change can't pop the body. `travelCum[i]` is the fraction of the
+   * cycle's ground the ART has covered when frame i starts, so the body should
+   * lead (or lag) the even glide by (travelled − progress) × cycleWu: a frog
+   * surges through its leap and stands still while it gathers, instead of
+   * sliding forward at a constant rate through a hop it is clearly not making.
+   * Only real hoppers ship `travel` — everyone else glides evenly, as before. */
+  private hopOffsetFor(mv: MonsterAvatar, dt: number): number {
+    const cum = mv.travelCum;
+    let want = 0;
+    if (
+      cum &&
+      mv.cycleWu &&
+      !mv.combatClip &&
+      mv.sprite.anims.isPlaying &&
+      (mv.spdWu ?? 0) > 1 &&
+      mv.sprite.anims.getName() === monsterAnimKey(mv.kind, mv.walkKey, mv.dispDir)
+    ) {
+      const n = cum.length - 1;
+      const p = Phaser.Math.Clamp(mv.sprite.anims.getProgress(), 0, 1);
+      const t = p * n;
+      const i = Math.min(n - 1, Math.max(0, Math.floor(t)));
+      const travelled = cum[i] + (cum[i + 1] - cum[i]) * (t - i);
+      want = (travelled - p) * mv.cycleWu * (mv.scrPerWu ?? 1);
+    }
+    const cur = mv.hopOff ?? 0;
+    return cur + (want - cur) * Math.min(1, dt * GAIT_HOP_EASE);
   }
 
   /** Stereo position of an avatar relative to the camera view — pan (-1..1)
@@ -4014,8 +4150,36 @@ export class WorldScene extends Phaser.Scene {
           mv.falling = false;
         } else {
           const k = Math.min(1, dt * 12);
+          const px0 = mv.lx;
+          const py0 = mv.lyFlat;
           mv.lx += (g.x - mv.lx) * k;
           mv.lyFlat += (g.y - mv.lyFlat) * k;
+          // GAIT SYNC (round 13): measure this body's own DRAWN motion — the
+          // gait must match what the eye sees, not the 20Hz server steps.
+          // Screen delta back-projects to world units exactly like the
+          // player's spdWu (Δsx = Δ(x−y)·dx/CELL, Δsy = Δ(x+y)·dy/CELL), so a
+          // screen-north walk counts the ~2.13× more world ground it really
+          // covers. scrPerWu is the local iso scale along THIS heading, which
+          // converts the hop's world-unit surge back into screen px for free.
+          if (dt > 0.001) {
+            const dsx = mv.lx - px0;
+            const dsy = mv.lyFlat - py0;
+            const scr = Math.hypot(dsx, dsy);
+            const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy);
+            const v = this.world
+              ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
+              : scr / dt;
+            const ema = Math.min(1, dt * 8); // ~125ms — irons out the ease ripple
+            mv.spdWu = mv.spdWu === undefined ? v : mv.spdWu + (v - mv.spdWu) * ema;
+            if (scr > 0.01) {
+              const r = scr / dt / Math.max(1e-3, v);
+              mv.scrPerWu = mv.scrPerWu === undefined ? r : mv.scrPerWu + (r - mv.scrPerWu) * ema;
+              const ux = dsx / scr;
+              const uy = dsy / scr;
+              mv.hdx = mv.hdx === undefined ? ux : mv.hdx + (ux - mv.hdx) * ema;
+              mv.hdy = mv.hdy === undefined ? uy : mv.hdy + (uy - mv.hdy) * ema;
+            }
+          }
           // Elevation eases/falls via the shared integrator, like avatars.
           const s = integrateFall(
             { elev: mv.elev, fallV: mv.fallV, falling: mv.falling },
@@ -4028,17 +4192,27 @@ export class WorldScene extends Phaser.Scene {
           mv.falling = s.falling;
         }
         mv.ly = mv.lyFlat - mv.elev;
-        mv.sprite.x = mv.lx;
-        // Winged flyers levitate hoverPx above the ground anchor; the nadir
-        // shadow stays ON the ground (placeBodyShadow gets the hover as air
-        // height, so it shrinks/fades slightly — the bird pattern).
-        mv.sprite.y = mv.ly - mv.hoverPx;
         // SHARED body pipeline (same code as players — maintainer 2026-07-29:
         // the naive painter depth drew terrace tiles over monsters and their
         // shadows in front): occluder-aware depth + landing-ground shadow.
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // HOP TRAVEL (round 13): a hopper covers its ground DURING the leap,
+        // so glide it along the heading by (travel-so-far − even progress) ×
+        // cycleWu. The curve returns to 0 at both ends of the cycle, so this
+        // is a pure mean-zero lead/lag — it never moves the body off the
+        // server position it is easing toward. Applied to the drawn anchor
+        // (never to mv.lx, which IS the ease state and would absorb it), so
+        // the shadow and the lit copy travel with the body as they must.
+        mv.hopOff = this.hopOffsetFor(mv, dt);
+        const hx = (mv.hopOff ?? 0) * (mv.hdx ?? 0);
+        const hy = (mv.hopOff ?? 0) * (mv.hdy ?? 0);
+        mv.sprite.x = mv.lx + hx;
+        // Winged flyers levitate hoverPx above the ground anchor; the nadir
+        // shadow stays ON the ground (placeBodyShadow gets the hover as air
+        // height, so it shrinks/fades slightly — the bird pattern).
+        mv.sprite.y = mv.ly - mv.hoverPx + hy;
         // PER-FRAME drift compensation (the safe equivalent of the player
         // art's nadir postprocess — measured in the manifest, art untouched):
         // pin THIS frame's own body-mass origin-x so baked horizontal
@@ -4079,6 +4253,9 @@ export class WorldScene extends Phaser.Scene {
           0,
           Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
         );
+        // A hopping body's shadow travels WITH it — placeBodyShadow anchors on
+        // the ease state (mv.lx), which is deliberately free of the surge.
+        if (hx || hy) mv.shadow.setPosition(mv.shadow.x + hx, mv.shadow.y + hy);
       });
       this.monstersActive = active;
     }
@@ -5755,9 +5932,15 @@ export class WorldScene extends Phaser.Scene {
                   ? frames <= 6
                     ? 4
                     : 7 // idle/angry breathe slower than a gait reads
-                  : frames <= 6
-                    ? 6
-                    : 10;
+                  : // WALK: the base rate is the art-measured gait at ROAM speed
+                    // (one cycle per gait.cycleWu), and playMonsterAnim scales
+                    // it by the body's live speed every frame. The old rate was
+                    // a flat 6/10 from the frame count — unrelated to how far
+                    // the art strides or how fast the monster is going.
+                    Math.max(
+                      GAIT_FPS_MIN,
+                      Math.min(GAIT_FPS_MAX, (frames * GAIT_REF_WU) / (def.gait?.cycleWu || 36)),
+                    );
           this.anims.create({
             key,
             frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
