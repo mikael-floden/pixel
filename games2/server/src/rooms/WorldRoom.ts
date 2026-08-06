@@ -926,9 +926,32 @@ export class WorldRoom extends Room<WorldState> {
         const dxp = tp.x - m.x;
         const dyp = tp.y - m.y;
         const dist = Math.hypot(dxp, dyp);
-        // Give up beyond the leash (from HOME, not the victim): walk back.
-        // (Safety net — chase movement is leash-gated below, so normally the
-        // rim-rejected step and the victim check are what end a chase.)
+        // MAX CHASE — "max chase is 1.5 screens (regardless of how close it
+        // is)" (maintainer 2026-08-06), measured from WHERE THIS HUNT BEGAN.
+        //
+        // This used to be measured from the zone's BOUNDING BOX, and that is
+        // why a hunt could run six screens (maintainer 2026-08-06: "I had to
+        // run so extremely long and the enemy still didn't give up … I said I
+        // wanted them to give up after a single screen"). MEASURED on
+        // the_island2: shore-1's bbox is 10.0 screens tall and shore-2's 8.5,
+        // so "within MAX_CHASE_WU of the box" licensed 13 and 11.5 screens of
+        // pursuit. The box is the monster's HABITAT — its size says nothing
+        // about how far one chase should run, and it grows with every world
+        // maps2 authors.
+        //
+        // It also could not be rescued by the victim-distance rule below: a
+        // PROVOKED hunter moves at 1.12x its victim's speed by design, so the
+        // gap NEVER opens by running and ESCAPE_RADIUS_WU can only fire when
+        // terrain stops the monster. Both exits were shut; this is the one
+        // that has to hold, so it is now anchored to the pursuit itself.
+        const chased = Math.hypot(m.x - m.chaseOx, m.y - m.chaseOy);
+        if (chased > MAX_CHASE_WU) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        // Habitat containment stays as a SECOND, independent bound: a chase
+        // that starts near the rim of a small zone must not tow the monster
+        // into the next biome even if it has not travelled 1.5 screens yet.
         if (!this.withinLeash(zone, m.x, m.y)) {
           this.disengageMonster(m, zone, now);
           return;
@@ -1075,6 +1098,8 @@ export class WorldRoom extends Room<WorldState> {
           m.targetSid = bestSid;
           m.provoked = bestProvoked;
           m.mstate = "chase";
+          m.chaseOx = m.x; // the hunt's origin — MAX_CHASE_WU is measured from here
+          m.chaseOy = m.y;
           m.tripActive = false;
           m.trip = null;
           m.returning = false;
@@ -1578,6 +1603,8 @@ export class WorldRoom extends Room<WorldState> {
         m.targetSid = sid;
         m.provoked = true;
         m.mstate = "chase";
+        m.chaseOx = m.x; // the hunt's origin — MAX_CHASE_WU is measured from here
+        m.chaseOy = m.y;
         m.tripActive = false;
         m.trip = null;
         m.returning = false;

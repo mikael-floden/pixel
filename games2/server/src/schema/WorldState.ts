@@ -155,6 +155,12 @@ export class Monster extends Schema {
   provoked = false; // this fight is the PLAYER's fault (retaliation / sword-marked
   // approach) — provoked hunters track the victim's speed and force the flee-slow
   nextAttackAt = 0;
+  // WHERE THIS HUNT BEGAN (world units) — the anchor MAX_CHASE_WU is measured
+  // from, so "max chase is 1.5 screens" means 1.5 screens of actual pursuit
+  // whatever the monster's zone looks like. Stamped every time a hunt starts
+  // (see beginHunt), never while it runs.
+  chaseOx = 0;
+  chaseOy = 0;
   aggroCheckAt = 0; // throttle the proximity scan (~2/s, not per tick)
   orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
   returning = false; // walking home after a chase ended outside the zone
