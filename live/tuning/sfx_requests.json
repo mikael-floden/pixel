@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T04:37:57.542Z",
+  "updated_at": "2026-08-06T04:58:02.376Z",
   "requests": {
     "player.die/msh0z0uo": {
       "event": "player.die",
@@ -12,6 +12,15 @@
       "max_random_pitch_semis": 0,
       "note": "This is the female die sound effect. Can't assign a separate voice to the male (you need to fix that)",
       "requested_at": "2026-08-06T04:37:54.576Z"
+    },
+    "combat.cross_on/msh1ouiq": {
+      "event": "combat.cross_on",
+      "sound": "composer/monster_die_crumble",
+      "take": "composer/foley/monster_die_crumble/monster_die_crumble__take01.wav",
+      "pitch": 0.95,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T04:57:59.426Z"
     }
   }
 }
