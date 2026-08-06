@@ -692,7 +692,14 @@ export class GameAudio {
                 round_robin: true,
                 no_immediate_repeat: true,
                 pitch_jitter_semitones: [-j, j],
-                gain_jitter_db: [-0.75, 0.5],
+                // NO GAIN JITTER on an assigned sound. He sets
+                // max_random_pitch_semis himself — cross_on_peat is 0, meaning
+                // "play it the same every time" — and the engine was still
+                // adding a random -0.75/+0.5 dB per fire that he never asked
+                // for. On a sound that fires after EVERY kill that is audible
+                // wobble, and it is the engine overruling the one knob he set.
+                // An assignment plays as assigned.
+                gain_jitter_db: [0, 0],
               },
             },
             assigned.bus ?? "sfx",
