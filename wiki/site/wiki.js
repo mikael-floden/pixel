@@ -181,8 +181,10 @@ async function apiSaveFile(key) {
     body: JSON.stringify({ file: key, set }),
   });
   if (res.status === 401) {
-    // Session expired (server restarts wipe sessions — routine). KEEP the
-    // unsaved edits: drop only the dead token; re-login then re-saves them.
+    // The session is genuinely over — a week has passed, or the server's
+    // secret was rotated. (It is no longer "the server restarted": sessions
+    // are signed and survive deploys since 2026-08-06.) KEEP the unsaved
+    // edits: drop only the dead token; re-login then re-saves them.
     localStorage.removeItem("wiki-admin-token");
     setAdmin(false, { keepEdits: true });
     throw new Error("session expired — sign in again, your edits are kept");

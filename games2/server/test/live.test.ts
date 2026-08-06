@@ -5,6 +5,7 @@ import { test, before, after, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { createServer, type Server as HttpServer } from "http";
 import type { AddressInfo } from "net";
+import { createHash, createHmac } from "crypto";
 import express from "express";
 
 // Mock GitHub (raw + contents API) — must be up BEFORE live.ts reads env.
@@ -108,6 +109,54 @@ test("login rejects wrong credentials, accepts the admin", async () => {
   assert.deepEqual(await me.json(), { admin: true });
   const anon = await fetch(`${base}/api/wiki/me`);
   assert.deepEqual(await anon.json(), { admin: false });
+});
+
+test("a session survives a restart — a deploy must not sign the Game Master out", async () => {
+  const token = await login();
+  // Everything a process restart loses. The old in-memory session map died
+  // here, which is why every deploy (many a day) signed the admin out.
+  live._resetLiveForTests();
+  const me = await fetch(`${base}/api/wiki/me`, { headers: { Authorization: `Bearer ${token}` } });
+  assert.deepEqual(await me.json(), { admin: true });
+
+  // It is genuinely SIGNED: the expiry is not a free-text claim a client can
+  // stretch by editing the token.
+  const [exp, sig] = token.split(".");
+  const forged = await fetch(`${base}/api/wiki/me`, {
+    headers: { Authorization: `Bearer ${Number(exp) + 999999}.${sig}` },
+  });
+  assert.deepEqual(await forged.json(), { admin: false });
+});
+
+test("a session lasts a week, expires on its own, and rotating the secret revokes it", async () => {
+  const res = await fetch(`${base}/api/wiki/login`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: "admin", password: PASSWORD }),
+  });
+  const { token, expires_in_s } = (await res.json()) as { token: string; expires_in_s: number };
+  const WEEK = 7 * 24 * 3600;
+  assert.equal(expires_in_s, WEEK);
+  assert.ok(Math.abs(Number(token.split(".")[0]) - (Date.now() / 1000 + WEEK)) < 60, "expiry is a week out");
+
+  // An EXPIRED token, correctly signed with the server's own derived key, is
+  // still refused. (Signing it here pins the token format on purpose: change
+  // the scheme and this test tells you.)
+  const key = createHash("sha256").update(`wiki-session|${process.env.WIKI_GITHUB_TOKEN}`, "utf8").digest();
+  const past = String(Math.floor(Date.now() / 1000) - 60);
+  const expired = `${past}.${createHmac("sha256", key).update(past).digest("hex")}`;
+  const old = await fetch(`${base}/api/wiki/me`, { headers: { Authorization: `Bearer ${expired}` } });
+  assert.deepEqual(await old.json(), { admin: false });
+
+  // Rotating the server secret invalidates every live session — the
+  // revocation lever a stateless scheme would otherwise lack.
+  process.env.WIKI_SESSION_SECRET = "rotated";
+  live._resetLiveForTests();
+  const after = await fetch(`${base}/api/wiki/me`, { headers: { Authorization: `Bearer ${token}` } });
+  assert.deepEqual(await after.json(), { admin: false });
+  delete process.env.WIKI_SESSION_SECRET;
+  live._resetLiveForTests();
+  const back = await fetch(`${base}/api/wiki/me`, { headers: { Authorization: `Bearer ${token}` } });
+  assert.deepEqual(await back.json(), { admin: true }, "and putting it back restores them");
 });
 
 test("save without login is refused; with login it commits + notifies rooms", async () => {

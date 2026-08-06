@@ -134,6 +134,24 @@ Signing in unlocks stars, approve/remove, notes, monster stats and constant
 overrides. All writes go through the game server, which holds the ONLY
 GitHub credential (`WIKI_GITHUB_TOKEN` env on the Cloud Run service).
 
+**A session lasts a WEEK and survives deploys** (maintainer 2026-08-06: "if I
+have logged in I should stay logged in for a week"). The TTL was always 7
+days; the bug was that sessions lived in a `Map` in the server process, and
+this service redeploys many times a day (every art push deploys), so the Game
+Master was signed out several times a day. The token is now **stateless and
+signed** — `<expiry-epoch-seconds>.<hmac-sha256>` — so it outlives restarts,
+rolling deploys and a scale-out to several instances (a session table on
+instance A 401s every request that lands on instance B). The HMAC key is
+derived from `WIKI_SESSION_SECRET` if set, else from `WIKI_GITHUB_TOKEN`,
+which an admin session is worthless without anyway; with neither (dev, tests)
+it is per-process random, i.e. the old behaviour. **Rotating that secret
+revokes every session** — the one revocation lever a stateless scheme needs,
+and the reason it is worth knowing where the key comes from. Signing out is
+still immediate (the browser drops the token). Gates: `live.test.ts` (survives
+a reset, a stretched expiry is refused, an expired-but-correctly-signed token
+is refused, rotation revokes) and a scratch e2e that logs in, KILLS the server
+process, starts a new one and reloads.
+
 ## Feedback files — the contract with the other agents
 
 `live/feedback/<domain>.json` (`monsters` `characters` `tiles` `objects`
