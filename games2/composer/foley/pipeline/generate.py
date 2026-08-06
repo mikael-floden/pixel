@@ -1041,6 +1041,15 @@ def _decode(raw: bytes, fmt: str) -> np.ndarray:
         x = _ffmpeg_decode(raw)
     elif fmt.startswith("pcm_"):
         x = np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+        # A raw pcm payload carries NO header, so its rate is whatever we asked
+        # for in the query string — resample anything that is not our own SR,
+        # or the take plays sharp and short (pcm_44100 read as 48 kHz is 8.9%
+        # sharp, which is inside any sane length tolerance and would pass
+        # silently as "honest").
+        rate = int(fmt.split("_")[1])
+        if rate != SR and x.size:
+            n = int(round(x.size * SR / rate))
+            x = np.interp(np.linspace(0, x.size - 1, n), np.arange(x.size), x).astype(np.float32)
     else:
         x = _ffmpeg_decode(raw)
     if x.size < SR * 0.05:
@@ -1352,7 +1361,12 @@ def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.n
     duration_s = max(0.5, min(22.0, duration_s))  # API-enforced bounds; 0.4 → 400
     salvage: tuple[np.ndarray, float, str] | None = None
     r = None
-    for fmt in (f"pcm_{SR}", "mp3_44100_128"):
+    # Best first: lossless, then the highest-bitrate compressed fallback. The
+    # ladder exists because ONE of these may come back honest while the others
+    # do not, and which one that is depends on the account tier — measured
+    # 2026-08-06, the 128k mp3 was the first honest format and it cliffs hard at
+    # 16 kHz, so a lossless rung that turns out to be honest is a real gain.
+    for fmt in (f"pcm_{SR}", "pcm_44100", "mp3_44100_192", "mp3_44100_128"):
         r = session.post(
             GEN_URL,
             params={"output_format": fmt},
@@ -1369,6 +1383,7 @@ def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.n
             x = _decode(r.content, fmt)
             ratio = (x.size / SR) / duration_s
             if 0.7 <= ratio <= 1.4:
+                print(f"  format {fmt} (length {ratio:.2f}x)")
                 return x  # honest, full-rate audio — this is what we want
             if salvage is None:
                 salvage = (x, ratio, fmt)
