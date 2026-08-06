@@ -42,8 +42,13 @@ export function composerFoley(surface: string): string[] | null {
  * the take is not bundled, so an assignment for a deleted take goes silent
  * rather than quietly playing a different recording. */
 export function composerFoleyTake(set: string, take: string | number): string | null {
-  const rows = composerFoleyTakes().get(set);
-  if (!rows?.length) return null;
+  // The POOL counts as a source of recordings, not just the selected takes.
+  // The wiki auditions every candidate, so he assigns whatever he liked — he
+  // picked thunder__cand07/08/09/17 (all pool files) for weather.thunder. If
+  // this only looked at the takes, those four assignments would resolve to
+  // silence and the request would look honoured while playing nothing.
+  const rows = [...(composerFoleyTakes().get(set) ?? []), ...(composerFoleyPools().get(set) ?? [])];
+  if (!rows.length) return null;
   // The wiki's request carries the EXACT recording path — its own board note:
   // `take: composer/foley/ui_tick/ui_tick__take04.wav`. Accept that verbatim
   // (a request should wire in as DATA, not as a transcription step) alongside

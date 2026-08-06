@@ -65,10 +65,10 @@ const eventFoley = names(block(/EVENT_FOLEY: Record<string, string> = \{[^}]*\}/
 // end": a `;` inside a COMMENT in the table truncated the match and blinded
 // this gate the first time a comment there used one. It failed loudly, which
 // is the point — but the fix belongs in the regex, not in the prose.
-const assignBlock = block(/const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = \{[\s\S]*?\n\};/s, "EVENT_ASSIGNMENTS");
+const assignBlock = block(/const EVENT_ASSIGNMENTS: Record<string, EventAssignment\[\]> = \{[\s\S]*?\n\};/s, "EVENT_ASSIGNMENTS");
 // `@<uid>` scopes an assignment to ONE character (the wiki's own spelling,
 // `player.jump@default_girl`); the event the game emits is the part before it.
-const assigned = [...assignBlock.matchAll(/["']([a-z][a-z0-9_.@]+)["']\s*:\s*\{/gi)].map((m) => m[1]);
+const assigned = [...assignBlock.matchAll(/["']([a-z][a-z0-9_.@]+)["']\s*:\s*\[/gi)].map((m) => m[1]);
 
 for (const n of [...bindingsApproved, ...eventFoley]) {
   if (!APPROVED_SOUNDING.has(n)) fail(`"${n}" can sound via ${bindingsApproved.includes(n) ? "bindings" : "EVENT_FOLEY"} but is not on the approved list`);

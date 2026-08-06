@@ -1,26 +1,8 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T05:47:38.253Z",
+  "updated_at": "2026-08-06T09:20:00.000Z",
   "requests": {
-    "player.water_enter/msh2sc9p": {
-      "event": "player.water_enter",
-      "sound": "composer/cross_rise_water",
-      "take": "composer/foley/cross_rise_water/cross_rise_water__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:28:42.013Z"
-    },
-    "player.water_enter/msh2ss3r": {
-      "event": "player.water_enter",
-      "sound": "composer/mon_water_poring_attack",
-      "take": "composer/foley/mon_water_poring_attack/mon_water_poring_attack__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:29:02.535Z"
-    },
     "combat.enemy_defeat/msh2xhhe": {
       "event": "combat.enemy_defeat",
       "sound": "composer/mon_ice_poring_attack",
@@ -29,42 +11,6 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T05:32:42.050Z"
-    },
-    "weather.thunder/msh3btzg": {
-      "event": "weather.thunder",
-      "sound": "composer/thunder",
-      "take": "composer/foley/thunder/pool/thunder__cand07.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:43:51.436Z"
-    },
-    "weather.thunder/msh3c4o0": {
-      "event": "weather.thunder",
-      "sound": "composer/thunder",
-      "take": "composer/foley/thunder/pool/thunder__cand08.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:44:05.280Z"
-    },
-    "weather.thunder/msh3ceb3": {
-      "event": "weather.thunder",
-      "sound": "composer/thunder",
-      "take": "composer/foley/thunder/pool/thunder__cand09.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:44:17.775Z"
-    },
-    "weather.thunder/msh3cxtm": {
-      "event": "weather.thunder",
-      "sound": "composer/thunder",
-      "take": "composer/foley/thunder/pool/thunder__cand17.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:44:43.066Z"
     }
   }
 }

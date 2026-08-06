@@ -175,37 +175,62 @@ interface EventAssignment {
  * note above). Editing this table means re-running scripts/build-assignments.mjs
  * so composer/assignments.json still matches; verify-quiet fails if it doesn't.
  *
+ * AN EVENT HOLDS A LIST, not one sound (2026-08-06). The wiki's dialog says
+ * "Assign ANOTHER sound to X" and its card unbinds per sound, so several
+ * assignments for one event are an ADDITION, not a correction — and he proved
+ * it by assigning four different thunder candidates to weather.thunder inside
+ * one minute, and two to player.water_enter. A single-slot table could only
+ * have honoured one of each and silently dropped the rest, which is the
+ * dangling-request bug wearing a different hat. Several sounds ROTATE
+ * (round-robin, never the same one twice running) and each keeps its OWN
+ * pitch/volume/jitter, so a rotation is not forced to share one setting.
+ *
  * Wired 2026-08-06 from live/tuning/sfx_requests.json, entries then deleted
- * per the contract. Every set he picked here holds exactly ONE take, so these
- * are unambiguous even though they were chosen with the old set-level picker.
+ * per the contract.
  * ONE CLICK EVERYWHERE still holds — it is just his new click now (ui_click_bead
  * on every UI event, the dedicated ui_click_latch on release). */
-const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {
-  "item.drop": { sound: "composer/dirt", pitch: 1.35, volume_db: -8, max_random_pitch_semis: 0.4 },
-  "ui.press": { sound: "composer/ui_click_bead" },
-  "ui.release": { sound: "composer/ui_click_latch" },
-  "ui.cursor_move": { sound: "composer/ui_click_bead" },
-  "ui.confirm": { sound: "composer/ui_click_bead" },
-  "ui.cancel": { sound: "composer/ui_click_bead" },
-  "ui.error": { sound: "composer/ui_click_bead" },
-  "combat.punch": { sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 },
-  "combat.kick": { sound: "hit_hurt" },
+const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
+  "item.drop": [{ sound: "composer/dirt", pitch: 1.35, volume_db: -8, max_random_pitch_semis: 0.4 }],
+  "ui.press": [{ sound: "composer/ui_click_bead" }],
+  "ui.release": [{ sound: "composer/ui_click_latch" }],
+  "ui.cursor_move": [{ sound: "composer/ui_click_bead" }],
+  "ui.confirm": [{ sound: "composer/ui_click_bead" }],
+  "ui.cancel": [{ sound: "composer/ui_click_bead" }],
+  "ui.error": [{ sound: "composer/ui_click_bead" }],
+  "combat.punch": [{ sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 }],
+  "combat.kick": [{ sound: "hit_hurt" }],
   // Her death cry, one named take, no jitter — exactly as he auditioned it.
   // Scoped to the GIRL because he said so in the request's note; default_boy
   // has no die assignment yet and is therefore silent, which is the right
   // sound for a voice he has not chosen. He could not pick one: the wiki puts
   // only Jump and Fall on the per-hero rows, so Die has a single shared card.
   // Asked them for a Die row per hero (coordination/games-audio.json).
-  "player.die@default_girl": { sound: "composer/die_voice", take: "die_voice__take06" },
-  "combat.cross_on": { sound: "composer/monster_die_crumble", take: "monster_die_crumble__take01", pitch: 0.95 },
-  "combat.cross_off": { sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 },
-  "item.pickup": { sound: "composer/kick_earthmound", take: "kick_earthmound__take01" },
-  "combat.hit_taken": { sound: "composer/kick_bamboo", take: "kick_bamboo__take01" },
-  "combat.monster_die": { sound: "composer/mon_ice_poring_attack", take: "mon_ice_poring_attack__take01" },
+  "player.die@default_girl": [{ sound: "composer/die_voice", take: "die_voice__take06" }],
+  "combat.cross_on": [{ sound: "composer/monster_die_crumble", take: "monster_die_crumble__take01", pitch: 0.95 }],
+  "combat.cross_off": [{ sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 }],
+  "item.pickup": [{ sound: "composer/kick_earthmound", take: "kick_earthmound__take01" }],
+  "combat.hit_taken": [{ sound: "composer/kick_bamboo", take: "kick_bamboo__take01" }],
+  "combat.monster_die": [{ sound: "composer/mon_ice_poring_attack", take: "mon_ice_poring_attack__take01" }],
   // Levelling up finally has a sound. progress.level_up has been emitted and
   // deliberately EMPTY since 2026-08-05 (its old binding was stripped because
   // nothing had asked for it) — this is the first thing he has assigned to it.
-  "progress.level_up": { sound: "composer/level_up_harp", take: "level_up_harp__take01" },
+  "progress.level_up": [{ sound: "composer/level_up_harp", take: "level_up_harp__take01" }],
+  // TWO sounds, 20 seconds apart, so both play — see the list note above.
+  // These REPLACE the catalog splash on entering water; exiting still splashes
+  // because he has assigned nothing to player.water_exit.
+  "player.water_enter": [
+    { sound: "composer/cross_rise_water", take: "cross_rise_water__take01" },
+    { sound: "composer/mon_water_poring_attack", take: "mon_water_poring_attack__take01" },
+  ],
+  // FOUR candidates inside one minute — "a group with several sounds"
+  // (2026-08-06) delivered as an assignment rather than as a set. All four are
+  // POOL files, which is why take lookup now searches the pool too.
+  "weather.thunder": [
+    { sound: "composer/thunder", take: "thunder__cand07" },
+    { sound: "composer/thunder", take: "thunder__cand08" },
+    { sound: "composer/thunder", take: "thunder__cand09" },
+    { sound: "composer/thunder", take: "thunder__cand17" },
+  ],
 };
 
 /** Split a wiki `sound` id into its set and (optional) chosen recording. */
@@ -612,6 +637,20 @@ export class GameAudio {
     "ui.error": "ui_tick",
   };
 
+  /** Which of an event's assigned sounds plays this time. Round-robin, so N
+   * sounds on one event each get their turn and none repeats back-to-back —
+   * the same contract a multi-take set already gets, lifted one level up.
+   * Deliberately NOT random: he assigned four thunders to hear four thunders,
+   * and random selection would replay one twice in a row often enough to read
+   * as "it only picked up some of them". */
+  private assignTurn = new Map<string, number>();
+  private pickAssigned(name: string, list: EventAssignment[]): EventAssignment {
+    if (list.length === 1) return list[0];
+    const i = (this.assignTurn.get(name) ?? -1) + 1;
+    this.assignTurn.set(name, i);
+    return list[i % list.length];
+  }
+
   /** Fire a bound event (sounds/bindings.json names: "ui.confirm",
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
@@ -623,9 +662,10 @@ export class GameAudio {
     // die-voice request: "This is the female die sound effect. Can't assign a
     // separate voice to the male (you need to fix that)"). Unscoped stays the
     // everyone-sound; nothing is inherited, so an unassigned voice is silent.
-    const assigned =
+    const list =
       (opts.voice ? EVENT_ASSIGNMENTS[`${name}@${opts.voice}`] : undefined) ??
       EVENT_ASSIGNMENTS[name];
+    const assigned = list?.length ? this.pickAssigned(name, list) : undefined;
     if (assigned) {
       const rate = (opts.rate ?? 1) * (assigned.pitch ?? 1);
       const gainDb = (opts.gainDb ?? 0) + (assigned.volume_db ?? 0);
@@ -745,17 +785,27 @@ export class GameAudio {
    * every strike, micro pitch jitter, near-center pan, level with real
    * presence (the roll's low end barely reproduces on small speakers).
    *
-   * SILENT since 2026-08-05: the maintainer rejected all four thunder takes
-   * in the wiki and the set is deleted, so lightning flashes without a roll
-   * until a new set is generated and he keeps one. The lookup below is kept
-   * BECAUSE thunder is not a `gameAudio.event(...)` the wiki can assign — a
-   * regenerated `foley/thunder` set is the only way it comes back, and this
-   * is what picks it up. The old catalog fallback (a pitched-down
-   * `explosion` arriving 1-2.5 s after the flash) is deleted with the set:
-   * deleting the takes must not silently promote the exact disguise-and-
-   * delay behaviour he rejected in the first place. */
+   * ASSIGNABLE since 2026-08-06 as `weather.thunder`. It used to play the
+   * whole regenerated set, because thunder is not fired by a
+   * `gameAudio.event(...)` call site and so had no name the wiki could offer.
+   * It has one now, and he immediately used it: four different candidates
+   * (cand07/08/09/17) assigned inside a minute, which ROTATE. An assignment
+   * replaces the set — picking four means those four, not those four plus the
+   * six selected takes. The old catalog fallback (a pitched-down `explosion`
+   * arriving 1-2.5 s after the flash) stays deleted: an empty set must not
+   * silently promote the exact disguise-and-delay behaviour he rejected.
+   *
+   * The gain and the near-center pan stay HERE rather than coming from the
+   * assignment: they are what puts the crack on the white flash, and they
+   * apply whichever recording he picks. */
   thunder(strength = 1): void {
     if (!this.ready()) return;
+    const gainDb = THUNDER_GAIN_DB * Math.min(1, strength);
+    const pan = (Math.random() - 0.5) * 0.16;
+    if (EVENT_ASSIGNMENTS["weather.thunder"]?.length) {
+      this.event("weather.thunder", { gainDb, pan });
+      return;
+    }
     const own = composerFoley("thunder");
     if (!own) return;
     // ROTATE, not the primary take: he asked for "a group with several
