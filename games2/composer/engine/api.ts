@@ -197,6 +197,7 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {
   // only Jump and Fall on the per-hero rows, so Die has a single shared card.
   // Asked them for a Die row per hero (coordination/games-audio.json).
   "player.die@default_girl": { sound: "composer/die_voice", take: "die_voice__take06" },
+  "combat.cross_on": { sound: "composer/monster_die_crumble", take: "monster_die_crumble__take01", pitch: 0.95 },
 };
 
 /** Split a wiki `sound` id into its set and (optional) chosen recording. */

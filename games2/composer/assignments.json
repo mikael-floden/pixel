@@ -37,6 +37,11 @@
     "player.die@default_girl": {
       "sound": "composer/die_voice",
       "take": "die_voice__take06"
+    },
+    "combat.cross_on": {
+      "sound": "composer/monster_die_crumble",
+      "take": "monster_die_crumble__take01",
+      "pitch": 0.95
     }
   }
 }
