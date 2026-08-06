@@ -805,21 +805,6 @@ export class WorldScene extends Phaser.Scene {
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
-  // --- Occlusion fade: tall geometry ABOVE the local player's level near the
-  // player is faded to a faint ghost (moved behind the player) so it stops
-  // hiding the character; a REVEAL layer redraws the player-level ground the
-  // tower was covering (so you see the grass/level you're walking on, NOT the
-  // tower), and drops a BLACK diamond at each faded tower's ROOT (its base
-  // footprint — the one spot with nothing behind it, so it must read as void).
-  // Masked to a soft bubble around the player (distance falloff).
-  private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
-  private occFocus: { col: number; row: number } | null = null; // debug focus override
-  // Does the CURRENT occluder set carry ghost depth/alpha from a fade pass?
-  // While the feature is OFF (the default) this stays false, which lets
-  // updateOcclusionFade skip its restore sweep entirely — see there.
-  private occGhosted = false;
-  private occRevealRT?: Phaser.GameObjects.RenderTexture; // player-level ground + black roots
-  private lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -1228,7 +1213,6 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
     this.input.keyboard!.on("keydown-FIVE", sync(() => this.toggleTorch()));
     this.input.keyboard!.on("keydown-SIX", sync(() => this.toggleBonfire()));
-    this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
     // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
     // game viewport itself gets the matching pixel frame overlay.
     this.hud = new HudBar({
@@ -1307,7 +1291,6 @@ export class WorldScene extends Phaser.Scene {
         { label: "respawn", act: () => this.room?.send("respawn") },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
-        { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
@@ -1719,32 +1702,10 @@ export class WorldScene extends Phaser.Scene {
           ?.connection;
         (conn?.close ?? conn?.transport?.close)?.call(conn?.close ? conn : conn?.transport);
       },
-      // Occlusion-fade debug: force the fade focus to a cell (null → follow the
-      // player), and toggle the feature. Lets headless probes frame the effect.
-      occFocus: (col?: number, row?: number) => {
-        this.occFocus = col === undefined || row === undefined ? null : { col, row };
-        return this.occFocus;
-      },
-      occFade: (on?: boolean) => {
-        if (on !== undefined) this.occFadeOn = on;
-        return this.occFadeOn;
-      },
-      // Force one fade pass now (headless render loop is throttled) and report
-      // how many occluders were tagged vs ghosted-to-black.
       worldInfo: () => {
         let maxL = 0;
         if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
         return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
-      },
-      occApply: () => {
-        this.lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN }; // force a reveal redraw
-        this.updateOcclusionFade();
-        const fc = this.occFocus;
-        let fLevel = null,
-          ghosted = 0;
-        for (const o of this.occluders) if (o.getData("oc") !== undefined && o.depth < -1000) ghosted++;
-        if (fc && this.world) fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
-        return { occluders: this.occluders.length, ghosted, revealVisible: !!this.occRevealRT?.visible, focus: fc, fLevel };
       },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
@@ -4833,9 +4794,6 @@ export class WorldScene extends Phaser.Scene {
 
     this.updateChaseCam(delta);
 
-    // See-through tall geometry above the player's level (occlusion fade).
-    this.updateOcclusionFade();
-
     // Night lighting (always on): per-pixel point lights with heightmap
     // line-of-sight when WebGL is available; the multiply grade otherwise.
     const shaderNight = !!this.night;
@@ -5049,11 +5007,6 @@ export class WorldScene extends Phaser.Scene {
       .forEach((e) => (e.style.display = color ? "none" : ""));
     this.hud?.refreshSettings();
     return this.overlayIdx;
-  }
-
-  private toggleWalls() {
-    this.occFadeOn = !this.occFadeOn;
-    this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
   }
 
   /** Show/hide the maps2 monster spawn-zone outlines (debug). Persisted so a
@@ -6902,175 +6855,27 @@ export class WorldScene extends Phaser.Scene {
     return off;
   }
 
+  /** Stamp a maps2 terrain occluder image with the CELL it was built for — that
+   * is all these tags carry. The ONE reader is the cull audit
+   * (`__ml.occAudit`), which uses them to answer "which cells contributed at
+   * least one image this rebuild?" and so to compute `metaWithoutArt`. Nothing
+   * reads a depth or a level from here: the audit measures geometry with
+   * Phaser's own `getBounds()` and takes each column's top level, cell and
+   * bounds (`top`, `col`/`row`, `solid`, `x0`/`x1`/`y0`/`y1`) from
+   * `occluderMeta`. Keep this cheap — a rebuild runs it ~3,885 times at
+   * the_island2's mountain. */
+  private tagOccluder(img: Phaser.GameObjects.Image, col: number, row: number): Phaser.GameObjects.Image {
+    img.setData("oc", col);
+    img.setData("or", row);
+    return img;
+  }
+
   /**
    * Rebuild the occluder set: every raised (l>0) or solid non-water tile near
    * the camera gets real depth-sorted images (depth = its footprint's TOP
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
-  /** Tag a maps2 terrain occluder image with its cell, top level and original
-   * depth so the occlusion-fade pass can find/ghost/restore it. */
-  private tagOccluder(
-    img: Phaser.GameObjects.Image,
-    col: number,
-    row: number,
-    top: number,
-    od: number,
-  ): Phaser.GameObjects.Image {
-    img.setData("oc", col);
-    img.setData("or", row);
-    img.setData("ot", top);
-    img.setData("od", od);
-    return img;
-  }
-
-  /**
-   * Occlusion fade (see the field note). Two parts, both keyed to the local
-   * player (or debug `occFocus`):
-   *  (1) tall occluders ABOVE the focus level, camera-closer than it, within a
-   *      radius are dimmed to a faint GHOST and moved behind the player so they
-   *      stop hiding the character;
-   *  (2) a REVEAL render-texture redraws the player-level GROUND those towers
-   *      were covering (so you see the grass/level you walk on, not the tower)
-   *      and drops a BLACK diamond at each tower's ROOT (base footprint = void).
-   */
-  private updateOcclusionFade() {
-    const world = this.world;
-    const R = 14; // bubble radius in cells
-    const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
-    let fc = this.occFocus;
-    const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    if (!fc && pav) fc = { col: Math.floor(pav.fx / CELL_WU), row: Math.floor(pav.fy / CELL_WU) };
-    const active = this.occFadeOn && this.maps2 && !!world && !!fc;
-    if (active && world && fc) {
-      const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
-      const fSum = fc.col + fc.row;
-      for (const o of this.occluders) {
-        const col = o.getData("oc") as number | undefined;
-        if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
-        const row = o.getData("or") as number;
-        const top = o.getData("ot") as number;
-        const od = o.getData("od") as number;
-        const dist = Math.hypot(col - fc.col, row - fc.row);
-        if (top > fLevel && dist < R && col + row > fSum) {
-          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
-          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
-        } else {
-          o.setDepth(od).setAlpha(1);
-        }
-      }
-      this.occGhosted = true;
-    } else if (this.occGhosted) {
-      // ONE restore sweep, on the frame the feature (or the focus) goes away.
-      // This used to run EVERY frame with the feature OFF — a getData +
-      // setDepth + setAlpha over the whole occluder set, which on the_island2's
-      // cave/mountain region is 6-15k Images, and every setDepth re-queues
-      // Phaser's display-list sort. Measured 1.33ms/frame at (120,32) for a
-      // feature that is off by default (ULTRACODE lag investigation, fix #1).
-      // Fresh occluders are born with their natural depth/alpha, so
-      // rebuildOccluders clears the flag rather than needing a sweep.
-      for (const o of this.occluders) {
-        const od = o.getData("od") as number | undefined;
-        if (od !== undefined) o.setDepth(od).setAlpha(1);
-      }
-      this.occGhosted = false;
-    }
-    this.updateOccReveal(active && fc ? fc : null, pav, R);
-  }
-
-  /** Lazily build the occlusion-fade assets: a black cell-diamond (tower roots)
-   * drawn into the reveal layer. */
-  private ensureOccAssets() {
-    const { tile, dy } = MAP_GEOMETRY;
-    if (this.textures.exists("occ-root")) return;
-    const g = this.make.graphics({ x: 0, y: 0 }, false);
-    g.fillStyle(0x000000, 1).beginPath();
-    g.moveTo(tile / 2, 0);
-    g.lineTo(tile, dy);
-    g.lineTo(tile / 2, dy * 2);
-    g.lineTo(0, dy);
-    g.closePath();
-    g.fillPath();
-    g.generateTexture("occ-root", tile, dy * 2);
-    g.destroy();
-  }
-
-  /**
-   * Reveal layer: a world-anchored RenderTexture drawn just above the ground RT
-   * (−900k) but below the faded ghosts + sprites. Within `R` cells of the focus
-   * it redraws the player-level GROUND (walkable cells at/below the focus level)
-   * — so a faded tower reveals the grass you walk on — and paints a BLACK
-   * diamond at every taller cell's ROOT so the tower's own footprint reads as
-   * void, never walkable. Redrawn only when the player/camera moves.
-   */
-  private updateOccReveal(fc: { col: number; row: number } | null, pav: Avatar | undefined, R: number) {
-    if (!fc || !this.world || !pav) {
-      this.occRevealRT?.setVisible(false);
-      return;
-    }
-    this.ensureOccAssets();
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
-    if (!this.occRevealRT) {
-      const rs = this.renderScale(); // world-space RT — size in world px (see makeGroundRT)
-      this.occRevealRT = this.add
-        .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
-        .setOrigin(0, 0)
-        .setDepth(-900_000);
-    }
-    const rt = this.occRevealRT;
-    rt.setVisible(true);
-    const cam = this.cameras.main;
-    const ccx = cam.worldView.centerX; // zoom-correct world centre (see redrawGround)
-    const ccy = cam.worldView.centerY;
-    // Redraw only when the player or camera drifts — otherwise the texture holds.
-    if (
-      !Number.isNaN(this.lastReveal.x) &&
-      Math.abs(pav.fx - this.lastReveal.x) < 4 &&
-      Math.abs(pav.fy - this.lastReveal.y) < 4 &&
-      Math.abs(ccx - this.lastReveal.cx) < 4 &&
-      Math.abs(ccy - this.lastReveal.cy) < 4
-    )
-      return;
-    this.lastReveal = { x: pav.fx, y: pav.fy, cx: ccx, cy: ccy };
-    const world = this.world;
-    const ax = Math.round(ccx - rt.width / 2);
-    const ay = Math.round(ccy - rt.height / 2);
-    rt.setPosition(ax, ay);
-    rt.clear();
-    const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
-    const fSum = fc.col + fc.row;
-    const x0 = ax - tile;
-    const x1 = ax + rt.width + tile;
-    const y0 = ay - tile;
-    const y1 = ay + rt.height + tile + this.maxLevel * lh;
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-    rt.beginDraw();
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = world.rows[row]?.[col];
-        if (!cell) continue;
-        if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
-        const bx = this.iso.ox + u * dx - ax;
-        const by = this.iso.oy + v * dy - ay;
-        if (cell.l > fLevel && col + row > fSum) {
-          // Taller than the player, in front of them → black root diamond (void).
-          rt.batchDraw("occ-root", bx, by);
-        } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
-          // The ground the player walks on — re-expose it over the towers above.
-          const k0 = topKeyFor(cell);
-          if (k0 && this.textures.exists(k0)) rt.batchDraw(cell.flip ? this.flippedKey(k0) : k0, bx, by - cell.l * lh);
-        }
-      }
-    }
-    rt.endDraw();
-  }
-
   private rebuildOccluders() {
     if (!this.world) return;
     const cam = this.cameras.main;
@@ -7085,9 +6890,6 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     for (const lo of this.litOccluders) lo.img.destroy();
-    // The new set is built fresh at natural depth/alpha — no ghost state to
-    // restore (updateOcclusionFade re-applies it next frame if the fade is on).
-    this.occGhosted = false;
     this.litOccluders = [];
     this.occluders = [];
     this.occluderMeta = [];
@@ -7174,7 +6976,7 @@ export class WorldScene extends Phaser.Scene {
                   continue;
                 }
                 this.occluders.push(
-                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row, dk.deck.level, dDepth),
+                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row),
                 );
               }
               culled += dFrom - lvl0;
@@ -7187,7 +6989,7 @@ export class WorldScene extends Phaser.Scene {
                 this.occluders.push(
                   this.tagOccluder(
                     this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
-                    col, row, dk.deck.level, dDepth,
+                    col, row,
                   ),
                 );
               else culled++;
@@ -7223,7 +7025,7 @@ export class WorldScene extends Phaser.Scene {
               continue;
             }
             this.occluders.push(
-              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
+              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
             );
           }
           // Keep the top whenever the COLUMN reaches the cull box, so every
@@ -7237,8 +7039,6 @@ export class WorldScene extends Phaser.Scene {
                 this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
                 col,
                 row,
-                cell.l,
-                oDepth,
               ),
             );
           else culled++;
