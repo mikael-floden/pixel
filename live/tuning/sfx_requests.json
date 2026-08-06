@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T05:37:02.575Z",
+  "updated_at": "2026-08-06T05:42:23.900Z",
   "requests": {
     "combat.cross_off/msh2o7xe": {
       "event": "combat.cross_off",
@@ -65,6 +65,15 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T05:37:00.429Z"
+    },
+    "progress.level_up/msh39hi8": {
+      "event": "progress.level_up",
+      "sound": "composer/level_up_harp",
+      "take": "composer/foley/level_up_harp/level_up_harp__take01.wav",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T05:42:01.952Z"
     }
   }
 }
