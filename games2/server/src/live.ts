@@ -37,7 +37,10 @@ const RAW_BASE = process.env.LIVE_RAW_BASE || `https://raw.githubusercontent.com
 const GH_API = process.env.LIVE_GH_API || "https://api.github.com";
 const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer"] as const;
+// "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs, and
+// a rejected entry means UNBIND that sound from that event — the recording
+// itself is untouched (maintainer 2026-08-06). The composer agent consumes it.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",

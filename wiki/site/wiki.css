@@ -701,6 +701,10 @@ button.drop-row {
 .sfx-layer { border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
 .sfx-layer-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .sfx-take { margin-left: 22px; }
+/* The BINDING's verdict — one row per attached sound, above its recordings,
+   so "✕ unbind" can never be mistaken for "delete this file" (which lives in
+   All sounds). Quietly inset like the takes it governs. */
+.sfx-bind-verdict { margin-left: 22px; flex-wrap: wrap; row-gap: 4px; }
 .sfx-req { background: color-mix(in srgb, var(--warn, #b58900) 8%, transparent); border-radius: 6px; }
 .sfx-add { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
 .sfx-add-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }

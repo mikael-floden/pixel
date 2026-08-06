@@ -178,9 +178,13 @@ ok(picker.searchMargin === "0px" && picker.fits, "the dialog's own input CSS (no
 ok(picker.plays === 3 && new Set(picker.names).size === 3, `Next steps AND plays (${picker.plays} plays: ${picker.names?.join(" → ")})`);
 ok(picker.live <= 1, `only one sound is ever sounding — the previous stops dead (${picker.live})`);
 
-// request flow: assign from the dialog → pending row → savebar → withdraw
+// request flow: assign from the dialog → pending row → savebar → withdraw.
+// SCOPED to the card this check opened: the Game Master's own queued requests
+// live on this page too, and a gate must never withdraw one of those.
 const req = await p.evaluate(async () => {
   const d = document.querySelector("dialog.sfx-picker");
+  const card = document.querySelector(".sfx-event:has(.sfx-add-open)");
+  const before = card.querySelectorAll(".sfx-req").length;
   const set = (label, v) => {
     const c = [...d.querySelectorAll(".picker-ctl")].find((x) => x.textContent.startsWith(label));
     c.querySelector("input").value = String(v);
@@ -189,24 +193,28 @@ const req = await p.evaluate(async () => {
   set("pitch", 1.2); set("random pitch", 0.5);
   d.querySelector(".dialog-row .primary-btn").click();
   await new Promise((r) => setTimeout(r, 400));
-  const after = document.querySelector(".sfx-req");
+  // the card is re-rendered by route(); find it again and take OUR row (the last)
+  const again = document.querySelector(".sfx-event:has(.sfx-add-open)");
+  const rows = [...again.querySelectorAll(".sfx-req")];
   return {
-    pending: after?.textContent ?? null,
+    before, now: rows.length,
+    pending: rows.at(-1)?.textContent ?? null,
     closed: !document.querySelector("dialog.sfx-picker"),
     savebar: !document.querySelector("#savebar").classList.contains("hidden"),
-    stored: Object.values(JSON.parse(JSON.stringify((window.state ?? {}).tuning?.sfx_requests?.requests ?? {}))),
   };
 });
 console.log("request:", JSON.stringify(req).slice(0, 300));
-ok(!!req.pending && /pitch ×1\.2/.test(req.pending) && /±0\.5 st/.test(req.pending), "the request renders with its pitch/vol/random-pitch");
+ok(req.now === req.before + 1, `the request is queued on that event (${req.before} → ${req.now})`);
+ok(!!req.pending && /pitch ×1\.2/.test(req.pending) && /±0\.5 st/.test(req.pending), "and renders with its pitch/vol/random-pitch");
 ok(req.closed, "assigning closes the picker");
 ok(req.savebar, "the savebar offers to send it (same save path as all live edits)");
-const withdrew = await p.evaluate(async () => {
-  document.querySelector(".sfx-req .x-btn").click();
+const withdrew = await p.evaluate(async (before) => {
+  const card = document.querySelector(".sfx-event:has(.sfx-add-open)");
+  [...card.querySelectorAll(".sfx-req")].at(-1).querySelector(".x-btn").click();
   await new Promise((r) => setTimeout(r, 300));
-  return !document.querySelector(".sfx-req");
-});
-ok(withdrew, "a queued request can be withdrawn");
+  return document.querySelector(".sfx-event:has(.sfx-add-open)").querySelectorAll(".sfx-req").length === before;
+}, req.before);
+ok(withdrew, "a queued request can be withdrawn — and only the one we queued");
 
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");

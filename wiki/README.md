@@ -457,9 +457,23 @@ to replace the parsing.
 - **Players see only events that make sound.** Silent events, "not fired
   yet" pills, stars, the add-a-sound form and the raw all-sounds library
   are Game-Master-only.
-- **Stars** go to the take's OWNER: catalog takes → `feedback/sounds.json`,
-  composer takes → `feedback/composer.json` (new domain, ids
-  `composer/foley/<set>/<take>`).
+- **A BINDING is not a RECORDING** (maintainer 2026-08-06: "if I remove a
+  sound from an event that doesn't mean I want to delete the sound … it just
+  means I want to unbind it"). Two different verdicts, in two different
+  places:
+  - On an **event card**, one verdict row per attached sound —
+    "this sound, for this event" — writing to `live/feedback/bindings.json`
+    with `<eventId>#<sound>` ids. Its ✕ reads **"✕ unbind"** and detaches the
+    sound from that one event; the recording is untouched. Take rows carry
+    ▶ + name + length and nothing else: a take is a recording, and judging
+    one is not this page's job.
+  - In **All sounds**, the file's own stars/approve/✕ — and there ✕ really
+    does retire the recording everywhere, which both the tooltip and the
+    section's intro say out loud.
+- **Stars on a recording** go to its OWNER: catalog takes →
+  `feedback/sounds.json`, composer takes → `feedback/composer.json` (ids
+  `composer/foley/<set>/<take>`). Binding verdicts go to the composer via
+  `feedback/bindings.json`.
 - **Add-a-sound requests** ride the normal save path into
   `live/tuning/sfx_requests.json` (`pixel-wiki-sfx-requests@1`, server key
   `tuning/sfx_requests`): pick a sound, set pitch / volume dB / max random
@@ -502,6 +516,18 @@ to replace the parsing.
   that ignored dark mode). Its width is capped in `em`, not `%`: a percentage
   cap against a shrink-to-fit flex parent collapsed the box and "Idle"
   rendered as "Idl".
+- **One row per RECORDING, not per folder** (maintainer 2026-08-06: "you
+  don't let me select the sound. You point to a group! We have way more
+  sounds than this"). A set is a folder of alternatives — `ui_tick` holds
+  three different clicks, `jump_voice` four grunts, and 33 catalog sounds
+  have several takes — so listing sets showed 128 rows for 183 real
+  recordings and made take 2 of anything unreachable. Every take is its own
+  row now, labelled `flavour · take N` when its set has more than one, each
+  auditioning its own file. The request carries **`take`** (the exact file)
+  beside the existing `sound` (the set id the composer already parses), so
+  what gets bound is what was heard. "in game" is computed per RECORDING
+  from the event table's own bound files — not "something in this folder is
+  used".
 - **Grouped by action, and it lists EVERY composer set** — wired or not
   (their ask, 2026-08-05: they ship ~10 `<action>_<flavour>` alternatives per
   action and the winner gets wired afterwards). `composerGroups()` derives the

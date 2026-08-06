@@ -38,12 +38,22 @@ paths** — changing monster stats or rating a sound never restarts the game.
   for `games2/shared` gameplay constants, keyed by exported name.
   **Consumed by the game**. Edited in the wiki's Tuning page.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
-  characters, tiles, objects, sounds, music, items. Star ratings (1-5),
-  approve/reject verdicts and notes per asset id. **Consumed by the art
-  agents, not the game**: each agent MUST read its domain file at the start
-  of every run and act on it (rejected → remove/replace the asset and delete
-  the feedback entry once handled; stars steer style). Written by the wiki
-  (admin verdicts) and by agents (clearing handled entries).
+  characters, tiles, objects, sounds, music, items, lore, composer. Star
+  ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed
+  by the art agents, not the game**: each agent MUST read its domain file at
+  the start of every run and act on it (rejected → remove/replace the asset
+  and delete the feedback entry once handled; stars steer style). Written by
+  the wiki (admin verdicts) and by agents (clearing handled entries).
+- `live/feedback/bindings.json` — the same format, but its ids are
+  **`<eventId>#<sound>` PAIRS**, not assets: `player.water_enter#splash`,
+  `ui.press#composer/ui_tick`. It rates an ATTACHMENT — is this the right
+  sound for this moment — and a `rejected` entry means **unbind that sound
+  from that event**. The recording is untouched and stays in the library
+  (maintainer 2026-08-06: "if I remove a sound from an event that doesn't
+  mean I want to delete the sound … it just means I want to unbind it").
+  Retiring a recording is the file's own verdict in `sounds.json` /
+  `composer.json`. **Consumed by the composer (games-audio) agent**, which
+  removes the binding and deletes the handled entry.
 
 ## Rules
 

@@ -24,7 +24,10 @@ const stripExt = (rel) => rel.replace(/\.(png|webp)$/i, "");
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer"];
+// "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs and a
+// rejected entry means UNBIND that sound from that event — the recording is
+// untouched (maintainer 2026-08-06). See live/feedback/bindings.json.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
@@ -121,11 +124,11 @@ function starsWidget(domain, id) {
   render();
   return wrap;
 }
-function verdictWidget(domain, id, { onchange } = {}) {
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal" } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
-    if (st === "rejected") return h("span", { class: "pill err" }, "slated for removal");
+    if (st === "rejected") return h("span", { class: "pill err" }, rejectedLabel);
     return h("span");
   }
   const wrap = h("span", { class: "verdict" });
@@ -133,7 +136,7 @@ function verdictWidget(domain, id, { onchange } = {}) {
     const st = fb(domain, id).status;
     wrap.replaceChildren(
       h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
-      h("button", { class: st === "rejected" ? "rejected" : "", title: "Reject = the producing agent removes/replaces this on its next run", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, "✕ remove"),
+      h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, reject),
     );
   };
   render();
@@ -1978,12 +1981,13 @@ const stFmt = (x) => (Number.isInteger(x) ? String(x) : x.toFixed(2).replace(/0$
  *  Chrome and Firefox both decode it and it is a tenth of the wav's bytes;
  *  m4a is there for Safari (no ogg); wav always works. */
 const audioCandidates = (t) => [t?.files?.ogg, t?.files?.m4a, t?.files?.wav].filter(Boolean);
-function sfxTakeFb(layer, take) {
-  // Stars flow to the agent that OWNS the take: catalog takes to the sounds
-  // agent (the ids it already consumes), composer takes to the composer.
-  if (layer.source === "composer") return ["composer", take.file.replace(/\.\w+$/, "")];
-  return ["sounds", take.file.replace(/\.\w+$/, "")];
-}
+/** The id of a BINDING — this sound attached to this event. Rating, approving
+ *  and removing here is about the PAIRING, never the recording (maintainer
+ *  2026-08-06: "If I remove a sound from an event doesn't mean I want to
+ *  delete the sound … it just means I want to unbind it"). The file's own
+ *  stars, approval and removal live in All sounds, where "remove" really does
+ *  retire the recording. */
+const bindingId = (ev, layer) => `${ev.id}#${layer.source === "composer" ? `composer/${layer.set}` : layer.soundId}`;
 function sfxLayerRow(ev, layer) {
   const totalDb = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (state.data.sfx.engine.busDb?.[layer.bus] ?? 0);
   const jit = layer.jitterSemis;
@@ -2010,15 +2014,27 @@ function sfxLayerRow(ev, layer) {
         n === 1 ? "1 take" : `${n} takes · equal 1/${n}`),
       layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
   ];
+  // The verdict belongs to the BINDING, and it sits on the binding's own row —
+  // not on each take. A take is a recording; judging it (and deleting it) is
+  // the library's job. Here the question is only "is this the right sound for
+  // this moment", and ✕ detaches it from this event, nothing more.
+  if (state.admin) {
+    const bid = bindingId(ev, layer);
+    rows.push(h("div", { class: "take-row sfx-bind-verdict" },
+      h("span", { class: "muted", style: "font-size:12px" }, "this sound, for this event:"),
+      h("span", { class: "spacer" }),
+      starsWidget("bindings", bid),
+      verdictWidget("bindings", bid, {
+        reject: "✕ unbind",
+        rejectTitle: "Detach this sound from THIS event only — the recording stays in the library. To retire the recording itself, reject it under All sounds.",
+        rejectedLabel: "to be unbound",
+      })));
+  }
   for (const t of layer.takes) {
-    const [dom, fid] = sfxTakeFb(layer, t);
     rows.push(h("div", { class: "take-row sfx-take" },
       h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
       h("span", { class: "take-name muted" }, t.name),
-      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
-      h("span", { class: "spacer" }),
-      state.admin ? starsWidget(dom, fid) : null,
-      state.admin ? verdictWidget(dom, fid) : null));
+      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null));
   }
   if (layer.spareTakes > 0 && state.admin) {
     rows.push(h("p", { class: "muted sfx-unbound-note" },
@@ -2026,6 +2042,9 @@ function sfxLayerRow(ev, layer) {
   }
   return h("div", { class: "sfx-layer" }, ...rows);
 }
+/** A queued request, said the way it was picked: the exact recording, not the
+ *  folder it came from (older entries carry only `sound`). */
+const reqSound = (r) => (r.take ? r.take.split("/").pop().replace(/\.\w+$/, "") : r.sound);
 function setSfxRequest(id, val) {
   const doc = state.tuning.sfx_requests ?? (state.tuning.sfx_requests = { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} });
   if (val === null) delete doc.requests[id];
@@ -2074,8 +2093,21 @@ function composerGroups(names) {
   for (const [n, g] of of) if (!g || (size.get(g) ?? 0) < 2) of.set(n, "Other");
   return of;
 }
+/** Every RECORDING the Game Master can pick — one row per take, not per set
+ *  (maintainer 2026-08-06: "you don't let me select the sound. You point to a
+ *  group! We have way more sounds than this"). A set is a folder of
+ *  alternatives: `ui_tick` holds three different clicks and `jump_voice` four
+ *  different grunts, and picking the set says nothing about WHICH. Listing
+ *  sets showed 128 rows for 183 real recordings, and take 2 of anything was
+ *  unreachable. */
 function sfxLibraryList() {
   const out = [];
+  // Which recordings the game actually plays today — computed from the event
+  // table's own bound take files, so "in game" is exact per RECORDING rather
+  // than "something in this folder is used".
+  const bound = new Set();
+  for (const e of state.data.sfx.events ?? []) for (const l of e.sounds) for (const t of l.takes) bound.add(t.file);
+
   // The composer's purpose-made candidates lead: that is what a Game Master
   // is auditioning through. The catalog follows, grouped by its category.
   const sets = Object.keys(state.data.sfx.composerSets);
@@ -2088,21 +2120,28 @@ function sfxLibraryList() {
   for (const set of ordered) {
     const cs = state.data.sfx.composerSets[set];
     const g = group.get(set);
-    out.push({ key: `set:${set}`, wire: `composer/${set}`, name: set, kind: "composer",
-      // Under "HIT TAKEN", the row that matters is "armor" / "gut" / "oof" —
-      // repeating the action in every row only truncates the flavour, which
-      // is the one thing you are choosing between.
-      label: g !== "Other" && set.startsWith(`${g}_`) ? set.slice(g.length + 1) : set,
+    // Under "HIT TAKEN", the row that matters is "armor" / "gut" / "oof" —
+    // repeating the action in every row only truncates the flavour, which is
+    // the one thing you are choosing between. A multi-take set adds "take N".
+    const flavour = g !== "Other" && set.startsWith(`${g}_`) ? set.slice(g.length + 1) : set;
+    cs.takes.forEach((t, i) => out.push({
+      key: `set:${set}#${i}`, wire: `composer/${set}`, take: t.file, kind: "composer",
+      name: `${set} ${t.name}`,
+      label: cs.takes.length > 1 ? `${flavour} · take ${i + 1}` : flavour,
       group: g === "Other" ? "Other composer sounds" : titleish(g),
-      sub: cs.voice ? "voice" : "foley", file: cs.takes[0]?.file, dur: cs.takes[0]?.dur ?? null,
-      voice: !!cs.voice, takes: cs.takes.length, used: (cs.usedBy ?? []).length });
+      sub: cs.voice ? "voice" : "foley", file: t.file, dur: t.dur ?? null,
+      voice: !!cs.voice, used: bound.has(t.file),
+    }));
   }
   for (const s of [...state.data.domains.sounds].sort((a, b) => (a.category ?? "").localeCompare(b.category ?? "") || a.name.localeCompare(b.name))) {
-    const t = s.takes[0];
-    out.push({ key: `cat:${s.id}`, wire: s.id, name: s.name, kind: "catalog",
+    s.takes.forEach((t, i) => out.push({
+      key: `cat:${s.id}#${t.id}`, wire: s.id, take: t.files.wav, kind: "catalog",
+      name: `${s.name} ${s.id} ${t.id}`,
+      label: s.takes.length > 1 ? `${s.name} · take ${i + 1}` : s.name,
       group: `Catalog · ${titleish(s.category ?? "sounds")}`, sub: s.category,
-      file: audioCandidates(t), dur: t?.dur ?? s.duration_s ?? null,
-      voice: false, takes: s.takes.length, used: (s.usedBy ?? []).length });
+      file: audioCandidates(t), dur: t.dur ?? s.duration_s ?? null,
+      voice: false, used: bound.has(t.files.wav),
+    }));
   }
   return out;
 }
@@ -2154,9 +2193,8 @@ function openSoundPicker({ title, forWhat, onPick }) {
       h("span", { class: "take-name", title: it.name }, it.label ?? it.name),
       it.dur != null ? h("span", { class: "pill" }, fmtDur(it.dur)) : null,
       it.voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — 2× is the true voice" }, "voice ×2") : null,
-      it.takes > 1 ? h("span", { class: "pill" }, `${it.takes} takes`) : null,
-      it.used ? h("span", { class: "pill ok", title: "The game already plays this somewhere" }, "in game")
-        : h("span", { class: "pill", title: "Nothing plays this yet" }, "unused"));
+      it.used ? h("span", { class: "pill ok", title: "The game plays THIS recording somewhere today" }, "in game")
+        : h("span", { class: "pill", title: "Nothing plays this recording yet" }, "unused"));
       rowEls.push(row);
       kids.push(row);
     });
@@ -2201,7 +2239,10 @@ function openSoundPicker({ title, forWhat, onPick }) {
   assign.addEventListener("click", () => {
     const it = list[sel];
     if (!it) return;
-    onPick({ sound: it.wire, pitch: pitch.get(), volume_db: vol.get(), max_random_pitch_semis: rnd.get(), note: note.value.trim() || undefined });
+    // `sound` stays the set/catalog id the composer already parses; `take` is
+    // the EXACT recording that was auditioned — the whole point of listing
+    // takes. Bind that one, not "something from that folder".
+    onPick({ sound: it.wire, take: it.take, pitch: pitch.get(), volume_db: vol.get(), max_random_pitch_semis: rnd.get(), note: note.value.trim() || undefined });
     dlg.close();
   });
   dlg.addEventListener("keydown", (e) => {
@@ -2286,7 +2327,7 @@ function sfxEventCard(ev) {
     ...ev.sounds.map((l) => sfxLayerRow(ev, l)),
     ...reqs.map(([id, r]) => h("div", { class: "take-row sfx-req" },
       h("span", { class: "pill warn" }, "requested"),
-      h("span", { class: "take-name" }, `${r.sound} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "take-name" }, `${reqSound(r)} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
       h("span", { class: "spacer" }),
       h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))),
     state.admin ? sfxAddForm(ev) : null);
@@ -2324,7 +2365,12 @@ function sfxAllSounds() {
         h("span", { class: "take-name muted" }, t.name),
         t.dur != null ? h("span", { class: "pill" }, fmtDur(t.dur)) : null,
         h("span", { class: "spacer" }),
-        starsWidget(t.dom, t.fid), verdictWidget(t.dom, t.fid)))));
+        // THE recording's own verdict: ✕ here retires the file itself, which
+        // is why it lives down here and not on an event's binding.
+        starsWidget(t.dom, t.fid),
+        verdictWidget(t.dom, t.fid, {
+          rejectTitle: "Retire this RECORDING — the producing agent deletes it on its next run. To take a sound off one event without deleting it, unbind it on that event's card.",
+        })))));
   };
   for (const s of state.data.domains.sounds) {
     entryRow(s.name, s.category, s.takes.map((t) => ({
@@ -2340,7 +2386,7 @@ function sfxAllSounds() {
   }
   return h("div", { class: "sfx-lib" },
     h("h2", {}, "All sounds ", h("span", { class: "pill" }, "Game Master")),
-    h("p", { class: "muted" }, "Every recording in the library, used or not, played raw — voices at their honest 2×. The sliders audition pitch, volume and a max random pitch without touching the game."),
+    h("p", { class: "muted" }, "Every recording in the library, used or not, played raw — voices at their honest 2×. The sliders audition pitch, volume and a max random pitch without touching the game. This is where a sound is judged as a RECORDING: ✕ here retires the file everywhere. To take a sound off one event and keep it, unbind it on that event's card."),
     ...rows);
 }
 /* --- an ENTITY's sounds: the same cards, the same engine, the same admin
@@ -2377,7 +2423,7 @@ function entityAddCard(domain, ent) {
     h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), btn),
     ...pending.map(([id, r]) => h("div", { class: "take-row sfx-req" },
       h("span", { class: "pill warn" }, "requested"),
-      h("span", { class: "take-name" }, `${stateLabel(r.action ?? "")}: ${r.sound} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "take-name" }, `${stateLabel(r.action ?? "")}: ${reqSound(r)} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
       h("span", { class: "spacer" }),
       h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))));
 }
