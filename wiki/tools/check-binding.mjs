@@ -110,16 +110,21 @@ const ent = await p.evaluate(() => {
   // empty card has nothing to judge.
   const c = [...document.querySelectorAll(".sfx-entity .sfx-event")].find((x) => x.querySelector(".sfx-bind-verdict"));
   return { binds: c.querySelectorAll(".sfx-bind-verdict").length,
+    layers: c.querySelectorAll(".sfx-layer").length,
     takes: c.querySelectorAll(".sfx-take").length,
     takeStars: c.querySelectorAll(".sfx-take .stars").length,
     takeUnbinds: c.querySelectorAll(".sfx-take .verdict").length };
 });
 console.log("entity card:", JSON.stringify(ent));
 ok(ent.binds > 0 && ent.takeStars === 0, "a hero's own sound events judge the binding too");
-// A hero's jump voice is a 3-4 take set, so the per-recording unbind has to
-// reach here as well — that is where "drop just this grunt" belongs.
-ok(ent.takes < 2 || ent.takeUnbinds === ent.takes,
-  `and each of its ${ent.takes} recordings can be unbound on its own (${ent.takeUnbinds})`);
+// EVERY BOUND SOUND IS UNBINDABLE, whatever shape the card is. A hero's Die is
+// three rotating sounds of one take each; his Jump is one set of four takes.
+// The rule that has to hold in both: one unbind row per LAYER, plus a
+// per-recording unbind on any layer that carries more than one.
+ok(ent.binds === ent.layers && ent.layers > 0,
+  `one unbind per bound sound (${ent.binds} for ${ent.layers} layer(s), ${ent.takes} recording(s))`);
+ok(ent.takes <= ent.layers || ent.takeUnbinds === ent.takes,
+  `and a multi-take layer unbinds per recording too (${ent.takeUnbinds}/${ent.takes})`);
 
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");

@@ -684,6 +684,34 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+- **A creature's page shows what that creature sounds like** (maintainer
+  2026-08-06: "I can't see already mapped sound effects on monsters. I can
+  only bind new effects. How do I unbind individual sounds like I can do on
+  the Player page?"). Two separate bugs were behind that:
+  - **Per-entity events were not scoped.** The entity assign card mints
+    `<domain>.<entity id>.<action>`, and the composer wires those verbatim —
+    `monsters.forest_poring_2.walk` is Sprigling's footstep. build.mjs sent
+    them back through the generic path, so they rendered as unscoped cards
+    filed under "World" on the Sound Effects page: you could bind a sound to a
+    creature and never find it again. A three-part id whose middle segment is
+    a real entity of that domain is now scoped to it, exactly like
+    `player.jump@<uid>`. An id naming an entity that no longer exists stays
+    generic rather than scoping itself onto a page that isn't there.
+  - **`sharedWith`**: `combat.monster_die` and both cross events fire off a
+    monster's death but are not routed per creature, so every monster page
+    now shows them too — as full cards with the same per-recording unbind,
+    marked **"every creature"** so it is never a surprise that ✕ there takes
+    the sound off all of them. Chosen from the CALL SITES, not the names:
+    `combat.hit_taken` is the player being hurt and `combat.kick`/`punch` are
+    the player's own swings, so none of those appear.
+- **The emitted-scan understands DYNAMIC names.** A per-entity event cannot be
+  a literal: the game fires ``gameAudio.event(`monsters.${mv.kind}.${action}`)``
+  once per gait cycle, per swing and per growl. A literal-only scan called
+  every one of them "not fired yet" — telling the Game Master the sound he
+  had just bound to Sprigling could never be heard while the game played it on
+  every step. The static prefix before the first `${` is now recorded as an
+  emitted FAMILY (`isEmitted`). Gate: `check-sfx.mjs` fails on any
+  `<domain>.<entity>.<action>` event that is not scoped.
 - **Unbind is PER RECORDING, not just per sound** (maintainer 2026-08-06: "I
   wanted to unbind `coin_pickup__take02.wav` from Coin Pickup, but the unbind
   is not on the sound itself … I don't want to delete the sound, just unbind

@@ -25,8 +25,16 @@ ok(jumpBoy?.scope?.id === "default_boy" && jumpBoy.sounds.length === 1 && jumpBo
 // quoting the maintainer: "Can't assign a separate voice to the male (you need
 // to fix that)") — there was ONE shared Die card, so the boy could not be
 // given his own death cry.
-const scoped = sfx.events.filter((e) => e.scope);
-ok(scoped.length === 6, `six scoped events: jump+fall+die per hero (${scoped.length})`);
+// Count the HEROES' six explicitly. The total is not a fixed number any more:
+// per-monster events are scoped too, and the Game Master mints those himself.
+const heroScoped = sfx.events.filter((e) => e.scope?.domain === "characters");
+ok(heroScoped.length === 6, `six scoped hero events: jump+fall+die per hero (${heroScoped.length})`);
+// A PER-ENTITY event must be scoped, or it lands on the generic Sound Effects
+// page filed under "World" and the Game Master can never find what he bound
+// to a creature (maintainer 2026-08-06: "I have bound sound to Sprigling,
+// can't unbind in the UI" — monsters.forest_poring_2.walk was exactly there).
+const stray = sfx.events.filter((e) => /^(monsters|objects|items|characters)\.[^.]+\..+/.test(e.id) && !e.scope);
+ok(stray.length === 0, `every per-entity event is scoped to its entity${stray.length ? ` — STRAY: ${stray.map((e) => e.id).join(", ")}` : ""}`);
 const die = sfx.events.filter((e) => e.id.startsWith("player.die@"));
 ok(die.length === 2 && die.every((e) => e.scope?.id), `Die is per hero (${die.map((e) => e.id).join(", ")})`);
 ok(!sfx.events.some((e) => e.id === "player.die" && !e.scope),

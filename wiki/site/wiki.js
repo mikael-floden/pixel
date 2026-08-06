@@ -2440,7 +2440,7 @@ function sfxAddForm(ev) {
       onPick: queue,
     })));
 }
-function sfxEventCard(ev) {
+function sfxEventCard(ev, { shared = false } = {}) {
   const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
   return h("div", { class: "panel sfx-event" },
     h("div", { class: "panel-title" },
@@ -2448,6 +2448,9 @@ function sfxEventCard(ev) {
         onclick: () => sfxEngine.playEvent(ev) }, "▶") : null,
       ev.name,
       state.admin ? h("span", { class: "pill" }, ev.id) : null,
+      // Shown ONLY on an entity page, where the reasonable assumption is that
+      // a card belongs to the creature you are looking at. It does not.
+      shared ? h("span", { class: "pill warn", title: "The game plays this for EVERY creature — the engine has no per-creature routing for it yet. Changing or unbinding it here changes it for all of them." }, "every creature") : null,
       ev.duck ? h("span", { class: "pill", title: "The music dips while this plays" }, "ducks music") : null,
       ev.sounds.length > 1 ? (ev.rotates
         ? h("span", { class: "pill ok", title: "One of these plays each time, never the same one twice in a row — ▶ picks one, like the game does" }, `${ev.sounds.length} in rotation`)
@@ -2567,10 +2570,22 @@ function entityAddCard(domain, ent) {
       h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))));
 }
 function entitySoundsCard(domain, ent) {
-  const evs = (state.data.sfx?.events ?? [])
-    .filter((e) => e.scope && e.scope.domain === domain && e.scope.id === ent.id)
-    .filter((e) => state.admin || (e.sounds.length && e.emitted));
-  const kids = evs.map((e) => sfxEventCard(e));
+  const all = state.data.sfx?.events ?? [];
+  const visible = (e) => state.admin || (e.sounds.length && e.emitted);
+  // This entity's OWN events (a hero's voice — the engine routes them by who
+  // you play).
+  const mine = all.filter((e) => e.scope && e.scope.domain === domain && e.scope.id === ent.id).filter(visible);
+  // …and the events this KIND of entity fires, which the engine does not yet
+  // route per individual. A monster page showed neither, so its sounds looked
+  // unassigned and there was nothing to unbind — the Game Master could only
+  // ever add (maintainer 2026-08-06). They render as full cards, with the
+  // same per-recording unbind, marked `shared` so it is never a surprise that
+  // ✕ here takes the sound off EVERY creature.
+  const shared = all.filter((e) => e.sharedWith === domain).filter(visible);
+  const kids = [
+    ...mine.map((e) => sfxEventCard(e)),
+    ...shared.map((e) => sfxEventCard(e, { shared: true })),
+  ];
   if (state.admin) { const add = entityAddCard(domain, ent); if (add) kids.push(add); }
   if (!kids.length) return null;
   return h("div", { class: "sfx-entity" }, ...kids);

@@ -927,7 +927,7 @@ function fileHash(p) {
   }
   return hashCache.get(p);
 }
-function buildSfx(soundEntries) {
+function buildSfx(soundEntries, entityIds = {}) {
   const cat = readJson(join(ROOT, "sounds", "viewer_data.json"))?.sounds ?? [];
   const catById = new Map(cat.map((s) => [s.id, s]));
   const bindings = readJson(join(ROOT, "sounds", "bindings.json")) ?? {};
@@ -1040,6 +1040,9 @@ function buildSfx(soundEntries) {
   // ---- what the game actually EMITS (an event nobody emits is "wired, not
   //      fired"; an emitted event with no sound is "silent") ----
   const emitted = new Set();
+  // Static prefixes of DYNAMIC event names (see the template-literal scan
+  // below): "monsters." means every `monsters.<kind>.<action>` is fired.
+  const emittedPrefixes = new Set();
   for (const f of [...walkTs(join(GAMES2, "client", "src")), ...walkTs(join(comp ?? "", "engine"))]) {
     const src = (() => { try { return readFileSync(f, "utf8"); } catch { return ""; } })();
     // COMMENTS ARE NOT CALL SITES: api.ts's own doc header shows
@@ -1054,8 +1057,21 @@ function buildSfx(soundEntries) {
         if (line.slice(0, m.index).includes("//")) continue;
         emitted.add(m[1]);
       }
+      // DYNAMIC names. A PER-ENTITY event cannot be a literal — the game fires
+      // `monsters.${mv.kind}.${action}` once per gait cycle, per swing, per
+      // growl (WorldScene.monsterSfx). A literal-only scan called every one of
+      // those "not fired yet", i.e. told the Game Master that the sound he had
+      // just bound to Sprigling could never be heard, while the game played it
+      // on every step. The static PREFIX before the first ${ is the family.
+      for (const m of line.matchAll(/(?:gameAudio|audio)\.event\(\s*`([^`$]*)\$\{/g)) {
+        if (line.slice(0, m.index).includes("//")) continue;
+        if (m[1].includes(".")) emittedPrefixes.add(m[1]);
+      }
     }
   }
+  /** Does the game fire this event? A literal call site, or a dynamic one
+   *  whose static prefix this id falls under. */
+  const isEmitted = (id) => emitted.has(id) || [...emittedPrefixes].some((p) => id.startsWith(p));
   // Sounds the ENGINE drives without a semantic event() call — the ambience
   // beds (region changes via setEnv) and the water-entry splash (avatarFrame).
   // They play in the real game every session; hiding them from players as
@@ -1248,10 +1264,10 @@ function buildSfx(soundEntries) {
     // ANYTHING BOUND STILL SHOWS, even when nothing fires it: that is the
     // red "not fired yet" case, and hiding it would strand a sound the Game
     // Master assigned with no way to see or unbind it.
-    if (!r.bound && !emitted.has(id) && !ENGINE_DRIVEN.has(id)) { droppedDead.push(id); continue; }
+    if (!r.bound && !isEmitted(id) && !ENGINE_DRIVEN.has(id)) { droppedDead.push(id); continue; }
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
-      emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
+      emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
       bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
   }
   // Everything else the engine knows about: events the game EMITS, and events
@@ -1267,7 +1283,7 @@ function buildSfx(soundEntries) {
     const r = resolveEvent(id, null);
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? "sfx", duck: false,
-      emitted: emitted.has(id) || ENGINE_DRIVEN.has(id),
+      emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
       bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
   }
   // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
@@ -1371,13 +1387,50 @@ function buildSfx(soundEntries) {
     const own = !!EVENT_ASSIGN[`player.die@${uid}`];
     const r = resolveEvent(own ? `player.die@${uid}` : "player.die", null);
     events.push({ id: `player.die@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Die",
-      bus: "sfx", duck: false, emitted: emitted.has("player.die"), ...r,
+      bus: "sfx", duck: false, emitted: isEmitted("player.die"), ...r,
       note: own ? "their own death cry"
         : r.bound ? "the shared death cry — assign one here to give this hero their own"
         : "no death cry yet; an unassigned voice stays silent rather than borrowing the other hero's" });
   }
+  // AN ENTITY'S OWN EVENT BELONGS ON ITS OWN PAGE. The entity assign card
+  // mints `<domain>.<entity id>.<action>` (wiki.js entityAddCard), and the
+  // composer wires those verbatim — `monsters.forest_poring_2.walk` is
+  // Sprigling's footstep. Without this they came back through the generic
+  // path as unscoped cards filed under "World" on the Sound Effects page, so
+  // the maintainer could bind a sound to a creature and then never find it
+  // again: "I have bound sound to Sprigling, can't unbind in the UI".
+  // Only a THREE-part id whose middle segment is a real entity of that domain
+  // qualifies — `item.drop` and `combat.monster_die` are two parts and must
+  // stay generic, and an id naming an entity that no longer exists stays
+  // generic too rather than scoping itself onto a page that isn't there.
+  for (const e of events) {
+    if (e.scope) continue;
+    const [dom, id, ...rest] = e.id.split(".");
+    if (!rest.length || !entityIds[dom]?.has(id)) continue;
+    const action = rest.join(".");
+    e.scope = { domain: dom, id };
+    e.name = titleCase(action.replace(/[._]/g, " "));
+    e.group = GROUPS[dom] ?? "World";
+  }
   for (const e of events) if (!("scope" in e)) e.scope = null;
   for (const e of events) if (!("rotates" in e)) e.rotates = false;
+  // A creature's page should show what that creature SOUNDS LIKE. These
+  // events are fired BY a monster but are not scoped to one — the engine has
+  // no per-monster routing yet, the way heroes got `player.die@<uid>` — so
+  // they are shared by every creature and the card has to say so, or
+  // unbinding on a mammoth's page would silently change every monster in the
+  // game (maintainer 2026-08-06: "I can't see already mapped sound effects on
+  // monsters … How do I unbind individual sounds like I can do on the Player
+  // page?"). Verified against the CALL SITES, not the names: monster_die and
+  // both cross events fire off a monster's death (WorldScene 3188/3245/3294);
+  // combat.hit_taken is the PLAYER being hurt (4329) and combat.kick/punch are
+  // the player's own swings, so none of those three belong here.
+  const SHARED_WITH = {
+    "combat.monster_die": "monsters",
+    "combat.cross_on": "monsters",
+    "combat.cross_off": "monsters",
+  };
+  for (const e of events) e.sharedWith = e.scope ? null : SHARED_WITH[e.id] ?? null;
   // EVERY ASSIGNMENT MUST HAVE LANDED. This is the check that would have
   // caught the array change on the build that shipped it, instead of the
   // maintainer finding a page full of "no sound yet" over work he had done.
@@ -1598,7 +1651,11 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 }
 const world = buildWorldUsage();
 markSoundUsage(sounds);
-const sfx = buildSfx(sounds);
+const sfx = buildSfx(sounds, {
+  monsters: new Set(monsters.map((m) => m.id)),
+  characters: new Set(characters.map((c) => c.id)),
+  objects: new Set(objects.map((o) => o.id)),
+});
 markMusicUsage(music);
 const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
 // Both directions of "who drops what", precomputed from the SEEDED tuning so
