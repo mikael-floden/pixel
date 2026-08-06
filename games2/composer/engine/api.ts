@@ -201,7 +201,6 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   // sound for a voice he has not chosen. He could not pick one: the wiki puts
   // only Jump and Fall on the per-hero rows, so Die has a single shared card.
   // Asked them for a Die row per hero (coordination/games-audio.json).
-  "player.die@default_girl": [{ sound: "composer/die_voice", take: "die_voice__take06" }],
   // REPLACES monster_die_crumble rather than joining it, and that is a
   // judgement — flag it if it is wrong. Several assignments on one event
   // normally ADD (see the list note above), but crumble was picked at 05:57,
@@ -231,6 +230,15 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   // FOUR candidates inside one minute — "a group with several sounds"
   // (2026-08-06) delivered as an assignment rather than as a set. All four are
   // POOL files, which is why take lookup now searches the pool too.
+  // HIS DEATH CRY FOR THE BOY — the assignment the per-voice `@<uid>` spelling
+  // was added for. The GIRL has none right now: he unbound die_voice from her
+  // on 2026-08-06 (feedback/bindings.json), so she dies silently until he
+  // picks from the forty new die_girl_* / die_boy_* styles.
+  "player.die@default_boy": [{ sound: "composer/die_voice_boy", take: "die_voice_boy__take06" }],
+  // First per-monster assignments. The id is `monsters.<kind>.<action>`, built
+  // from data in WorldScene rather than written as a literal anywhere.
+  "monsters.forest_poring_2.walk": [{ sound: "composer/mon_forest_poring_walk", take: "mon_forest_poring_walk__take01" }],
+  "monsters.forest_poring_2.attack": [{ sound: "composer/mon_lava_poring_attack", take: "mon_lava_poring_attack__take01" }],
   "weather.thunder": [
     { sound: "composer/thunder", take: "thunder__cand07" },
     { sound: "composer/thunder", take: "thunder__cand08" },

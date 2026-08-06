@@ -1,44 +1,6 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T07:40:25.519Z",
-  "requests": {
-    "player.die@default_boy/msh7bixu": {
-      "event": "player.die@default_boy",
-      "sound": "composer/die_voice_boy",
-      "take": "composer/foley/die_voice_boy/die_voice_boy__take06.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T07:35:35.586Z"
-    },
-    "monsters.forest_poring_2.walk/msh7f8ei": {
-      "event": "monsters.forest_poring_2.walk",
-      "scope": {
-        "domain": "monsters",
-        "id": "forest_poring_2"
-      },
-      "action": "walk",
-      "sound": "composer/mon_forest_poring_walk",
-      "take": "composer/foley/mon_forest_poring_walk/mon_forest_poring_walk__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T07:38:28.554Z"
-    },
-    "monsters.forest_poring_2.attack/msh7hprf": {
-      "event": "monsters.forest_poring_2.attack",
-      "scope": {
-        "domain": "monsters",
-        "id": "forest_poring_2"
-      },
-      "action": "attack",
-      "sound": "composer/mon_lava_poring_attack",
-      "take": "composer/foley/mon_lava_poring_attack/mon_lava_poring_attack__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T07:40:24.364Z"
-    }
-  }
+  "updated_at": "2026-08-06T12:10:00.000Z",
+  "requests": {}
 }

@@ -162,13 +162,21 @@ for (const n of REQUIRED_APPROVED) {
 // the entity and its animation states — but nothing else would notice if the
 // emission were refactored away, so check the call shape directly.
 const scene = readFileSync(join(ROOT, "client", "src", "scenes", "WorldScene.ts"), "utf8");
+// Set only when the emission is verified present, so the "every declared event
+// is triggered" check below can accept `monsters.<kind>.<action>` ids on the
+// strength of THIS check rather than assuming them safe.
+let monsterStatesFire = false;
 if (!/gameAudio\.event\(`monsters\.\$\{[^`]*\}\.\$\{?\w+\}?`/.test(scene))
   fail("the per-monster `monsters.<kind>.<action>` emission is gone from WorldScene");
 else {
   const acts = ["attack", "angry", "walk", "idle"].filter((a) => scene.includes(`fire("${a}")`));
   if (acts.length !== 4) fail(`monsterSfx fires ${acts.length}/4 states (${acts.join(", ")}) — the wiki card can only assign what is emitted`);
-  else console.log(`  per-monster states emitted: monsters.<kind>.{${acts.join(",")}}`);
+  else { monsterStatesFire = true; console.log(`  per-monster states emitted: monsters.<kind>.{${acts.join(",")}}`); }
 }
+// The ONE dynamic family: built from the roster at runtime, so it can never
+// appear in the literal scan. Triggered iff the shape check above passed.
+const MONSTER_EVENT = /^monsters\.[a-z0-9_]+\.(idle|walk|angry|attack)$/;
+const isTriggered = (n) => emitted.has(n) || (monsterStatesFire && MONSTER_EVENT.test(n));
 
 // ---- nothing dangling: removed names gone from bindings AND from source ---
 const bindingsJson = JSON.parse(readFileSync(join(ROOT, "..", "sounds", "bindings.json"), "utf8"));
@@ -200,7 +208,7 @@ for (const e of bindingsJson.events ?? []) {
   for (const e of bindingsJson.events ?? []) note(e.event, "sounds/bindings.json");
   for (const n of eventFoley) note(n, "EVENT_FOLEY");
   for (const n of assigned) note(n.split("@")[0], "EVENT_ASSIGNMENTS");
-  const orphans = [...knownNames].filter(([n]) => !emitted.has(n));
+  const orphans = [...knownNames].filter(([n]) => !isTriggered(n));
   if (orphans.length)
     for (const [n, where] of orphans)
       fail(`event "${n}" is declared in ${[...new Set(where)].join(" + ")} but NOTHING TRIGGERS IT — an event is something the game fires; delete it or fire it`);
@@ -212,7 +220,7 @@ for (const e of bindingsJson.events ?? []) {
 // (opts.voice), not part of the emitted name.
 for (const n of assigned) {
   const base = n.split("@")[0];
-  if (!emitted.has(base)) console.log(`NOTE  assignment for "${n}" but nothing emits it (dead wiring?)`);
+  if (!isTriggered(base)) console.log(`NOTE  assignment for "${n}" but nothing emits it (dead wiring?)`);
 }
 
 console.log(failed ? `\nverify-quiet: ${failed} FAILURE(S)` : "\nverify-quiet: ALL OK");

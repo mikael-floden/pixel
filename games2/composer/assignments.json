@@ -32,12 +32,6 @@
         "sound": "hit_hurt"
       }
     ],
-    "player.die@default_girl": [
-      {
-        "sound": "composer/die_voice",
-        "take": "die_voice__take06"
-      }
-    ],
     "combat.cross_on": [
       {
         "sound": "composer/cross_on_peat",
@@ -78,6 +72,24 @@
       {
         "sound": "composer/mon_water_poring_attack",
         "take": "mon_water_poring_attack__take01"
+      }
+    ],
+    "player.die@default_boy": [
+      {
+        "sound": "composer/die_voice_boy",
+        "take": "die_voice_boy__take06"
+      }
+    ],
+    "monsters.forest_poring_2.walk": [
+      {
+        "sound": "composer/mon_forest_poring_walk",
+        "take": "mon_forest_poring_walk__take01"
+      }
+    ],
+    "monsters.forest_poring_2.attack": [
+      {
+        "sound": "composer/mon_lava_poring_attack",
+        "take": "mon_lava_poring_attack__take01"
       }
     ],
     "weather.thunder": [
