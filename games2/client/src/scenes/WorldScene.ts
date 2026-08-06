@@ -25,6 +25,12 @@ import {
   startTrip,
   stepAutopilot,
   AutopilotTrip,
+  findIndoorSpace,
+  roofAbove,
+  type IndoorSpace,
+  INDOOR_DEPTH,
+  INDOOR_WALL_RATIO,
+  MIN_ROOM_CELLS,
   surfaceAtWorld,
   levelAtWorld,
   integrateFall,
@@ -525,6 +531,93 @@ const DIR_STICK_MS = 160;
 // the residual previously misread as edge-alpha inset).
 const TILE_DIAMOND_TOP = 5;
 
+// ===========================================================================
+// INDOORS — the renderer half of shared/src/indoor.ts
+// ===========================================================================
+// The module answers "am I under a roof, and is that a ROOM?"; everything
+// below is what the picture then does about it (maintainer 2026-08-06):
+//
+//   "we should automatically detect when a player walks into a house/cave…
+//    The game does this by removing the roof and everything over the roof. The
+//    game also renders everything outside the house (not under the roof)
+//    black, but we have to still be able to show the walls facing the inside
+//    of the house/cave, but only the part that faces the inside. Not the
+//    entire tile."
+//   "The lighting indoors is always dark as during the night, but with a less
+//    'blue moonlight ambient' tone. It's up to each individual room to place
+//    lights."
+//   "It's also important to re-enable the players torch even if it's day."
+//
+// THE OUTSIDE IS A VOID, NOT A BLACK TILE. "Draw the outside black" is
+// implemented as "draw nothing and make the ground RT's backdrop black",
+// because a black TILE is strictly worse: the ground RT paints in painter
+// order (v = col+row ascending), so the NEAR walls — the ones between the
+// camera and the room — are drawn AFTER the interior and a black copy of them
+// covers the whole room. Measured on the_island2's house: its south/east walls
+// are 6 levels = 96px of art standing one cell down-screen of a 3-row-deep
+// interior, i.e. they hide all of it. Skipping them is what makes the room
+// visible at all, and against a black backdrop it IS "rendered black".
+// The wall cells the maintainer wants kept are exactly `wallLeft`/`wallRight`
+// — the FAR (up-screen) walls whose drawn face looks in — and they draw that
+// ONE 32px face half and no tile top.
+//
+// The per-cell verdict is a BITMASK, one entry per cell of the current space,
+// rebuilt only when the space changes (see refreshIndoorMask). It is also the
+// hook the ray-traced doorway daylight will want: keep the mask a plain
+// bitfield and add a PARALLEL Map<cellIndex, number> of light, rather than
+// turning these into objects — the mask is walked once per cell per ground
+// redraw and per occluder rebuild.
+const IN_ROOF = 1; // under the same roof as me: interior floor
+const IN_WALL_L = 2; // its LEFT  (SW, toward row+1) drawn face looks into the room
+const IN_WALL_R = 4; // its RIGHT (SE, toward col+1) drawn face looks into the room
+
+/** Sub-frame names for the two screen-space halves of a 64×64 tile. The split
+ * is x = 32 — MAP_GEOMETRY.dx, and the same axis tiles2' own emission pass
+ * uses to call a glow pixel "sw" vs "se" (`x < 32`). A rectangle CANNOT
+ * isolate the skirt from the top diamond (that boundary is a diagonal running
+ * (0,~20) → (32,~33) → (63,~20) in the measured art), and it does not need to:
+ * split by x only, keep all 64 rows, and painter order does the rest — each
+ * face tile's top is covered by the tile 16px above it. */
+const HALF_L = "ml-half-L";
+const HALF_R = "ml-half-R";
+
+/** Indoor ambient — "always dark as during the night, but with a less blue
+ * moonlight ambient tone" (maintainer). Derived from TIME_PHASES[0] Night
+ * [0.075, 0.09, 0.14] by holding LUMINANCE and rotating the hue about green:
+ *
+ *   Rec.709 luma  night 0.09042 → indoor 0.09016   (−0.3%: equally dark)
+ *   B ÷ R         night 1.867   → indoor 1.209     (76% of the blue tilt gone)
+ *   chroma        night 0.639   → indoor 0.193     (30% of night's saturation)
+ *
+ * Equal luminance is the load-bearing half: stepping inside at midnight must be
+ * a HUE change, not a brightness pop. G is left at night's own 0.090 and only
+ * R/B move, which is why the luma barely shifts (G carries 71% of Rec.709).
+ * The residual +21% blue is deliberate — unlit stone and wood are cool; going
+ * fully neutral reads as flat grey and going warm reads as if a fire were
+ * already lit, which would pre-empt "it's up to each individual room to place
+ * lights". TUNE ALONG [0.09 − k·0.015, 0.090, 0.09 + k·0.050]: k=1 is Night
+ * itself, k=0.28 is this. Every point on that line holds luma within 1%. */
+const INDOOR_AMBIENT: [number, number, number] = [0.086, 0.09, 0.104];
+
+/** Time constant of the indoor LIGHT cross-fade (seconds). The geometry snaps
+ * — a half-faded roof is just a wrong roof — but the grade must not, or a
+ * doorstep reads as a camera cut. Same exponential-roll idiom as the cloud /
+ * mist / aurora eases (frame-rate independent, and retarget-safe: turn round in
+ * the doorway and it simply reverses from wherever it is). 0.35s is ~93% of the
+ * way in 1s — an eye adapting, and finished before you have walked one cell in.
+ * The weather roll's 4s is far too slow for a doorway. */
+const INDOOR_TAU = 0.35;
+
+/** Minimum wall-clock between APPLIED indoor transitions. Layers 1 and 2 of the
+ * hysteresis (the relaxed leave bar and the space identity, see
+ * `indoorVerdict`) cannot smooth the last case: a player standing astride a
+ * doorway steps between two cells that differ by ROOF MEMBERSHIP, and no depth
+ * bar reaches that. A deferred verdict is never discarded — it is re-checked
+ * every recompute and lands the moment this expires — so this can only DELAY a
+ * flip, never lose one. It matters because a flip rebuilds the whole ground RT
+ * AND ~3,900 occluder sprites. */
+const INDOOR_DWELL_MS = 250;
+
 // A roaming MONSTER (the poring family) rendered from the authoritative
 // server-synced Monster schema. Much lighter than an Avatar: no swim/torch/
 // footstep/label machinery — porings just hop (walk == jump), so we ease the
@@ -760,6 +853,39 @@ export class WorldScene extends Phaser.Scene {
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
+  // ---- INDOOR MODE (see the constants block above) ------------------------
+  // ONE state, the LOCAL player's. Every consumer the renderer has is a
+  // singleton — one ground RenderTexture, one occluder set, one ambient
+  // uniform, one "the outside is black" decision about MY room — so a
+  // per-avatar boolean would have nothing to drive. The one place per-body
+  // really differs is the torch day-gate, and that is answered by an O(1)
+  // `indoorContains` lookup into MY space's roof set (no second flood fill).
+  private indoorSpace: IndoorSpace | null = null;
+  private indoorInside = false; // the APPLIED verdict the renderer obeys
+  private indoorPending = false; // verdict waiting on the dwell timer
+  private indoorKey = -1; // canonical space id = min(roof); -1 = none
+  private indoorFlipAt = -Infinity; // time.now of the last applied transition
+  private indoorMix = 0; // 0..1 eased light blend toward INDOOR_AMBIENT
+  /** Per-cell render verdict for the current space: cellIndex → IN_ROOF |
+   * IN_WALL_L | IN_WALL_R. A cell that is ABSENT is outside and draws nothing.
+   * Rebuilt only when the space (or its ceiling) changes. */
+  private indoorMask: Map<number, number> | null = null;
+  private indoorMaskSig = ""; // what indoorMask was built for (space key + ceiling)
+  /** The room's CEILING level — the slab's UNDERSIDE over the player's own
+   * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
+   * differ by the slab's thickness and the gap is the whole wall height:
+   * measured on the_island2, the house is level 6 / thickness 0 (ceiling 6 ==
+   * roofLevel), but every one of the cave's 12 decks is level 24-40 with
+   * thickness 16-32 and they ALL have deckBot 8 — a uniform 8-level (128px)
+   * void. Cutting the cave's walls at roofLevel 24 would leave 16 levels of
+   * rock standing above a ceiling that is no longer drawn. */
+  private indoorCut = 0;
+  private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
+  private indoorAtRow = NaN;
+  private indoorAtElev = NaN;
+  private indoorDirty = true; // world load / teleport: force the next recompute
+  private indoorFlips = 0; // QA: applied transitions (hysteresis is assertable)
+  private indoorComputes = 0; // QA: findIndoorSpace calls (never per frame)
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -936,6 +1062,17 @@ export class WorldScene extends Phaser.Scene {
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
+      // New grid ⇒ every cached indoor verdict is about a world that no longer
+      // exists. Start outdoors and force the first recompute.
+      this.indoorSpace = null;
+      this.indoorMask = null;
+      this.indoorMaskSig = "";
+      this.indoorInside = false;
+      this.indoorPending = false;
+      this.indoorKey = -1;
+      this.indoorMix = 0;
+      this.indoorAtCol = NaN;
+      this.indoorDirty = true;
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -1369,6 +1506,51 @@ export class WorldScene extends Phaser.Scene {
           col,
           row,
           level: w?.rows[ri]?.[ci]?.l ?? 0,
+        };
+      },
+      /** INDOOR MODE — the whole verdict, for gate assertions.
+       *
+       * `indoor` is what the renderer obeys; `pending` differs only while the
+       * dwell timer holds a flip. The raw module fields are exposed so a gate
+       * can assert WHY a verdict came out the way it did (a space that failed
+       * on `capped` and one that failed on `wallRatio` are very different
+       * bugs), and the two COUNTERS make the two performance/robustness claims
+       * assertable rather than merely asserted: stand still for 200 frames and
+       * `computes` must not move (the fill is not per-frame); walk a doorway
+       * back and forth ten times and `flips` must not track your steps (the
+       * hysteresis holds).
+       *
+       * `elev` is the RESOLVED SURFACE LEVEL fed to the module; `renderedLvl`
+       * is the WRONG basis (`elev px / lh`) printed beside it, because the two
+       * disagree exactly when it matters — while swimming and mid-fall. */
+      indoor: () => {
+        const s = this.indoorSpace;
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        return {
+          indoor: this.indoorInside,
+          roofLevel: s?.roofLevel ?? null,
+          depth: s ? s.depth : null,
+          wallRatio: s ? +s.wallRatio.toFixed(4) : null,
+          roof: s?.roof.size ?? 0,
+          entrances: s?.entrances.size ?? 0,
+          capped: s?.capped ?? false,
+          // Renderer-side state (what the mask is doing about that verdict).
+          pending: this.indoorPending,
+          mix: +this.indoorMix.toFixed(3),
+          ceiling: this.indoorCut, // deckBot — the CUT, not roofLevel
+          key: this.indoorKey,
+          mask: this.indoorMask?.size ?? 0,
+          wallLeft: s?.wallLeft.size ?? 0,
+          wallRight: s?.wallRight.size ?? 0,
+          fringe: s?.fringe.size ?? 0,
+          cell: [this.indoorAtCol, this.indoorAtRow],
+          elev: this.indoorAtElev,
+          renderedLvl: av ? +(av.elev / MAP_GEOMETRY.lh).toFixed(2) : null,
+          swimming: av?.swimming ?? null,
+          flips: this.indoorFlips,
+          computes: this.indoorComputes,
+          sinceFlipMs: Number.isFinite(this.indoorFlipAt) ? Math.round(this.time.now - this.indoorFlipAt) : null,
+          torchF: +this.curTorchF.toFixed(3),
         };
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
@@ -3273,6 +3455,13 @@ export class WorldScene extends Phaser.Scene {
     // flash transparent FASTER AND FASTER until gone (maintainer). Timed
     // from the witnessed birth; the server's sweep is authoritative.
     for (const rec of this.drops.values()) {
+      // Loot lying outside my room goes black with the rest of the outside.
+      // `wx/wy` is the FLAT world position (img.x/y are screen coords, lifted by
+      // elevation and by the toss tween); and the art only shows once its
+      // texture has landed — a drop still on "__MISSING" must stay hidden.
+      const out = this.indoorHides(rec.wx, rec.wy) || rec.img.texture.key === "__MISSING";
+      rec.img.setVisible(!out);
+      rec.shadow.setVisible(!out);
       const left = DROP_TTL_MS - (now - rec.bornAt);
       if (left <= DROP_FLASH_MS) {
         const t = Math.max(0, 1 - left / DROP_FLASH_MS); // 0 → 1 over the final stretch
@@ -3754,7 +3943,8 @@ export class WorldScene extends Phaser.Scene {
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
-        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
+        !this.indoorHides(npc.fx, npc.fy); // a street outside my room is "outside"
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
@@ -4418,6 +4608,10 @@ export class WorldScene extends Phaser.Scene {
           this.clearMoveTarget();
           this.dropHold();
         }
+        // …and the indoor verdict: a snap across the map must not spend 250ms
+        // of dwell rendering the room you left, nor cross-fade the grade over
+        // what is really a cut.
+        if (id === myId) this.indoorSnap();
       } else {
         const px0 = av.lx;
         const py0 = av.lyFlat;
@@ -4527,7 +4721,14 @@ export class WorldScene extends Phaser.Scene {
       av.surfLevel = surfLevel; // for lighting: swimmers sample HERE, not the sunk elev
       this.resolveBodyDepth(av, surfLevel);
       this.placeBodyShadow(av, targetElev, hop, 34, 14, 9, 4);
-      av.shadow.setVisible(!av.swimming);
+      // INDOORS a REMOTE player standing outside my room goes black with the
+      // rest of the outside. I am never hidden from myself (`indoorHides` is
+      // false for anyone in the roof set, and I define the set). The LIT COPY
+      // needs no handling — syncLitCopy already stands down on `!sprite.visible`.
+      const away = id !== myId && this.indoorHides(av.fx, av.fy);
+      av.sprite.setVisible(!away);
+      av.label.setVisible(!away);
+      av.shadow.setVisible(!away && !av.swimming);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -4552,7 +4753,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18);
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -4597,6 +4798,15 @@ export class WorldScene extends Phaser.Scene {
       });
     });
 
+    // INDOORS — run it HERE, not at the top of update(): this is the earliest
+    // point at which the local player's fx/fy AND surfLevel are all fresh (the
+    // loop above writes surfLevel), and it is still upstream of the torch loop
+    // and the ambient blend, so the lighting reacts in the SAME frame. The
+    // ground RT + occluders ran at the top of the frame; on a transition
+    // commitIndoor re-runs them immediately rather than showing one frame of
+    // stale roof (both are self-gating no-ops the rest of the time).
+    this.updateIndoor();
+
     // Roaming monsters: authoritative server positions, eased exactly like a
     // remote player (rate 12, snap on a big jump). Server owns the movement —
     // the client only interpolates + renders the hop.
@@ -4628,7 +4838,8 @@ export class WorldScene extends Phaser.Scene {
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB;
+          ay - sp.displayHeight <= vB &&
+          !this.indoorHides(mv.fx, mv.fy); // outside my room is outside, full stop
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -4801,6 +5012,18 @@ export class WorldScene extends Phaser.Scene {
 
     this.updateChaseCam(delta);
 
+    // INDOORS: the spawn bonfire is a world object like any other, so if it is
+    // not in MY room it is part of the black outside — its ART goes AND its
+    // light goes. the_island2 puts it ~5 cells from the house door, well inside
+    // its radius-7 pool, so leaving the light alone pours firelight through the
+    // wall onto the floor. (Its lit copy follows campfireSprite.visible below.)
+    // NB campfire.col/row ALREADY carry the +0.5 cell-centre offset (see
+    // placeCampfire), so multiplying by CELL_WU lands on the cell's centre —
+    // adding another half-cell would floor into the NEXT cell.
+    const fireOut = !!this.campfire && this.indoorHides(this.campfire.col * CELL_WU, this.campfire.row * CELL_WU);
+    this.campfireSprite?.setVisible(this.fireOn && !fireOut);
+    const fireLit = !!this.campfire && this.fireOn && !fireOut;
+
     // Night lighting (always on): per-pixel point lights with heightmap
     // line-of-sight when WebGL is available; the multiply grade otherwise.
     const shaderNight = !!this.night;
@@ -4812,7 +5035,7 @@ export class WorldScene extends Phaser.Scene {
       // verification place a light at an exact grid position, since walking
       // there is dt-clamped to a crawl on slow headless clients.
       if (this.probeLight) sl.push(this.probeLight);
-      if (this.campfire && this.fireOn) {
+      if (fireLit && this.campfire) {
         const c = this.campfire;
         // Overbright core: the shader clamps the multiplier at 1.25, so values
         // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
@@ -4821,9 +5044,19 @@ export class WorldScene extends Phaser.Scene {
       }
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
-      const tf = this.curTorchF;
       for (const [id, a] of this.avatars.entries()) {
-        if (tf <= 0.01) break; // full Day: torches have no impact
+        // The day gate is now PER BODY: "re-enable the player's torch even if
+        // it's day outside" (maintainer) — but only for bodies sharing MY room,
+        // which is an O(1) Set lookup into the space I already have, not a
+        // second flood fill. Everyone else keeps the global fade.
+        // `continue`, NOT `break`: the old gate broke the whole loop because
+        // curTorchF was loop-INVARIANT. Per-body, one daylit outdoor avatar
+        // early in the Map's join order would silently cancel every indoor
+        // torch behind it. max() is the right combiner — it never dims a torch
+        // daylight already allows, and it is continuous in both arguments, so
+        // the day fade and the doorway fade compose without a step.
+        const tf = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
+        if (tf <= 0.01) continue; // full Day, outdoors: torches have no impact
         if (!this.torchLit(id, myId, state)) continue;
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
@@ -4890,11 +5123,44 @@ export class WorldScene extends Phaser.Scene {
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
       if (Math.abs(this.curAurora - auroraTo) < 0.005) this.curAurora = auroraTo;
+      // INDOOR GRADE. Blend the FINISHED outdoor ambient (cloud grey + rain
+      // gloom already applied) toward INDOOR_AMBIENT, rather than mutating
+      // `curAmbient`: a storm outside has no bearing on a sealed room, mix=1
+      // lands exactly on INDOOR_AMBIENT whatever the weather is doing, and
+      // `curAmbient` stays the OUTDOOR world clock — which matters because
+      // setTimeOfDay snapshots it as `timeFromAmbient` (writing the interior
+      // grade there would ease FROM it toward the next phase and pop bright)
+      // and `__ml.timeOfDay()` / verify-timecycle read it.
+      const iF = this.indoorMix;
       const ambEff = this.curAmbient.map((v, i) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
-        return clouded * (1 - this.curPrecipDim);
+        const outdoor = clouded * (1 - this.curPrecipDim);
+        return outdoor + (INDOOR_AMBIENT[i] - outdoor) * iF;
       }) as [number, number, number];
+      // …and the SKY terms have to go with it, or the roof we just deleted
+      // stops being the only thing keeping the room dark:
+      //   uSun.w is `sunShare` — `sunF = (1-sunShare) + sunShare*sunVis` — so
+      //     zeroing it gives sunF = 1.0 exactly: no directional term, no cast
+      //     shadows, and the interior sits on INDOOR_AMBIENT at EVERY hour.
+      //     Left alone, a day interior would be 0.55x a night one, and the
+      //     maintainer's rule is "always dark as during the night". This is
+      //     also precisely the knob the future doorway daylight turns back up
+      //     (per cell, for cells with line of sight to an `entrances` cell).
+      //   cloud/aurora/mist: you cannot see the sky from inside.
+      // this.curSun itself is untouched — __ml.sunAt/sunInfo keep reporting the
+      // WORLD clock, which is what they are for.
+      const sunIn: [number, number, number, number] = [
+        this.curSun[0],
+        this.curSun[1],
+        this.curSun[2],
+        this.curSun[3] * (1 - iF),
+      ];
+      // The cel-shaded DISTANCE fog is a distance cue for open country; indoors
+      // it paints its teal/pale bands over the black void that is supposed to
+      // BE the outside. `fogScale` is a separate multiplier from `fogStrength`
+      // so the __ml.depthFog debug knob keeps owning the master value.
+      if (this.night) this.night.fogScale = 1 - iF;
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
@@ -4907,10 +5173,10 @@ export class WorldScene extends Phaser.Scene {
         sl,
         ambEff,
         this.glowStamps,
-        this.curSun,
-        this.curCloud,
-        this.curAurora,
-        this.curMist,
+        sunIn,
+        this.curCloud * (1 - iF),
+        this.curAurora * (1 - iF),
+        this.curMist * (1 - iF),
         playerZ,
         playerCol,
         playerRow,
@@ -4918,7 +5184,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const lights: LightSource[] = [];
-    if (this.campfire && this.fireOn) {
+    if (fireLit && this.campfire) {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
@@ -4938,7 +5204,9 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!shaderNight) {
       for (const [id, a] of this.avatars.entries()) {
-        if (this.curTorchF <= 0.5) break; // canvas fallback: no per-light tint
+        // Same per-body gate as the shader path, same `continue`-not-`break`
+        // reason (the scalar is no longer loop-invariant).
+        if (Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0) <= 0.5) continue;
         if (!this.torchLit(id, myId, this.room?.state as any)) continue;
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
@@ -4981,10 +5249,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Is a player's torch lit? Mine reads the instant local mirror; everyone
-   * else reads their synced player state (default lit). NOBODY'S torch burns
-   * during Day (maintainer: torches are an evening/night/morning feature) —
-   * the switch keeps the preference, the flame just waits for the light to
-   * fade. */
+   * else reads their synced player state (default lit). This is the PREFERENCE
+   * only and has never held a day gate — that lives at the two consumption
+   * sites, which scale by `curTorchF` (0 at full Day: torches are an
+   * evening/night/morning feature, the switch keeps the preference and the
+   * flame waits for the light to fade). Since 2026-08-06 that gate is per body
+   * and INDOORS overrides it: "it's important to re-enable the players torch
+   * even if it's day outside" (maintainer). */
   private torchLit(id: string, myId: string, state: any): boolean {
     if (id === myId) return this.torchOn;
     return state?.players?.get?.(id)?.torch ?? true;
@@ -5150,7 +5421,7 @@ export class WorldScene extends Phaser.Scene {
           .setScale(CAMPFIRE_SCALE);
       }
       this.campfireLit
-        .setVisible(on && this.fireOn)
+        .setVisible(on && this.fireOn && this.campfireSprite.visible)
         .setFrame(this.campfireSprite.frame.name)
         .setPosition(this.campfireSprite.x, this.campfireSprite.y)
         .setDepth(litDepth(this.campfireSprite.depth));
@@ -6602,6 +6873,295 @@ export class WorldScene extends Phaser.Scene {
     return fp && this.textures.exists(pathTileKey(fp)) ? pathTileKey(fp) : topKey;
   }
 
+  // =========================================================================
+  // INDOOR STATE MACHINE
+  // =========================================================================
+
+  /**
+   * Re-derive the module's own room rule at an arbitrary DEPTH bar.
+   *
+   * Identical to `space.indoor` when `bar === INDOOR_DEPTH` (indoor.ts) — that
+   * equality is the whole point: ENTER uses the shipped rule untouched, and
+   * only LEAVE relaxes. `IndoorOptions` has no depth knob, so the re-derivation
+   * has to live here.
+   *
+   * HYSTERESIS LAYER 1. The module's own note says `depth` is a property of the
+   * QUERIED CELL, not of the space, so `indoor` can flip while you walk INSIDE
+   * one cave and a player straddling the boundary flips it every step. Enter at
+   * INDOOR_DEPTH (4), leave at 3. The relaxed bar is safe against bridges
+   * because ENTERING still needs 4, which no shipped bridge cell reaches (the
+   * measured maxima are 2 / 2 / 3) — so a bridge can never be entered, and the
+   * relaxed bar can only ever apply inside a space you are already in. Only the
+   * DEPTH branch needs it: `wallRatio` is a property of the whole space and
+   * cannot flicker per step, which is why the house's doorway cell (depth 1,
+   * ratio 0.9286) never dithers.
+   */
+  private indoorVerdict(space: IndoorSpace, bar: number): boolean {
+    return (
+      !space.capped &&
+      space.roof.size >= MIN_ROOM_CELLS &&
+      (space.wallRatio > INDOOR_WALL_RATIO || space.depth >= bar)
+    );
+  }
+
+  /**
+   * THE INDOOR STATE MACHINE — called ONCE per frame from update(), right after
+   * the avatar loop writes `av.surfLevel` and BEFORE the torch loop and the
+   * `ambEff` blend consume the result, so the lighting reacts in the SAME
+   * frame. Costs one Math.floor and three comparisons while nothing changes.
+   *
+   * THE ELEVATION IS `av.surfLevel`, NOT `av.elev / lh`. findIndoorSpace
+   * ENFORCES that `elev` is a RESOLVED SURFACE LEVEL (|grid.level[i] − elev| <=
+   * 1e-6) and returns null otherwise, and `av.elev` is PIXELS eased by
+   * integrateFall. Two cases where the rendered basis is not merely imprecise
+   * but wrong: while SWIMMING the drawn body is deliberately sunk `swimDrop` px
+   * below the pool surface, so elev/lh is a fraction strictly under
+   * grid.level[i] and the precondition rejects it — the maintainer's
+   * swim-into-a-water-cave case could never fire; and mid-FALL it is a
+   * non-surface float, so the verdict would blink outdoors for the whole drop.
+   * `surfLevel` is exactly what `resolveElevAt` returned (or the authoritative
+   * `player.elev` for a remote), i.e. grid.level[i] or grid.deck[i].
+   */
+  private updateIndoor() {
+    const now = this.time.now;
+    const g = this.terrain;
+    const av = this.avatars.get(this.room?.sessionId ?? "");
+    if (!g || !av || av.surfLevel === undefined) {
+      // No grid / no body yet: outdoors, and forget the cache so the next real
+      // frame recomputes instead of trusting a stale space.
+      this.indoorAtCol = NaN;
+      this.setIndoor(false, null, -1, now, true);
+      this.easeIndoorMix();
+      return;
+    }
+    const col = Math.floor(av.fx / CELL_WU);
+    const row = Math.floor(av.fy / CELL_WU);
+    const elev = av.surfLevel;
+    if (!this.indoorDirty && col === this.indoorAtCol && row === this.indoorAtRow && elev === this.indoorAtElev) {
+      // Nothing that can change the answer has changed. Still service the dwell
+      // timer — a verdict deferred on the doorstep must land even if you then
+      // stand perfectly still.
+      this.applyPendingIndoor(now);
+      this.easeIndoorMix();
+      return;
+    }
+    this.indoorAtCol = col;
+    this.indoorAtRow = row;
+    this.indoorAtElev = elev;
+    this.indoorDirty = false;
+
+    // FAST PATH: O(1), zero allocation. findIndoorSpace allocates a
+    // Uint8Array(w*h) + an Int32Array(w*h) — ~307 KB on the_island2's 248×248 —
+    // and a walking body crosses a cell several times a second, so it must
+    // never run under open sky. `roofAbove` is the same test findIndoorSpace
+    // opens with, so this can only skip calls that would have returned null.
+    if (roofAbove(g, col, row, elev) === null) {
+      this.setIndoor(false, null, -1, now, false);
+      this.easeIndoorMix();
+      return;
+    }
+    this.indoorComputes++;
+    const space = findIndoorSpace(g, col, row, elev);
+    if (!space) {
+      // The precondition rejected us (an elev that is not one of this cell's
+      // resolved surfaces). Fail OUTDOORS exactly as the module does: a wrong
+      // room hides the map, a missing one does not.
+      this.setIndoor(false, null, -1, now, false);
+      this.easeIndoorMix();
+      return;
+    }
+    // HYSTERESIS LAYER 2 — space identity. min(roof) is canonical for a
+    // connected component whatever cell seeded the fill, so "am I still in the
+    // same room?" is exact, and the relaxed LEAVE bar can apply inside the
+    // space we entered without also relaxing the ENTER bar for the next one.
+    let key = Infinity;
+    for (const i of space.roof) if (i < key) key = i;
+    const sameSpace = this.indoorInside && key === this.indoorKey;
+    this.setIndoor(this.indoorVerdict(space, sameSpace ? INDOOR_DEPTH - 1 : INDOOR_DEPTH), space, key, now, false);
+    this.easeIndoorMix();
+  }
+
+  /** Record a verdict, gated by the dwell timer (HYSTERESIS LAYER 3). */
+  private setIndoor(inside: boolean, space: IndoorSpace | null, key: number, now: number, force: boolean) {
+    this.indoorPending = inside;
+    const flip = inside !== this.indoorInside;
+    const held = flip && !force && now - this.indoorFlipAt < INDOOR_DWELL_MS;
+    // A held LEAVE must KEEP the room it is still drawing. The mask, the torch
+    // gate and the outside-body cull all read `indoorSpace`, so dropping it to
+    // null the moment the raw verdict says "outside" would put the torches out
+    // and bring the whole village back for a quarter of a second while the
+    // ground RT still showed the interior. A held ENTER has the opposite need —
+    // nothing is drawn from it yet, and the space must be remembered for when
+    // the timer expires and applyPendingIndoor lands it.
+    if (!held || inside) {
+      this.indoorSpace = space;
+      this.indoorKey = key;
+    }
+    if (held) return; // applyPendingIndoor lands it
+    if (!flip) {
+      // Same verdict, possibly a DIFFERENT room — a door between two spaces, or
+      // a cave whose ceiling steps to another height. The mask has to follow,
+      // and if it really changed the two caches are now stale even though
+      // nothing "flipped": repaint them exactly as commitIndoor would.
+      if (inside && this.refreshIndoorMask()) this.repaintWorld();
+      return;
+    }
+    this.commitIndoor(inside, now);
+  }
+
+  /** Land a verdict the dwell timer deferred. */
+  private applyPendingIndoor(now: number) {
+    if (this.indoorPending !== this.indoorInside && now - this.indoorFlipAt >= INDOOR_DWELL_MS)
+      this.commitIndoor(this.indoorPending, now);
+  }
+
+  /**
+   * THE TRANSITION. Everything that CACHES world art has to be rebuilt here.
+   *
+   * NOT rebuilt, deliberately: the light/occlusion HEIGHTMAP (the roof is still
+   * physically there and must keep blocking the sun — that is what keeps the
+   * room dark, and it is the field the future doorway raytracing marches
+   * through). Only what is DRAWN changes.
+   */
+  private commitIndoor(inside: boolean, now: number) {
+    this.indoorInside = inside;
+    this.indoorPending = inside;
+    this.indoorFlipAt = now;
+    this.indoorFlips++;
+    this.refreshIndoorMask();
+    this.repaintWorld();
+  }
+
+  /** Throw away both terrain caches and rebuild them THIS frame.
+   *
+   * Poison BOTH latches together, always. They fire on different thresholds
+   * (the ground RT on 256px of camera drift, the occluders on 96px), and
+   * flipping one without the other brings the hidden roof straight back as ~30
+   * occluder SPRITES floating over a ground RT that has already deleted it.
+   * NaN short-circuits both guards — the existing idiom (see the night shader /
+   * resize paths). Re-running them here rather than waiting for the top of the
+   * next frame costs one extra rebuild on a transition frame (a handful per
+   * session) and buys a frame with no stale roof on screen; both are
+   * self-gating no-ops the rest of the time. */
+  private repaintWorld() {
+    this.lastGround = { x: NaN, y: NaN };
+    this.lastOccl = { x: NaN, y: NaN };
+    this.redrawGround();
+    this.rebuildOccluders();
+  }
+
+  /** Rebuild the per-cell mask when the SPACE or its CEILING changed; a no-op
+   * otherwise, so walking around one room costs nothing. Returns whether it
+   * really rebuilt — the caller must repaint when it did. */
+  private refreshIndoorMask(): boolean {
+    const g = this.terrain;
+    const s = this.indoorSpace;
+    if (!this.indoorInside || !s || !g) {
+      const had = !!this.indoorMask;
+      this.indoorMask = null;
+      this.indoorMaskSig = "";
+      return had;
+    }
+    // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
+    // the player's head actually meets; roofLevel is the slab's top (see the
+    // indoorCut field note for the measured 24-vs-8 case).
+    const i = this.indoorAtRow * g.width + this.indoorAtCol;
+    const cut = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
+    const sig = `${this.indoorKey}:${cut}`;
+    if (sig === this.indoorMaskSig && this.indoorMask) return false;
+    this.indoorMaskSig = sig;
+    this.indoorCut = cut;
+    const m = new Map<number, number>();
+    for (const ci of s.roof) m.set(ci, IN_ROOF);
+    // The two wall sets OVERLAP at an INSIDE corner — a nub of wall the room
+    // wraps around on both lower sides, whose BOTH drawn faces really do look
+    // in (7 of them in the_island2's cave). OR the bits so such a cell draws
+    // both halves.
+    for (const ci of s.wallLeft) m.set(ci, (m.get(ci) ?? 0) | IN_WALL_L);
+    for (const ci of s.wallRight) m.set(ci, (m.get(ci) ?? 0) | IN_WALL_R);
+    this.indoorMask = m;
+    return true;
+  }
+
+  /** Ease the LIGHT blend toward the current geometric state. Exponential roll
+   * on the frame delta (the cloud/mist idiom), with the same `< 0.005 → snap`
+   * clamp so it settles exactly instead of asymptotically. */
+  private easeIndoorMix() {
+    const to = this.indoorInside ? 1 : 0;
+    const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
+    this.indoorMix += (to - this.indoorMix) * k;
+    if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
+  }
+
+  /** Teleport / respawn: apply the next verdict instantly. A snap across the
+   * map must not spend 250ms of dwell rendering the room you left, nor
+   * cross-fade the grade over what is really a cut. */
+  private indoorSnap() {
+    this.indoorDirty = true;
+    this.indoorFlipAt = -Infinity;
+    this.indoorMix = this.indoorInside ? 1 : 0;
+  }
+
+  /** Indoors, is this body part of "everything outside the house"? A body is
+   * not terrain, so the ground pass cannot black it out — it draws at sprite
+   * depth over the void and stands there in mid-air. This is not theoretical:
+   * the_island2's spawn bonfire and most of its 19 NPCs stand within ~6 cells of
+   * the house door, and the first cut of this feature drew the entire village
+   * hanging in the blackness while you stood inside. Culled exactly like the
+   * off-camera bodies beside it, and the LOCAL player is never hidden — they
+   * are the one standing in the room. */
+  private indoorHides(fx: number, fy: number): boolean {
+    return this.indoorInside && !this.indoorContains(fx, fy);
+  }
+
+  /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
+   * gate so a torch is re-enabled in daylight for bodies sharing my space and
+   * for nobody else (everyone outside is drawn black anyway). */
+  private indoorContains(fx: number, fy: number): boolean {
+    const g = this.terrain;
+    const s = this.indoorSpace;
+    if (!this.indoorInside || !s || !g) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= g.width || row >= g.height) return false;
+    return s.roof.has(row * g.width + col);
+  }
+
+  /**
+   * Register the two 32×64 screen-space HALVES of a tile texture as named
+   * sub-frames, so `batchDrawFrame` / `add.image(x, y, key, frame)` can draw one
+   * inward-facing wall face without the other. RenderTexture.batchDraw cannot
+   * crop; a sub-frame is the crop primitive.
+   *
+   * THE TRAP, paid for once: `Texture.add` HIJACKS `firstFrame` —
+   * `if (this.firstFrame === "__BASE") this.firstFrame = name;` — and every
+   * plain `batchDraw(key, …)` / `add.image(x, y, key)` resolves its frame
+   * through `texture.get(undefined)` → `frames[firstFrame]`. Measured live:
+   * after one `add()`, a default-frame Image on that texture reported 32×64 and
+   * the ground RT drew the LEFT HALF of every tile using it. Putting
+   * `firstFrame` back is MANDATORY, not tidiness.
+   *
+   * Only ever called on FACE textures, which are never mirrored (redrawGround
+   * flips the TOP tile for `cell.flip` and leaves `fk` alone), so the other
+   * half-frame trap — `setFlipX` mirrors WITHIN the sub-frame's own 32px box,
+   * landing the half mirrored AND on the wrong side — cannot be reached here.
+   */
+  private halfFrames(key: string): boolean {
+    const tex = this.textures.get(key);
+    if (!tex) return false;
+    if (!tex.has(HALF_L)) {
+      const src = tex.getSourceImage() as { width?: number; height?: number };
+      const w = src?.width ?? 0;
+      const h = src?.height ?? 0;
+      if (w < MAP_GEOMETRY.tile || h < 1) return false; // not a tile-sized source
+      const half = MAP_GEOMETRY.tile / 2;
+      tex.add(HALF_L, 0, 0, 0, half, h);
+      tex.add(HALF_R, 0, half, 0, half, h);
+      tex.firstFrame = "__BASE"; // MANDATORY — Texture.add stole it
+    }
+    return true;
+  }
+
   private makeGroundRT() {
     this.groundRT?.destroy();
     const rs = this.renderScale();
@@ -6642,7 +7202,14 @@ export class WorldScene extends Phaser.Scene {
     const ay = Math.round(ccy - rt.height / 2);
     rt.setPosition(ax, ay);
     rt.clear();
-    rt.fill(0x181c28, 1);
+    // INDOORS the backdrop is BLACK, and every cell outside the room simply is
+    // not drawn — that is how "renders everything outside the house black" is
+    // implemented (see the indoor constants block: a black TILE would be drawn
+    // in painter order and the NEAR walls would cover the very room we are
+    // trying to reveal). Outdoors this is the unchanged void colour.
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const cut = this.indoorCut;
+    rt.fill(mask ? 0x000000 : 0x181c28, 1);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
@@ -6666,6 +7233,10 @@ export class WorldScene extends Phaser.Scene {
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
         if (this.maps2) {
+          // INDOORS: the outside is a black void — nothing is drawn for it, so
+          // bail before the key/texture work (this is most of the window).
+          const vis = mask ? mask.get(row * world.width + col) : 0;
+          if (vis === undefined) continue;
           // maps2: the world bakes the exact TOP tile per cell; terraces are
           // built by stacking the material's plain FACE tile 16px per level
           // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
@@ -6677,6 +7248,43 @@ export class WorldScene extends Phaser.Scene {
           const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
           const faceKey = faceKeyFor(world, cell);
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
+          if (mask) {
+            // ---- INDOORS -------------------------------------------------
+            if (vis & (IN_WALL_L | IN_WALL_R)) {
+              // A FAR wall. Draw ONLY the 32px face half that looks into the
+              // room ("only the part that faces the inside. Not the entire
+              // tile"), and never the tile TOP — at/above the ceiling the top
+              // IS the ceiling. wallRight ⇒ the room is toward (col+1), which
+              // is down-RIGHT on screen ⇒ its SE face ⇒ the RIGHT half; a cell
+              // in BOTH sets is an inside corner and draws both.
+              if (this.halfFrames(fk)) {
+                const hi = Math.min(cell.l, cut);
+                for (let lvl = 0; lvl < hi; lvl++) {
+                  const y = by - lvl * lh;
+                  if (vis & IN_WALL_L) rt.batchDrawFrame(fk, HALF_L, bx, y);
+                  if (vis & IN_WALL_R) rt.batchDrawFrame(fk, HALF_R, bx + tile / 2, y);
+                }
+                // A wall SHORTER than the ceiling ends inside the room's air,
+                // so its top diamond is a real surface you look down on (a sill
+                // / ledge), not the ceiling — draw it. No shipped indoor space
+                // reaches this: the_island2's house wall is level 6 under a
+                // ceiling of 6, and its cave walls are 24-40 under a ceiling of
+                // 8. Without it such a wall would be a floating half-column.
+                if (cell.l < cut) rt.batchDraw(topKey, bx, by - cell.l * lh);
+              }
+              continue; // walls never carry a deck we would want to draw
+            }
+            // An interior floor cell. Terrain AT OR ABOVE the ceiling is
+            // "everything over the roof" and goes; in practice a roof cell's
+            // terrain never reaches it (the module's own interiorFloor caps it
+            // at elev+climb), so this is the honest rule, not a hot path.
+            const hi = Math.min(cell.l, cut - 1);
+            if (hi >= 0) {
+              for (let lvl = 0; lvl < hi; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
+              rt.batchDraw(hi === cell.l ? topKey : fk, bx, by - hi * lh);
+            }
+            continue; // AND the roof slab itself, which is the whole point
+          }
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
           rt.batchDraw(topKey, bx, by - cell.l * lh);
           // world@2 deck slab (roof / bridge span) at this cell, drawn right
@@ -6902,6 +7510,15 @@ export class WorldScene extends Phaser.Scene {
     this.occluderMeta = [];
     this.emissiveLights = [];
 
+    // ONE mask, TWO consumers — the ground RT and this pass are independent
+    // renderings of the same terrain, and deriving the verdict twice guarantees
+    // they drift. Roof art suppressed only in the RT comes straight back here
+    // as a sprite at depth `by+dy`, floating over a ground that has already
+    // deleted it. (commitIndoor poisons BOTH camera latches for the same
+    // reason — they fire on different thresholds.)
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const cut = this.indoorCut;
+
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
     const x0 = cam.worldView.x - pad;
@@ -6955,6 +7572,12 @@ export class WorldScene extends Phaser.Scene {
         if (!cell) continue;
         const s = surfaceFor(cell.t);
         if (this.maps2) {
+          // INDOORS: outside the room nothing is drawn, so nothing may be
+          // registered either — a meta record whose art was suppressed crops a
+          // body's lit copy against terrain that is not there (`coverY`), which
+          // is the exact artifact the cull work already paid for once.
+          const vis = mask ? mask.get(row * this.world.width + col) : 0;
+          if (vis === undefined) continue;
           // world@2 DECK occluder: a slab floating ABOVE its base (deck.level >
           // base level) must occlude whoever walks/swims under it, and must draw
           // on top of the ground RT so it's visible over the walls it roofs.
@@ -6962,7 +7585,13 @@ export class WorldScene extends Phaser.Scene {
           // l=0, which the terrain branch below skips). Where the deck coincides
           // with its base top (deck.level == base l — a roof lapping its own
           // walls), the terrain occluder already covers it, so skip.
-          const dk = this.deckIndex.get(row * this.world.width + col);
+          // INDOORS the slab IS the roof: every cell that got this far is under
+          // my own ceiling, so its deck is overhead by construction (the fill
+          // only enters cells with `elev < deckBot`). Skipping the block drops
+          // its meta push for free, which is what you want — kept, the deck's
+          // `top` sits far above the player, the ray test clamps them BEHIND an
+          // invisible roof and crops their lit copy at the vanished ceiling.
+          const dk = mask ? undefined : this.deckIndex.get(row * this.world.width + col);
           if (dk && dk.cell.path && dk.deck.level > cell.l) {
             const dTop0 = pathTileKey(dk.cell.path);
             if (this.textures.exists(dTop0)) {
@@ -7020,13 +7649,80 @@ export class WorldScene extends Phaser.Scene {
           const bx = this.iso.ox + u * dx;
           const by = this.iso.oy + v * dy;
           const oDepth = by + dy;
+          const half = tileSize / 2;
+          if (vis & (IN_WALL_L | IN_WALL_R)) {
+            // A FAR wall, indoors: the occluder copy must draw EXACTLY what the
+            // ground RT drew — the inward 32px face half per level below the
+            // ceiling, and no tile top. Draw the full tile here and the extra
+            // 32px would sit on top of the RT at sprite depth and undo the cut.
+            const hi = Math.min(cell.l, cut); // face levels drawn: 0 .. hi-1
+            if (hi <= 0 || !this.halfFrames(fk)) continue;
+            const L = !!(vis & IN_WALL_L);
+            const R = !!(vis & IN_WALL_R);
+            const pushHalf = (lvl: number) => {
+              const y = by - lvl * lh;
+              // Half frames + setFlipX do NOT compose (the mirror happens inside
+              // the sub-frame's own 32px box, landing the half mirrored AND on
+              // the wrong side). Safe here: `fk` is the material's plain FACE
+              // tile and faces are never flipped — only tops are.
+              if (L)
+                this.occluders.push(
+                  this.tagOccluder(this.add.image(bx, y, fk, HALF_L).setOrigin(0, 0).setDepth(oDepth), col, row),
+                );
+              if (R)
+                this.occluders.push(
+                  this.tagOccluder(this.add.image(bx + half, y, fk, HALF_R).setOrigin(0, 0).setDepth(oDepth), col, row),
+                );
+            };
+            for (let lvl = this.stackFrom(col, row, hi - 1, false); lvl < hi - 1; lvl++) {
+              if (!shows(bx, by - lvl * lh)) {
+                culled++;
+                continue;
+              }
+              pushHalf(lvl);
+            }
+            const topLvl = cell.l < cut ? cell.l : hi - 1;
+            if (columnShows(bx, by - topLvl * lh, by + tileSize)) {
+              pushHalf(hi - 1);
+              if (cell.l < cut)
+                this.occluders.push(
+                  this.tagOccluder(
+                    this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+                    col,
+                    row,
+                  ),
+                );
+            } else culled++;
+            this.occluderMeta.push({
+              col,
+              row,
+              top: topLvl, // the truncated column, not the rock's real height
+              solid: false,
+              depth: oDepth,
+              // NARROWED to the half that actually draws: a full 64px record
+              // beside an undrawn half claims a body there as covered, and
+              // `faceOverFeet` would crop it against nothing. An inside corner
+              // (both sets) draws both halves and keeps the full box.
+              x0: L ? bx : bx + half,
+              x1: R ? bx + tileSize : bx + half,
+              y0: by - topLvl * lh,
+              y1: by + tileSize,
+            });
+            continue;
+          }
+          // Interior floor (or plain outdoor terrain): truncate at the ceiling.
+          // `topL < cell.l` means the column was cut, and the surviving top is a
+          // FACE tile — the baked top diamond is the outdoor grass/rock surface
+          // and would read as a lid on a wall stump.
+          const topL = mask ? Math.min(cell.l, cut - 1) : cell.l;
+          if (topL < 0) continue;
           // Draw only the EXPOSED cliff faces (from the lowest front neighbour
           // up). The ground RT already bakes every cell's full face stack with
           // the lower front cells drawn OVER it; redrawing the covered lower
           // faces here — on top of the RT at a high depth — re-exposed them,
           // painting the front cell's ground back into a wall (the "half-tile"
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++) {
+          for (let lvl = this.stackFrom(col, row, topL, false); lvl < topL; lvl++) {
             if (!shows(bx, by - lvl * lh)) {
               culled++;
               continue;
@@ -7038,12 +7734,16 @@ export class WorldScene extends Phaser.Scene {
           // Keep the top whenever the COLUMN reaches the cull box, so every
           // meta record in range still has drawn art behind it (see
           // columnShows).
-          if (columnShows(bx, by - cell.l * lh, by + tileSize))
+          if (columnShows(bx, by - topL * lh, by + tileSize))
             this.occluders.push(
               // Occluder images CAN flip directly (setFlipX) — matches the RT's
               // mirrored top so the two layers stay pixel-aligned for flipped cells.
               this.tagOccluder(
-                this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+                this.add
+                  .image(bx, by - topL * lh, topL === cell.l ? topKey : fk)
+                  .setOrigin(0, 0)
+                  .setFlipX(topL === cell.l && !!cell.flip)
+                  .setDepth(oDepth),
                 col,
                 row,
               ),
@@ -7052,12 +7752,12 @@ export class WorldScene extends Phaser.Scene {
           this.occluderMeta.push({
             col,
             row,
-            top: cell.l, // maps2 terrain is all standable ground: visual top = level
+            top: topL, // maps2 terrain is all standable ground: visual top = level
             solid: false,
             depth: oDepth,
             x0: bx,
             x1: bx + tileSize,
-            y0: by - cell.l * lh,
+            y0: by - topL * lh,
             y1: by + tileSize,
           });
           continue;
@@ -7217,7 +7917,14 @@ export class WorldScene extends Phaser.Scene {
     // ended up under the grid V (playtester). The skirt is the flat tile's own
     // front face; a prop is not part of that face.
     const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
+    // INDOORS: a prop standing outside my room is part of "everything outside
+    // the house" and must go with it — art, occluder meta AND its emissive glow
+    // stamp. rebuildProps rides inside rebuildOccluders' camera guard but its
+    // own images/meta/stamps are not covered by anything added to that cell
+    // loop, so the test has to be repeated here.
+    const mask = this.indoorInside ? this.indoorMask : null;
     for (const p of props) {
+      if (mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF)) continue;
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;

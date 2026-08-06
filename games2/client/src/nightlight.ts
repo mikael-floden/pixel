@@ -1183,6 +1183,12 @@ export class NightLights {
   /** Master strength of the elevation depth-fog (0 = off). Tunable via
    *  `__ml.depthFog(v)`; the maintainer may roll it to 0 to disable. */
   fogStrength = 1;
+  /** Per-frame SCENE scale on top of `fogStrength`, kept separate so the debug
+   * knob above still owns the master value. WorldScene drives it to 0 while the
+   * player is INDOORS: the fog is a distance cue for open country, and inside a
+   * room its teal/pale bands paint over the black void that is supposed to BE
+   * the outside. 1 outdoors ⇒ every existing reading is unchanged. */
+  fogScale = 1;
   /** Headless QA only: force the player level / cell the fog keys off (null = live). */
   fogTestZ: number | null = null;
   fogTestXY: [number, number] | null = null;
@@ -2099,7 +2105,7 @@ export class NightLights {
 
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
     // drawn when the master strength is on (0 = disabled, costs nothing).
-    const showFog = this.fogStrength > 0.003;
+    const showFog = this.fogStrength * this.fogScale > 0.003;
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
     if (showFog && this.depthFogShader) {
@@ -2118,7 +2124,7 @@ export class NightLights {
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
       f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
       f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
-      f.setUniform("uFog.value", this.fogStrength);
+      f.setUniform("uFog.value", this.fogStrength * this.fogScale);
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);
       f.setUniform("uAmbient.value.z", ambient[2]);
@@ -2181,7 +2187,7 @@ export class NightLights {
    * has no cliff-face compression). Everything else mirrors DEPTHFOG_FRAG and
    * MUST be kept in sync with the GLSL consts atop it. */
   depthFogAt(col: number, row: number, z: number): { a: number; r: number; g: number; b: number } {
-    const uFog = this.fogStrength;
+    const uFog = this.fogStrength * this.fogScale;
     const NONE = { a: 0, r: 0, g: 0, b: 0 };
     if (uFog <= 0.003) return NONE;
     // MUST MATCH the GLSL consts atop DEPTHFOG_FRAG.

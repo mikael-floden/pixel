@@ -2008,7 +2008,33 @@ side collision just like monsters").
   press-and-drag hold-to-move steering, keyboard cancel, jump anim states,
   measured anim rates, in-place reconnect (last — it swaps the session),
   then one reload for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
-  -reconnect/-animrates/-navigation/-longwalk) remain for deep dives.
+  -reconnect/-animrates/-navigation/-longwalk/-indoor) remain for deep dives.
+- **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
+  browser gate for "walk into a house and the roof comes off". It frames
+  the_island2's house with ONE pinned camera from outside and from within and
+  compares the two frames on REAL PIXELS at points derived from maps2'
+  `world.json` (deck footprint + terrain levels, so a re-authored house moves
+  the samples with it): the roof slab loses >40% of its luminance at every one
+  of its cells (measured −91% overall, ~46% of those pixels pure void); the
+  ground outside the room is void at median 0 while the interior floor still
+  averages 6-9; all 8 far walls keep the 32px face that looks IN, and on 7 of
+  them the outward half and the roof-level tile top are void (the 8th is
+  skipped — computed, not hand-listed: an inner-corner neighbour's own inward
+  face legitimately covers it). Then the LIGHT: at Day indoors the ambient is
+  `[0.086,0.09,0.104]` — Rec.709 luma within 0.3% of the Night phase but
+  B/R 1.21 against night's 1.87 — and the local torch is lit with the global
+  day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet, ~14k screen pixels
+  brighter). Finally the two OUTDOOR controls: standing ON the same roof (the
+  gate walks there off a wall top — teleport always lands on the base surface)
+  and swimming UNDER a bridge both read outdoors with nothing blacked out.
+  `SHOT_DIR=<dir>` keeps every frame it judges. TWO THINGS IT DELIBERATELY
+  TOLERATES, both documented at the assertions: the ambient agent's fireflies /
+  birds / bats (`games2/ambient/`, not this game agent's files) and footstep
+  marks + grave crosses still paint over the void, so every "is it black?" test
+  is a MEDIAN over a wide patch — scattered single pixels can't move it, a
+  terrain tile that escaped the cull fills the patch and does; and the avatar
+  itself is never hidden indoors, so sample points inside its drawn art box are
+  dropped using Phaser's own `myScreen()` anchor.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
   speed first and ABORTS ("HARNESS STARVED") if the harness is too slow —
   software-GL at big viewports throttles the frame loop into slow motion
