@@ -1970,21 +1970,70 @@ function setSfxRequest(id, val) {
    step AND play as they go. Every play cuts the previous one dead —
    sfxEngine.stop() runs before the fetch, so even an uncached take can't
    overlap the one you were just listening to. */
+/** The composer ships its candidates as `<action>_<flavour>` siblings — ten
+ *  alternatives for one action (board, 2026-08-05: "ideally grouped by action
+ *  prefix so the ten alternatives for an action sit together"). Derive the
+ *  action instead of hardcoding it: a set's group is its LONGEST underscore
+ *  prefix that at least one sibling shares, so hit_taken_gut and
+ *  hit_taken_oof land together and a lone set falls to "Other". */
+function composerGroups(names) {
+  const count = new Map();
+  for (const n of names) {
+    const parts = n.split("_");
+    for (let i = 1; i <= parts.length; i++) {
+      const p = parts.slice(0, i).join("_");
+      count.set(p, (count.get(p) ?? 0) + 1);
+    }
+  }
+  const of = new Map();
+  for (const n of names) {
+    const parts = n.split("_");
+    let g = null;
+    for (let i = parts.length; i >= 1; i--) {
+      const p = parts.slice(0, i).join("_");
+      if ((count.get(p) ?? 0) >= 2) { g = p; break; }
+    }
+    of.set(n, g);
+  }
+  // A "group" of one is not a group — those read better collected at the end.
+  const size = new Map();
+  for (const g of of.values()) if (g) size.set(g, (size.get(g) ?? 0) + 1);
+  for (const [n, g] of of) if (!g || (size.get(g) ?? 0) < 2) of.set(n, "Other");
+  return of;
+}
 function sfxLibraryList() {
   const out = [];
-  for (const s of state.data.domains.sounds) {
-    const t = s.takes[0];
-    out.push({ key: `cat:${s.id}`, wire: s.id, name: s.name, kind: "catalog", sub: s.category,
-      file: audioCandidates(t), dur: t?.dur ?? s.duration_s ?? null,
-      voice: false, takes: s.takes.length, used: (s.usedBy ?? []).length });
-  }
-  for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
+  // The composer's purpose-made candidates lead: that is what a Game Master
+  // is auditioning through. The catalog follows, grouped by its category.
+  const sets = Object.keys(state.data.sfx.composerSets);
+  const group = composerGroups(sets);
+  const ordered = [...sets].sort((a, b) => {
+    const ga = group.get(a), gb = group.get(b);
+    if (ga !== gb) return ga === "Other" ? 1 : gb === "Other" ? -1 : ga.localeCompare(gb);
+    return a.localeCompare(b);
+  });
+  for (const set of ordered) {
+    const cs = state.data.sfx.composerSets[set];
+    const g = group.get(set);
     out.push({ key: `set:${set}`, wire: `composer/${set}`, name: set, kind: "composer",
+      // Under "HIT TAKEN", the row that matters is "armor" / "gut" / "oof" —
+      // repeating the action in every row only truncates the flavour, which
+      // is the one thing you are choosing between.
+      label: g !== "Other" && set.startsWith(`${g}_`) ? set.slice(g.length + 1) : set,
+      group: g === "Other" ? "Other composer sounds" : titleish(g),
       sub: cs.voice ? "voice" : "foley", file: cs.takes[0]?.file, dur: cs.takes[0]?.dur ?? null,
       voice: !!cs.voice, takes: cs.takes.length, used: (cs.usedBy ?? []).length });
   }
+  for (const s of [...state.data.domains.sounds].sort((a, b) => (a.category ?? "").localeCompare(b.category ?? "") || a.name.localeCompare(b.name))) {
+    const t = s.takes[0];
+    out.push({ key: `cat:${s.id}`, wire: s.id, name: s.name, kind: "catalog",
+      group: `Catalog · ${titleish(s.category ?? "sounds")}`, sub: s.category,
+      file: audioCandidates(t), dur: t?.dur ?? s.duration_s ?? null,
+      voice: false, takes: s.takes.length, used: (s.usedBy ?? []).length });
+  }
   return out;
 }
+const titleish = (s) => String(s).replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 function openSoundPicker({ title, forWhat, onPick }) {
   const all = sfxLibraryList();
   let list = all, sel = 0;
@@ -2011,26 +2060,35 @@ function openSoundPicker({ title, forWhat, onPick }) {
     if (!it?.file) return;
     void sfxEngine.rawOrAudition(it.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() });
   };
+  let rowEls = [];
   const move = (d) => {
     if (!list.length) return;
     sel = (sel + d + list.length) % list.length;
     paint();
-    listEl.children[sel]?.scrollIntoView({ block: "nearest" });
+    rowEls[sel]?.scrollIntoView({ block: "nearest" });
     play();
   };
   const paint = () => {
-    listEl.replaceChildren(...list.map((it, i) => h("button", {
+    const kids = [];
+    rowEls = [];
+    let g = null;
+    list.forEach((it, i) => {
+      if (it.group && it.group !== g) { g = it.group; kids.push(h("div", { class: "picker-group" }, g)); }
+      const row = h("button", {
       class: `picker-row${i === sel ? " sel" : ""}`, type: "button",
       onclick: () => { sel = i; paint(); play(); },
     },
       h("span", { class: "play-btn", "aria-hidden": "true" }, "▶"),
-      h("span", { class: "take-name" }, it.name),
-      h("span", { class: "pill" }, it.kind),
+      h("span", { class: "take-name", title: it.name }, it.label ?? it.name),
       it.dur != null ? h("span", { class: "pill" }, fmtDur(it.dur)) : null,
       it.voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — 2× is the true voice" }, "voice ×2") : null,
       it.takes > 1 ? h("span", { class: "pill" }, `${it.takes} takes`) : null,
       it.used ? h("span", { class: "pill ok", title: "The game already plays this somewhere" }, "in game")
-        : h("span", { class: "pill", title: "Nothing plays this yet" }, "unused"))));
+        : h("span", { class: "pill", title: "Nothing plays this yet" }, "unused"));
+      rowEls.push(row);
+      kids.push(row);
+    });
+    listEl.replaceChildren(...kids);
     const it = list[sel];
     chosen.textContent = it ? `Selected: ${it.name}` : "Nothing matches that search";
     assign.disabled = !it;

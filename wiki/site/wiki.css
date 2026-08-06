@@ -709,6 +709,13 @@ input[type="range"] { accent-color: var(--accent); }
   color: inherit; font: inherit;
 }
 .picker-row:last-child { border-bottom: none; }
+/* The composer ships ~10 alternatives per action; the header keeps a run of
+   them together so stepping through one action's candidates is one gesture. */
+.picker-group {
+  position: sticky; top: 0; z-index: 1;
+  padding: 5px 9px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface-2); border-bottom: 1px solid var(--border);
+}
 /* One line per sound, always: the NAME gives up its width (ellipsis) so the
    chips at the right — length, and whether the game uses it — survive a
    393px phone instead of being clipped by the list's own overflow. */

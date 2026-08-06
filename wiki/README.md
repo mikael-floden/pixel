@@ -435,6 +435,14 @@ to replace the parsing.
   recorded** — and the request carries the numbers you auditioned with. The
   generic `dialog input` rule is scoped to `:not(.sfx-picker)`: it is the
   sign-in dialog's full-width stacked field and it wrecked these rows.
+- **Grouped by action, and it lists EVERY composer set** — wired or not
+  (their ask, 2026-08-05: they ship ~10 `<action>_<flavour>` alternatives per
+  action and the winner gets wired afterwards). `composerGroups()` derives the
+  action rather than hardcoding it: a set's group is its longest underscore
+  prefix that a sibling shares, singletons collect under "Other". Under a
+  `HIT TAKEN` header the rows read `armor` / `bass` / `coat` — the flavour is
+  what you are choosing between, and repeating the action only truncated it;
+  the full name stays in the tooltip, the "Selected:" line and the request.
 - **One sound at a time.** `sfxEngine.stop()` runs BEFORE the fetch and bumps
   a generation counter, so stepping to the next sound kills the previous one
   instantly and a slow take whose decode is still in flight never starts
