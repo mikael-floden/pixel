@@ -217,7 +217,6 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   "combat.cross_off": [{ sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 }],
   "item.pickup": [{ sound: "composer/kick_earthmound", take: "kick_earthmound__take01" }],
   "combat.hit_taken": [{ sound: "composer/kick_bamboo", take: "kick_bamboo__take01" }],
-  "combat.monster_die": [{ sound: "composer/mon_ice_poring_attack", take: "mon_ice_poring_attack__take01" }],
   // Levelling up finally has a sound. progress.level_up has been emitted and
   // deliberately EMPTY since 2026-08-05 (its old binding was stripped because
   // nothing had asked for it) — this is the first thing he has assigned to it.
