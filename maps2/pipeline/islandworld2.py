@@ -218,6 +218,31 @@ HOUSE_ROAD_GAP = 4                  # cells of meadow the dirt ROAD network must
 HOUSE_WATER_GAP = 6                 # keep this many cells of land between the walls
                                     # and any water — no house on the shoreline
 
+# -- BONFIRE A/B (maintainer 2026-08-06) — TEMPORARY, one line to delete -------
+# "I know we have a props-tile that also looks like a bonfire... Can you
+# manually place that tile next to the bonfire on the map TheIsland2? (I want to
+# compare it to the other bonfire on that exact map)."
+#
+# The two things being compared are NOT the same kind of object: the one already
+# there is the game's ANIMATED spawn campfire (objects/campfire, drawn by
+# WorldScene at the arrival point, absent from world.json), and this is a STATIC
+# tiles2 prop — the one circled in prop_demo at (30,18).
+#
+# The cell is chosen so the comparison is honest rather than flattering. The
+# game's fire lands on (203,120); (205,118) differs by 4 in (x-y) and by ZERO in
+# (x+y), so in this iso the prop renders exactly 128px to the RIGHT of the fire
+# at the SAME screen height — side by side, same light, same ground, no
+# foreshortening between them. It is also outside npcs.fire_cells(), so nobody
+# is posted between the two.
+#
+# DELIBERATELY A HAND-PLACED FIXTURE, against this repo's rules-not-spot-edits
+# doctrine, because it is a question ("which of these two reads better?") and
+# not a law. It lives here rather than as a world.json edit only so a rebuild
+# does not silently drop it mid-comparison. Delete both lines when the answer
+# is in.
+BONFIRE_AB_CELL = (205, 118)
+BONFIRE_AB_TILE = "tiles2/saturated_grass/base_x_3/base_x_3_1054990476/tile_12.webp"
+
 
 class Island2(Island):
     def __init__(self, seed=21, M=24):
@@ -3081,9 +3106,18 @@ def build(out=None, seed=21, M=24):
                  for (x, y) in dk["cells"]]
         decks_out.append({"kind": dk["kind"], "mat": m, "level": dk["level"],
                           "thickness": dk["thickness"], "cells": cells})
+    # BONFIRE A/B fixture — see BONFIRE_AB_CELL. It goes into the SAVED world and
+    # is then removed from the live object, so every QA pass below — the cave
+    # containment digest, the occlusion/trap/reachability battery, the minimap —
+    # runs on the un-fixtured world. That ordering is deliberate: a temporary
+    # comparison prop must never be able to trip a terrain invariant, and (the
+    # reason this is not theoretical) the cave digest asserts the post-carve
+    # render is byte-identical outside the doorway, which a new prop breaks.
+    d.props[BONFIRE_AB_CELL] = os.path.join(os.path.dirname(MAPS2), BONFIRE_AB_TILE)
     worldio.save_world(os.path.join(out, "world.json"), name="the_island2",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
                        spawn=d.spawn, props=d.props, decks=decks_out)
+    d.props.pop(BONFIRE_AB_CELL, None)
     # NORMALIZED map image (maintainer 2026-07-23): one `minimap.png` per world — the
     # isometric view with every non-map pixel transparent (the game draws it under the Map
     # tab). No more 17MB demo.png / preview.png.
