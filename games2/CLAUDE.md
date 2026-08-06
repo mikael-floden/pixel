@@ -838,15 +838,23 @@ visible head/shoulders are ABOVE the surface).
   victim carries the persistent FLEE_SLOW_FACTOR 0.8 for the whole hunt (the
   synced `slow` = min(hit-slow 0.55/1.5s, flee 0.8) — the client predicts from
   the synced field, pending inputs carry their factor). The way OUT is the
-  RUN-AWAY LINE: ESCAPE_RADIUS_WU 780 ≈ 1.5 screens (camera frames ~520wu,
-  zoomFor) beyond the home ZONE bbox — crossing it makes the hunter give up,
-  walk home (m.returning, aggro-scan suppressed), and the flee slow lifts.
-  DE-AGGRO BY DISTANCE (round 9) is its own rule on top: ANY hunt — predator
-  or provoked — ends the moment the victim is more than ESCAPE_RADIUS_WU from
-  THE MONSTER. The leash box alone could not promise that, because it is
-  measured from the home ZONE and a big zone's bbox is most of the map; a
-  predator that noticed you at its edge would follow far past any sane point.
-  combat.review.test.ts proves it on an unprovoked saber-tooth.
+  RUN-AWAY LINE: ESCAPE_RADIUS_WU **390 ≈ 0.75 of a screen** (camera frames
+  ~520wu, zoomFor) beyond the home ZONE bbox — crossing it makes the hunter
+  give up, walk home (m.returning, aggro-scan suppressed), and the flee slow
+  lifts. DE-AGGRO BY DISTANCE (round 9) is its own rule on top: ANY hunt —
+  predator or provoked — ends the moment the victim is more than
+  ESCAPE_RADIUS_WU from THE MONSTER. The leash box alone could not promise
+  that, because it is measured from the home ZONE and a big zone's bbox is
+  most of the map; a predator that noticed you at its edge would follow far
+  past any sane point. combat.review.test.ts proves it on an unprovoked
+  saber-tooth. HALVED from 780 (2026-08-06: "aggro monster chase the player
+  for too long … cut in half"), and BOTH uses had to halve for that to be
+  felt — a provoked hunter paces its victim, so the gap never opens by
+  running; it opens when the monster stops at its LEASH, and shortening only
+  the give-up distance would barely change how long a hunt lasts. The floor
+  on this constant is the PROVOKE radius (128wu): drop it near that and a
+  marked monster aggros and gives up in the same breath instead of committing
+  — combat.unit.test.ts pins both the screen fraction and that margin.
   IN-FIGHT CIRCLING, rounds 4-6 ("more like a boxing fight"): BOTH bodies
   strafe tangentially with the same rotational sense (ORBIT_SPEED 6 — the
   maintainer slowed it twice) — the monster holds ~0.88 reach radially (pad

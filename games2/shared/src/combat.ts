@@ -130,12 +130,19 @@ export function provokedChaseSpeed(victimSpeedWu: number): number {
   return Math.min(CHASE_MAX_WU, Math.max(CHASE_MIN_WU, victimSpeedWu * CHASE_GAIN));
 }
 
-// The RUN-AWAY / ESCAPE RADIUS (maintainer: "~1½ screen in size"): the camera
-// frames ~520 world-px of world regardless of viewport (WorldScene zoomFor),
-// so 1.5 screens ≈ 780wu. A chase follows its victim this far beyond the home
-// ZONE and no further — crossing the line IS the successful escape: the
-// monster gives up, walks home, and the flee slow lifts.
-export const ESCAPE_RADIUS_WU = 780;
+// The RUN-AWAY / ESCAPE RADIUS. The camera frames ~520 world-px regardless of
+// viewport (WorldScene zoomFor), so this is ~0.75 of a screen — the hunted
+// player is still on screen when the monster gives up. A chase follows its
+// victim this far beyond the home ZONE and no further, and any hunt ends once
+// the victim is this far from the MONSTER: crossing the line IS the successful
+// escape — the monster gives up, walks home, and the flee slow lifts.
+// HALVED from 780 (~1.5 screens) — maintainer 2026-08-06: "aggro monster chase
+// the player for too long … cut in half for the player to have escaped".
+// BOTH uses had to halve for that to be felt: a PROVOKED hunter paces its
+// victim (always ~12% faster, see provokedChaseSpeed), so the gap never opens
+// by running — it opens when the monster stops at its LEASH. Shortening the
+// give-up distance alone would barely change how long a hunt lasts.
+export const ESCAPE_RADIUS_WU = 390;
 export const MONSTER_RESPAWN_MS = 12_000;
 export const MONSTER_DIE_MS = 1_100; // corpse lingers (die clip) before removal + drops
 

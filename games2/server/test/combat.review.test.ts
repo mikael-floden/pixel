@@ -287,7 +287,7 @@ test("a PREDATOR that aggros on proximity also gives up once you outrun it", asy
     }
     assert.equal(me().hitSeq, 0, "we never traded blows — this hunt is unprovoked");
 
-    // Now outrun it: park well past ESCAPE_RADIUS_WU (780wu ≈ 1.5 screens).
+    // Now outrun it: park well past ESCAPE_RADIUS_WU (390wu ≈ 0.75 screens).
     const mm = r1.state.monsters.get(tid);
     const far = { x: Math.min(mm.x + 1200, 1700), y: Math.min(mm.y + 1200, 1700) };
     const flee = setInterval(() => {

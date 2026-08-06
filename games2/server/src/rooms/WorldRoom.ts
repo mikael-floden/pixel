@@ -938,8 +938,8 @@ export class WorldRoom extends Room<WorldState> {
         // below is measured from the monster's HOME ZONE, and a big zone's
         // bbox can be most of the map — a predator that noticed you at the
         // edge of a huge zone would follow far past any sane give-up point.
-        // This rule is measured monster-to-victim instead, so ~1.5 screens
-        // of daylight ends ANY hunt regardless of zone size. (A provoked
+        // This rule is measured monster-to-victim instead, so ~0.75 of a
+        // screen of daylight ends ANY hunt regardless of zone size. (A provoked
         // hunter paces its victim and never falls this far behind unless
         // terrain has genuinely stopped it — where giving up is also right.)
         if (dist > ESCAPE_RADIUS_WU) {
@@ -1211,7 +1211,7 @@ export class WorldRoom extends Room<WorldState> {
   private storeFlushAt = 0;
   private leashBoxes = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
-  /** True while (x,y) is within ESCAPE_RADIUS_WU (~1.5 screens) of the zone's
+  /** True while (x,y) is within ESCAPE_RADIUS_WU (~0.75 screens) of the zone's
    * bounding box — the run-away line: a chase may spill this far from home,
    * and a victim crossing it has SUCCESSFULLY escaped. Cheap: clamp + hypot. */
   private withinLeash(zone: ZoneRuntime, x: number, y: number): boolean {

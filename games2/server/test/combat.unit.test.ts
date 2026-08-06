@@ -55,8 +55,12 @@ test("the escape math holds for both chase kinds", () => {
   const fleeing = RUN_SPEED * FLEE_SLOW_FACTOR; // the fastest a hunted player can go
   assert.ok(provokedChaseSpeed(fleeing) > fleeing, "fleeing at full flee speed never opens the gap");
   assert.ok(provokedChaseSpeed(0) >= 55, "closes on a standing victim");
-  // The escape line is the way out: ~1.5 screens (camera frames ~520wu).
-  assert.ok(ESCAPE_RADIUS_WU > 700 && ESCAPE_RADIUS_WU < 900, "escape radius ≈ 1.5 × 520wu screens");
+  // The escape line is the way out: ~0.75 of a screen (camera frames ~520wu),
+  // halved from 1.5 screens because hunts ran too long (maintainer 2026-08-06).
+  assert.ok(ESCAPE_RADIUS_WU > 300 && ESCAPE_RADIUS_WU < 470, "escape radius ≈ 0.75 × 520wu screen");
+  // …but still comfortably beyond the provocation range, or a marked monster
+  // would aggro and give up in the same breath instead of committing to a hunt.
+  assert.ok(ESCAPE_RADIUS_WU > 2.5 * PROVOKE_RADIUS_WU, "escape line is well outside the provoke radius");
   assert.ok(PROVOKE_RADIUS_WU >= 3 * CELL_WU && PROVOKE_RADIUS_WU <= 6 * CELL_WU, "provoke radius is a few cells");
   assert.ok(FLEE_SLOW_FACTOR > SLOW_FACTOR && FLEE_SLOW_FACTOR < 1, "flee slow is milder than the hit stagger");
   assert.ok(WALK_SPEED * FLEE_SLOW_FACTOR > 0, "hunted walking still moves");
