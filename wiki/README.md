@@ -528,6 +528,35 @@ to replace the parsing.
   what gets bound is what was heard. "in game" is computed per RECORDING
   from the event table's own bound files — not "something in this folder is
   used".
+- **…and one row per take was STILL not every generated sound.** The
+  maintainer asked the follow-up that mattered — *"Every single generated
+  sound? Or something else missing?"* — and the honest answer was no. The
+  composer generates a **pool** per brief, scores it, and copies only the
+  winner(s) out as takes; 23 of the 91 sets kept their pool on disk. That was
+  **130 more files**, of which **91 were audio no page in this wiki could
+  reach** (the other 39 are byte copies of the take chosen out of them). They
+  are listed now as `flavour · alternative N`, right under the take they lost
+  to, best-scoring first — 190 rows → **281**.
+  - **Dedupe is by CONTENT HASH, never by path** (`fileHash` in build.mjs):
+    promoting a candidate to a take is a plain file copy under a new name, so
+    the paths never match and the bytes always do. Compare paths and every
+    winner shows up twice.
+  - They ship because the composer's score answers *"does this fit the brief
+    it was generated for"*, which is a **different question** from *"is this
+    the sound I want for my event"* — a candidate rejected as a grass footstep
+    is still a fine rustle for an item pickup, and only the Game Master can
+    say so. That is also why there is no quality badge on them: re-imposing
+    the judgement that hid them would defeat the point.
+  - **Assigning one is a request to PROMOTE it.** The request carries the pool
+    path in `take`, so the composer must copy that file out of `pool/` into
+    the set and add it to `takes` in `foley.json` — wiring the `pool/` path
+    directly would leave a bound sound the pipeline treats as a discard.
+    Board note sent to games-audio 2026-08-06.
+  - Gate: **`wiki/tools/check-everysound.mjs`** — this is the durable answer
+    to the question. It does not check a number anyone typed: it walks
+    `games2/composer/foley/**` and `sounds/**`, hashes every audio file, and
+    fails unless each one is listed in `data.json` or byte-identical to one
+    that is. Verified to fail on the pre-fix baseline naming all 91.
 - **Grouped by action, and it lists EVERY composer set** — wired or not
   (their ask, 2026-08-05: they ship ~10 `<action>_<flavour>` alternatives per
   action and the winner gets wired afterwards). `composerGroups()` derives the
@@ -582,7 +611,11 @@ to replace the parsing.
   (`spareTakes`). The old `round_robin:false` pin flag and the wiki's
   display-time slice workaround are both gone.
 - The composer's foley takes are served at `/assets/composer/foley/…`
-  (Dockerfile copies them; dev falls back to `games2/composer/foley`).
+  (Dockerfile copies them; dev falls back to `games2/composer/foley`). The
+  copy is the WHOLE folder, so `<set>/pool/` rides along — that is what makes
+  the 91 alternatives audible in the deployed wiki, and it is why the foley
+  layer is ~21 MB rather than ~13. `.dockerignore` has no composer rule;
+  adding one there would silently 404 every alternative.
 
 ## Music comes from TWO places
 

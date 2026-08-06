@@ -11,12 +11,20 @@ const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 
-// what the repo actually holds
-const compTakes = Object.values(D.sfx.composerSets).reduce((n, c) => n + c.takes.length, 0);
+// what the repo actually holds — takes AND the generation pool they were
+// picked from (see check-everysound.mjs: listing takes alone hid 91 sounds).
+const compTakes = Object.values(D.sfx.composerSets).reduce((n, c) => n + c.takes.length + (c.alts?.length ?? 0), 0);
 const catTakes = D.domains.sounds.reduce((n, s) => n + s.takes.length, 0);
 const REAL = compTakes + catTakes;
 const SETS = Object.keys(D.sfx.composerSets).length + D.domains.sounds.length;
 console.log(`repo: ${REAL} recordings across ${SETS} sets/sounds`);
+if (!process.env.WIKI_ADMIN_PASSWORD) {
+  // The picker is Game-Master-only, so without the password there is nothing
+  // to open. Skip rather than crash — check-everysound.mjs still proves the
+  // LIST is complete without a browser or a login.
+  console.log("\nSKIPPED: WIKI_ADMIN_PASSWORD not set (the picker is admin-only)");
+  process.exit(0);
+}
 
 await p.goto(W, { waitUntil: "load" });
 await p.evaluate(async (pw) => {
@@ -65,9 +73,13 @@ const takes = await p.evaluate(async (set) => {
   }
   return { rows: rows.length, labels: rows.map((r) => r.querySelector(".take-name").textContent), played };
 }, multi[0]);
-console.log(`${multi[0]} (${multi[1].takes.length} takes):`, JSON.stringify(takes));
-ok(takes.rows === multi[1].takes.length, `searching "${multi[0]}" lists its ${multi[1].takes.length} takes (${takes.rows})`);
-ok(takes.labels.every((l) => /take \d/.test(l)), `each labelled by take (${takes.labels.join(", ")})`);
+const nAlts = multi[1].alts?.length ?? 0;
+const nRows = multi[1].takes.length + nAlts;
+console.log(`${multi[0]} (${multi[1].takes.length} takes + ${nAlts} alternatives):`, JSON.stringify(takes));
+ok(takes.rows === nRows, `searching "${multi[0]}" lists its ${multi[1].takes.length} takes AND its ${nAlts} unpicked candidates (${takes.rows})`);
+ok(takes.labels.every((l) => /take \d|alternative \d/.test(l)), `each labelled by recording (${takes.labels.slice(0, 4).join(", ")}…)`);
+ok(nAlts > 0 && takes.labels.filter((l) => /alternative \d/.test(l)).length === nAlts,
+  `the generation pool is reachable, not just the winners (${nAlts} alternatives listed)`);
 ok(new Set(takes.played).size === takes.played.length && takes.played.every(Boolean),
   `and each row auditions its OWN file (${takes.played.map((f) => f?.split("/").pop()).join(", ")})`);
 
@@ -93,8 +105,11 @@ const req = await p.evaluate(async () => {
 const set = posted.find((x) => x.file === "tuning/sfx_requests");
 const entry = Object.values(set?.set ?? {})[0];
 console.log("request:", JSON.stringify({ ...req, entry }));
-ok(!!entry?.take && /__take\d+\.\w+$/.test(entry.take), `the request names the exact recording (take: ${entry?.take})`);
+ok(!!entry?.take && /__(take|cand)\d+\.\w+$/.test(entry.take), `the request names the exact recording (take: ${entry?.take})`);
 ok(entry.take.includes(multi[0]) && entry.sound === `composer/${multi[0]}`, "with its set alongside, for the composer's existing parser");
+// The LAST row of a composer set is an unpicked candidate, so this doubles as
+// the proof that a pool sound can be cast — the whole point of listing them.
+ok(/\/pool\/.*__cand\d+\.\w+$/.test(entry.take), `and an unpicked candidate can be assigned, not only a winner (${entry.take.split("/").pop()})`);
 ok(/take\d+/.test(req.row) || req.row.includes(entry.take.split("/").pop().replace(/\.\w+$/, "")),
   `and the queued row shows which take (“${req.row.slice(0, 60)}”)`);
 

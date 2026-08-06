@@ -7,6 +7,11 @@ const p = await (await b.newContext({ viewport: { width: 393, height: 851 }, isM
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
+// Unbind/reject controls only exist for a signed-in Game Master.
+if (!process.env.WIKI_ADMIN_PASSWORD) {
+  console.log("SKIPPED: WIKI_ADMIN_PASSWORD not set (unbind is admin-only)");
+  await b.close(); process.exit(0);
+}
 
 await p.goto(W, { waitUntil: "load" });
 await p.evaluate(async (pw) => {

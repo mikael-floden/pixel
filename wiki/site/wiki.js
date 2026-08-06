@@ -2102,7 +2102,14 @@ function composerGroups(names) {
  *  alternatives: `ui_tick` holds three different clicks and `jump_voice` four
  *  different grunts, and picking the set says nothing about WHICH. Listing
  *  sets showed 128 rows for 183 real recordings, and take 2 of anything was
- *  unreachable. */
+ *  unreachable.
+ *
+ *  ...and one row per take was STILL not every generated sound (maintainer,
+ *  same day: "Every single generated sound? Or something else missing?").
+ *  The answer was no: the composer scores a whole POOL per brief and copies
+ *  only the winners out as takes, so 91 generated recordings existed on disk
+ *  that no page in this wiki could reach. They are listed here as
+ *  "alternative", right under the take they lost to — see build.mjs. */
 function sfxLibraryList() {
   const out = [];
   // Which recordings the game actually plays today — computed from the event
@@ -2127,14 +2134,19 @@ function sfxLibraryList() {
     // repeating the action in every row only truncates the flavour, which is
     // the one thing you are choosing between. A multi-take set adds "take N".
     const flavour = g !== "Other" && set.startsWith(`${g}_`) ? set.slice(g.length + 1) : set;
-    cs.takes.forEach((t, i) => out.push({
-      key: `set:${set}#${i}`, wire: `composer/${set}`, take: t.file, kind: "composer",
-      name: `${set} ${t.name}`,
-      label: cs.takes.length > 1 ? `${flavour} · take ${i + 1}` : flavour,
+    const row = (t, key, label) => out.push({
+      key, wire: `composer/${set}`, take: t.file, kind: "composer",
+      name: `${set} ${t.name}`, label,
       group: g === "Other" ? "Other composer sounds" : titleish(g),
       sub: cs.voice ? "voice" : "foley", file: t.file, dur: t.dur ?? null,
       voice: !!cs.voice, used: bound.has(t.file),
-    }));
+    });
+    cs.takes.forEach((t, i) => row(t, `set:${set}#${i}`,
+      cs.takes.length > 1 ? `${flavour} · take ${i + 1}` : flavour));
+    // The rest of the pool this set's take was chosen out of, best-scoring
+    // first. Nothing about them is second-rate for YOUR event — they lost a
+    // contest for a brief that is not the one you are casting.
+    (cs.alts ?? []).forEach((t, i) => row(t, `alt:${set}#${i}`, `${flavour} · alternative ${i + 1}`));
   }
   for (const s of [...state.data.domains.sounds].sort((a, b) => (a.category ?? "").localeCompare(b.category ?? "") || a.name.localeCompare(b.name))) {
     s.takes.forEach((t, i) => out.push({
@@ -2382,7 +2394,9 @@ function sfxAllSounds() {
     })), { usedBy: s.usedBy ?? [] });
   }
   for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
-    entryRow(set, "composer", cs.takes.map((t) => ({
+    // Takes and the pool they were picked from, in one row: this page is
+    // "every recording in the library", and the pool is recordings.
+    entryRow(set, "composer", [...cs.takes, ...(cs.alts ?? [])].map((t) => ({
       name: t.name, file: t.file, dur: t.dur ?? null,
       dom: "composer", fid: t.file.replace(/\.\w+$/, ""),
     })), { voice: cs.voice, usedBy: cs.usedBy ?? [] });
@@ -3048,8 +3062,10 @@ function buildKnownIds() {
   (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
   d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(stripExt(`${g.dir}/${f}`)))); });
   d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
-  // Composer foley takes (feedback domain "composer") — ids are file paths.
-  Object.values(state.data.sfx?.composerSets ?? {}).forEach((cs) => cs.takes.forEach((t) => add(t.file.replace(/\.\w+$/, ""))));
+  // Composer foley recordings (feedback domain "composer") — ids are file
+  // paths, and the generation pool is as rateable as the chosen take.
+  Object.values(state.data.sfx?.composerSets ?? {}).forEach((cs) =>
+    [...cs.takes, ...(cs.alts ?? [])].forEach((t) => add(t.file.replace(/\.\w+$/, ""))));
 }
 
 function initChrome() {

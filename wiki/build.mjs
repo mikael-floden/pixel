@@ -16,6 +16,7 @@
 // (existing edits are always preserved).
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
@@ -882,6 +883,20 @@ function composerDir() {
   for (const p of [join(GAMES2, "composer"), join(ROOT, "composer")]) if (isDir(p)) return p;
   return null;
 }
+/** Content hash, memoised — the ONLY way to tell a pool candidate that was
+ *  promoted to a take from one that was passed over: the promotion is a plain
+ *  file copy under a new name, so the paths never match and the bytes always
+ *  do. Reading the whole foley pool costs ~8 MB once per build, and only the
+ *  in-repo build pays it (Docker keeps the committed sfx block). */
+const hashCache = new Map();
+function fileHash(p) {
+  if (!hashCache.has(p)) {
+    let v = null;
+    try { v = createHash("md5").update(readFileSync(p)).digest("hex"); } catch { /* absent */ }
+    hashCache.set(p, v);
+  }
+  return hashCache.get(p);
+}
 function buildSfx(soundEntries) {
   const cat = readJson(join(ROOT, "sounds", "viewer_data.json"))?.sounds ?? [];
   const catById = new Map(cat.map((s) => [s.id, s]));
@@ -937,6 +952,30 @@ function buildSfx(soundEntries) {
         file: `composer/foley/${t}`,
         dur: meta.durations_s?.[i] ?? null,
       })),
+      // ---- THE GENERATION POOL — the takes' unpicked siblings ----------
+      // The composer generates a POOL per brief, scores it and copies the
+      // winner(s) out as takes; 23 of the 91 sets kept their pool on disk.
+      // That is 130 more files nothing ever listed — and of those, 91 are
+      // audio that existed NOWHERE in the wiki (the other 39 are byte
+      // copies of the take that was chosen out of them, hence the hash
+      // dedupe: same bytes at two paths must never become two rows).
+      // They ship because the score answers "does this fit the brief it was
+      // generated for", which is a DIFFERENT question from "is this the
+      // sound I want for my event" — a candidate rejected as a grass
+      // footstep is still a fine rustle for an item pickup, and only the
+      // Game Master can say so (maintainer 2026-08-06: "Every single
+      // generated sound?"). Best-scoring first; `rank` ascends.
+      alts: (() => {
+        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, t))).filter(Boolean));
+        return (meta.pool_candidates ?? [])
+          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, c.file))))
+          .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+          .map((c) => ({
+            name: c.file.split("/").pop(),
+            file: `composer/foley/${c.file}`,
+            dur: c.features?.duration_s ?? null,
+          }));
+      })(),
       voice: set.startsWith("jump_voice"),
       usedBy: [],
     };
@@ -1007,7 +1046,9 @@ function buildSfx(soundEntries) {
     return {
       source: "composer", set, label: `${set} (composer)`,
       takes: over.primary ? cs.takes.slice(0, 1) : cs.takes,
-      spareTakes: over.primary ? cs.takes.length - 1 : 0,
+      // Everything else in the folder the Game Master could swap in — the
+      // set's other takes AND its unpicked generation candidates.
+      spareTakes: (over.primary ? cs.takes.length - 1 : 0) + cs.alts.length,
       pick: over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
       rate: over.rate ?? 1,
       mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",

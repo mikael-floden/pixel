@@ -7,6 +7,10 @@ const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 const PW = process.env.WIKI_ADMIN_PASSWORD ?? "";
+// The assign card is Game-Master-only: with no password every assertion below
+// reads `undefined` off a card that was never rendered, which is a broken
+// harness reporting a broken UI. Skip honestly instead.
+if (!PW) { console.log("SKIPPED: WIKI_ADMIN_PASSWORD not set (the assign card is admin-only)"); await b.close(); process.exit(0); }
 const errs = [];
 
 async function open(touch) {
