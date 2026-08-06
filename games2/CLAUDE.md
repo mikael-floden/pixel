@@ -1089,6 +1089,30 @@ visible head/shoulders are ABOVE the surface).
   `server/test/combat.review.test.ts`. QA probe `__ml.invFake(items)` paints a
   backpack locally (the server never hands out a ×3 on demand);
   `__ml.canWalk()` reports the movement gate.
+- **LEVELLING UP — "Thunderclap"** (maintainer 2026-08-06, chosen from a page
+  of eleven alternatives and tuned on it: "the level up graphics is perfect! I
+  love it! Now get it into the game!"). It lives entirely in `bars.ts` and runs
+  off `setLevel()` — the level going up IS the event, so no scene wiring, no
+  message, nothing to keep in sync. The gauge climbs to full on the level you
+  just FINISHED, then three effects peak on ONE frame (the fill flashes
+  brightness 1.95, the chip recoils, the LEVEL number stamps down from ×2)
+  while a shockwave ring is thrown off the chip and a light sweeps the track —
+  then a beat, and the bar drains to the carry-over. What the game has to add
+  on top of the approved page, because the SERVER NEVER SENDS THE FULL BAR:
+  a level-up arrives as one sync carrying the NEW level and the carry-over xp,
+  and WorldScene pushes `setBar("xp", …)` BEFORE `setLevel()`, so by the time
+  the animation knows it is happening the frame it must start from is gone.
+  setBar therefore remembers the fraction and requirement it is overwriting,
+  and the animation replays from there — nothing has painted in between, so
+  the jump is never seen. Same reason the LEVEL label is held on the old
+  number until the stamp lands. While it runs it OWNS the gauge (a kill
+  mid-animation still drains onto the newest sync), a watchdog hands the
+  gauge back if a backgrounded tab freezes rAF, and reduced motion just lands
+  the values. No sound — that is the audio agent's, and only when asked for.
+  Gate: `scripts/verify-levelup.mjs`. QA probe `__mlBars` (its own namespace,
+  since WorldScene assigns `__ml` wholesale): `levelUp(carry, need)` fakes
+  exactly the pair of calls a real one arrives as, `state()` reports the label,
+  the numbers, the fill and each punch's live transform.
 - **Monster stats come from the LIVE TUNING channel** — the wiki agent's
   document (live/tuning/monsters.json, format @1), adopted exactly as they
   requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.

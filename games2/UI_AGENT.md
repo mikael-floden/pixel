@@ -75,7 +75,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
   orientations; the SERVER's count clamp is unit-tested in
-  `server/test/combat.review.test.ts` instead).
+  `server/test/combat.review.test.ts` instead),
+  `scripts/verify-levelup.mjs` (the XP bar's level-up).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -171,6 +172,24 @@ from the games agent), #18 (title/landing screen).
 - Suppress `contextmenu` on roots containing `<img>` (Android long-press).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
+- **To TIME a DOM animation on this harness, drop the WebGL context first.**
+  The software GL renders the world at ~5fps (measured at every viewport and
+  on the lightest worlds), and WAAPI clocks run on the document timeline — at
+  that rate an animation's own `currentTime` can still read 0 after a whole
+  interval of wall time, and every sampled film collapses. `verify-levelup`
+  joins, waits for the real stats, then calls `WEBGL_lose_context.loseContext()`
+  on the game canvas: Phaser stops rasterising, the thread comes free (~42fps,
+  zero page errors) and the animation runs at something like device speed.
+  Everything DOM keeps working — the socket, the synced state, the HUD. It
+  BLANKS the canvas, so it is useless for a screenshot of anything over the
+  world, and useless for anything Phaser draws.
+- **Film DOM animations with a MutationObserver, not a sampler.** It fires per
+  mutation BATCH, so every paint is one ordered snapshot however slow the page
+  is, and reading `getComputedStyle` inside the callback flushes style — which
+  resolves animations created in that same block to their offset-0 values, i.e.
+  the impact frame, exactly. For "did these start together", read the browser's
+  own `Animation.startTime` instead of any pixel: grab the objects when their
+  effect appears and read them at the end (a finished animation keeps it).
 
 ## Don't
 
