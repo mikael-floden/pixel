@@ -16,8 +16,10 @@
 //
 // Question 2 is the whole reason the module is not a two-liner. Hiding the roof
 // the moment anything is overhead makes every bridge and every overhang blink
-// the world away, so the space has to prove it is a room first — see the two
-// rules at the bottom (wall dominance AND a minimum room size).
+// the world away, so the space has to prove it is a room first: it must be big
+// enough (MIN_ROOM_CELLS) and then EITHER walled in (INDOOR_WALL_RATIO) OR
+// something you are deep inside (INDOOR_DEPTH) — the second is what tells a
+// widening bridge from the water cave it eventually becomes.
 //
 // ===========================================================================
 // PRECONDITION: `elev` MUST BE A RESOLVED SURFACE LEVEL
@@ -135,6 +137,43 @@ export const INDOOR_WALL_RATIO = 0.7;
  * the fix is a new signal (span aspect ratio, or the deck's own `kind`), not a
  * higher floor — 13 is the ceiling, and the house sits on it. */
 export const MIN_ROOM_CELLS = 8;
+
+/** THE SECOND WAY IN: how deep under the roof you must be — cells from the
+ * nearest entrance, measured THROUGH the space — before it is indoors no matter
+ * what its fringe looks like.
+ *
+ * The wall ratio asks a question about the whole SPACE; this asks one about
+ * WHERE YOU ARE STANDING IN IT, and it is the rule that answers the maintainer's
+ * case (2026-08-06): "if you continue to make the bridge wider at some point
+ * it's not a bridge — it's a tunnel/water cave… it would be really cool to swim
+ * into a water cave and the outside turns dark". A widening bridge and a water
+ * cave have the SAME fringe geometry — banks on two sides, open water at both
+ * ends — so no ratio bar can separate them; lowering the bar to 1/3 to catch the
+ * cave takes occlusion_test's bridge (30 of 30 cells) and the_island2's pier
+ * (9 of 9) with it. What actually differs is how far you can get from daylight:
+ * under a bridge you are always a step from the open, and in a cave you are not.
+ *
+ * MEASURED — distance from the nearest entrance for every roofed cell in every
+ * shipped world (BFS through the roof set, so a cell touching a doorway is 1):
+ *
+ *     BRIDGES (must stay OUTDOORS)          ROOMS/CAVES (deep interiors exist)
+ *     the_island       max 2                the_island2 house   max  6
+ *     the_island2      max 2                occlusion_test roof max 11
+ *     occlusion_test   max 3                the_island2 cave    max 57
+ *
+ * Every bridge cell the game ships is at depth 1-3. 4 is the first value no
+ * bridge reaches, and it is the honest reading of the maintainer's own rule:
+ * a span you can get four cells into without seeing sky IS a tunnel.
+ *
+ * This is deliberately an OR with the wall rule, not a replacement. Depth alone
+ * would call the house's own doorway cells outdoors (its shallow cells are at
+ * depth 1-2) — the wall rule covers those; depth covers the wide-open-ended
+ * spaces the wall rule cannot. The consequence is that `indoor` now varies
+ * BETWEEN CELLS of one space, which is the point: swim into the cave mouth and
+ * the world darkens around you a few cells in, rather than snapping the instant
+ * the ceiling appears. The renderer must therefore hysteresis this transition —
+ * see the note on `depth`. */
+export const INDOOR_DEPTH = 4;
 
 /** How big a level step a fringe cell may sit at and still count as a way OUT.
  * Mirrors JUMP_CLIMB in index.ts (a 2-level ledge is crossable with a jump; 3+
@@ -267,11 +306,27 @@ export interface IndoorSpace {
   /** Fraction of the fringe that is wall rather than opening (1 when the space
    * has no fringe at all, i.e. the roof runs off the map edge on all sides). */
   wallRatio: number;
+  /** How far THE QUERIED CELL is from the nearest entrance, in cells, measured
+   * by BFS through the roof set: 1 when it touches an opening, and
+   * `Infinity` when the space is sealed (no entrances at all — then `wallRatio`
+   * is 1 and the wall rule has already called it indoors).
+   *
+   * Unlike every other field here this one is about the PLAYER'S CELL, not the
+   * space, so two cells of one cave answer differently — see INDOOR_DEPTH.
+   *
+   * RENDERER NOTE: because of that, `indoor` can flip while the player walks
+   * INSIDE one space, and a player standing exactly on the boundary who steps
+   * back and forth will flip it every step. Hysteresis belongs in the consumer
+   * (enter at INDOOR_DEPTH, leave at INDOOR_DEPTH - 1, or time-based), not here
+   * — this module is pure and stateless by design. */
+  depth: number;
   /** The fill hit `maxCells` and the space is truncated — see MAX_ROOF_CELLS. */
   capped: boolean;
-  /** Both room rules passed — the space is genuinely enclosed AND big enough
-   * to be a room: `!capped && roof.size >= MIN_ROOM_CELLS && wallRatio >
-   * INDOOR_WALL_RATIO`. Neither rule alone is enough; see both constants. */
+  /** The room rules passed: the space is big enough to be a room AND it is
+   * either genuinely enclosed or you are deep enough inside it —
+   * `!capped && roof.size >= MIN_ROOM_CELLS && (wallRatio > INDOOR_WALL_RATIO
+   * || depth >= INDOOR_DEPTH)`. The size floor is an AND with both; the two
+   * ways IN are an OR. See all three constants. */
   indoor: boolean;
 }
 
@@ -366,16 +421,26 @@ function roofAboveIndex(grid: TerrainGrid, i: number, elev: number): number | nu
  *        yet they still count as walls for step 3, which is about enclosure,
  *        not about pixels.
  *
- * 3. THE TWO ROOM RULES — a space is indoors only when its fringe is
- *    wall-dominated (`wallRatio > INDOOR_WALL_RATIO`) AND it is big enough to
- *    be a room (`roof.size >= MIN_ROOM_CELLS`). Without the first, "a tile is
- *    over my head" fires on every bridge span, every cliff overhang and every
- *    gate arch, and the client would strobe the roof layer on and off as the
- *    player walks a road: a bridge is nearly all fringe-and-no-wall (you can
- *    step off either side anywhere along it), a house is one door in a ring of
- *    6-level walls. Without the second, the ratio's scale-freedom lets a 2-cell
- *    arch over a 2-cell gully score a perfect 1.00. See both constants — each
- *    carries the measured numbers it was chosen from.
+ * 3. THE ROOM RULES — a space must be big enough to be a room at all
+ *    (`roof.size >= MIN_ROOM_CELLS`), and then there are TWO ways to be inside
+ *    it, either of which is enough:
+ *
+ *      • ENCLOSURE — the fringe is wall-dominated (`wallRatio >
+ *        INDOOR_WALL_RATIO`). Without this, "a tile is over my head" fires on
+ *        every bridge span, cliff overhang and gate arch, and the client strobes
+ *        the roof layer on and off as the player walks a road: a bridge is
+ *        nearly all fringe-and-no-wall (you can step off either side anywhere
+ *        along it), a house is one door in a ring of 6-level walls.
+ *
+ *      • DEPTH — the queried cell is `INDOOR_DEPTH` or more cells from the
+ *        nearest entrance. Enclosure is a property of the SPACE and is blind to
+ *        a covered water channel, whose two open ends keep the ratio low however
+ *        long it runs; depth is a property of WHERE YOU STAND and separates the
+ *        bridge you are stepping under from the cave you have swum into.
+ *
+ *    And the size floor is an AND with both, because the ratio is scale-free —
+ *    a 2-cell arch over a 2-cell gully scores a perfect 1.00. See all three
+ *    constants; each carries the measured numbers it was chosen from.
  */
 export function findIndoorSpace(
   grid: TerrainGrid,
@@ -484,10 +549,58 @@ export function findIndoorSpace(
   }
 
   const wallRatio = fringe.size === 0 ? 1 : (fringe.size - entrances.size) / fringe.size;
+
+  // DEPTH of the player's own cell: BFS inward from the entrance ring, through
+  // the roof set only. Reuses `mark` (roof cells are 1, fringe 2) as the
+  // visited flag by overwriting the roof marks with 3 — the fill and the fringe
+  // pass are both finished, so nothing reads them again, and this stays
+  // allocation-free apart from the distance array. O(roof), same order as the
+  // fill itself, and it runs on a slab crossing rather than per frame.
+  const dist = new Int32Array(cells); // 0 = unreached
+  let dh = 0;
+  let dt = 0;
+  for (const e of entrances) {
+    const c = e % w;
+    const r = (e - c) / w;
+    for (let k = 0; k < 4; k++) {
+      const nc = c + DC[k];
+      const nr = r + DR[k];
+      if (nc < 0 || nr < 0 || nc >= w || nr >= h) continue;
+      const j = nr * w + nc;
+      if (mark[j] !== 1) continue; // only step INTO the roof set
+      mark[j] = 3;
+      dist[j] = 1;
+      queue[dt++] = j;
+    }
+  }
+  while (dh < dt) {
+    const i = queue[dh++];
+    const c = i % w;
+    const r = (i - c) / w;
+    for (let k = 0; k < 4; k++) {
+      const nc = c + DC[k];
+      const nr = r + DR[k];
+      if (nc < 0 || nr < 0 || nc >= w || nr >= h) continue;
+      const j = nr * w + nc;
+      if (mark[j] !== 1) continue;
+      mark[j] = 3;
+      dist[j] = dist[i] + 1;
+      queue[dt++] = j;
+    }
+  }
+  // Unreached means the space has no entrances at all (sealed) — or, with a
+  // capped fill, that the entrance ring never got built out this far. Either
+  // way there is no path to daylight from here, so the honest answer is
+  // "infinitely deep"; `capped` independently forces indoor false.
+  const depth = dist[start] > 0 ? dist[start] : Number.POSITIVE_INFINITY;
+
   // A truncated fill can say nothing about enclosure — its outline is mostly
   // cells the fill never got to. Fail OUTDOORS: the world renders normally,
   // which is wrong-but-harmless, where a false indoors would hide the map.
-  const indoor = !capped && roof.size >= MIN_ROOM_CELLS && wallRatio > INDOOR_WALL_RATIO;
+  const indoor =
+    !capped &&
+    roof.size >= MIN_ROOM_CELLS &&
+    (wallRatio > INDOOR_WALL_RATIO || depth >= INDOOR_DEPTH);
 
-  return { roof, fringe, wallLeft, wallRight, entrances, roofLevel, wallRatio, capped, indoor };
+  return { roof, fringe, wallLeft, wallRight, entrances, roofLevel, wallRatio, depth, capped, indoor };
 }

@@ -20,6 +20,7 @@ import {
   MAX_ROOF_CELLS,
   MIN_ROOM_CELLS,
   INDOOR_WALL_RATIO,
+  INDOOR_DEPTH,
   type TerrainGrid,
   type ParsedWorld,
 } from "@nangijala/shared";
@@ -774,4 +775,159 @@ test("every shipped world: no bridge cell is indoors, every roof/cave space is",
   assert.ok(Math.abs(roomMin - 13 / 14) < 1e-9, "the best-open shipped room");
   assert.ok(bridgeMax < INDOOR_WALL_RATIO && INDOOR_WALL_RATIO < roomMin, "the bar is inside the gap");
   assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.19 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");
+});
+
+// ---------------------------------------------------------------------------
+// DEPTH — the second way in (maintainer 2026-08-06: "if you continue to make
+// the bridge wider at some point it's not a bridge - it's a tunnel/water cave…
+// it would be really cool to swim into a water cave and the outside turns
+// dark"). The wall ratio cannot see this case: a covered channel keeps both
+// ends open however long it runs, so its ratio stays flat while it plainly
+// becomes an interior. INDOOR_DEPTH asks where you are standing instead.
+// ---------------------------------------------------------------------------
+
+/** A covered water channel: `len` rows of 5-wide water (level 0) between two
+ * level-4 banks, roofed at level 4 over the water only, open at both ends.
+ * WIDE on purpose — a narrow one is wall-dominated and the ratio rule already
+ * catches it; this is the shape that defeats the ratio. */
+function channelGrid(len: number): TerrainGrid {
+  const w = 7;
+  const h = len + 2;
+  const rows: { t: string; l: number }[][] = [];
+  for (let r = 0; r < h; r++) {
+    const row: { t: string; l: number }[] = [];
+    for (let c = 0; c < w; c++) {
+      const bank = c === 0 || c === 6;
+      row.push({ t: bank ? "saturated_grass" : "clear_water", l: bank ? 4 : 0 });
+    }
+    rows.push(row);
+  }
+  const cells = [];
+  for (let r = 1; r <= len; r++) for (let c = 1; c <= 5; c++) cells.push({ col: c, row: r });
+  return buildTerrainGrid(w, h, rows, [], [{ level: 4, thickness: 0, cells }]);
+}
+
+test("a wide covered channel: shallow is a bridge, deep is a water cave", () => {
+  const g = channelGrid(10);
+
+  // At the mouth you can still see out — this must read OUTDOORS however long
+  // the channel is behind you.
+  const mouth = findIndoorSpace(g, 3, 2, 0);
+  assert.ok(mouth);
+  assert.equal(mouth.roof.size, 50, "5 wide x 10 long");
+  assert.ok(mouth.roof.size >= MIN_ROOM_CELLS, "big enough — only the two ways IN can refuse it");
+  assert.equal(mouth.entrances.size, 10, "five open water cells at each end");
+  assert.ok(
+    mouth.wallRatio < INDOOR_WALL_RATIO,
+    `the ratio rule cannot see this shape (${mouth.wallRatio.toFixed(4)}) — that is the point`,
+  );
+  assert.equal(mouth.depth, 2, "two cells in from the open end");
+  assert.equal(mouth.indoor, false, "still a bridge you are stepping under");
+
+  // Swim on and the SAME space turns into a cave around you.
+  const deep = findIndoorSpace(g, 3, 5, 0);
+  assert.ok(deep);
+  assert.equal(deep.roof.size, mouth.roof.size, "same space, different cell");
+  assert.equal(deep.wallRatio, mouth.wallRatio, "…and the same ratio — depth is the only thing that moved");
+  assert.equal(deep.depth, 5);
+  assert.ok(deep.depth >= INDOOR_DEPTH);
+  assert.ok(deep.indoor, "deep under a wide roof is a water cave");
+
+  // The boundary is exactly INDOOR_DEPTH, and it is a property of the CELL.
+  for (const [row, depth] of [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]] as const) {
+    const s = findIndoorSpace(g, 3, row, 0);
+    assert.ok(s);
+    assert.equal(s.depth, depth, `row ${row}`);
+    assert.equal(s.indoor, depth >= INDOOR_DEPTH, `row ${row} at depth ${depth}`);
+  }
+});
+
+test("a short covered channel is a bridge at every cell", () => {
+  // Six rows: the deepest cell is 3 from an end, one short of INDOOR_DEPTH.
+  const g = channelGrid(6);
+  for (let r = 1; r <= 6; r++) {
+    const s = findIndoorSpace(g, 3, r, 0);
+    assert.ok(s);
+    assert.ok(s.depth < INDOOR_DEPTH, `row ${r} depth ${s.depth}`);
+    assert.equal(s.indoor, false, `row ${r}: still a bridge`);
+  }
+  // …and it is genuinely the depth rule doing the refusing, not the ratio or
+  // the size floor, both of which are unchanged from the 10-row case.
+  const s = findIndoorSpace(g, 3, 3, 0);
+  assert.ok(s);
+  assert.ok(s.roof.size >= MIN_ROOM_CELLS, "30 cells");
+  assert.ok(s.wallRatio < INDOOR_WALL_RATIO);
+});
+
+test("depth is 1 at the doorway and grows inward; a sealed space is infinite", () => {
+  // The house: its door cell is depth 1, the far corner deeper. (It is indoors
+  // throughout on the WALL rule — depth is not what carries it.)
+  const g = houseGrid();
+  const door = findIndoorSpace(g, 2, 4, 0); // the doorway cell itself
+  assert.ok(door);
+  assert.equal(door.depth, 1, "one step from the opening");
+  assert.ok(door.indoor, "carried by the wall rule, not by depth");
+  const back = findIndoorSpace(g, 1, 1, 0); // far corner
+  assert.ok(back);
+  assert.ok(back.depth > door.depth, `back ${back.depth} vs door ${door.depth}`);
+
+  // No entrances at all: nothing to walk out to, so the depth is infinite.
+  // (The wall rule already calls this indoors — the point is that depth does
+  // not read 0 and quietly cancel it.)
+  const sealed = findIndoorSpace(channelSealed(), 3, 5, 0);
+  assert.ok(sealed);
+  assert.equal(sealed.entrances.size, 0);
+  assert.equal(sealed.wallRatio, 1);
+  assert.equal(sealed.depth, Number.POSITIVE_INFINITY);
+  assert.ok(sealed.indoor);
+});
+
+/** The 10-row channel with both ends walled off by level-4 rock: a sealed room. */
+function channelSealed(): TerrainGrid {
+  const w = 7;
+  const len = 10;
+  const h = len + 2;
+  const rows: { t: string; l: number }[][] = [];
+  for (let r = 0; r < h; r++) {
+    const row: { t: string; l: number }[] = [];
+    for (let c = 0; c < w; c++) {
+      const wall = c === 0 || c === 6 || r === 0 || r === h - 1;
+      row.push({ t: wall ? "stone_mountain" : "clear_water", l: wall ? 4 : 0 });
+    }
+    rows.push(row);
+  }
+  const cells = [];
+  for (let r = 1; r <= len; r++) for (let c = 1; c <= 5; c++) cells.push({ col: c, row: r });
+  return buildTerrainGrid(w, h, rows, [], [{ level: 4, thickness: 0, cells }]);
+}
+
+test("INDOOR_DEPTH clears every bridge the game ships", () => {
+  // The constant's whole justification: no shipped bridge cell is ever more
+  // than 3 cells from daylight, so the depth rule cannot fire on one. If a
+  // future world authors a deeper span, this fails and the bar gets re-tuned
+  // against the new distribution (or the span really is a tunnel).
+  const worst = new Map<string, number>();
+  for (const { name, world } of deckedWorlds()) {
+    const grid = gridOf(world);
+    for (const d of world.decks ?? []) {
+      for (const c of d.cells) {
+        const i = c.row * grid.width + c.col;
+        const s = findIndoorSpace(grid, c.col, c.row, grid.level[i]);
+        if (!s || !Number.isFinite(s.depth)) continue;
+        const key = `${name}/${d.kind}`;
+        worst.set(key, Math.max(worst.get(key) ?? 0, s.depth));
+      }
+    }
+  }
+  const bridges = [...worst].filter(([k]) => k.endsWith("/bridge"));
+  assert.ok(bridges.length >= 3, `swept ${bridges.length} bridge decks`);
+  const deepestBridge = Math.max(...bridges.map(([, v]) => v));
+  assert.equal(deepestBridge, 3, "occlusion_test's wide test span is the deepest shipped bridge");
+  assert.ok(deepestBridge < INDOOR_DEPTH, "…and the bar sits above it");
+  // Interiors DO go deep — the rule is not vacuous.
+  const rooms = [...worst].filter(([k]) => !k.endsWith("/bridge"));
+  assert.ok(
+    rooms.every(([, v]) => v >= INDOOR_DEPTH),
+    `every shipped interior reaches INDOOR_DEPTH: ${JSON.stringify(Object.fromEntries(rooms))}`,
+  );
 });
