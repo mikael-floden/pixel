@@ -121,6 +121,16 @@ for (const file of files) {
   for (const m of readFileSync(file, "utf8").matchAll(/gameAudio\.event\(\s*["']([^"']+)["']/g))
     emitted.add(m[1]);
 }
+// A few moments are ENGINE-driven: the engine watches a state flag the client
+// already sends (the swimming flag → player.water_enter/exit) and names the
+// event itself, so no client call site exists to scan. They are still real
+// assignable events, so count them as emitted rather than reporting every
+// assignment for one as dead wiring.
+for (const m of api.matchAll(/this\.event\(\s*["']([^"']+)["']/g)) emitted.add(m[1]);
+for (const m of api.matchAll(/\?\s*["'](player\.[a-z_]+)["']\s*:\s*["'](player\.[a-z_]+)["']/g)) {
+  emitted.add(m[1]);
+  emitted.add(m[2]);
+}
 
 for (const n of REQUIRED_ACTIONS) {
   if (!emitted.has(n)) fail(`action "${n}" is not emitted — the wiki cannot list it for assignment`);

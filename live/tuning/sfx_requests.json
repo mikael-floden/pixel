@@ -1,17 +1,8 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T05:44:59.142Z",
+  "updated_at": "2026-08-06T09:00:00.000Z",
   "requests": {
-    "combat.cross_off/msh2o7xe": {
-      "event": "combat.cross_off",
-      "sound": "composer/monster_die_twigs",
-      "take": "composer/foley/monster_die_twigs/monster_die_twigs__take01.wav",
-      "pitch": 1.85,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:25:29.762Z"
-    },
     "player.water_enter/msh2sc9p": {
       "event": "player.water_enter",
       "sound": "composer/cross_rise_water",
@@ -30,15 +21,6 @@
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T05:29:02.535Z"
     },
-    "item.pickup/msh2vy6w": {
-      "event": "item.pickup",
-      "sound": "composer/kick_earthmound",
-      "take": "composer/foley/kick_earthmound/kick_earthmound__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:31:30.392Z"
-    },
     "combat.enemy_defeat/msh2xhhe": {
       "event": "combat.enemy_defeat",
       "sound": "composer/mon_ice_poring_attack",
@@ -47,33 +29,6 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T05:32:42.050Z"
-    },
-    "combat.hit_taken/msh2ymie": {
-      "event": "combat.hit_taken",
-      "sound": "composer/kick_bamboo",
-      "take": "composer/foley/kick_bamboo/kick_bamboo__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:33:35.222Z"
-    },
-    "combat.monster_die/msh330ul": {
-      "event": "combat.monster_die",
-      "sound": "composer/mon_ice_poring_attack",
-      "take": "composer/foley/mon_ice_poring_attack/mon_ice_poring_attack__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:37:00.429Z"
-    },
-    "progress.level_up/msh39hi8": {
-      "event": "progress.level_up",
-      "sound": "composer/level_up_harp",
-      "take": "composer/foley/level_up_harp/level_up_harp__take01.wav",
-      "pitch": 1,
-      "volume_db": 0,
-      "max_random_pitch_semis": 0,
-      "requested_at": "2026-08-06T05:42:01.952Z"
     },
     "weather.thunder/msh3btzg": {
       "event": "weather.thunder",

@@ -42,6 +42,27 @@
       "sound": "composer/monster_die_crumble",
       "take": "monster_die_crumble__take01",
       "pitch": 0.95
+    },
+    "combat.cross_off": {
+      "sound": "composer/monster_die_twigs",
+      "take": "monster_die_twigs__take01",
+      "pitch": 1.85
+    },
+    "item.pickup": {
+      "sound": "composer/kick_earthmound",
+      "take": "kick_earthmound__take01"
+    },
+    "combat.hit_taken": {
+      "sound": "composer/kick_bamboo",
+      "take": "kick_bamboo__take01"
+    },
+    "combat.monster_die": {
+      "sound": "composer/mon_ice_poring_attack",
+      "take": "mon_ice_poring_attack__take01"
+    },
+    "progress.level_up": {
+      "sound": "composer/level_up_harp",
+      "take": "level_up_harp__take01"
     }
   }
 }

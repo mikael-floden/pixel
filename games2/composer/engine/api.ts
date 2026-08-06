@@ -198,6 +198,14 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment> = {
   // Asked them for a Die row per hero (coordination/games-audio.json).
   "player.die@default_girl": { sound: "composer/die_voice", take: "die_voice__take06" },
   "combat.cross_on": { sound: "composer/monster_die_crumble", take: "monster_die_crumble__take01", pitch: 0.95 },
+  "combat.cross_off": { sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 },
+  "item.pickup": { sound: "composer/kick_earthmound", take: "kick_earthmound__take01" },
+  "combat.hit_taken": { sound: "composer/kick_bamboo", take: "kick_bamboo__take01" },
+  "combat.monster_die": { sound: "composer/mon_ice_poring_attack", take: "mon_ice_poring_attack__take01" },
+  // Levelling up finally has a sound. progress.level_up has been emitted and
+  // deliberately EMPTY since 2026-08-05 (its old binding was stripped because
+  // nothing had asked for it) — this is the first thing he has assigned to it.
+  "progress.level_up": { sound: "composer/level_up_harp", take: "level_up_harp__take01" },
 };
 
 /** Split a wiki `sound` id into its set and (optional) chosen recording. */
@@ -781,14 +789,28 @@ export class GameAudio {
 
     // Enter/exit water: a catalog `splash`. A fuller plunge going IN, a
     // lighter + brighter (pitched-up) splash climbing OUT.
+    //
+    // ASSIGNABLE since 2026-08-06. This moment was driven straight off the
+    // swimming flag and never passed through event(), so `player.water_enter`
+    // existed only as a line in sounds/bindings.json — the wiki listed it, he
+    // assigned a sound to it, and there was nothing for the assignment to
+    // attach to. Now the transition names itself, and an assignment REPLACES
+    // the splash. With no assignment the catalog splash plays exactly as
+    // before: this sound was approved long before the assignment loop existed,
+    // so "unassigned" must not silence it the way it does for a fresh event.
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
-      this.play("splash", "sfx", {
-        pan: f.pan,
-        dist: f.dist,
-        gainDb: f.swimming ? SWIM_ENTER_DB : SWIM_EXIT_DB,
-        rate: f.swimming ? 1 : 1.2,
-      });
+      const evt = f.swimming ? "player.water_enter" : "player.water_exit";
+      if (EVENT_ASSIGNMENTS[evt]) {
+        this.event(evt, { pan: f.pan, dist: f.dist });
+      } else {
+        this.play("splash", "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: f.swimming ? SWIM_ENTER_DB : SWIM_EXIT_DB,
+          rate: f.swimming ? 1 : 1.2,
+        });
+      }
     }
 
     // SWIMMING: ONE looping water source whose volume follows swim speed in
