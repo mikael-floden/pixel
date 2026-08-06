@@ -276,7 +276,9 @@ doorway (`kind:"roof"`), the cave mouth, bridge ends, road junctions, the shore
 cannot strand anybody. Eight laws are asserted before the file is written: dry
 standable ground (never water), **walk-reachable from the spawn** using the
 game's own step rule (a shop you can't reach is not a shop), never in a
-chokepoint (doorway, bridge end, cave mouth), never hidden from the camera
+chokepoint (doorway, bridge end, cave mouth), never in the SPAWN CAMPFIRE (the game draws it at the arrival point and it is
+not a prop in world.json, so nothing in the terrain says it is there — the first
+cast stood a commoner in the flames), never hidden from the camera
 (derived from the painter order `(x+y, y)`, which catches standing round the
 back of a building), never overlapping another sprite **in screen space** (iso
 puts `(x+2,y+2)` directly below `(x,y)`), never crowding the arrival point,

@@ -297,6 +297,38 @@ def _d(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
+# THE SPAWN CAMPFIRE — an object I cannot see in my own data.
+# The game draws one animated campfire at every world's arrival point. It is the
+# only objects/ asset it draws and it is canon (lore/RED_LINE.md §2: "there is a
+# campfire burning at the place where you arrive"), but it is NOT a prop in
+# world.json — nothing in the terrain says it exists. So the first cast stood a
+# commoner directly in the flames, which the maintainer spotted in-game with
+# "Living on the edge :)".
+#
+# WorldScene.ts placeCampfire() picks the FIRST standable same-level neighbour
+# of the spawn from this fixed offset order. Mirroring somebody else's search is
+# fragile, so fire_cells() does NOT trust its own standability test to agree
+# with theirs: it keeps every candidate up to AND INCLUDING the first one it
+# believes is standable, so a small disagreement still lands on a clear cell.
+FIRE_OFFSETS = ((2, 0), (0, 2), (2, 2), (-2, 0), (0, -2), (-2, -2), (1, 1), (0, 0))
+FIRE_CLEAR = 1          # ...and nobody within a cell of it, or they touch the flames
+
+
+def fire_cells(w):
+    """Every cell the spawn campfire could occupy, plus a ring of breathing room."""
+    sx, sy = w.spawn
+    lvl = w.base(sx, sy)
+    could = []
+    for dc, dr in FIRE_OFFSETS:
+        c = (sx + dc, sy + dr)
+        could.append(c)
+        if w.inside(*c) and w.base_ok(*c) and w.base(*c) == lvl:
+            break
+    return {(cx + dx, cy + dy) for (cx, cy) in could
+            for dx in range(-FIRE_CLEAR, FIRE_CLEAR + 1)
+            for dy in range(-FIRE_CLEAR, FIRE_CLEAR + 1)}
+
+
 def apart(a, b):
     """Do these two read as two separate people ON SCREEN?
 
@@ -539,7 +571,7 @@ def anchors(w, reach):
 
 # -- placement -----------------------------------------------------------------
 
-def spot_near(w, focus, reach, taken, band, approach=(), ports=()):
+def spot_near(w, focus, reach, taken, band, approach=(), ports=(), fire=()):
     """First legal standing spot at/around `focus`, ringing outward so the same
     terrain always yields the same placement.
 
@@ -567,6 +599,8 @@ def spot_near(w, focus, reach, taken, band, approach=(), ports=()):
             if chokepoint(w, x, y, reach):
                 continue
             if doorway(x, y, ports):
+                continue
+            if (x, y) in fire:
                 continue
             if hidden(w, x, y):
                 continue
@@ -633,6 +667,7 @@ def build(w):
     types = item_types()
     reach = walk_reach(w)
     ports = portals(w, reach)
+    fire = fire_cells(w)
     anch = anchors(w, reach)
     # where people come FROM: the arrival point and the road network. NPCs turn
     # to face it, so the world greets the player rather than ignoring them.
@@ -641,7 +676,7 @@ def build(w):
 
     def place(kind, focus, cid, ntype, wares=None):
         band = w.deck.get(focus, w.base(*focus)) if w.inside(*focus) else 0
-        spot = spot_near(w, focus, reach, taken, band, approach, ports)
+        spot = spot_near(w, focus, reach, taken, band, approach, ports, fire)
         if spot is None:
             return False
         x, y = spot
@@ -690,6 +725,7 @@ def validate(w, npcs, idx=None, types=None, reach=None):
     types = types if types is not None else item_types()
     reach = reach if reach is not None else walk_reach(w)
     ports = portals(w, reach)
+    fire = fire_cells(w)
     seen_ids, spots = set(), []
     for n in npcs:
         tag = f"{w.name}/{n['id']}"
@@ -716,6 +752,10 @@ def validate(w, npcs, idx=None, types=None, reach=None):
         assert not chokepoint(w, x, y, reach), \
             (f"{tag}: ({x},{y}) is a chokepoint — {n['name']} is blocking the "
              f"only way through (a doorway, a bridge end, the cave mouth)")
+        assert (x, y) not in fire, (
+            f"{tag}: ({x},{y}) is in the SPAWN CAMPFIRE — {n['name']} is "
+            f"standing in the flames. The fire is drawn by the game at the "
+            f"arrival point and is not in world.json; see fire_cells().")
         assert not doorway(x, y, ports), (
             f"{tag}: ({x},{y}) is IN a doorway/cave mouth/bridge head — "
             f"{n['name']} is blocking the way in. Stand NEXT to an opening, "

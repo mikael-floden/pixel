@@ -122,18 +122,29 @@ change breaks the **build** rather than stranding somebody in the deployed game.
    Clearance is measured from the **opening itself** — the gap in the wall, the
    cave-floor cell at the mouth — not from the step outside it. Measuring from
    the step is off by one column and lets a sprite clip the edge of the door.
-5. **Never hidden from the camera.** Derived from the painter order `(x+y, y)`
+5. **Never in the spawn campfire.** The game draws one animated campfire at
+   every world's arrival point — the only `objects/` asset it draws, and canon
+   (`lore/RED_LINE.md` §2: *"there is a campfire burning at the place where you
+   arrive"*). It is **not** a prop in `world.json`, so nothing in the terrain
+   says it is there, and the first cast duly stood a commoner in the flames —
+   spotted in-game by the maintainer with *"Living on the edge :)"*.
+   `WorldScene.ts placeCampfire()` takes the first standable same-level
+   neighbour of the spawn from a fixed offset order; `fire_cells()` deliberately
+   does **not** trust its own standability test to agree with theirs, and keeps
+   every candidate up to *and including* the first it believes is standable,
+   plus a one-cell ring — so a small disagreement still lands on a clear cell.
+6. **Never hidden from the camera.** Derived from the painter order `(x+y, y)`
    rather than guessed — which catches the non-obvious case of equal `x+y` with
    greater `y`, i.e. one step round the side of a building. An NPC nobody can
    see is worse than no NPC.
-6. **Never overlapping another sprite**, measured in **screen** space, not grid
+7. **Never overlapping another sprite**, measured in **screen** space, not grid
    space: iso puts `(x+2, y+2)` directly below `(x, y)` with 60px between them,
    so plain grid distance happily stacks two sprites into one blob. Side by
    side needs 3 columns (96px) — 2 leaves them shoulder-to-shoulder.
-7. **Not on or crowding the arrival point** — you land in open ground.
-8. **References resolve**: the character exists in characters2, its art is on
+8. **Not on or crowding the arrival point** — you land in open ground.
+9. **References resolve**: the character exists in characters2, its art is on
    disk, `name` still matches upstream, and every ware is a real `items/` TYPE.
-9. **Indoors is off limits** — the house belongs to whoever lives there; the
+10. **Indoors is off limits** — the house belongs to whoever lives there; the
    market forms outside the door. (The cave is explicitly *not* indoors.)
 
 `prop_demo`, `trans_demo`, `glow_test`, `occlusion_test` and `monster_demo` ship
