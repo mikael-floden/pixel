@@ -208,6 +208,25 @@ float baseTerrAt(vec2 cr) {
   return texture2D(uHeightL, uv).b * 255.0 / uHScale;
 }
 
+// The GROUND COLUMN's own top (A of the linear map): terrain + its solid/prop
+// bump, but NEVER a deck. Bilinear like heightAtSoft, because the LOS march
+// wants the same soft blocker ramp.
+//
+// Why this channel has to exist: R is max(ground, deck), ONE number per column,
+// and the marches test "is the column taller than the ray". That is only true
+// of terrain, which really is solid from 0 to its top. A DECK IS A FLOATING
+// SLAB — a roof at level 6 over a floor at 0 leaves 6 levels of open air you
+// walk through — so R makes the shader treat every roof and bridge as a solid
+// pillar standing on the ground beneath it. MEASURED cost of that on live: a
+// torch under the_island2's pier lights the water at 0.221 one cell away where
+// the same torch on open water five cells south reaches 0.585 (-62%), and a
+// torch inside the house dies from 0.640 to 0.186 in one cell. The room was
+// never dark because of the ambient; its own ceiling was eating the light.
+float groundAtSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).a * 255.0 / uHScale;
+}
+
 
 
 float heightAt(vec2 cr) {
@@ -588,8 +607,18 @@ void main() {
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
+        // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
+        // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
+        // under it. A slab can therefore only block a ray whose LIGHT is on the
+        // far side of it — sun/lamp above, ray below. A torch under the same
+        // slab is in the open air with it and must shine straight through.
+        // (The sun march is deliberately untouched: it wants the deck to block,
+        // and its cliff look is locked.)
         float H = heightAtSoft(p);
-        if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
+        float hg = groundAtSoft(p);
+        float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
+        if (blocker < 90.0 && blocker > hRay)
+          occ *= mix(0.8, 0.45, clamp((blocker - hRay) * 1.5, 0.0, 1.0));
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -1201,6 +1230,7 @@ export class NightLights {
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
+  private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curStamps: GlowStamp[] = [];
@@ -1505,6 +1535,7 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
+    this.gArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
@@ -1559,13 +1590,18 @@ export class NightLights {
         const solid = !s.standable && !s.swimmable;
         const pl = propLvl.get(r * w + c) ?? 0;
         const deckL = deckH[r * w + c];
+        // The GROUND column on its own: terrain plus its solid/prop bump, with
+        // no deck. This is the real solid span from 0 upward; the deck is a
+        // separate floating slab (see groundAtSoft / the LOS march).
+        const groundH = cell.l + Math.max(solid ? 1 : 0, pl);
         // Occlusion: the taller of the terrain (+ solid/prop bump) and any deck
         // slab, so a roof/bridge casts a real cast shadow on the ground below.
-        const occH = Math.max(cell.l + Math.max(solid ? 1 : 0, pl), deckL);
+        const occH = Math.max(groundH, deckL);
         // The lit SURFACE height: the deck slab when one caps this cell, else the terrain.
         const surfL = Math.max(cell.l, deckL);
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
+        this.gArr[r * w + c] = groundH;
         this.tArr[r * w + c] = surfL;
         this.bArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
@@ -1596,7 +1632,12 @@ export class NightLights {
         const ei = glows ? emitIdx.get(cell.t) : undefined;
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
-        imgL.data[i + 3] = 255;
+        // A = the GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED)
+        // — see groundAtSoft. R stays max(ground, deck) so every existing reader
+        // is byte-identical; this channel is what lets the point-light march
+        // tell a floating slab from a solid pillar. On a deck-free world it
+        // equals R exactly, so those worlds march identically to before.
+        imgL.data[i + 3] = Math.min(255, groundH * hScale);
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -1789,16 +1830,19 @@ export class NightLights {
       return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
     };
     // Bilinear twin of the shader's heightAtSoft (LOS penumbra).
-    const hAtSoft = (c: number, r: number) => {
+    const soft2 = (arr: Float32Array) => (c: number, r: number) => {
       const cf = c - 0.5, rf = r - 0.5;
       const c0 = Math.floor(cf), r0 = Math.floor(rf);
       const fx = cf - c0, fy = rf - r0;
       const v = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : arr[ri * W + ci];
       const a = v(c0, r0), b = v(c0 + 1, r0), d = v(c0, r0 + 1), e = v(c0 + 1, r0 + 1);
       if (a > 90 || b > 90 || d > 90 || e > 90) return hAt(c, r);
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
+    const hAtSoft = soft2(this.hArr);
+    // Twin of groundAtSoft: the ground column alone, deck excluded.
+    const gAtSoft = soft2(this.gArr);
     const t = this.scene.game.loop.getDuration();
     // Directional-sun + cloud twins (see the shader): shade the ambient term.
     const geo = MAP_GEOMETRY;
@@ -1829,8 +1873,13 @@ export class NightLights {
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
           const hRay = z + (L.z - z) * tt + 0.2;
+          // EXACT twin of the shader's two-span test: a deck is a floating
+          // slab, so it only blocks a ray whose light is on its far side.
           const hh = hAtSoft(px, py);
-          if (hh < 90 && hh > hRay) occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (hh - hRay) * 1.5);
+          const hg = gAtSoft(px, py);
+          const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
+          if (blocker < 90 && blocker > hRay)
+            occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
         }
         occ = Math.max(occ, 0.22); // bounce floor — same as the shader
       }

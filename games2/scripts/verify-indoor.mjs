@@ -497,6 +497,15 @@ try {
   const ambient = async (phase, wantIndoor) => {
     let prev = null;
     for (let i = 0; i < 80; i++) {
+      // RE-PIN THE PHASE EVERY POLL. timeOfDay() parks phaseT at 0.5 (the
+      // phase's own anchor) but the WORLD CLOCK KEEPS RUNNING underneath —
+      // blendPhases lerps continuously between mid-phase anchors, so by the
+      // time a slow headless run settles, "Day" has drifted toward Evening and
+      // the cell reads a blend of the two. Measured drift on one run:
+      // [0.892, 0.813, 0.738] — ratios 1 : 0.911 : 0.827, exactly between
+      // Day [1,1,1] and Evening [0.74, 0.55, 0.37] — which reads as "the probe
+      // cell is not light-free" when nothing is lighting it at all.
+      await page.evaluate((ph) => window.__ml.timeOfDay(ph, true, 0.5), phase);
       const v = await page.evaluate(([c, r]) => ({
         l: window.__ml.lightAtCell(c, r),
         mix: window.__ml.indoor().mix,
