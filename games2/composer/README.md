@@ -159,6 +159,25 @@ events; the game never plays unapproved audio. The machinery:
   pipeline** — an anvil punch that ships no metallic ring was never given one
   to ship. The lever for a dull impact is the BRIEF (ask for the bright half
   of the sound out loud), not another decode change.
+- **Round 13** (2026-08-06, "Can you generate 20 level up sounds"): twenty,
+  varied by **shape and mood rather than by instrument**. Round 7 had already
+  spent ten on warm acoustic level-ups (strings, lute, flute, organ, voices,
+  whistle, accordion, marimba, bowl, handdrum) and every one of them was the
+  same gesture — a phrase RISING and RESOLVING BRIGHTLY. Ten timbres of one
+  idea; he kept none and asked again, so timbre was not the missing variable.
+  So each brief fixes a different ARRIVAL: a two-note call answered from far
+  off (`panpipes`), one tone blooming with no melody at all (`glassbloom`,
+  `reed`), a flourish that stops dead on its top note (`fiddle`), a sweep that
+  lands DOWN (`koto`), a shimmer that decays instead of holding (`dulcimer`),
+  a resolve that is tender rather than triumphant (`nylon`). Two are not music
+  — the reward as an OBJECT (`chestlatch`, `forgequench`) — because twelve
+  musical takes cannot be compared against a non-musical one until it exists.
+  Kept from his keep list: warm and acoustic, and NO bright struck metal.
+  Measured after generation: lengths 1.00× (0.83–0.77× on `emberrise` /
+  `chestlatch`, the model returning less than asked — not the decode bug), and
+  the shapes really did separate — attack peaks land at 0.01 s for
+  `hurdygurdy`/`kalimba`/`nylon` versus 1.2–1.5 s for `hymn`/`glassbloom`/
+  `sunrise`/`reed`. Candidates only; nothing is wired.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, every assignable action must stay emitted, and
   every foley set an active route names must EXIST (deleting a rejected set
