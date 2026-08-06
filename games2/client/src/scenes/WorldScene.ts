@@ -886,6 +886,15 @@ export class WorldScene extends Phaser.Scene {
   private indoorDirty = true; // world load / teleport: force the next recompute
   private indoorFlips = 0; // QA: applied transitions (hysteresis is assertable)
   private indoorComputes = 0; // QA: findIndoorSpace calls (never per frame)
+  /** face texture key → its baked SKIRT-ONLY twin (null = un-bakeable). One
+   * canvas per FACE MATERIAL for the whole session — a world uses a handful.
+   * See skirtTextureFor for what the mask is and why it is measured. */
+  private skirtKeys = new Map<string, string | null>();
+  /** skirt key → the highest KEPT row, whole-tile and per 32px screen half.
+   * The mask's top edge is diagonal, so `occluderMeta`'s rectangular box takes
+   * the minimum over the half that is actually drawn — the box has to describe
+   * the art that is really on screen (it is what crops a body's lit copy). */
+  private skirtTop = new Map<string, { all: number; l: number; r: number }>();
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -5663,6 +5672,43 @@ export class WorldScene extends Phaser.Scene {
       if (cell && cell.l >= l) { col = c; row = r; L = l; cellL = cell.l; break; } // L = DRAWN level (ramps up a face); cellL = the column's TOP (cell.l) — lifts a flyer's shadow off the face onto the flat top
     }
     const z = L + altPx / lh;
+    // INDOORS the outside is a black VOID, and a flyer over it has to go with
+    // it — birds, bats and their ground shadows were the one thing still moving
+    // across the blackness (visible as bright specks down the left edge of
+    // every indoor screenshot). The flocks live in games2/ambient/ (another
+    // agent's directory), so this is gated HERE, through the probe contract
+    // they already consume, with no new channel and no edit to their files:
+    //   • `l` = [0,0,0] is a MULTIPLY tint (critters.ts: sprite.setTint(tint)),
+    //     so the creature renders pure black — invisible against the void, and
+    //     it EASES there over gradeCritter's 130ms tau, so crossing a doorway
+    //     is a fade rather than a pop.
+    //   • `fog` = 0 keeps applyFog's tint-FILLED overlay sprite off. That
+    //     overlay paints at the fog COLOUR, so a nonzero fog here would repaint
+    //     the very pixels the black tint just killed. (Indoors the fog is
+    //     already scaled to 0 — this makes it not depend on that.)
+    //   • `lift` > alt is applyShadow's own documented "draw no shadow" case.
+    //     It reads "the flyer is below the resolved clifftop"; over hidden
+    //     ground the honest reading is the same — there is no drawn ground to
+    //     cast on. It is the only shadow-suppressing field the contract has.
+    // NOT null: gradeCritter falls back to FULL BRIGHTNESS + no fog on a null
+    // probe (`p ? p.l : [1,1,1]`), so returning null makes a critter BRIGHTER
+    // over the void, which is the exact opposite of what is wanted.
+    // Hidden = the ground point is not under MY roof, OR it is but the flyer is
+    // at/above my ceiling — a bird cruising 70-120px up over the house roof has
+    // its ground point on the interior floor yet is plainly outside the room.
+    if (this.indoorInside && this.indoorMask) {
+      const ci = Math.floor(row) * this.world.width + Math.floor(col);
+      const inRoom =
+        Math.floor(col) >= 0 &&
+        Math.floor(row) >= 0 &&
+        (this.indoorMask.get(ci) ?? 0) !== 0 &&
+        z < this.indoorCut;
+      if (!inRoom)
+        return {
+          l: [0, 0, 0], fog: 0, fogCol: [0, 0, 0],
+          col, row, L, cellL, lift: altPx + 1, shadowDepth: gy + 3, z,
+        };
+    }
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
     // Depth to sort a critter's ground SHADOW at. The naive `gy + L*lh + 3` uses
@@ -7146,6 +7192,130 @@ export class WorldScene extends Phaser.Scene {
    * half-frame trap — `setFlipX` mirrors WITHIN the sub-frame's own 32px box,
    * landing the half mirrored AND on the wrong side — cannot be reached here.
    */
+  /**
+   * TOPMOST skirt band of an indoor wall column — the loop bound shared by the
+   * ground RT and the occluder pass, so the two renderings cannot drift.
+   * Levels 0..this each draw one 16px skirt band; they tile exactly, and the
+   * result's top edge is the diamond's lower edge at `this` (see
+   * skirtTextureFor).
+   *
+   * A wall that REACHES the ceiling tops out AT `cut`, one band higher than the
+   * old `hi = min(l, cut)` face loop went. That is not an off-by-one — a tile
+   * drawn at level L has its diamond ON the level-L surface and its skirt
+   * hanging BELOW it, i.e. the wall band [L-1, L]. The band [cut-1, cut] — the
+   * last strip of wall under the roof — was drawn by the tile at `cut` in the
+   * uncut world, and the cut deleted it, so the room's walls stopped one level
+   * short of their own ceiling. Every pixel of the band is still BELOW the
+   * ceiling plane, so "nothing at or above the ceiling" holds; what the band
+   * adds is exactly the diagonal top edge landing ON that plane.
+   *
+   * A wall SHORTER than the ceiling keeps the old bound: its own top diamond
+   * is a real surface (a sill) and is drawn whole by the caller, skirt and all.
+   */
+  private wallBands(cellLevel: number, cut: number): number {
+    return cellLevel < cut ? cellLevel - 1 : cut;
+  }
+
+  /**
+   * SKIRT-ONLY variant of a face tile: the same art with everything above the
+   * top diamond's LOWER edge zeroed to alpha 0. Cached per source key; returns
+   * null only when the texture is missing or not tile-sized.
+   *
+   * WHY IT EXISTS — the battlements. A wall column stacks face tiles 16px
+   * apart, and in a normal terrace the tile ABOVE covers each one's 64x30 top
+   * diamond. The ceiling cut deletes that covering tile, so the topmost face
+   * tile in every indoor wall column showed its whole diamond sticking up, and
+   * a wall run read as a row of triangular merlons — a castle crown. Measured
+   * offline on a 5-cell run of the real art: the shipped top edge deviates
+   * 15.9px from a straight line and JUMPS 28px at every cell boundary.
+   *
+   * WHY A BAKED MASK AND NOT A SUB-FRAME: the boundary is the diamond's lower
+   * edge, which runs (0,~26) -> (32,~40) -> (63,~26) — DIAGONAL. A rectangular
+   * crop high enough to keep the skirt at x=0 keeps diamond at x=32 and vice
+   * versa; no rectangle expresses it. So the pixels are read and re-written,
+   * the way ringTextureFor bakes its outline.
+   *
+   * WHERE THE BOUNDARY COMES FROM — measured, not assumed, and DILATION-PROOF.
+   * Per column x the mask keeps rows y >= bot(x) - lh, where bot(x) is the
+   * tile's OWN last opaque row and lh is one level (16px). That is precisely
+   * the band an uncut stack has always shown: the tile 16px above ends at
+   * bot(x) - lh in this tile's frame, so everything the mask removes was
+   * overdrawn anyway. Proven offline against the shipped renderer on the real
+   * tiles — masking EVERY level changed 3,410 pixels and every single one was
+   * art REMOVED: 0 added, 0 recoloured. It is also why the boundary is taken
+   * from the silhouette rather than from the art's tone step: processed base/
+   * tiles are dilated 2px outward (gap_close.grow:2), so a tone-derived
+   * boundary is right but the DILATED skirt of the covering tile hangs 1-2px
+   * past it (measured: -1 row on 16 of the 38 columns where the SW face is
+   * shaded enough to read a tone step at all; 0 on the other 22, and the SE
+   * face is too close in tone to answer). Deriving the boundary from the same
+   * silhouette that does the covering cancels the dilation exactly.
+   *
+   * The result's top edge is the diamond's lower edge, which is diagonal at the
+   * iso slope — so adjacent columns' tops join into one straight wall line
+   * (measured on the same 5-cell run: slope -0.470 against the ideal -15/32 =
+   * -0.469, worst deviation 0.8px, biggest jump 1px).
+   */
+  private skirtTextureFor(key: string): string | null {
+    const cached = this.skirtKeys.get(key);
+    if (cached !== undefined) return cached;
+    const out = this.bakeSkirt(key);
+    this.skirtKeys.set(key, out);
+    return out;
+  }
+
+  private bakeSkirt(key: string): string | null {
+    const tex = this.textures.get(key);
+    const src = tex?.getSourceImage() as (CanvasImageSource & { width?: number; height?: number }) | undefined;
+    const w = src?.width ?? 0;
+    const h = src?.height ?? 0;
+    if (!tex || !src || !w || h < MAP_GEOMETRY.lh + 1) return null;
+    const outKey = `skirt:${key}`;
+    // The measurement runs even when the texture is already registered: the
+    // texture manager is GLOBAL and outlives the scene, but `skirtTop` (which
+    // the occluder box reads) is per-scene, so a re-join must re-measure or
+    // every wall's box silently reverts to the pre-mask top. It is a 64x64
+    // pass, once per face material.
+    const exists = this.textures.exists(outKey);
+    const cnv = document.createElement("canvas");
+    cnv.width = w;
+    cnv.height = h;
+    const ctx = cnv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(src, 0, 0);
+    const im = ctx.getImageData(0, 0, w, h);
+    const d = im.data;
+    // bot(x) = last opaque row per column; then zero everything above the
+    // diamond's lower edge at bot(x) - lh. A fully transparent column simply
+    // stays transparent (bot = -1 keeps nothing, which is what it already was).
+    let topRow = h; // highest kept row over the WHOLE tile (the art's real top)
+    const halfTop = [h, h]; // ...and per 32px screen half, for the occluder box
+    for (let x = 0; x < w; x++) {
+      let bot = -1;
+      for (let y = h - 1; y >= 0; y--)
+        if (d[(y * w + x) * 4 + 3] > 0) {
+          bot = y;
+          break;
+        }
+      if (bot < 0) continue;
+      const keepFrom = bot - MAP_GEOMETRY.lh;
+      for (let y = 0; y < keepFrom; y++) d[(y * w + x) * 4 + 3] = 0;
+      const first = Math.max(0, keepFrom);
+      topRow = Math.min(topRow, first);
+      const half = x < MAP_GEOMETRY.tile / 2 ? 0 : 1;
+      halfTop[half] = Math.min(halfTop[half], first);
+    }
+    this.skirtTop.set(outKey, { all: topRow, l: halfTop[0], r: halfTop[1] });
+    if (exists) return outKey;
+    ctx.putImageData(im, 0, 0);
+    // NEAREST explicitly — addCanvas does NOT inherit pixelArt's default the
+    // way loaded textures do, and LINEAR smears a hard pixel-art edge into a
+    // soft halo at fractional camera zoom. This file has been bitten here once
+    // already (see ringTextureFor).
+    this.textures.addCanvas(outKey, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    return outKey;
+  }
+
   private halfFrames(key: string): boolean {
     const tex = this.textures.get(key);
     if (!tex) return false;
@@ -7257,12 +7427,16 @@ export class WorldScene extends Phaser.Scene {
               // IS the ceiling. wallRight ⇒ the room is toward (col+1), which
               // is down-RIGHT on screen ⇒ its SE face ⇒ the RIGHT half; a cell
               // in BOTH sets is an inside corner and draws both.
-              if (this.halfFrames(fk)) {
-                const hi = Math.min(cell.l, cut);
-                for (let lvl = 0; lvl < hi; lvl++) {
+              // EVERY level draws the SKIRT-ONLY twin, and the topmost band
+              // sits at the CEILING itself (`cut`), not one level under it.
+              // Both halves of that are load-bearing — see wallBands.
+              const sk = this.skirtTextureFor(fk) ?? fk;
+              if (this.halfFrames(sk)) {
+                const top = this.wallBands(cell.l, cut);
+                for (let lvl = 0; lvl <= top; lvl++) {
                   const y = by - lvl * lh;
-                  if (vis & IN_WALL_L) rt.batchDrawFrame(fk, HALF_L, bx, y);
-                  if (vis & IN_WALL_R) rt.batchDrawFrame(fk, HALF_R, bx + tile / 2, y);
+                  if (vis & IN_WALL_L) rt.batchDrawFrame(sk, HALF_L, bx, y);
+                  if (vis & IN_WALL_R) rt.batchDrawFrame(sk, HALF_R, bx + tile / 2, y);
                 }
                 // A wall SHORTER than the ceiling ends inside the room's air,
                 // so its top diamond is a real surface you look down on (a sill
@@ -7652,38 +7826,41 @@ export class WorldScene extends Phaser.Scene {
           const half = tileSize / 2;
           if (vis & (IN_WALL_L | IN_WALL_R)) {
             // A FAR wall, indoors: the occluder copy must draw EXACTLY what the
-            // ground RT drew — the inward 32px face half per level below the
+            // ground RT drew — the inward 32px SKIRT half per band up to the
             // ceiling, and no tile top. Draw the full tile here and the extra
-            // 32px would sit on top of the RT at sprite depth and undo the cut.
-            const hi = Math.min(cell.l, cut); // face levels drawn: 0 .. hi-1
-            if (hi <= 0 || !this.halfFrames(fk)) continue;
+            // 32px would sit on top of the RT at sprite depth and undo the cut;
+            // draw the UNMASKED face and the battlement the RT no longer has
+            // comes straight back as a sprite (same trap, one layer up).
+            const top = this.wallBands(cell.l, cut); // skirt bands drawn: 0 .. top
+            const sk = this.skirtTextureFor(fk) ?? fk;
+            if (top < 0 || !this.halfFrames(sk)) continue;
             const L = !!(vis & IN_WALL_L);
             const R = !!(vis & IN_WALL_R);
             const pushHalf = (lvl: number) => {
               const y = by - lvl * lh;
               // Half frames + setFlipX do NOT compose (the mirror happens inside
               // the sub-frame's own 32px box, landing the half mirrored AND on
-              // the wrong side). Safe here: `fk` is the material's plain FACE
-              // tile and faces are never flipped — only tops are.
+              // the wrong side). Safe here: `sk` is baked from the material's
+              // plain FACE tile and faces are never flipped — only tops are.
               if (L)
                 this.occluders.push(
-                  this.tagOccluder(this.add.image(bx, y, fk, HALF_L).setOrigin(0, 0).setDepth(oDepth), col, row),
+                  this.tagOccluder(this.add.image(bx, y, sk, HALF_L).setOrigin(0, 0).setDepth(oDepth), col, row),
                 );
               if (R)
                 this.occluders.push(
-                  this.tagOccluder(this.add.image(bx + half, y, fk, HALF_R).setOrigin(0, 0).setDepth(oDepth), col, row),
+                  this.tagOccluder(this.add.image(bx + half, y, sk, HALF_R).setOrigin(0, 0).setDepth(oDepth), col, row),
                 );
             };
-            for (let lvl = this.stackFrom(col, row, hi - 1, false); lvl < hi - 1; lvl++) {
+            for (let lvl = this.stackFrom(col, row, top, false); lvl < top; lvl++) {
               if (!shows(bx, by - lvl * lh)) {
                 culled++;
                 continue;
               }
               pushHalf(lvl);
             }
-            const topLvl = cell.l < cut ? cell.l : hi - 1;
+            const topLvl = cell.l < cut ? cell.l : cut;
             if (columnShows(bx, by - topLvl * lh, by + tileSize)) {
-              pushHalf(hi - 1);
+              pushHalf(top);
               if (cell.l < cut)
                 this.occluders.push(
                   this.tagOccluder(
@@ -7693,6 +7870,19 @@ export class WorldScene extends Phaser.Scene {
                   ),
                 );
             } else culled++;
+            // The box has to describe the art that is REALLY drawn — it is what
+            // crops a body's lit copy (`coverY`) and what the depth ray tests
+            // against. Two consequences of the skirt mask, both measured:
+            //  • `top` is now the CEILING level, not `hi-1`: the column really
+            //    does reach the ceiling plane (see wallBands).
+            //  • y0 starts at the mask's own highest kept row, ~25px into the
+            //    tile, not at the tile's origin — the diamond above it is gone.
+            //    The edge is diagonal and this box is a rectangle, so it takes
+            //    the minimum over the half(s) actually drawn (the art's highest
+            //    point), which keeps the box a superset of the art and never
+            //    crops a body against a pixel that is not there.
+            const st = this.skirtTop.get(sk);
+            const skTop = !st ? 0 : L && R ? st.all : L ? st.l : st.r;
             this.occluderMeta.push({
               col,
               row,
@@ -7705,7 +7895,7 @@ export class WorldScene extends Phaser.Scene {
               // (both sets) draws both halves and keeps the full box.
               x0: L ? bx : bx + half,
               x1: R ? bx + tileSize : bx + half,
-              y0: by - topLvl * lh,
+              y0: by - topLvl * lh + (cell.l < cut ? 0 : skTop),
               y1: by + tileSize,
             });
             continue;
