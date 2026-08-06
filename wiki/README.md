@@ -426,6 +426,36 @@ to replace the parsing.
   `live/tuning/sfx_requests.json` (`pixel-wiki-sfx-requests@1`, server key
   `tuning/sfx_requests`): pick a sound, set pitch / volume dB / max random
   pitch, note. The composer agent consumes and deletes entries it acted on.
+- **Assigning a sound is a LISTENING job** (maintainer 2026-08-06), so the
+  picker is a real dialog (`openSoundPicker`), not a `<select>`: search, one
+  row per sound carrying its length and whether the game already uses it, ▶
+  on every row, and Prev/Next (or ↑/↓) that step AND play as they go so you
+  can hunt down the list for the right one. Pitch / volume / random pitch are
+  sliders inside the dialog — volume's normal value is **0 dB = exactly as
+  recorded** — and the request carries the numbers you auditioned with. The
+  generic `dialog input` rule is scoped to `:not(.sfx-picker)`: it is the
+  sign-in dialog's full-width stacked field and it wrecked these rows.
+- **One sound at a time.** `sfxEngine.stop()` runs BEFORE the fetch and bumps
+  a generation counter, so stepping to the next sound kills the previous one
+  instantly and a slow take whose decode is still in flight never starts
+  playing after you have moved on.
+- **Auditions try every format the take ships** (`audioCandidates`): ogg →
+  m4a → wav, first one that decodes wins, and the picked url is what the
+  play log records. Not a nicety — the library asked for `.m4a` first and
+  **Chromium ships no AAC decoder**, so every catalog sound in the raw list
+  failed to load while the composer's `.wav` sets played. Same order the
+  game's own engine probes (`composer/engine/catalog.ts`).
+- **Every take shows its length**, from the composer's `durations_s` or, for
+  catalog takes, `wavDuration()` in build.mjs — a RIFF chunk walk (data bytes
+  ÷ byteRate), zero dependencies because it runs in the Docker build too.
+- **Three status chips carry the whole state of an event** for the Game
+  Master: green **in game** (assigned AND fired by game code — what players
+  hear), coral **no sound yet** (nothing assigned), red **not fired yet** (a
+  sound is assigned but no game code triggers it, so nobody can hear it).
+  They are mutually exclusive by construction; the gate asserts no card ever
+  shows a contradictory pair. The engine's `bus` is plumbing and is no longer
+  named in the UI — the layer pill reads `volume −26 dB` and explains itself
+  in plain words on hover.
 - **Events have a TYPE** (maintainer 2026-08-05): `scope` is either null
   (generic — listed under Sound Effects) or `{domain, id}` (entity-owned —
   listed on that entity's page). Jump and Fall are scoped per hero: the game

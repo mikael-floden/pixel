@@ -420,7 +420,11 @@ dialog {
   box-shadow: var(--shadow); padding: 20px; max-width: 460px;
 }
 dialog::backdrop { background: rgba(20, 18, 12, 0.45); }
-dialog input {
+/* The full-width stacked field is the SIGN-IN dialog's look. Scoped on
+   purpose: the sound picker holds sliders and a search box in rows, and the
+   blanket rule stretched every one of them to full width with 10px of
+   margin — the "bad CSS input" (maintainer 2026-08-06). */
+dialog:not(.sfx-picker) input {
   width: 100%; background: var(--bg); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
   font: inherit; margin: 10px 0;
@@ -678,8 +682,49 @@ button.drop-row {
 .sfx-add-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
 .sfx-add-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
 .sfx-pick { max-width: 46%; }
-.sfx-num { width: 62px; }
 .sfx-note { flex: 1; min-width: 140px; }
+
+/* The audition sliders are wiki furniture, not browser chrome. */
+input[type="range"] { accent-color: var(--accent); }
+
+/* ---- the sound picker dialog: a listening tool. The list is the tall part
+   (that is where the iterating happens); the transport, the three audition
+   controls and the note sit under it, in rows, at their natural widths. */
+.sfx-picker { width: min(560px, calc(100vw - 24px)); max-width: none; padding: 18px; }
+.sfx-picker h3 { margin: 0 0 2px; }
+.picker-for { margin: 0 0 10px; font-size: 12.5px; }
+.sfx-picker input[type="search"], .sfx-picker .picker-note {
+  width: 100%; background: var(--bg); color: var(--ink); font: inherit;
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
+}
+.sfx-picker .picker-note { margin-top: 8px; }
+.picker-list {
+  margin-top: 8px; max-height: min(46vh, 340px); overflow-y: auto;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+}
+.picker-row {
+  display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
+  padding: 7px 9px; background: none; border: none; border-bottom: 1px solid var(--border);
+  color: inherit; font: inherit;
+}
+.picker-row:last-child { border-bottom: none; }
+/* One line per sound, always: the NAME gives up its width (ellipsis) so the
+   chips at the right — length, and whether the game uses it — survive a
+   393px phone instead of being clipped by the list's own overflow. */
+.picker-row .take-name { font-size: 13px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker-row .pill { flex: none; }
+.picker-row .play-btn { pointer-events: none; flex: none; }
+.picker-row.sel { background: var(--accent-soft); }
+.picker-row.sel .take-name { color: var(--accent-ink); font-weight: 600; }
+.picker-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.picker-bar .ghost-btn { padding: 5px 12px; }
+.picker-chosen { font-size: 12.5px; margin-left: auto; }
+.picker-ctls { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.picker-ctl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.picker-ctl > span:first-child { min-width: 84px; }
+.picker-ctl input[type="range"] { flex: 1; min-width: 120px; }
+.sfx-picker .dialog-row { margin-top: 12px; }
 .sfx-lib { margin-top: 26px; }
 .sfx-lib-row { border-top: 1px solid var(--border); padding: 8px 0; }
 .sfx-lib-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }

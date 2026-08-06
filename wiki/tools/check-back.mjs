@@ -76,19 +76,28 @@ await p.evaluate(() => { location.hash = "#/items"; });
 await p.waitForTimeout(900);
 ok((await look()).y === 0, "an ordinary forward navigation still starts at the top");
 
-// --- 5. the maintainer's literal walk: Stumpling → Sprigling (a CREATURE link,
-//        which lands mid-page on the target's own story) → Back.
+// --- 5. the maintainer's literal walk: Stumpling → a creature it points at (an
+//        ENTITY link, which lands mid-page on the target's own story) → Back.
+//        DATA-DRIVEN: the lore agent rewrites who points at whom, and pinning a
+//        specific pair (it was Sprigling until lore v2) fails on their content,
+//        not on this behaviour. Any entity link exercises the same rule.
+const entityLink = () => p.evaluate(() =>
+  [...document.querySelectorAll(".story-card .see-also a")]
+    .map((a) => a.getAttribute("href"))
+    .find((hr) => /^#\/(monsters|characters|items|tiles|objects)\//.test(hr)) ?? null);
 await p.goto(W + "#/monsters/tree_stump", { waitUntil: "load" });
 await p.waitForTimeout(1500);
 await p.evaluate(() => document.querySelector(".story-card .page-rail .nav-btn:last-child").click());
 await p.waitForTimeout(400);
 const st = await look();
-await p.evaluate(() => document.querySelector('.story-card .see-also a[href="#/monsters/forest_poring_2"]').click());
+const hop1 = await entityLink();
+ok(!!hop1, `Stumpling's story points at an entity (${hop1})`);
+await p.evaluate((hr) => document.querySelector(`.story-card .see-also a[href="${hr}"]`).click(), hop1);
 await p.waitForTimeout(1300);
 const sp = await look();
 console.log(`Stumpling(${st.page}) → ${sp.h1}: y=${sp.y}, card at ${sp.cardTop}`);
-ok(sp.h1 === "Sprigling", "the creature link opens Sprigling");
-ok(sp.cardTop !== null && Math.abs(sp.cardTop - sp.bar) <= 20, `it lands ON Sprigling's story (card at ${sp.cardTop}, topbar ${sp.bar})`);
+ok(sp.h1 && sp.h1 !== "Stumpling", `the entity link opens ${sp.h1}`);
+ok(sp.cardTop !== null && Math.abs(sp.cardTop - sp.bar) <= 20, `it lands ON ${sp.h1}'s story (card at ${sp.cardTop}, topbar ${sp.bar})`);
 await p.goBack({ waitUntil: "load" });
 await p.waitForTimeout(1300);
 const st2 = await look();
@@ -97,8 +106,9 @@ ok(st2.h1 === "Stumpling" && st2.page === st.page && Math.abs(st2.cardTop - st.c
   `Back lands on Stumpling's story, page ${st.page}, where it was`);
 
 // --- 6. a three-deep trail unwinds one page at a time
-await p.evaluate(() => document.querySelector('.story-card .see-also a[href="#/monsters/forest_poring_2"]').click());
+await p.evaluate((hr) => document.querySelector(`.story-card .see-also a[href="${hr}"]`).click(), hop1);
 await p.waitForTimeout(1200);
+const midName = (await look()).h1;
 await p.evaluate(() => document.querySelector(".story-card .see-also a").click());
 await p.waitForTimeout(1200);
 const deep = await look();
@@ -106,8 +116,8 @@ await p.goBack({ waitUntil: "load" }); await p.waitForTimeout(1100);
 const mid = await look();
 await p.goBack({ waitUntil: "load" }); await p.waitForTimeout(1100);
 const home = await look();
-console.log(`trail: Stumpling → Sprigling → ${deep.h1} | back: ${mid.h1}@${mid.y} → ${home.h1}@${home.y}`);
-ok(mid.h1 === "Sprigling" && mid.y > 0, `first Back → Sprigling, still on its story (y=${mid.y})`);
+console.log(`trail: Stumpling → ${midName} → ${deep.h1} | back: ${mid.h1}@${mid.y} → ${home.h1}@${home.y}`);
+ok(mid.h1 === midName && mid.y > 0, `first Back → ${midName}, still on its story (y=${mid.y})`);
 ok(home.h1 === "Stumpling" && home.page === st.page, `second Back → Stumpling, page ${home.page}`);
 
 console.log("page errors:", errs.length ? errs : "none");

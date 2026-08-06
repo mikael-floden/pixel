@@ -30,6 +30,7 @@ const player = await p.evaluate(() => ({
   lib: !!document.querySelector(".sfx-lib"),
   stars: document.querySelectorAll(".sfx-event .stars").length,
   addForms: document.querySelectorAll(".sfx-add").length,
+  inGame: [...document.querySelectorAll(".sfx-event .pill.ok")].filter((x) => x.textContent === "in game").length,
   notFired: [...document.querySelectorAll(".pill")].filter((x) => /not fired/.test(x.textContent)).length,
   groups: [...document.querySelectorAll("h2")].map((x) => x.textContent.replace(/\d+$/, "").trim()),
   aGrass: [...document.querySelectorAll(".sfx-event .panel-title")].some((x) => /Footsteps · Grass/.test(x.textContent)),
@@ -39,7 +40,7 @@ ok(player.cards > 0 && player.aGrass, `players see the events (${player.cards})`
 const pTitles = await p.evaluate(() => [...document.querySelectorAll(".sfx-event .panel-title")].map((x) => x.textContent));
 ok(!pTitles.some((t) => /Jump|Fall/.test(t)), "jump/fall live on the hero pages, not here");
 ok(!pTitles.some((t) => /Chest|Potion|Confirm|Cancel/.test(t)), "players see nothing the game does not fire");
-ok(player.silent === 0 && !player.lib && player.stars === 0 && player.addForms === 0 && player.notFired === 0,
+ok(player.silent === 0 && !player.lib && player.stars === 0 && player.addForms === 0 && player.notFired === 0 && player.inGame === 0,
   "players see NO silent events, no library, no stars, no add forms, no pipeline pills");
 ok(player.groups.includes("Movement") && player.groups.includes("Interface"), "grouped by kind of moment");
 
@@ -124,24 +125,81 @@ const audition = await p.evaluate(async () => {
 ok(audition.v0 === "2" && audition.raw[0]?.rate === 2, `a voice's raw play is ×2 by default (slider ${audition.v0}, played ${audition.raw[0]?.rate})`);
 ok(audition.slid[0]?.rate === 1.5 && /1\.5/.test(audition.label), `the pitch slider drives the audition and shows its value (${audition.slid[0]?.rate}, "${audition.label}")`);
 
-// request flow: queue → pending row → savebar → withdraw
+// ---------- the status chips a Game Master steers by (maintainer 2026-08-06)
+const chips = await p.evaluate(() => {
+  const pills = (c) => [...c.querySelectorAll(".pill")].map((x) => x.textContent);
+  const notFired = [...document.querySelectorAll(".sfx-event .pill")].filter((x) => x.textContent === "not fired yet");
+  return {
+    inGame: [...document.querySelectorAll(".sfx-event .pill.ok")].filter((x) => x.textContent === "in game").length,
+    notFired: notFired.length, notFiredRed: notFired.filter((x) => x.classList.contains("err")).length,
+    contradictions: [...document.querySelectorAll(".sfx-event")].filter((c) => {
+      const t = pills(c);
+      return t.includes("in game") && (t.includes("not fired yet") || t.includes("no sound yet"));
+    }).length,
+    bus: /\bbus\b/i.test(document.querySelector("#content").innerText),
+    takes: document.querySelectorAll(".sfx-take").length,
+    durs: [...document.querySelectorAll(".sfx-take .pill")].filter((x) => /^[\d.]+s$|^\d+:\d\d$/.test(x.textContent)).length,
+  };
+});
+console.log("chips:", JSON.stringify(chips));
+ok(chips.inGame > 0, `assigned AND fired events carry the green "in game" chip (${chips.inGame})`);
+ok(chips.notFired > 0 && chips.notFiredRed === chips.notFired, `"not fired yet" is RED on all ${chips.notFired}`);
+ok(chips.contradictions === 0, "no event claims to be in game and broken at once");
+ok(!chips.bus, "no engine 'bus' jargon anywhere on the page");
+ok(chips.takes > 0 && chips.durs === chips.takes, `every take shows its length (${chips.durs}/${chips.takes})`);
+
+// ---------- the picker dialog: search, listen, step, assign
+const picker = await p.evaluate(async () => {
+  document.querySelector(".sfx-event .sfx-add-open").click();
+  await new Promise((r) => setTimeout(r, 300));
+  const d = document.querySelector("dialog.sfx-picker");
+  if (!d?.open) return { open: false };
+  const rows = d.querySelectorAll(".picker-row").length;
+  const ctl = [...d.querySelectorAll(".picker-ctl")].map((c) => `${c.querySelector("span").textContent}=${c.querySelector("code").textContent}`);
+  // step down the list: each step must PLAY, and only one may be sounding
+  window.__sfxPlays.length = 0;
+  const next = [...d.querySelectorAll(".picker-bar .ghost-btn")].find((x) => /Next/.test(x.textContent));
+  const names = [];
+  for (let i = 0; i < 3; i++) {
+    next.click();
+    await new Promise((r) => setTimeout(r, 260));
+    names.push(d.querySelector(".picker-row.sel .take-name").textContent);
+  }
+  return { open: true, rows, ctl, names, plays: window.__sfxPlays.length, live: sfxEngine.live.size,
+    durs: [...d.querySelectorAll(".picker-row")].filter((r) => [...r.querySelectorAll(".pill")].some((x) => /^[\d.]+s$|^\d+:\d\d$/.test(x.textContent))).length,
+    searchMargin: getComputedStyle(d.querySelector("input[type=search]")).marginTop,
+    fits: d.getBoundingClientRect().width <= window.innerWidth };
+});
+console.log("picker:", JSON.stringify(picker));
+ok(picker.open && picker.rows > 40, `the picker is a dialog listing the library (${picker.rows} sounds)`);
+ok(picker.durs === picker.rows, `every row shows its length (${picker.durs}/${picker.rows})`);
+ok(picker.ctl?.join(",") === "pitch=1×,volume=0 dB,random pitch=0 st", `audition controls start at normal values (${picker.ctl?.join(", ")})`);
+ok(picker.searchMargin === "0px" && picker.fits, "the dialog's own input CSS (not the sign-in dialog's) and it fits a phone");
+ok(picker.plays === 3 && new Set(picker.names).size === 3, `Next steps AND plays (${picker.plays} plays: ${picker.names?.join(" → ")})`);
+ok(picker.live <= 1, `only one sound is ever sounding — the previous stops dead (${picker.live})`);
+
+// request flow: assign from the dialog → pending row → savebar → withdraw
 const req = await p.evaluate(async () => {
-  const card = [...document.querySelectorAll(".sfx-event")].find((c) => /no sound yet|not fired/.test(c.textContent)) ?? document.querySelector(".sfx-event");
-  const form = card.querySelector(".sfx-add");
-  form.querySelector(".sfx-pick").value = form.querySelector(".sfx-pick option").value;
-  form.querySelector('input[title="pitch (playbackRate)"]').value = "1.2";
-  form.querySelector('input[title="max random pitch, semitones"]').value = "0.5";
-  [...form.querySelectorAll("button")].find((x) => /Request/.test(x.textContent)).click();
+  const d = document.querySelector("dialog.sfx-picker");
+  const set = (label, v) => {
+    const c = [...d.querySelectorAll(".picker-ctl")].find((x) => x.textContent.startsWith(label));
+    c.querySelector("input").value = String(v);
+    c.querySelector("input").dispatchEvent(new Event("input"));
+  };
+  set("pitch", 1.2); set("random pitch", 0.5);
+  d.querySelector(".dialog-row .primary-btn").click();
   await new Promise((r) => setTimeout(r, 400));
   const after = document.querySelector(".sfx-req");
   return {
     pending: after?.textContent ?? null,
+    closed: !document.querySelector("dialog.sfx-picker"),
     savebar: !document.querySelector("#savebar").classList.contains("hidden"),
     stored: Object.values(JSON.parse(JSON.stringify((window.state ?? {}).tuning?.sfx_requests?.requests ?? {}))),
   };
 });
 console.log("request:", JSON.stringify(req).slice(0, 300));
 ok(!!req.pending && /pitch ×1\.2/.test(req.pending) && /±0\.5 st/.test(req.pending), "the request renders with its pitch/vol/random-pitch");
+ok(req.closed, "assigning closes the picker");
 ok(req.savebar, "the savebar offers to send it (same save path as all live edits)");
 const withdrew = await p.evaluate(async () => {
   document.querySelector(".sfx-req .x-btn").click();

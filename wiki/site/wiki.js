@@ -1761,11 +1761,46 @@ const sfxPlays = [];                                // test/debug: what actually
 window.__sfxPlays = sfxPlays;
 const sfxEngine = {
   ctx: null, buffers: new Map(), lastTake: new Map(), lastAt: new Map(),
+  live: new Set(),                                  // sources still sounding
+  gen: 0,                                           // bumped by stop(); stale decodes check it
   ac() { return (this.ctx ??= new (window.AudioContext || window.webkitAudioContext)()); },
+  /** Cut everything that is sounding, right now. Auditioning your way down a
+   *  list means each ▶ must replace the last one instantly (maintainer
+   *  2026-08-06) — two overlapping takes tell you nothing about either.
+   *  The generation bump matters as much as the stop: a take whose decode is
+   *  still in flight must not start playing after you have already moved on. */
+  stop() {
+    this.gen++;
+    for (const s of this.live) { try { s.stop(); } catch {} }
+    this.live.clear();
+  },
+  /** Every source goes through here so `stop()` can reach it. */
+  track(src) {
+    this.live.add(src);
+    src.addEventListener("ended", () => this.live.delete(src), { once: true });
+  },
+  /** Decode a take, trying each format the catalog ships until one WORKS.
+   *  Not a nicety: the library auditioned `.m4a` first, and Chromium carries
+   *  no AAC decoder — so every catalog sound in the raw list and the picker
+   *  failed to load while the composer's .wav sets played fine. Order is
+   *  ogg (Chrome/Firefox) → m4a (Safari, which has no ogg) → wav (always).
+   *  Resolves to {buf, file} so callers can report what actually played. */
   async buffer(rel) {
-    if (this.buffers.has(rel)) return this.buffers.get(rel);
-    const p = fetch(assetUrl(rel)).then((r) => r.arrayBuffer()).then((b) => this.ac().decodeAudioData(b)).catch(() => null);
-    this.buffers.set(rel, p);
+    const cands = (Array.isArray(rel) ? rel : [rel]).filter(Boolean);
+    const key = cands.join("|");
+    if (this.buffers.has(key)) return this.buffers.get(key);
+    const p = (async () => {
+      for (const file of cands) {
+        try {
+          const r = await fetch(assetUrl(file));
+          if (!r.ok) continue;
+          const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
+          if (buf) return { buf, file };
+        } catch { /* next format */ }
+      }
+      return null;
+    })();
+    this.buffers.set(key, p);
     return p;
   },
   pickTake(key, takes, primaryOnly) {
@@ -1783,10 +1818,17 @@ const sfxEngine = {
     const now = performance.now();
     if (now - (this.lastAt.get(key) ?? -1e9) < (eng.debounceMs ?? 30)) return;  // oneshot.play debounce
     this.lastAt.set(key, now);
+    // Silence the last one BEFORE the fetch, not after: an uncached take takes
+    // a network round-trip to decode, and waiting would leave the two sounds
+    // overlapping for exactly as long as the file is slow to arrive.
+    if (over.solo !== false) this.stop();
+    const gen = this.gen;
     const idx = this.pickTake(key, layer.takes, /primary/.test(layer.pick ?? ""));
     const take = layer.takes[idx];
-    const buf = await this.buffer(take.file);
-    if (!buf) { toast(`Could not load ${take.name}`); return; }
+    const got = await this.buffer(take.file);
+    if (!got) { toast(`Could not load ${take.name}`); return; }
+    if (gen !== this.gen) return;                   // you moved on while it decoded
+    const buf = got.buf;
     const ctx = this.ac();
     const rand = (a, b) => a + Math.random() * (b - a);
     const semis = layer.jitterSemis ? rand(layer.jitterSemis[0], layer.jitterSemis[1]) : 0;
@@ -1805,26 +1847,34 @@ const sfxEngine = {
     const g = ctx.createGain();
     g.gain.value = Math.pow(10, db / 20);           // catalog.dbToGain
     head.connect(g); g.connect(ctx.destination);
+    this.track(src);
     src.start();
-    sfxPlays.push({ file: take.file, rate: +rate.toFixed(4), db: +db.toFixed(2), lowpassHz: layer.lowpassHz ?? null });
+    sfxPlays.push({ file: got.file, rate: +rate.toFixed(4), db: +db.toFixed(2), lowpassHz: layer.lowpassHz ?? null });
   },
   /** The whole EVENT: every layer at once — that is what the game does
    *  (grass footstep = the grass set AND dirt underneath, same instant). */
-  playEvent(ev) { for (const l of ev.sounds) void this.playLayer(l); },
+  playEvent(ev) {
+    this.stop();                                    // the previous audition, not this event's own layers
+    for (const l of ev.sounds) void this.playLayer(l, { solo: false });
+  },
   /** The admin's all-sounds list: raw file, or the audition sliders. */
   async rawOrAudition(file, { rate = 1, gainDb = 0, maxSemis = 0 } = {}) {
-    const buf = await this.buffer(file);
-    if (!buf) { toast("Could not load the take"); return; }
+    this.stop();                                    // before the fetch — see playLayer
+    const gen = this.gen;
+    const got = await this.buffer(file);
+    if (!got) { toast("Could not load the take"); return; }
+    if (gen !== this.gen) return;                   // you moved on while it decoded
     const ctx = this.ac();
     const semis = maxSemis ? (Math.random() * 2 - 1) * maxSemis : 0;
     const r = rate * Math.pow(2, semis / 12);
     const src = ctx.createBufferSource();
-    src.buffer = buf; src.playbackRate.value = r;
+    src.buffer = got.buf; src.playbackRate.value = r;
     const g = ctx.createGain();
     g.gain.value = Math.pow(10, gainDb / 20);
     src.connect(g); g.connect(ctx.destination);
+    this.track(src);
     src.start();
-    sfxPlays.push({ file, rate: +r.toFixed(4), db: +gainDb.toFixed(2), lowpassHz: null, raw: true });
+    sfxPlays.push({ file: got.file, rate: +r.toFixed(4), db: +gainDb.toFixed(2), lowpassHz: null, raw: true });
   },
 };
 
@@ -1851,6 +1901,10 @@ function muteGameBtn() {
    silent events, the stars, the add-a-sound requests and the raw all-sounds
    list at the bottom are the Game Master's. */
 const stFmt = (x) => (Number.isInteger(x) ? String(x) : x.toFixed(2).replace(/0$/, ""));
+/** Every format a catalog take ships, best decoder first. Ogg leads because
+ *  Chrome and Firefox both decode it and it is a tenth of the wav's bytes;
+ *  m4a is there for Safari (no ogg); wav always works. */
+const audioCandidates = (t) => [t?.files?.ogg, t?.files?.m4a, t?.files?.wav].filter(Boolean);
 function sfxTakeFb(layer, take) {
   // Stars flow to the agent that OWNS the take: catalog takes to the sounds
   // agent (the ids it already consumes), composer takes to the composer.
@@ -1868,7 +1922,7 @@ function sfxLayerRow(ev, layer) {
       h("span", { class: "take-name" }, layer.label),
       layer.voiceRate ? h("span", { class: "pill ok", title: "The vocal takes are authored at half speed — 2× is the true voice" }, `voice ×${stFmt(layer.voiceRate)}`) : null,
       layer.rate !== 1 && !layer.voiceRate ? h("span", { class: "pill", title: "playbackRate — pitch and speed together" }, `pitch ×${stFmt(layer.rate)}`) : null,
-      h("span", { class: "pill", title: `mix ${stFmt(layer.mixGainDb ?? 0)} dB + event ${stFmt(layer.trimDb ?? 0)} dB + ${layer.bus} bus ${stFmt(state.data.sfx.engine.busDb?.[layer.bus] ?? 0)} dB` }, `${totalDb > 0 ? "+" : ""}${stFmt(totalDb)} dB`),
+      h("span", { class: "pill", title: `How loud it plays: the recording's own level (${stFmt(layer.mixGainDb ?? 0)} dB), this event's trim (${stFmt(layer.trimDb ?? 0)} dB) and the game's ${layer.bus === "ui" ? "interface" : layer.bus === "ambience" ? "ambience" : "sound-effects"} fader (${stFmt(state.data.sfx.engine.busDb?.[layer.bus] ?? 0)} dB), added up` }, `volume ${totalDb > 0 ? "+" : ""}${stFmt(totalDb)} dB`),
       jitTxt ? h("span", { class: "pill", title: "Random pitch on every play (already scaled by the engine's gentleness ×0.35)" }, `pitch jitter ${jitTxt}`) : null,
       layer.gainJitterDb ? h("span", { class: "pill", title: "Random volume on every play (gentled)" }, `vol ±${stFmt(Math.abs(layer.gainJitterDb[1]))} dB`) : null,
       layer.lowpassHz ? h("span", { class: "pill", title: "Fixed tone shaping" }, `lowpass ${layer.lowpassHz} Hz`) : null,
@@ -1907,35 +1961,136 @@ function setSfxRequest(id, val) {
   touch("tuning/sfx_requests", id);
   markDirty("tuning/sfx_requests");
 }
+/* ---- the sound PICKER ---------------------------------------------------
+   Assigning a sound is a listening job, not a dropdown job (maintainer
+   2026-08-06: "I must be able to listen to the sound I'm about to add and
+   the UX should make it easy to listen to the next sound … iterate the list
+   and search for the perfect sound"). So it is a real dialog: search, one
+   row per sound with its own ▶ and its length, and Prev/Next (or ↑/↓) that
+   step AND play as they go. Every play cuts the previous one dead —
+   sfxEngine.stop() runs before the fetch, so even an uncached take can't
+   overlap the one you were just listening to. */
+function sfxLibraryList() {
+  const out = [];
+  for (const s of state.data.domains.sounds) {
+    const t = s.takes[0];
+    out.push({ key: `cat:${s.id}`, wire: s.id, name: s.name, kind: "catalog", sub: s.category,
+      file: audioCandidates(t), dur: t?.dur ?? s.duration_s ?? null,
+      voice: false, takes: s.takes.length, used: (s.usedBy ?? []).length });
+  }
+  for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
+    out.push({ key: `set:${set}`, wire: `composer/${set}`, name: set, kind: "composer",
+      sub: cs.voice ? "voice" : "foley", file: cs.takes[0]?.file, dur: cs.takes[0]?.dur ?? null,
+      voice: !!cs.voice, takes: cs.takes.length, used: (cs.usedBy ?? []).length });
+  }
+  return out;
+}
+function openSoundPicker({ title, forWhat, onPick }) {
+  const all = sfxLibraryList();
+  let list = all, sel = 0;
+  const search = h("input", { type: "search", class: "picker-search", placeholder: `Search ${all.length} sounds…`, autocomplete: "off" });
+  const listEl = h("div", { class: "picker-list" });
+  // The audition controls: pitch, volume, max random pitch — the SAME three
+  // numbers the request carries, so what you hear is what you ask for.
+  // Volume's normal value is 0 dB = exactly as recorded (maintainer).
+  const ctl = (min, max, step, val, unit, label, hint) => {
+    const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
+    const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title: hint });
+    inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+    return { row: h("label", { class: "picker-ctl" }, h("span", {}, label), inp, out), inp,
+      get: () => Number(inp.value), set: (v) => { inp.value = String(v); out.textContent = `${stFmt(v)}${unit}`; } };
+  };
+  const pitch = ctl(0.25, 4, 0.05, 1, "×", "pitch", "Speed and pitch together — 1× is the recording as it is");
+  const vol = ctl(-24, 12, 1, 0, " dB", "volume", "0 dB is the recording as it is; negative is quieter");
+  const rnd = ctl(0, 6, 0.1, 0, " st", "random pitch", "Each play lands within this many semitones of the pitch above — 0 means always identical");
+  const note = h("input", { type: "text", class: "picker-note", placeholder: "note to the composer (optional)" });
+  const chosen = h("span", { class: "picker-chosen muted" }, "");
+  const assign = h("button", { class: "primary-btn" }, "Assign this sound");
+  const play = () => {
+    const it = list[sel];
+    if (!it?.file) return;
+    void sfxEngine.rawOrAudition(it.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() });
+  };
+  const move = (d) => {
+    if (!list.length) return;
+    sel = (sel + d + list.length) % list.length;
+    paint();
+    listEl.children[sel]?.scrollIntoView({ block: "nearest" });
+    play();
+  };
+  const paint = () => {
+    listEl.replaceChildren(...list.map((it, i) => h("button", {
+      class: `picker-row${i === sel ? " sel" : ""}`, type: "button",
+      onclick: () => { sel = i; paint(); play(); },
+    },
+      h("span", { class: "play-btn", "aria-hidden": "true" }, "▶"),
+      h("span", { class: "take-name" }, it.name),
+      h("span", { class: "pill" }, it.kind),
+      it.dur != null ? h("span", { class: "pill" }, fmtDur(it.dur)) : null,
+      it.voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — 2× is the true voice" }, "voice ×2") : null,
+      it.takes > 1 ? h("span", { class: "pill" }, `${it.takes} takes`) : null,
+      it.used ? h("span", { class: "pill ok", title: "The game already plays this somewhere" }, "in game")
+        : h("span", { class: "pill", title: "Nothing plays this yet" }, "unused"))));
+    const it = list[sel];
+    chosen.textContent = it ? `Selected: ${it.name}` : "Nothing matches that search";
+    assign.disabled = !it;
+    // A voice's honest playback is 2× — snap the slider when you land on one,
+    // exactly like the raw library does, or every voice auditions wrong.
+    if (it?.voice && pitch.get() === 1) pitch.set(2);
+    if (it && !it.voice && pitch.get() === 2) pitch.set(1);
+  };
+  search.addEventListener("input", () => {
+    const q = search.value.trim().toLowerCase();
+    list = q ? all.filter((it) => `${it.name} ${it.kind} ${it.sub}`.toLowerCase().includes(q)) : all;
+    sel = 0; paint();
+  });
+  const dlg = h("dialog", { class: "sfx-picker" },
+    h("h3", {}, title),
+    h("p", { class: "muted picker-for" }, forWhat),
+    search,
+    listEl,
+    h("div", { class: "picker-bar" },
+      h("button", { class: "ghost-btn", type: "button", onclick: () => move(-1) }, "← Prev"),
+      h("button", { class: "ghost-btn picker-play", type: "button", onclick: play }, "▶ Play"),
+      h("button", { class: "ghost-btn", type: "button", onclick: () => move(1) }, "Next →"),
+      chosen),
+    h("div", { class: "picker-ctls" }, pitch.row, vol.row, rnd.row),
+    note,
+    h("div", { class: "dialog-row" },
+      h("button", { class: "ghost-btn", type: "button", onclick: () => dlg.close() }, "Cancel"),
+      assign));
+  assign.addEventListener("click", () => {
+    const it = list[sel];
+    if (!it) return;
+    onPick({ sound: it.wire, pitch: pitch.get(), volume_db: vol.get(), max_random_pitch_semis: rnd.get(), note: note.value.trim() || undefined });
+    dlg.close();
+  });
+  dlg.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    else if (e.key === "Enter" && e.target !== assign) { e.preventDefault(); assign.click(); }
+  });
+  // Closing must silence whatever is playing — a dialog that keeps sounding
+  // after it is gone is a sound you cannot stop.
+  dlg.addEventListener("close", () => { sfxEngine.stop(); dlg.remove(); });
+  document.body.append(dlg);
+  paint();
+  dlg.showModal();
+  search.focus();
+  return dlg;
+}
 function sfxAddForm(ev) {
-  const opts = [
-    ...state.data.domains.sounds.map((s) => h("option", { value: `cat:${s.id}` }, `${s.name} (catalog)`)),
-    ...Object.keys(state.data.sfx.composerSets).map((set) => h("option", { value: `set:${set}` }, `${set} (composer)`)),
-  ];
-  const sel = h("select", { class: "sfx-pick" }, ...opts);
-  const num = (val, min, max, step, title) => h("input", { type: "number", value: String(val), min: String(min), max: String(max), step: String(step), title, class: "sfx-num" });
-  const pitch = num(1, 0.25, 4, 0.05, "pitch (playbackRate)");
-  const vol = num(0, -24, 12, 1, "volume trim, dB");
-  const rnd = num(0, 0, 6, 0.1, "max random pitch, semitones");
-  const note = h("input", { type: "text", placeholder: "note to the composer (optional)", class: "sfx-note" });
-  const btn = h("button", { class: "ghost-btn", onclick: () => {
-    const id = `${ev.id}/${Date.now().toString(36)}`;
-    setSfxRequest(id, {
-      event: ev.id, sound: sel.value.replace(/^cat:/, "").replace(/^set:/, "composer/"),
-      pitch: Number(pitch.value) || 1, volume_db: Number(vol.value) || 0,
-      max_random_pitch_semis: Number(rnd.value) || 0,
-      note: note.value.trim() || undefined, requested_at: new Date().toISOString(),
-    });
+  const queue = (req) => {
+    setSfxRequest(`${ev.id}/${Date.now().toString(36)}`, { event: ev.id, ...req, requested_at: new Date().toISOString() });
     toast("Request queued — Save sends it to the composer.");
     route();
-  } }, "Request this sound");
+  };
   return h("div", { class: "sfx-add" },
-    h("div", { class: "muted", style: "font-size:12.5px" }, "Add a sound to this event — the composer agent wires it in:"),
-    h("div", { class: "sfx-add-row" }, sel,
-      h("label", { class: "muted" }, "pitch ", pitch),
-      h("label", { class: "muted" }, "vol dB ", vol),
-      h("label", { class: "muted" }, "±pitch ", rnd)),
-    h("div", { class: "sfx-add-row" }, note, btn));
+    h("button", { class: "ghost-btn sfx-add-open", onclick: () => openSoundPicker({
+      title: ev.sounds.length ? "Add another sound" : "Assign a sound",
+      forWhat: `${ev.name} — plays when the game fires this moment. Listen your way down the list; the composer wires in what you pick.`,
+      onPick: queue,
+    }) }, ev.sounds.length ? "+ Add another sound…" : "+ Assign a sound…"));
 }
 function sfxEventCard(ev) {
   const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
@@ -1945,11 +2100,16 @@ function sfxEventCard(ev) {
         onclick: () => sfxEngine.playEvent(ev) }, "▶") : null,
       ev.name,
       state.admin ? h("span", { class: "pill" }, ev.id) : null,
-      state.admin ? h("span", { class: "pill" }, `${ev.bus} bus`) : null,
       ev.duck ? h("span", { class: "pill", title: "The music dips while this plays" }, "ducks music") : null,
       ev.sounds.length > 1 ? h("span", { class: "pill ok", title: "All of these play at the same time" }, `${ev.sounds.length} layered`) : null,
-      !ev.sounds.length ? h("span", { class: "pill warn" }, "no sound yet") : null,
-      state.admin && ev.bound && !ev.emitted ? h("span", { class: "pill", title: "Wired to a sound, but no game code fires this event yet" }, "not fired yet") : null),
+      // The three states a Game Master needs at a glance: green = players
+      // hear this, coral = nothing assigned, red = assigned but the game
+      // never triggers it (maintainer 2026-08-06). Players only ever see
+      // in-game events, so the green chip is the admin's own signal.
+      !ev.sounds.length ? h("span", { class: "pill warn", title: "Nothing is assigned to this moment yet — assign a sound below" }, "no sound yet") : null,
+      state.admin && ev.bound && !ev.emitted ? h("span", { class: "pill err", title: "A sound is assigned, but no game code triggers this moment — nobody can ever hear it" }, "not fired yet") : null,
+      state.admin && ev.sounds.length && ev.emitted
+        ? h("span", { class: "pill ok", title: "Assigned AND triggered by the game — players hear this" }, "in game") : null),
     ev.note ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.note) : null,
     ...ev.sounds.map((l) => sfxLayerRow(ev, l)),
     ...reqs.map(([id, r]) => h("div", { class: "take-row sfx-req" },
@@ -1990,18 +2150,19 @@ function sfxAllSounds() {
         h("button", { class: "play-btn", "aria-label": "play raw with the sliders", onclick: () =>
           void sfxEngine.rawOrAudition(t.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() }) }, "▶"),
         h("span", { class: "take-name muted" }, t.name),
+        t.dur != null ? h("span", { class: "pill" }, fmtDur(t.dur)) : null,
         h("span", { class: "spacer" }),
         starsWidget(t.dom, t.fid), verdictWidget(t.dom, t.fid)))));
   };
   for (const s of state.data.domains.sounds) {
     entryRow(s.name, s.category, s.takes.map((t) => ({
-      name: t.id, file: t.files.m4a ?? t.files.ogg ?? t.files.wav,
+      name: t.id, file: audioCandidates(t), dur: t.dur ?? null,
       dom: "sounds", fid: `${s.path}/${t.id}`.replace(/\.\w+$/, ""),
     })), { usedBy: s.usedBy ?? [] });
   }
   for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
     entryRow(set, "composer", cs.takes.map((t) => ({
-      name: t.name, file: t.file,
+      name: t.name, file: t.file, dur: t.dur ?? null,
       dom: "composer", fid: t.file.replace(/\.\w+$/, ""),
     })), { voice: cs.voice, usedBy: cs.usedBy ?? [] });
   }
@@ -2020,36 +2181,24 @@ function entityAddCard(domain, ent) {
   if (!actions.length) return null;
   const evId = () => `${domain}.${ent.id}.${act.value}`;
   const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
-  const sel = h("select", { class: "sfx-pick" },
-    ...state.data.domains.sounds.map((s2) => h("option", { value: `cat:${s2.id}` }, `${s2.name} (catalog)`)),
-    ...Object.keys(state.data.sfx.composerSets).map((set) => h("option", { value: `set:${set}` }, `${set} (composer)`)));
-  const num = (val, min, max, step, title) => h("input", { type: "number", value: String(val), min: String(min), max: String(max), step: String(step), title, class: "sfx-num" });
-  const pitch = num(1, 0.25, 4, 0.05, "pitch (playbackRate)");
-  const vol = num(0, -24, 12, 1, "volume trim, dB");
-  const rnd = num(0, 0, 6, 0.1, "max random pitch, semitones");
-  const note = h("input", { type: "text", placeholder: "note to the composer (optional)", class: "sfx-note" });
-  const btn = h("button", { class: "ghost-btn", onclick: () => {
-    setSfxRequest(`${evId()}/${Date.now().toString(36)}`, {
-      event: evId(), scope: { domain, id: ent.id }, action: act.value,
-      sound: sel.value.replace(/^cat:/, "").replace(/^set:/, "composer/"),
-      pitch: Number(pitch.value) || 1, volume_db: Number(vol.value) || 0,
-      max_random_pitch_semis: Number(rnd.value) || 0,
-      note: note.value.trim() || undefined, requested_at: new Date().toISOString(),
-    });
-    toast("Request queued — Save sends it to the composer.");
-    route();
-  } }, "Request this sound");
+  const btn = h("button", { class: "ghost-btn sfx-add-open", onclick: () => openSoundPicker({
+    title: "Assign a sound",
+    forWhat: `${ent.name ?? ent.id} — ${stateLabel(act.value)}. Listen your way down the list; the composer wires in what you pick.`,
+    onPick: (req) => {
+      setSfxRequest(`${evId()}/${Date.now().toString(36)}`, {
+        event: evId(), scope: { domain, id: ent.id }, action: act.value, ...req,
+        requested_at: new Date().toISOString(),
+      });
+      toast("Request queued — Save sends it to the composer.");
+      route();
+    },
+  }) }, "+ Pick a sound…");
   const pending = Object.entries(state.tuning.sfx_requests?.requests ?? {})
     .filter(([, r]) => r?.scope?.domain === domain && r?.scope?.id === ent.id);
   return h("div", { class: "panel sfx-entity-add" },
     h("div", { class: "panel-title" }, "Assign a sound ", h("span", { class: "pill" }, "Game Master")),
     h("p", { class: "muted", style: "margin:0 0 6px" }, "Pick one of this page's game actions and the sound it should play — the composer agent wires it into the engine."),
-    h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), sel),
-    h("div", { class: "sfx-add-row" },
-      h("label", { class: "muted" }, "pitch ", pitch),
-      h("label", { class: "muted" }, "vol dB ", vol),
-      h("label", { class: "muted" }, "±pitch ", rnd)),
-    h("div", { class: "sfx-add-row" }, note, btn),
+    h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), btn),
     ...pending.map(([id, r]) => h("div", { class: "take-row sfx-req" },
       h("span", { class: "pill warn" }, "requested"),
       h("span", { class: "take-name" }, `${stateLabel(r.action ?? "")}: ${r.sound} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),

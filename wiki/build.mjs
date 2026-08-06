@@ -126,6 +126,42 @@ function imageSize(path) {
   } catch { return null; }
 }
 
+/** Seconds of a PCM .wav, read from its RIFF header — zero dependencies, same
+ *  rule as imageSize (this runs inside the Docker build). EVERY take shows its
+ *  length as a chip (maintainer 2026-08-06); the composer's foley.json ships
+ *  `durations_s`, the sounds catalog ships none, so we read the header:
+ *  data-chunk bytes ÷ byteRate is exact for PCM. A chunk walk, not a fixed
+ *  offset — real files carry LIST/fact chunks before `data`. */
+const wavDurCache = new Map();
+function wavDuration(path) {
+  if (wavDurCache.has(path)) return wavDurCache.get(path);
+  let dur = null;
+  try {
+    const fd = openSync(path, "r");
+    const buf = Buffer.alloc(4096);
+    const n = readSync(fd, buf, 0, 4096, 0);
+    closeSync(fd);
+    if (n >= 44 && buf.toString("ascii", 0, 4) === "RIFF" && buf.toString("ascii", 8, 12) === "WAVE") {
+      let off = 12, byteRate = 0;
+      while (off + 8 <= n) {
+        const id = buf.toString("ascii", off, off + 4);
+        const sz = buf.readUInt32LE(off + 4);
+        if (id === "fmt " && off + 24 <= n) byteRate = buf.readUInt32LE(off + 16);
+        if (id === "data") {
+          // A streamed file can carry a 0/0xffffffff placeholder size; the real
+          // length is then whatever follows the header on disk.
+          const bytes = sz > 0 && sz < 0xffffffff ? sz : statSync(path).size - (off + 8);
+          if (byteRate > 0 && bytes > 0) dur = +(bytes / byteRate).toFixed(2);
+          break;
+        }
+        off += 8 + sz + (sz & 1);
+      }
+    }
+  } catch { dur = null; }
+  wavDurCache.set(path, dur);
+  return dur;
+}
+
 const titleCase = (id) => id.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 // The deployed commit, for the topbar stamp (shown under the build date, same
@@ -499,6 +535,7 @@ function buildSounds() {
         return {
           id: rel.replace(/^.*\//, "").replace(/\.wav$/, ""),
           chosen: rel === meta.file,
+          dur: wavDuration(join(ROOT, relPath)),
           files: audioSiblings(relPath),
         };
       }).filter((t) => isFile(join(ROOT, t.files.wav)));
@@ -879,7 +916,8 @@ function buildSfx(soundEntries) {
     if (!s) return null;
     const g = engine.gentle;
     const v = s.variation ?? {};
-    const all = (s.takes?.length ? s.takes : [s.file]).map((t) => ({ name: t.split("/").pop(), file: `sounds/${t}` }));
+    const all = (s.takes?.length ? s.takes : [s.file]).map((t) =>
+      ({ name: t.split("/").pop(), file: `sounds/${t}`, dur: wavDuration(join(ROOT, "sounds", t)) }));
     return {
       source: "catalog", soundId, label: s.name ?? soundId,
       takes: over.primary ? all.slice(0, 1) : all,
