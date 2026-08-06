@@ -100,6 +100,17 @@ events; the game never plays unapproved audio. The machinery:
   ten. `generate.py:REJECTED_SETS` keeps a bare run from resurrecting any of
   it; naming a set on the command line still works, which is the deliberate
   act.
+- **Round 9** (2026-08-06, "more button click/press/release sounds, like 10
+  to pick from"): ten tactile MECHANISMS — the variety is in what physically
+  makes the click (spring, plastic, metal catch, stone, leather, wood, cork,
+  flint), and they deliberately span both halves of the tactile pair, since
+  `ui.release` has been silent since ui_cancel was rejected. Their briefs are
+  **purely positive**, unlike the ui_tick/ui_confirm ones above, which are the
+  most negative in the pipeline and predate the backfire lesson; the anti-piano
+  job belongs to the `click` GATE, which measures tonality and cannot be
+  talked into the thing it is filtering. They are the first alternatives with a
+  POOL (3) and a judge — the gate cannot narrow variety when variety lives
+  across the ten briefs and the judge only picks among three renditions of one.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
   approved list + assignments, every assignable action must stay emitted, and
   every foley set an active route names must EXIST (deleting a rejected set
