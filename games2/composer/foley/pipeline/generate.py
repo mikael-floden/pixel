@@ -932,6 +932,57 @@ for _fam, _list in (("ui_down", UI_DOWN), ("ui_up", UI_UP)):
             "max_ms": _trim,
         }
 
+# ---- ROUND 11 (maintainer 2026-08-06): "Can't find a single good die and only
+# found one good for kick/punch." Ten more of each, and the FIRST round to
+# render through the fixed _generate — every previous take in this library came
+# back at half rate with nothing above 12 kHz, which is the dull, transient-
+# slurred "game from the 90ths" character he is hearing. The concepts below are
+# new, but the bigger change is that they should finally arrive full-band.
+ROUND11: dict[str, list[tuple]] = {
+    # DYING — round 6 spent ten on a solemn fade and round 7 ten on ways for a
+    # world to close, and none landed. These ten are PHYSICAL: what a body and
+    # its gear actually do when it goes down. (His own idea, the character's
+    # VOICE, is the die_voice/die_voice_boy sets — twenty takes of it.)
+    "player_die": [
+        ("bodyfall", "a body hitting the ground hard and going still, weight and cloth together", 1.2, None),
+        ("armorfall", "a person in armour collapsing, metal plates clattering to a stop", 1.4, None),
+        ("swordfall", "a dropped sword ringing once on stone and settling still", 1.4, None),
+        ("glassfall", "a pane shattering and the shards settling down to silence", 1.4, None),
+        ("lantern", "a lantern dropping and its flame going out with a soft puff", 1.3, None),
+        ("hearth", "a fire collapsing into embers, a soft crumble and a last hiss", 1.5, None),
+        ("doorslam", "a heavy door slamming shut and the echo dying away", 1.4, None),
+        ("rockslide", "a small rockslide tumbling down and stopping dead", 1.4, None),
+        ("pages", "loose pages fluttering down and falling still", 1.4, None),
+        ("chainslack", "a chain running out, snapping taut, then going slack", 1.3, None),
+    ],
+    "kick": [
+        ("anvil", "a boot against a solid iron anvil, a hard dead clank with no give", 0.6, 550),
+        ("cart", "a boot into a wooden cart wheel, a hollow spoked rattle", 0.8, 700),
+        ("pumpkin", "a boot bursting a pumpkin, a wet hollow crunch", 0.7, 600),
+        ("tent", "a boot into taut canvas tent cloth, a deep drum-tight thud", 0.6, 550),
+        ("bell", "a boot against a hanging bronze bell, a dull clang with a long hum", 0.9, 800),
+        ("firewood", "a boot into a stack of firewood, a clattering woody tumble", 0.8, 700),
+        ("rug", "a boot into a tightly rolled rug, a dense soft whump", 0.6, 550),
+        ("gate", "a boot on an iron gate, a rattling metallic bang", 0.8, 700),
+        ("bush", "a boot crashing through a dense bush, a thrashing leafy burst", 0.7, 650),
+        ("earthmound", "a boot into a mound of loose earth, a heavy soft burst of soil", 0.7, 600),
+    ],
+    "punch": [
+        ("cheese", "a fist into a big wheel of cheese, a dense waxy crush", 0.6, 550),
+        ("plank", "a fist snapping a thin wooden plank, one sharp woody crack", 0.6, 500),
+        ("curtain", "a fist through a heavy velvet curtain, a muffled soft burst", 0.6, 550),
+        ("anvil", "a bare fist landing on an iron anvil, a hard dead ring", 0.6, 500),
+        ("waterskin", "a fist on a full waterskin, a taut liquid slap", 0.6, 550),
+        ("plaster", "a fist punching through a plaster wall, a dry crumbling break", 0.7, 600),
+        ("drum", "a fist on a big taut drum head, a deep resonant boom", 0.7, 650),
+        ("sandbank", "a fist into a bank of wet sand, a dense packed thud", 0.6, 550),
+        ("helmet", "a fist on an iron helmet, a bright ringing bonk", 0.7, 600),
+        ("dough", "a fist into a big mass of dough, a soft airy squelch", 0.6, 550),
+    ],
+}
+for _action, _alts in ROUND11.items():
+    ALTERNATIVES.setdefault(_action, []).extend(_alts)
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
@@ -1276,10 +1327,31 @@ def _fit_channels(x: np.ndarray, duration_s: float, fmt: str) -> np.ndarray:
 
 
 def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.ndarray:
-    # Lossless first (Pro tier); compressed fallback keeps free tiers
-    # working. output_format goes in the QUERY STRING — in the body the API
-    # silently ignores it and returns mp3 (run 2's garbage-audio bug).
+    """Fetch one candidate, PREFERRING whatever format comes back at full rate.
+
+    THE 90s SOUND, DIAGNOSED (maintainer 2026-08-06: "some sounds you have
+    generated are so extremely bad, like a game from the 90ths"). Every set in
+    the library measures essentially ZERO energy above 12 kHz — dull, no top
+    end, soft transients — with exactly one exception, `ui_tick`, which is the
+    one set that fell back to the mp3 path and decodes through ffmpeg. And
+    every un-trimmed set came back at exactly 2.00x the length we asked for.
+    One payload is honest and full-band; the other arrives at half the rate we
+    read it at, which halves the bandwidth and slurs every transient. That is
+    the whole complaint, and it is not the model's fault.
+
+    We do not have to know WHY the raw stream is half-rate (multi-channel
+    interleave, a lower-rate payload than the query string asked for, a tier
+    cap) because the length tells us it happened: we know what duration we
+    requested. So take the first format whose decoded length MATCHES, and only
+    fall back to collapsing a wrong-length stream if no format is honest —
+    a correctly decoded 128k mp3 beats a decimated raw one, because decimation
+    cannot restore a top octave that was never in the payload.
+    """
+    # output_format goes in the QUERY STRING — in the body the API silently
+    # ignores it and returns mp3 (run 2's garbage-audio bug).
     duration_s = max(0.5, min(22.0, duration_s))  # API-enforced bounds; 0.4 → 400
+    salvage: tuple[np.ndarray, float, str] | None = None
+    r = None
     for fmt in (f"pcm_{SR}", "mp3_44100_128"):
         r = session.post(
             GEN_URL,
@@ -1294,12 +1366,25 @@ def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.n
             timeout=120,
         )
         if r.ok:
-            return _fit_channels(_decode(r.content, fmt), duration_s, fmt)
+            x = _decode(r.content, fmt)
+            ratio = (x.size / SR) / duration_s
+            if 0.7 <= ratio <= 1.4:
+                return x  # honest, full-rate audio — this is what we want
+            if salvage is None:
+                salvage = (x, ratio, fmt)
+            continue
         if r.status_code not in (400, 402, 403):  # format/tier issues → fallback
             r.raise_for_status()
-    # Both formats failed: surface the API's reason (quota/credits exhausted
-    # returns 400/402 with a message here — the log was opaque otherwise).
-    raise RuntimeError(f"API {r.status_code} for both formats: {r.text[:200]}")
+    if salvage is not None:
+        x, ratio, fmt = salvage
+        print(f"  NOTE: every format returned {ratio:.2f}x the requested length "
+              f"— collapsing the {fmt} stream (pitch and timing restored, "
+              f"bandwidth is whatever the payload actually held)")
+        return _fit_channels(x, duration_s, fmt)
+    # Nothing usable: surface the API's reason (a 401 killed 95 sets of one
+    # round while the workflow still reported success).
+    raise RuntimeError(f"API {r.status_code if r is not None else '?'} for both formats: "
+                       f"{r.text[:200] if r is not None else ''}")
 
 
 def main() -> int:
