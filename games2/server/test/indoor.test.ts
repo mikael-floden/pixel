@@ -495,7 +495,7 @@ test("wallLeft/wallRight hold the FAR walls only; the near walls are fringe minu
   assert.equal([...s.wallLeft].filter((i) => s.wallRight.has(i)).length, 0);
 });
 
-test("the_island2 cave: the two wall sets really do overlap at corners", () => {
+test("the_island2 cave: the two wall sets overlap only at INSIDE corners", () => {
   const world = loadWorld("the_island2");
   if (!world) return test.skip("maps2/worlds/the_island2 missing");
   const grid = gridOf(world);
@@ -507,12 +507,31 @@ test("the_island2 cave: the two wall sets really do overlap at corners", () => {
   assert.equal(s.wallLeft.size, 80);
   assert.equal(s.wallRight.size, 73);
   const both = [...s.wallLeft].filter((i) => s.wallRight.has(i));
-  assert.equal(both.length, 7, "7 corner cells show the room BOTH of their drawn faces");
+  assert.equal(both.length, 7, "7 cells show the room BOTH of their drawn faces");
+  // …and every one of them is an INSIDE corner — a nub of rock the cave wraps
+  // around, so BOTH lower neighbours are interior. (Maintainer 2026-08-06: "a
+  // corner is perfectly covered both to the right and to the left" — true of a
+  // room's OWN corner, which is why that one is in neither set; this is the
+  // opposite shape.) A cell in both sets is by definition one whose down-right
+  // AND down-left neighbours are both roof, so assert the whole local picture.
+  for (const j of both) {
+    const c = j % grid.width;
+    const r = (j - c) / grid.width;
+    assert.ok(!s.roof.has(j), `(${c},${r}) is fringe, not roof`);
+    assert.ok(s.roof.has(r * grid.width + c + 1), `(${c},${r}) down-right is interior`);
+    assert.ok(s.roof.has((r + 1) * grid.width + c), `(${c},${r}) down-left is interior`);
+    // The nub points UP-screen: at least one of its up-screen neighbours is
+    // NOT interior, else it would be surrounded and could not be fringe.
+    assert.ok(
+      !s.roof.has(r * grid.width + c - 1) || !s.roof.has((r - 1) * grid.width + c),
+      `(${c},${r}) is a nub poking in, not an enclosed hole`,
+    );
+  }
   // The identity the interface used to document is arithmetically wrong here.
   const near = [...s.fringe].filter((i) => !s.entrances.has(i) && !s.wallLeft.has(i) && !s.wallRight.has(i));
   assert.equal(near.length, 117, "the true near-wall count");
   assert.equal(s.fringe.size - s.entrances.size - s.wallLeft.size - s.wallRight.size, 110,
-    "…which the old subtraction under-counts by exactly the corner overlap");
+    "…which the old subtraction under-counts by exactly the inside-corner overlap");
   // The identity that IS true, on the real geometry.
   const union = new Set([...s.wallLeft, ...s.wallRight]);
   assert.equal(s.entrances.size + union.size + near.length, s.fringe.size);
@@ -930,4 +949,38 @@ test("INDOOR_DEPTH clears every bridge the game ships", () => {
     rooms.every(([, v]) => v >= INDOOR_DEPTH),
     `every shipped interior reaches INDOOR_DEPTH: ${JSON.stringify(Object.fromEntries(rooms))}`,
   );
+});
+
+test("a room's OWN corners are in neither wall set — they only show their top", () => {
+  // Maintainer 2026-08-06: "The only side a corner shows is top … A corner is
+  // perfectly covered both to the right and to the left." Correct, and stronger
+  // than the code needs to be: the fringe is 4-CONNECTED, so a cell diagonally
+  // off a room's corner touches the room at a point only and is never collected
+  // at all. Pinned on a clean square room so a future 8-connected fringe (an
+  // easy "improvement" to reach for) fails right here.
+  const W = 7;
+  const rows = Array.from({ length: W }, (_, r) =>
+    Array.from({ length: W }, (_, c) => {
+      const wall = c === 0 || c === W - 1 || r === 0 || r === W - 1;
+      return { t: wall ? "stone_mountain" : "saturated_grass", l: wall ? 6 : 0 };
+    }),
+  );
+  const cells = [];
+  for (let r = 0; r < W; r++) for (let c = 0; c < W; c++) cells.push({ col: c, row: r });
+  const g = buildTerrainGrid(W, W, rows, [], [{ level: 6, thickness: 0, cells }]);
+  const s = findIndoorSpace(g, 3, 3, 0);
+  assert.ok(s);
+  assert.equal(s.roof.size, 25, "the 5x5 floor; the level-6 ring is wall, not roof");
+  assert.equal(s.fringe.size, 20, "the wall ring MINUS its four corners");
+  for (const [name, c, r] of [["N", 0, 0], ["E", W - 1, 0], ["W", 0, W - 1], ["S", W - 1, W - 1]] as const) {
+    const j = r * W + c;
+    assert.equal(s.fringe.has(j), false, `${name} corner is not even fringe`);
+    assert.equal(s.wallLeft.has(j), false, `${name} corner shows no left face inward`);
+    assert.equal(s.wallRight.has(j), false, `${name} corner shows no right face inward`);
+  }
+  // With no inside corners anywhere, the two sets are disjoint here — the
+  // overlap is a property of concave geometry, not of rooms.
+  assert.equal([...s.wallLeft].filter((j) => s.wallRight.has(j)).length, 0);
+  assert.equal(s.wallLeft.size, 5);
+  assert.equal(s.wallRight.size, 5);
 });

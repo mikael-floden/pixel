@@ -280,19 +280,33 @@ export interface IndoorSpace {
    * and are never drawn, so nothing occludes the interior and nothing needs
    * culling. Near walls are still real walls for the enclosure rule below.
    *
-   * THE TWO WALL SETS OVERLAP. A CORNER cell qualifies on BOTH sides — its
-   * down-right neighbour and its down-left neighbour are both inside the room —
-   * and step 2 of `findIndoorSpace` deliberately puts it in both ("Corner cells
-   * get both"): both of its drawn faces look into the room and both must be
-   * culled. So the near walls are
+   * A ROOM'S OWN CORNER IS IN NEITHER SET, and is not even in the fringe. The
+   * fringe is 4-connected, so the cell diagonally off a room's corner touches it
+   * only at a point and is never collected; and the only face of it the camera
+   * could see is its TOP, which is at roof level and culled anyway. Verified on
+   * a clean 5x5 room: all four corners report fringe=false, wallLeft=false,
+   * wallRight=false.
+   *
+   * THE TWO SETS DO OVERLAP, BUT ONLY AT AN **INSIDE** CORNER — a nub of wall
+   * poking INTO the space, where the room wraps around it on both lower sides:
+   *
+   *     . . #        `.` outside   `#` room   `X` the fringe cell
+   *     . X #        its down-RIGHT neighbour is room  -> wallRight
+   *     # # #        its down-LEFT  neighbour is room  -> wallLeft
+   *
+   * Both of THAT cell's drawn faces really do look into the room and both must
+   * be culled, so step 2 puts it in both sets. Every one of the 7 overlaps in
+   * the_island2's cave has exactly this shape (6 of them the diagram above, one
+   * a 3-neighbour pillar tip) — they are rock nubs in a cave wall, not room
+   * corners. Consequence for the caller: the near walls are
    *
    *     fringe − entrances − (wallLeft ∪ wallRight)
    *
    * and NOT `fringe − entrances − wallLeft − wallRight`, which double-counts
-   * every corner. Measured on the_island2's east-mountain cave: 267 fringe,
-   * 4 entrances, |wallLeft| 80, |wallRight| 73, |wallLeft ∩ wallRight| 7 — the
-   * subtraction says 110 near walls where the truth is 117. `entrances` IS
-   * disjoint from both (an opening returns before either test). */
+   * every inside corner. Measured on that cave: 267 fringe, 4 entrances,
+   * |wallLeft| 80, |wallRight| 73, |wallLeft ∩ wallRight| 7 — the subtraction
+   * says 110 near walls where the truth is 117. `entrances` IS disjoint from
+   * both (an opening returns before either test). */
   wallLeft: Set<number>;
   /** The room's up-LEFT (north-west) far wall — see `wallLeft`. */
   wallRight: Set<number>;
@@ -415,7 +429,9 @@ function roofAboveIndex(grid: TerrainGrid, i: number, elev: number): number | nu
  *        down-RIGHT and (col,row+1) is the neighbour down-LEFT. A cell's two
  *        drawn faces are exactly those two sides, so a fringe cell shows the
  *        room an inward wall on its right face when (col+1,row) is inside, and
- *        on its left face when (col,row+1) is inside. Corner cells get both.
+ *        on its left face when (col,row+1) is inside. An INSIDE corner — a nub
+ *        of wall the room wraps around — gets both; a room's OWN corner gets
+ *        neither, and never even reaches the fringe (see `wallLeft`).
  *        Fringe cells on the near (down-screen) side of the room get neither —
  *        their inward faces point away from the camera and are never drawn —
  *        yet they still count as walls for step 3, which is about enclosure,
