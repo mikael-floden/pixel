@@ -419,6 +419,15 @@ const OCC_CULL_PAD = OCC_STEP + 64 + 200;
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
+// Per-monster SFX cadence (games-audio 2026-08-06). Idle and angry LOOP, so
+// they fire on a jittered per-individual interval — a pack must breathe out of
+// phase, not in chorus. The per-second budget is the herd guard: at most this
+// many monster sounds may START in any one second across the whole view, which
+// is what keeps a visible mammoth herd from machine-gunning.
+const MONSTER_IDLE_GAP_MS: [number, number] = [5200, 12800];
+const MONSTER_ANGRY_GAP_MS: [number, number] = [2200, 4600];
+const MONSTER_SFX_PER_SEC = 10;
+
 // Battle music (composer): how close a HUNTING monster (mstate chase/combat)
 // has to be for the fight to count as mine — world units, 32/cell, so ~7
 // cells. Roaming monsters score zero at any distance.
@@ -579,6 +588,16 @@ interface MonsterAvatar {
   mstate?: string;
   lastActionSeq?: number;
   combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
+  // ---- per-monster SFX bookkeeping (games-audio 2026-08-06) ----
+  // The wiki assigns a sound per (monster, animation state); these fields are
+  // what keep a LOOPING state from firing every frame and a herd from firing
+  // at once. All silent until the Game Master assigns something.
+  sfxIdleAt?: number; // ms of the last idle call
+  sfxIdleGap?: number; // this individual's current idle interval (jittered)
+  sfxAngryAt?: number;
+  sfxAngryGap?: number;
+  sfxWalkProg?: number; // last seen anim progress — a wrap is one gait cycle
+  sfxLastSwing?: number; // actionSeq the attack sound last fired on
   hpBg?: Phaser.GameObjects.Rectangle;
   hpFill?: Phaser.GameObjects.Rectangle;
   nameText?: Phaser.GameObjects.Text; // display name — left-aligned OVER the bar
@@ -656,6 +675,9 @@ export class WorldScene extends Phaser.Scene {
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
+  // Rolling one-second window for the monster-SFX budget (see monsterSfx).
+  private monSfxWindowAt = 0;
+  private monSfxInWindow = 0;
   // How many monsters passed the camera gate last frame (QA: __ml.monsterGate).
   private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
@@ -3393,6 +3415,82 @@ export class WorldScene extends Phaser.Scene {
    * sector-boundary angles — the identical jitter the player fix killed):
    * a 45° change must persist DIR_STICK_MS before the sprite turns, 90°+
    * turns switch instantly. */
+  /** Per-monster SEMANTIC EVENTS for the wiki's sound card: one per animation
+   * state, `monsters.<kind>.<idle|walk|angry|attack>` — the id shape the wiki
+   * agent specified (`<domain>.<entityId>.<action>`, e.g. monsters.mammoth.attack).
+   * Every one of them is SILENT until the Game Master assigns a sound on the
+   * monster's wiki page; emitting them is what makes the card able to offer
+   * them at all.
+   *
+   * The whole difficulty here is CADENCE, because two of the four states LOOP
+   * and the_island2 ships 160 monsters:
+   *   · attack — a true one-shot, fired off the same `actionSeq` change that
+   *     restarts the swing clip, so the sound lands exactly on the swing.
+   *   · walk  — once per GAIT CYCLE, detected by the clip's own progress
+   *     wrapping. That makes it a footfall: it already scales with speed,
+   *     because round 13 paces the walk clip by ground covered, so a chasing
+   *     body steps faster without a second cadence to keep in sync.
+   *   · idle / angry — periodic with a per-individual jittered gap, so a pack
+   *     breathes and growls out of phase instead of in chorus.
+   * On top of that: culled (off-screen) bodies are silent, the dying are left
+   * to combat.monster_die, and a GLOBAL budget caps how many monster sounds
+   * may start in any one second — a visible herd must never machine-gun. */
+  private monsterSfx(mv: MonsterAvatar, moving: boolean, mstate: string, actionSeq: number): void {
+    if (mv.culled || mstate === "die") return;
+    const now = this.time.now;
+    const fire = (action: string) => {
+      // Global budget, oldest-window: a herd cresting a hill is exactly when
+      // this matters, and it is cheaper to drop a call than to duck later.
+      if (now - this.monSfxWindowAt > 1000) {
+        this.monSfxWindowAt = now;
+        this.monSfxInWindow = 0;
+      }
+      if (this.monSfxInWindow >= MONSTER_SFX_PER_SEC) return;
+      this.monSfxInWindow++;
+      const sp = this.worldSpatial(mv.sprite.x, mv.sprite.y);
+      gameAudio.event(`monsters.${mv.kind}.${action}`, { pan: sp.pan, dist: sp.dist });
+    };
+
+    // ATTACK — the swing itself. Same signal the clip restarts on, so an
+    // assigned sound cannot drift off the animation.
+    if (mstate === "combat" && actionSeq !== (mv.sfxLastSwing ?? mv.lastActionSeq ?? 0)) {
+      mv.sfxLastSwing = actionSeq;
+      fire("attack");
+      return; // the swing IS this frame's monster sound
+    }
+    if (mstate === "chase" || mstate === "combat") {
+      // ANGRY IDLE — the growl between swings, and while closing in.
+      if (mv.sfxAngryGap === undefined) mv.sfxAngryGap = MONSTER_ANGRY_GAP_MS[0];
+      if (now - (mv.sfxAngryAt ?? 0) >= mv.sfxAngryGap) {
+        mv.sfxAngryAt = now;
+        mv.sfxAngryGap = MONSTER_ANGRY_GAP_MS[0] + Math.random() * (MONSTER_ANGRY_GAP_MS[1] - MONSTER_ANGRY_GAP_MS[0]);
+        fire("angry");
+      }
+    }
+    if (moving) {
+      // WALK / hop forward — once per gait cycle. Progress running backwards
+      // is a wrap; a state change resets it so a fresh clip cannot fire on
+      // its first frame.
+      const prog = mv.sprite.anims.isPlaying ? mv.sprite.anims.getProgress() : 0;
+      const prev = mv.sfxWalkProg;
+      mv.sfxWalkProg = prog;
+      if (prev !== undefined && prog < prev - 0.25) fire("walk");
+      return;
+    }
+    mv.sfxWalkProg = undefined;
+    if (mstate === "chase" || mstate === "combat") return; // angry owns the stopped case
+    // IDLE — a resting creature's own noise, jittered per individual.
+    if (mv.sfxIdleGap === undefined) {
+      mv.sfxIdleGap = MONSTER_IDLE_GAP_MS[0] + Math.random() * (MONSTER_IDLE_GAP_MS[1] - MONSTER_IDLE_GAP_MS[0]);
+      mv.sfxIdleAt = now; // never on the first frame a body appears
+    }
+    if (now - (mv.sfxIdleAt ?? 0) >= mv.sfxIdleGap) {
+      mv.sfxIdleAt = now;
+      mv.sfxIdleGap = MONSTER_IDLE_GAP_MS[0] + Math.random() * (MONSTER_IDLE_GAP_MS[1] - MONSTER_IDLE_GAP_MS[0]);
+      fire("idle");
+    }
+  }
+
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
@@ -4633,6 +4731,10 @@ export class WorldScene extends Phaser.Scene {
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // …and the per-state semantic events the wiki's sound card assigns to
+        // (silent until it does). AFTER playMonsterAnim, so the walk cadence
+        // reads the clip that is actually running this frame.
+        this.monsterSfx(mv, !!m.moving, m.mstate ?? "roam", m.actionSeq ?? 0);
         // HOP TRAVEL (round 13): a hopper covers its ground DURING the leap,
         // so glide it along the heading by (travel-so-far − even progress) ×
         // cycleWu. The curve returns to 0 at both ends of the cycle, so this

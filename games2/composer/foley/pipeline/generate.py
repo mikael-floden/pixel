@@ -983,6 +983,139 @@ ROUND11: dict[str, list[tuple]] = {
 for _action, _alts in ROUND11.items():
     ALTERNATIVES.setdefault(_action, []).extend(_alts)
 
+# ---- ROUND 12 (maintainer 2026-08-06): "a sound effect for each monster you
+# assume make a certain sound when they're idling … when they walk/jump forward
+# … in 'angry idle'/in combat … and when they attack." Four per creature across
+# the whole 24-monster roster, named `mon_<roster id>_<state>` so the wiki's
+# picker groups all four under one header per monster, and matching the game's
+# own animation states — WorldScene now emits monsters.<kind>.{idle,walk,angry,
+# attack}, which is what the sound card on each monster page assigns to.
+#
+# The brief for a creature is written from WHAT IT IS, not from a template: a
+# blob has no lungs and no feet, a mammoth has both, a golem is rock walking on
+# rock, and the stump is wood. Vocal states override the global STYLE (which
+# bans voice) exactly as the jump grunts do; WALK is foley and keeps a max_ms
+# trim so it stays one footfall rather than a stride of them.
+# (id, idle, walk, angry, attack)
+MONSTERS: list[tuple] = [
+    ("forest_poring", "a small soft gel blob settling, a faint wet wobble and squish",
+     "a small gel blob hopping once onto soft moss, a light wet plop",
+     "a small gel blob quivering fast and tightening, an agitated wet trembling",
+     "a small gel blob lunging with a sharp wet slap"),
+    ("forest_poring_2", "a little leafy sprout-blob rustling gently in place",
+     "a leafy sprout-blob hopping once, a soft papery crunch and settle",
+     "a leafy sprout-blob shaking its leaves fast and angrily",
+     "a leafy sprout-blob whipping forward, a quick leafy thwack"),
+    ("ice_poring", "a small frozen gel blob creaking faintly, tiny ice crystals ticking",
+     "a frozen gel blob hopping once onto packed snow, a crisp crunch",
+     "a frozen gel blob cracking and grinding its ice angrily",
+     "a frozen gel blob striking, a brittle icy crack and shatter"),
+    ("lava_poring", "a molten gel blob bubbling softly, a low lazy magma glop",
+     "a molten blob hopping once onto hot stone, a thick wet sizzle",
+     "a molten blob boiling up fast and spitting, an agitated hiss",
+     "a molten blob lashing out, a hot wet splat with a sharp sizzle"),
+    ("water_poring", "a water blob sloshing gently in place, soft liquid settling",
+     "a water blob hopping once, a round wet plop and splash",
+     "a water blob churning fast, agitated sloshing and bubbling",
+     "a water blob slamming forward, a big flat water slap"),
+    ("butterfly_dragon", "a large winged creature breathing softly, slow leathery wing flutter",
+     "one deep beat of big leathery wings pushing air downward",
+     "a winged creature hissing and beating its wings fast, agitated",
+     "a winged dragon lunging with a sharp hiss and a hard wing snap"),
+    ("mystical_frog", "a big frog croaking low and slow, one wet resonant burp",
+     "a big frog landing from a hop onto wet ground, a soft splat",
+     "a big frog croaking fast and swelling, an agitated throaty rattle",
+     "a big frog lunging with a snapping wet gulp"),
+    ("hedgehog", "a small spiny animal snuffling softly, quills shifting with a dry rustle",
+     "small quick paws pattering over dry leaves, one light scuffle",
+     "a small spiny animal huffing and rattling its quills fast, angry",
+     "a small spiny animal lunging with a sharp squeal and a quill stab"),
+    ("white_rabbit", "a small animal breathing quickly, soft fur shifting, a faint nose twitch",
+     "a rabbit thumping once as it lands from a hop on soft earth",
+     "a small animal snarling and thumping the ground fast, agitated",
+     "a small fanged animal lunging with a sharp shriek and a bite snap"),
+    ("malformed_creature", "a pale sickly creature breathing wetly and unevenly, a faint rattle",
+     "an uneven dragging step of a malformed body over dirt, a scuffing lurch",
+     "a malformed creature snarling low and wet, agitated and building",
+     "a malformed creature lunging with a wet ragged shriek"),
+    ("masked_shadow_creature", "a shadowy figure breathing shallow and hollow, cloth stirring faintly",
+     "a soft gliding footfall of a shadow figure, cloth and a whisper of air",
+     "a shadow figure hissing low through a mask, rising and menacing",
+     "a shadow figure striking, a sharp hollow rasp and a fast cloth snap"),
+    ("night_beast", "a large predator breathing deep and slow in the dark, a faint bone click",
+     "a heavy padded paw stepping down, a soft thud with a dry bone rattle",
+     "a large predator growling low and rising, dangerous and building",
+     "a large predator lunging with a roaring snarl and a jaw snap"),
+    ("lava_salamander", "a big reptile breathing hot and slow, a soft ember crackle",
+     "a heavy reptile foot on hot stone, a scraping step with a faint sizzle",
+     "a big fire reptile hissing hard, embers popping angrily",
+     "a big fire reptile lunging with a roaring hiss and a burst of flame"),
+    ("lava_salamander_2", "a pale reptile breathing slow and rasping, scales shifting",
+     "a heavy pale reptile foot scraping over gravel, one dragging step",
+     "a pale reptile rasping and snapping, agitated and rising",
+     "a pale reptile lunging with a hard rasping snarl and a jaw snap"),
+    ("ice_crystal_golem", "a crystal body ticking and creaking faintly as ice settles",
+     "a heavy crystal foot planting on frozen ground, a hard crunch",
+     "a crystal golem grinding and cracking its facets, building pressure",
+     "a crystal golem striking, a bright shattering crack of ice"),
+    ("stone_turtle", "a huge shelled creature breathing slow and deep, a faint stone grind",
+     "a heavy turtle foot planting, a dull stone thud with a shell shift",
+     "a huge shelled creature huffing hard, stone grinding angrily",
+     "a huge shelled creature slamming its shell forward, a heavy stone crack"),
+    ("tree_stump", "an old tree stump creaking faintly, dry wood settling",
+     "a wooden stump hopping once onto soil, a hollow woody thump",
+     "an old stump groaning and splitting, wood straining angrily",
+     "a tree stump swinging a branch, a hard woody crack and whoosh"),
+    ("stone_golem", "a mossy stone figure settling, a low grind with a soft moss rustle",
+     "a huge stone foot planting on rock, a deep grinding thud",
+     "a stone golem grinding its joints, low and building and angry",
+     "a stone golem slamming a rock fist down, a heavy grinding crash"),
+    ("diablo", "an ash demon breathing hot and low, embers ticking softly",
+     "a cloven hoof striking scorched ground, a hard step with an ember hiss",
+     "an ash demon snarling low with a rising crackle of fire, menacing",
+     "an ash demon striking with a roaring snarl and a burst of flame"),
+    ("diablo_2", "a fire demon breathing deep, flames guttering softly",
+     "a heavy cloven hoof on hot stone, one hard step with a flame flare",
+     "a fire demon growling with fire building and roaring, angry",
+     "a fire demon striking with a deep roar and a hard flame burst"),
+    ("snow_demon", "a frost wraith breathing out cold, a thin hollow wind and ice ticking",
+     "a light step over deep snow, a muffled crunch with a cold gust",
+     "a frost wraith shrieking softly and rising, cold and hateful",
+     "a frost wraith striking with a piercing icy shriek and a frozen crack"),
+    ("dark_donkey", "a dark beast of burden snorting and huffing softly, harness leather creaking",
+     "one heavy hoof striking packed earth, a solid dull clop",
+     "a dark mule braying low and angry, snorting hard and stamping",
+     "a dark mule kicking out with a harsh bray and a heavy hoof crack"),
+    ("saber_toothed_tiger", "a big cat breathing deep and slow, a low resting rumble",
+     "a big cat paw padding down soft and heavy, a muffled thud",
+     "a big cat growling low and rising into a snarl, dangerous",
+     "a big cat lunging with a roaring snarl and a heavy fanged snap"),
+    ("mammoth", "an enormous woolly beast breathing deep and slow, a faint low rumble",
+     "one enormous foot planting on hard ground, a deep booming thud",
+     "an enormous beast trumpeting low and angry, huffing hard",
+     "an enormous beast slamming its tusks forward with a trumpeting roar"),
+]
+VOCAL_STYLE = "clean close-miked creature vocalisation, one isolated animal sound, dry"
+STEP_STYLE = "clean close-miked foley, natural, one isolated sound"
+for _id, _idle, _walk, _angry, _attack in MONSTERS:
+    for _state, _brief, _dur, _trim, _style in (
+        ("idle", _idle, 0.9, None, VOCAL_STYLE),
+        ("walk", _walk, 0.6, 600, STEP_STYLE),
+        ("angry", _angry, 1.1, None, VOCAL_STYLE),
+        ("attack", _attack, 0.8, None, VOCAL_STYLE),
+    ):
+        _spec: dict = {
+            "brief": _brief,
+            "style": _style,
+            "duration_s": _dur,
+            "variants": ["standard take"],
+            "takes": 1,
+            "pool": 1,
+        }
+        if _trim:
+            _spec["max_ms"] = _trim
+        SETS[f"mon_{_id}_{_state}"] = _spec
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a

@@ -122,6 +122,22 @@ for (const n of REQUIRED_ACTIONS) {
 for (const n of REQUIRED_APPROVED) {
   if (!emitted.has(n)) fail(`approved "${n}" is no longer emitted — approved audio was lost`);
 }
+// ---- the per-monster state events exist (games-audio 2026-08-06) ----------
+// These are the ONE family that cannot be emitted as literal names: the id is
+// `monsters.<kind>.<action>` over 24 roster kinds x 4 animation states, so it
+// is built from data and the literal-name scan above is blind to it. The wiki
+// does not need the scan for them either — its sound card derives the ids from
+// the entity and its animation states — but nothing else would notice if the
+// emission were refactored away, so check the call shape directly.
+const scene = readFileSync(join(ROOT, "client", "src", "scenes", "WorldScene.ts"), "utf8");
+if (!/gameAudio\.event\(`monsters\.\$\{[^`]*\}\.\$\{?\w+\}?`/.test(scene))
+  fail("the per-monster `monsters.<kind>.<action>` emission is gone from WorldScene");
+else {
+  const acts = ["attack", "angry", "walk", "idle"].filter((a) => scene.includes(`fire("${a}")`));
+  if (acts.length !== 4) fail(`monsterSfx fires ${acts.length}/4 states (${acts.join(", ")}) — the wiki card can only assign what is emitted`);
+  else console.log(`  per-monster states emitted: monsters.<kind>.{${acts.join(",")}}`);
+}
+
 // ---- nothing dangling: removed names gone from bindings AND from source ---
 const bindingsJson = JSON.parse(readFileSync(join(ROOT, "..", "sounds", "bindings.json"), "utf8"));
 const boundNames = new Set((bindingsJson.events ?? []).map((e) => e.event));
