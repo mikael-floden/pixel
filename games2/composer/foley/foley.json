@@ -12804,5 +12804,905 @@
     "brief": "dry ground opening with a hard brittle crack and a heavy slow push rising under it",
     "generated_at": "2026-08-06T06:12:09+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_sod": {
+    "takes": [
+      "cross_on_sod/cross_on_sod__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.9,
+        "duration_s": 0.811,
+        "attack_ms": 114.6,
+        "tail_ratio": 0.133,
+        "tonality": 0.581,
+        "crest": 5.82,
+        "centroid_hz": 3373,
+        "mid_ratio": 0.411
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a square of turf lifting free, fine roots parting softly under it",
+    "generated_at": "2026-08-06T06:38:48+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_grasspart": {
+    "takes": [
+      "cross_on_grasspart/cross_on_grasspart__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -38.8,
+        "duration_s": 0.706,
+        "attack_ms": 244.5,
+        "tail_ratio": 0.408,
+        "tonality": 0.461,
+        "crest": 11.97,
+        "centroid_hz": 10491,
+        "mid_ratio": 0.016
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry grass parting and springing back as something rises through it",
+    "generated_at": "2026-08-06T06:38:53+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_dirtshrug": {
+    "takes": [
+      "cross_on_dirtshrug/cross_on_dirtshrug__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -30.0,
+        "duration_s": 0.706,
+        "attack_ms": 203.0,
+        "tail_ratio": 0.028,
+        "tonality": 0.344,
+        "crest": 6.85,
+        "centroid_hz": 10246,
+        "mid_ratio": 0.028
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "loose dry dirt shrugging upward and sliding off in a small heap",
+    "generated_at": "2026-08-06T06:38:58+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_turflift": {
+    "takes": [
+      "cross_on_turflift/cross_on_turflift__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -19.9,
+        "duration_s": 0.811,
+        "attack_ms": 215.3,
+        "tail_ratio": 0.06,
+        "tonality": 0.588,
+        "crest": 6.64,
+        "centroid_hz": 7769,
+        "mid_ratio": 0.228
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a patch of grassy turf easing up and settling back down, soft and low",
+    "generated_at": "2026-08-06T06:39:03+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_mossgive": {
+    "takes": [
+      "cross_on_mossgive/cross_on_mossgive__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -28.5,
+        "duration_s": 0.811,
+        "attack_ms": 159.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.17,
+        "crest": 15.98,
+        "centroid_hz": 7417,
+        "mid_ratio": 0.167
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft pad of moss giving way and lifting, damp fibres letting go quietly",
+    "generated_at": "2026-08-06T06:39:09+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_leaflitter": {
+    "takes": [
+      "cross_on_leaflitter/cross_on_leaflitter__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -37.8,
+        "duration_s": 0.706,
+        "attack_ms": 133.0,
+        "tail_ratio": 0.001,
+        "tonality": 0.072,
+        "crest": 19.83,
+        "centroid_hz": 10330,
+        "mid_ratio": 0.036
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry leaf litter stirring and sliding aside as the ground lifts under it",
+    "generated_at": "2026-08-06T06:39:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_pineneedles": {
+    "takes": [
+      "cross_on_pineneedles/cross_on_pineneedles__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -33.7,
+        "duration_s": 0.706,
+        "attack_ms": 238.0,
+        "tail_ratio": 0.006,
+        "tonality": 0.294,
+        "crest": 8.87,
+        "centroid_hz": 10784,
+        "mid_ratio": 0.02
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft bed of dry pine needles shifting apart from below",
+    "generated_at": "2026-08-06T06:39:19+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_strawpush": {
+    "takes": [
+      "cross_on_strawpush/cross_on_strawpush__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.6,
+        "duration_s": 0.706,
+        "attack_ms": 327.9,
+        "tail_ratio": 0.201,
+        "tonality": 0.385,
+        "crest": 8.37,
+        "centroid_hz": 6391,
+        "mid_ratio": 0.488
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "loose straw pushed gently upward and spilling off to the sides",
+    "generated_at": "2026-08-06T06:39:25+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_barkchips": {
+    "takes": [
+      "cross_on_barkchips/cross_on_barkchips__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -39.6,
+        "duration_s": 0.811,
+        "attack_ms": 88.2,
+        "tail_ratio": 0.008,
+        "tonality": 0.663,
+        "crest": 14.45,
+        "centroid_hz": 9261,
+        "mid_ratio": 0.013
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry bark chips shifting and tumbling off a small rising mound",
+    "generated_at": "2026-08-06T06:39:30+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_pebbleshift": {
+    "takes": [
+      "cross_on_pebbleshift/cross_on_pebbleshift__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -25.5,
+        "duration_s": 0.811,
+        "attack_ms": 309.2,
+        "tail_ratio": 0.016,
+        "tonality": 0.189,
+        "crest": 17.71,
+        "centroid_hz": 4827,
+        "mid_ratio": 0.464
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "small pebbles rolling quietly off soil that is nudging upward",
+    "generated_at": "2026-08-06T06:39:35+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_topsoil": {
+    "takes": [
+      "cross_on_topsoil/cross_on_topsoil__take01.wav"
+    ],
+    "durations_s": [
+      0.665
+    ],
+    "features": [
+      {
+        "mid_peak_db": -36.2,
+        "duration_s": 0.665,
+        "attack_ms": 124.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.238,
+        "crest": 47.22,
+        "centroid_hz": 7295,
+        "mid_ratio": 0.306
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry topsoil breaking apart softly in fine crumbs as something lifts",
+    "generated_at": "2026-08-06T06:39:40+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_clod": {
+    "takes": [
+      "cross_on_clod/cross_on_clod__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -34.9,
+        "duration_s": 0.811,
+        "attack_ms": 169.2,
+        "tail_ratio": 0.004,
+        "tonality": 0.215,
+        "crest": 32.03,
+        "centroid_hz": 6995,
+        "mid_ratio": 0.154
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a clod of dry earth breaking loose and rolling gently away",
+    "generated_at": "2026-08-06T06:39:44+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_rootlift": {
+    "takes": [
+      "cross_on_rootlift/cross_on_rootlift__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -26.1,
+        "duration_s": 0.889,
+        "attack_ms": 461.4,
+        "tail_ratio": 0.524,
+        "tonality": 0.137,
+        "crest": 22.15,
+        "centroid_hz": 4691,
+        "mid_ratio": 0.877
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "fine roots stretching and letting go one by one, small and soft",
+    "generated_at": "2026-08-06T06:39:49+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_grit": {
+    "takes": [
+      "cross_on_grit/cross_on_grit__take01.wav"
+    ],
+    "durations_s": [
+      0.602
+    ],
+    "features": [
+      {
+        "mid_peak_db": -15.4,
+        "duration_s": 0.602,
+        "attack_ms": 373.9,
+        "tail_ratio": 0.1,
+        "tonality": 0.233,
+        "crest": 4.93,
+        "centroid_hz": 6034,
+        "mid_ratio": 0.539
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry grit sliding off a low mound and pattering down",
+    "generated_at": "2026-08-06T06:39:54+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_loam": {
+    "takes": [
+      "cross_on_loam/cross_on_loam__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -24.6,
+        "duration_s": 0.811,
+        "attack_ms": 307.7,
+        "tail_ratio": 0.018,
+        "tonality": 0.765,
+        "crest": 8.76,
+        "centroid_hz": 1068,
+        "mid_ratio": 0.127
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "soft dark loam parting quietly from underneath, earthy and low",
+    "generated_at": "2026-08-06T06:39:59+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_thatch": {
+    "takes": [
+      "cross_on_thatch/cross_on_thatch__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -31.6,
+        "duration_s": 0.706,
+        "attack_ms": 231.5,
+        "tail_ratio": 0.004,
+        "tonality": 0.306,
+        "crest": 23.86,
+        "centroid_hz": 7612,
+        "mid_ratio": 0.212
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry thatch and stalks lifting apart with a light papery rustle",
+    "generated_at": "2026-08-06T06:40:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_chaff": {
+    "takes": [
+      "cross_on_chaff/cross_on_chaff__take01.wav"
+    ],
+    "durations_s": [
+      0.602
+    ],
+    "features": [
+      {
+        "mid_peak_db": -21.9,
+        "duration_s": 0.602,
+        "attack_ms": 200.8,
+        "tail_ratio": 0.001,
+        "tonality": 0.183,
+        "crest": 9.68,
+        "centroid_hz": 5624,
+        "mid_ratio": 0.384
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "light dry chaff pushed up and drifting off, airy and thin",
+    "generated_at": "2026-08-06T06:40:09+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_fernpush": {
+    "takes": [
+      "cross_on_fernpush/cross_on_fernpush__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.1,
+        "duration_s": 0.811,
+        "attack_ms": 310.7,
+        "tail_ratio": 0.03,
+        "tonality": 0.542,
+        "crest": 9.08,
+        "centroid_hz": 6321,
+        "mid_ratio": 0.391
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a low fern pushed up from beneath, fronds brushing and settling",
+    "generated_at": "2026-08-06T06:40:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_peat": {
+    "takes": [
+      "cross_on_peat/cross_on_peat__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -31.9,
+        "duration_s": 0.811,
+        "attack_ms": 117.8,
+        "tail_ratio": 0.086,
+        "tonality": 0.141,
+        "crest": 36.15,
+        "centroid_hz": 6172,
+        "mid_ratio": 0.454
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry crumbling peat opening softly, fibrous and muted",
+    "generated_at": "2026-08-06T06:40:19+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_sandsift": {
+    "takes": [
+      "cross_on_sandsift/cross_on_sandsift__take01.wav"
+    ],
+    "durations_s": [
+      0.602
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.5,
+        "duration_s": 0.602,
+        "attack_ms": 121.0,
+        "tail_ratio": 0.016,
+        "tonality": 0.212,
+        "crest": 5.62,
+        "centroid_hz": 9503,
+        "mid_ratio": 0.041
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry sand sifting off a small rise, a soft grainy whisper",
+    "generated_at": "2026-08-06T06:40:24+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_gravelnudge": {
+    "takes": [
+      "cross_on_gravelnudge/cross_on_gravelnudge__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -25.7,
+        "duration_s": 0.706,
+        "attack_ms": 171.0,
+        "tail_ratio": 0.005,
+        "tonality": 0.165,
+        "crest": 10.15,
+        "centroid_hz": 7499,
+        "mid_ratio": 0.153
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "fine gravel nudged upward and trickling back down, small and unhurried",
+    "generated_at": "2026-08-06T06:40:29+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_twigmat": {
+    "takes": [
+      "cross_on_twigmat/cross_on_twigmat__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -44.1,
+        "duration_s": 0.706,
+        "attack_ms": 346.3,
+        "tail_ratio": 0.01,
+        "tonality": 0.381,
+        "crest": 18.09,
+        "centroid_hz": 11574,
+        "mid_ratio": 0.008
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a mat of small dry twigs lifting and crackling faintly, gentle not sharp",
+    "generated_at": "2026-08-06T06:40:33+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_cloverpull": {
+    "takes": [
+      "cross_on_cloverpull/cross_on_cloverpull__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -20.9,
+        "duration_s": 0.811,
+        "attack_ms": 351.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.555,
+        "crest": 16.14,
+        "centroid_hz": 2006,
+        "mid_ratio": 0.985
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "low clover and its shallow roots pulling softly out of soft ground",
+    "generated_at": "2026-08-06T06:40:38+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_dustpuff": {
+    "takes": [
+      "cross_on_dustpuff/cross_on_dustpuff__take01.wav"
+    ],
+    "durations_s": [
+      0.602
+    ],
+    "features": [
+      {
+        "mid_peak_db": -41.1,
+        "duration_s": 0.602,
+        "attack_ms": 57.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.527,
+        "crest": 8.44,
+        "centroid_hz": 12078,
+        "mid_ratio": 0.004
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a soft puff of dry dust escaping as the ground opens a little",
+    "generated_at": "2026-08-06T06:40:43+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_stonelip": {
+    "takes": [
+      "cross_on_stonelip/cross_on_stonelip__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -28.1,
+        "duration_s": 0.706,
+        "attack_ms": 285.1,
+        "tail_ratio": 0.09,
+        "tonality": 0.168,
+        "crest": 12.83,
+        "centroid_hz": 7945,
+        "mid_ratio": 0.165
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small flat stone tipping up at one edge, grit sliding off it",
+    "generated_at": "2026-08-06T06:40:47+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_earthsigh": {
+    "takes": [
+      "cross_on_earthsigh/cross_on_earthsigh__take01.wav"
+    ],
+    "durations_s": [
+      0.889
+    ],
+    "features": [
+      {
+        "mid_peak_db": -35.6,
+        "duration_s": 0.889,
+        "attack_ms": 11.7,
+        "tail_ratio": 0.002,
+        "tonality": 0.982,
+        "crest": 5.77,
+        "centroid_hz": 2851,
+        "mid_ratio": 0.004
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "soil settling with a soft low exhale as something lifts beneath it",
+    "generated_at": "2026-08-06T06:40:52+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_crumbfall": {
+    "takes": [
+      "cross_on_crumbfall/cross_on_crumbfall__take01.wav"
+    ],
+    "durations_s": [
+      0.602
+    ],
+    "features": [
+      {
+        "mid_peak_db": -40.7,
+        "duration_s": 0.602,
+        "attack_ms": 235.3,
+        "tail_ratio": 0.113,
+        "tonality": 0.421,
+        "crest": 11.53,
+        "centroid_hz": 11004,
+        "mid_ratio": 0.009
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "small crumbs of dry soil breaking away and falling back down",
+    "generated_at": "2026-08-06T06:40:57+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_weedroot": {
+    "takes": [
+      "cross_on_weedroot/cross_on_weedroot__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -22.5,
+        "duration_s": 0.811,
+        "attack_ms": 79.4,
+        "tail_ratio": 0.035,
+        "tonality": 0.066,
+        "crest": 14.41,
+        "centroid_hz": 7069,
+        "mid_ratio": 0.579
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a shallow weed and its root easing up out of loose dirt",
+    "generated_at": "2026-08-06T06:41:01+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_moundgive": {
+    "takes": [
+      "cross_on_moundgive/cross_on_moundgive__take01.wav"
+    ],
+    "durations_s": [
+      0.706
+    ],
+    "features": [
+      {
+        "mid_peak_db": -23.8,
+        "duration_s": 0.706,
+        "attack_ms": 121.2,
+        "tail_ratio": 0.031,
+        "tonality": 0.277,
+        "crest": 5.95,
+        "centroid_hz": 10342,
+        "mid_ratio": 0.083
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "a small dry sandy mound giving way softly from below",
+    "generated_at": "2026-08-06T06:41:06+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "cross_on_heather": {
+    "takes": [
+      "cross_on_heather/cross_on_heather__take01.wav"
+    ],
+    "durations_s": [
+      0.811
+    ],
+    "features": [
+      {
+        "mid_peak_db": -17.1,
+        "duration_s": 0.811,
+        "attack_ms": 155.5,
+        "tail_ratio": 0.007,
+        "tonality": 0.168,
+        "crest": 6.57,
+        "centroid_hz": 7424,
+        "mid_ratio": 0.44
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 1,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [],
+    "brief": "dry heather and low scrub brushing apart as the ground rises under it",
+    "generated_at": "2026-08-06T06:41:11+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
