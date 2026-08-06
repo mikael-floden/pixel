@@ -1116,6 +1116,60 @@ for _id, _idle, _walk, _angry, _attack in MONSTERS:
             _spec["max_ms"] = _trim
         SETS[f"mon_{_id}_{_state}"] = _spec
 
+# ---- ROUND 13 (maintainer 2026-08-06): "Can you generate 20 level up sounds".
+# Twenty, and the variety is in the SHAPE and the MOOD — not in twenty more
+# instruments. Round 7 already gave him ten warm acoustic level-ups (strings,
+# lute, flute, organ, voices, whistle, accordion, marimba, bowl, handdrum) and
+# every one of them was the same gesture: a phrase RISING and RESOLVING
+# BRIGHTLY. Ten timbres of one idea. He kept none of them and asked again, so
+# the timbre was not what was missing.
+#
+# So each brief below fixes a different ARRIVAL: a two-note call answered from
+# far off, a single tone blooming with no melody at all, a flourish that stops
+# dead on its top note, a sweep that lands DOWN instead of up, a shimmer that
+# decays instead of holding, a tender resolve that is not triumphant. Two are
+# not music at all — the reward as an OBJECT (a chest latch, a quench) — which
+# twelve musical takes cannot be compared against until one exists.
+#
+# Held from the keep list: warm and ACOUSTIC (he kept harp + choir), and NO
+# bright struck metal — bells, chimes, glockenspiel and gong lost every time
+# they were tried, so nothing here is struck metal ringing out.
+LEVEL_UP_R13: list[tuple] = [
+    # Sacred / radiant — the lane his two keepers (harp, choir) came from,
+    # given three colours it has not had rather than a fourth choir.
+    ("hymn", "low men's voices holding one solemn note, then opening upward together into a bright wide chord in a stone cathedral", 2.2, None),
+    ("glassbloom", "a single glass harmonica tone blooming out of silence, swelling wide and pure and holding, no melody", 2.4, None),
+    ("sunrise", "a wide warm orchestral swell, soft strings underneath opening out into one clear sustained horn", 2.4, None),
+    # Folk / celebratory — the pastoral world's own music, and the only
+    # rhythmic entries in the round.
+    ("fiddle", "a quick folk fiddle flourish dancing upward and stopping dead on the top note, bright and confident", 1.4, None),
+    ("tambourine", "a bright tambourine shake bursting into a short round of happy hand claps, then silence", 1.5, None),
+    ("panpipes", "a breathy pan pipe call of two notes, answered a moment later by the same two notes higher and softer", 2.0, None),
+    ("hurdygurdy", "a hurdy-gurdy drone brightening and blooming into one warm major chord, earthy and folk", 1.8, None),
+    # Plucked / intimate — harp's cousins, deliberately sparse. A level-up
+    # does not have to be loud to feel earned.
+    ("kalimba", "a few soft kalimba notes climbing gently, the last one left alone to ring out and fade", 2.0, None),
+    ("dulcimer", "a hammered dulcimer cascade tumbling quickly upward and shimmering away into nothing", 1.8, None),
+    ("koto", "a koto swept fast upward then landing hard on one low warm note that rings and settles", 1.8, None),
+    ("nylon", "gentle nylon guitar harmonics arpeggiating slowly upward, unhurried and tender, not triumphant", 2.0, None),
+    # Wind / breath — air moving, from a toy-simple phrase to a horn heard
+    # across a valley.
+    ("ocarina", "three clear round ocarina notes rising simply, the last one held steady and warm", 1.6, None),
+    ("horn", "a warm hunting horn calling two lifting notes from far across open country, wide natural air around it", 2.2, None),
+    ("reed", "a soft double reed swelling slowly from nothing into a warm blooming held tone, earthy, no melody", 2.0, None),
+    # Elemental / magical — the level-up as something HAPPENING to you rather
+    # than something played for you.
+    ("emberrise", "a soft warm whoosh of air rising upward and blooming into a gentle shimmering ring", 1.8, None),
+    ("waterbloom", "water swelling upward and opening into a bright sparkling resolve, liquid and clean", 1.8, None),
+    ("growth", "leaves and stems unfurling and growing fast, a green organic rustle settling onto one soft warm chord", 2.0, None),
+    ("windgift", "a warm gust of wind rushing past and lifting away into one bright clear held tone", 1.8, None),
+    # Diegetic — no music at all. The reward as a physical event, so there is
+    # finally something to compare the eighteen musical takes against.
+    ("chestlatch", "a heavy iron chest latch releasing with a solid clunk and the wooden lid lifting open, a soft warm tone glowing underneath", 2.0, None),
+    ("forgequench", "red hot steel plunged into water, a fierce hiss settling down into one low warm ring", 2.0, None),
+]
+ALTERNATIVES.setdefault("level_up", []).extend(LEVEL_UP_R13)
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
