@@ -294,11 +294,14 @@ try {
   ok("backpack DOM renders the item sprite");
 
   // Drop it back out through the server path; the ground item reappears.
-  const nDrops = await page.evaluate(() => window.__ml.dropsList().length);
+  // Compare IDS, not the count: a drop being picked up now lingers a few
+  // hundred ms for its grab frame (round 15), so it can retire in the same
+  // window the new one spawns and leave the total unchanged.
+  const before = await page.evaluate(() => window.__ml.dropsList().map((d) => d.id));
   await page.evaluate(() => window.__ml.roomSend?.("drop", { slot: 0 }));
   await page.waitForFunction(
-    (n) => window.__ml.dropsList().length > n,
-    nDrops,
+    (ids) => window.__ml.dropsList().some((d) => !ids.includes(d.id)),
+    before,
     { timeout: 6000 },
   );
   ok("backpack drop-out spawns a ground item");

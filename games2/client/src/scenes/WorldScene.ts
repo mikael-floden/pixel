@@ -159,6 +159,17 @@ const GAIT_REF_WU = 42; // roam speed (WALK_SPEED × MONSTER_SPEED_SCALE) — th
 const GAIT_FPS_MIN = 3; // a heavy body may pace slowly, but never freeze mid-stride
 const GAIT_FPS_MAX = 26; // …nor blur at a provoked sprint
 const GAIT_HOP_EASE = 10; // hop-offset smoothing (per second) — no pops on frame changes
+// THE GRAB (maintainer 2026-08-06): the player walks to the spot where the
+// pickup gesture's hand actually reaches the item, and the item vanishes on
+// the exact frame the hand closes on it. How near that spot counts as
+// "standing on it" — the autopilot's own arrival tolerance is a few wu, so a
+// tighter number would just stall the grab.
+const GRAB_ALIGN_WU = 10;
+/** Frame index out of a character frame's texture key (f:<uid>:<state>:<dir>:<n>). */
+const frameIndexOf = (key?: string): number => {
+  const m = key ? /:(\d+)$/.exec(key) : null;
+  return m ? +m[1] : 0;
+};
 const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
 const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
 const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
@@ -755,6 +766,10 @@ export class WorldScene extends Phaser.Scene {
   private pickupIntentUntil = 0; // give up on a pickup intent after this
   private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
   private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
+  // How the last grabbed drop was retired (round-15 gate reads it via grabInfo).
+  private lastGrabRetire?: {
+    frame: number; grabFrame: number | null; anim: string; via: string; heldMs: number;
+  };
   private monsterRings = new Map<string, Phaser.GameObjects.Image>(); // red outlines: engaged + hunters
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
@@ -771,6 +786,11 @@ export class WorldScene extends Phaser.Scene {
       wy: number;
       item: string;
       bornAt: number;
+      // Held past the server's removal until my pickup clip reaches the frame
+      // the hand closes on it (removeDrop / stepGroundDecor).
+      grabbedAt?: number;
+      grabFrame?: number;
+      sawPickup?: boolean; // the clip has actually started (see stepGroundDecor)
     }
   >();
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
@@ -1036,7 +1056,9 @@ export class WorldScene extends Phaser.Scene {
           this.pickupIntentUntil = this.time.now + 6000;
           this.engagedId = null;
           const d = this.drops.get(tgt.id)!;
-          this.setMoveTarget(d.wx, d.wy, true, false, undefined, false); // hand marker, no beacon
+          const meNow = this.avatars.get(this.room!.sessionId);
+          if (meNow) this.walkToGrab(meNow, d.wx, d.wy);
+          else this.setMoveTarget(d.wx, d.wy, true, false, undefined, false);
         } else {
           this.engagedId = tgt.id;
           this.pendingPickupId = null;
@@ -2094,6 +2116,34 @@ export class WorldScene extends Phaser.Scene {
               hopOff: mv.hopOff !== undefined ? +mv.hopOff.toFixed(2) : null,
             };
           }),
+      // THE GRAB (round 15): where my character must stand for the pickup
+      // gesture to land on a given drop, how far off it currently is, and the
+      // live state of a drop being held for its grab frame.
+      grabInfo: (dropId?: string) => {
+        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        if (!me) return null;
+        const id = dropId ?? this.pendingPickupId ?? [...this.drops.keys()][0];
+        const rec = id ? this.drops.get(id) : undefined;
+        const def = this.manifest.characters.find((c) => c.uid === me.character);
+        const spot = rec ? this.grabStandSpot(me, rec.wx, rec.wy) : null;
+        const anim = me.sprite.anims.getName() ?? "";
+        return {
+          id: id ?? null,
+          hasGrabData: !!def?.grab,
+          dir: me.dispDir,
+          grabFrame: (me.dispDir && def?.grab?.[me.dispDir]?.f) ?? null,
+          approx: (me.dispDir && def?.grab?.[me.dispDir]?.approx) ?? false,
+          spot: spot ? { x: +spot.x.toFixed(1), y: +spot.y.toFixed(1), dir: spot.dir } : null,
+          // How far the body is from the aligned spot (wu) — 0 = the hand
+          // lands exactly on the item.
+          offBy: spot ? +Math.hypot(spot.x - me.fx, spot.y - me.fy).toFixed(1) : null,
+          anim,
+          frame: frameIndexOf(me.sprite.texture.key),
+          held: rec ? { grabbedAt: rec.grabbedAt ?? null, grabFrame: rec.grabFrame ?? null } : null,
+          lastRetire: this.lastGrabRetire ?? null,
+          drops: this.drops.size,
+        };
+      },
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
@@ -2538,10 +2588,40 @@ export class WorldScene extends Phaser.Scene {
   private removeDrop(id: string) {
     const rec = this.drops.get(id);
     if (!rec) return;
+    // GRAB ON THE EXACT FRAME (maintainer 2026-08-06: the item should vanish
+    // "the exact frame the hand is closest to the ground actually picking up
+    // that item"). The server removes the drop the moment it validates the
+    // pickup, which is ~half the gesture EARLIER than the hand arrives — the
+    // loot used to blink out while the character was still bending down. When
+    // this is MY pickup and my avatar is playing the clip, hold the sprite and
+    // let stepGroundDecor retire it on the measured grab frame. Everyone
+    // else's pickups, TTL despawns and my own un-animated grabs are unchanged.
+    if (id === this.pendingPickupId && !rec.grabbedAt) {
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const g = me && this.grabFrameFor(me);
+      if (me && g) {
+        rec.grabbedAt = this.time.now;
+        rec.grabFrame = g.f;
+        this.pendingPickupId = null; // the intent is satisfied; the art plays on
+        return;
+      }
+    }
     rec.img.destroy();
     rec.shadow.destroy();
     this.drops.delete(id);
     if (this.pendingPickupId === id) this.pendingPickupId = null;
+  }
+
+  /** The measured grab frame for the avatar's CURRENT facing (the pickup
+   * handler has already turned it toward the drop). Deliberately does NOT
+   * require the clip to be playing yet: the drop's removal and the player's
+   * `action` field arrive in the same state patch, and the removal listener
+   * runs FIRST — demanding a live pickup clip here made the deferral never
+   * engage at all. null → this character ships no measured grab. */
+  private grabFrameFor(av: Avatar): { f: number } | null {
+    const def = this.manifest.characters.find((c) => c.uid === av.character);
+    const g = av.dispDir ? def?.grab?.[av.dispDir] : undefined;
+    return g ? { f: g.f } : null;
   }
 
   /** Lazy per-kind item texture (48x48 webp). The callback fires immediately
@@ -2610,11 +2690,20 @@ export class WorldScene extends Phaser.Scene {
       // race on laggy links and the player stands next to untouched loot.
       if (!d || nowP >= this.pickupIntentUntil) this.pendingPickupId = null;
       else if (Math.hypot(d.wx - me.fx, d.wy - me.fy) <= PICKUP_RADIUS_WU * 0.8) {
-        if (nowP >= this.nextPickupSendAt) {
+        // WAIT FOR THE ALIGNED SPOT before grabbing (maintainer 2026-08-06):
+        // being merely inside the pickup radius means the gesture would reach
+        // into empty ground beside the loot. Hold until we are standing where
+        // the hand actually lands on it — unless the trip has already ended
+        // (path blocked / autopilot arrived as close as it can), which must
+        // still grab rather than stand there forever.
+        const spot = this.grabStandSpot(me, d.wx, d.wy);
+        const aligned =
+          !spot || !this.trip || Math.hypot(spot.x - me.fx, spot.y - me.fy) <= GRAB_ALIGN_WU;
+        if (aligned && nowP >= this.nextPickupSendAt) {
           this.nextPickupSendAt = nowP + 400;
           this.room.send("pickup", { id: this.pendingPickupId });
         }
-        if (this.trip) this.clearMoveTarget(); // arrived: stand for the grab
+        if (aligned && this.trip) this.clearMoveTarget(); // arrived: stand for the grab
       }
     }
     if (!this.engagedId) return;
@@ -2872,6 +2961,53 @@ export class WorldScene extends Phaser.Scene {
 
   /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
    * when in reach, else walk to it first (same flow as tapping it). */
+  /** WHERE TO STAND so the pickup gesture lands ON the item (maintainer
+   * 2026-08-06: "walk to the location where the hand in the pick up animation
+   * is as close as possible … so the animation at that angle align perfectly
+   * with the item"). The manifest measures, per direction, the screen offset
+   * from the character's foot anchor to the spot its hand reaches — so the
+   * stand position is simply itemPos − thatOffset, back-projected into world
+   * units. We get to choose the FACING, so try all eight and take the one
+   * whose stand spot is the shortest walk from here: the character then
+   * approaches naturally and ends up reaching exactly at the loot.
+   * Returns null when the character ships no measured grab (older art) — the
+   * caller then falls back to walking at the item itself, as before. */
+  private grabStandSpot(
+    av: Avatar,
+    wx: number,
+    wy: number,
+  ): { x: number; y: number; dir: string } | null {
+    const def = this.manifest.characters.find((c) => c.uid === av.character);
+    const grab = def?.grab;
+    if (!grab) return null;
+    const fw = def?.frameW ?? 0;
+    const fh = def?.frameH ?? 0;
+    if (!fw || !fh) return null;
+    let best: { x: number; y: number; dir: string; d: number } | null = null;
+    for (const [dir, g] of Object.entries(grab)) {
+      // Frame fractions → screen px → world units (the same inverse iso the
+      // gait speed measurement uses: Δsx = Δ(x−y)·dx/CELL, Δsy = Δ(x+y)·dy/CELL).
+      const sx = g.x * fw;
+      const sy = g.y * fh;
+      let ox: number;
+      let oy: number;
+      if (this.world) {
+        const dDiff = (sx * CELL_WU) / MAP_GEOMETRY.dx; // Δ(x−y)
+        const dSum = (sy * CELL_WU) / MAP_GEOMETRY.dy; // Δ(x+y)
+        ox = (dSum + dDiff) / 2;
+        oy = (dSum - dDiff) / 2;
+      } else {
+        ox = sx;
+        oy = sy;
+      }
+      const px = wx - ox;
+      const py = wy - oy;
+      const d = Math.hypot(px - av.fx, py - av.fy);
+      if (!best || d < best.d) best = { x: px, y: py, dir, d };
+    }
+    return best ? { x: best.x, y: best.y, dir: best.dir } : null;
+  }
+
   private pickupNearest() {
     if (this.selfDead || !this.room) return;
     const me = this.avatars.get(this.room.sessionId);
@@ -2895,8 +3031,18 @@ export class WorldScene extends Phaser.Scene {
       this.room.send("pickup", { id: bestId });
     } else {
       const d = this.drops.get(bestId)!;
-      this.setMoveTarget(d.wx, d.wy, true, false, undefined, false); // hand marker, no beacon
+      this.walkToGrab(me, d.wx, d.wy);
     }
+  }
+
+  /** Walk to the spot where the pickup gesture reaches the item (grabStandSpot),
+   * falling back to the item itself when the character ships no measured grab.
+   * Blue item border, never the ground beacon. */
+  private walkToGrab(av: Avatar, wx: number, wy: number) {
+    const spot = this.grabStandSpot(av, wx, wy);
+    const tx = spot ? spot.x : wx;
+    const ty = spot ? spot.y : wy;
+    this.setMoveTarget(tx, ty, true, false, undefined, false);
   }
 
   private removeMonster(id: string) {
@@ -2991,6 +3137,42 @@ export class WorldScene extends Phaser.Scene {
   /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
   private stepGroundDecor() {
     const now = this.time.now;
+    // A drop being GRABBED lingers past the server's removal until my pickup
+    // clip reaches the measured frame the hand closes on it. Safety valve: if
+    // the clip is interrupted (a hit, a respawn, the tab hidden), retire it on
+    // a timeout instead of leaving a phantom item lying there forever.
+    for (const [id, rec] of [...this.drops]) {
+      if (!rec.grabbedAt) continue;
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const anim = me?.sprite.anims.getName() ?? "";
+      // Character frames are PER-FRAME TEXTURES keyed f:<uid>:<state>:<dir>:<n>
+      // (only monsters use numbered spritesheet frames), so the index comes
+      // from the texture key — frame.name is not a number here and parsing it
+      // pinned every read at 0, which let the clip run to its end instead.
+      const frame = frameIndexOf(me?.sprite.texture.key);
+      const playing = /:pickup:/.test(anim);
+      if (playing) rec.sawPickup = true;
+      // Retire when the hand closes on it; or when the clip has come and gone
+      // (interrupted by a hit/respawn); or on a timeout, so a pickup clip that
+      // never starts cannot strand a phantom item on the ground.
+      const grabbed = playing && frame >= (rec.grabFrame ?? 0);
+      const clipOver = rec.sawPickup && !playing;
+      if (grabbed || clipOver || now - rec.grabbedAt > 1200) {
+        // Record WHY and WHEN, for the gate: polling from the outside cannot
+        // resolve a ~77ms animation frame, so the client reports the exact
+        // frame it retired the item on.
+        this.lastGrabRetire = {
+          frame,
+          grabFrame: rec.grabFrame ?? null,
+          anim,
+          via: grabbed ? "grab-frame" : clipOver ? "clip-ended" : "timeout",
+          heldMs: Math.round(now - rec.grabbedAt),
+        };
+        rec.img.destroy();
+        rec.shadow.destroy();
+        this.drops.delete(id);
+      }
+    }
     for (let i = this.graveCrosses.length - 1; i >= 0; i--) {
       const gc = this.graveCrosses[i];
       if (!gc.reversing && now - gc.bornAt >= 60_000) {

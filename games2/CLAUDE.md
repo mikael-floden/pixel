@@ -994,6 +994,43 @@ visible head/shoulders are ABOVE the surface).
   the synced die state; `graveCrosses()` probe + verify-combat assert it.
   A player grabbing an item TURNS TO it: predicted locally (pendingPickup
   facing) and synced for everyone (the pickup handler faces the drop).
+  **THE GRAB LANDS ON THE ITEM** (maintainer 2026-08-06: walk so "the hand in
+  the pick up animation is as close as possible … looking like it actually
+  picks up that exact item", and the item must vanish "the exact frame the
+  hand is closest to the ground"). THE ART ANSWERS BOTH QUESTIONS ITSELF: the
+  pickup clip DRAWS a little item lying on the ground in front of the
+  character, the hand comes down, and it disappears from the ground on the
+  frame it is grabbed (re-appearing in the hands a frame or two later).
+  `build-manifest.mjs grabOf` measures that per direction into `grab[dir] =
+  {f, x, y}`: the drawn item's offset from the FOOT ANCHOR (frame fractions)
+  and the frame it vanishes. Every candidate blob is VALIDATED before it is
+  believed — it must lie at/below the foot line and on the side the character
+  faces — because a late frame splits off the hair or the item already held,
+  and the naive "lowest detached blob" put north's target 24px out to the
+  side. SOUTH and NORTH draw the item merged into the body silhouette (the
+  character is face-on/back-on), so those two are interpolated from their
+  neighbours and flagged `approx` — never invented. Runtime:
+  `grabStandSpot` back-projects the offset into world units and, since we get
+  to choose the FACING, tries all eight and takes the stand spot that is the
+  shortest walk from here; `walkToGrab` sends the autopilot THERE instead of
+  at the item, and driveCombatIntent holds the grab until the body is within
+  GRAB_ALIGN_WU of it (falling through the moment the trip ends, so a blocked
+  path still picks up rather than standing there forever). THE ITEM OUTLIVES
+  ITS OWN REMOVAL: the server deletes the drop the instant it validates the
+  pickup, which is ~half a gesture EARLIER than the hand arrives, so the loot
+  used to blink out while the character was still bending down. `removeDrop`
+  now parks MY pickup's drop and `stepGroundDecor` retires it on the measured
+  grab frame (or when the clip ends / a 1.2s valve, so an interrupted gesture
+  cannot strand a phantom item). Two traps paid for: the drop's removal and
+  the player's `action` field arrive in the SAME state patch and the removal
+  listener runs FIRST, so requiring a live pickup clip made the deferral never
+  engage at all; and character frames are PER-FRAME TEXTURES keyed
+  `f:<uid>:<state>:<dir>:<n>` (only monsters use numbered spritesheet frames),
+  so the frame index must come from the texture key — parsing `frame.name`
+  pinned every read at 0 and the clip always ran to its end. Gate:
+  `scripts/verify-pickup.mjs`; probe `__ml.grabInfo()` (stand spot, how far
+  off the body is, and the client-recorded retirement — polling from outside
+  cannot resolve a ~77ms animation frame).
   Item sprites are uniform `items/<id>/sprite.webp` 48×48
   (verified across all 105) — the client lazy-loads per KIND, no manifest
   fetch. TAP an item to fetch it (walk + grab), or the PICKUP button beside

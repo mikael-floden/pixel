@@ -38,6 +38,13 @@ export interface CharacterDef {
   // speed (WALK_SPEED/RUN_SPEED). One rate per gait — every direction keeps
   // the same leg cadence. Runtime speed variation scales anims.timeScale.
   gaitFps?: Record<string, number>;
+  /** THE GRAB, per direction (build-manifest grabOf): `x`/`y` = where the
+   * pickup gesture's hand meets the ground RELATIVE TO THE FOOT ANCHOR, in
+   * frame fractions — measured from the item the art itself draws lying on
+   * the ground — and `f` = the frame that item vanishes, i.e. the hand
+   * closing on it. `approx` marks the two axis views (south/north) the art
+   * draws merged into the body, interpolated from their neighbours. */
+  grab?: Record<string, { f: number; x: number; y: number; approx?: boolean }>;
 }
 
 export interface Manifest {

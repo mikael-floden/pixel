@@ -364,6 +364,124 @@ function gaitFpsOf(animsDir, animations, animSrc) {
  * the runtime converts through the sprite's origin/scale, so the mark lands
  * on the exact drawn spot (maintainer: "the exact spot the foot was down").
  */
+/** THE GRAB (maintainer 2026-08-06: "the player should walk to the location
+ * where the hand in the pick up animation is … looking like it actually picks
+ * up that exact item", and the item must vanish "the exact frame the hand is
+ * closest to the ground").
+ *
+ * The pickup art ANSWERS BOTH QUESTIONS ITSELF: it draws a little item lying
+ * on the ground in front of the character, the hand comes down, and the item
+ * DISAPPEARS from the ground on the frame it is grabbed (it re-appears in the
+ * hands a frame or two later). So per direction we measure:
+ *  - `off` {x,y}: where that drawn item sits RELATIVE TO THE FOOT ANCHOR, in
+ *    frame px — the exact spot a real ground item must occupy for the gesture
+ *    to land on it;
+ *  - `f`: the frame it vanishes = the grab.
+ * The item is found as a DETACHED silhouette component (not touching the body)
+ * sitting low in the frame — verified against the art for every direction that
+ * draws one. SOUTH and NORTH draw it merged into the body silhouette (the
+ * character is face-on/back-on, so it overlaps the feet), so those two are
+ * interpolated from their neighbours rather than invented: x mirrors to 0 and
+ * y takes the mean of the two adjacent diagonals. */
+function grabOf(animsDir, src, perDir, anchors) {
+  if (!src || !perDir) return null;
+  const out = {};
+  for (const [d, n] of Object.entries(perDir)) {
+    const seen = []; // per frame: the detached ground blob, if any
+    for (let i = 0; i < n; i++) {
+      const p = findImg(join(animsDir, src, d), String(i));
+      const png = p && imgAlpha(p);
+      if (!png) { seen.push(null); continue; }
+      seen.push(groundBlob(png));
+    }
+    const a = anchors[d];
+    if (!a) continue;
+    // VALIDATE each candidate before believing it. Not every detached blob is
+    // the loot: a late frame can split off the hair, or the item already held
+    // in the hands. A real ground item (a) lies ON the ground, at or below the
+    // foot line, and (b) sits on the side the character is FACING — a blob
+    // 24px out to the side of a back-facing sprite is not what it reaches for.
+    const wantSign = /east/.test(d) ? 1 : /west/.test(d) ? -1 : 0;
+    const plausible = (b) => {
+      if (!b) return false;
+      if (b.maxY < a.y * b.h - 6) return false; // floating above the feet
+      const dx = b.cx / b.w - a.x;
+      return wantSign === 0 ? Math.abs(dx) < 0.07 : Math.sign(dx) === wantSign;
+    };
+    // It must appear for a RUN of frames and then vanish — that vanish IS the
+    // grab. (A blob present to the last frame was never picked up.)
+    const first = seen.findIndex(plausible);
+    if (first < 0) continue;
+    let last = first;
+    while (last + 1 < seen.length && plausible(seen[last + 1])) last++;
+    if (last >= seen.length - 1) continue; // never picked up — not the item
+    const blob = seen[last];
+    const { w, h } = blob;
+    out[d] = {
+      f: last + 1, // the frame the item is GONE = the hand closed on it
+      x: +(blob.cx / w - a.x).toFixed(4), // frame fractions, anchor-relative
+      y: +(blob.cy / h - a.y).toFixed(4),
+    };
+  }
+  // SOUTH / NORTH: interpolate from the measured neighbours (see above).
+  const lerpAxis = (axis, l, r) => {
+    if (out[axis] || !out[l] || !out[r]) return;
+    out[axis] = {
+      f: Math.round((out[l].f + out[r].f) / 2),
+      x: 0, // dead ahead: the art mirrors, so the two diagonals cancel
+      y: +((out[l].y + out[r].y) / 2).toFixed(4),
+      approx: true,
+    };
+  };
+  lerpAxis("south", "south-west", "south-east");
+  lerpAxis("north", "north-west", "north-east");
+  return Object.keys(out).length ? out : null;
+}
+
+/** The lowest DETACHED silhouette component of a frame — the item lying on the
+ * ground beside the character. Returns null when everything is one blob (the
+ * item is drawn touching the body, or there is no item). */
+function groundBlob(png) {
+  const { w, h, opaque } = png; // imgAlpha's contract: a predicate, not a buffer
+  const on = (x, y) => x >= 0 && y >= 0 && x < w && y < h && opaque(x, y);
+  const seen = new Uint8Array(w * h);
+  const comps = [];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (!on(x, y) || seen[i]) continue;
+      const stack = [[x, y]];
+      seen[i] = 1;
+      const pts = [];
+      while (stack.length) {
+        const [cx, cy] = stack.pop();
+        pts.push([cx, cy]);
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = cx + dx, ny = cy + dy;
+            const ni = ny * w + nx;
+            if (on(nx, ny) && !seen[ni]) { seen[ni] = 1; stack.push([nx, ny]); }
+          }
+      }
+      comps.push(pts);
+    }
+  }
+  if (comps.length < 2) return null;
+  comps.sort((a, b) => b.length - a.length);
+  // Every component but the body; take the one nearest the ground (max y).
+  let best = null;
+  for (const c of comps.slice(1)) {
+    if (c.length < 3) continue;
+    const maxY = Math.max(...c.map((p) => p[1]));
+    if (!best || maxY > best.maxY) {
+      const cx = c.reduce((s, p) => s + p[0], 0) / c.length;
+      const cy = c.reduce((s, p) => s + p[1], 0) / c.length;
+      best = { cx, cy, maxY, n: c.length, w, h };
+    }
+  }
+  return best;
+}
+
 function plantsOf(animsDir, src, dir, n) {
   const grounded = []; // per frame: [{x, y}]
   for (let i = 0; i < n; i++) {
@@ -505,6 +623,7 @@ function scan() {
         shoulders[d] = { lx: med(acc.lx), ly: med(acc.ly), rx: med(acc.rx), ry: med(acc.ry) };
       }
     }
+    const grab = grabOf(animsDir, animSrc.pickup, animations.pickup, anchors);
     const gaitFps = gaitFpsOf(animsDir, animations, animSrc);
     // Footstep plants for the moving gaits (walk/run; jump lands too).
     const plants = {};
@@ -544,6 +663,9 @@ function scan() {
       shoulders,
       gaitFps,
       plants,
+      // Where the pickup gesture's hand meets the ground, per direction, and
+      // the frame it closes on the item (see grabOf).
+      grab,
     });
   }
   return characters;
