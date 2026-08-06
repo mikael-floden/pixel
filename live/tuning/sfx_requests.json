@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T05:42:23.900Z",
+  "updated_at": "2026-08-06T05:44:59.142Z",
   "requests": {
     "combat.cross_off/msh2o7xe": {
       "event": "combat.cross_off",
@@ -74,6 +74,42 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T05:42:01.952Z"
+    },
+    "weather.thunder/msh3btzg": {
+      "event": "weather.thunder",
+      "sound": "composer/thunder",
+      "take": "composer/foley/thunder/pool/thunder__cand07.wav",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T05:43:51.436Z"
+    },
+    "weather.thunder/msh3c4o0": {
+      "event": "weather.thunder",
+      "sound": "composer/thunder",
+      "take": "composer/foley/thunder/pool/thunder__cand08.wav",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T05:44:05.280Z"
+    },
+    "weather.thunder/msh3ceb3": {
+      "event": "weather.thunder",
+      "sound": "composer/thunder",
+      "take": "composer/foley/thunder/pool/thunder__cand09.wav",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T05:44:17.775Z"
+    },
+    "weather.thunder/msh3cxtm": {
+      "event": "weather.thunder",
+      "sound": "composer/thunder",
+      "take": "composer/foley/thunder/pool/thunder__cand17.wav",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T05:44:43.066Z"
     }
   }
 }
