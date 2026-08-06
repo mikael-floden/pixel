@@ -43,7 +43,6 @@ try {
   for (const p of placed) {
     const n = npcs.find((x) => x.id === p.id);
     if (!n) fail(`NPC ${p.id} never spawned`);
-    if (n.dir !== p.facing) fail(`${p.id} faces ${n.dir}, maps2 says ${p.facing}`);
     // cell centre, in world units
     const wantX = Math.round((p.x + 0.5) * 32);
     const wantY = Math.round((p.y + 0.5) * 32);
@@ -61,6 +60,50 @@ try {
     if (bad.length) fail(`NPCs not rendering through the body pipeline: ${JSON.stringify(bad[0])}`);
     ok(`${drawn.length} on-screen NPC(s) draw with a sorted depth + ground shadow`);
   }
+
+  // (2b) THE NADIR SHADOW SITS BETWEEN THE FEET (maintainer 2026-08-06: "the
+  // NPC nadir shadow … exactly at the middle of the characters two feet (the
+  // underside of the feet). If this is not correct it will look as if the NPC
+  // is flying"). Checked against the ART, not against the code's own maths: we
+  // re-derive the foot line from the DRAWN sprite box + its measured origin
+  // and compare with where the shadow is actually drawn.
+  const anchored = await page.evaluate(async () => {
+    const man = await (await fetch("/npcs.json")).json();
+    const byId = new Map(man.npcs.map((d) => [d.id, d]));
+    return window.__ml.npcInfo().filter((n) => !n.culled).map((n) => {
+      const def = byId.get(n.charId);
+      const a = def?.anchors?.[n.dir] ?? null;
+      return {
+        id: n.id,
+        dir: n.dir,
+        measured: a,
+        originX: n.originX,
+        originY: n.originY,
+        // the shadow must sit exactly where the sprite is pinned
+        dx: +(n.shadowX - n.sx).toFixed(2),
+        dy: +(n.shadowY - n.sy).toFixed(2),
+      };
+    });
+  });
+  if (!anchored.length) console.log("(no NPC on screen — skipping the anchor check)");
+  else {
+    for (const n of anchored) {
+      if (!n.measured) fail(`${n.id}: no measured foot anchor in the manifest`);
+      if (Math.abs(n.originY - n.measured.y) > 0.001 || Math.abs(n.originX - n.measured.x) > 0.001)
+        fail(`${n.id}: origin ${n.originX},${n.originY} != measured foot anchor ${n.measured.x},${n.measured.y}`);
+      // The sprite is pinned AT its foot anchor, so the nadir shadow must be
+      // at that same point — any offset is the body floating off its shadow.
+      if (Math.abs(n.dx) > 1 || Math.abs(n.dy) > 1)
+        fail(`${n.id}: shadow is ${n.dx},${n.dy}px off the foot anchor — it will read as flying`);
+    }
+    ok(`${anchored.length} NPC(s): origin == art-measured foot anchor, shadow on it (<=1px)`);
+  }
+
+  // (2c) they all face SOUTH — the only rotation with an idle clip for now.
+  const facings = [...new Set(npcs.map((n) => n.dir))];
+  if (facings.length !== 1 || facings[0] !== "south")
+    fail(`NPCs face ${facings.join("/")} — only south has idle art, so all must face south`);
+  ok("every NPC faces south (the only rotation with an idle clip)");
 
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
   // it must spend most of its time PARKED, and the pauses must vary — a fixed

@@ -15,6 +15,8 @@ import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from 
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { imgDims, resolveImg } from "./imagelib.mjs";
+import { footAnchor, soleOf } from "./anchorlib.mjs";
+import { imgAlpha } from "./imagelib.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, "..");
@@ -44,12 +46,38 @@ function scan() {
     } catch {}
     // Static rotations — the fallback every facing is guaranteed to have.
     const base = {};
+    // FOOT ANCHOR per rotation, measured with the SAME code the player
+    // characters use (anchorlib.footAnchor): the point BETWEEN the two feet,
+    // at the underside. The client sets it as the sprite origin, so the drawn
+    // soles land exactly on the ground point its nadir shadow is drawn at.
+    // A guessed origin is precisely what made the monsters "fly" for three
+    // rounds — never eyeball this number (maintainer 2026-08-06).
+    const anchors = {};
     let frameW = 0;
     let frameH = 0;
     for (const d of DIRECTIONS) {
       const abs = resolveImg(join(dir, "base", `${d}.webp`));
       if (!abs) continue;
       base[d] = `/assets/characters2/npcs/${id}/base/${abs.split(/[\\/]/).pop()}`;
+      const a = footAnchor(abs);
+      // CLOAK GUARD (NPC-only — the player measurement is approved art and is
+      // never touched here). A floor-length cloak/robe puts the frame's lowest
+      // mass at the HEM, and the foot-blob pass then anchors on the boots
+      // ABOVE it: measured 2 of 191 characters landing ~7px high, one of whom
+      // (06e4eb08, "Aurelia") is placed in five worlds. A hem that reaches the
+      // floor IS the ground contact, so when the anchor drifts far above the
+      // drawn sole, take the sole line instead (with the same ~2px mid-foot
+      // lift footAnchor applies). 189 of 191 are unaffected: they measure
+      // 1.5px above their sole, exactly the designed offset.
+      if (a) {
+        const png = imgAlpha(abs);
+        const sole = png ? soleOf(png) : -1;
+        if (png && sole >= 0) {
+          const anchorRow = a.y * png.h;
+          if (sole - anchorRow > 4) a.y = +((sole - 1.5) / png.h).toFixed(4);
+        }
+        anchors[d] = a;
+      }
       if (!frameW) {
         const [w, h] = imgDims(abs);
         frameW = w;
@@ -88,6 +116,7 @@ function scan() {
       frameW,
       frameH,
       base,
+      anchors, // dir -> {x, y, top} foot anchor (fractions of the frame)
       idleAnim,
       idle, // dir -> frame count (SOUTH only today; empty for a few)
     });

@@ -621,6 +621,7 @@ interface NpcAvatar {
   type: string;
   dir: string;
   animKey: string | null; // the idle clip for THIS facing, when the art has one
+  pendingAnim?: { key: string; frames: string[] }; // queued art, registered when it lands
   holdUntil: number; // frame-0 pause deadline — the "calm idle" (see NPC_HOLD_*)
   culled?: boolean;
 }
@@ -2201,6 +2202,17 @@ export class WorldScene extends Phaser.Scene {
           dir: n.dir,
           x: Math.round(n.fx),
           y: Math.round(n.fy),
+          // Drawn geometry, for the anchor gate: where the sprite is pinned,
+          // its origin, and where the nadir shadow sits. The feet must land on
+          // the shadow's centre or the NPC reads as flying.
+          sx: +n.sprite.x.toFixed(1),
+          sy: +n.sprite.y.toFixed(1),
+          originX: +n.sprite.originX.toFixed(4),
+          originY: +n.sprite.originY.toFixed(4),
+          dw: n.sprite.displayWidth,
+          dh: n.sprite.displayHeight,
+          shadowX: +n.shadow.x.toFixed(1),
+          shadowY: +n.shadow.y.toFixed(1),
           culled: !!n.culled,
           hasAnim: !!n.animKey,
           playing: n.sprite.anims.isPlaying,
@@ -3547,7 +3559,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private addNpc(p: NpcPlacement, def: NpcDef) {
-    const dir = DIRECTIONS.includes(p.facing as never) ? p.facing : DEFAULT_DIRECTION;
+    // ALWAYS SOUTH for now (maintainer 2026-08-06): the generated idle exists
+    // for south alone, so an NPC placed facing any other way would stand
+    // frozen on a static rotation while its neighbours breathe. maps2' own
+    // `facing` is deliberately ignored until characters2 generates the other
+    // seven rotations — then this becomes `p.facing` again and nothing else
+    // changes. They never walk either; there is no walk art and no server body.
+    const dir = DEFAULT_DIRECTION;
     // maps2 gives a TILE cell; bodies stand at the cell CENTRE like everything
     // else that is placed by cell (the campfire, spawn scatter).
     const fx = (p.x + 0.5) * CELL_WU;
@@ -3559,7 +3577,16 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDisplaySize(34, 14)
       .setAlpha(0.5);
-    const sprite = this.add.sprite(g.x, g.y - elev, PLACEHOLDER_TEX).setOrigin(0.5, 0.9);
+    // ORIGIN = THE MEASURED FOOT ANCHOR, never a guess. It is the point
+    // between the two feet at their underside, so the drawn soles land exactly
+    // on the ground point placeBodyShadow puts the nadir shadow at — the whole
+    // difference between standing and hovering (measured: the eyeballed 0.9
+    // this replaces was up to 9px off, and the monsters' "flying" rounds were
+    // this same mistake).
+    const a = def.anchors?.[dir];
+    const sprite = this.add
+      .sprite(g.x, g.y - elev, PLACEHOLDER_TEX)
+      .setOrigin(a?.x ?? 0.5, a?.y ?? 0.84);
     const npc: NpcAvatar = {
       sprite,
       shadow,
@@ -3609,18 +3636,13 @@ export class WorldScene extends Phaser.Scene {
           );
         }
       }
-      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
-        if (!keys.every((k) => this.textures.exists(k))) return;
-        if (!this.anims.exists(animKey)) {
-          this.anims.create({
-            key: animKey,
-            frames: keys.map((k) => ({ key: k })),
-            frameRate: ANIM_FPS.idle ?? 6,
-            repeat: 0, // ONE pass, then the calm hold (stepNpcs)
-          });
-        }
-        npc.animKey = animKey;
-      });
+      // Registered LAZILY by stepNpcs once every frame texture exists — NOT on
+      // a one-shot loader COMPLETE. A world queues ~20 NPCs back to back, so
+      // COMPLETE fires between batches while later files are still pending and
+      // a one-shot handler finds its own textures missing and gives up
+      // silently: measured 0 of 19 clips registering. Same shape as the
+      // monsters' single-call-site trap.
+      npc.pendingAnim = { key: animKey, frames: keys };
     }
     this.load.start();
   }
@@ -3660,6 +3682,21 @@ export class WorldScene extends Phaser.Scene {
       }
       sp.x = npc.lx;
       sp.y = npc.ly;
+      if (!npc.animKey && npc.pendingAnim) {
+        const pa = npc.pendingAnim;
+        if (pa.frames.every((k) => this.textures.exists(k))) {
+          if (!this.anims.exists(pa.key)) {
+            this.anims.create({
+              key: pa.key,
+              frames: pa.frames.map((k) => ({ key: k })),
+              frameRate: ANIM_FPS.idle ?? 6,
+              repeat: 0, // ONE pass, then the calm hold below
+            });
+          }
+          npc.animKey = pa.key;
+          npc.pendingAnim = undefined;
+        }
+      }
       // THE CALM IDLE: a finished (or never started) clip parks on frame 0
       // until its own random deadline passes, then plays once more.
       if (npc.animKey && !sp.anims.isPlaying) {

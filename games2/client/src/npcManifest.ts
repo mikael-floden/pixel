@@ -15,6 +15,13 @@ export interface NpcDef {
   frameW: number;
   frameH: number;
   base: Record<string, string>; // dir -> served url (all 8)
+  /** Foot anchor per rotation, measured with the SAME anchorlib.footAnchor the
+   * player characters use: the point BETWEEN the two feet at their underside,
+   * as fractions of the frame. The client uses it as the sprite ORIGIN so the
+   * drawn soles sit exactly on the ground point the nadir shadow is drawn at.
+   * Verified equal to the idle frames' own anchor (0.00px across 60 NPCs), so
+   * one anchor serves the static rotation AND the clip with no snap. */
+  anchors: Record<string, { x: number; y: number; top: number }>;
   idleAnim: string | null; // the idle folder name, if any
   idle: Record<string, number>; // dir -> frame count (south only today)
 }

@@ -1144,6 +1144,26 @@ side collision just like monsters").
   idle clip's frame count PER DIRECTION. Art loads LAZILY per character — a
   world places ~20 people out of a 191-strong roster, so fetching the catalog
   would be pure waste.
+- **THEY ALL FACE SOUTH, and never walk** (maintainer 2026-08-06). maps2'
+  `facing` is deliberately IGNORED for now: only south has an idle clip, so
+  honouring the placement would leave most of a street frozen on a static
+  rotation while their neighbours breathe. One line in `addNpc` goes back to
+  `p.facing` the day the other rotations exist.
+- **THE NADIR SHADOW SITS BETWEEN THE FEET.** The sprite origin is the
+  ART-MEASURED foot anchor (`anchorlib.footAnchor`, the point between the two
+  feet at their underside — the SAME function and numbers the player
+  characters use), so the drawn soles land exactly on the ground point
+  `placeBodyShadow` draws the shadow at. **Never eyeball this**: the first cut
+  guessed `originY 0.9` and was up to 9px off, which is exactly the "flying"
+  bug the monsters took three rounds to kill. Verified against the ART, not
+  just the code: every one of the 191 anchors lands 1.5-3px above its own
+  drawn sole line, which is the designed mid-foot lift.
+  CLOAK GUARD, NPC-only: a floor-length cloak puts the frame's lowest mass at
+  the HEM and the foot-blob pass then anchors on the boots ABOVE it (2 of 191
+  measured ~7px high, one of them placed in five worlds). A hem that reaches
+  the floor IS the ground contact, so an anchor drifting >4px above the sole
+  falls back to the sole line. The player measurement is never touched by
+  this — it is approved art and lives in the shared module unchanged.
 - **THE IDLE IS SOUTH-ONLY** (measured: 188 of 191 characters ship a 5-frame
   idle, all of them for `south` alone). So an NPC facing any other way
   correctly stands on its static rotation. `idle` is keyed per direction
@@ -1166,10 +1186,17 @@ side collision just like monsters").
   `monsterDodge` near-list at NPC_BODY_RADIUS, so the INPUT slips around them
   and the server integrates the identical deflected vector (no rubber-band).
   They are not in the collision grid and not in findPath.
+- The idle clip is registered LAZILY, per NPC, once its frame textures exist
+  — NOT on a one-shot loader COMPLETE. A world queues ~20 NPCs back to back,
+  so COMPLETE fires between batches while later files are still pending and a
+  one-shot handler finds its own textures missing and gives up silently:
+  measured 0 of 19 clips registering. Same shape as the monsters'
+  single-call-site trap.
 - Gate: `scripts/verify-npcs.mjs` (dev stack, the_island2's 19 NPCs) — every
-  placed NPC spawns at its cell facing as placed, on-screen ones carry a
-  sorted depth + ground shadow, the idle is measurably calm and its holds
-  measurably vary. Probe: `__ml.npcInfo()`.
+  placed NPC spawns at its cell, all face south, on-screen ones carry a sorted
+  depth + a ground shadow ON their measured foot anchor, the idle is
+  measurably calm, its holds measurably vary, and neighbours are out of phase.
+  Probe: `__ml.npcInfo()` (incl. the drawn origin/shadow geometry).
 - TRAPS: the registry's `world` key holds the parsed World OBJECT (the id is
   `worldName`), and spawning must happen in `create()` — `projectFlat` is
   meaningless in `init()`.

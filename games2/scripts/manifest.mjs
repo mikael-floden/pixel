@@ -42,7 +42,7 @@ const BUILDERS = ["build-manifest.mjs", "build-worlds.mjs", "build-monsters-mani
 // Listed explicitly rather than globbed: scripts/ holds ~58 files, almost all
 // unrelated verify/debug tools, and the gitignored scripts/_tmp-*.mjs probes
 // would thrash the cache on every session.
-const BUILDER_DEPS = ["imagelib.mjs"];
+const BUILDER_DEPS = ["imagelib.mjs", "anchorlib.mjs"];
 const OUTPUTS = ["characters.json", "worlds.json", "monsters.json", "npcs.json"].map((f) =>
   join(GAME_ROOT, "client", "public", f),
 );
