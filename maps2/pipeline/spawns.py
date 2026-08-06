@@ -171,6 +171,41 @@ BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 #   3. each type's own total is then spread across ITS zones in proportion to
 #      zone area (min 1 per zone) — so density still decides WHERE a type is
 #      thickest, never HOW MANY of it exist.
+# -- THE DIFFICULTY GRADIENT (maintainer 2026-08-06) --------------------------
+# "Why do you spawn Duskfang next to newcomers? They are aggressive and will
+# kill them immediately. What's wrong with Mirewart? Why not scale up the
+# difficulty as you progress? Quillkin should also be closer. You just want
+# Newbies to have a hard time. Try to make them enjoy the game instead."
+#
+# Habitat alone decided placement before this, and habitat knows nothing about
+# danger: Duskfang is a sabre-toothed tiger, tigers live on grass, the arrival
+# point is grass — so a level-8 hunter with a 96wu aggro radius that kills a
+# fresh 40hp player in three hits had a zone touching the spawn, while Mirewart
+# (level 1) sat 54 cells away and Quillkin (level 4) was the single most distant
+# monster on the map at 152. The correlation between level and distance was nil.
+#
+# So distance from the arrival point is now a FUNCTION OF DIFFICULTY, measured
+# by WALK distance (what the player actually travels) and not by straight line,
+# which on a map with a mountain, a gorge and an ocean are very different things.
+#
+# The ranking is not invented here: `level` and `aggro_radius_wu` come from the
+# game's own combat tuning (live/tuning/monsters.json), so a rebalance there
+# moves the monsters on the map instead of silently disagreeing with it.
+TUNING = os.path.join(REPO, "live", "tuning", "monsters.json")
+SAFE_R = 6              # nothing at all inside this walk radius — you land, you
+                        # get a moment before anything can reach you
+LVL_STEP = 5            # ...then every level of difficulty pushes 5 cells further.
+                        # Calibrated against the terrain, not picked: THE CAVE is
+                        # a single component 112 walk-cells out and holds all four
+                        # cave dwellers, the worst of them Balefiend (L18,
+                        # aggressive). 6 + 17*5 + 14 = 105 <= 112, so every
+                        # monster on the_island2 can satisfy its own floor and
+                        # none has to fall back.
+AGGRO_PUSH = 14         # monsters that HUNT (aggro_radius_wu > 0) start further
+                        # out again: a passive monster is a thing you choose to
+                        # fight, an aggressive one is a thing that chooses you
+MAX_LVL = 20
+
 WORLD_CELLS_PER_MONSTER = 137       # world budget = land cells / this
 MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
 MON_TOTAL_MAX = 9                   # per-type ceiling
@@ -187,6 +222,122 @@ ELEV_PASSES = 8                     # elev/dry-mask fixed-point backstop
 def roster_ids():
     j = json.load(open(os.path.join(REPO, "monsters", "config", "roster.json")))
     return [m["id"] for m in j["monsters"]]
+
+
+_tuning = None
+
+
+def tuning():
+    """The GAME's combat tuning — the authority on how dangerous a monster is.
+
+    Not a ranking invented in maps2: `level`, `damage` and `aggro_radius_wu` are
+    what the server fights with (games2/server/src/tuning.ts reads this exact
+    file), so rebalancing combat moves the monsters on the map to match instead
+    of quietly disagreeing with it."""
+    global _tuning
+    if _tuning is None:
+        try:
+            _tuning = json.load(open(TUNING))
+        except Exception:
+            _tuning = {"defaults": {}, "monsters": {}}
+    return _tuning
+
+
+def threat(mid):
+    """(level, aggro_radius) for a monster, defaults applied."""
+    t = tuning()
+    d = t.get("defaults") or {}
+    m = (t.get("monsters") or {}).get(mid) or {}
+    lvl = m.get("level", d.get("level", 1))
+    ag = m.get("aggro_radius_wu", d.get("aggro_radius_wu", 0))
+    return int(lvl), float(ag)
+
+
+def keep_out(mid):
+    """How far from the arrival point this monster must stay, in walk cells."""
+    lvl, ag = threat(mid)
+    lvl = max(1, min(MAX_LVL, lvl))
+    return SAFE_R + (lvl - 1) * LVL_STEP + (AGGRO_PUSH if ag > 0 else 0)
+
+
+def walk_dist(w):
+    """Walk distance in cells from the arrival point to every standable surface.
+
+    The player's own movement rule (games2: 4-neighbour, climb at most 1 level,
+    drops free, a deck top is its own surface and a slab seals the base beneath
+    it unless you are already under there). Straight-line distance would call
+    the far side of the gorge 'near'."""
+    def surfaces(x, y):
+        out = []
+        if (0 <= x < w.w and 0 <= y < w.h and w.m(x, y) != ""
+                and w.m(x, y) not in w.water and (x, y) not in w.props):
+            d = w.deck.get((x, y))
+            th = w.deck_thick.get((x, y), 1)
+            if d is None or d <= w.base(x, y) or w.base(x, y) < d - th:
+                out.append((w.base(x, y), "base"))
+        d = w.deck.get((x, y))
+        if d is not None and d > w.base(x, y) and (x, y) not in w.props:
+            out.append((d, "deck"))
+        return out
+
+    sx, sy = w.spawn
+    start = [(sx, sy, lv, la) for lv, la in surfaces(sx, sy)]
+    dist, q = {}, deque()
+    for (x, y, lv, la) in start:
+        dist[(x, y, la)] = 0
+        q.append((x, y, lv, la))
+    while q:
+        x, y, lv, la = q.popleft()
+        d0 = dist[(x, y, la)]
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            for nlv, nla in surfaces(nx, ny):
+                if nlv > lv + 1:
+                    continue
+                if (nx, ny, nla) in dist:
+                    continue
+                dist[(nx, ny, nla)] = d0 + 1
+                q.append((nx, ny, nlv, nla))
+    flat = {}
+    for (x, y, _la), d in dist.items():
+        if d < flat.get((x, y), 1 << 30):
+            flat[(x, y)] = d
+    return flat
+
+
+def comp_dist(comp, field):
+    """How far a player must walk to reach the NEAREST cell of this habitat."""
+    ds = [field[c] for c in comp if c in field]
+    return min(ds) if ds else None
+
+
+_near_cache = {}
+
+
+def near_cells(field, floor):
+    """Cells within `floor` walk-cells of the arrival point — forbidden ground."""
+    key = (id(field), floor)
+    hit = _near_cache.get(key)
+    if hit is None:
+        hit = frozenset(c for c, d in field.items() if d < floor)
+        _near_cache[key] = hit
+    return hit
+
+
+def gradient_trim(comp, field, floor):
+    """Cut the part of a habitat that is too close to the arrival point.
+
+    Choosing a far-enough COMPONENT is not enough on its own: a habitat is often
+    one connected sprawl covering half the map, so its nearest cell is next to
+    the spawn while most of it is nowhere near — on demo_isle the single grass
+    component reaches within 1 cell of the arrival point. Trimming by CELL and
+    keeping the largest surviving piece gives a zone that genuinely begins at
+    the monster's keep-out distance, whatever shape the habitat is."""
+    far = {c for c in comp if field.get(c, 1 << 30) >= floor}
+    if not far:
+        return set()
+    parts = comps(far)
+    return parts[0] if parts else set()
 
 
 def habitat_of(mid):
@@ -211,6 +362,7 @@ class W:
         self.mat = [[mats[i] for i in row] for row in doc["mat"]]
         self.level = doc["level"]
         self.water = set(doc.get("water", ["clear_water"]))
+        self.spawn = (int(doc["spawn"][0]), int(doc["spawn"][1]))
         self.props = {(p["x"], p["y"]) for p in doc.get("props", [])}
         self.paths = doc["paths"]
         self.tall_props = set()
@@ -221,6 +373,7 @@ class W:
         # walk surface per cell = the deck level where one covers, else base;
         # cave floors keep their own base level as a SECOND surface (deck_kind)
         self.deck = {}
+        self.deck_thick = {}
         self.deck_kind = {}
         self.cave_floor = set()
         self.bridges = []
@@ -229,6 +382,7 @@ class W:
             for c in cells:
                 if int(dk["level"]) > self.deck.get(c, -1):
                     self.deck[c] = int(dk["level"])
+                    self.deck_thick[c] = int(dk.get("thickness", 1))
                     self.deck_kind[c] = dk.get("kind", "deck")
             if dk.get("kind") == "cave":
                 self.cave_floor.update(cells)
@@ -453,9 +607,13 @@ def _cut_open(filled, inside, pocket):
     return set(best[2])
 
 
-def dry_mask(w, comp, lo, hi):
+def dry_mask(w, comp, lo, hi, forbid=frozenset()):
     """Shrink a habitat component until the polygon traced from it encloses NO
-    water-surfaced cell. Two shrink moves, both strictly monotone:
+    forbidden cell — water (the water law) and, via `forbid`, anything closer to
+    the arrival point than this monster is allowed to be (the difficulty
+    gradient). Both need the SAME guarantee: not merely that the habitat avoids
+    those cells, but that the traced POLYGON cannot contain one, since the game
+    picks roam points from the polygon. Two shrink moves, both strictly monotone:
 
       * a diagonal-fill that would land on water is refused outright
         (fix_diagonals' `blocked`), so the mask never grows into the sea;
@@ -466,8 +624,9 @@ def dry_mask(w, comp, lo, hi):
     DRY_PASSES is a backstop that fails the BUILD rather than shipping a zone
     with water in it."""
     banned = set()
+    bad = (lambda c: c in forbid or wet(w, c[0], c[1], lo, hi))
     for _ in range(DRY_PASSES):
-        blocked = (lambda c: c in banned or wet(w, c[0], c[1], lo, hi))
+        blocked = (lambda c: c in banned or bad(c))
         parts = comps({c for c in comp if not blocked(c)})
         if not parts:
             return set()
@@ -476,7 +635,7 @@ def dry_mask(w, comp, lo, hi):
             return set()
         poly = trace_outer(filled)
         inside = poly_cells(poly)
-        pond = {c for c in inside if wet(w, c[0], c[1], lo, hi)}
+        pond = {c for c in inside if bad(c)}
         if not pond:
             return filled
         cut = set()
@@ -494,7 +653,7 @@ def _elev_of(w, cells):
 
 # -- zone construction --------------------------------------------------------
 
-def make_zone(w, kind, comp, zid, elev=None):
+def make_zone(w, kind, comp, zid, elev=None, forbid=frozenset()):
     """Build one zone with a placeholder population of 1. The real `num` is set
     later by balance_population(), which shares the world budget out per MONSTER
     (see the population doctrine above) — a zone can't know its own count
@@ -506,7 +665,7 @@ def make_zone(w, kind, comp, zid, elev=None):
     iterating to a fixed point converges (ELEV_PASSES is the backstop)."""
     band = [int(elev[0]), int(elev[1])] if elev else _elev_of(w, comp)
     for _ in range(ELEV_PASSES):
-        cells = dry_mask(w, comp, band[0], band[1])
+        cells = dry_mask(w, comp, band[0], band[1], forbid)
         assert cells, f"{w.name}/{zid}: no dry ground left after the water law"
         nxt = band if elev else _elev_of(w, (cells & set(comp)) or cells)
         if nxt == band:
@@ -566,6 +725,40 @@ def balance_population(w, zones):
         kept.extend(zs)
     pos = {id(z): i for i, z in enumerate(zones)}
     return sorted(kept, key=lambda z: pos[id(z)])
+
+
+def assert_gradient(w, zones, field=None):
+    """THE DIFFICULTY GRADIENT — nothing dangerous within reach of a newcomer.
+
+    Two rules, both about the moment a player lands:
+
+      * NOTHING at all inside SAFE_R walk-cells of the arrival point. Absolute.
+        A fresh player has 40 HP, and the map is not allowed to spend any of it
+        before they have looked around.
+      * every monster at least keep_out() away, which scales with its combat
+        level and pushes the ones that HUNT further still — unless its habitat
+        genuinely cannot offer anywhere far enough, which is reported rather
+        than hidden.
+
+    Returns the list of monsters the terrain could not satisfy (empty is good)."""
+    field = field if field is not None else walk_dist(w)
+    short = []
+    for z in zones:
+        kind = z["monster"]
+        cells = poly_cells([tuple(p) for p in z["area"]])
+        ds = [field[c] for c in cells if c in field]
+        if not ds:
+            continue
+        d = min(ds)
+        assert d >= SAFE_R, (
+            f"{w.name}/{z['id']} ({kind}): spawns {d} walk-cell(s) from the "
+            f"arrival point {w.spawn} — inside the SAFE_R={SAFE_R} landing "
+            f"radius. Newcomers arrive there with 40 HP.")
+        floor = keep_out(kind)
+        if d < floor:
+            lvl, ag = threat(kind)
+            short.append((kind, lvl, ag, d, floor))
+    return short
 
 
 def validate_zone(w, zone, inside=None):
@@ -648,6 +841,7 @@ def zones_for(w):
     for mid in ids:
         members.setdefault(habitat_of(mid), []).append(mid)
     masks = habitat_masks(w)
+    field = walk_dist(w)             # THE DIFFICULTY GRADIENT: walk cells from spawn
     zones = []
     for hab in sorted(members):
         mask = masks.get(hab, set())
@@ -657,14 +851,63 @@ def zones_for(w):
         kept = kept[:max(TOP_K, len(mem))]
         if not kept:
             continue
-        # every member gets a zone; extra components cycle back over members.
-        # Members sharing one component OVERLAP — that is the design.
+        far = {}
+        for i, c in enumerate(kept):
+            d = comp_dist(c, field)
+            far[i] = d if d is not None else 1 << 30   # unreachable: treat as far
+        # Every member gets a zone; extra components cycle back over members, and
+        # members sharing one component OVERLAP — that is still the design. What
+        # changed (maintainer 2026-08-06) is WHICH component a given monster gets:
+        # the NEAREST one it is allowed to live in, where "allowed" is its
+        # keep_out() distance from the arrival point. Easy monsters therefore
+        # come as close as the terrain permits and hard ones are pushed out,
+        # instead of difficulty being scattered at random by habitat alone.
         count = max(len(mem), len(kept))
+        taken = {}
         for i in range(count):
             kind = mem[i % len(mem)]
-            comp = kept[i % len(kept)]
+            floor = keep_out(kind)
+            seen = taken.setdefault(kind, set())
+            # Trim each unused component to the part far enough out for THIS
+            # monster, then take the nearest surviving piece: as close as it is
+            # allowed to be, never closer.
+            cands = []
+            for j, c in enumerate(kept):
+                if j in seen:
+                    continue
+                t = gradient_trim(c, field, floor)
+                if len(t) >= min_cells:
+                    cands.append((comp_dist(t, field) or (1 << 30), -len(t), j, t))
+            if cands:
+                cands.sort()
+                _d, _n, j, comp = cands[0]
+            elif not seen:
+                # Nowhere on this world is far enough for it, and it still needs
+                # a home: take the furthest habitat there is. assert_gradient
+                # REPORTS this rather than letting it pass unnoticed.
+                j = max(range(len(kept)), key=lambda j: (far[j], len(kept[j])))
+                comp = kept[j]
+            else:
+                # It already has a zone. A spare component is NOT a reason to add
+                # a second one somewhere too easy — that is exactly how a level-11
+                # Nightmule ended up 5 cells from the arrival point.
+                continue
+            seen.add(j)
             elev = [0, 1] if hab == "cave" else None
-            zones.append(make_zone(w, kind, comp, f"{hab}-{i + 1}", elev=elev))
+            # The polygon may not merely START beyond the floor — it may not
+            # CONTAIN a cell inside it, or the game could roam a monster back
+            # toward the newcomers. Same guarantee, same machinery as the water
+            # law: hand the too-close cells to dry_mask as forbidden ground.
+            # In the fallback case the terrain already cannot meet the floor, so
+            # only SAFE_R is enforced — the absolute landing radius always holds.
+            forbid = near_cells(field, floor if cands else SAFE_R)
+            try:
+                zones.append(make_zone(w, kind, comp, f"{hab}-{i + 1}",
+                                       elev=elev, forbid=forbid))
+            except AssertionError:
+                # Nothing legal survives here on this world (small maps hit this).
+                # Coverage on MUST_HAVE_ALL worlds is handled by fallback_zone.
+                seen.discard(j)
     # showcase: a guard on the biggest bridge span (deck-elevation zone)
     if BRIDGE_GUARD in ids and w.bridges:
         lvl, cells = max(w.bridges, key=lambda b: (len(b[1]), b[0]))
@@ -720,6 +963,10 @@ def refresh(name):
         return
     w = W(name)
     zones = balance_population(w, zones_for(w))
+    short = assert_gradient(w, zones)
+    for kind, lvl, ag, d, floor in short:
+        print(f"  ! {name}/{kind} (L{lvl}{'/hunts' if ag else ''}) sits {d} cells "
+              f"from spawn, wanted {floor} — its habitat has nowhere further")
     for z in zones:                                 # drop the allocator's scratch
         z.pop("_valid", None)
         z.pop("_cells", None)

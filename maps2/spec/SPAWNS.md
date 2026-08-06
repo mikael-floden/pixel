@@ -140,8 +140,77 @@ running a builder directly both re-check the zones against the new terrain. A
 terrain edit therefore cannot leave a stale zone sitting on new water — the
 build fails instead.
 
-Three placement laws (maintainer 2026-07-29, 2026-08-05):
+## The difficulty gradient
 
+> "Why do you spawn Duskfang next to newcomers? They are aggressive and will
+> kill them immediately. What's wrong with Mirewart? Why not scale up the
+> difficulty as you progress? Quillkin should also be closer. You just want
+> Newbies to have a hard time. Try to make them enjoy the game instead."
+> — maintainer, 2026-08-06
+
+Habitat alone decided placement before this, and habitat knows nothing about
+danger. Duskfang is a sabre-toothed tiger, tigers live on grass, the arrival
+point is grass — so a level-8 hunter that kills a fresh 40 HP player in three
+hits had a zone **touching the spawn**, while Mirewart (level 1) sat 54 cells
+away and Quillkin (level 4) was the most distant monster on the map at 152. The
+correlation between level and distance was nil.
+
+**Distance from the arrival point is now a function of difficulty**, measured in
+WALK cells — what the player actually travels — not straight line, which on a
+map with a mountain, a gorge and an ocean are very different numbers (the
+island is 168 cells across in straight line and 467 on foot).
+
+    keep_out(monster) = SAFE_R + (level - 1) * LVL_STEP + AGGRO_PUSH if it hunts
+                      = 6      + (level - 1) * 5        + 14
+
+The ranking is **not invented here**: `level` and `aggro_radius_wu` come from the
+game's own combat tuning (`live/tuning/monsters.json`, the same file
+`games2/server/src/tuning.ts` fights with), so a rebalance there moves the
+monsters on the map instead of silently disagreeing with it.
+
+`LVL_STEP` is calibrated against the terrain rather than picked: THE CAVE is a
+single component 112 walk-cells out holding all four cave dwellers, the worst of
+them Balefiend (L18, aggressive). 6 + 17·5 + 14 = 105 ≤ 112, so every monster on
+the_island2 satisfies its own floor with none falling back.
+
+Two mechanisms enforce it, and the second is the one that matters:
+
+- each monster takes the **nearest** habitat it is allowed — so easy monsters
+  come as close as the terrain permits rather than ending up wherever;
+- the too-close cells are handed to `dry_mask()` as **forbidden ground**, the
+  same machinery as the water law. Picking a far-enough *component* is not
+  enough on its own: a habitat is often one sprawl covering half the map, and
+  the polygon fill can bulge back toward the spawn. Forbidding by cell means the
+  polygon **cannot contain** a cell inside the floor, so the game cannot roam a
+  monster back toward the newcomers.
+
+`assert_gradient()` then enforces two rules before the file is written: **nothing
+at all** within `SAFE_R` walk-cells of the arrival point (absolute — a fresh
+player has 40 HP and the map may not spend any of it before they have looked
+around), and every monster at or beyond its `keep_out`, *unless* its habitat
+genuinely offers nowhere further, which is **reported** rather than hidden.
+
+Result on the_island2 — the first things a newcomer meets are a level-1 frog and
+a level-2 poring, both passive, 14 cells out; the nearest thing that **hunts** is
+55 cells away:
+
+| walk | monster | lvl | hunts | was |
+|---|---|---|---|---|
+| 14 | Mirewart | 1 | – | 54 |
+| 14 | Puddling | 2 | – | 14 |
+| 29 | Quillkin | 4 | – | **152** |
+| 55 | Duskfang | 8 | **yes** | **0** |
+| 56 | Nightmule | 11 | – | **5** |
+| 112 | Balefiend | 18 | yes | 79 |
+| 150 | Rimeshard | 19 | – | 100 |
+
+The floor is a **minimum**, not an exact ordering: Fluffang (L5) sits at 121
+because snow only exists on the mountain. Terrain may push a monster further
+than its level requires; it may never pull one closer.
+
+Four placement laws (maintainer 2026-07-29, 2026-08-05, 2026-08-06):
+
+- **difficulty scales with distance from the arrival point** — the gradient above.
 - **no monster spawns on water** — the water law above.
 
 - **`the_island2` MUST contain every monster** — it is the map closest to the

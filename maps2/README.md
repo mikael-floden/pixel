@@ -232,7 +232,22 @@ habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
 world is written (`save_world` calls `spawns.refresh`), so a terrain edit can
 never leave stale zones behind; it validates every zone (simple polygon, ≥num
 standable cells at the claimed elevation) before writing.
-Three placement laws:
+Four placement laws.
+**DIFFICULTY SCALES WITH DISTANCE FROM THE ARRIVAL POINT** (maintainer
+2026-08-06: "Why do you spawn Duskfang next to newcomers? … Try to make them
+enjoy the game instead"). Habitat alone knows nothing about danger — a level-8
+sabre-toothed tiger lives on grass, the spawn is on grass, so it had a zone
+touching the arrival point while the level-1 frog was 54 cells away and the
+level-4 hedgehog was the most distant monster on the map. Now
+`keep_out = SAFE_R + (level-1)*LVL_STEP + AGGRO_PUSH-if-it-hunts`, measured in
+WALK cells (the island is 168 across in straight line and 467 on foot), with
+`level`/`aggro_radius_wu` taken from the GAME's own combat tuning
+(`live/tuning/monsters.json`) so a rebalance moves the monsters to match. Each
+monster takes the NEAREST habitat it is allowed, and the too-close cells are
+forbidden to `dry_mask()` exactly like water — so a polygon cannot even contain
+one. Nothing at all spawns within SAFE_R of the arrival point; the first things
+a newcomer meets on the_island2 are a level-1 frog and a level-2 poring, both
+passive, and the nearest monster that HUNTS is 55 cells out.
 **NO MONSTER SPAWNS ON WATER** (maintainer 2026-08-05: "monsters can't swim…
 we're gonna soon make water into a safe zone") — not filtered at runtime but
 guaranteed by the GEOMETRY: no zone polygon on any world contains a single
