@@ -202,7 +202,18 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   // only Jump and Fall on the per-hero rows, so Die has a single shared card.
   // Asked them for a Die row per hero (coordination/games-audio.json).
   "player.die@default_girl": [{ sound: "composer/die_voice", take: "die_voice__take06" }],
-  "combat.cross_on": [{ sound: "composer/monster_die_crumble", take: "monster_die_crumble__take01", pitch: 0.95 }],
+  // REPLACES monster_die_crumble rather than joining it, and that is a
+  // judgement — flag it if it is wrong. Several assignments on one event
+  // normally ADD (see the list note above), but crumble was picked at 05:57,
+  // BEFORE he asked for cross_on candidates at all; the 50 sets in rounds 14
+  // and 15 exist precisely because nothing he had was the right cross_on, and
+  // peat is the end of that hunt. crumble is also a monster-death brief ("a
+  // body crumbling into dry dust"), at 0 dB against peat's deliberately tuned
+  // -6 dB — alternating them on every kill would swing loud/quiet, which is
+  // not a designed pair. Recovery decided the tie: re-assigning crumble in the
+  // wiki works, while un-assigning it needs the per-take unbind that is still
+  // broken there.
+  "combat.cross_on": [{ sound: "composer/cross_on_peat", take: "cross_on_peat__take01", volume_db: -6 }],
   "combat.cross_off": [{ sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 }],
   "item.pickup": [{ sound: "composer/kick_earthmound", take: "kick_earthmound__take01" }],
   "combat.hit_taken": [{ sound: "composer/kick_bamboo", take: "kick_bamboo__take01" }],

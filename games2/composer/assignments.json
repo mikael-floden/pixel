@@ -40,9 +40,9 @@
     ],
     "combat.cross_on": [
       {
-        "sound": "composer/monster_die_crumble",
-        "take": "monster_die_crumble__take01",
-        "pitch": 0.95
+        "sound": "composer/cross_on_peat",
+        "take": "cross_on_peat__take01",
+        "volume_db": -6
       }
     ],
     "combat.cross_off": [
