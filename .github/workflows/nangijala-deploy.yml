@@ -51,6 +51,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # WHAT ARE WE DEPLOYING? Resolved ONCE, here, and used by both jobs below.
+  #
+  # `github.sha` is the commit the run was CREATED with, which for a dispatched
+  # deploy is whatever main pointed at when the dispatch was accepted — not what
+  # main holds when the build actually starts. A generator that pushes art and
+  # then dispatches this workflow loses that race: composer-foley pushed 20 new
+  # sounds at 06:12:13 on 2026-08-06 and dispatched one second later, and the
+  # deploy still built the previous tip. The sounds were on GitHub and 404'd in
+  # the game, and the deploy went GREEN — which is why generated art only
+  # "sometimes" showed up.
+  #
+  # Resolving here rather than in each job keeps the gate honest: if `test` and
+  # `build-deploy` each resolved main themselves they could land on different
+  # commits and the suite would be testing something other than what ships.
+  resolve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      sha: ${{ steps.rev.outputs.sha }}
+    steps:
+      - id: rev
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          echo "deploying main @ $sha (run was created with ${{ github.sha }})"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
   # Quality gate — runs in parallel with the image build, so it adds ~no wall
   # time. Sparse checkout: only what typecheck + npm test actually read
   # (games2, characters2 for the manifest, maps2/worlds for the navigation
@@ -58,12 +87,15 @@ jobs:
   # without it every monster fights as the builtin poring and the combat
   # tests fail on exactly the stats they assert).
   test:
+    needs: resolve
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
         with:
+          # The SAME commit build-deploy ships — see the `resolve` job.
+          ref: ${{ needs.resolve.outputs.sha }}
           sparse-checkout: |
             /games2/
             /characters2/
@@ -87,14 +119,16 @@ jobs:
   # deploy step polls the parallel `test` job and aborts on failure (tests
   # normally finish before the image push does, so the wait is ~zero).
   build-deploy:
+    needs: resolve
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write          # required for Workload Identity Federation
       actions: read            # poll the sibling test job's status
     steps:
-      # PLAIN checkout, deliberately. This used to list 12 of the 13 top-level
-      # domains as a sparse-checkout, which sounds cheaper but is not: passing
+      # NO sparse-checkout here, deliberately. This used to list 12 of the 13
+      # top-level domains as a sparse-checkout, which sounds cheaper but is
+      # not: passing
       # `sparse-checkout` makes actions/checkout use a BLOBLESS PARTIAL CLONE
       # (--filter=blob:none), so every file it does materialise costs an extra
       # lazy fetch round-trip. Selecting ~83% of the tree that way was pure
@@ -103,7 +137,13 @@ jobs:
       # 3-path sparse checkout. The one thing the list actually excluded was
       # the retired games/ tree, and that is now deleted from the repo
       # (9a73cc25c), so there is nothing left to exclude.
+      # The tip of main as resolved ONCE by the `resolve` job — NOT github.sha,
+      # which is the commit this run was created with and can predate a
+      # generator's push by seconds. Everything below tags, stamps and deploys
+      # with the same value, so the image name always names its own contents.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
 
       - id: auth
         uses: google-github-actions/auth@v2
@@ -131,10 +171,10 @@ jobs:
           push: true
           provenance: false
           tags: |
-            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:${{ github.sha }}
+            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:${{ needs.resolve.outputs.sha }}
             ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:latest
           build-args: |
-            GIT_SHA=${{ github.sha }}
+            GIT_SHA=${{ needs.resolve.outputs.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -156,7 +196,7 @@ jobs:
           IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
         run: |
           gcloud run deploy "${{ vars.GCP_SERVICE }}" \
-            --image "$IMAGE:${{ github.sha }}" \
+            --image "$IMAGE:${{ needs.resolve.outputs.sha }}" \
             --region "${{ vars.GCP_REGION }}" \
             --platform managed \
             --allow-unauthenticated \
