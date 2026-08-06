@@ -76,6 +76,8 @@ const focus = await p.evaluate(async () => {
   document.querySelector(".sfx-entity-add .sfx-add-open").click();
   await new Promise((r) => setTimeout(r, 350));
   const d = document.querySelector("dialog.sfx-picker");
+  window.__dlgTitle = d.querySelector("h3")?.textContent ?? "";
+  window.__dlgFits = d.getBoundingClientRect().height <= window.innerHeight;
   const search = d.querySelector("input[type=search]");
   const before = document.activeElement?.tagName + "." + (document.activeElement?.className || "");
   // tapping the search box IS how you ask for the keyboard
@@ -86,6 +88,15 @@ const focus = await p.evaluate(async () => {
 console.log("focus:", JSON.stringify(focus));
 ok(!/INPUT/.test(focus.before), `opening the picker leaves the keyboard alone (focus was ${focus.before})`);
 ok(focus.after, "tapping the search box still focuses it — that is when the keyboard belongs");
+
+// the dialog must keep reminding you WHAT you are listening for
+const titled = await p.evaluate(() => ({ title: window.__dlgTitle, fits: window.__dlgFits,
+  action: document.querySelector(".sfx-entity-add select")?.value,
+  name: document.querySelector("h1")?.textContent }));
+console.log("dialog title:", JSON.stringify(titled));
+ok(/^Assign a sound to /.test(titled.title), `the title names the target ("${titled.title}")`);
+ok(titled.title.includes(titled.name), "…including whose page you are on");
+ok(titled.fits, "and the dialog still fits the phone screen");
 
 // ---------- the transport must not move as you step (maintainer 2026-08-06)
 const pinned = await p.evaluate(async () => {
@@ -131,6 +142,30 @@ const labels = await p.evaluate(() => {
     anyPlus: [...document.querySelectorAll(".sfx-add-open")].some((x) => /^\+/.test(x.textContent.trim())) };
 });
 console.log("buttons:", JSON.stringify(labels));
+// an EVENT card's dialog names the event, and says "another" when it has one
+const evTitles = await p.evaluate(async () => {
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  document.querySelector("dialog.sfx-picker")?.close();     // a modal left open eats the next click
+  await wait(200);
+  const out = [];
+  for (const which of [true, false]) {
+    const card = [...document.querySelectorAll(".sfx-event")].find((c) => !!c.querySelector(".sfx-take") === which);
+    // the event's own name is the panel title's first TEXT node — the rest are pills
+    const name = [...card.querySelector(".panel-title").childNodes]
+      .find((n) => n.nodeType === 3 && n.textContent.trim())?.textContent.trim() ?? "";
+    card.querySelector(".sfx-add-open").click();
+    await wait(300);
+    const d = document.querySelector("dialog.sfx-picker");
+    out.push({ name, title: d.querySelector("h3").textContent, fits: d.getBoundingClientRect().height <= window.innerHeight });
+    d.close();
+    await wait(200);
+  }
+  return out;
+});
+console.log("event dialogs:", JSON.stringify(evTitles));
+ok(evTitles[0].title === `Assign another sound to ${evTitles[0].name}`, `an event with a sound: "${evTitles[0].title}"`);
+ok(evTitles[1].title === `Assign a sound to ${evTitles[1].name}`, `a silent event: "${evTitles[1].title}"`);
+ok(evTitles.every((x) => x.fits), "both dialogs fit the phone screen");
 ok(labels.withSound === "Assign another sound…", `an event that already sounds says "Assign another sound…" (got "${labels.withSound}")`);
 ok(labels.without === "Assign a sound…", `a silent event says "Assign a sound…" (got "${labels.without}")`);
 ok(labels.icons === labels.buttons && !labels.anyPlus, `every one of the ${labels.buttons} buttons carries the chain, none the old "+"`);

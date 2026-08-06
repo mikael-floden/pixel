@@ -2253,9 +2253,12 @@ function sfxAddForm(ev) {
     route();
   };
   return h("div", { class: "sfx-add" },
+    // The title NAMES THE TARGET (maintainer 2026-08-06): once you are three
+    // screens down a list of 117 sounds, "Assign a sound" alone no longer
+    // tells you what you are listening for. "Assign a sound to Drop" does.
     assignSoundBtn(ev.sounds.length > 0, () => openSoundPicker({
-      title: ev.sounds.length ? "Assign another sound" : "Assign a sound",
-      forWhat: `${ev.name} — plays when the game fires this moment. Listen your way down the list; the composer wires in what you pick.`,
+      title: `${ev.sounds.length ? "Assign another sound to" : "Assign a sound to"} ${ev.name}`,
+      forWhat: "Plays whenever the game fires this moment. Listen your way down the list — the composer wires in what you pick.",
       onPick: queue,
     })));
 }
@@ -2349,8 +2352,10 @@ function entityAddCard(domain, ent) {
   const evId = () => `${domain}.${ent.id}.${act.value}`;
   const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
   const btn = assignSoundBtn(false, () => openSoundPicker({
-    title: "Assign a sound",
-    forWhat: `${ent.name ?? ent.id} — ${stateLabel(act.value)}. Listen your way down the list; the composer wires in what you pick.`,
+    // Names the target the same way an event card does — here the target is
+    // the entity's own action, read at the moment the button is pressed.
+    title: `Assign a sound to ${ent.name ?? ent.id} · ${stateLabel(act.value)}`,
+    forWhat: "A new sound event for this animation. Listen your way down the list — the composer wires in what you pick.",
     onPick: (req) => {
       setSfxRequest(`${evId()}/${Date.now().toString(36)}`, {
         event: evId(), scope: { domain, id: ent.id }, action: act.value, ...req,

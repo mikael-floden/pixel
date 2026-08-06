@@ -455,6 +455,11 @@ to replace the parsing.
   recorded** — and the request carries the numbers you auditioned with. The
   generic `dialog input` rule is scoped to `:not(.sfx-picker)`: it is the
   sign-in dialog's full-width stacked field and it wrecked these rows.
+- **The dialog names its target** (maintainer 2026-08-06): "Assign a sound to
+  Drop", "Assign another sound to Footsteps · Dirt", "Assign a sound to
+  Nyssa · Idle". Three screens into 117 sounds, a bare "Assign a sound" no
+  longer tells you what you are listening FOR. The subtitle then only has to
+  say what kind of moment it is.
 - **The dialog's geometry is FIXED** (maintainer 2026-08-06: Next must be
   where it was after you press Next). A modal is centred, so anything below
   the list that changes height moves every control: the list has a fixed
