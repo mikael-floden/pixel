@@ -180,8 +180,37 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   (byte-identical). The stall-replan is already deck-aware (`findPath` with
   `fromElev`/`goalLevel`). Gate: `server/test/navigation.sim.test.ts` "leave the
   bridge onto same-level ground" scans every the_island2 span cell and drives the
-  real follower off it (fails on the base-only baseline, 4/40 stuck). TODO:
-  occlusion-FADE when standing under a deck (see yourself inside the house).
+  real follower off it (fails on the base-only baseline, 4/40 stuck). SEEING
+  YOURSELF UNDER A DECK (inside the house, inside the cave) is NOT answered
+  today: the occlusion fade that used to be the TODO here is deleted (see the
+  see-through-walls note below) and INDOOR MODE is half-built. What exists is
+  `shared/src/indoor.ts` — a pure, tested roof/wall/entrance detector
+  (`roofAbove`, `findIndoorSpace`) with NO renderer consumer; nothing in
+  WorldScene imports it. What is PLANNED is the renderer half: skipping tiles
+  at/above the roof level, a per-cell lit mask feeding ambient, and a darker
+  non-blue indoor ambient.
+- **SEE-THROUGH WALLS IS DELETED — do NOT reintroduce a per-frame occluder
+  alpha sweep** (2026-08-06). The prototype (~196 lines, the `[7]` key, a
+  Settings switch "see-through walls" and the `__ml.occFade`/`occFocus`/
+  `occApply` probes) ran a GHOST PASS EVERY FRAME: it walked the whole
+  occluder set and, for every image whose cell was taller than the player's
+  level, inside a 14-cell bubble AND in front of the player (`col+row >`
+  the player's `fSum`), dropped its alpha and pushed it behind
+  the player — plus a REVEAL RenderTexture at depth −900_000 that redrew the
+  player-level ground the tower was covering and stamped a BLACK diamond at
+  each faded tower's root so its footprint still read as void. It was OFF by
+  default and never persisted (no localStorage), so nobody but QA ever saw it.
+  The maintainer removed it as SLOW and never good-looking: the sweep is a
+  getData + setDepth + setAlpha over the live occluder set (3.9k images after
+  the view-cull, 13k before), and every setDepth re-queues Phaser's
+  display-list sort — 1.33ms/frame measured for a feature that was off. Its
+  intended replacement is INDOOR MODE, which will decide per CELL what is
+  indoors instead of re-tinting thousands of images per frame. Only its
+  DETECTION half exists so far (`shared/src/indoor.ts`: pure, tested, no
+  renderer consumer); the renderer half — skipping tiles at/above the roof
+  level, a per-cell lit mask feeding ambient, a darker non-blue indoor ambient
+  — is still to be written, so nothing replaces the fade today. The dead `"ot"`/`"od"` occluder tags went with it — `tagOccluder`
+  now stamps the cell only. History in git.
 - **OCCLUDER VIEW-CULL + DECK EXPOSURE** (perf #2/#3, 2026-07-31 — the walking
   hitch). `rebuildOccluders` destroys and recreates the whole occluder set
   whenever the camera centre drifts `OCC_STEP` (96px), and it built **14.4

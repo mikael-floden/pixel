@@ -2031,6 +2031,8 @@ export function stepAutopilot(
 
 export * from "./monsters";
 export * from "./combat";
+// indoor.ts — "am I under a roof, and is it a room?" (pure; reads TerrainGrid).
+export * from "./indoor";
 
 // ---------------------------------------------------------------------------
 // Spawn-zone runtimes (the terrain-aware half of spawns@1 — the pure geometry
