@@ -626,19 +626,64 @@ function viewHome() {
 }
 
 /* --- monsters --- */
+/** Does this creature come for you unprompted? The game's rule exactly: a
+ *  monster proximity-aggros only when its aggro radius is greater than zero,
+ *  and the tuning default is 0 — PASSIVE by default, so most of the roster
+ *  only ever retaliates. Read from the LIVE tuning doc through monsterStats,
+ *  so editing a radius in the wiki re-colours the pill with no rebuild. */
+const isAggressive = (st) => Number(st.aggro_radius_wu ?? 0) > 0;
+function aggroPill(st) {
+  const on = isAggressive(st);
+  return h("span", { class: `pill ${on ? "err" : "ok"}`, title: on
+      ? `Attacks on sight — it hunts anything that comes within ${st.aggro_radius_wu} world units of it.`
+      : "Calm — it will not start a fight. Hit it and it fights back like any creature." },
+    on ? "aggressive" : "calm");
+}
+/** A row of mutually exclusive sort buttons. Its own fixed-height row, so the
+ *  grid below it never shifts as the order changes. */
+function sortBar(key, options, current, onPick) {
+  const row = h("div", { class: "sortbar" });
+  row.append(...options.map(([id, label, title]) => h("button", {
+    class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
+    onclick: () => { try { localStorage.setItem(key, id); } catch { /* private mode */ } onPick(id); },
+  }, label)));
+  return row;
+}
+const MONSTER_SORT_KEY = "wiki-monster-sort";
 function viewMonsters() {
   const q = state.query;
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
+  // Default is BY NAME. The underlying order is the folder id, which reads as
+  // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
+  let sort = "name";
+  try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const lvl = (m) => Number(stat.get(m.id).level ?? 0);
+  const CMP = {
+    name: byName,
+    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
+    // Aggressive first, and hardest first within each half — "what can come
+    // for me, worst first" is the question this sort answers.
+    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+  };
+  const sorted = [...list].sort(CMP[sort] ?? byName);
+  const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
   return h("div", {},
     sectionHead("monsters"),
     h("p", { class: "muted" }, state.admin
-      ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its shadow, edit its stats and loot.`
-      : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
-    h("div", { class: "grid" }, ...list.map((m) => {
+      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight. Click one to preview every animation, check its shadow, edit its stats and loot.`
+      : `${list.length} creatures roam Nangijala, ${nAggro} of them aggressive. Click one to watch every animation and study its stats.`),
+    sortBar(MONSTER_SORT_KEY, [
+      ["name", "by name", "Alphabetical"],
+      ["level", "by level", "Hardest first"],
+      ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+    ], sort, () => route()),
+    h("div", { class: "grid" }, ...sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
-      const st = monsterStats(m.id);
+      const st = stat.get(m.id);
       const sp = monsterSpawns(m.id);
       return h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
@@ -646,9 +691,12 @@ function viewMonsters() {
         h("div", { class: "card-name" }, m.name),
         h("div", { class: "card-sub" },
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
-        h("div", { class: "card-sub" }, sp
-          ? `${sp.spawned} roaming · ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`
-          : "not spawned"),
+        // The habitat count is gone from here (maintainer 2026-08-06) — will
+        // it come for me matters more at a glance, and the count is still on
+        // the creature's own page. "not spawned" stays beside it because it
+        // is a different fact from calm: that one is in no world at all.
+        h("div", { class: "card-sub card-pills" }, aggroPill(st),
+          sp ? null : h("span", { class: "pill", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")),
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }

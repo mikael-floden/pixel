@@ -684,6 +684,32 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+## Creatures overview: sortable, and "will it attack me" at a glance
+
+- **Sort by name / level / aggressive first** (maintainer 2026-08-06). Its own
+  fixed-height `.sortbar` row above the grid, and the choice persists in
+  `localStorage["wiki-monster-sort"]`. **by name** is the default — the
+  underlying order is the folder id, which reads as random against display
+  names (Emberwing, Nightmule, Ashfiend…). **by level** is hardest first;
+  **aggressive first** puts the ones that hunt you before the rest and orders
+  each half hardest-first, which is the question that sort answers.
+- **A red `aggressive` / green `calm` pill replaced the habitat line** on the
+  card. The habitat count is still on the creature's own page; whether it comes
+  for you unprompted matters more in a grid.
+  - **It is LIVE data, not a build-time snapshot.** A monster proximity-aggros
+    only when its aggro radius is above zero and the tuning default is 0 —
+    passive by default, 9 of 24 hunt. The pill reads through `monsterStats`,
+    the same live doc the stats editor writes, so re-tuning a radius in the
+    wiki re-colours the pill with no rebuild.
+  - `not spawned` survives beside it: a creature in no world at all is a
+    different fact from a calm one, and it was carried by the line that went.
+  - Gate: **`wiki/tools/check-creatures.mjs`** derives its expectation from
+    `live/tuning/monsters.json` rather than a list typed into the gate, checks
+    each pill against its own creature's radius, asserts the two pills are
+    genuinely red- and green-dominant by COMPUTED COLOUR (two words in the same
+    colour would pass a text-only check), and drives all three sorts plus the
+    reload that proves the choice sticks.
+
 - **ONE PLAY BUTTON PER SEPARATELY-AUDIBLE THING** (maintainer 2026-08-06, on
   the player view of a creature page: "why is the group in a group? Why 3 play
   buttons and not 2? A non admin will probably not even understand why we have

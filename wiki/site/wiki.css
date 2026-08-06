@@ -789,13 +789,23 @@ input[type="range"] { accent-color: var(--accent); }
 /* The sort toggle. Its own fixed-height row ABOVE the list, so it can never
    change size with the list's contents — the bar below stays put whichever
    order you choose and however few rows a search leaves. */
+/* The section sort row, same control as the picker's. Its own fixed-height
+   row so the grid below can reorder without anything above it moving. */
+.sortbar { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; }
 .picker-sort { display: flex; gap: 6px; margin-top: 8px; }
+.sortbar-btn,
 .picker-sort-btn {
   flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;
   border: 1px solid var(--border); border-radius: 9px;
   background: transparent; color: var(--muted);
 }
+/* On a page the bar is not sharing a fixed modal width, so the buttons hug
+   their text instead of stretching across a desktop column. */
+.sortbar-btn { flex: 0 0 auto; padding: 7px 14px; }
+.sortbar-btn.sel,
 .picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+/* Card pill row: replaces the habitat line, so it keeps that line's rhythm. */
+.card-pills { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 /* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
    height change here shifts every control — Next must be where it was after
    you press Next. */
