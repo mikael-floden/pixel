@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-sfx-requests@1",
   "_comment": "The Game Master's requests to ADD a sound to an in-game event, written by the wiki (server-merged, per-entry). Key: <event id>/<n>. Value: {event, sound (catalog id or composer/<set>), pitch, volume_db, max_random_pitch_semis, note, requested_at}. The composer (games-audio) agent reads these at run start, wires the sound in its engine, and DELETES the entry it acted on (read-modify-write, like feedback).",
-  "updated_at": "2026-08-06T01:46:52.086Z",
+  "updated_at": "2026-08-06T01:50:21.700Z",
   "requests": {
     "item.drop/msguljrm": {
       "event": "item.drop",
@@ -18,6 +18,46 @@
       "volume_db": 0,
       "max_random_pitch_semis": 0,
       "requested_at": "2026-08-06T01:46:37.694Z"
+    },
+    "ui.press/msguwau8": {
+      "event": "ui.press",
+      "sound": "composer/ui_click_bead",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T01:47:49.856Z"
+    },
+    "ui.error/msguwv17": {
+      "event": "ui.error",
+      "sound": "composer/ui_click_bead",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T01:48:16.027Z"
+    },
+    "ui.cursor_move/msgux2d7": {
+      "event": "ui.cursor_move",
+      "sound": "composer/ui_click_bead",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T01:48:25.531Z"
+    },
+    "ui.confirm/msgux879": {
+      "event": "ui.confirm",
+      "sound": "composer/ui_click_bead",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T01:48:33.094Z"
+    },
+    "ui.cancel/msguxe6s": {
+      "event": "ui.cancel",
+      "sound": "composer/ui_click_bead",
+      "pitch": 1,
+      "volume_db": 0,
+      "max_random_pitch_semis": 0,
+      "requested_at": "2026-08-06T01:48:40.852Z"
     }
   }
 }
