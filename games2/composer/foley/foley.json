@@ -3815,5 +3815,750 @@
     "brief": "an extremely close lightning strike directly overhead: one instant deafening thunder crack, a sharp explosive splitting snap with a hard short rumble right behind it",
     "generated_at": "2026-08-06T01:21:08+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_switch": {
+    "takes": [
+      "ui_click_switch/ui_click_switch__take01.wav"
+    ],
+    "durations_s": [
+      0.21
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.0,
+        "duration_s": 0.21,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.406,
+        "crest": 13.82,
+        "centroid_hz": 7155,
+        "mid_ratio": 0.477
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 0,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_switch/pool/ui_click_switch__cand01.wav",
+        "passed_gates": false,
+        "rank": 4.42,
+        "features": {
+          "mid_peak_db": -27.0,
+          "duration_s": 0.21,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.406,
+          "crest": 13.82,
+          "centroid_hz": 7155,
+          "mid_ratio": 0.477
+        }
+      },
+      {
+        "file": "ui_click_switch/pool/ui_click_switch__cand02.wav",
+        "passed_gates": false,
+        "rank": 22.55,
+        "features": {
+          "mid_peak_db": -18.4,
+          "duration_s": 0.25,
+          "attack_ms": 8.6,
+          "tail_ratio": 0.0,
+          "tonality": 0.665,
+          "crest": 6.48,
+          "centroid_hz": 6694,
+          "mid_ratio": 0.767
+        }
+      }
+    ],
+    "brief": "a small toggle switch flicking over, one crisp mechanical snap",
+    "generated_at": "2026-08-06T01:36:58+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_keycap": {
+    "takes": [
+      "ui_click_keycap/ui_click_keycap__take01.wav"
+    ],
+    "durations_s": [
+      0.3
+    ],
+    "features": [
+      {
+        "mid_peak_db": -27.4,
+        "duration_s": 0.3,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.296,
+        "crest": 15.17,
+        "centroid_hz": 6120,
+        "mid_ratio": 0.524
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand01.wav",
+        "passed_gates": true,
+        "rank": 2.96,
+        "features": {
+          "mid_peak_db": -27.4,
+          "duration_s": 0.3,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.296,
+          "crest": 15.17,
+          "centroid_hz": 6120,
+          "mid_ratio": 0.524
+        }
+      },
+      {
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand02.wav",
+        "passed_gates": true,
+        "rank": 3.01,
+        "features": {
+          "mid_peak_db": -22.7,
+          "duration_s": 0.3,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.301,
+          "crest": 11.2,
+          "centroid_hz": 5576,
+          "mid_ratio": 0.846
+        }
+      },
+      {
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand03.wav",
+        "passed_gates": false,
+        "rank": 4.35,
+        "features": {
+          "mid_peak_db": -22.5,
+          "duration_s": 0.3,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.405,
+          "crest": 10.22,
+          "centroid_hz": 4940,
+          "mid_ratio": 0.738
+        }
+      }
+    ],
+    "brief": "a mechanical keyboard key bottoming out, one firm plastic thock",
+    "generated_at": "2026-08-06T01:37:04+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_latch": {
+    "takes": [
+      "ui_click_latch/ui_click_latch__take01.wav"
+    ],
+    "durations_s": [
+      0.205
+    ],
+    "features": [
+      {
+        "mid_peak_db": -31.0,
+        "duration_s": 0.205,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.393,
+        "crest": 21.82,
+        "centroid_hz": 7372,
+        "mid_ratio": 0.481
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_latch/pool/ui_click_latch__cand01.wav",
+        "passed_gates": true,
+        "rank": 3.93,
+        "features": {
+          "mid_peak_db": -31.0,
+          "duration_s": 0.205,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.393,
+          "crest": 21.82,
+          "centroid_hz": 7372,
+          "mid_ratio": 0.481
+        }
+      },
+      {
+        "file": "ui_click_latch/pool/ui_click_latch__cand02.wav",
+        "passed_gates": false,
+        "rank": 14.36,
+        "features": {
+          "mid_peak_db": -31.6,
+          "duration_s": 0.25,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.548,
+          "crest": 13.78,
+          "centroid_hz": 8076,
+          "mid_ratio": 0.167
+        }
+      },
+      {
+        "file": "ui_click_latch/pool/ui_click_latch__cand03.wav",
+        "passed_gates": false,
+        "rank": 33.19,
+        "features": {
+          "mid_peak_db": -28.0,
+          "duration_s": 0.25,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.817,
+          "crest": 7.82,
+          "centroid_hz": 7528,
+          "mid_ratio": 0.121
+        }
+      }
+    ],
+    "brief": "a small metal latch dropping into its catch, one tight clean clack",
+    "generated_at": "2026-08-06T01:37:09+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_pebble": {
+    "takes": [
+      "ui_click_pebble/ui_click_pebble__take01.wav"
+    ],
+    "durations_s": [
+      0.22
+    ],
+    "features": [
+      {
+        "mid_peak_db": -28.6,
+        "duration_s": 0.22,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.254,
+        "crest": 14.79,
+        "centroid_hz": 7295,
+        "mid_ratio": 0.378
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand01.wav",
+        "passed_gates": true,
+        "rank": 2.54,
+        "features": {
+          "mid_peak_db": -28.6,
+          "duration_s": 0.22,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.254,
+          "crest": 14.79,
+          "centroid_hz": 7295,
+          "mid_ratio": 0.378
+        }
+      },
+      {
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand02.wav",
+        "passed_gates": true,
+        "rank": 2.84,
+        "features": {
+          "mid_peak_db": -35.7,
+          "duration_s": 0.214,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.284,
+          "crest": 33.32,
+          "centroid_hz": 7973,
+          "mid_ratio": 0.374
+        }
+      },
+      {
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand03.wav",
+        "passed_gates": false,
+        "rank": 16.46,
+        "features": {
+          "mid_peak_db": -37.1,
+          "duration_s": 0.22,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.578,
+          "crest": 17.73,
+          "centroid_hz": 11229,
+          "mid_ratio": 0.078
+        }
+      }
+    ],
+    "brief": "one small smooth pebble tapped once against another, a bright dry tick",
+    "generated_at": "2026-08-06T01:37:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_leather": {
+    "takes": [
+      "ui_click_leather/ui_click_leather__take01.wav"
+    ],
+    "durations_s": [
+      0.347
+    ],
+    "features": [
+      {
+        "mid_peak_db": -23.9,
+        "duration_s": 0.347,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.238,
+        "crest": 13.3,
+        "centroid_hz": 7001,
+        "mid_ratio": 0.787
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_leather/pool/ui_click_leather__cand01.wav",
+        "passed_gates": true,
+        "rank": 2.38,
+        "features": {
+          "mid_peak_db": -23.9,
+          "duration_s": 0.347,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.238,
+          "crest": 13.3,
+          "centroid_hz": 7001,
+          "mid_ratio": 0.787
+        }
+      },
+      {
+        "file": "ui_click_leather/pool/ui_click_leather__cand02.wav",
+        "passed_gates": true,
+        "rank": 3.28,
+        "features": {
+          "mid_peak_db": -27.1,
+          "duration_s": 0.178,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.328,
+          "crest": 17.74,
+          "centroid_hz": 5848,
+          "mid_ratio": 0.765
+        }
+      },
+      {
+        "file": "ui_click_leather/pool/ui_click_leather__cand03.wav",
+        "passed_gates": true,
+        "rank": 3.48,
+        "features": {
+          "mid_peak_db": -25.1,
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.348,
+          "crest": 16.94,
+          "centroid_hz": 2690,
+          "mid_ratio": 0.955
+        }
+      }
+    ],
+    "brief": "a stiff leather cover pressed down under a thumb, one soft creaking tap",
+    "generated_at": "2026-08-06T01:37:20+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_woodpeg": {
+    "takes": [
+      "ui_click_woodpeg/ui_click_woodpeg__take01.wav"
+    ],
+    "durations_s": [
+      0.3
+    ],
+    "features": [
+      {
+        "mid_peak_db": -18.9,
+        "duration_s": 0.3,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.483,
+        "crest": 7.35,
+        "centroid_hz": 3354,
+        "mid_ratio": 0.87
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 0,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand01.wav",
+        "passed_gates": false,
+        "rank": 9.81,
+        "features": {
+          "mid_peak_db": -18.9,
+          "duration_s": 0.3,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.483,
+          "crest": 7.35,
+          "centroid_hz": 3354,
+          "mid_ratio": 0.87
+        }
+      },
+      {
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand02.wav",
+        "passed_gates": false,
+        "rank": 14.57,
+        "features": {
+          "mid_peak_db": -24.7,
+          "duration_s": 0.278,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.551,
+          "crest": 14.32,
+          "centroid_hz": 2184,
+          "mid_ratio": 0.884
+        }
+      },
+      {
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand03.wav",
+        "passed_gates": false,
+        "rank": 15.55,
+        "features": {
+          "mid_peak_db": -25.3,
+          "duration_s": 0.3,
+          "attack_ms": 19.9,
+          "tail_ratio": 0.0,
+          "tonality": 0.565,
+          "crest": 12.26,
+          "centroid_hz": 4513,
+          "mid_ratio": 0.556
+        }
+      }
+    ],
+    "brief": "a wooden peg pushed home into a hole in a plank, one warm dry knock",
+    "generated_at": "2026-08-06T01:37:25+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_clasp": {
+    "takes": [
+      "ui_click_clasp/ui_click_clasp__take01.wav"
+    ],
+    "durations_s": [
+      0.25
+    ],
+    "features": [
+      {
+        "mid_peak_db": -26.1,
+        "duration_s": 0.25,
+        "attack_ms": 10.4,
+        "tail_ratio": 0.0,
+        "tonality": 0.657,
+        "crest": 7.68,
+        "centroid_hz": 6708,
+        "mid_ratio": 0.182
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 0,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_clasp/pool/ui_click_clasp__cand01.wav",
+        "passed_gates": false,
+        "rank": 21.99,
+        "features": {
+          "mid_peak_db": -26.1,
+          "duration_s": 0.25,
+          "attack_ms": 10.4,
+          "tail_ratio": 0.0,
+          "tonality": 0.657,
+          "crest": 7.68,
+          "centroid_hz": 6708,
+          "mid_ratio": 0.182
+        }
+      },
+      {
+        "file": "ui_click_clasp/pool/ui_click_clasp__cand02.wav",
+        "passed_gates": false,
+        "rank": 34.8,
+        "features": {
+          "mid_peak_db": -29.5,
+          "duration_s": 0.25,
+          "attack_ms": 8.1,
+          "tail_ratio": 0.0,
+          "tonality": 0.84,
+          "crest": 7.17,
+          "centroid_hz": 9962,
+          "mid_ratio": 0.072
+        }
+      },
+      {
+        "file": "ui_click_clasp/pool/ui_click_clasp__cand03.wav",
+        "passed_gates": false,
+        "rank": 45.48,
+        "features": {
+          "mid_peak_db": -34.6,
+          "duration_s": 0.25,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.964,
+          "crest": 4.0,
+          "centroid_hz": 8219,
+          "mid_ratio": 0.006
+        }
+      }
+    ],
+    "brief": "the metal clasp on a book snapping shut, one small bright click",
+    "generated_at": "2026-08-06T01:37:31+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_cork": {
+    "takes": [
+      "ui_click_cork/ui_click_cork__take01.wav"
+    ],
+    "durations_s": [
+      0.3
+    ],
+    "features": [
+      {
+        "mid_peak_db": -28.1,
+        "duration_s": 0.3,
+        "attack_ms": 7.5,
+        "tail_ratio": 0.0,
+        "tonality": 0.596,
+        "crest": 14.12,
+        "centroid_hz": 11018,
+        "mid_ratio": 0.39
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 0,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_cork/pool/ui_click_cork__cand01.wav",
+        "passed_gates": false,
+        "rank": 17.72,
+        "features": {
+          "mid_peak_db": -28.1,
+          "duration_s": 0.3,
+          "attack_ms": 7.5,
+          "tail_ratio": 0.0,
+          "tonality": 0.596,
+          "crest": 14.12,
+          "centroid_hz": 11018,
+          "mid_ratio": 0.39
+        }
+      },
+      {
+        "file": "ui_click_cork/pool/ui_click_cork__cand02.wav",
+        "passed_gates": false,
+        "rank": 23.67,
+        "features": {
+          "mid_peak_db": -22.3,
+          "duration_s": 0.3,
+          "attack_ms": 4.5,
+          "tail_ratio": 0.0,
+          "tonality": 0.681,
+          "crest": 8.77,
+          "centroid_hz": 3788,
+          "mid_ratio": 0.564
+        }
+      },
+      {
+        "file": "ui_click_cork/pool/ui_click_cork__cand03.wav",
+        "passed_gates": false,
+        "rank": 29.13,
+        "features": {
+          "mid_peak_db": -27.1,
+          "duration_s": 0.3,
+          "attack_ms": 9.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.759,
+          "crest": 10.88,
+          "centroid_hz": 7481,
+          "mid_ratio": 0.288
+        }
+      }
+    ],
+    "brief": "a cork stopper pressed into a bottle neck, one soft muted pop",
+    "generated_at": "2026-08-06T01:37:37+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_flint": {
+    "takes": [
+      "ui_click_flint/ui_click_flint__take01.wav"
+    ],
+    "durations_s": [
+      0.129
+    ],
+    "features": [
+      {
+        "mid_peak_db": -31.8,
+        "duration_s": 0.129,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.248,
+        "crest": 17.46,
+        "centroid_hz": 7923,
+        "mid_ratio": 0.254
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_flint/pool/ui_click_flint__cand01.wav",
+        "passed_gates": true,
+        "rank": 2.48,
+        "features": {
+          "mid_peak_db": -31.8,
+          "duration_s": 0.129,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.248,
+          "crest": 17.46,
+          "centroid_hz": 7923,
+          "mid_ratio": 0.254
+        }
+      },
+      {
+        "file": "ui_click_flint/pool/ui_click_flint__cand02.wav",
+        "passed_gates": false,
+        "rank": 20.31,
+        "features": {
+          "mid_peak_db": -29.7,
+          "duration_s": 0.22,
+          "attack_ms": 11.5,
+          "tail_ratio": 0.0,
+          "tonality": 0.633,
+          "crest": 9.67,
+          "centroid_hz": 9634,
+          "mid_ratio": 0.126
+        }
+      },
+      {
+        "file": "ui_click_flint/pool/ui_click_flint__cand03.wav",
+        "passed_gates": false,
+        "rank": 25.98,
+        "features": {
+          "mid_peak_db": -28.1,
+          "duration_s": 0.22,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.714,
+          "crest": 11.73,
+          "centroid_hz": 7619,
+          "mid_ratio": 0.269
+        }
+      }
+    ],
+    "brief": "a piece of flint struck once against steel, one sharp gritty tick",
+    "generated_at": "2026-08-06T01:37:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_click_bead": {
+    "takes": [
+      "ui_click_bead/ui_click_bead__take01.wav"
+    ],
+    "durations_s": [
+      0.25
+    ],
+    "features": [
+      {
+        "mid_peak_db": -30.1,
+        "duration_s": 0.25,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.199,
+        "crest": 24.35,
+        "centroid_hz": 7378,
+        "mid_ratio": 0.729
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 3,
+      "passed_gates": 1,
+      "of": 1
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_click_bead/pool/ui_click_bead__cand01.wav",
+        "passed_gates": true,
+        "rank": 1.99,
+        "features": {
+          "mid_peak_db": -30.1,
+          "duration_s": 0.25,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.199,
+          "crest": 24.35,
+          "centroid_hz": 7378,
+          "mid_ratio": 0.729
+        }
+      },
+      {
+        "file": "ui_click_bead/pool/ui_click_bead__cand02.wav",
+        "passed_gates": false,
+        "rank": 7.92,
+        "features": {
+          "mid_peak_db": -21.2,
+          "duration_s": 0.25,
+          "attack_ms": 27.6,
+          "tail_ratio": 0.0,
+          "tonality": 0.456,
+          "crest": 5.07,
+          "centroid_hz": 11425,
+          "mid_ratio": 0.244
+        }
+      },
+      {
+        "file": "ui_click_bead/pool/ui_click_bead__cand03.wav",
+        "passed_gates": false,
+        "rank": 12.48,
+        "features": {
+          "mid_peak_db": -21.3,
+          "duration_s": 0.25,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.496,
+          "crest": 4.12,
+          "centroid_hz": 11876,
+          "mid_ratio": 0.158
+        }
+      }
+    ],
+    "brief": "a wooden abacus bead sliding one notch along its wire, one small warm click",
+    "generated_at": "2026-08-06T01:37:48+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
