@@ -39,7 +39,13 @@ _emission_set: set | None = None
 
 def emissive_paths() -> set:
     """Repo-relative paths of every self-emissive tile, per tiles2's authoritative
-    emission.json (`sources` = tiles with an extracted night-glow cluster)."""
+    emission.json (`sources` = tiles with an extracted night-glow cluster).
+
+    Used by glowdemo.py to CHOOSE which props to place in the glow showcase.
+    world.json deliberately does NOT bake this: the game reads emission.json
+    itself (WorldScene.tiles2Src, keyed by tile path), so a copy in every world
+    was 9.2 KB of duplicated state that could only ever go stale — and did,
+    twice. Read the source of truth."""
     global _emission_set
     if _emission_set is None:
         _emission_set = set()
@@ -49,10 +55,6 @@ def emissive_paths() -> set:
         except Exception:
             pass
     return _emission_set
-
-
-def _is_emissive(rel_path: str) -> bool:
-    return rel_path in emissive_paths()
 
 
 def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
@@ -170,10 +172,6 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
         "top": top_ix,
         "mirror": [[int(mirror[y, x]) for x in range(W)] for y in range(H)],
         "collision": collide,
-        # which entries of `paths` are self-emissive (tiles2 features.shiny) — a
-        # convenience so a consumer can light emissive cells without re-reading
-        # tiles2 metadata: top[y][x] indexes paths; emissive[that index] == 1.
-        "emissive": [1 if _is_emissive(p) else 0 for p in paths],
         "props": prop_list,
     }
     # decks are the sole world@2 addition: a strict superset, so emit them (and the
@@ -236,7 +234,6 @@ class World:
         inv = {i: m for i, m in enumerate(self.materials)}
         self.mat = np.vectorize(lambda i: inv[i])(matarr).astype(object)
         self.collision = np.array(d["collision"], np.uint8)
-        self.emissive = d.get("emissive", [0] * len(self.paths))
         self.props = d.get("props", [])
         self.decks = d.get("decks", [])       # world@2: elevated walkable slabs
         self.meta = d.get("meta", {})
