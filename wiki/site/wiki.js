@@ -2024,14 +2024,26 @@ const audioCandidates = (t) => [t?.files?.ogg, t?.files?.m4a, t?.files?.wav].fil
 const bindingId = (ev, layer, take) => take
   ? `${ev.id}#${take.file}`
   : `${ev.id}#${layer.source === "composer" ? `composer/${layer.set}` : layer.soundId}`;
-function sfxLayerRow(ev, layer) {
+/** ONE PLAY BUTTON PER THING YOU CAN ACTUALLY HEAR SEPARATELY (maintainer
+ *  2026-08-06: "why is the group in a group? Why 3 play buttons and not 2? A
+ *  non admin will probably not even understand why we have 2 and not 1").
+ *  A single-sound, single-take event was rendering THREE ▶ — event, layer,
+ *  take — every one of them playing the identical file. A button earns its
+ *  place only by doing something its parent does not:
+ *    · the EVENT's ▶ is always there — it is what the game does at this moment;
+ *    · a LAYER's ▶ only when the event has more than one sound (layered or in
+ *      rotation), because otherwise the event's ▶ already is it;
+ *    · a TAKE's ▶ only when its layer holds more than one recording.
+ *  So one sound = one button, and every extra button means a different sound. */
+function sfxLayerRow(ev, layer, { soleLayer = false } = {}) {
   const totalDb = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (state.data.sfx.engine.busDb?.[layer.bus] ?? 0);
   const jit = layer.jitterSemis;
   const jitTxt = jit ? (Math.abs(jit[0]) === Math.abs(jit[1]) ? `±${stFmt(Math.abs(jit[1]))} st` : `${stFmt(jit[0])}…${stFmt(jit[1])} st`) : null;
   const n = layer.takes.length;
   const rows = [
     h("div", { class: "sfx-layer-head" },
-      h("button", { class: "play-btn", "aria-label": "play this sound alone", onclick: () => void sfxEngine.playLayer(layer) }, "▶"),
+      soleLayer ? null
+        : h("button", { class: "play-btn", "aria-label": "play this sound alone", onclick: () => void sfxEngine.playLayer(layer) }, "▶"),
       h("span", { class: "take-name" }, layer.label),
       layer.voiceRate ? h("span", { class: "pill ok", title: "The vocal takes are authored at half speed — 2× is the true voice" }, `voice ×${stFmt(layer.voiceRate)}`) : null,
       layer.rate !== 1 && !layer.voiceRate ? h("span", { class: "pill", title: "playbackRate — pitch and speed together" }, `pitch ×${stFmt(layer.rate)}`) : null,
@@ -2043,11 +2055,17 @@ function sfxLayerRow(ev, layer) {
       // exactly what it plays, so `takes` is the whole truth — a single-take
       // layer with spare recordings means the set's other takes are unbound
       // and live only in the admin's All sounds library.
+      // With one recording there is no take row to carry its length, and
+      // "1 take" told nobody anything — show the length itself instead.
       h("span", { class: "pill muted-pill", title: n > 1
           ? "Each play picks a take at random, never the same one twice in a row"
           : layer.spareTakes ? `The one bound recording; the ${layer.spareTakes} other recording(s) of this set are unbound (see All sounds)`
           : "One recording" },
-        n === 1 ? "1 take" : `${n} takes · equal 1/${n}`),
+        n === 1 ? (layer.takes[0]?.dur != null ? `${stFmt(layer.takes[0].dur)}s` : "1 take") : `${n} takes · equal 1/${n}`),
+      // WHICH recording is bound is the Game Master's business and nobody
+      // else's — it is the difference between take01 and cand07.
+      n === 1 && state.admin && layer.takes[0]
+        ? h("span", { class: "pill", title: "The exact recording this event plays" }, layer.takes[0].name) : null,
       layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
   ];
   // The verdict belongs to the BINDING, and it sits on the binding's own row —
@@ -2069,7 +2087,10 @@ function sfxLayerRow(ev, layer) {
         rejectedLabel: "to be unbound",
       })));
   }
-  for (const t of layer.takes) {
+  // Only when there is a CHOICE. A lone recording is the layer, and its row
+  // was a third button playing the same file — its name and length now sit on
+  // the layer's own line instead.
+  for (const t of (n > 1 ? layer.takes : [])) {
     // PER-RECORDING UNBIND (maintainer 2026-08-06: "I wanted to unbind
     // coin_pickup__take02.wav from Coin Pickup, but the unbind is not on the
     // sound itself … I don't want to delete the sound, just unbind it").
@@ -2442,7 +2463,10 @@ function sfxAddForm(ev) {
 }
 function sfxEventCard(ev, { shared = false } = {}) {
   const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
-  return h("div", { class: "panel sfx-event" },
+  // The event id as a stable hook. The visible id pill is admin-only, so a
+  // gate that identified cards by their first pill silently matched nothing in
+  // the player view and passed vacuously.
+  return h("div", { class: "panel sfx-event", "data-event": ev.id },
     h("div", { class: "panel-title" },
       ev.sounds.length ? h("button", { class: "play-btn play-event", "aria-label": "play the event as the game plays it",
         onclick: () => sfxEngine.playEvent(ev) }, "▶") : null,
@@ -2463,8 +2487,12 @@ function sfxEventCard(ev, { shared = false } = {}) {
       state.admin && ev.bound && !ev.emitted ? h("span", { class: "pill err", title: "A sound is assigned, but no game code triggers this moment — nobody can ever hear it" }, "not fired yet") : null,
       state.admin && ev.sounds.length && ev.emitted
         ? h("span", { class: "pill ok", title: "Assigned AND triggered by the game — players hear this" }, "in game") : null),
+    // `note` describes the SOUND ("loops while you are in the region"); the
+    // pipeline line ("assigned by the Game Master in the wiki") is shop talk
+    // and was being shown to players on every creature page.
     ev.note ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.note) : null,
-    ...ev.sounds.map((l) => sfxLayerRow(ev, l)),
+    state.admin && ev.adminNote ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.adminNote) : null,
+    ...ev.sounds.map((l) => sfxLayerRow(ev, l, { soleLayer: ev.sounds.length === 1 })),
     ...reqs.map(([id, r]) => h("div", { class: "take-row sfx-req" },
       h("span", { class: "pill warn" }, "requested"),
       h("span", { class: "take-name" }, `${reqSound(r)} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),

@@ -1215,7 +1215,11 @@ function buildSfx(soundEntries, entityIds = {}) {
       // together), so the flag has to travel with the card or ▶ would fire
       // four thunder cracks simultaneously.
       rotates: asg.length > 1,
-      note: asg.length > 1
+      // adminNote, not note: "assigned by the Game Master in the wiki" is
+      // pipeline shop talk. It was being shown to PLAYERS on every creature
+      // page (maintainer 2026-08-06). The "N in rotation" chip already tells
+      // everyone what they need about several sounds taking turns.
+      adminNote: asg.length > 1
         ? `assigned by the Game Master in the wiki — these ${asg.length} take turns, one per trigger`
         : "assigned by the Game Master in the wiki" };
     if (EVENT_FOLEY[id]) {
@@ -1268,7 +1272,7 @@ function buildSfx(soundEntries, entityIds = {}) {
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
       emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
-      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note ?? null, adminNote: r.adminNote ?? null, sounds: r.sounds });
   }
   // Everything else the engine knows about: events the game EMITS, and events
   // the Game Master has ASSIGNED (an assignment for an event no binding ever
@@ -1284,7 +1288,7 @@ function buildSfx(soundEntries, entityIds = {}) {
     events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
       bus: r.sounds[0]?.bus ?? "sfx", duck: false,
       emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
-      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note, sounds: r.sounds });
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note ?? null, adminNote: r.adminNote ?? null, sounds: r.sounds });
   }
   // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
   // surface resolves to a composer set or a catalog sound, with per-surface

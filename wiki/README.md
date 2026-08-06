@@ -684,6 +684,30 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+- **ONE PLAY BUTTON PER SEPARATELY-AUDIBLE THING** (maintainer 2026-08-06, on
+  the player view of a creature page: "why is the group in a group? Why 3 play
+  buttons and not 2? A non admin will probably not even understand why we have
+  2 and not 1"). A single-sound, single-take event rendered THREE ▶ — event,
+  layer and take — every one playing the identical file. A button now earns its
+  place only by doing something its parent does not:
+  - the **event's** ▶ is always there — it is what the game does at this moment;
+  - a **layer's** ▶ only when the event has more than one sound (layered or in
+    rotation), because otherwise the event's ▶ already is it;
+  - a **take's** ▶ only when its layer holds more than one recording.
+
+  So Sprigling's Attack is one button; grass footsteps are three (event + the
+  two layers); a hero's Jump is five (event + four takes); thunder is five
+  (event + four in rotation). A lone recording's name and length moved onto the
+  layer's own line, and which exact recording is bound (`take01` vs `cand07`)
+  is shown to the Game Master only.
+  - `data-event` on each card is the stable hook for gates: the visible id pill
+    is admin-only, so a check that identified cards by their first pill matched
+    nothing in the player view and passed vacuously.
+  - The pipeline line ("assigned by the Game Master in the wiki") is
+    `adminNote` now — it was being shown to players on every creature page.
+  - Gate: `check-sfx.mjs` computes the expected button count from the DATA's
+    own layer/take shape and compares, so the rule holds for every card rather
+    than for the ones someone thought to check.
 - **A creature's page shows what that creature sounds like** (maintainer
   2026-08-06: "I can't see already mapped sound effects on monsters. I can
   only bind new effects. How do I unbind individual sounds like I can do on

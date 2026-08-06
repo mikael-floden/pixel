@@ -64,6 +64,42 @@ ok(player.silent === 0 && !player.lib && player.stars === 0 && player.addForms =
   "players see NO silent events, no library, no stars, no add forms, no pipeline pills");
 ok(player.groups.includes("Movement") && player.groups.includes("Interface"), "grouped by kind of moment");
 
+// ONE PLAY BUTTON PER SEPARATELY-AUDIBLE THING (maintainer 2026-08-06: "why is
+// the group in a group? Why 3 play buttons and not 2? A non admin will
+// probably not even understand why we have 2 and not 1"). A single-sound,
+// single-take event rendered THREE ▶ — event, layer, take — all playing the
+// identical file. The rule, checked against the DATA's own shape rather than
+// against the DOM's opinion of itself:
+//     buttons = 1 (the event)
+//             + layers, only when there is more than one
+//             + takes of any layer that holds more than one
+const btns = await p.evaluate(() => [...document.querySelectorAll(".sfx-event")].map((c) => ({
+  id: c.dataset.event, buttons: c.querySelectorAll(".play-btn").length })));
+ok(btns.length > 0 && btns.every((c) => c.id), `every card is identifiable (${btns.length})`);
+const wrong = [], unmatched = [];
+for (const card of btns) {
+  const e = sfx.events.find((x) => x.id === card.id);
+  if (!e) { unmatched.push(card.id); continue; }
+  const layers = e.sounds.length;
+  const want = (layers ? 1 : 0) + (layers > 1 ? layers : 0)
+    + e.sounds.reduce((n, l) => n + (l.takes.length > 1 ? l.takes.length : 0), 0);
+  if (card.buttons !== want) wrong.push(`${card.id}: ${card.buttons} buttons, expected ${want} (${layers} layer(s), takes ${e.sounds.map((l) => l.takes.length).join("/")})`);
+}
+ok(unmatched.length === 0, `every card resolves to a real event${unmatched.length ? ` — ${unmatched.join(", ")}` : ""}`);
+ok(wrong.length === 0, `every ▶ plays something no other ▶ on its card does${wrong.length ? ` — ${wrong.slice(0, 4).join("; ")}` : ` (${btns.length} cards)`}`);
+// The case that started this: ONE layer holding ONE recording. Not merely one
+// layer — a single layer can still hold four takes, and those rows each earn
+// a button of their own.
+const single = btns.filter((c) => {
+  const s = sfx.events.find((x) => x.id === c.id)?.sounds ?? [];
+  return s.length === 1 && s[0].takes.length === 1;
+});
+ok(single.length > 0 && single.every((c) => c.buttons === 1),
+  `a single-recording event has exactly ONE button (${single.length} such cards${single.filter((c) => c.buttons !== 1).length ? `, ${single.filter((c) => c.buttons !== 1).map((c) => `${c.id}=${c.buttons}`).join(", ")}` : ""})`);
+// The pipeline line is the Game Master's, not a player's.
+ok(!(await p.evaluate(() => [...document.querySelectorAll(".sfx-event p.muted")].some((x) => /Game Master/.test(x.textContent)))),
+  "players are not told which sounds the Game Master assigned");
+
 // ---------- the engine mirror computes the game's numbers
 const grassPlay = await p.evaluate(async () => {
   window.__sfxPlays.length = 0;
