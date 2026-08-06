@@ -1170,6 +1170,59 @@ LEVEL_UP_R13: list[tuple] = [
 ]
 ALTERNATIVES.setdefault("level_up", []).extend(LEVEL_UP_R13)
 
+# ---- ROUND 14 (maintainer 2026-08-06): "more sounds for the cross on. I'm
+# happy with cross off, but need something similar to cross off to put on cross
+# on. It sounds like something is coming up from the earth. almost as the earth
+# cracks in a way."
+#
+# READ THE SOUND HE KEPT, not the category. cross_off is monster_die_twigs —
+# "a dry crunching collapse, a nest of twigs giving way" — and he plays it at
+# PITCH 1.85, nearly double speed. So what he actually likes is DRY, BRITTLE,
+# FAST and CRISP. Every existing cross_rise_* brief is the opposite: "heavy
+# damp garden soil", "thick roots and DAMP soil", "packed soil pushing apart",
+# "thick mud". Eleven damp risers is why none of them is his cross_on.
+#
+# So: no mud, no damp, no wet anywhere in this round. The ground is dry and it
+# CRACKS. The variety is in what cracks (baked earth, clay, slate, shale, frost,
+# bark, husk, ash, terracotta, sand crust) and in how much weight is underneath
+# — a rise needs something heavy pushing, or it is just debris.
+#
+# Named cross_on_* rather than cross_rise_* so the wiki groups them under the
+# event he actually reads (CROSS ON), separate from the eleven damp ones.
+# Short, because he will pitch them up: 0.9-1.3 s renders to roughly half that
+# at the 1.85 he already likes.
+CROSS_ON_R14: list[tuple] = [
+    ("earthcrack", "dry hard-baked earth splitting open, one sharp tearing crack running away along the ground", 1.0, None),
+    ("crustsplit", "a dry crust of soil breaking apart as something heavy pushes up from underneath", 1.1, None),
+    ("stoneheave", "a flat stone slab cracking and tilting up out of dry ground, grit showering off it", 1.2, None),
+    ("claysnap", "sun-dried clay ground snapping apart into hard plates", 0.9, None),
+    ("rootburst", "dry roots snapping fast one after another as something bursts upward through them", 1.0, None),
+    ("gravelspill", "dry gravel thrown upward and raining back down onto stone", 1.1, None),
+    ("timberrise", "a wooden post shouldering up through dry ground, a woody groan under a sharp crack", 1.2, None),
+    ("frostheave", "frozen ground cracking and lifting, brittle ice splintering inside the soil", 1.1, None),
+    ("slateshatter", "thin slate splitting upward into sharp brittle plates", 0.9, None),
+    ("barkpush", "dry bark splitting apart as something forces its way out through it", 1.0, None),
+    ("driftwood", "dry driftwood cracking free and lifting out of packed sand", 1.1, None),
+    ("husksplit", "a big dry husk splitting open and something pushing out of it", 1.0, None),
+    ("sticksnap", "a fast run of dry sticks snapping upward one after another", 0.9, None),
+    ("shale", "layered shale cracking and sliding apart as the ground opens", 1.1, None),
+    ("groundgroan", "the ground opening with a sharp surface crack over a deep low groan underneath", 1.3, None),
+    ("ashcrust", "a dry ash crust cracking and lifting, fine powder sifting down off it", 1.1, None),
+    ("terracotta", "a fired clay tile cracking and rising, a hard bright ceramic snap", 0.9, None),
+    ("thornrise", "dry thorny brush tearing upward and pulling free of the ground", 1.0, None),
+    ("sandcrust", "a sun-baked sand crust breaking upward, dry grains sheeting off the edges", 1.1, None),
+    ("boneyard", "dry ground opening with a hard brittle crack and a heavy slow push rising under it", 1.3, None),
+]
+for _suffix, _brief, _dur, _trim in CROSS_ON_R14:
+    SETS[f"cross_on_{_suffix}"] = {
+        "brief": _brief,
+        "style": "clean close-miked foley, natural, one isolated sound, dry",
+        "duration_s": _dur,
+        "variants": ["standard take"],
+        "takes": 1,
+        "pool": 1,
+    }
+
 # Sets whose EVERY take the Game Master rejected in the wiki (2026-08-06).
 # The takes and folders are deleted; the briefs stay only as the record of
 # what was tried, and a bare `generate.py` skips them so nobody resurrects a
