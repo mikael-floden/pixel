@@ -210,6 +210,7 @@ test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clo
     await waitFor(() => r1.state.players?.size === 1);
     assert.equal(r1.state.timeSpeed, 1); // x1 is the boot default (2026-07-31)
     // Start the ring from x0 so the whole cycle is asserted in one known order.
+    // The ring itself starts at the x1 default with FREEZE next (2026-08-06).
     r1.send("timespeed", { v: 0 });
     await waitFor(() => r1.state.timeSpeed === 0);
     const seen: number[] = [];
@@ -220,7 +221,12 @@ test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clo
       prev = r1.state.timeSpeed;
       seen.push(prev);
     }
-    assert.deepEqual(seen, [0.5, 1, 2, 5, 10, 0]);
+    assert.deepEqual(seen, [0.5, 2, 5, 10, 1, 0]);
+    // …and from the boot default the very next press freezes.
+    r1.send("timespeed", { v: 1 });
+    await waitFor(() => r1.state.timeSpeed === 1);
+    r1.send("timespeed", {});
+    await waitFor(() => r1.state.timeSpeed === 0);
 
     // x10 on 2s phases: a phase rolls over in ~200ms.
     r1.send("timespeed", { v: 10 });

@@ -76,9 +76,13 @@ export const DEFAULT_TIME_IDX = 2; // Day
 // one speed and the pill design breaks.
 export const TIME_PHASE_SECONDS = [40, 20, 40, 20];
 
-// Time-speed steps the settings button cycles through (maintainer):
-// x0 freeze, x0.5 twice as slow, x1 normal, x2/x5/x10 faster.
-export const TIME_SPEEDS = [0, 0.5, 1, 2, 5, 10];
+// Time-speed steps the settings button cycles through. THE ORDER IS THE
+// BUTTON'S ORDER, and it starts at the x1 boot default with FREEZE as the
+// very next press (maintainer 2026-08-06: "unlogical yes, makes me develop
+// faster, yes") — then it climbs: x0.5, x2, x5, x10, back to x1. Freezing is
+// the thing you reach for constantly while building; making it one tap from
+// rest beats keeping the list sorted.
+export const TIME_SPEEDS = [1, 0, 0.5, 2, 5, 10];
 
 // WEATHER is a second server-owned world-state layer on top of time-of-day
 // (maintainer: "the final game should have a combination of time-of-day and

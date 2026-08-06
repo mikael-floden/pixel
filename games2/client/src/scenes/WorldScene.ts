@@ -2402,6 +2402,13 @@ export class WorldScene extends Phaser.Scene {
     let firstTimeSync = true;
     $(room.state).listen("timeIdx", (idx: number) => {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
+      // The Settings button PRINTS the phase, and the world clock advances by
+      // itself every 20-40s — so the label has to be re-read here or it keeps
+      // whatever phase happened to be current when the page was last built
+      // (maintainer 2026-08-06: "often gets out of sync with the real time").
+      // frozen/timeSpeed/weather all do this; time-of-day was the one listener
+      // that didn't, which is why IT was the button that drifted.
+      this.hud?.refreshSettings();
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
     });
