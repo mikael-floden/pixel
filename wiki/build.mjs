@@ -583,7 +583,62 @@ function buildMusic() {
       files: audioSiblings(wav),
     });
   }
-  return tracks;
+  return [...tracks, ...buildComposerMusic()];
+}
+
+/* The COMPOSER's own score (games2/composer/music/tracks.json,
+   `composer-music@1`). Two sources make the game's music and the page listed
+   only one, so the five context beds the composer generated on 2026-08-05
+   were invisible (maintainer 2026-08-06: "he did 5 new songs and you are
+   listing nothing but the old 2"). These are not the music DOMAIN's tracks —
+   different owner, different folder, different manifest — so they carry
+   `source: "composer"` and their feedback goes to the composer.
+
+   WHAT PLAYS TODAY is deliberately a separate axis from what EXISTS: the
+   context score is generated but dormant (games2/CLAUDE.md — the maintainer
+   picks what plays where before it is wired), so a bed's `routed` flag says
+   plainly whether the game can currently reach it. */
+const BED_ROLE = {
+  title: { when: "The title and character-select screen", live: true },
+  night: { when: "In the world, after dark — cross-faded by the sun", live: true },
+  battle: { when: "A real fight: a monster actually chasing or fighting you", live: false },
+  cave: { when: "Under a deck slab — inside the mountain", live: false },
+  home: { when: "Near the spawn bonfire", live: false },
+  town: { when: "Standing on roads and farm tiles", live: false },
+  adventure: { when: "Everywhere else — the default bed", live: false },
+};
+function buildComposerMusic() {
+  const dir = composerDir() ? join(composerDir(), "music") : null;
+  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  if (!doc?.tracks) return [];
+  // A bed the composer added that this build has no role text for is still
+  // LISTED (never hidden), just without the routing line — and it warns, the
+  // same contract as the sfx drift sentinel.
+  for (const id of Object.keys(doc.tracks)) if (!BED_ROLE[id]) sfxDrift.push(`composer music "${id}" has no role in BED_ROLE`);
+  return Object.entries(doc.tracks).map(([id, t]) => {
+    const files = {};
+    for (const f of t.files ?? []) {
+      const ext = (f.file.split(".").pop() ?? "").toLowerCase();
+      files[ext] = `composer/music/${f.file}`;
+    }
+    const role = BED_ROLE[id] ?? {};
+    return {
+      id, name: titleCase(id), source: "composer",
+      use: role.when ?? "",
+      routed: !!role.live,
+      feeling: (t.sections ?? []).flatMap((s) => s.styles ?? []).slice(0, 6),
+      sections: (t.sections ?? []).map((s) => s.name).filter(Boolean),
+      duration_s: t.duration_s ?? null,
+      bpm: t.bpm != null ? Math.round(t.bpm) : null,
+      key: t.musical?.root ? { root: t.musical.root, mode: t.musical.mode } : null,
+      loopable: !!t.loop,
+      loopStart: t.loop?.loop_start_s ?? null,
+      loopEnd: t.loop?.loop_end_s ?? null,
+      lufs: t.measured?.lufs ?? null,
+      path: `composer/music/${id}`,
+      files,
+    };
+  });
 }
 
 // -------------------------------------------------------------------- items
@@ -1163,7 +1218,12 @@ function markMusicUsage(music) {
     return s;
   };
   const bed = [...tracks].sort((a, b) => score(b) - score(a))[0];
-  for (const t of music) t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
+  // Catalog tracks only: a composer BED is not a candidate for this pick, and
+  // says what it is for through its own `routed` flag.
+  for (const t of music) {
+    if (t.source === "composer") { t.usedBy = t.routed ? ["the game's own score"] : []; continue; }
+    t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
+  }
 }
 
 // ------------------------------------------------------------ monster LEVEL

@@ -42,9 +42,9 @@ function serveAssets(): Plugin {
         const rel = normalize(decodeURIComponent(req.url.slice("/assets/".length)));
         const domain = rel.split(/[\\/]/)[0];
         if (rel.startsWith("..") || !ASSET_DOMAINS.has(domain)) return next();
-        // composer/foley lives under games2/ in the repo (only the takes are
-        // served; the engine sources are not assets).
-        const file = domain === "composer" && rel.startsWith("composer/foley")
+        // composer/foley + composer/music live under games2/ in the repo (only
+        // the takes and the beds are served; the engine sources are not assets).
+        const file = domain === "composer" && /^composer\/(foley|music)\//.test(rel)
           ? join(REPO_ROOT, "games2", rel)
           : join(REPO_ROOT, rel);
         if (!existsSync(file) || !statSync(file).isFile()) return next();

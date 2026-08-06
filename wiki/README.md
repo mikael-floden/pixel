@@ -584,6 +584,34 @@ to replace the parsing.
 - The composer's foley takes are served at `/assets/composer/foley/…`
   (Dockerfile copies them; dev falls back to `games2/composer/foley`).
 
+## Music comes from TWO places
+
+The Music page listed only `music/` — the music agent's domain — so the five
+situation beds the composer generated on 2026-08-05 were invisible
+(maintainer 2026-08-06: "he did 5 new songs and you are listing nothing but
+the old 2"). `buildComposerMusic()` now also reads
+`games2/composer/music/tracks.json` (`composer-music@1`) and appends those
+tracks with `source: "composer"`, their measured length/tempo/key/loop points
+and their section names.
+
+- **Existing is not routed.** A bed's `routed` flag says whether the GAME can
+  currently reach it: `title` and `night` play today, the five context beds
+  are generated but dormant (games2/CLAUDE.md — the maintainer picks what
+  plays where before it is wired), so they chip "not routed yet" rather than
+  implying the game uses them. `BED_ROLE` in build.mjs holds the one-line
+  "when would this play", and a bed with no entry still LISTS — it just warns
+  through the same drift sentinel the sfx table uses.
+- **Their feedback belongs to the composer**, not the music agent:
+  stars/verdicts on a bed go to `feedback/composer.json`, next to its foley.
+- Served at `/assets/composer/music/…` — the same two mounts as foley (image
+  copy + repo fallback), and the Dockerfile copies the folder. That is a
+  deliberate ~18 MB second copy: the client bundles its own for the in-world
+  score, but the wiki cannot reach those hashed bundle URLs, and a page that
+  lists five tracks it cannot play is worse than the bytes.
+- `playTake` prefers **ogg → m4a → mp3 → wav** (it asked for m4a first, which
+  headless Chromium cannot decode at all) — the same order as the WebAudio
+  auditions, so the page and the sound engine agree on formats.
+
 ## Tuning files
 
 - `live/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster

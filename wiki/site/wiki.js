@@ -441,7 +441,10 @@ const audioEl = () => $("#shared-audio");
 let playingBtn = null;
 function playTake(files, btn) {
   const a = audioEl();
-  const src = files.m4a ?? files.ogg ?? files.wav;
+  // ogg first: Chrome and Firefox both decode it and it is the smaller file;
+  // m4a is Safari's (no ogg); mp3/wav are the fallbacks. Same order as the
+  // WebAudio auditions, so the page and the sound engine agree on formats.
+  const src = files.ogg ?? files.m4a ?? files.mp3 ?? files.wav;
   if (playingBtn === btn && !a.paused) { a.pause(); return; }
   if (playingBtn) { playingBtn.classList.remove("playing"); playingBtn.textContent = "▶"; }
   a.src = assetUrl(src);
@@ -2465,26 +2468,54 @@ function viewSounds() {
 }
 
 /* --- music --- */
+/** One track panel — the same card for a music-domain track and a composer
+ *  bed; only where its feedback goes and how it says "is this in the game"
+ *  differ. */
+function musicPanel(t) {
+  const composer = t.source === "composer";
+  // Feedback id = the audio file's repo path sans extension (the README
+  // contract), not meta.id — they can diverge. A composer bed belongs to the
+  // composer, so its verdict goes to that domain, next to its foley.
+  const master = t.files.wav ?? t.files.ogg ?? t.files.m4a ?? t.files.mp3;
+  const dir = master.split("/").slice(0, -1).join("/");
+  const takeId = master.split("/").pop().replace(/\.\w+$/, "");
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, t.name,
+      h("span", { class: "pill" }, fmtDur(t.duration_s)),
+      t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
+      t.key ? h("span", { class: "pill" }, `${t.key.root} ${String(t.key.mode).replace(/_/g, " ")}`) : null,
+      t.loopable ? h("span", { class: "pill" }, "loopable") : null,
+      // A bed says whether the GAME can currently reach it — generating a
+      // track and routing it are two different decisions, and the wiki must
+      // not imply the second just because the first happened.
+      composer
+        ? (t.routed
+            ? h("span", { class: "pill ok", title: "The game plays this today" }, "in game")
+            : h("span", { class: "pill warn", title: "Generated and ready — nothing in the game switches to it yet" }, "not routed yet"))
+        : usePill(t.usedBy, "The score's director picks one catalog track as the background bed — this one isn't it")),
+    t.use ? h("p", { class: "muted", style: "margin:0 0 8px" }, t.use) : null,
+    t.sections?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "sections: ", t.sections.join(" → ")) : null,
+    t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
+    state.admin && composer && t.loopStart != null
+      ? h("p", { class: "muted", style: "margin:0 0 8px" }, `loops ${stFmt(t.loopStart)}s → ${stFmt(t.loopEnd)}s${t.lufs != null ? ` · ${stFmt(t.lufs)} LUFS` : ""}`) : null,
+    takeRow(composer ? "composer" : "music", dir, { id: takeId, chosen: true, files: t.files }));
+}
 function viewMusic() {
-  const list = state.data.domains.music.filter((t) => matches(state.query, t.id, t.name, t.use));
+  const list = (state.data.domains.music ?? []).filter((t) => matches(state.query, t.id, t.name, t.use));
+  const domainTracks = list.filter((t) => t.source !== "composer");
+  const beds = list.filter((t) => t.source === "composer");
   return h("div", {},
     sectionHead("music"),
-    h("p", { class: "muted" }, "The score, from the music agent."),
+    h("p", { class: "muted" }, "Everything written for the game to play — the music agent's tracks, and the composer's own situation beds."),
     muteGameBtn(),
-    ...list.map((t) =>
-      h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, t.name,
-          h("span", { class: "pill" }, fmtDur(t.duration_s)),
-          t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
-          t.key ? h("span", { class: "pill" }, `${t.key.root} ${String(t.key.mode).replace(/_/g, " ")}`) : null,
-          t.loopable ? h("span", { class: "pill" }, "loopable") : null,
-          usePill(t.usedBy, "The score's director picks one catalog track as the background bed — this one isn't it")),
-        h("p", { class: "muted", style: "margin:0 0 8px" }, t.use),
-        t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
-        // Feedback id = the audio file's repo path sans extension (the
-        // README contract), not meta.id — they can diverge.
-        takeRow("music", t.files.wav.split("/").slice(0, -1).join("/"),
-          { id: t.files.wav.split("/").pop().replace(/\.wav$/, ""), chosen: true, files: t.files }))));
+    domainTracks.length ? h("h2", {}, "Tracks ", h("span", { class: "pill" }, String(domainTracks.length))) : null,
+    ...domainTracks.map(musicPanel),
+    // The composer's beds are a SECOND source of music and were missing from
+    // this page entirely (maintainer 2026-08-06: "he did 5 new songs and you
+    // are listing nothing but the old 2").
+    beds.length ? h("h2", { style: "margin-top:26px" }, "Situation beds ", h("span", { class: "pill" }, String(beds.length))) : null,
+    beds.length ? h("p", { class: "muted" }, "The composer's own score, one track per situation. What plays where is not wired yet — listen, then say which belongs where.") : null,
+    ...beds.map(musicPanel));
 }
 
 /* --- items --- */
