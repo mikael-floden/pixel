@@ -348,7 +348,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "jump_voice_boy", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "jump_voice_boy", "ui_tick", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -513,14 +513,16 @@ export class GameAudio {
   /** Events whose sound the composer has taken in-house. MAINTAINER
    * 2026-07-18: the tab click (ui_tick) is THE approved button sound —
    * "I want the backpack button sound" — so every UI event plays it (one
-   * sound, everywhere, like the stone footsteps). The ui_confirm/ui_cancel
-   * sets stay bundled + auditionable at /#foley for a future opt-in. */
+   * sound, everywhere, like the stone footsteps). The ui_confirm set stays
+   * bundled + auditionable at /#foley for a future opt-in. */
   private static EVENT_FOLEY: Record<string, string> = {
-    // Tactile pair (maintainer 2026-07-18: distinct down/up for immersive
-    // touch feedback): press = the approved tab click, release = the
-    // dedicated duller release recording (ui_cancel — generated for this).
+    // The approved tab click on press. The tactile PAIR is gone: `ui.release`
+    // used to play the dedicated duller ui_cancel recording, but the
+    // maintainer rejected all four ui_cancel takes in the wiki (2026-08-05)
+    // and the set is deleted — so the release is SILENT rather than quietly
+    // reusing a sound he approved for something else. `ui.release` is still
+    // emitted, so the wiki can assign it whenever he picks a release sound.
     "ui.press": "ui_tick",
-    "ui.release": "ui_cancel",
     // Legacy single-click events any game code may still emit.
     "ui.cursor_move": "ui_tick",
     "ui.confirm": "ui_tick",
@@ -647,25 +649,24 @@ export class GameAudio {
    * "I want it in sync with the flashes" — the earlier 0.8-2.3s realism
    * delay read as silence). GENTLENESS: the primary real roll (take01)
    * every strike, micro pitch jitter, near-center pan, level with real
-   * presence (the roll's low end barely reproduces on small speakers). */
+   * presence (the roll's low end barely reproduces on small speakers).
+   *
+   * SILENT since 2026-08-05: the maintainer rejected all four thunder takes
+   * in the wiki and the set is deleted, so lightning flashes without a roll
+   * until a new set is generated and he keeps one. The lookup below is kept
+   * BECAUSE thunder is not a `gameAudio.event(...)` the wiki can assign — a
+   * regenerated `foley/thunder` set is the only way it comes back, and this
+   * is what picks it up. The old catalog fallback (a pitched-down
+   * `explosion` arriving 1-2.5 s after the flash) is deleted with the set:
+   * deleting the takes must not silently promote the exact disguise-and-
+   * delay behaviour he rejected in the first place. */
   thunder(strength = 1): void {
     if (!this.ready()) return;
     const own = composerFoley("thunder");
-    if (own) {
-      this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
-        gainDb: 6 * Math.min(1, strength),
-        pan: (Math.random() - 0.5) * 0.16,
-      });
-      return;
-    }
-    const sound = this.catalog!.sounds.get("explosion");
-    if (!sound) return;
-    this.oneShots.play(sound, "sfx", {
-      rate: 0.38 + Math.random() * 0.14,
-      lowpassHz: 300 + Math.random() * 200,
-      gainDb: 2 + 5 * Math.min(1, strength),
-      delayS: 1.0 + Math.random() * 1.5,
-      pan: (Math.random() - 0.5) * 0.8,
+    if (!own) return;
+    this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
+      gainDb: 6 * Math.min(1, strength),
+      pan: (Math.random() - 0.5) * 0.16,
     });
   }
 

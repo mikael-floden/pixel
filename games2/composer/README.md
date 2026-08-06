@@ -36,8 +36,8 @@ decides what sounds.
 | footstep stone | okey-ish, not great | composer regenerates |
 | footstep ice (pitched stone) | okey-ish, not great | composer generates a real ice set |
 | footstep wood | unrated | regenerated alongside the rest |
-| UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm, ui_cancel) — wooden-button thocks matching the carved HUD, explicitly non-musical |
-| thunder | **"doesn't sound like thunder"** (2026-07-18) | verdict: the COMPOSER's fault, not an asset — there was no thunder asset, so the composer disguised `explosion` (0.4× rate + lowpass) and the disguise reads as mush. Fix: real generated `foley/thunder` set (6 s natural rolls), preferred automatically; the disguise stays only as fallback |
+| UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm) — wooden-button thocks matching the carved HUD, explicitly non-musical. `ui_cancel` (the duller release recording) was **rejected wholesale in the wiki 2026-08-05 and deleted**, so `ui.press` clicks and `ui.release` is silent until he assigns a release sound |
+| thunder | **"doesn't sound like thunder"** (2026-07-18); all four generated rolls **rejected in the wiki** (2026-08-05) | the `explosion` disguise (0.4× rate + lowpass, 1–2.5 s after the flash) read as mush, and the real generated `foley/thunder` set that replaced it did not survive QA either — the set is deleted and **the disguise fallback went with it**, because deleting the takes must not silently promote the behaviour he rejected first. Lightning currently flashes SILENT; `thunder()` still picks up a regenerated `foley/thunder` set, which is the only route back (thunder is not a `gameAudio.event`, so the wiki cannot assign it) |
 | composer foley round 1 | **stone (black_mountain) GOOD — "I like that one"; other footsteps "still not good enough (but better than before)"** (2026-07-18) | the liked set trims to tight varied lengths = a discrete impact; every disliked set sat at full clip length = continuous texture instead of one step. Round 2: briefs rewritten on stone's "one compact impact" formula + `max_ms` transient tightening cuts the step out of any texture bed in post. **Stone's recipe is FROZEN — never regenerate a liked set.** |
 | footsteps, final directive | **"Only use the stone footsteps for now (regardless of tile-type). Water can be different."** (2026-07-18) | playback routes EVERY dry surface to the stone set (`FOOTSTEP_SET` in engine/api.ts); water keeps splash/swim. The per-surface sets stay generated + auditionable at /#foley but are NOT played until something earns approval. Re-enabling per-surface = change one constant back to `f.surface` routing. |
 | jump/fall VOICE grunts | **girl + boy each APPROVED at rate 2.0** — "2.0 sounds like a normal man … put the girl at 2.0 also, I want her real voice" (2026-07-25) | per-character `JUMP_VOICE` sets in engine/api.ts (`jump_voice` = girl, `jump_voice_boy` = boy), routed by character uid (`opts.voice` from WorldScene), each on the SFX bus, round-robin, −12 dB, on both jump AND fall-start (0.28 s debounce). **⭐ LESSON — ElevenLabs vocal takes are authored at HALF speed: play them at RATE 2.0 to hear the true, normal voice.** We wasted a long tuning loop pitching the girl up by ear (1.12→…→1.75) chasing "normal" before realizing 2× is the honest baseline — start any new character voice at 2.0, then nudge. Male-brief lessons: lean YOUNG/LIGHT/BRIGHT/HUMAN (round-1 male read as an "orc") and say "young MAN/youthful" not "boy/young boy" (child-voice wording gets moderation-blocked, same as "girl"). |
@@ -78,13 +78,21 @@ events; the game never plays unapproved audio. The machinery:
   at every run start**, wire accepted entries into `EVENT_ASSIGNMENTS`
   verbatim (the fields map 1:1), and DELETE the entries acted on
   (read-modify-write). Feedback on takes: `live/feedback/composer.json`.
-- Candidate SFX are generated as foley sets (round-5 sets: `hit_taken`,
-  `kick`, `punch`, `monster_hit`, `monster_die`, `player_die`, `cross_rise`,
-  `cross_sink`, `item_pickup`, `item_drop`) — served at
+- Candidate SFX are generated as foley sets, served at
   `/assets/composer/foley`, auditioned in the wiki, played nowhere until
-  assigned.
+  assigned. **A rejected take is DELETED, not left lying around** (wiki pass
+  2026-08-05 removed 164 takes; a set whose every take was rejected — the
+  whole round-5 candidate batch, plus `sand`, `thunder`, `ui_cancel` — is
+  gone, directory and all). What survives is the maintainer's keep list: the
+  footstep/voice/click sets in playback, plus the ten single-take candidates
+  he liked (`cross_rise_roots`, `cross_sink_swallow`, `hit_taken_gut`,
+  `item_drop_mudplop`, `kick_bamboo`, `level_up_choir`, `level_up_harp`,
+  `monster_die_bubble`, `monster_die_splat`, `monster_hit_splat`) — kept and
+  **unwired**: liking a sound is not assigning it.
 - Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
-  approved list + assignments, and every assignable action must stay emitted.
+  approved list + assignments, every assignable action must stay emitted, and
+  every foley set an active route names must EXIST (deleting a rejected set
+  must not leave a route pointing at nothing).
 
 ### Background behavior (maintainer 2026-08-05)
 
@@ -150,7 +158,7 @@ buses: music / sfx / ui / ambience               ┘
 | `dropAvatar(id)` | avatar removed |
 | `setEnv({sun, cloud, mist})` | world mood, pushed each frame by the scene |
 | `setFieldSampler(fn)` | scene-provided terrain fractions `{forest, water, town, fire}` around the listener |
-| `thunder(strength)` | with a lightning flash — rumble arrives 1–2.5 s later |
+| `thunder(strength)` | with a lightning flash — in sync with the flash; **silent today**, its set was rejected and deleted |
 | `star()` | shooting star — chime snapped into key **on the next beat** |
 | `toggleSound() / toggleMusic()` | HUD settings switches (persisted in localStorage) |
 | `debug()` | QA probe (`__ml.audio()`) |

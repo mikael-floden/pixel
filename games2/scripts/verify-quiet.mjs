@@ -71,6 +71,33 @@ console.log(assigned.length
   ? `  can-sound (wiki-assigned): ${assigned.join(", ")}`
   : "  can-sound (wiki-assigned): none yet");
 
+// ---- no route points at a foley set that isn't there ----------------------
+// The wiki lets the maintainer REJECT takes, and a set whose every take is
+// rejected gets deleted. A route left pointing at a deleted set is the same
+// dangling-reference bug as a binding for a removed event ("never ever do
+// that again"): the event silently stops sounding and nothing says so. Every
+// set an ACTIVE route names must exist on disk. (`thunder` is deliberately
+// NOT checked — it has no set today by the maintainer's verdict, and its
+// lookup is documented as the way a regenerated set comes back.)
+const foleySets = new Set(
+  readdirSync(join(ROOT, "composer", "foley"), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "pipeline")
+    .map((d) => d.name),
+);
+const routedSets = [
+  ...Object.entries({ EVENT_FOLEY: /EVENT_FOLEY: Record<string, string> = \{[^}]*\}/s,
+                      FOOTSTEP_SETS: /FOOTSTEP_SETS: Record<string, string> = \{[^}]*\}/s,
+                      JUMP_VOICE: /const JUMP_VOICE: Record<string, JumpVoiceCfg> = \{[^;]*\};/s })
+    .flatMap(([label, re]) =>
+      [...block(re, label).matchAll(/(?::|set:)\s*["']([^"']+)["']/g)].map((m) => [label, m[1]])),
+  ["FOOTSTEP_DEFAULT", (api.match(/FOOTSTEP_DEFAULT = "([^"]+)"/) ?? [])[1]],
+];
+for (const [label, set] of routedSets) {
+  if (!set) { fail(`cannot read a set name out of ${label} — gate is blind, fix the regex`); continue; }
+  if (!foleySets.has(set)) fail(`${label} routes to foley set "${set}" but composer/foley/${set} does not exist`);
+}
+console.log(`  routed foley sets all present: ${[...new Set(routedSets.map(([, s]) => s))].join(", ")}`);
+
 // ---- what the game emits --------------------------------------------------
 const files = [];
 (function walk(dir) {
