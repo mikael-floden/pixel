@@ -71,10 +71,12 @@ const world = JSON.parse(
   readFileSync(join(here, "..", "..", "maps2", "worlds", "the_island2", "world.json"), "utf8"),
 );
 const fail = (m) => { throw new Error(m); };
-// The dial's own maximum (indoorcut.ts INDOOR_CUT_MAX). The house ceiling is 6,
-// so roof-5 leaves exactly ONE level of wall — the shallowest parapet the game
-// can be asked for, and the far end of the sweep in 2e.
-const INDOOR_CUT_MAX = 5;
+// The dial's own maximum (indoorwall.ts INDOOR_WALL_MAX). The dial is a WALL
+// HEIGHT in levels ABOVE THE ROOM'S OWN FLOOR — not a depth below its ceiling
+// (maintainer 2026-08-07: a cave's ceiling is higher than a house's, so roof-N
+// gave a different wall in each room). 6 is the tallest shipped room, so it is
+// the point past which every room clamps — the far end of the sweep in 2e.
+const INDOOR_WALL_MAX = 6;
 const ok = (m) => console.log(`ok - ${m}`);
 const X = (c) => c.col ?? c.x;
 const Y = (c) => c.row ?? c.y;
@@ -604,7 +606,7 @@ try {
   // A face tile's art is the 16px SKIRT at the BOTTOM of its 64px box, so the
   // sample belongs at +39/+46 from the cap tile's own top-left, never at the
   // diamond centre +23, which is transparent for that tile. Measured on the
-  // shipped house at roof-4: the diamond centre reads 0 on all eight far-wall
+  // shipped house at a 2-level wall: the diamond centre reads 0 on all eight far-wall
   // cells while the skirt band reads 26-44. A column NOT truncated (level <=
   // the cut) does end in its top diamond, so it keeps +23.
   //
@@ -655,7 +657,7 @@ try {
   // aimed at (its 64px art box overlaps, and a far wall is drawn before the
   // floor and near walls that cover it). Measured on the shipped house: eight
   // different far- and near-wall cells all report the SAME crown offset at
-  // roof-1, roof-3 and roof-5, while the frames plainly differ. The probe was
+  // wall 1, wall 3 and wall 5, while the frames plainly differ. The probe was
   // wrong, not the renderer.
   //
   // What IS unambiguous is the frame itself. One step of the dial takes a
@@ -685,27 +687,29 @@ try {
       }
     return n;
   };
-  const before = await page.evaluate(() => window.__ml.indoorCut());
+  const before = await page.evaluate(() => window.__ml.indoorWall());
   const cuts = [];
   for (const n of [1, 2, 3, 4]) {
-    await page.evaluate((v) => window.__ml.indoorCut(v), n);
+    await page.evaluate((v) => window.__ml.indoorWall(v), n);
     await page.waitForTimeout(900);
-    cuts.push({ n, shot: await shoot(`cut-${n}`), top: (await page.evaluate(() => window.__ml.indoorCut())).top });
+    cuts.push({ n, shot: await shoot(`wall-${n}`), top: (await page.evaluate(() => window.__ml.indoorWall())).top });
   }
-  await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
+  await page.evaluate((v) => window.__ml.indoorWall(v), before.wall);
   await page.waitForTimeout(900);
   const bad = [];
   const moved = [0];
   for (let i = 1; i < cuts.length; i++) {
-    if (cuts[i].top !== cuts[i - 1].top - 1)
-      bad.push(`roof-${cuts[i].n} resolved to top ${cuts[i].top}, one less than roof-${cuts[i - 1].n}'s ${cuts[i - 1].top} expected`);
+    // ONE LEVEL PER STEP, UPWARD. The dial is a height above the floor now, so
+    // asking for one more level must raise the drawn top by exactly one.
+    if (cuts[i].top !== cuts[i - 1].top + 1)
+      bad.push(`wall ${cuts[i].n} resolved to top ${cuts[i].top}, one MORE than wall ${cuts[i - 1].n}'s ${cuts[i - 1].top} expected`);
     const d = diffPixels(cuts[0].shot, cuts[i].shot, houseBox);
     moved.push(d);
     if (d <= moved[i - 1])
-      bad.push(`roof-${cuts[i].n} changed ${d} pixels vs roof-1, no more than roof-${cuts[i - 1].n}'s ${moved[i - 1]} — the dial stopped cutting`);
+      bad.push(`wall ${cuts[i].n} changed ${d} pixels vs wall 1, no more than wall ${cuts[i - 1].n}'s ${moved[i - 1]} — the dial stopped moving`);
   }
   if (moved[moved.length - 1] < 2000)
-    bad.push(`roof-1 to roof-4 only moved ${moved[moved.length - 1]} pixels of the house — the dial barely does anything`);
+    bad.push(`wall 1 to wall 4 only moved ${moved[moved.length - 1]} pixels of the house — the dial barely does anything`);
   // ...and it does nothing OUTSIDE the house: the outside is black at every
   // setting, so a dial leaking into the world would show up as a difference
   // there. Sampled at the same outdoor probes 2b uses.
@@ -713,12 +717,12 @@ try {
     const a = patch(cuts[0].shot, p.x, p.y, p.rad ?? 3);
     const b = patch(cuts[cuts.length - 1].shot, p.x, p.y, p.rad ?? 3);
     if (a && b && (a.med >= 1 || b.med >= 1))
-      bad.push(`the dial lit ground outside the room at ${p.c},${p.r} (roof-1 median ${a.med.toFixed(1)}, roof-4 ${b.med.toFixed(1)})`);
+      bad.push(`the dial lit ground outside the room at ${p.c},${p.r} (wall 1 median ${a.med.toFixed(1)}, wall 4 ${b.med.toFixed(1)})`);
   }
   if (bad.length) fail(`the Indoor wall cut dial does not move the picture: ${bad.join("; ")}`);
-  ok(`the dial IS the cut: roof-1..4 resolve to top ${cuts.map((c) => c.top).join(" -> ")} and change ` +
-    `${moved.slice(1).join(" -> ")} pixels of the house against roof-1 — strictly more each step, and nothing ` +
-    `outside it — restored to roof-${before.cut}`);
+  ok(`the dial IS the wall height: 1..4 levels resolve to top ${cuts.map((c) => c.top).join(" -> ")} ` +
+    `(one level each, measured UP from the room's floor) and change ${moved.slice(1).join(" -> ")} pixels of ` +
+    `the house against wall 1 — strictly more each step, and nothing outside it — restored to ${before.wall}`);
 
   // -- 2e. THE WHITE OUTLINE ON WHAT IS STILL HIDDEN -----------------------
   // The other half of the maintainer's design: "a white pixel outline on parts
@@ -727,31 +731,39 @@ try {
   // extent that, a wall really covers them.
   //
   // Asserted as a MONOTONE RESPONSE to the dial rather than one magic number:
-  // a taller parapet must hide MORE of the figure, and a cut that removes the
-  // walls entirely must hide NONE. Nothing stuck on, stuck off, or keyed to
-  // anything but real geometry can satisfy both ends.
+  // a taller wall must hide MORE of the figure, and the shortest one the dial
+  // can ask for must hide far less. Nothing stuck on, stuck off, or keyed to
+  // anything but real geometry can satisfy both ends. The chain runs the other
+  // way round from the old roof-N dial, for the obvious reason: a BIGGER number
+  // is now a TALLER wall.
+  // The TALL end is one below the dial's max, not the max itself: at the full
+  // 6 levels the house's own wall is its whole height and the body behind it is
+  // hidden ENTIRELY, which would make `hiddenCropped` vacuous — the outline
+  // would legitimately cover the whole figure and the crop assertion below
+  // would be asserting nothing. 5 leaves a head showing. The max is exercised
+  // separately, by the clamp check inside the loop.
   const hid = [];
-  for (const n of [1, 3, INDOOR_CUT_MAX]) {
-    await page.evaluate((v) => window.__ml.indoorCut(v), n);
+  for (const n of [INDOOR_WALL_MAX - 1, 3, 1]) {
+    await page.evaluate((v) => window.__ml.indoorWall(v), n);
     await page.waitForTimeout(900);
     const c = await page.evaluate(() => window.__ml.myCover());
-    const got = await page.evaluate(() => window.__ml.indoorCut().cut);
-    if (got !== n) fail(`the dial refused roof-${n} (clamped to roof-${got}) — INDOOR_CUT_MAX and this gate disagree`);
+    const got = await page.evaluate(() => window.__ml.indoorWall().wall);
+    if (got !== n) fail(`the dial refused ${n} levels (clamped to ${got}) — INDOOR_WALL_MAX and this gate disagree`);
     hid.push({ n, ...c });
   }
-  await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
+  await page.evaluate((v) => window.__ml.indoorWall(v), before.wall);
   await page.waitForTimeout(900);
   const [tall, mid, low] = hid;
   const chain = hid.map((h) => h.hiddenFrac);
   if (!(chain[0] > chain[1] && chain[1] > chain[2]))
-    fail(`the outline does not follow the cut: roof-1/3/${INDOOR_CUT_MAX} hide ${chain.join(" / ")} of the body — a taller parapet must hide strictly more`);
+    fail(`the outline does not follow the wall height: ${INDOOR_WALL_MAX - 1}/3/1 levels hide ${chain.join(" / ")} of the body — a taller wall must hide strictly more`);
   if (!(low.hiddenFrac < 0.4 * tall.hiddenFrac))
-    fail(`the shallowest parapet (roof-${INDOOR_CUT_MAX}, one level of wall) still hides ${low.hiddenFrac} against roof-1's ${tall.hiddenFrac} — the outline is not tracking real cover`);
+    fail(`a ONE-level wall still hides ${low.hiddenFrac} against a ${INDOOR_WALL_MAX - 1}-level wall's ${tall.hiddenFrac} — the outline is not tracking real cover`);
   if (!tall.hiddenCropped)
     fail("the outline is drawn UNCROPPED over a partly-visible body — it must trace only the hidden part");
   // …and the ZERO, which is what proves the outline is not simply always on.
-  // It comes from OUTDOORS in the open rather than from a deep cut: with the
-  // dial capped at INDOOR_CUT_MAX every room keeps a wall, by design.
+  // It comes from OUTDOORS in the open rather than from a short wall: the dial
+  // floor is 1, so every room keeps a wall, by design.
   if (outsideCover.hiddenFrac !== 0 || outsideCover.hidden)
     fail(`standing in the open outdoors the body still reads ${outsideCover.hiddenFrac} hidden — the outline is not keyed to real cover`);
   // -- 2f. A TAP LANDS WHERE YOU TAPPED ------------------------------------
@@ -788,8 +800,8 @@ try {
     ok(`a tap lands where you tap: all ${interior.length} interior floor cells round-trip through the real hit test to themselves at level 0`);
   }
 
-  ok(`the white outline follows the cut: roof-1 hides ${(tall.hiddenFrac * 100).toFixed(0)}% of the figure, ` +
-    `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_MAX} ${(low.hiddenFrac * 100).toFixed(0)}%, ` +
+  ok(`the white outline follows the wall height: ${INDOOR_WALL_MAX - 1} levels hide ${(tall.hiddenFrac * 100).toFixed(0)}% of the figure, ` +
+    `3 levels ${(mid.hiddenFrac * 100).toFixed(0)}%, 1 level ${(low.hiddenFrac * 100).toFixed(0)}%, ` +
     `and outdoors in the open none at all (the ring is cropped to the hidden part, never the whole body)`);
 
   // -- 2g. THE TORCH REACHES THROUGH THE DOORWAY ---------------------------

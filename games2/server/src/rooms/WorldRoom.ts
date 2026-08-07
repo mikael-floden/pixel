@@ -167,6 +167,10 @@ export class WorldRoom extends Room<WorldState> {
   // Server half of the monsters' own soft collision: per-monster dodge-side
   // hysteresis (mirrors the client player's dodgeState) — never synced.
   private monsterDodgeStates = new Map<string, MonsterDodgeState>();
+  /** Session ids that have "disable aggro" on — see the "noaggro" handler.
+   * A Set rather than a schema field: nobody else can see the difference, so
+   * it costs no bandwidth and no sync. Cleared in onLeave with the player. */
+  private noAggro = new Set<string>();
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -325,6 +329,37 @@ export class WorldRoom extends Room<WorldState> {
     this.onMessage("torch", (client, message: { on?: boolean }) => {
       const player = this.state.players.get(client.sessionId);
       if (player) player.torch = !!message?.on;
+    });
+
+    // DISABLE AGGRO — a per-player testing switch (maintainer 2026-08-07: "I
+    // will use this feature to test walk around in the cave without dying").
+    //
+    // PER PLAYER, and deliberately NOT in the schema. It changes nothing anyone
+    // else can see — no art, no state another client renders — so putting it in
+    // the schema would spend a synced field per player on a debug flag. The
+    // client owns it in localStorage and re-sends it on join, exactly like the
+    // torch does; the server is the only thing that has to know.
+    //
+    // It suppresses UNPROVOKED aggro only. A monster you have raised your sword
+    // at (p.target === id) still comes for you, and one you hit still fights
+    // back — the switch is "nothing jumps me while I walk", not god mode.
+    // Flipping it ON also RELEASES every unprovoked chase already running:
+    // without that you would have to outrun whatever noticed you before the
+    // switch could help, which is the whole situation it exists for.
+    this.onMessage("noaggro", (client, message: { on?: boolean }) => {
+      const on = !!message?.on;
+      if (on) this.noAggro.add(client.sessionId);
+      else this.noAggro.delete(client.sessionId);
+      if (!on) return;
+      const now = Date.now();
+      this.state.monsters.forEach((m) => {
+        if (m.targetSid !== client.sessionId || m.provoked || m.mstate === "die") return;
+        // The SAME exit every other ended chase takes — it also clears the
+        // victim's flee slow and walks the monster home if the hunt carried it
+        // off its zone. Hand-clearing targetSid here would leave strays.
+        const z = this.zones.find((zz) => zz.zone.id === m.areaId);
+        if (z) this.disengageMonster(m, z, now);
+      });
     });
 
     // Respawn: send the player back to a fresh spawn point (settings button /
@@ -679,6 +714,9 @@ export class WorldRoom extends Room<WorldState> {
     const player = this.state.players.get(client.sessionId);
     if (player) this.savePlayer(player);
     this.state.players.delete(client.sessionId);
+    // Session ids are not reused, so a stale entry would leak for the room's
+    // lifetime and silently pacify whoever inherited the id.
+    this.noAggro.delete(client.sessionId);
   }
 
   /** Persist one player: position to the per-world store, progression to the
@@ -1083,6 +1121,10 @@ export class WorldRoom extends Room<WorldState> {
         this.state.players.forEach((p, sid) => {
           if (p.dead || p.swimming || Math.abs(p.elev - m.elev) > 2) return; // water = sanctuary
           const marked = p.target === id;
+          // "Disable aggro" (Settings): this player is invisible to UNPROVOKED
+          // aggro. Marking a monster with the sword still provokes it — the
+          // switch removes the ambush, not the fight.
+          if (!marked && this.noAggro.has(sid)) return;
           const radius = marked
             ? Math.max(stats.aggro_radius_wu, PROVOKE_RADIUS_WU)
             : stats.aggro_radius_wu;

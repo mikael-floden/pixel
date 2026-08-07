@@ -20,7 +20,7 @@ import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, setIndoorLight } from "./indoorlight";
-import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "./indoorcut";
+import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
@@ -822,20 +822,21 @@ export class HudBar {
       pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
     );
 
-    // INDOOR WALL CUT: how far down from each room's own ceiling the cut-away
-    // takes the building (maintainer 2026-08-07: "cut all walls at 'roof - 1',
-    // 'roof - 2', etc. Even making this configurable in settings so I can test
-    // what looks best"). STEPPED, because the underlying quantity is a whole
-    // number of 16px levels — a continuous slider would show the same picture
-    // across a third of its travel and then jump. indoorcut.ts owns the value
-    // and its persistence; the scene rebuilds its mask on "ml-indoor-cut".
-    const cutSpan = INDOOR_CUT_MAX - INDOOR_CUT_MIN;
-    const p2cut = (p: number) => INDOOR_CUT_MIN + Math.round(p * cutSpan);
-    const cut2p = (v: number) => (v - INDOOR_CUT_MIN) / cutSpan;
+    // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in
+    // levels ABOVE THE ROOM'S OWN FLOOR (maintainer 2026-08-07: "change the
+    // logic and settings slider to select how high the walls should be measured
+    // from the ground/floor and not from the roof (a cave might have higher to
+    // the ceiling)"). STEPPED, because the underlying quantity is a whole number
+    // of 16px levels — a continuous slider would show the same picture across a
+    // third of its travel and then jump. indoorwall.ts owns the value and its
+    // persistence; the scene rebuilds its mask on "ml-indoor-wall".
+    const wallSpan = INDOOR_WALL_MAX - INDOOR_WALL_MIN;
+    const p2wall = (p: number) => INDOOR_WALL_MIN + Math.round(p * wallSpan);
+    const wall2p = (v: number) => (v - INDOOR_WALL_MIN) / wallSpan;
     wrap.appendChild(
-      pctSlider("Indoor wall cut", () => cut2p(indoorCut()), (p) => setIndoorCut(p2cut(p)), {
-        snap: (p) => cut2p(p2cut(p)),
-        format: (p) => `roof \u2212${p2cut(p)}`,
+      pctSlider("Indoor wall height", () => wall2p(indoorWall()), (p) => setIndoorWall(p2wall(p)), {
+        snap: (p) => wall2p(p2wall(p)),
+        format: (p) => `${p2wall(p)} level${p2wall(p) === 1 ? "" : "s"}`,
       }),
     );
 

@@ -67,7 +67,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
-import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "../indoorcut";
+import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
@@ -593,7 +593,7 @@ const TILE_DIAMOND_TOP = 5;
 //
 // So the two halves of the design are: this truncation, and the white
 // silhouette outline that keeps a body readable when a parapet still covers
-// its legs. The cut DEPTH is the maintainer's dial — see indoorcut.ts.
+// its legs. The WALL HEIGHT is the maintainer's dial — see indoorwall.ts.
 //
 // THE OUTSIDE IS A VOID, NOT A BLACK TILE. "Draw the outside black" is
 // implemented as "draw nothing and make the ground RT's backdrop black",
@@ -933,14 +933,20 @@ export class WorldScene extends Phaser.Scene {
    * roofLevel), but every one of the cave's 12 decks is level 24-40 with
    * thickness 16-32 and they ALL have deckBot 8 — a uniform 8-level (128px)
    * void. Cutting the cave's walls at roofLevel 24 would leave 16 levels of
-   * rock standing above a ceiling that is no longer drawn. */
-  private indoorCut = 0;
-  /** THE CUT — the highest level any column of the building still draws, i.e.
-   * `indoorCut - indoorCutDrop()`, clamped at 0. Everything above it is simply
-   * not drawn: that is what takes the roof off AND what shortens the walls, in
-   * one rule. Kept beside `indoorCut` rather than replacing it because the two
-   * mean different things and both have consumers — the CEILING still decides
-   * which lights are in the room, while THIS decides what is painted. */
+   * rock standing above a ceiling that is no longer drawn.
+   *
+   * Since the dial became a wall height measured UP from the floor, this is no
+   * longer what the cut is derived FROM — it is the CLAMP (a wall taller than
+   * its own room would seal the box again) and the "am I above the room?" line
+   * for bodies and flyers. */
+  private indoorCeil = 0;
+  /** THE CUT — the highest level any column of the WORLD still draws while
+   * indoors: `min(roomFloor + indoorWall(), indoorCeil)`. Everything above it
+   * is simply not drawn, which is what takes the roof off AND what shortens the
+   * walls, in one rule. Kept beside `indoorCeil` rather than replacing it
+   * because the two mean different things and both have consumers — the CEILING
+   * decides what counts as being IN the room, while THIS decides what is
+   * painted. */
   private indoorTop = 0;
   private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
   private indoorAtRow = NaN;
@@ -1013,6 +1019,9 @@ export class WorldScene extends Phaser.Scene {
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
+   * proximity scan is server-side). Re-sent on every join. */
+  private noAggroOn = localStorage.getItem("ml-no-aggro") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
   private joinQuietUntil = 0; // drops synced in at (re)join are not events
@@ -1502,6 +1511,10 @@ export class WorldScene extends Phaser.Scene {
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
         { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
+        // Disable aggro (maintainer 2026-08-07: "I will use this feature to
+        // test walk around in the cave without dying"). Server-side and per
+        // player — see the "noaggro" handler in WorldRoom.
+        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
@@ -1549,7 +1562,7 @@ export class WorldScene extends Phaser.Scene {
     // invalidate the mask and repaint. Clearing the signature is what forces
     // the rebuild — refreshIndoorMask is otherwise a no-op while you stand in
     // one room, which is the whole point of it.
-    window.addEventListener("ml-indoor-cut", () => {
+    window.addEventListener("ml-indoor-wall", () => {
       if (!this.indoorInside) return; // outdoors there is nothing cut to redraw
       this.indoorMaskSig = "";
       if (this.refreshIndoorMask()) this.repaintWorld();
@@ -1608,18 +1621,18 @@ export class WorldScene extends Phaser.Scene {
         if (typeof v === "number") setIndoorLight(v);
         return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
       },
-      // The Settings "Indoor wall cut" dial (indoorcut.ts). No arg reads it; a
+      // The Settings "Indoor wall height" dial (indoorwall.ts). No arg reads it; a
       // number sets it, so a gate can walk every level without a pointer drag.
       // Returns the dial AND what it resolves to for the room you are in — the
-      // dial is levels-below-the-ceiling and `top` is the level it lands on,
-      // which is the number the picture is actually made of.
-      indoorCut: (v?: number) => {
-        if (typeof v === "number") setIndoorCut(v);
+      // dial is levels ABOVE THE FLOOR and `top` is the absolute level it lands
+      // on, which is the number the picture is actually made of.
+      indoorWall: (v?: number) => {
+        if (typeof v === "number") setIndoorWall(v);
         return {
-          cut: indoorCut(),
-          min: INDOOR_CUT_MIN,
-          max: INDOOR_CUT_MAX,
-          ceiling: this.indoorCut,
+          wall: indoorWall(),
+          min: INDOOR_WALL_MIN,
+          max: INDOOR_WALL_MAX,
+          ceiling: this.indoorCeil,
           top: this.indoorTop,
         };
       },
@@ -1648,7 +1661,7 @@ export class WorldScene extends Phaser.Scene {
           // Renderer-side state (what the mask is doing about that verdict).
           pending: this.indoorPending,
           mix: +this.indoorMix.toFixed(3),
-          ceiling: this.indoorCut, // deckBot — the CUT, not roofLevel
+          ceiling: this.indoorCeil, // deckBot — the room UNDERSIDE, not roofLevel
           key: this.indoorKey,
           mask: this.indoorMask?.size ?? 0,
           wallLeft: s?.wallLeft.size ?? 0,
@@ -2356,6 +2369,10 @@ export class WorldScene extends Phaser.Scene {
           hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
           level: (this.room?.state as any)?.monsters?.get(id)?.level ?? null,
           aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
+          // Who this monster is hunting ("" = nobody). The one field that
+          // answers "did it notice me?" without inferring it from behaviour —
+          // what the "disable aggro" gate reads.
+          tsid: (this.room?.state as any)?.monsters?.get(id)?.tsid ?? "",
           mstate: mv.mstate ?? "roam",
           hpBar: !!mv.hpBg?.visible,
           hpBarText:
@@ -2530,6 +2547,9 @@ export class WorldScene extends Phaser.Scene {
           lit: !!n.lit?.visible,
         })),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
+      // Settings "disable aggro" — read with no argument, set with one.
+      noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
+      mySid: () => this.room?.sessionId ?? "",
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -2771,6 +2791,10 @@ export class WorldScene extends Phaser.Scene {
         this.camChase.init = false; // chase-cam snaps onto the new avatar
         // Re-assert my torch to the fresh player entry (rejoins reset it).
         if (!this.torchOn) room.send("torch", { on: false });
+        // Same for "disable aggro": the server keys it by SESSION id, and a
+        // rejoin is a new session — without this the setting looks on in
+        // Settings while everything in the cave hunts you again.
+        if (this.noAggroOn) room.send("noaggro", { on: true });
         hideLoading(); // my avatar is in and the camera is on it — world's up
         this.loadDeferredAnims(); // action states stream in behind the live world
       }
@@ -3445,6 +3469,26 @@ export class WorldScene extends Phaser.Scene {
     } catch {}
     this.chat.addLog("—", `Aggro radius: ${on ? "on" : "off"}`);
     return this.aggroRadiusOn;
+  }
+
+  /** DISABLE AGGRO — stop monsters noticing me on their own, so a cave can be
+   * walked through and looked at (maintainer 2026-08-07).
+   *
+   * The switch lives on the SERVER (per session, see WorldRoom's "noaggro"),
+   * because that is where the proximity scan runs; the client only owns the
+   * preference and re-sends it on every join. It suppresses UNPROVOKED aggro
+   * only: raise your sword at something and it still comes, hit something and
+   * it still fights back. Turning it ON also releases whatever is already
+   * chasing you unprovoked — otherwise you would have to outrun the thing that
+   * noticed you first, which is exactly the situation it exists for. */
+  private toggleNoAggro(on = !this.noAggroOn) {
+    this.noAggroOn = on;
+    try {
+      localStorage.setItem("ml-no-aggro", on ? "1" : "0");
+    } catch {}
+    this.room?.send("noaggro", { on });
+    this.chat.addLog("—", `Aggro: ${on ? "DISABLED — nothing will jump you" : "back on"}`);
+    return this.noAggroOn;
   }
 
   /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
@@ -6056,11 +6100,11 @@ export class WorldScene extends Phaser.Scene {
     // ground point is honestly inside the room — a bird cruising 70-120px up
     // over the house has its cell on the interior floor — but it is outside the
     // room and above the cut, so it must not take the room's ambient. Blacking
-    // it here is exactly the `z < indoorCut` half of indoorOutside.
+    // it here is exactly the `z < indoorCeil` half of indoorOutside.
     if (
       this.indoorInside &&
       this.indoorMask &&
-      z >= this.indoorCut &&
+      z >= this.indoorCeil &&
       (this.indoorMask.get(Math.floor(row) * this.world.width + Math.floor(col)) ?? 0) !== 0
     )
       return {
@@ -7520,17 +7564,33 @@ export class WorldScene extends Phaser.Scene {
     }
     // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
     // the player's head actually meets; roofLevel is the slab's top (see the
-    // indoorCut field note for the measured 24-vs-8 case).
+    // indoorCeil field note for the measured 24-vs-8 case).
     const i = this.indoorAtRow * g.width + this.indoorAtCol;
-    const cut = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
-    // The CUT-AWAY: take the dial's levels off this room's own ceiling. Both
-    // numbers go in the signature — turning the Settings slider must rebuild
-    // the mask exactly the way walking into a taller room does.
-    const top = Math.max(0, cut - indoorCut());
-    const sig = `${this.indoorKey}:${cut}:${top}`;
+    const ceil = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
+    // THE ROOM'S FLOOR — the LOWEST level under its roof, not the level of the
+    // cell I happen to be standing on. A cave floor is not flat, and anchoring
+    // the cut to my own feet would make every wall in the room jump 16px each
+    // time I stepped onto a ledge. The minimum also keeps the whole floor plan
+    // below the cut, so a raised shelf inside the room reads as a shelf you
+    // look over rather than as a wall.
+    let floor = Infinity;
+    for (const ci of s.roof) if (g.level[ci] < floor) floor = g.level[ci];
+    if (!Number.isFinite(floor)) floor = 0;
+    // THE CUT-AWAY: walls stand `indoorWall()` levels ABOVE THAT FLOOR, clamped
+    // by the ceiling — a wall taller than its own room would just seal the box
+    // again. Measuring UP is the whole point (maintainer 2026-08-07): the dial
+    // is a WALL HEIGHT, and "roof − N" only equals one when every room has the
+    // same ceiling. the_island2's house has its ceiling at 6 and its caves at 8
+    // over the same level-0 floor, so the roof−4 that gave him the 2-level wall
+    // he liked gave FOUR in the cave — "the walls are higher than what I
+    // wanted". From the floor, 2 is 2 everywhere.
+    // All three numbers go in the signature: turning the Settings slider must
+    // rebuild the mask exactly the way walking into a different room does.
+    const top = Math.max(0, Math.min(ceil, floor + indoorWall()));
+    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}`;
     if (sig === this.indoorMaskSig && this.indoorMask) return false;
     this.indoorMaskSig = sig;
-    this.indoorCut = cut;
+    this.indoorCeil = ceil;
     this.indoorTop = top;
     const m = new Map<number, number>();
     for (const ci of s.roof) m.set(ci, IN_ROOF);
@@ -7601,7 +7661,7 @@ export class WorldScene extends Phaser.Scene {
     const col = Math.floor(fx / CELL_WU);
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
-    return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
+    return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCeil);
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
