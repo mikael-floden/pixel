@@ -301,6 +301,19 @@ function npcState(folder) {
   for (const [state, keys] of NPC_STATES) if (keys.some((k) => words.has(k))) return state;
   return [...words].join("_") || "idle";
 }
+/** The 8 base rotations as a one-frame "standing" clip, for a character that
+ *  has no animation art yet. Emits ONLY the directions whose file is actually
+ *  on disk — a clip pointing at a missing rotation would trade an empty
+ *  viewer for a broken image, which is worse. Returns {} when there is
+ *  nothing at all, so the caller can still tell the difference. */
+function baseRotationClip(baseDir) {
+  const dirs = {};
+  for (const d of DIRS) {
+    const p = art(`${baseDir}/${d}`);
+    if (p) dirs[d] = { frames: 1, strip: p };
+  }
+  return Object.keys(dirs).length ? { standing: { folder: "base", dirs } } : {};
+}
 function buildCharacters() {
   const base = join(ROOT, "characters2", "humans");
   if (!isDir(base)) return null;
@@ -398,7 +411,18 @@ function buildCharacters() {
       preview: art(`characters2/npcs/${key}/base/south`),
       baseStrip: art(`characters2/npcs/${key}/base/preview`),
       frameW, frameH,
-      animations: anims,
+      // NO ANIMATION ART? Then the 8 STANDING ROTATIONS are the art, and they
+      // become a one-frame "standing" clip so the viewer has something real to
+      // show (maintainer 2026-08-07: "Why is Morwenna not visible in the
+      // animation viewer?" — 3 of the 191 NPCs are synced with a base/ folder
+      // and no animations/ folder at all, so the player drew an empty
+      // chessboard with a "—" frame counter and no explanation).
+      //
+      // A synthesised clip, not a special case in the UI: the player, the
+      // direction buttons and the state chip all work unchanged, and the
+      // 8 rotations are genuinely worth flipping through. `standing` is the
+      // state name, so the card says plainly what it is showing.
+      animations: Object.keys(anims).length ? anims : baseRotationClip(`characters2/npcs/${key}/base`),
     });
   }
   return chars;
