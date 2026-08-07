@@ -63,6 +63,11 @@ WORLDS = os.path.join(MAPS2, "worlds")
 
 SCHEMA = "pixel-maps2/spawns@1"
 BUILDER_OWNS = {"monster_demo"}     # writes its own explicit spawns.json
+# THE ONE MAP THE CROWDING LAW DOES NOT BIND. monster_demo is a display case —
+# one 5x5 pad per roster monster, two of each, so you can walk the rows and look
+# at them (monsterdemo.py). Two monsters on 25 cells is 0.08/cell and that is
+# the entire point of the map, not a pile-up. Every other world obeys the law.
+CROWDING_EXEMPT = {"monster_demo"}
 
 # Test/feature-demo maps used to exercise ONE rendering feature — they get NO
 # monsters (maintainer 2026-07-29: "used for testing different things"): the
@@ -207,13 +212,66 @@ AGGRO_PUSH = 14         # monsters that HUNT (aggro_radius_wu > 0) start further
                         # fight, an aggressive one is a thing that chooses you
 MAX_LVL = 20
 
+# -- THE CROWDING LAW (maintainer 2026-08-07) ---------------------------------
+# "LOL! Why have you placed this many monsters at the same place 😂 Looks funny!"
+#
+# He was pointing at the copse east of the plains, and he was right: FOUR forest
+# species — hedgehog, tree stump and both forest porings — had all picked the
+# SAME 46-cell component, six of each, with the two plains zones lying over the
+# top. 24 monsters under one tree: 0.53 expected monsters per cell, one every
+# two tiles, a mosh pit.
+#
+# Nothing in the rules was broken. That was the problem. A zone said WHERE a
+# monster may live and never HOW MUCH ROOM it needs, and each species picks the
+# nearest component it is allowed to live in INDEPENDENTLY of the others — so
+# when several share a habitat they all converge on the same patch. Habitat and
+# the difficulty gradient both point the same way; nothing pointed apart.
+#
+# So room is now a first-class quantity. For a cell,
+#
+#     density(cell) = SUM over zones covering it of num / |zone spawn cells|
+#
+# is the expected number of monsters standing on it — the game picks roam
+# targets uniformly from exactly those cells (pickMonsterTarget, WorldRoom.ts),
+# so this is what the player sees, not a proxy for it. It may never exceed
+# MAX_DENSITY. Three mechanisms, all in the generator:
+#
+#   1. ROOM PICKS THE COMPONENT. Each component carries `cells * MAX_DENSITY`
+#      monsters. A species prefers one that still has room for its whole
+#      population; among those it still takes the NEAREST, so the difficulty
+#      gradient is untouched — species spread SIDEWAYS across the habitat, not
+#      inwards toward the spawn.
+#   2. ROOM CAPS THE POPULATION. balance_population already refused to put more
+#      monsters in a zone than it has standable cells; it now also refuses to
+#      exceed the zone's room, and the spill goes to that species' other zones.
+#   3. enforce_density() SETTLES THE OVERLAP. Zones of different species may
+#      still share ground (that has always been the design) — but where the sum
+#      goes over the cap, the biggest contributor gives a monster back until it
+#      doesn't. Deterministic, monotone, terminates.
+#
+# assert_density() then fails the BUILD if any cell is still over — including
+# for a hand-written spawns.json, which none of the three mechanisms touch.
+MAX_DENSITY = 0.05      # expected monsters per cell: one per 20 cells, i.e. at
+                        # most ~4 in a 9x9 patch of ground. The forest copse was
+                        # at 0.53 when the maintainer laughed at it.
+ROOM_MIN = int(round(1 / MAX_DENSITY))   # cells a zone needs to hold ONE monster
+                                         # legally — the floor for any component
+                                         # worth making a zone out of
+
 WORLD_CELLS_PER_MONSTER = 137       # world budget = land cells / this
 MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
 MON_TOTAL_MAX = 9                   # per-type ceiling
-MIN_ZONE = {"forest": 12}           # smallest component worth a zone (cells)
+MIN_ZONE = {"forest": ROOM_MIN}     # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
 TOP_K = 4                           # component cap per habitat (>= its members)
-TREE_R = 3
+TREE_R = 6                          # the woods a GROVE casts, not the shade of
+                                    # one trunk. At 3 every one of the island's
+                                    # 8 tall props was its own 7x7 island of
+                                    # "forest" and the four forest species had
+                                    # nowhere to spread to but each other's
+                                    # laps; at 6 the same 8 props make 11
+                                    # copses of 100-165 cells, which is a wood
+                                    # a species can actually live in.
 WATER_SHORE_R = 4                   # how far inland the `shore` band reaches
 BRIDGE_MIN_CELLS = 10
 DRY_PASSES = 60                     # water-law fixed-point backstop (asserts)
@@ -685,6 +743,23 @@ def make_zone(w, kind, comp, zid, elev=None, forbid=frozenset()):
     return zone
 
 
+def world_budget(w, n):
+    """How many monsters this world carries in total, for `n` species."""
+    if not n:
+        return 0
+    land = sum(1 for y in range(w.h) for x in range(w.w)
+               if w.m(x, y) not in w.water and w.m(x, y) != "")
+    return max(n * MON_TOTAL_MIN,
+               min(n * MON_TOTAL_MAX, round(land / WORLD_CELLS_PER_MONSTER)))
+
+
+def room_of(z):
+    """How many monsters a zone has ROOM for (the crowding law): its standable
+    cells at MAX_DENSITY, and never fewer than one — a single monster on its own
+    is not a crowd whatever the arithmetic says."""
+    return max(1, min(z["_valid"], int(z["_valid"] * MAX_DENSITY)))
+
+
 def balance_population(w, zones):
     """Share the world's monster budget out so every TYPE ends up with a similar
     total, then spread each type's total across its own zones by area."""
@@ -694,10 +769,7 @@ def balance_population(w, zones):
     n = len(by_mon)
     if not n:
         return zones
-    land = sum(1 for y in range(w.h) for x in range(w.w)
-               if w.m(x, y) not in w.water and w.m(x, y) != "")
-    budget = max(n * MON_TOTAL_MIN,
-                 min(n * MON_TOTAL_MAX, round(land / WORLD_CELLS_PER_MONSTER)))
+    budget = world_budget(w, n)
     base, extra = divmod(budget, n)
     # the few +1s go to the types with the most habitat (deterministic tie-break)
     order = sorted(by_mon, key=lambda m: (-sum(z["_cells"] for z in by_mon[m]), m))
@@ -705,6 +777,8 @@ def balance_population(w, zones):
     for i, mon in enumerate(order):
         target = base + (1 if i < extra else 0)
         zs = sorted(by_mon[mon], key=lambda z: (-z["_cells"], z["id"]))
+        for z in zs:
+            z["_target"] = target       # what topup_population aims back at
         if len(zs) > target:            # more zones than monsters: keep the biggest
             zs = zs[:target]
         weight = sum(z["_cells"] for z in zs) or 1
@@ -716,16 +790,164 @@ def balance_population(w, zones):
                         key=lambda k: (-(share[k] % 1), zs[k]["id"]))[
                             :rest - sum(int(s) for s in share)]:
             zs[k]["num"] += 1
-        for z in zs:                    # never claim more than the zone can hold
-            z["num"] = min(z["num"], z["_valid"])
+        # never claim more than the zone can HOLD (standable cells) or has ROOM
+        # for (the crowding law) — and spill the excess into this species' OTHER
+        # zones, so a full copse sends hedgehogs to the next copse instead of
+        # stacking them six-deep in this one.
+        for z in zs:
+            z["num"] = max(1, min(z["num"], room_of(z)))
         short = target - sum(z["num"] for z in zs)
-        for z in zs:                    # spill anything that got capped
-            while short > 0 and z["num"] < z["_valid"]:
+        for z in zs:
+            while short > 0 and z["num"] < room_of(z):
                 z["num"] += 1
                 short -= 1
         kept.extend(zs)
     pos = {id(z): i for i, z in enumerate(zones)}
     return sorted(kept, key=lambda z: pos[id(z)])
+
+
+# -- the crowding law ---------------------------------------------------------
+
+def density_field(w, zones, cells=None):
+    """cell -> expected monsters standing on it, summed over every zone.
+
+    A zone contributes `num / |spawn cells|` to each of its spawn cells because
+    that is literally how the server places them: pickMonsterTarget draws a cell
+    uniformly from the zone's pre-validated list. Overlapping zones add up —
+    which is the whole point, since overlap is what stacked 24 monsters under
+    one tree."""
+    cells = cells if cells is not None else \
+        {z["id"]: spawn_cells(w, z) for z in zones}
+    dens = {}
+    for z in zones:
+        cs = cells[z["id"]]
+        if not cs:
+            continue
+        share = z["num"] / len(cs)
+        for c in cs:
+            dens[c] = dens.get(c, 0.0) + share
+    return dens, cells
+
+
+def floor_density(zones, cells):
+    """cell -> the density that remains when every zone is down to ONE monster.
+
+    The irreducible floor. ONE MONSTER IS NEVER A CROWD: a zone always keeps at
+    least one, so a 14-cell footbridge with a single turtle on it sits at
+    0.071/cell and no amount of arithmetic makes that a pile-up. The crowding
+    law therefore binds on everything ABOVE this line — which is everything the
+    generator can actually spend."""
+    out = {}
+    for z in zones:
+        cs = cells[z["id"]]
+        if not cs:
+            continue
+        share = 1.0 / len(cs)
+        for c in cs:
+            out[c] = out.get(c, 0.0) + share
+    return out
+
+
+def enforce_density(w, zones):
+    """Settle the overlap: while some cell is over MAX_DENSITY, the zone
+    crowding it hardest gives a monster back.
+
+    Room-aware component choice keeps species APART, and the per-zone room cap
+    keeps each one thin; neither can see the SUM where two species deliberately
+    share ground. This can. Strictly monotone (Sum(num) drops by one per step,
+    floored at one monster per zone), so it terminates; and it takes from the
+    thickest contributor first, so the population it gives back is the crowd,
+    not the map's variety.
+
+    Returns (monsters given back, cells it could not get under the cap) — the
+    second is terrain too small for the species that want it, reported the same
+    way the difficulty gradient reports a habitat with nowhere far enough."""
+    dens, cells = density_field(w, zones)
+    given, stuck = 0, []
+    live = dict(dens)
+    while live:
+        c, hi = max(live.items(), key=lambda kv: (kv[1], kv[0]))
+        if hi <= MAX_DENSITY + 1e-9:
+            break
+        cand = [z for z in zones if z["num"] > 1 and c in cells[z["id"]]]
+        if not cand:                    # already one monster per zone here
+            over = sorted(z["id"] for z in zones if c in cells[z["id"]])
+            # A LONE zone at its minimum is just a small zone — the bridge guard
+            # is one turtle on 14 cells and always will be. Only ground several
+            # species are squeezed onto is worth reporting.
+            if len(over) > 1 and not any(o == over for _c, _h, o in stuck):
+                stuck.append((c, hi, over))
+            del live[c]
+            continue
+        z = max(cand, key=lambda z: (z["num"] / len(cells[z["id"]]), z["id"]))
+        share = 1.0 / len(cells[z["id"]])
+        z["num"] -= 1
+        given += 1
+        for cc in cells[z["id"]]:
+            dens[cc] -= share
+            if cc in live:
+                live[cc] -= share
+    return given, stuck
+
+
+def topup_population(w, zones):
+    """Hand back what enforce_density took, wherever the ground can still take
+    it — the other half of settling the overlap.
+
+    enforce_density takes from the thickest contributor at the crowded cell,
+    which is fair but blind to WHOSE population it is spending: the lava poring
+    lost four of its five monsters to a stone-golem zone lying over its ledge,
+    while its other ledge sat half empty. So every species that ends up under
+    the target it was allocated gets monsters back, one at a time, in whichever
+    of its own zones has the most headroom left under the cap. Only ever adds
+    where the result is still legal, so the law holds throughout."""
+    dens, cells = density_field(w, zones)
+    by_mon = {}
+    for z in zones:
+        by_mon.setdefault(z["monster"], []).append(z)
+    added = 0
+    for _mon, zs in sorted(by_mon.items()):
+        target = zs[0].get("_target", 0)
+        while sum(z["num"] for z in zs) < target:
+            best = None
+            for z in sorted(zs, key=lambda z: z["id"]):
+                cs = cells[z["id"]]
+                if not cs or z["num"] >= min(z["_valid"], room_of(z)):
+                    continue
+                share = 1.0 / len(cs)
+                head = min(MAX_DENSITY - dens[c] - share for c in cs)
+                if head >= -1e-9 and (best is None or head > best[0]):
+                    best = (head, z, share, cs)
+            if best is None:
+                break
+            _h, z, share, cs = best
+            z["num"] += 1
+            added += 1
+            for c in cs:
+                dens[c] += share
+    return added
+
+
+def assert_density(w, zones):
+    """THE CROWDING LAW — no cell may carry more than MAX_DENSITY monsters,
+    beyond the one-per-zone floor no generator can spend.
+
+    The gate the three mechanisms exist to satisfy, and the only one that also
+    binds a hand-written spawns.json. Returns the peak density seen."""
+    dens, cells = density_field(w, zones)
+    if not dens:
+        return 0.0
+    base = floor_density(zones, cells)
+    c, hi = max(dens.items(),
+                key=lambda kv: (kv[1] - min(kv[1], max(MAX_DENSITY, base[kv[0]])),
+                                kv[1], kv[0]))
+    over = sorted(z["id"] for z in zones if c in cells[z["id"]])
+    assert hi <= max(MAX_DENSITY, base[c]) + 1e-9, (
+        f"{w.name}: {hi:.3f} expected monsters on cell {c} — over the crowding "
+        f"law's {MAX_DENSITY} (one per {ROOM_MIN} cells). {len(over)} zone(s) "
+        f"stack there: {', '.join(over)}. Spread them across more of the "
+        f"habitat; don't pile them up.")
+    return max(dens.values())
 
 
 def assert_gradient(w, zones, field=None):
@@ -762,16 +984,32 @@ def assert_gradient(w, zones, field=None):
     return short
 
 
-def validate_zone(w, zone, inside=None):
+def spawn_cells(w, zone, inside=None):
+    """The SURFACES the game will actually stand a monster on inside this
+    polygon, as (x, y, level) — a cell that is both dry ground and covered by a
+    deck in the band yields two, exactly as the server's list does.
+
+    Mirrors buildZoneRuntimes (games2/shared/src/index.ts): a surface counts
+    when the base is dry ground inside the elevation band, or when a deck top
+    inside the band covers it (bridge spans over water, the cave roof over the
+    cave floor). Props and void are out.
+
+    The LEVEL is part of the key on purpose. This world is stacked: the cave
+    floor at elev 0-1 lies directly under the black-mountain rock at 32-36, and
+    the mountain benches and the snow cap are stacked over both. Those are
+    different FLOORS of the same building — a player on the summit never meets
+    what lives in the cave under their boots — so the crowding law must not add
+    them together. Keyed by (x,y) alone it did, and it emptied the cave to
+    relieve a crowd on the mountain that was never there.
+
+    This — not the polygon — is the set the server draws roam targets from
+    uniformly, so it is the set THE CROWDING LAW measures density over. Also
+    re-asserts the water law on every cell it walks."""
     kind = zone["monster"]
-    poly = [tuple(p) for p in zone["area"]]
-    assert_simple(poly, f"{w.name}/{zone['id']}")
     if inside is None:
-        inside = poly_cells(poly)
+        inside = poly_cells([tuple(p) for p in zone["area"]])
     lo, hi = zone["elev"]
-    assert 0 <= lo <= hi <= 64, f"{zone['id']}: bad elev {zone['elev']}"
-    assert zone["num"] >= 1, f"{zone['id']}: num < 1"
-    ok = 0
+    out = set()
     for (x, y) in inside:
         if not (0 <= x < w.w and 0 <= y < w.h):
             continue
@@ -789,13 +1027,23 @@ def validate_zone(w, zone, inside=None):
             continue
         # BASE surface: dry ground inside the band. Water never qualifies —
         # the assert above already proved any water here is deck-covered.
-        base_ok = lo <= w.base(x, y) <= hi and m not in w.water
-        # DECK surface: a deck top is standable whatever lies beneath it —
-        # bridge spans over water, the cave ROOF over the cave floor.
+        if lo <= w.base(x, y) <= hi and m not in w.water:
+            out.add((x, y, w.base(x, y)))
         d = w.deck.get((x, y), -1)
-        deck_ok = d > w.base(x, y) and lo <= d <= hi
-        if base_ok or deck_ok:
-            ok += 1
+        if d > w.base(x, y) and lo <= d <= hi:
+            out.add((x, y, d))
+    return out
+
+
+def validate_zone(w, zone, inside=None):
+    poly = [tuple(p) for p in zone["area"]]
+    assert_simple(poly, f"{w.name}/{zone['id']}")
+    if inside is None:
+        inside = poly_cells(poly)
+    lo, hi = zone["elev"]
+    assert 0 <= lo <= hi <= 64, f"{zone['id']}: bad elev {zone['elev']}"
+    assert zone["num"] >= 1, f"{zone['id']}: num < 1"
+    ok = len(spawn_cells(w, zone, inside))
     assert ok >= zone["num"], \
         (f"{w.name}/{zone['id']}: only {ok} valid spawn cell(s) for num="
          f"{zone['num']} in elev {zone['elev']}")
@@ -849,7 +1097,10 @@ def zones_for(w):
         mem = members[hab]
         min_cells = MIN_ZONE.get(hab, MIN_ZONE_DEFAULT)
         kept = [c for c in comps(mask) if len(c) >= min_cells]
-        kept = kept[:max(TOP_K, len(mem))]
+        # Two homes per species' worth of components: the crowding law needs
+        # somewhere to spread TO, and one component per member only works if
+        # every member happens to want a different one.
+        kept = kept[:max(TOP_K, 2 * len(mem))]
         if not kept:
             continue
         far = {}
@@ -865,23 +1116,53 @@ def zones_for(w):
         # instead of difficulty being scattered at random by habitat alone.
         count = max(len(mem), len(kept))
         taken = {}
+        # THE CROWDING LAW, mechanism 1. Each component carries only so many
+        # monsters; `used` is what the species placed so far have already
+        # claimed of it. `demand` is what one species expects to be given
+        # (balance_population splits the world budget evenly by type), so a
+        # species can tell whether a component has room for it BEFORE moving in.
+        used = [0.0] * len(kept)
+        room = [len(c) * MAX_DENSITY for c in kept]
+        demand = max(1, world_budget(w, len(ids)) // max(1, len(ids)))
+        got = {m: 0.0 for m in mem}      # room each species has actually secured
         for i in range(count):
-            kind = mem[i % len(mem)]
+            # Everyone once, in roster order; then the SPARE components go to
+            # whoever has the least room so far. Round-robin gave them to the
+            # first names in the roster instead, which is how the lava poring
+            # ended up alone on a ledge the stone golems were already using
+            # while the malformed creature had two homes.
+            kind = mem[i] if i < len(mem) else \
+                min(mem, key=lambda m: (got[m], mem.index(m)))
             floor = keep_out(kind)
             seen = taken.setdefault(kind, set())
             # Trim each unused component to the part far enough out for THIS
-            # monster, then take the nearest surviving piece: as close as it is
-            # allowed to be, never closer.
+            # monster, then take the nearest piece THAT STILL HAS ROOM: as close
+            # as it is allowed to be, never closer, never on top of the
+            # neighbours. Room outranks distance — that is the only way four
+            # species sharing a habitat end up in four different copses — but
+            # among the components with room, distance decides exactly as
+            # before, so the difficulty gradient is unchanged.
             cands = []
             for j, c in enumerate(kept):
                 if j in seen:
                     continue
                 t = gradient_trim(c, field, floor)
-                if len(t) >= min_cells:
-                    cands.append((comp_dist(t, field) or (1 << 30), -len(t), j, t))
+                if len(t) < min_cells:
+                    continue
+                free = room[j] - used[j]          # monsters it can still take
+                fits = free >= demand
+                # Tier 1: components with room for the whole population, nearest
+                # first. Tier 2 (nothing has room): the EMPTIEST one — falling
+                # back to distance here is what put all four black-mountain
+                # species on the same 127-cell ledge, since "nearest" is the
+                # same answer for all of them.
+                cands.append((0 if fits else 1, 0 if fits else -free,
+                              comp_dist(t, field) or (1 << 30), -len(t), j, t))
             if cands:
                 cands.sort()
-                _d, _n, j, comp = cands[0]
+                j, comp = cands[0][-2], cands[0][-1]
+                got[kind] += max(0.0, min(demand, room[j] - used[j]))
+                used[j] += demand
             elif not seen:
                 # Nowhere on this world is far enough for it, and it still needs
                 # a home: take the furthest habitat there is. assert_gradient
@@ -909,6 +1190,9 @@ def zones_for(w):
                 # Nothing legal survives here on this world (small maps hit this).
                 # Coverage on MUST_HAVE_ALL worlds is handled by fallback_zone.
                 seen.discard(j)
+                if cands:                # it never moved in — give the room back
+                    got[kind] -= max(0.0, min(demand, room[j] - used[j] + demand))
+                    used[j] -= demand
     # showcase: a guard on the biggest bridge span (deck-elevation zone)
     if BRIDGE_GUARD in ids and w.bridges:
         lvl, cells = max(w.bridges, key=lambda b: (len(b[1]), b[0]))
@@ -964,13 +1248,24 @@ def refresh(name):
         return
     w = W(name)
     zones = balance_population(w, zones_for(w))
+    given, stuck = enforce_density(w, zones)         # THE CROWDING LAW
+    given -= topup_population(w, zones)              # ...and its refund
+    peak = assert_density(w, zones)
     short = assert_gradient(w, zones)
     for kind, lvl, ag, d, floor in short:
         print(f"  ! {name}/{kind} (L{lvl}{'/hunts' if ag else ''}) sits {d} cells "
               f"from spawn, wanted {floor} — its habitat has nowhere further")
+    for c, hi, over in stuck[:3]:
+        print(f"  ! {name}: {hi:.3f} monsters/cell at {c} with every zone there "
+              f"down to one — {len(over)} species want the same small ground "
+              f"({', '.join(over)})")
+    if given:
+        print(f"  ~ the crowding law gave back {given} monster(s) where zones "
+              f"overlapped")
     for z in zones:                                 # drop the allocator's scratch
         z.pop("_valid", None)
         z.pop("_cells", None)
+        z.pop("_target", None)
     doc = {"schema": SCHEMA, "world": name, "zones": zones}
     with open(os.path.join(WORLDS, name, "spawns.json"), "w") as f:
         json.dump(doc, f, separators=(",", ":"))
@@ -978,7 +1273,7 @@ def refresh(name):
     total = sum(z["num"] for z in zones)
     extra = f"  [ALL {len(kinds)} monsters]" if name in MUST_HAVE_ALL else ""
     print(f"{name}: {len(zones)} zone(s), {total} monsters, "
-          f"{len(kinds)} kind(s){extra}")
+          f"{len(kinds)} kind(s), peak {peak:.3f}/cell{extra}")
 
 
 def validate_file(name):
@@ -990,6 +1285,8 @@ def validate_file(name):
     for z in doc["zones"]:
         assert z["monster"] in ids, f"{z['id']}: unknown monster {z['monster']}"
         validate_zone(w, z)
+    if name not in CROWDING_EXEMPT:
+        assert_density(w, doc["zones"])              # THE CROWDING LAW
     return len(doc["zones"])
 
 
@@ -1022,7 +1319,8 @@ def check_all(names):
         mons += sum(z["num"] for z in doc["zones"])
         print(f"  {name}: {n} zone(s) OK")
     print(f"spawns --check: {zones} zone(s), {mons} monsters, "
-          f"{'ALL OK — no zone touches water' if not bad else f'{bad} WORLD(S) FAILED'}")
+          + ("ALL OK — no zone touches water, nothing is piled up"
+             if not bad else f"{bad} WORLD(S) FAILED"))
     return 1 if bad else 0
 
 
