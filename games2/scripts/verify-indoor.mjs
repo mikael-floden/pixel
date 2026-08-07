@@ -419,8 +419,18 @@ try {
     `peak ${Math.max(...floorIn.map((s) => s.max)).toFixed(1)}, against 0.00 outside; the room is lit only by the torch, by design)`);
 
   // -- 2c. THE INWARD WALL FACES ARE STILL DRAWN ----------------------------
+  // The bar is "drawn", not "bright". It was 8 when the surface resolve still
+  // reported the ROOF's height for every cell under it — which put the floor
+  // and the wall tops at the SAME z, so the torch lit both equally and the
+  // walls measured 12-16. With the resolve corrected (uIndoor, nightlight.ts)
+  // a waist-height torch lights the FLOOR strongly and the upper wall weakly,
+  // exactly as it should: the floor's screen luminance went up 8x while these
+  // faces settled to 6-8. Dropping the bar to 4 keeps what this test is FOR —
+  // the inward half must still be painted, and the outward half + tile top
+  // must still be void, which the very next assertion checks against the same
+  // frame. Anything actually culled reads 0 and still fails.
   const wallIn = measure(inShot, wallP);
-  const gone = wallIn.filter((s) => s.black > 0.05 || s.med < 8);
+  const gone = wallIn.filter((s) => s.black > 0.05 || s.med < 4);
   if (gone.length)
     fail(`inward wall faces are missing at ${gone.map((s) => `${s.c},${s.r}${s.side} (mean ${s.mean.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")}`);
   ok(`all ${wallIn.length} FAR walls still show the face that looks into the room ` +

@@ -166,6 +166,7 @@ uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
+uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -227,10 +228,33 @@ float groundAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).a * 255.0 / uHScale;
 }
 
-
-
+// The SURFACE height a screen pixel resolves to.
+//
+// INDOORS THIS MUST IGNORE DECKS. uHeight's R is max(terrain, deck), so every
+// cell under a roof reports the ROOF's level — and indoor mode has just
+// stopped drawing that roof, so the pixel on screen is the FLOOR while the map
+// still says 6. The resolve puts the floor 6 levels up, and a point light's
+// attenuation counts the VERTICAL gap
+// (dist = sqrt(horizontal^2 + ((lp.z - z)*0.6)^2)), so the player's own torch
+// at z 0.55 is treated as ~3.3 cells from the ground it stands on before any
+// horizontal distance: att = (1 - 3.27/6)^2 = 0.21.
+//
+// MEASURED in one of maps2' houses at (215,121) — torch-only light at the
+// player's OWN cell: 0.631 resolved at the true floor, 0.211 at the deck level
+// the map reports. A third of the light, which is exactly the "yes I can see
+// something very very dim happens if I toggle it on/off in-door" the
+// maintainer reported (2026-08-07) while the same torch throws a wide pool
+// outdoors.
+//
+// SAME CLASS AS THE FLOATING-SLAB FIX in the LOS march (groundAtSoft above):
+// a roof removed from the RENDER still living in a height map. That one was
+// the OCCLUSION map; this is the SURFACE map, and fixing one without the other
+// left the light crippled by the half that was missed. Indoors every deck on
+// screen is culled by definition, so the base terrain IS the drawn surface
+// everywhere — walls included, since they are terrain and keep their height.
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  if (uIndoor > 0.5) return baseTerrAt(cr);
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
@@ -1229,6 +1253,11 @@ export class NightLights {
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
+  /** 1 while the local player is INDOORS: the surface resolve then ignores
+   * decks, because indoor mode has culled every one of them from the render.
+   * See heightAt() in the fragment for the measured reason. Mirrored into the
+   * CPU twin (tAt) so sprite tints agree with the ground under them. */
+  indoor = false;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
@@ -1335,6 +1364,10 @@ export class NightLights {
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
+      // 1 while the local player is INDOORS — see heightAt(). Declared here
+      // because an UNDECLARED uniform silently never syncs on real phone GPUs
+      // (the uSun lesson, already paid for twice in this file).
+      uIndoor: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -2101,6 +2134,7 @@ export class NightLights {
     s.setUniform("uIsoB.value.w", this.maxLevel);
     s.setUniform("uHScale.value", this.hScale);
     s.setUniform("uCloud.value", cloud);
+    s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
     s.setUniform("uAurora.value", aurora);
     s.setUniform("uSun.value.x", sun[0]);
     s.setUniform("uSun.value.y", sun[1]);

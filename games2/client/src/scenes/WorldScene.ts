@@ -5190,6 +5190,15 @@ export class WorldScene extends Phaser.Scene {
       // BE the outside. `fogScale` is a separate multiplier from `fogStrength`
       // so the __ml.depthFog debug knob keeps owning the master value.
       if (this.night) this.night.fogScale = 1 - iF;
+      // THE SURFACE RESOLVE MUST FORGET THE ROOF TOO. uHeight reports
+      // max(terrain, deck), so with the roof culled every floor pixel still
+      // resolves to the CEILING's level and the torch — held at z 0.55 — is
+      // attenuated as if it were ~3.3 cells above the ground it stands on
+      // (measured: 0.631 -> 0.211 at the player's own cell). Flip it on the
+      // GEOMETRY, not the light blend: the roof is drawn or it is not, and
+      // indoorInside is what the ground RT and the occluders already switch on,
+      // so the height map can never disagree with the art on screen.
+      if (this.night) this.night.indoor = this.indoorInside;
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
