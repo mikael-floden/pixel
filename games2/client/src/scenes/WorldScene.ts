@@ -2149,6 +2149,10 @@ export class WorldScene extends Phaser.Scene {
           x: (wx - cam.worldView.x) * cam.zoom,
           y: (wy - cam.worldView.y) * cam.zoom,
           zoom: cam.zoom,
+          // The camera's own origin, so a caller can undo the transform and
+          // hand pickGround the WORLD coords its pointerdown works in.
+          camX: cam.worldView.x,
+          camY: cam.worldView.y,
           level: cell.l,
           t: cell.t,
           v: cell.v ?? 0,
@@ -5949,7 +5953,17 @@ export class WorldScene extends Phaser.Scene {
     if (!this.world) return clampW(wx, wy, 0); // plain-ground fallback: screen == flat world
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (wx - this.iso.ox - tile / 2) / dx;
-    for (let l = this.maxLevel; l >= 0; l--) {
+    // A TAP MUST RESOLVE AGAINST WHAT IS ON SCREEN, and indoors that is the
+    // CUT-AWAY: nothing above `indoorTop` is drawn and the roof slab is not
+    // drawn at all. Resolving against the untruncated data instead put EVERY
+    // indoor tap on the roof deck — the scan runs top-down and the house's
+    // slab matched at level 6 before the floor could match at 0, so the walk
+    // target landed 6 levels' worth of screen y down-screen of the finger
+    // (maintainer 2026-08-07: "the player walks to a spot about a full
+    // character in length under the spot I actually clicked on. This makes it
+    // really hard to point and click navigate indoors").
+    const cut = this.indoorInside && this.indoorMask ? this.indoorTop : -1;
+    for (let l = cut >= 0 ? cut : this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
@@ -5958,9 +5972,22 @@ export class WorldScene extends Phaser.Scene {
       const cell = this.world.rows[ri]?.[ci];
       if (!cell) continue;
       // world@2: a deck slab drawn at level l here is the TOP surface — tapping
-      // it targets the deck (bridge/roof), not the base underneath.
-      const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
-      if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+      // it targets the deck (bridge/roof), not the base underneath. Skipped
+      // indoors, where the slab over your head is exactly what is NOT drawn.
+      if (cut < 0) {
+        const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
+        if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+      }
+      // THE CUT TRUNCATES THE DRAWING, NOT THE WORLD. A parapet you can see
+      // over is still a full-height wall you cannot stand on, so a tap that
+      // lands on its drawn top means the FLOOR BEYOND it — keep scanning down.
+      // Resolving to the parapet instead put the target 2 levels (2.13 cells)
+      // past the finger for every tap near a wall, which is the same bug as
+      // the roof deck one level down and just as invisible from the code.
+      // A wall SHORTER than the cut is not truncated and stays tappable: its
+      // top is a real sill, and it is drawn exactly where it is.
+      const inside = cut >= 0 && this.indoorMask!.has(ri * this.world.width + ci);
+      if (inside && cell.l > cut) continue;
       if (cell.l !== l) continue;
       const s = surfaceFor(cell.t);
       if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure

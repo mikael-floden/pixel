@@ -617,6 +617,40 @@ try {
   // dial capped at INDOOR_CUT_MAX every room keeps a wall, by design.
   if (outsideCover.hiddenFrac !== 0 || outsideCover.hidden)
     fail(`standing in the open outdoors the body still reads ${outsideCover.hiddenFrac} hidden — the outline is not keyed to real cover`);
+  // -- 2f. A TAP LANDS WHERE YOU TAPPED ------------------------------------
+  // The cut-away changes what is ON SCREEN, so it changes what a tap means.
+  // pickGround scans levels top-down, and the roof slab is still in the DATA
+  // over every interior cell — so before this was fixed every indoor tap
+  // matched the deck at level 6 and the walk target landed 6.40 cells (96px)
+  // down-screen of the finger (maintainer 2026-08-07: "the player walks to a
+  // spot about a full character in length under the spot I actually clicked
+  // on. This makes it really hard to point and click navigate indoors").
+  //
+  // Asserted by ROUND TRIP on the room's own floor: project a known cell to
+  // screen, feed that point to the REAL hit test, and require the cell back.
+  {
+    const bad = [];
+    for (const [c, r] of interior) {
+      const sc = await cellScreen(c, r);
+      const got = await page.evaluate(
+        ([x, y]) => {
+          const g = window.__ml.pickAt(x, y);
+          return g ? { c: g.x / 32, r: g.y / 32, lvl: g.lvl } : null;
+        },
+        // cellScreen is CANVAS px; pickGround works in WORLD px, and the tap
+        // point is the tile's own centre (+32, +2*dy) as pointerdown computes.
+        [sc.x / sc.zoom + sc.camX + 32, sc.y / sc.zoom + sc.camY + 30],
+      );
+      if (!got) { bad.push(`${c},${r} -> nothing`); continue; }
+      const off = Math.abs(got.c - c - 0.5) + Math.abs(got.r - r - 0.5);
+      if (off > 0.6 || got.lvl !== 0)
+        bad.push(`${c},${r} -> ${got.c.toFixed(1)},${got.r.toFixed(1)} at level ${got.lvl} (${off.toFixed(2)} cells off)`);
+    }
+    if (bad.length)
+      fail(`indoor taps do not land where you tap: ${bad.join("; ")} — the hit test is resolving against geometry the cut-away does not draw`);
+    ok(`a tap lands where you tap: all ${interior.length} interior floor cells round-trip through the real hit test to themselves at level 0`);
+  }
+
   ok(`the white outline follows the cut: roof-1 hides ${(tall.hiddenFrac * 100).toFixed(0)}% of the figure, ` +
     `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_MAX} ${(low.hiddenFrac * 100).toFixed(0)}%, ` +
     `and outdoors in the open none at all (the ring is cropped to the hidden part, never the whole body)`);

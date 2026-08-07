@@ -2041,6 +2041,21 @@ side collision just like monsters").
     the roof-in-the-heightmap bug one level up: the floor behind a wall drawn at
     level 3 would resolve at 6 and every torch lighting it would be attenuated
     across 48px of gap that is not there.
+  - **A TAP RESOLVES AGAINST WHAT IS DRAWN, AND ONLY THE FLOOR IS A TARGET**
+    (maintainer 2026-08-07: indoors "the player walks to a spot about a full
+    character in length under the spot I actually clicked on"). `pickGround`
+    scans levels TOP-DOWN, so two things in the untruncated data outranked the
+    floor and both had to go. (1) The ROOF SLAB is still in `terrain.deck` over
+    every interior cell, so every indoor tap matched it at level 6 — measured
+    6.40 cells (96px) down-screen of the finger, every time. (2) A PARAPET's
+    drawn top is at the cut, so a tap near a wall resolved onto it — 2.13 cells
+    off — even though the cut truncates the DRAWING, not the world: that is
+    still a full-height wall you cannot stand on, and the tap means the floor
+    beyond it. So indoors the scan starts at `indoorTop`, skips decks, and
+    SKIPS any building cell taller than the cut. A wall shorter than the cut is
+    not truncated and stays tappable — its top is a real sill. Gate: the tap
+    round-trip in verify-indoor (project every interior cell to screen, feed
+    that point to the REAL hit test, require the cell back at level 0).
   - **THE WHITE OCCLUSION OUTLINE** (`syncCoverOutline`) is the other half of
     the design, and it is not indoor-only: any body a parapet, cliff or tower
     covers gets a white silhouette ring (`HIDDEN_RING_COLOR`) over the hidden
