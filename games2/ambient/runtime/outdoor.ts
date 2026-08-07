@@ -26,10 +26,23 @@
  */
 
 /** Milliseconds for the gain to cross between outdoors (1) and indoors (0).
- * ZERO ON PURPOSE — the game's own indoor transition is a cut right now, and a
- * fade here would leave effects visibly hanging in a room that has already
- * finished appearing. Raise it when the crossing itself becomes a fade. */
-export const OUTDOOR_FADE_MS = 0;
+ *
+ * TURNED ON 2026-08-07 by the game agent, on the maintainer's instruction —
+ * this file's own documented handoff, taken up on the day it described. The
+ * game's crossing is no longer a cut: WorldScene eases `indoorMix` on
+ * INDOOR_TAU = 0.35s with the roll `k = 1 - exp(-dt_s / TAU)`, and the outside
+ * world now fades to black on it instead of snapping. The maintainer, seeing
+ * that land: "I really love how the game kinda fades into the 'in-door' view
+ * and back again when you go out. The snapping is gone. ... please fade the
+ * ambient effects in/out as well."
+ *
+ * 1050 IS NOT A TASTE NUMBER — it is that same roll, expressed in this class's
+ * units. step() uses `k = 1 - exp(-(dt_ms / fadeMs) * 3)`, so fadeMs / 3 is the
+ * time constant in ms: 3 * 0.35 * 1000 = 1050 makes the two curves IDENTICAL,
+ * frame for frame. Both also step on the same boolean flip (the geometry
+ * verdict, not the light blend), so the ambience and the world it hangs in can
+ * never drift apart. If INDOOR_TAU ever moves, move this with it. */
+export const OUTDOOR_FADE_MS = 1050;
 
 /** Below this the gain is treated as fully off: effects skip their simulation
  * and hide their objects rather than drawing invisible ones every frame. */

@@ -2075,8 +2075,31 @@ side collision just like monsters").
       lit head, because her head pixels resolved to my floor).
     - The eased half of the state is `uIndoorMix`, the same 0.35s roll the
       indoor grade rides — the outside FADES to black instead of popping a
-      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the mask)
-      stays boolean and snaps. The CPU twin mirrors the ease exactly.
+      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the drawn
+      truncation) stays boolean and snaps. The CPU twin mirrors the ease.
+    - **TWO AMBIENT GRADES, ONE CROSSING** (`uAmbient` / `uAmbientOut`). A cell
+      IN my room rides the blend from the outdoor grade to the interior dial; a
+      cell OUTSIDE fades between BLACK and its own OUTDOOR grade and never
+      touches the interior one. With a single shared ambient, walking out of a
+      house at night OVERSHOT — the interior dial at 40% is 3.9× night's luma,
+      so the moment the mask let go the outside took that value and eased back
+      DOWN to night (maintainer 2026-08-07: "it snaps to a brightness brighter
+      than night and has to fade back down"). Measured after: a clean monotone
+      rise, 1% → 99% of night, peak 98.6%, zero non-increasing steps.
+    - **THE LIGHT MASK OUTLIVES THE VERDICT BY ONE ROLL** (`roomMask`, dropped
+      in `easeIndoorMix`, and `roomAt`/the CPU twin gate on `uIndoorMix` rather
+      than `uIndoor`). Geometry snaps back the frame you step out; the light is
+      still rolling. A room that stopped existing mid-roll hands the WHOLE
+      world the interior's grade for that quarter second. Everything that asks
+      "is this outside MY room?" reads `roomMask`, never `indoorMask`: the
+      shader mask, the point-light filter, and the above-overlay chrome.
+    - **The ambient layer fades with it.** `ambient/runtime/outdoor.ts` shipped
+      its gain as a controller with `OUTDOOR_FADE_MS = 0` and documented the
+      handoff; it is now **1050**, which is not a taste number — that class's
+      roll is `k = 1 - exp(-(dt/fadeMs)*3)`, so `3 * INDOOR_TAU * 1000` makes it
+      identical to the game's, frame for frame, off the same boolean flip.
+      Its test asserts that relationship, so moving INDOOR_TAU without moving
+      the fade fails in `npm test` rather than on screen.
   - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
     openings excluded. That is the ONLY set the renderer reads;
     `wallLeft`/`wallRight` survive as detector output with no consumer. The fill

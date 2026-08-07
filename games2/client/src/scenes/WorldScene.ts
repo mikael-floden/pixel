@@ -910,6 +910,16 @@ export class WorldScene extends Phaser.Scene {
    * IN_WALL. A cell that is ABSENT is outside and draws nothing.
    * Rebuilt only when the space (or its cut level) changes. */
   private indoorMask: Map<number, number> | null = null;
+  /** The room's LIGHT mask. Same contents as `indoorMask` while you are inside,
+   * but it OUTLIVES the verdict by one 0.35s roll: geometry snaps back the
+   * frame you step out (the roof returns, every column is untruncated again)
+   * while the light is still rolling, and a room that stopped existing mid-roll
+   * would hand the whole world the interior's own grade for that quarter
+   * second — which is exactly the flash the maintainer reported walking out of
+   * a house at night. Everything keyed on "is this outside MY room?" reads THIS,
+   * not indoorMask: the shader mask, the point-light filter, and the chrome
+   * that draws above the darkness overlay. Dropped in easeIndoorMix. */
+  private roomMask: Map<number, number> | null = null;
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -1117,6 +1127,7 @@ export class WorldScene extends Phaser.Scene {
       // exists. Start outdoors and force the first recompute.
       this.indoorSpace = null;
       this.indoorMask = null;
+      this.roomMask = null; // no fade to finish — this world is gone
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -5327,7 +5338,7 @@ export class WorldScene extends Phaser.Scene {
       // drawn tile and a missing one are pixel-identical, and a light is the
       // only thing that tells them apart. Filtering it would make the gate
       // unable to see the very property this change exists to create.
-      if (this.indoorInside && this.indoorMask)
+      if (this.roomMask)
         for (let i = sl.length - 1; i >= 0; i--) {
           const L = sl[i];
           if (L === this.probeLight) continue;
@@ -5392,12 +5403,19 @@ export class WorldScene extends Phaser.Scene {
       // a live tuning dial, so a drag has to show while you stand in the room.
       // Cheap: three multiplies, no allocation beyond the triple itself.
       const indoorTarget = indoorAmbient();
-      const ambEff = this.curAmbient.map((v, i) => {
+      // Kept SEPARATELY, because the two are for different halves of the world
+      // while the crossing eases: `ambOut` is what a cell OUTSIDE my room is
+      // heading for, `ambEff` is what a cell INSIDE it gets. Blending the
+      // outside toward the indoor grade is what made stepping out of a house at
+      // night FLASH — the maintainer, 2026-08-07: "it snaps to a brightness
+      // brighter than night and has to fade back down". See uAmbientOut.
+      const ambOut = this.curAmbient.map((v) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
-        const outdoor = clouded * (1 - this.curPrecipDim);
-        return outdoor + (indoorTarget[i] - outdoor) * iF;
+        return clouded * (1 - this.curPrecipDim);
       }) as [number, number, number];
+      const ambEff = ambOut.map((outdoor, i) => outdoor + (indoorTarget[i] - outdoor) * iF) as
+        [number, number, number];
       // …and the SKY terms have to go with it, or the roof we just deleted
       // stops being the only thing keeping the room dark:
       //   uSun.w is `sunShare` — `sunF = (1-sunShare) + sunShare*sunVis` — so
@@ -5439,6 +5457,10 @@ export class WorldScene extends Phaser.Scene {
         // fades to black on indoorMix while the interior's own ambient rolls
         // down on it, so the two halves of a doorway crossing move together.
         this.night.indoorMix = this.indoorMix;
+        // What the OUTSIDE is fading between: black and this, never the
+        // interior grade. Set every frame — the outdoor phase keeps moving
+        // while you stand indoors.
+        this.night.ambientOut = ambOut;
       }
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
@@ -7417,11 +7439,11 @@ export class WorldScene extends Phaser.Scene {
    * copy of its art are dropped. (The maintainer 2026-08-07: "yes — point
    * light from outside has to be turned off".) */
   private inMyRoom(col: number, row: number): boolean {
-    if (!this.indoorInside || !this.indoorMask || !this.world) return true;
+    if (!this.roomMask || !this.world) return true;
     const c = Math.floor(col);
     const r = Math.floor(row);
     if (c < 0 || r < 0 || c >= this.world.width || r >= this.world.height) return false;
-    return (this.indoorMask.get(r * this.world.width + c) ?? 0) !== 0;
+    return (this.roomMask.get(r * this.world.width + c) ?? 0) !== 0;
   }
 
   /** Rebuild the per-cell mask when the SPACE or its CUT changed; a no-op
@@ -7434,7 +7456,11 @@ export class WorldScene extends Phaser.Scene {
       const had = !!this.indoorMask;
       this.indoorMask = null;
       this.indoorMaskSig = "";
-      if (had) this.night?.setRoom(null); // outdoors: the whole world is lit again
+      // NOTE the LIGHT mask (`roomMask` / night.setRoom) is deliberately NOT
+      // cleared here. Geometry snaps — the roof and every truncated column come
+      // back this frame — but the light has a 0.35s roll to finish, and a room
+      // that stopped existing mid-roll hands the whole world the interior's own
+      // grade. easeIndoorMix drops it when the roll lands on 0.
       return had;
     }
     // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
@@ -7460,6 +7486,7 @@ export class WorldScene extends Phaser.Scene {
     // has nothing to classify.
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
+    this.roomMask = m;
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
@@ -7476,6 +7503,15 @@ export class WorldScene extends Phaser.Scene {
     const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
     this.indoorMix += (to - this.indoorMix) * k;
     if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
+    // The room's LIGHT rules outlive the geometry by exactly one roll. Until
+    // this lands on 0 the outside is still fading up from black, the lights
+    // outside it are still fading in, and the chrome above the overlay is still
+    // held back — all of it keyed on `roomMask`, which is why it is dropped
+    // HERE and not the moment the verdict flipped.
+    if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
+      this.roomMask = null;
+      this.night?.setRoom(null);
+    }
   }
 
   /** Teleport / respawn: apply the next verdict instantly. A snap across the
@@ -7506,11 +7542,11 @@ export class WorldScene extends Phaser.Scene {
    * it is my floor. */
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
     const w = this.world;
-    if (!this.indoorInside || !this.indoorMask || !w) return false;
+    if (!this.roomMask || !w) return false;
     const col = Math.floor(fx / CELL_WU);
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
-    return !((this.indoorMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
+    return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch

@@ -233,7 +233,11 @@ try {
       ([w, m]) => {
         if (typeof window.__ml?.indoor !== "function") return false;
         const d = window.__ml.indoor();
-        return d.indoor === w && (!m || (w ? d.mix > 0.99 : d.mix < 0.01));
+        // FULLY landed, not "close enough": the ease snaps to exactly 0/1 once
+        // it is within 0.005, and 2b asserts the outside ambient is EXACTLY
+        // zero. A residual mix of 0.995 leaves it at 0.0005 and the assertion
+        // would be a coin flip on how starved the headless frame loop is.
+        return d.indoor === w && (!m || (w ? d.mix >= 1 : d.mix <= 0));
       },
       [want, !!needMix],
       { timeout, polling: 200 },
@@ -1113,7 +1117,21 @@ try {
   // of solid mountain over the room you are standing in. Truncating EVERY
   // column at the cut (redrawGround) is what removes it, and this is the only
   // shipped geometry that can tell.
-  const caveDeck = (world.decks ?? [])
+  // CANDIDATES, biggest chamber first, tried in order. Two reasons it is a
+  // LIST and not one pick, both learned the hard way:
+  //   • a cave cell can be geometrically interior and still UNREACHABLE — the
+  //     teleport is server-authoritative and lands you on the base surface, so
+  //     a sealed pocket high in the mountain bounces you back to spawn (the
+  //     level-40 chambers at the top of the_island2 all do);
+  //   • the room is the 4-connected space around the PLAYER, which for a big
+  //     deck may be one chamber of several.
+  // Biggest-first rather than tallest-rock-first for the same reason: the
+  // deepest chamber is the one with a way in. Height still has to be PROVEN,
+  // not assumed — the assertion below refuses to pass unless the rock beside
+  // the room really is far above the cut.
+  const rockBy = (floor) => Math.max(...floor.map(([c, r]) =>
+    Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
+  const caves = (world.decks ?? [])
     .filter((d) => d.kind === "cave")
     .map((d) => {
       const cells = d.cells.map((c) => [X(c), Y(c)]);
@@ -1121,37 +1139,50 @@ try {
       return { d, bot, floor: cells.filter(([c, r]) => lvl(c, r) < bot) };
     })
     .filter((x) => x.floor.length >= 8)
-    // The one whose floor has the tallest rock immediately down-screen: the
-    // worst case for painter order, derived rather than picked by hand.
-    .sort((a, b) => Math.max(...b.floor.map(([c, r]) => lvl(c + 1, r + 1))) -
-                    Math.max(...a.floor.map(([c, r]) => lvl(c + 1, r + 1))))[0];
-  if (!caveDeck) fail("the_island2 ships no cave with a floor — section 7 cannot run");
+    .sort((a, b) => b.floor.length - a.floor.length)
+    .slice(0, 5); // a failed candidate costs ~40s of retries; five is plenty
+  if (!caves.length) fail("the_island2 ships no cave with a floor — section 7 cannot run");
   {
-    const cc = Math.round(caveDeck.floor.reduce((a, [c]) => a + c, 0) / caveDeck.floor.length);
-    const cr = Math.round(caveDeck.floor.reduce((a, [, r]) => a + r, 0) / caveDeck.floor.length);
-    // Stand on a REAL floor cell nearest that centroid — a cave is concave and
-    // its centroid can land in the rock.
-    const [sc0, sr0] = caveDeck.floor
-      .slice()
-      .sort((a, b) => Math.hypot(a[0] - cc, a[1] - cr) - Math.hypot(b[0] - cc, b[1] - cr))[0];
-    await goTo(sc0 + 0.5, sr0 + 0.5);
-    if (!(await settle(true, true, 45000)))
-      fail(`standing in the cave at ${sc0},${sr0} never settled indoors: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
+    let caveDeck = null, sc0 = 0, sr0 = 0;
+    const tried = [];
+    for (const cand of caves) {
+      const cc = Math.round(cand.floor.reduce((a, [c]) => a + c, 0) / cand.floor.length);
+      const cr = Math.round(cand.floor.reduce((a, [, r]) => a + r, 0) / cand.floor.length);
+      // Nearest REAL floor cell to the centroid — a cave is concave and its
+      // centroid can land in the rock.
+      const [c0, r0] = cand.floor
+        .slice()
+        .sort((a, b) => Math.hypot(a[0] - cc, a[1] - cr) - Math.hypot(b[0] - cc, b[1] - cr))[0];
+      tried.push(`${c0},${r0}`);
+      await goTo(c0 + 0.5, r0 + 0.5).catch(() => {});
+      if (await settle(true, true, 25000)) { caveDeck = cand; sc0 = c0; sr0 = r0; break; }
+    }
+    if (!caveDeck)
+      fail(`no cave could be stood in — tried ${tried.join(" ")}: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
     const cav = await page.evaluate(() => window.__ml.indoor());
     await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), [sc0 + 0.5, sr0 + 0.5]);
     await page.waitForTimeout(900);
     const caveShot = await shoot("cave");
-    // Every floor cell of this cave that is on screen must be VISIBLE — lit by
-    // the cave's own indoor ambient, not buried under a rock face. `med` is the
-    // right statistic again: a burying column fills the whole patch.
+    // WHICH cells belong to MY room is asked of the LIGHT FIELD, not of the
+    // deck. A cave deck's floor can span several separate chambers — the game's
+    // room is the 4-connected space around the player — and a chamber on the
+    // far side of a rock wall is outside my room and correctly BLACK. Since the
+    // whole design is "in my room ⇒ indoor ambient, outside ⇒ exactly zero",
+    // a non-zero light AT a cell IS the membership test, and it is the same
+    // number the shader uses. So: every cell the light says is mine, and that
+    // is on screen, must also be VISIBLE in the picture. A cell that is lit but
+    // reads black is one the rock drew over — precisely this section's failure.
     const seen = [];
     for (const [c, r] of caveDeck.floor) {
+      const l = await lightAt(c + 0.5, r + 0.5, 0);
+      if (luma(l) <= 0) continue; // not in my room
       const s = await cellScreen(c, r);
       const p = patch(caveShot, s.x + 32, s.y + 23, 4);
       if (!p) continue; // off screen
       seen.push({ c, r, ...p });
     }
-    if (seen.length < 4) fail(`only ${seen.length} cave floor cells are on screen — the camera does not frame the room`);
+    if (seen.length < 4)
+      fail(`only ${seen.length} cells of this cave are both in my room and on screen — the camera does not frame it`);
     // A cell buried under outside rock reads PURE BLACK — the rock is outside
     // the room, so it is drawn at zero ambient. A cell that is visible reads
     // the cave's own indoor ambient on its floor art. Two bars, because a

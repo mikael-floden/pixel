@@ -3,24 +3,46 @@
 // into a house or cave and cuts the roof away — so the ambience has to stop, or
 // it keeps falling through the room.
 //
-// The maintainer asked for the stop to be IMMEDIATE but built as a controller
-// that could fade, because the in/out crossing itself is planned to become a
-// fade. That makes two things worth pinning:
-//   1. the shipped behaviour really is a hard 1 -> 0 (no fade snuck in);
-//   2. the fade path actually WORKS — otherwise "flip one constant" is an
-//      untested promise that only gets discovered on the day someone flips it.
+// The stop shipped as a SNAP built as a controller that could fade, because
+// the game's in/out crossing was itself a cut and was planned to become a fade.
+// THAT DAY CAME (2026-08-07): the game now eases `indoorMix` on INDOOR_TAU and
+// the outside world fades to black on it, so the maintainer asked for the
+// ambience to fade with it. Two things are worth pinning now:
+//   1. the shipped duration MATCHES the game's own crossing — the whole point
+//      of the handoff was that the two can never drift apart;
+//   2. the fade path actually WORKS, at any injected duration.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "../../ambient/runtime/outdoor.js";
 
-test("ships as a SNAP: one step indoors is fully off, whatever the frame time", () => {
-  assert.equal(OUTDOOR_FADE_MS, 0, "shipped crossing is a cut, not a fade");
-  for (const dt of [1, 16.7, 100, 500]) {
-    const g = new OutdoorGain();
-    assert.equal(g.value, 1, "starts outdoors");
-    assert.equal(g.step(dt, true), 0, `dt ${dt}: should be off after one step`);
-    assert.equal(g.step(dt, false), 1, `dt ${dt}: should be back on after one step`);
+// WorldScene's INDOOR_TAU (seconds) and the roll it drives:
+//   game   k = 1 - exp(-dt_s / TAU)
+//   here   k = 1 - exp(-(dt_ms / fadeMs) * 3)      =>  fadeMs = 3 * TAU * 1000
+const INDOOR_TAU_S = 0.35;
+
+test("ships as a FADE that matches the game's own crossing, frame for frame", () => {
+  // Rounded: 3 * 0.35 * 1000 is 1049.9999999999998 in binary floating point,
+  // and the constant is written as the integer a human would read.
+  assert.equal(OUTDOOR_FADE_MS, Math.round(3 * INDOOR_TAU_S * 1000),
+    "the ambient fade must be the game's INDOOR_TAU roll in this class's units");
+  // Same flip, same dt, same curve — asserted against the game's formula, so a
+  // change to either side that is not mirrored fails here rather than on screen.
+  const g = new OutdoorGain();
+  let game = 1; // the game's own (1 - indoorMix) for an outside cell
+  for (const dt of [16.7, 16.7, 33, 100, 250]) {
+    g.step(dt, true);
+    game += (0 - game) * (1 - Math.exp(-(dt / 1000) / INDOOR_TAU_S));
+    if (Math.abs(game - 0) < 0.005) game = 0;
+    assert.ok(Math.abs(g.value - game) < 1e-9, `dt ${dt}: gain ${g.value} vs game ${game}`);
   }
+});
+
+test("a fade still LANDS: enough steps and it is fully off, then fully on again", () => {
+  const g = new OutdoorGain();
+  for (let i = 0; i < 200; i++) g.step(16.7, true);
+  assert.equal(g.value, 0, "settles exactly on 0, not asymptotically");
+  for (let i = 0; i < 200; i++) g.step(16.7, false);
+  assert.equal(g.value, 1, "and exactly on 1 coming back out");
 });
 
 test("defaults to OUTDOORS so a missing indoor probe never suppresses ambience", () => {
