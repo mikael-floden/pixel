@@ -19,14 +19,23 @@
 
 const KEY = "ml-indoor-light";
 
-/** Default = the grade that shipped before the slider existed.
+/** Default = 40% — THE MAINTAINER'S OWN PICK, made on a device screenshot of
+ * one of maps2' house_demo rooms (2026-08-07: "Let's set the default indoor
+ * ambient to what 40%. That looks good to me.").
  *
- * It is 0.104 and not a round number on purpose: INDOOR_AMBIENT was
- * [0.086, 0.09, 0.104], and since the hue below is that triple normalised to
- * max 1, a dial of 0.104 reproduces it to the last decimal. So the slider
- * arrives at exactly today's look and moves from there — nobody's world
- * changes brightness the moment this ships. */
-export const INDOOR_LIGHT_DEFAULT = 0.104;
+ * It supersedes the derived 0.104, which reproduced the pre-slider grade
+ * exactly (INDOOR_AMBIENT was [0.086, 0.09, 0.104], and the hue below is that
+ * triple normalised to max 1, so the dial and the old constant met at its
+ * blue). That number was the right DEFAULT only while the slider was new and
+ * nobody's world was allowed to change brightness under them; now that the
+ * cut-away lets you actually see a room, it read as a cave with the lights
+ * off. Do not "restore" it — the tuned RELATIONSHIP it encoded is in HUE
+ * below and is untouched by moving the brightness.
+ *
+ * At 40% the triple is [0.342, 0.355, 0.400]: still cool (B/R 1.17 against
+ * night's 1.87), still a fifth of daylight, and bright enough that unlit
+ * corners of a room read as stone rather than as void. */
+export const INDOOR_LIGHT_DEFAULT = 0.4;
 
 /** The indoor HUE, as ratios (the tuned triple over its own max).
  *

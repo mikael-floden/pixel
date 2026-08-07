@@ -56,9 +56,10 @@ const world = JSON.parse(
   readFileSync(join(here, "..", "..", "maps2", "worlds", "the_island2", "world.json"), "utf8"),
 );
 const fail = (m) => { throw new Error(m); };
-// A cut at least as deep as the room's ceiling leaves NO wall standing — the
-// control case for anything claiming to respond to real cover.
-const INDOOR_CUT_TOP = 6;
+// The dial's own maximum (indoorcut.ts INDOOR_CUT_MAX). The house ceiling is 6,
+// so roof-5 leaves exactly ONE level of wall — the shallowest parapet the game
+// can be asked for, and the far end of the sweep in 2e.
+const INDOOR_CUT_MAX = 5;
 const ok = (m) => console.log(`ok - ${m}`);
 const X = (c) => c.col ?? c.x;
 const Y = (c) => c.row ?? c.y;
@@ -385,6 +386,10 @@ try {
   // standing where it will be in the indoor shot.
   await stand(OUTSIDE_SPOT[0], OUTSIDE_SPOT[1], false, true);
   const outShot = await shoot("outside");
+  // Read the outline's state while we are out here in the open — it is the
+  // control 2e needs and this is the only moment the gate stands clear of
+  // everything (see the zero assertion there).
+  const outsideCover = await page.evaluate(() => window.__ml.myCover());
   ok(`outdoors reference frame captured from ${OUTSIDE_SPOT[0]},${OUTSIDE_SPOT[1]} (camera pinned on ${roomC},${roomR})`);
 
   // =========================================================================
@@ -441,21 +446,41 @@ try {
   const inShot = await shoot("inside");
 
   // -- 2a. THE ROOF IS GONE -------------------------------------------------
+  // GEOMETRY, NOT BRIGHTNESS. This used to be a luminance-DROP ratio ("every
+  // ceiling-plane sample lost >40%"), which worked only while the interior was
+  // nearly black: the samples sit at the ceiling PLANE, and once the walls are
+  // cut short some of those screen points land on a legitimately drawn wall
+  // top instead of on void. At the tuned-dark grade that wall read ~3 and the
+  // ratio passed by accident; at the maintainer's 40% it reads ~44 and the
+  // same picture "failed". A test that flips when someone moves a brightness
+  // slider is not testing the roof.
+  //
+  // So: a ceiling-plane sample must be PURE VOID unless some drawn column can
+  // actually reach it. What a column reaches is computable — every cell of the
+  // building draws up to min(level, top) and its art is 64px tall — so the
+  // exceptions are DERIVED here, exactly as the outside probes derive their
+  // clearance, and never hand-listed.
   const roofIn = measure(inShot, roofP);
-  const roofInMean = roofIn.reduce((a, s) => a + s.med, 0) / roofIn.length;
-  const voidFrac = roofIn.reduce((a, s) => a + s.black, 0) / roofIn.length;
-  const kept = roofIn
-    .map((s, i) => ({ s, o: roofOut[i] }))
-    .filter(({ s, o }) => s.med > o.med * 0.6);
+  const drawnBoxes = [];
+  for (const [c, r] of [...interior, ...building]) {
+    const sc = await cellScreen(c, r);
+    const t = Math.min(sc.level, inn.top);
+    drawnBoxes.push({ x0: sc.x, x1: sc.x + 64, y0: sc.y + (sc.level - t) * 16, y1: sc.y + sc.level * 16 + 64 });
+  }
+  const reached = (p) => drawnBoxes.some((b) => p.x >= b.x0 - 3 && p.x <= b.x1 + 3 && p.y >= b.y0 - 3 && p.y <= b.y1 + 3);
+  const answerable = roofIn.filter((p) => !reached(p));
+  const kept = answerable.filter((s) => s.med >= 1);
   if (kept.length)
-    fail(`roof art survived at ${kept.map(({ s, o }) => `${s.c},${s.r} (median ${s.med.toFixed(0)} of ${o.med.toFixed(0)})`).join("; ")}`);
-  const drop = 1 - roofInMean / roofOutMean;
-  if (drop < 0.7) fail(`the roof only got ${(drop * 100).toFixed(0)}% darker (${roofOutMean.toFixed(1)} -> ${roofInMean.toFixed(1)}) — it is still being drawn`);
-  if (voidFrac < 0.2)
-    fail(`only ${(voidFrac * 100).toFixed(0)}% of the roof's pixels are pure void — the slab is still there`);
-  ok(`the roof is REMOVED: every one of ${roofIn.length} roof cells lost >40% of its median luminance, ` +
-    `mean ${roofOutMean.toFixed(1)} -> ${roofInMean.toFixed(1)} (-${(drop * 100).toFixed(0)}%), ` +
-    `${(voidFrac * 100).toFixed(0)}% of those pixels now pure void (0% outdoors)`);
+    fail(`roof art survived at ${kept.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(0)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")} — ` +
+      `nothing the building draws can reach that point, so the slab is still being painted`);
+  if (answerable.length < roofIn.length / 3)
+    fail(`the roof test went vacuous: only ${answerable.length} of ${roofIn.length} ceiling-plane samples are clear of the cut-away's own art`);
+  const voidFrac = answerable.reduce((a, s) => a + s.black, 0) / answerable.length;
+  if (voidFrac < 0.9)
+    fail(`only ${(voidFrac * 100).toFixed(0)}% of the answerable ceiling-plane pixels are pure void — the slab is still there`);
+  ok(`the roof is REMOVED: ${answerable.length} of ${roofIn.length} ceiling-plane samples are clear of everything the ` +
+    `cut-away still draws, and every one of them is pure void (${(voidFrac * 100).toFixed(0)}% of their pixels; ` +
+    `they read a median ${roofOutMean.toFixed(1)} from outside)`);
 
   // -- 2b. OUTSIDE IS BLACK, INSIDE IS NOT ----------------------------------
   // A GROUND TILE that escaped the cull fills its whole patch (0% void, mean
@@ -569,23 +594,32 @@ try {
   // walls entirely must hide NONE. Nothing stuck on, stuck off, or keyed to
   // anything but real geometry can satisfy both ends.
   const hid = [];
-  for (const n of [1, 3, INDOOR_CUT_TOP]) {
+  for (const n of [1, 3, INDOOR_CUT_MAX]) {
     await page.evaluate((v) => window.__ml.indoorCut(v), n);
     await page.waitForTimeout(900);
-    hid.push({ n, ...(await page.evaluate(() => window.__ml.myCover())) });
+    const c = await page.evaluate(() => window.__ml.myCover());
+    const got = await page.evaluate(() => window.__ml.indoorCut().cut);
+    if (got !== n) fail(`the dial refused roof-${n} (clamped to roof-${got}) — INDOOR_CUT_MAX and this gate disagree`);
+    hid.push({ n, ...c });
   }
   await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
   await page.waitForTimeout(900);
-  const [tall, mid, none] = hid;
-  if (!(tall.hiddenFrac > mid.hiddenFrac))
-    fail(`the outline does not follow the cut: roof-1 hides ${tall.hiddenFrac} of the body, roof-3 hides ${mid.hiddenFrac} — taller walls must hide more`);
-  if (none.hiddenFrac !== 0 || none.hidden)
-    fail(`with every wall cut away (roof-${INDOOR_CUT_TOP}) the body is still ${none.hiddenFrac} hidden — the outline is not keyed to real cover`);
+  const [tall, mid, low] = hid;
+  const chain = hid.map((h) => h.hiddenFrac);
+  if (!(chain[0] > chain[1] && chain[1] > chain[2]))
+    fail(`the outline does not follow the cut: roof-1/3/${INDOOR_CUT_MAX} hide ${chain.join(" / ")} of the body — a taller parapet must hide strictly more`);
+  if (!(low.hiddenFrac < 0.4 * tall.hiddenFrac))
+    fail(`the shallowest parapet (roof-${INDOOR_CUT_MAX}, one level of wall) still hides ${low.hiddenFrac} against roof-1's ${tall.hiddenFrac} — the outline is not tracking real cover`);
   if (!tall.hiddenCropped)
     fail("the outline is drawn UNCROPPED over a partly-visible body — it must trace only the hidden part");
+  // …and the ZERO, which is what proves the outline is not simply always on.
+  // It comes from OUTDOORS in the open rather than from a deep cut: with the
+  // dial capped at INDOOR_CUT_MAX every room keeps a wall, by design.
+  if (outsideCover.hiddenFrac !== 0 || outsideCover.hidden)
+    fail(`standing in the open outdoors the body still reads ${outsideCover.hiddenFrac} hidden — the outline is not keyed to real cover`);
   ok(`the white outline follows the cut: roof-1 hides ${(tall.hiddenFrac * 100).toFixed(0)}% of the figure, ` +
-    `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_TOP} none at all ` +
-    `(and the ring is cropped to the hidden part, never the whole body)`);
+    `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_MAX} ${(low.hiddenFrac * 100).toFixed(0)}%, ` +
+    `and outdoors in the open none at all (the ring is cropped to the hidden part, never the whole body)`);
 
   // =========================================================================
   // 3. THE INDOOR AMBIENT — dark as night, but less blue. Channel ratios,
@@ -636,24 +670,42 @@ try {
   console.log(
     `   ambient: indoor@Day [${fx(ambIn)}]  night@outdoors [${fx(ambNight)}]  day@outdoors [${fx(ambDay)}]`,
   );
-  // Indoors must still be UNMISTAKABLY darker than standing in the sun. The
-  // bar was 0.15, written when the indoor grade was pinned to night's own
-  // luma; the brightness experiment (INDOOR_BRIGHTNESS, WorldScene) lifts it,
-  // so this is the ceiling on the experiment rather than a restatement of it —
-  // a third of daylight is still "you walked indoors", and anything above that
-  // is not a room any more.
-  if (lIn > 0.3 * luma(ambDay))
-    fail(`indoors at Day is not dark: luma ${lIn.toFixed(4)} vs ${luma(ambDay).toFixed(4)} outside`);
-  // THE INTERIOR IS NOW A SETTINGS SLIDER (indoorlight.ts, maintainer
-  // 2026-08-06: "0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG"), so
-  // this measures it AT ITS DEFAULT — which is chosen to reproduce the
-  // night-matched grade exactly, and that is the property worth pinning: a
-  // player who never touches the slider must get the tuned look. The slider's
-  // own two ends are asserted separately below.
+  // Indoors must be UNMISTAKABLY darker than standing in the sun. WHAT THIS IS
+  // FOR: catching indoor mode not applying at all, which reads as daylight's
+  // own 1.0. It is NOT a ceiling on the maintainer's brightness dial — that bar
+  // has been walked down twice already (0.15 when the grade was pinned to
+  // night's luma, then 0.3) and each time it was my taste standing in for his,
+  // which is the wrong thing for a gate to hold. He set the default to 40% by
+  // eye (luma 0.355 = 35% of daylight); the slider legitimately goes to 100%,
+  // where the room IS the source art by his own spec, so the only defensible
+  // bar is one the DEFAULT must clear with room to spare.
+  if (lIn > 0.5 * luma(ambDay))
+    fail(`indoors at Day is not dark: luma ${lIn.toFixed(4)} vs ${luma(ambDay).toFixed(4)} outside — ` +
+      `indoor mode is not applying its own grade`);
+  // THE DEFAULT IS THE MAINTAINER'S CHOICE, NOT A DERIVATION. It was 0.104 —
+  // the dial value that reproduces the pre-slider grade's luma exactly — and
+  // pinning "the untouched slider lands on night's luma" was right while that
+  // held. He has since picked 40% by eye on his own device (2026-08-07), so
+  // asserting the old identity would now be asserting a number nobody wants.
+  //
+  // What is still worth pinning is the DERIVATION, one notch down from where
+  // anyone plays: at the dial's original 0.104 the grade must STILL land on
+  // night's luma, because that is what makes the hue line in indoorlight.ts a
+  // measured relationship rather than three numbers someone liked. The default
+  // only has to stay in the room — brighter than black, well under daylight,
+  // which the bar above and the tint checks below cover.
   const k = lIn / lNight;
-  if (Math.abs(k - 1) > 0.25)
-    fail(`the DEFAULT indoor grade is ${k.toFixed(2)}x night's luma — the untouched ` +
-      `slider must land on the tuned "dark as during the night" grade`);
+  const kDerived = await page.evaluate(async () => {
+    const before = window.__ml.indoorLight().dial;
+    const a = window.__ml.indoorLight(0.104).ambient;
+    window.__ml.indoorLight(before);
+    return a;
+  }).then((a) => luma(a) / lNight);
+  if (Math.abs(kDerived - 1) > 0.05)
+    fail(`the indoor hue line has drifted off night's luma: at the derived dial 0.104 the grade ` +
+      `is ${kDerived.toFixed(3)}x night, not 1.00 — indoorlight.ts's HUE no longer matches its own derivation`);
+  if (!(lIn > 2 * lNight))
+    fail(`the DEFAULT indoor grade (${k.toFixed(2)}x night) is at the tuned-dark end — the maintainer set it to 40%`);
   // THE SLIDER'S TWO ENDS, which are the maintainer's literal spec
   // (2026-08-06): "0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG
   // (WEBP)". Both are exact by construction, so assert them exactly rather
@@ -679,8 +731,9 @@ try {
     fail(`the indoor ambient is WARM (B/R ${blueIn.toFixed(3)} < 1) — unlit stone should stay cool, and warm reads as a fire already lit`);
   if (!(chroma(ambIn) < 0.6 * chroma(ambNight)))
     fail(`the indoor ambient is not desaturated vs night (chroma ${chroma(ambIn).toFixed(3)} vs ${chroma(ambNight).toFixed(3)})`);
-  ok(`indoor ambient sits on night's hue line and is less blue: luma ${lIn.toFixed(5)} = ${k.toFixed(2)}x night ${lNight.toFixed(5)} ` +
-    `(${((lIn / lNight - 1) * 100).toFixed(1)}%), B/R ${blueIn.toFixed(3)} vs ${blueNight.toFixed(3)} ` +
+  ok(`indoor ambient sits on night's hue line and is less blue: the DEFAULT reads ${k.toFixed(2)}x night's luma ` +
+    `(the maintainer's 40%), the DERIVED dial 0.104 still reads ${kDerived.toFixed(3)}x it; ` +
+    `B/R ${blueIn.toFixed(3)} vs ${blueNight.toFixed(3)} ` +
     `(${((1 - blueIn / blueNight) * 100).toFixed(0)}% of the blue tilt gone), chroma ${chroma(ambIn).toFixed(3)} vs ${chroma(ambNight).toFixed(3)}`);
 
   // =========================================================================

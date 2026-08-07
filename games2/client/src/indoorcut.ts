@@ -31,24 +31,35 @@
 
 const KEY = "ml-indoor-cut";
 
-/** Levels the dial can take off. The floor is 1 because 0 means "cut nothing",
- * and with the roof back on there would be no indoor mode left to look at —
- * the roof is not a special case here, it is simply the part above the cut.
- * The ceiling is 8 because that is the tallest ceiling any shipped world has
- * (the_island2's cave, deckBot 8); past it every room is already flattened to
- * its floor and the dial stops doing anything. */
-export const INDOOR_CUT_MIN = 1;
-export const INDOOR_CUT_MAX = 8;
-
-/** Default = 3.
+/** Levels the dial can take off.
  *
- * Chosen against the ART, not by taste: a character is ~64px tall and a level
- * is 16px (MAP_GEOMETRY.lh), so a body stands about 4 levels high. At the
- * shipped house's ceiling of 6, a cut of 3 leaves a 3-level parapet — under
- * the shoulder line of anyone standing behind it, so the head and torso read
- * over every near wall while the room still looks like a room rather than a
- * floor plan. Cut 2 hides the head; cut 4 starts to lose the walls. */
-export const INDOOR_CUT_DEFAULT = 3;
+ * The floor is 1 because 0 means "cut nothing", and with the roof back on
+ * there is no indoor mode left to look at — the roof is not a special case
+ * here, it is simply the part above the cut.
+ *
+ * The ceiling is 5 because a shipped house is 6 levels tall, so roof−5 leaves
+ * exactly ONE level of wall and roof−6 leaves none: past that the clamp in
+ * `indoorTop` pins every room flat and the slider has nothing left to say
+ * (maintainer 2026-08-07: "The slider can now be dragged way too long also.
+ * 'roof - 5' would have been the absolute max before we get negative walls").
+ * It was 8 — the tallest CEILING any shipped world has, the_island2's cave at
+ * deckBot 8 — which is the wrong number to size a slider by: the cut is
+ * relative, so what matters is the SHALLOWEST room, not the deepest. A cave at
+ * roof−5 still keeps a 3-level parapet, which is the same look the house gets
+ * at roof−3. */
+export const INDOOR_CUT_MIN = 1;
+export const INDOOR_CUT_MAX = 5;
+
+/** Default = roof−4 — THE MAINTAINER'S OWN PICK, from the contact sheet of the
+ * same room at every level (2026-08-07: "And the default cut at 'roof - 4'").
+ *
+ * I had proposed 3, reasoning from the art: a character is ~64px and a level
+ * is 16px (MAP_GEOMETRY.lh), so a body is about 4 levels high and a 3-level
+ * parapet sits under the shoulder line. He went one deeper, which on a
+ * 6-level house leaves a 2-level wall — enough to read as a room, low enough
+ * that a body behind one is mostly visible without the outline having to
+ * carry it. His eye, on his device, beats my arithmetic. */
+export const INDOOR_CUT_DEFAULT = 4;
 
 let value = load();
 

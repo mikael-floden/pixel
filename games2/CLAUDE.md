@@ -2009,9 +2009,16 @@ side collision just like monsters").
   The roof goes because it is above the cut; the near walls become a low
   parapet you look over. **Nothing is hidden, nothing is transparent, nothing
   is half a tile.** The dial is `client/src/indoorcut.ts` ("Indoor wall cut" in
-  Settings, roof−1 … roof−8, default roof−3 — a body is ~4 levels tall, so a
-  3-level parapet sits under the shoulder line); brightness is the separate
-  `indoorlight.ts` dial. Probes `__ml.indoorCut(v?)` / `__ml.indoor()`.
+  Settings, roof−1 … roof−5, default **roof−4**); brightness is the separate
+  `indoorlight.ts` dial, default **40%**. BOTH DEFAULTS ARE THE MAINTAINER'S
+  OWN PICKS (2026-08-07, from a device screenshot and a contact sheet of the
+  same room at every level) — I proposed roof−3 from the art (a body is ~4
+  levels tall) and 0.104 from the pre-slider grade; he went one cut deeper and
+  four times brighter. Do not "restore" either. The MAX is 5 and not 8 because
+  the cut is relative and a shipped house is 6 levels: roof−5 leaves one level
+  of wall and roof−6 leaves none, so anything past it is dead travel
+  ("the slider can now be dragged way too long also"). Probes
+  `__ml.indoorCut(v?)` / `__ml.indoor()`.
   - **DO NOT GO BACK TO CULLING.** The first cut drew no roof, no near walls
     and a 32px "skirt" half of each far wall, and it shipped HOLES — wall slabs
     floating disconnected in the void, black wedges through a solid roof line
@@ -2039,8 +2046,11 @@ side collision just like monsters").
     covers gets a white silhouette ring (`HIDDEN_RING_COLOR`) over the hidden
     part, at depth 900_001.43. It is the exact COMPLEMENT of the lit copy —
     `syncLitCopy` crops to [0, coverY), this draws [coverY, bottom) — so the two
-    tile the figure with no seam. Measured on the shipped house at 215,121:
-    roof−1 hides 44% of the body, roof−3 24%, roof−4 5%, roof−6 (no walls) 0%.
+    tile the figure with no seam. Measured on the shipped house: roof−1 hides
+    61% of the figure, roof−3 41%, roof−5 (one level of wall) far less, and
+    outdoors in the open none at all — the gate asserts that CHAIN rather than
+    any single number, because a monotone response to the dial is something an
+    outline stuck on or stuck off cannot fake.
 - **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
   browser gate for "walk into a house and the roof comes off". It frames
   the_island2's house with ONE pinned camera from outside and from within and
@@ -2057,11 +2067,14 @@ side collision just like monsters").
   wall crown to fall by exactly one level (16px) each time. Then the OUTLINE,
   asserted as a monotone response rather than a magic number: a taller parapet
   must hide more of the figure and a cut that removes every wall must hide
-  none. Then the LIGHT: at Day indoors the ambient is
-  `[0.086,0.09,0.104]` — Rec.709 luma within 0.3% of the Night phase but
-  B/R 1.21 against night's 1.87 — and the local torch is lit with the global
-  day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet, ~14k screen pixels
-  brighter). Finally the two OUTDOOR controls: standing ON the same roof (the
+  none. Then the LIGHT. Note WHAT is pinned there: the default is a maintainer
+  choice (40%) and asserting it would be asserting taste, so the gate pins the
+  DERIVATION instead — at the dial's original 0.104 the grade must still land
+  on night's own luma, which is what makes indoorlight.ts's hue line a measured
+  relationship and not three numbers someone liked. The default only has to
+  stay in the room: brighter than the tuned-dark end, well under daylight,
+  still cool (B/R 1.21 against night's 1.87). And the local torch is lit with
+  the global day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet). Finally the two OUTDOOR controls: standing ON the same roof (the
   gate walks there off a wall top — teleport always lands on the base surface)
   and swimming UNDER a bridge both read outdoors with nothing blacked out.
   `SHOT_DIR=<dir>` keeps every frame it judges. TWO THINGS IT DELIBERATELY
