@@ -2028,6 +2028,55 @@ side collision just like monsters").
     inward face, so no wall set can hold it and nobody draws it — likewise
     every T-junction where an interior partition meets an outer wall. Truncating
     has nothing to classify, so it cannot have that bug.
+  - **THE OUTSIDE IS DRAWN AT ZERO AMBIENT — IT IS NOT SKIPPED** (maintainer
+    2026-08-07: "why didn't we go with my original idea to set the ambient
+    light to 0 for everything outdoor... I was really hoping for that
+    transition where your TORCH can start to reveal the outdoor before you're
+    really outside. Yes — point light from outside has to be turned off").
+    Skipping it cost three separate bugs at once: the grass POPPED into
+    existence as you stepped through the door, a torch could not light what was
+    not there, and a tile whose down-screen neighbour was missing showed its own
+    side. So the renderer draws every cell and the SHADER kills the light:
+    `nightlight.ts` carries a per-cell mask texture `uRoom` (`world-room-mask`,
+    one texel per world cell, R=255 in-room, NEAREST, unit 4, published by
+    `setRoom()` on a doorway crossing or a turn of the dial — never per frame),
+    and `roomAt()` gates AMBIENT, the aurora and the emission floor and NOTHING
+    ELSE. Point lights stay additive, which is exactly the thing he asked for:
+    the torch spills through the doorway and reveals the ground beyond it, with
+    the opening's own shadow, before you have stepped out (measured: 5.2x
+    brighter down the doorway than at the flanks behind the wall).
+    - **THE CUT APPLIES TO EVERY COLUMN IN THE WORLD, not just the building.**
+      Painter order sorts by `col+row` ASCENDING, so a column DOWN-SCREEN of
+      the room draws over it — it buries an interior cell once it is ~0.94·k
+      levels taller at k steps. Around the shipped house that never fires (633
+      of the 650 cells within ±10 are level 0), which is why cutting only the
+      building looked right there; in the_island2's CAVES the surrounding rock
+      is terrain at level 24–40 and it hides **417 of 417** interior cells,
+      worst case 595px of solid mountain over the room you are standing in.
+      One rule for every column removes it, and it is what the shader's global
+      `heightAt` clamp already assumes. Gate: verify-indoor section 7.
+    - `roomAt()` FAILS LIT (`uRoomOn`, same guard as `uGlowOn`): an unbound
+      sampler2D reads texture unit 0 — the heightmap — so the failure mode
+      without it is a BLACK ROOM on a real phone while headless SwiftShader
+      looks fine.
+    - **Anything drawn ABOVE the darkness overlay must gate itself** — no
+      amount of zero ambient touches depth 900_001+. `indoorOutside(fx,fy,z)`
+      is that predicate, and it is NOT a visibility test: bodies are always
+      drawn. It gates name labels and chat bubbles (900_100), monster hp/Lv
+      bars (900_001.5–1.7), the red target ring (.45), the white cover outline
+      (.43), and the bonfire's blooms + full-bright lit copy (`fireRoomK`).
+      A pitch-black villager wearing a crisp readable name tag is the tell.
+    - **NPCs get a lit copy like every other body.** They were the one body
+      type without one, so their light came entirely from the multiply overlay
+      — which is per SCREEN PIXEL, lighting each pixel by the terrain cell the
+      ray resolves BEHIND it. For a 64px sprite that is a cell several steps
+      up-screen of its feet: outdoors close enough to pass, indoors plainly
+      wrong (a villager one step outside the door had black legs and a fully
+      lit head, because her head pixels resolved to my floor).
+    - The eased half of the state is `uIndoorMix`, the same 0.35s roll the
+      indoor grade rides — the outside FADES to black instead of popping a
+      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the mask)
+      stays boolean and snaps. The CPU twin mirrors the ease exactly.
   - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
     openings excluded. That is the ONLY set the renderer reads;
     `wallLeft`/`wallRight` survive as detector output with no consumer. The fill
@@ -2071,15 +2120,27 @@ side collision just like monsters").
   the_island2's house with ONE pinned camera from outside and from within and
   compares the two frames on REAL PIXELS at points derived from maps2'
   `world.json` (deck footprint + terrain levels, so a re-authored house moves
-  the samples with it): the roof slab loses >40% of its luminance at every one
-  of its cells; the ground outside the room is void at median 0 while the
-  interior floor still carries art. Then the three that pin THIS design —
+  the samples with it): the roof plane is pure void wherever no drawn column
+  can reach it; the ground outside the room reads median 0 while the interior
+  floor still carries art. **Those two frames are shot with the TORCH OFF** —
+  the outside is drawn now, so a lit torch legitimately lifts nearby outside
+  ground and would put both tests on their own boundary for a reason that is
+  the feature working. Then the three that pin THIS design —
   **the mask is exactly floor + building** (the gate derives the 8-connected
   footprint from world.json itself, so a corner the client forgets is a failure
   and not a silent pass); **the building is SOLID**, every enclosure cell
-  carrying art at its cut top (this is the assertion the hole bug would have
-  caught); and **the dial IS the cut**, sweeping roof−1..4 and requiring the
-  wall crown to fall by exactly one level (16px) each time. Then the OUTLINE,
+  carrying art at its cut top — sampled in the FACE tile's 16px SKIRT BAND
+  (+39/+46 of the cap tile's box), never at the diamond centre, which is
+  transparent for a truncated column: that probe used to sample the centre and
+  passed only because the indoor ground RT filled NAVY behind it, which is why
+  the fill is black now; and **the dial IS the cut**, sweeping roof−1..4 and
+  requiring the picture inside the house to change strictly MORE at every step
+  while nothing outside it changes at all. (It used to hunt a "wall crown" — the
+  topmost non-void row of one screen column. That is not sound once every column
+  in the world is drawn: the topmost lit pixel of a column belongs to whichever
+  cell the painter last put there, usually a NEIGHBOUR whose 64px art box
+  overlaps. Eight different wall cells all reported the same crown offset at
+  roof−1, −3 and −5 while the frames plainly differed.) Then the OUTLINE,
   asserted as a monotone response rather than a magic number: a taller parapet
   must hide more of the figure and a cut that removes every wall must hide
   none. Then the LIGHT. Note WHAT is pinned there: the default is a maintainer
@@ -2089,15 +2150,30 @@ side collision just like monsters").
   relationship and not three numbers someone liked. The default only has to
   stay in the room: brighter than the tuned-dark end, well under daylight,
   still cool (B/R 1.21 against night's 1.87). And the local torch is lit with
-  the global day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet). Finally the two OUTDOOR controls: standing ON the same roof (the
-  gate walks there off a wall top — teleport always lands on the base surface)
-  and swimming UNDER a bridge both read outdoors with nothing blacked out.
+  the global day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet). NOTE the
+  indoor ambient is now read at the ROOM CENTRE, not at the far outdoor probe
+  cell: that cell's ambient is identically ZERO from indoors, which is the whole
+  point (2b asserts exactly that). Three sections turn on the zero-ambient
+  design and cannot be satisfied by the old one: **2b** (the far cell is 0,0,0,
+  and the room centre equals the indoor dial exactly — the bonfire ~5 cells out
+  the door with radius 7 contributes nothing); **2g**, the DOORWAY BEAM (the
+  torch reaches the cells beyond the opening at 5.2× the flanks behind the wall,
+  a ratio and never "the flank is black", because the shader's `occ = max(occ,
+  0.22)` bounce floor guarantees it never is — then a debug probe light is
+  parked ON those cells and their pixels must go from black to real, since at
+  zero ambient a DRAWN tile and a MISSING one composite identically and a light
+  is the only instrument that tells them apart; this is why `probeLight` is
+  exempt from the room filter); and **7**, the CAVE, which is the only shipped
+  geometry where "is the cut world-wide?" is answerable at all. Finally the two
+  OUTDOOR controls: standing ON the same roof (the gate walks there off a wall
+  top — teleport always lands on the base surface) and swimming UNDER a bridge
+  both read outdoors with nothing blacked out.
   `SHOT_DIR=<dir>` keeps every frame it judges. TWO THINGS IT DELIBERATELY
   TOLERATES, both documented at the assertions: the ambient agent's fireflies /
   birds / bats (`games2/ambient/`, not this game agent's files) and footstep
   marks + grave crosses still paint over the void, so every "is it black?" test
   is a MEDIAN over a wide patch — scattered single pixels can't move it, a
-  terrain tile that escaped the cull fills the patch and does; and the avatar
+  terrain tile that is wrongly LIT fills the patch and does; and the avatar
   itself is never hidden indoors, so sample points inside its drawn art box are
   dropped using Phaser's own `myScreen()` anchor.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard

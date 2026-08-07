@@ -11,6 +11,21 @@
 //   "It's also important to re-enable the players torch even if it's day/sun
 //    outside (the torch is disabled during daytime I think)."
 //
+// ...and (2026-08-07, after seeing the grass POP into existence one step out
+// of the door):
+//
+//   "Why didn't we go with my original idea to set the ambient light to 0 for
+//    everything outdoor (when you are in-door)? ... I was really hoping for
+//    that transition where your TORCH can start to reveal the outdoor before
+//    you're really outside... yes - point light from outside has to be turned
+//    off."
+//
+// So the outside is DRAWN and unlit, not skipped. Three sections turn on that
+// distinction and none of them can be satisfied by the old design: 2b's
+// zero-ambient probe, 2g's doorway beam (with a light parked on cells that the
+// old renderer would not have painted at all), and 7's cave, where drawing the
+// outside untruncated buries the room under 595px of mountain.
+//
 // Everything below is asserted on REAL PIXELS and REAL probe state, never on
 // the renderer's own arithmetic: the same camera frames the_island2's house
 // from outside and from within, and the two screenshots are compared at points
@@ -176,9 +191,13 @@ try {
     }
     return PNG.sync.read(buf);
   };
-  // Mean / peak / pure-void fraction of a square of real pixels. "Pure void" is
-  // luminance < 1: the ground RT fills black and the light overlay MULTIPLIES,
-  // so anything the renderer skipped stays exactly 0 whatever the hour.
+  // Mean / peak / pure-black fraction of a square of real pixels. The bar is
+  // luminance < 1: indoors the ground RT fills BLACK and the light overlay
+  // MULTIPLIES, so any pixel whose light is zero composites to exactly 0
+  // whatever the hour and whatever art is under it. (It used to mean "the
+  // renderer skipped this"; since the outside is drawn at zero ambient it means
+  // "nothing is lighting this" — the same pixels, and the stronger statement,
+  // because it now also covers art that IS there.)
   // The MEDIAN is the load-bearing statistic for "is this pixel void?": a few
   // stray bright pixels drift across the black — the ambient agent's birds /
   // bats / fireflies (games2/ambient/, another agent's directory), footstep
@@ -443,6 +462,20 @@ try {
   if (wallOut.some((s) => s.mean < 30)) fail("wall faces are not drawn in the reference shot");
   ok(`outdoors the house is a solid closed box: ${roofOut.length} roof samples at median luminance ${roofOutMean.toFixed(1)}, ` +
     `none of them void`);
+  // TORCH OFF for the two darkness assertions below. It has to be, now that
+  // the outside is DRAWN at zero ambient rather than skipped: a lit torch
+  // reaches ~6 cells and lifts nearby outside ground to a real, intended
+  // luminance, which would put 2b's per-patch bar and 2a's ceiling-plane
+  // samples right on their own boundary for a reason that is the FEATURE
+  // WORKING. What 2a/2b are about is "nothing is lighting the outside" —
+  // so measure it with nothing lighting it. The beam gets its own section (2g).
+  const setTorch = async (want) => {
+    if ((await page.evaluate(() => window.__ml.me().torch)) !== want) await page.keyboard.press("5");
+    await page.waitForFunction((w) => window.__ml.me().torch === w, want, { timeout: 10000, polling: 100 })
+      .catch(() => fail(`could not switch the local torch ${want ? "on" : "off"}`));
+    await page.waitForTimeout(1200);
+  };
+  await setTorch(false);
   const inShot = await shoot("inside");
 
   // -- 2a. THE ROOF IS GONE -------------------------------------------------
@@ -460,6 +493,14 @@ try {
   // building draws up to min(level, top) and its art is 64px tall — so the
   // exceptions are DERIVED here, exactly as the outside probes derive their
   // clearance, and never hand-listed.
+  //
+  // NOW THAT THE OUTSIDE IS DRAWN, this reads as "whatever is painted at the
+  // ceiling plane is unlit", which still catches a returning roof: the slab is
+  // a cell of MY building, so it is IN the room mask and would come back LIT,
+  // at the interior ambient, not black. Only cells the mask excludes go dark,
+  // and the roof is never one of them. The boxes below stay derived from the
+  // BUILDING alone for a second reason: adding the outside would make almost
+  // every sample "reachable" and the test vacuous.
   const roofIn = measure(inShot, roofP);
   const drawnBoxes = [];
   for (const [c, r] of [...interior, ...building]) {
@@ -482,24 +523,56 @@ try {
     `cut-away still draws, and every one of them is pure void (${(voidFrac * 100).toFixed(0)}% of their pixels; ` +
     `they read a median ${roofOutMean.toFixed(1)} from outside)`);
 
-  // -- 2b. OUTSIDE IS BLACK, INSIDE IS NOT ----------------------------------
-  // A GROUND TILE that escaped the cull fills its whole patch (0% void, mean
-  // 5-10 at the indoor ambient), so the bar is per-patch coverage, not a peak.
-  // It is 0.9 rather than 1.0 because a handful of decor layers still paint
-  // over the void — the ambient agent's birds/bats/fireflies (games2/ambient/,
-  // not this agent's to gate), footstep marks, grave crosses and weather
-  // particles. Those are single scattered pixels; terrain is a solid diamond.
+  // -- 2b. OUTSIDE IS UNLIT, INSIDE IS NOT ----------------------------------
+  // THE MECHANISM CHANGED HERE AND THE ASSERTION DID NOT. The outside used to
+  // be black because the renderer SKIPPED it; it is black now because it is
+  // DRAWN at zero ambient under a MULTIPLY overlay, which composites to the
+  // same exact zero (maintainer 2026-08-07: "why didn't we go with my original
+  // idea to set the ambient light to 0 for everything outdoor"). Same pixels,
+  // different reason — so the numbers below hold, and 2g asserts the part only
+  // the new mechanism can do.
+  //
+  // The bar is per-patch coverage, not a peak: a ground tile fills its whole
+  // 17x17 window, so anything genuinely lit out there cannot have a median of
+  // 0. It is 0.9 rather than 1.0 because a few decor layers still paint over
+  // the black — the ambient agent's birds/bats/fireflies (games2/ambient/, not
+  // this agent's to gate), footstep marks, grave crosses and weather particles.
+  // Those are scattered single pixels; terrain is a solid diamond.
   const outsideIn = measure(inShot, outsideP);
-  // MEDIAN only. A ground tile fills the whole 17x17 window (it reads 6-9 like
-  // the interior floor does), so its median cannot be 0; a firefly, a bird or a
-  // footstep mark covers a minority of it however bright it is.
   const lit = outsideIn.filter((s) => s.med >= 1);
   if (lit.length)
-    fail(`ground outside the room is still drawn at ${lit.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)}, mean ${s.mean.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")}`);
+    fail(`ground outside the room is LIT at ${lit.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)}, mean ${s.mean.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")} — ` +
+      `with the torch off nothing indoors may reach it`);
   const outVoid = outsideIn.reduce((a, s) => a + s.black, 0) / outsideIn.length;
-  ok(`everything outside the room is BLACK: ${outsideIn.length} sample patches, median luminance 0, ` +
-    `${(outVoid * 100).toFixed(0)}% of their pixels pure void ` +
+  ok(`everything outside the room is UNLIT: ${outsideIn.length} sample patches, median luminance 0, ` +
+    `${(outVoid * 100).toFixed(0)}% of their pixels pure black ` +
     `(they read ${outsideOut.map((s) => s.mean.toFixed(0)).join("/")} from outdoors)`);
+  // ...and it is the LIGHT that is zero, not the geometry. This is the whole
+  // difference between the two designs and the only place it can be seen
+  // without a second light: the CPU field is the shader's exact twin, and it
+  // says the ambient at a cell 40+ cells outside is identically zero.
+  const farIn = await lightAt(FAR_CELL[0] + 0.5, FAR_CELL[1] + 0.5, 0);
+  if (farIn.some((v) => v !== 0))
+    fail(`the ambient outside my room is ${fx(farIn)}, not zero — the outside is dark for the wrong reason`);
+  ok(`the outside is dark because its AMBIENT IS ZERO: lightAtCell(${FAR_CELL}) = ${fx(farIn)} while indoors`);
+
+  // ...and nothing OUTSIDE is lighting the room either (maintainer 2026-08-07:
+  // "yes — point light from outside has to be turned off"). the_island2's spawn
+  // bonfire stands ~5 cells from the door with radius 7 and colour [1.9, .88,
+  // .3], so an unfiltered one pours firelight through the wall onto the floor —
+  // and it would be the LAST thing to notice, because a warm floor at night
+  // looks intentional. The test is exact: with my own torch off, the light at
+  // the room centre must be the indoor ambient dial and nothing else.
+  {
+    const dial = await page.evaluate(() => window.__ml.indoorLight().ambient);
+    const here = await lightAt(roomC + 0.5, roomR + 0.5, 0);
+    const off = here.map((v, i) => Math.abs(v - dial[i]));
+    if (Math.max(...off) > 0.01)
+      fail(`the room centre reads ${fx(here)} but the indoor dial is ${fx(dial)} — something outside is lighting my room ` +
+        `(warm tilt ${(here[0] / Math.max(1e-6, here[2])).toFixed(2)} R/B vs the dial's ${(dial[0] / Math.max(1e-6, dial[2])).toFixed(2)})`);
+    ok(`no light from outside reaches in: the room centre is exactly the indoor dial ${fx(dial)}, ` +
+      `with the bonfire ~5 cells out the door and inside its own radius`);
+  }
   // The interior is judged on BRIGHTNESS, not on the void fraction: at an
   // ambient of ~0.09 the darkest pixels of the grass art quantize to 0, so a
   // real, drawn floor legitimately contains a few pure-black pixels. What it
@@ -521,18 +594,43 @@ try {
   // disconnected wall slabs"). The cut-away draws the whole enclosure, so
   // every one of these cells must carry art at its own drawn top.
   //
-  // Sampled at the tile's diamond CENTRE (+32,+23) on the level the column was
-  // truncated to, which is where that cell's cap tile is painted.
+  // WHERE THE CAP'S INK ACTUALLY IS. A column that was TRUNCATED ends in a
+  // FACE tile, not the baked top diamond (redrawGround picks `hi === cell.l ?
+  // topKey : fk` deliberately — a grass/rock lid on a wall stump reads wrong).
+  // A face tile's art is the 16px SKIRT at the BOTTOM of its 64px box, so the
+  // sample belongs at +39/+46 from the cap tile's own top-left, never at the
+  // diamond centre +23, which is transparent for that tile. Measured on the
+  // shipped house at roof-4: the diamond centre reads 0 on all eight far-wall
+  // cells while the skirt band reads 26-44. A column NOT truncated (level <=
+  // the cut) does end in its top diamond, so it keeps +23.
+  //
+  // This probe was wrong before and passed anyway, because the indoor ground
+  // RT used to fill NAVY (0x181c28): the empty diamond centre showed the fill
+  // at ~11 luminance, over the median-4 bar, and the test read "art" where
+  // there was none. The fill is black now, so the mistake surfaced. Sampling
+  // three x offsets across the skirt and keeping the best keeps it honest at
+  // the doorway jambs, where the centre column of one cell is a real gap.
+  const capBand = (sc) => {
+    const drawn = Math.min(sc.level, inn.top);
+    const capTop = sc.y + (sc.level - drawn) * 16;
+    return drawn < sc.level
+      ? [39, 46].flatMap((dy) => [16, 32, 48].map((dx) => ({ x: sc.x + dx, y: capTop + dy })))
+      : [{ x: sc.x + 32, y: capTop + 23 }];
+  };
   const bldP = [];
   for (const [c, r] of building) {
     const sc = await cellScreen(c, r);
-    const drawn = Math.min(sc.level, inn.top); // the cap band
-    const pt = { c, r, x: sc.x + 32, y: sc.y + 23 + (sc.level - drawn) * 16 };
-    if (inView(pt)) bldP.push(pt);
+    const pts = capBand(sc).filter((p) => inView(p));
+    if (pts.length) bldP.push({ c, r, pts });
   }
   if (bldP.length < building.length - 2)
     fail(`only ${bldP.length} of ${building.length} building cells are on screen — the house no longer fits the frame`);
-  const bldIn = measure(inShot, bldP);
+  const bldIn = bldP.map(({ c, r, pts }) => {
+    const ss = pts.map((p) => patch(inShot, p.x, p.y, 2)).filter(Boolean);
+    if (!ss.length) fail(`no on-screen sample for building cell ${c},${r}`);
+    // BEST of the band: one gap in a jamb is not a hole in the building.
+    return ss.reduce((a, s) => (s.med > a.med ? s : a), { ...ss[0], c, r });
+  });
   const holes = bldIn.filter((s) => s.med < 4);
   if (holes.length)
     fail(`HOLES in the building at ${holes.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")} — ` +
@@ -545,43 +643,78 @@ try {
   // 'roof - 2', etc. Even making this configurable in settings so I can test
   // what looks best." So the picture must MOVE, by exactly one level per step.
   //
-  // Measured on a fixed screen column through a far-wall run: the topmost
-  // non-void row there is the wall's crown, and one more level of cut lowers it
-  // by exactly LEVEL_PX (16). Tolerance ±3 for the art's own diagonal top edge
-  // landing on a different row of the same tile.
-  const dialCol = await (async () => {
-    const [c, r] = wallLeft[Math.floor(wallLeft.length / 2)];
-    const sc = await cellScreen(c, r);
-    return Math.round(sc.x + 32);
-  })();
-  const crownAt = (shot, x) => {
-    for (let y = gv.y; y < gv.y + gv.h; y++) {
-      const p = patch(shot, x, y, 1);
-      if (p && p.med >= 4) return y;
+  // MEASURED AS A WHOLE-PICTURE DIFFERENCE, not as one crown row. The obvious
+  // probe — "scan a screen column and find the topmost non-void row, it must
+  // drop 16px per step" — is not sound once every column in the world is drawn:
+  // the topmost lit pixel in any given column belongs to whatever cell the
+  // painter last put there, which is frequently a NEIGHBOUR of the wall you
+  // aimed at (its 64px art box overlaps, and a far wall is drawn before the
+  // floor and near walls that cover it). Measured on the shipped house: eight
+  // different far- and near-wall cells all report the SAME crown offset at
+  // roof-1, roof-3 and roof-5, while the frames plainly differ. The probe was
+  // wrong, not the renderer.
+  //
+  // What IS unambiguous is the frame itself. One step of the dial takes a
+  // 16px band off every wall column at once, so it must (a) change the picture,
+  // (b) change it inside the house and nowhere else, and (c) change it FURTHER
+  // at every further step — measured against the shallowest cut, so the counts
+  // are cumulative and a dial that saturated would show up as a flat run.
+  const houseBox = await (async () => {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (const [c, r] of [...interior, ...building]) {
+      const sc = await cellScreen(c, r);
+      x0 = Math.min(x0, sc.x); x1 = Math.max(x1, sc.x + 64);
+      y0 = Math.min(y0, sc.y); y1 = Math.max(y1, sc.y + sc.level * 16 + 64);
     }
-    return NaN;
+    return { x0: Math.max(gv.x, Math.round(x0)), x1: Math.min(gv.x + gv.w, Math.round(x1)),
+             y0: Math.max(gv.y, Math.round(y0)), y1: Math.min(gv.y + gv.h, Math.round(y1)) };
+  })();
+  // Pixels that differ by more than the art's own dither. Restricted to a box
+  // and to a bar of 8 so a firefly or a breathing NPC cannot pass for a dial.
+  const diffPixels = (a, b, box) => {
+    let n = 0;
+    for (let y = box.y0; y <= box.y1; y++)
+      for (let x = box.x0; x <= box.x1; x++) {
+        const i = (y * a.width + x) * 4;
+        if (Math.abs(a.data[i] - b.data[i]) + Math.abs(a.data[i + 1] - b.data[i + 1]) +
+            Math.abs(a.data[i + 2] - b.data[i + 2]) > 8) n++;
+      }
+    return n;
   };
   const before = await page.evaluate(() => window.__ml.indoorCut());
-  const crowns = [];
+  const cuts = [];
   for (const n of [1, 2, 3, 4]) {
     await page.evaluate((v) => window.__ml.indoorCut(v), n);
     await page.waitForTimeout(900);
-    const shot = await shoot(`cut-${n}`);
-    crowns.push({ n, y: crownAt(shot, dialCol), top: (await page.evaluate(() => window.__ml.indoorCut())).top });
+    cuts.push({ n, shot: await shoot(`cut-${n}`), top: (await page.evaluate(() => window.__ml.indoorCut())).top });
   }
   await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
   await page.waitForTimeout(900);
   const bad = [];
-  for (let i = 1; i < crowns.length; i++) {
-    const d = crowns[i].y - crowns[i - 1].y;
-    if (!Number.isFinite(d) || Math.abs(d - 16) > 3)
-      bad.push(`roof-${crowns[i - 1].n} -> roof-${crowns[i].n}: crown moved ${Number.isFinite(d) ? d : "nothing"}px, want 16`);
-    if (crowns[i].top !== crowns[i - 1].top - 1)
-      bad.push(`roof-${crowns[i].n} resolved to top ${crowns[i].top}, one less than roof-${crowns[i - 1].n}'s ${crowns[i - 1].top} expected`);
+  const moved = [0];
+  for (let i = 1; i < cuts.length; i++) {
+    if (cuts[i].top !== cuts[i - 1].top - 1)
+      bad.push(`roof-${cuts[i].n} resolved to top ${cuts[i].top}, one less than roof-${cuts[i - 1].n}'s ${cuts[i - 1].top} expected`);
+    const d = diffPixels(cuts[0].shot, cuts[i].shot, houseBox);
+    moved.push(d);
+    if (d <= moved[i - 1])
+      bad.push(`roof-${cuts[i].n} changed ${d} pixels vs roof-1, no more than roof-${cuts[i - 1].n}'s ${moved[i - 1]} — the dial stopped cutting`);
+  }
+  if (moved[moved.length - 1] < 2000)
+    bad.push(`roof-1 to roof-4 only moved ${moved[moved.length - 1]} pixels of the house — the dial barely does anything`);
+  // ...and it does nothing OUTSIDE the house: the outside is black at every
+  // setting, so a dial leaking into the world would show up as a difference
+  // there. Sampled at the same outdoor probes 2b uses.
+  for (const p of outsideP) {
+    const a = patch(cuts[0].shot, p.x, p.y, p.rad ?? 3);
+    const b = patch(cuts[cuts.length - 1].shot, p.x, p.y, p.rad ?? 3);
+    if (a && b && (a.med >= 1 || b.med >= 1))
+      bad.push(`the dial lit ground outside the room at ${p.c},${p.r} (roof-1 median ${a.med.toFixed(1)}, roof-4 ${b.med.toFixed(1)})`);
   }
   if (bad.length) fail(`the Indoor wall cut dial does not move the picture: ${bad.join("; ")}`);
-  ok(`the dial IS the cut: roof-1..4 lower the wall crown by exactly one level each ` +
-    `(screen y ${crowns.map((c) => c.y).join(" -> ")}, resolved top ${crowns.map((c) => c.top).join(" -> ")}), restored to roof-${before.cut}`);
+  ok(`the dial IS the cut: roof-1..4 resolve to top ${cuts.map((c) => c.top).join(" -> ")} and change ` +
+    `${moved.slice(1).join(" -> ")} pixels of the house against roof-1 — strictly more each step, and nothing ` +
+    `outside it — restored to roof-${before.cut}`);
 
   // -- 2e. THE WHITE OUTLINE ON WHAT IS STILL HIDDEN -----------------------
   // The other half of the maintainer's design: "a white pixel outline on parts
@@ -655,6 +788,76 @@ try {
     `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_MAX} ${(low.hiddenFrac * 100).toFixed(0)}%, ` +
     `and outdoors in the open none at all (the ring is cropped to the hidden part, never the whole body)`);
 
+  // -- 2g. THE TORCH REACHES THROUGH THE DOORWAY ---------------------------
+  // The thing the maintainer asked for and the reason the outside is DRAWN at
+  // all (2026-08-07): "I was really hoping for that transition where your TORCH
+  // can start to reveal the outdoor before you're really outside."
+  //
+  // Only the AMBIENT is zeroed out there, never the point lights, so the torch
+  // in my hand spills through the opening and lifts the ground beyond it — with
+  // the doorway's own shadow, because the wall still blocks the LOS march.
+  // Three claims, in the order they can fail:
+  //   (a) the beam exists — the cells straight out of the door light up;
+  //   (b) it is a BEAM — the cells flanking them, behind the wall, are several
+  //       times darker (a ratio, never "the flank is black": the shader's
+  //       occ = max(occ, 0.22) bounce floor guarantees it never is);
+  //   (c) those pixels are really DRAWN, not merely dark. At zero ambient a
+  //       drawn tile and a missing one composite identically, so a LIGHT is the
+  //       only instrument that separates them — which is exactly why this
+  //       section, and not 2b, is where "the outside is drawn" is proved.
+  {
+    // The entrance cell (the one OUTSIDE the opening — the doorway itself is
+    // interior) and the cell straight beyond it: the beam. Flanking the
+    // entrance at the same row, so they share a screen band and the same art
+    // run but sit behind solid wall: the shadow.
+    if (!doorway.length) fail("no entrance derived from the house footprint");
+    const [doorC, doorR] = doorway[0];
+    const beam = [[doorC, doorR], [doorC, doorR + 1]];
+    const flank = [[doorC - 1, doorR], [doorC + 1, doorR]];
+    await setTorch(true);
+    const beamL = [];
+    for (const [c, r] of beam) beamL.push(luma(await lightAt(c + 0.5, r + 0.5, 0)));
+    const flankL = [];
+    for (const [c, r] of flank) flankL.push(luma(await lightAt(c + 0.5, r + 0.5, 0)));
+    if (!(Math.min(...beamL) > 0.02))
+      fail(`the torch does not reach through the doorway: ${beam.map((p, i) => `${p} -> ${beamL[i].toFixed(4)}`).join(", ")}`);
+    // The RATIO is taken at the mouth, where the wedge is narrowest and the
+    // wall's shadow hardest. Further out the beam spreads and the pool's own
+    // 1/r falloff shrinks the contrast — asserting the deep cell would be
+    // asserting the falloff, not the doorway.
+    const ratio = beamL[0] / Math.max(...flankL);
+    if (!(ratio >= 3))
+      fail(`the doorway is not casting a beam — behind-the-wall flanks are only ${ratio.toFixed(2)}x darker ` +
+        `(beam ${beamL.map((v) => v.toFixed(4)).join("/")}, flank ${flankL.map((v) => v.toFixed(4)).join("/")})`);
+    // (c) DRAWN. The probe light is deliberately exempt from the room filter
+    // (WorldScene) precisely so a gate can do this: park a bright, flicker-free
+    // pool ON the doorway and require the beam cells to go from black pixels to
+    // real ones. If the renderer had skipped them there would be nothing there
+    // to light and the patches would stay at zero however bright the pool.
+    const litShot = await (async () => {
+      await page.evaluate(([c, r]) => window.__ml.probeLight(c + 0.5, r + 0.5, 0.55, 10), [doorC, doorR]);
+      await page.waitForTimeout(900);
+      return shoot("doorway-beam");
+    })();
+    const drawn = [];
+    for (const [c, r] of beam) {
+      const sc = await cellScreen(c, r);
+      // Same anchor the outdoor probes use: the top diamond's centre.
+      const s = patch(litShot, sc.x + 32, sc.y + 23, 5);
+      if (!s) fail(`the beam sample for ${c},${r} fell off screen`);
+      drawn.push({ c, r, ...s });
+    }
+    await page.evaluate(() => window.__ml.probeLight());
+    const missing = drawn.filter((s) => s.med < 1);
+    if (missing.length)
+      fail(`the ground outside the doorway is NOT DRAWN at ${missing.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)})`).join("; ")} — ` +
+        `a light is standing on it and it stayed black, so the renderer is still skipping the outside`);
+    await setTorch(false);
+    ok(`the torch reveals the outside through the doorway: beam ${beamL.map((v) => v.toFixed(4)).join("/")} vs ` +
+      `${flankL.map((v) => v.toFixed(4)).join("/")} behind the wall (${ratio.toFixed(1)}x), and a light parked on ` +
+      `those cells paints real pixels (median ${drawn.map((s) => s.med.toFixed(0)).join("/")}) — they were DRAWN all along`);
+  }
+
   // =========================================================================
   // 3. THE INDOOR AMBIENT — dark as night, but less blue. Channel ratios,
   //    measured at a cell far from every light (so the field IS the ambient).
@@ -665,7 +868,18 @@ try {
   // that just waits lands mid-fade and reports a grade that is neither. Poll
   // until two consecutive reads agree AND the state that produced them is the
   // one asked for.
+  //
+  // WHERE it is measured now depends on which side of a wall you are on. The
+  // probe cell used to be FAR_CELL for both readings, which was fine while the
+  // outside merely went unrendered — the light field there still carried the
+  // grade. It does not any more: FAR_CELL is 40 cells outside the room and its
+  // ambient is now identically ZERO from indoors (that is 2b's assertion). So
+  // the INDOOR reading moves to the room's own centre, and the two OUTDOOR
+  // readings keep FAR_CELL. The +0.5 matters: an integer sample beside a wall
+  // picks up the AO twin's 0.72 corner term and would silently under-read the
+  // indoor grade; at the room centre both up-screen neighbours are floor.
   const ambient = async (phase, wantIndoor) => {
+    const cell = wantIndoor ? [roomC + 0.5, roomR + 0.5] : FAR_CELL;
     let prev = null;
     for (let i = 0; i < 80; i++) {
       // RE-PIN THE PHASE EVERY POLL. timeOfDay() parks phaseT at 0.5 (the
@@ -681,7 +895,7 @@ try {
         l: window.__ml.lightAtCell(c, r),
         mix: window.__ml.indoor().mix,
         phase: window.__ml.timeOfDay().name,
-      }), FAR_CELL);
+      }), cell);
       const stateOk = v.phase.toLowerCase() === phase.toLowerCase() && (wantIndoor ? v.mix > 0.995 : v.mix < 0.005);
       if (stateOk && prev && prev.every((p, k) => Math.abs(p - v.l[k]) < 1e-4)) return v.l;
       prev = v.l;
@@ -884,6 +1098,80 @@ try {
   ok(`under the bridge at ${bCol},${bRow} (roof ${br.roof} cells at level ${br.roofLevel}, wallRatio ${br.wallRatio}, ` +
     `depth ${br.depth}${br.swimming ? ", swimming" : ""}): OUTDOORS, and the surrounding world is untouched ` +
     `(luminance ${around.map((s) => s.mean.toFixed(0)).join("/")})`);
+
+  // =========================================================================
+  // 7. IN A CAVE — the cut is WORLD-WIDE, or the mountain buries the room.
+  // =========================================================================
+  // The house proves almost nothing about this: within +-10 cells of it the
+  // terrain is 633 cells at level 0 and 17 at level 6 (the house itself), so
+  // whether the cut applies to the outside as well is invisible there. A cave
+  // is the opposite. Painter order draws by (col+row) ASCENDING, so a column
+  // DOWN-SCREEN of the room draws over it, and it buries an interior cell once
+  // it is about 0.94*k levels taller at k steps. the_island2's caves are cut
+  // into rock at levels 24-40 with the interior floor at 0 — measured, drawing
+  // the outside untruncated hides 417 of 417 interior cells, worst case 595px
+  // of solid mountain over the room you are standing in. Truncating EVERY
+  // column at the cut (redrawGround) is what removes it, and this is the only
+  // shipped geometry that can tell.
+  const caveDeck = (world.decks ?? [])
+    .filter((d) => d.kind === "cave")
+    .map((d) => {
+      const cells = d.cells.map((c) => [X(c), Y(c)]);
+      const bot = d.level - (d.thickness ?? 0);
+      return { d, bot, floor: cells.filter(([c, r]) => lvl(c, r) < bot) };
+    })
+    .filter((x) => x.floor.length >= 8)
+    // The one whose floor has the tallest rock immediately down-screen: the
+    // worst case for painter order, derived rather than picked by hand.
+    .sort((a, b) => Math.max(...b.floor.map(([c, r]) => lvl(c + 1, r + 1))) -
+                    Math.max(...a.floor.map(([c, r]) => lvl(c + 1, r + 1))))[0];
+  if (!caveDeck) fail("the_island2 ships no cave with a floor — section 7 cannot run");
+  {
+    const cc = Math.round(caveDeck.floor.reduce((a, [c]) => a + c, 0) / caveDeck.floor.length);
+    const cr = Math.round(caveDeck.floor.reduce((a, [, r]) => a + r, 0) / caveDeck.floor.length);
+    // Stand on a REAL floor cell nearest that centroid — a cave is concave and
+    // its centroid can land in the rock.
+    const [sc0, sr0] = caveDeck.floor
+      .slice()
+      .sort((a, b) => Math.hypot(a[0] - cc, a[1] - cr) - Math.hypot(b[0] - cc, b[1] - cr))[0];
+    await goTo(sc0 + 0.5, sr0 + 0.5);
+    if (!(await settle(true, true, 45000)))
+      fail(`standing in the cave at ${sc0},${sr0} never settled indoors: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
+    const cav = await page.evaluate(() => window.__ml.indoor());
+    await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), [sc0 + 0.5, sr0 + 0.5]);
+    await page.waitForTimeout(900);
+    const caveShot = await shoot("cave");
+    // Every floor cell of this cave that is on screen must be VISIBLE — lit by
+    // the cave's own indoor ambient, not buried under a rock face. `med` is the
+    // right statistic again: a burying column fills the whole patch.
+    const seen = [];
+    for (const [c, r] of caveDeck.floor) {
+      const s = await cellScreen(c, r);
+      const p = patch(caveShot, s.x + 32, s.y + 23, 4);
+      if (!p) continue; // off screen
+      seen.push({ c, r, ...p });
+    }
+    if (seen.length < 4) fail(`only ${seen.length} cave floor cells are on screen — the camera does not frame the room`);
+    // A cell buried under outside rock reads PURE BLACK — the rock is outside
+    // the room, so it is drawn at zero ambient. A cell that is visible reads
+    // the cave's own indoor ambient on its floor art. Two bars, because a
+    // single sample can sit under a body or a dark tile: nothing may be pure
+    // black, and the clear majority must be plainly lit.
+    const buried = seen.filter((s) => s.med < 1);
+    const dim = seen.filter((s) => s.med < 8);
+    if (buried.length || dim.length > seen.length / 4)
+      fail(`the cave interior is BURIED at ${(buried.length ? buried : dim).map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)})`).join("; ")} — ` +
+        `outside terrain up to level ${Math.max(...caveDeck.floor.map(([c, r]) => lvl(c + 1, r + 1)))} is drawing over the room, ` +
+        `so the cut is not being applied to columns outside the enclosure`);
+    // ...and the reason is the cut, not luck: the tallest rock next door really
+    // is far above the level the room is cut to.
+    const rock = Math.max(...caveDeck.floor.map(([c, r]) => Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
+    if (!(rock > cav.top + 4))
+      fail(`the rock beside this cave tops out at level ${rock}, only ${rock - cav.top} above the cut — this proves nothing`);
+    ok(`the cut is WORLD-WIDE: standing in a cave (ceiling ${cav.ceiling}, cut to level ${cav.top}, ${cav.roof} cells under it), ` +
+      `all ${seen.length} on-screen floor cells are visible (median ${Math.min(...seen.map((s) => s.med)).toFixed(0)}-${Math.max(...seen.map((s) => s.med)).toFixed(0)}) ` +
+      `with level-${rock} rock immediately down-screen`);
+  }
 
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);
   console.log("\nverify-indoor: ALL OK");

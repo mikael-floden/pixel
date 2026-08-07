@@ -1051,6 +1051,10 @@ export class WorldScene extends Phaser.Scene {
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
   private campfireSprite?: Phaser.GameObjects.Sprite;
   private campfireLit?: Phaser.GameObjects.Sprite;
+  /** 1 while the bonfire's light counts, easing to 0 as I close a door on it.
+   * Set once per frame in update(); read by everything that draws the fire
+   * ABOVE the darkness overlay, which no amount of zero ambient can dim. */
+  private fireRoomK = 1;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
   // [6] toggles the spawn bonfire — firelight drowns self-emission QA nearby.
@@ -1603,6 +1607,17 @@ export class WorldScene extends Phaser.Scene {
           top: this.indoorTop,
         };
       },
+      // Is the room mask really reaching the shader? The one failure this
+      // feature has that is INVISIBLE on the headless harness and fatal on a
+      // phone: an unbound uRoom sampler reads texture unit 0 (the heightmap)
+      // and blacks out the ROOM instead of the outside. `bound` is the answer.
+      roomTex: () => this.night?.roomDebug() ?? null,
+      // The torch, for gates that must shoot the same frame lit and unlit —
+      // with the outside at zero ambient a drawn tile and a missing one are
+      // pixel-identical, so a light is the only instrument that tells them
+      // apart (see verify-indoor's beam assertions).
+      torchOn: () => this.torchOn,
+      toggleTorch: () => this.toggleTorch(),
       indoor: () => {
         const s = this.indoorSpace;
         const av = this.avatars.get(this.room?.sessionId ?? "");
@@ -3214,9 +3229,14 @@ export class WorldScene extends Phaser.Scene {
       if (b.hidden?.visible) b.hidden.setVisible(false);
     };
     // A body that is not drawn has nothing hidden — this also covers the
-    // camera-culled monsters (whose coverY is deliberately stale) and everyone
-    // indoor mode blacks out for standing outside the room.
+    // camera-culled monsters (whose coverY is deliberately stale).
     if (!sp.visible || b.coverY === undefined) return hide();
+    // INDOORS, nobody outside my room gets an outline. The line draws at
+    // 900_001.43, ABOVE the darkness overlay, so it is immune to the zero
+    // ambient that makes those bodies black — and a crisp white silhouette
+    // around a figure you are meant to barely see out there inverts the whole
+    // feature. The outline exists to show you who is behind YOUR walls.
+    if (this.indoorOutside(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
     // Frame-space y of the covering terrain's top line, exactly as syncLitCopy
     // computes it — the two MUST agree or the body shows a gap or a seam.
     const frameTop = sp.y - sp.displayHeight * sp.originY;
@@ -3284,7 +3304,10 @@ export class WorldScene extends Phaser.Scene {
         !!sm &&
         mv2.mstate !== "die" &&
         !mv2.culled &&
-        mv2.sprite.visible;
+        mv2.sprite.visible &&
+        // Above the overlay (900_001.45), so zero ambient cannot dim it — a
+        // monster outside my room keeps no red ring while I am indoors.
+        !this.indoorOutside(mv2.fx, mv2.fy, mv2.surfLevel);
       let ring = this.monsterRings.get(id);
       if (!on) {
         ring?.setVisible(false);
@@ -3644,11 +3667,10 @@ export class WorldScene extends Phaser.Scene {
     // flash transparent FASTER AND FASTER until gone (maintainer). Timed
     // from the witnessed birth; the server's sweep is authoritative.
     for (const rec of this.drops.values()) {
-      // Loot lying outside my room goes black with the rest of the outside.
-      // `wx/wy` is the FLAT world position (img.x/y are screen coords, lifted by
-      // elevation and by the toss tween); and the art only shows once its
-      // texture has landed — a drop still on "__MISSING" must stay hidden.
-      const out = this.indoorHides(rec.wx, rec.wy) || rec.img.texture.key === "__MISSING";
+      // A drop lying outside my room is DRAWN and goes black with the ground
+      // under it — no special case. The art only shows once its texture has
+      // landed: a drop still on "__MISSING" must stay hidden.
+      const out = rec.img.texture.key === "__MISSING";
       rec.img.setVisible(!out);
       rec.shadow.setVisible(!out);
       const left = DROP_TTL_MS - (now - rec.bornAt);
@@ -3677,7 +3699,11 @@ export class WorldScene extends Phaser.Scene {
     const inFight =
       m.hpMax > 0 &&
       m.mstate !== "die" &&
-      (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id);
+      (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id) &&
+      // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
+      // darkness overlay: indoors they would be the only readable thing on a
+      // monster that is otherwise a black silhouette out on the grass.
+      !this.indoorOutside(mv.fx, mv.fy, mv.surfLevel);
     if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
@@ -4132,8 +4158,9 @@ export class WorldScene extends Phaser.Scene {
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
-        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
-        !this.indoorHides(npc.fx, npc.fy); // a street outside my room is "outside"
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
+      // NB no indoor test: a villager on the street outside my room is drawn
+      // and lit like the street is — black, until my torch finds them.
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
@@ -4910,14 +4937,15 @@ export class WorldScene extends Phaser.Scene {
       av.surfLevel = surfLevel; // for lighting: swimmers sample HERE, not the sunk elev
       this.resolveBodyDepth(av, surfLevel);
       this.placeBodyShadow(av, targetElev, hop, 34, 14, 9, 4);
-      // INDOORS a REMOTE player standing outside my room goes black with the
-      // rest of the outside. I am never hidden from myself (`indoorHides` is
-      // false for anyone in the roof set, and I define the set). The LIT COPY
-      // needs no handling — syncLitCopy already stands down on `!sprite.visible`.
-      const away = id !== myId && this.indoorHides(av.fx, av.fy);
-      av.sprite.setVisible(!away);
+      // INDOORS a REMOTE player standing outside my room is DRAWN and goes
+      // black with the ground under them — but their NAME TAG is not, because
+      // it draws at depth 900_100, above the darkness overlay. A readable name
+      // floating in the black is the one thing that would give away a body you
+      // are meant to barely see, so the label and the chat bubble follow the
+      // room while the body follows the light. I am never outside my own room.
+      const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
       av.label.setVisible(!away);
-      av.shadow.setVisible(!away && !av.swimming);
+      av.shadow.setVisible(!av.swimming);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -5027,8 +5055,10 @@ export class WorldScene extends Phaser.Scene {
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB &&
-          !this.indoorHides(mv.fx, mv.fy); // outside my room is outside, full stop
+          ay - sp.displayHeight <= vB;
+        // NB no indoor test: a monster outside my room is drawn and lit like
+        // the ground under it. Its ABOVE-OVERLAY chrome is another matter —
+        // see indoorOutside and updateMonsterHpBar.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -5201,17 +5231,25 @@ export class WorldScene extends Phaser.Scene {
 
     this.updateChaseCam(delta);
 
-    // INDOORS: the spawn bonfire is a world object like any other, so if it is
-    // not in MY room it is part of the black outside — its ART goes AND its
-    // light goes. the_island2 puts it ~5 cells from the house door, well inside
-    // its radius-7 pool, so leaving the light alone pours firelight through the
-    // wall onto the floor. (Its lit copy follows campfireSprite.visible below.)
-    // NB campfire.col/row ALREADY carry the +0.5 cell-centre offset (see
-    // placeCampfire), so multiplying by CELL_WU lands on the cell's centre —
-    // adding another half-cell would floor into the NEXT cell.
-    const fireOut = !!this.campfire && this.indoorHides(this.campfire.col * CELL_WU, this.campfire.row * CELL_WU);
-    this.campfireSprite?.setVisible(this.fireOn && !fireOut);
-    const fireLit = !!this.campfire && this.fireOn && !fireOut;
+    // The bonfire is world ART and is DRAWN wherever it stands — indoors the
+    // outside is no longer a void, so nothing about the room hides it. Its
+    // LIGHT is a different question, answered below with every other light
+    // source: while indoors, only lights inside my room count (the maintainer
+    // 2026-08-07, "point light from outside has to be turned off" —
+    // the_island2 puts this fire ~5 cells from the house door, well inside its
+    // radius-7 pool, so leaving it alone pours firelight through the wall onto
+    // the floor). Its lit copy is gated to match, in syncLitCopies.
+    this.campfireSprite?.setVisible(this.fireOn);
+    const fireLit = !!this.campfire && this.fireOn;
+    // How much of the fire's LIGHT survives — 1 outdoors or when it shares my
+    // room, easing to 0 as I shut the door on it. The shader light is faded by
+    // the room filter below; this is the same factor for everything the shader
+    // cannot reach: the two additive blooms and the flame's full-bright lit
+    // copy, all of which draw ABOVE the darkness overlay.
+    this.fireRoomK =
+      fireLit && this.campfire && !this.inMyRoom(this.campfire.col, this.campfire.row)
+        ? 1 - this.indoorMix
+        : 1;
 
     // Night lighting (always on): per-pixel point lights with heightmap
     // line-of-sight when WebGL is available; the multiply grade otherwise.
@@ -5233,6 +5271,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
+      // (Filtered to my own room at the end of this block while indoors.)
       for (const [id, a] of this.avatars.entries()) {
         // The day gate is now PER BODY: "re-enable the player's torch even if
         // it's day outside" (maintainer) — but only for bodies sharing MY room,
@@ -5269,6 +5308,34 @@ export class WorldScene extends Phaser.Scene {
           flicker: 0.35, // hand torch: gentle fire flicker
         });
       }
+      // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
+      // "point light from outside has to be turned off"). This became load
+      // bearing the moment the outside stopped being a void: it is drawn now
+      // and lit only by point lights, so an un-filtered bonfire in the street
+      // would be the ONE thing illuminating everything you are supposed to
+      // have shut the door on — and it would pour back through the doorway.
+      //
+      // The gate is the light's own CELL against the room mask, which is the
+      // same set the shader gives ambient to, so "what is lit" and "what lights
+      // it" can never disagree. My torch is inside by construction, so its
+      // spill through the doorway — the reveal he asked for — survives.
+      //
+      // FADED on indoorMix, not switched: an outside light dies over the same
+      // 0.35s roll the outside ambient does, so nothing on screen steps.
+      // The debug PROBE is exempt. It is the only instrument a headless gate
+      // has for "the outside tiles really are drawn" — with ambient at zero a
+      // drawn tile and a missing one are pixel-identical, and a light is the
+      // only thing that tells them apart. Filtering it would make the gate
+      // unable to see the very property this change exists to create.
+      if (this.indoorInside && this.indoorMask)
+        for (let i = sl.length - 1; i >= 0; i--) {
+          const L = sl[i];
+          if (L === this.probeLight) continue;
+          if (this.inMyRoom(L.col, L.row)) continue;
+          const k = 1 - this.indoorMix;
+          if (k <= 0.01) sl.splice(i, 1);
+          else L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
+        }
       // Time-of-day: ease the on-screen grade toward the target phase.
       // Wall-clock driven — the physics dt is clamped per frame and would
       // crawl on slow clients. Night's values are the calibrated reference.
@@ -5368,6 +5435,10 @@ export class WorldScene extends Phaser.Scene {
         // would read half-cut geometry for a quarter-second on every doorway.
         this.night.indoor = this.indoorInside;
         this.night.indoorTop = this.indoorTop;
+        // The LIGHT half of the same state does ride the ease: the outside
+        // fades to black on indoorMix while the interior's own ambient rolls
+        // down on it, so the two halves of a doorway crossing move together.
+        this.night.indoorMix = this.indoorMix;
       }
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
@@ -5392,13 +5463,17 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const lights: LightSource[] = [];
-    if (fireLit && this.campfire) {
+    if (fireLit && this.campfire && this.fireRoomK > 0.01) {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
       // Slow breathing, not a strobe: ~4s and ~1.4s periods, small swing.
+      // Both alphas are scaled by fireRoomK: they are ADDITIVE, so nothing
+      // else can take them away when the fire is out on the grass and I have
+      // closed the door on it.
       const flick = 0.52 + Math.sin(this.time.now / 640) * 0.05 + Math.sin(this.time.now / 225) * 0.03;
-      lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick, depth: c.depth + 0.2 });
+      const k = this.fireRoomK;
+      lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick * k, depth: c.depth + 0.2 });
       // Flame-core bloom ABOVE the night grade + vignette so the flame never
       // goes dull at screen edges — but sized to HUG the flame (a big fixed
       // disc read as a floating ball from afar) and scaled by proximity, so
@@ -5406,7 +5481,7 @@ export class WorldScene extends Phaser.Scene {
       const camMid = this.cameras.main.midPoint;
       const camDist = Math.hypot(c.x - camMid.x, c.y - camMid.y);
       const near = Math.max(0.45, Math.min(1, 1.15 - camDist / 1400));
-      lights.push({ x: c.x, y: c.y - 12, color: 0xffb75a, radius: 12, alpha: (flick + 0.2) * near, depth: 900_005 });
+      lights.push({ x: c.x, y: c.y - 12, color: 0xffb75a, radius: 12, alpha: (flick + 0.2) * near * k, depth: 900_005 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
@@ -5621,6 +5696,17 @@ export class WorldScene extends Phaser.Scene {
     // and syncLitCopy samples the CPU light AND the depth fog per call.
     for (const mv of this.monsters.values())
       if (!mv.culled) this.syncLitCopy(mv, on, 0xffffff);
+    // NPCs ride it too. They were the ONE body type without a lit copy, which
+    // meant their light came entirely from the multiply overlay — and the
+    // overlay is per SCREEN PIXEL, lighting each pixel by the terrain cell the
+    // ray resolves BEHIND it. For a 64px-tall sprite that is the cell several
+    // steps UP-SCREEN of its feet, which outdoors is close enough to pass and
+    // indoors is plainly wrong: a villager standing one step outside my door
+    // had black legs and a fully lit head and shoulders, because her head
+    // pixels resolved to my floor. The lit copy samples the light at the
+    // BODY's own cell, once, like players and monsters already do.
+    for (const nv of this.npcs.values())
+      if (!nv.culled) this.syncLitCopy(nv, on, 0xffffff);
     if (this.campfireSprite) {
       if (!this.campfireLit) {
         this.campfireLit = this.add
@@ -5628,8 +5714,18 @@ export class WorldScene extends Phaser.Scene {
           .setOrigin(0.5, CAMPFIRE_BASE)
           .setScale(CAMPFIRE_SCALE);
       }
+      // INDOORS the flame's lit copy follows fireRoomK. Everything else on this
+      // pass is tinted by the CPU light field, which already zeroes the ambient
+      // outside the room — but this copy carries no tint at all (the fire is
+      // its own light, at full brightness by definition), so without the gate a
+      // bonfire out on the grass keeps burning bright above the darkness
+      // overlay while its LIGHT has been filtered out of the shader. Art and
+      // light have to agree: hide the copy and the base sprite is left to the
+      // shader, which paints it black out there and lets a torch reveal it like
+      // any other outside pixel.
       this.campfireLit
-        .setVisible(on && this.fireOn && this.campfireSprite.visible)
+        .setVisible(on && this.fireOn && this.campfireSprite.visible && this.fireRoomK > 0.01)
+        .setAlpha(this.fireRoomK)
         .setFrame(this.campfireSprite.frame.name)
         .setPosition(this.campfireSprite.x, this.campfireSprite.y)
         .setDepth(litDepth(this.campfireSprite.depth));
@@ -5871,43 +5967,31 @@ export class WorldScene extends Phaser.Scene {
       if (cell && cell.l >= l) { col = c; row = r; L = l; cellL = cell.l; break; } // L = DRAWN level (ramps up a face); cellL = the column's TOP (cell.l) — lifts a flyer's shadow off the face onto the flat top
     }
     const z = L + altPx / lh;
-    // INDOORS the outside is a black VOID, and a flyer over it has to go with
-    // it — birds, bats and their ground shadows were the one thing still moving
-    // across the blackness (visible as bright specks down the left edge of
-    // every indoor screenshot). The flocks live in games2/ambient/ (another
-    // agent's directory), so this is gated HERE, through the probe contract
-    // they already consume, with no new channel and no edit to their files:
-    //   • `l` = [0,0,0] is a MULTIPLY tint (critters.ts: sprite.setTint(tint)),
-    //     so the creature renders pure black — invisible against the void, and
-    //     it EASES there over gradeCritter's 130ms tau, so crossing a doorway
-    //     is a fade rather than a pop.
-    //   • `fog` = 0 keeps applyFog's tint-FILLED overlay sprite off. That
-    //     overlay paints at the fog COLOUR, so a nonzero fog here would repaint
-    //     the very pixels the black tint just killed. (Indoors the fog is
-    //     already scaled to 0 — this makes it not depend on that.)
-    //   • `lift` > alt is applyShadow's own documented "draw no shadow" case.
-    //     It reads "the flyer is below the resolved clifftop"; over hidden
-    //     ground the honest reading is the same — there is no drawn ground to
-    //     cast on. It is the only shadow-suppressing field the contract has.
-    // NOT null: gradeCritter falls back to FULL BRIGHTNESS + no fog on a null
-    // probe (`p ? p.l : [1,1,1]`), so returning null makes a critter BRIGHTER
-    // over the void, which is the exact opposite of what is wanted.
-    // Hidden = the ground point is not under MY roof, OR it is but the flyer is
-    // at/above my ceiling — a bird cruising 70-120px up over the house roof has
-    // its ground point on the interior floor yet is plainly outside the room.
-    if (this.indoorInside && this.indoorMask) {
-      const ci = Math.floor(row) * this.world.width + Math.floor(col);
-      const inRoom =
-        Math.floor(col) >= 0 &&
-        Math.floor(row) >= 0 &&
-        (this.indoorMask.get(ci) ?? 0) !== 0 &&
-        z < this.indoorCut;
-      if (!inRoom)
-        return {
-          l: [0, 0, 0], fog: 0, fogCol: [0, 0, 0],
-          col, row, L, cellL, lift: altPx + 1, shadowDepth: gy + 3, z,
-        };
-    }
+    // INDOORS a flyer outside my room needs NO special case any more. lightAt
+    // now returns ~zero there by itself (the ambient is gated on the room mask,
+    // and `l` is a MULTIPLY tint in critters.ts), so a bird over the grass goes
+    // black on its own — and correctly lights up again when it crosses my
+    // torch's spill through the doorway, which a hard [0,0,0] could never do.
+    // The shadow follows the same reasoning: there IS drawn ground under it
+    // now, so suppressing the shadow would be the artefact.
+    //
+    // The one case still worth stating is a flyer AT OR ABOVE MY CEILING. Its
+    // ground point is honestly inside the room — a bird cruising 70-120px up
+    // over the house has its cell on the interior floor — but it is outside the
+    // room and above the cut, so it must not take the room's ambient. Blacking
+    // it here is exactly the `z < indoorCut` half of indoorOutside.
+    if (
+      this.indoorInside &&
+      this.indoorMask &&
+      z >= this.indoorCut &&
+      (this.indoorMask.get(Math.floor(row) * this.world.width + Math.floor(col)) ?? 0) !== 0
+    )
+      return {
+        l: [0, 0, 0], fog: 0, fogCol: [0, 0, 0],
+        // `lift` > alt is applyShadow's own "draw no shadow" case, and it is
+        // right here: the ceiling this thing is flying above is not drawn.
+        col, row, L, cellL, lift: altPx + 1, shadowDepth: gy + 3, z,
+      };
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
     // Depth to sort a critter's ground SHADOW at. The naive `gy + L*lh + 3` uses
@@ -5986,8 +6070,10 @@ export class WorldScene extends Phaser.Scene {
       // the roof deck one level down and just as invisible from the code.
       // A wall SHORTER than the cut is not truncated and stays tappable: its
       // top is a real sill, and it is drawn exactly where it is.
-      const inside = cut >= 0 && this.indoorMask!.has(ri * this.world.width + ci);
-      if (inside && cell.l > cut) continue;
+      // Every column in the world is truncated indoors, not just my building's
+      // (see redrawGround), so this asks about the CUT alone — a hillside stump
+      // out on the grass is exactly as unstandable as a parapet.
+      if (cut >= 0 && cell.l > cut) continue;
       if (cell.l !== l) continue;
       const s = surfaceFor(cell.t);
       if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
@@ -7318,6 +7404,26 @@ export class WorldScene extends Phaser.Scene {
     this.rebuildOccluders();
   }
 
+  /** Is this world cell part of the room I am standing in?
+   *
+   * TRUE whenever I am not indoors at all — outdoors there is no "my room", so
+   * every caller that asks "may this thing light / shine / be lit?" gets the
+   * unrestricted answer and needs no `indoorInside` check of its own.
+   *
+   * The mask is floor ∪ shell, so a torch mounted ON the wall of my room
+   * counts as mine, which is what you want: the wall is part of the room.
+   * Anything else — the bonfire on the grass, a lamp in the house next door,
+   * a brazier upstairs — is outside, and both its light and any full-bright
+   * copy of its art are dropped. (The maintainer 2026-08-07: "yes — point
+   * light from outside has to be turned off".) */
+  private inMyRoom(col: number, row: number): boolean {
+    if (!this.indoorInside || !this.indoorMask || !this.world) return true;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= this.world.width || r >= this.world.height) return false;
+    return (this.indoorMask.get(r * this.world.width + c) ?? 0) !== 0;
+  }
+
   /** Rebuild the per-cell mask when the SPACE or its CUT changed; a no-op
    * otherwise, so walking around one room costs nothing. Returns whether it
    * really rebuilt — the caller must repaint when it did. */
@@ -7328,6 +7434,7 @@ export class WorldScene extends Phaser.Scene {
       const had = !!this.indoorMask;
       this.indoorMask = null;
       this.indoorMaskSig = "";
+      if (had) this.night?.setRoom(null); // outdoors: the whole world is lit again
       return had;
     }
     // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
@@ -7353,6 +7460,11 @@ export class WorldScene extends Phaser.Scene {
     // has nothing to classify.
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
+    // Publish the room to the LIGHT. This is what makes the outside black:
+    // the renderer draws it like any other terrain, and the shader gives every
+    // cell outside this set zero ambient — so a point light inside can still
+    // reach it (the torch through the doorway) while the sky cannot.
+    this.night?.setRoom(m.keys());
     return true;
   }
 
@@ -7375,16 +7487,30 @@ export class WorldScene extends Phaser.Scene {
     this.indoorMix = this.indoorInside ? 1 : 0;
   }
 
-  /** Indoors, is this body part of "everything outside the house"? A body is
-   * not terrain, so the ground pass cannot black it out — it draws at sprite
-   * depth over the void and stands there in mid-air. This is not theoretical:
-   * the_island2's spawn bonfire and most of its 19 NPCs stand within ~6 cells of
-   * the house door, and the first cut of this feature drew the entire village
-   * hanging in the blackness while you stood inside. Culled exactly like the
-   * off-camera bodies beside it, and the LOCAL player is never hidden — they
-   * are the one standing in the room. */
-  private indoorHides(fx: number, fy: number): boolean {
-    return this.indoorInside && !this.indoorContains(fx, fy);
+  /** Indoors, is this body outside MY room?
+   *
+   * NOT a visibility test. Bodies are always DRAWN — a villager outside the
+   * door is black at zero ambient and your torch reaching through the doorway
+   * reveals them, which is the whole point of the change (maintainer
+   * 2026-08-07). The earlier cut of this feature hid them, because the ground
+   * under them was not drawn either and they would have hung in a black void at
+   * sprite depth; that reason is gone.
+   *
+   * What this IS for is the chrome drawn ABOVE the darkness overlay — name
+   * labels, chat bubbles, hp bars, target rings, the white cover outline. No
+   * amount of zero ambient touches those, so a pitch-black villager out on the
+   * grass would still wear a crisp readable name tag. Anything at depth
+   * 900_001+ has to ask this question itself.
+   *
+   * `z` in LEVELS: a body up on the roof is outside even though the cell under
+   * it is my floor. */
+  private indoorOutside(fx: number, fy: number, z = 0): boolean {
+    const w = this.world;
+    if (!this.indoorInside || !this.indoorMask || !w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
+    return !((this.indoorMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
@@ -7459,13 +7585,12 @@ export class WorldScene extends Phaser.Scene {
     const ay = Math.round(ccy - rt.height / 2);
     rt.setPosition(ax, ay);
     rt.clear();
-    // INDOORS the backdrop is BLACK, and every cell outside the room simply is
-    // not drawn — that is how "renders everything outside the house black" is
-    // implemented (see the indoor constants block: a black TILE would be drawn
-    // in painter order and the NEAR walls would cover the very room we are
-    // trying to reveal). Outdoors this is the unchanged void colour.
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
+    // The colour behind everything. Outdoors the usual night-navy; INDOORS
+    // BLACK, because indoors this fill is what shows through the sky band
+    // above the cut-away and in genuine void cells — and navy times the indoor
+    // ambient still reads as a faintly lit sky over an unlit world.
     rt.fill(mask ? 0x000000 : 0x181c28, 1);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
@@ -7490,10 +7615,6 @@ export class WorldScene extends Phaser.Scene {
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
         if (this.maps2) {
-          // INDOORS: the outside is a black void — nothing is drawn for it, so
-          // bail before the key/texture work (this is most of the window).
-          const vis = mask ? mask.get(row * world.width + col) : 0;
-          if (vis === undefined) continue;
           // maps2: the world bakes the exact TOP tile per cell; terraces are
           // built by stacking the material's plain FACE tile 16px per level
           // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
@@ -7506,11 +7627,25 @@ export class WorldScene extends Phaser.Scene {
           const faceKey = faceKeyFor(world, cell);
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
           if (mask) {
-            // ---- INDOORS: THE CUT-AWAY, one rule for every cell -----------
-            // Floor, near wall, far wall, corner — all the same: draw this
-            // column from the ground up and STOP at `top`. Whatever stood
-            // above is not drawn, which is what takes the roof off and what
-            // shortens the walls, in a single expression.
+            // ---- THE CUT-AWAY, one rule for every cell of the WORLD ----
+            // Floor, near wall, far wall, corner, and the hillside a hundred
+            // cells away — all the same: draw this column from the ground up
+            // and STOP at `top`. Whatever stood above is not drawn, which is
+            // what takes the roof off and what shortens the walls, in a single
+            // expression.
+            //
+            // WHY THE WHOLE WORLD AND NOT JUST MY BUILDING. Painter order sorts
+            // by (col+row) ascending, so a tall column down-screen of the room
+            // draws AFTER the room and over it: a column k steps down-screen
+            // buries an interior cell once it is ≳0.94·k levels taller. Around
+            // the_island2's house that never happens (633 of the 650 cells
+            // within ±10 are level 0), which is why cutting only the building
+            // looked right there. In its CAVES the surrounding rock is terrain
+            // at level 24-40 and it hides 417 of 417 interior cells — you walk
+            // in and the room is replaced by solid mountain. One rule for every
+            // column removes that outright, and it is also what the shader's
+            // `heightAt` clamp already assumes: that clamp is global, so any
+            // column drawn taller than `top` would resolve to the wrong cell.
             //
             // The tile at the top of the drawn stack is a FACE, not the baked
             // top diamond, whenever the column was cut: the baked top is the
@@ -7813,12 +7948,6 @@ export class WorldScene extends Phaser.Scene {
         if (!cell) continue;
         const s = surfaceFor(cell.t);
         if (this.maps2) {
-          // INDOORS: outside the room nothing is drawn, so nothing may be
-          // registered either — a meta record whose art was suppressed crops a
-          // body's lit copy against terrain that is not there (`coverY`), which
-          // is the exact artifact the cull work already paid for once.
-          const vis = mask ? mask.get(row * this.world.width + col) : 0;
-          if (vis === undefined) continue;
           // world@2 DECK occluder: a slab floating ABOVE its base (deck.level >
           // base level) must occlude whoever walks/swims under it, and must draw
           // on top of the ground RT so it's visible over the walls it roofs.
@@ -7826,12 +7955,14 @@ export class WorldScene extends Phaser.Scene {
           // l=0, which the terrain branch below skips). Where the deck coincides
           // with its base top (deck.level == base l — a roof lapping its own
           // walls), the terrain occluder already covers it, so skip.
-          // INDOORS the slab IS the roof: every cell that got this far is under
-          // my own ceiling, so its deck is overhead by construction (the fill
-          // only enters cells with `elev < deckBot`). Skipping the block drops
-          // its meta push for free, which is what you want — kept, the deck's
-          // `top` sits far above the player, the ray test clamps them BEHIND an
-          // invisible roof and crops their lit copy at the vanished ceiling.
+          // INDOORS NO DECK DRAWS ANYWHERE. My own ceiling is the obvious one —
+          // every cell of my room is under it by construction, and it IS the
+          // roof the cut takes off. But the ground RT stops drawing decks for
+          // the whole world indoors (one truncation rule, no slabs), so
+          // building an occluder for the neighbour's roof or a distant bridge
+          // would register meta whose art was never painted — and a meta record
+          // without art crops a body's lit copy against terrain that is not
+          // there. Art and meta agree, in both directions.
           const dk = mask ? undefined : this.deckIndex.get(row * this.world.width + col);
           if (dk && dk.cell.path && dk.deck.level > cell.l) {
             const dTop0 = pathTileKey(dk.cell.path);
@@ -8101,18 +8232,26 @@ export class WorldScene extends Phaser.Scene {
     // ended up under the grid V (playtester). The skirt is the flat tile's own
     // front face; a prop is not part of that face.
     const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
-    // INDOORS: a prop standing outside my room is part of "everything outside
-    // the house" and must go with it — art, occluder meta AND its emissive glow
-    // stamp. rebuildProps rides inside rebuildOccluders' camera guard but its
-    // own images/meta/stamps are not covered by anything added to that cell
-    // loop, so the test has to be repeated here.
+    // INDOORS a prop outside my room is DRAWN like the ground it stands on —
+    // it renders below the multiply overlay, so zero ambient blacks it out for
+    // free and a torch through the doorway finds it. Its GLOW STAMP is another
+    // matter: that is a light source, additive into the glow field, and a
+    // glowing mushroom out on the grass would be the one thing lighting the
+    // world you shut the door on. Art drawn, light suppressed — the same split
+    // the bonfire gets. (Measured on the shipped worlds: 3 props, all deep in
+    // the_island2's caves, can reach a room interior at all; none near a house.)
     const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop;
     for (const p of props) {
-      if (mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF)) continue;
+      const propOut = !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF);
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;
-      const lvl = cell?.l ?? 0;
+      // Indoors every column in the world is drawn truncated at the cut, so a
+      // prop rides its stump instead of hanging where the vanished hilltop
+      // used to be. Its own art is never shortened — it is one object, like a
+      // tree, and the occluder pass treats it the same way.
+      const lvl = mask ? Math.min(cell?.l ?? 0, top) : cell?.l ?? 0;
       const u = p.col - p.row;
       const v = p.col + p.row;
       const bx = this.iso.ox + u * dx;
@@ -8134,7 +8273,7 @@ export class WorldScene extends Phaser.Scene {
       //     tall tile so the runes/crystals bloom — cosmetic only (litChar
       //     false), because sampling a HIGH point from the character's feet
       //     made it brighter-then-darker as you approached.
-      const srcs = this.night ? this.tiles2Src[p.path] : undefined;
+      const srcs = this.night && !propOut ? this.tiles2Src[p.path] : undefined;
       if (srcs?.length) {
         const mat = p.path.split("/")[1]; // tiles2/<material>/…
         const em = this.tiles2Mat[mat];
