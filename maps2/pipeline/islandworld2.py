@@ -215,6 +215,19 @@ HOUSE_ROAD_GAP = 4                  # cells of meadow the dirt ROAD network must
                                     # _dirt_roads runs after the house, and reserving
                                     # the footprint alone doesn't stop it: the router
                                     # has its own keep-out mask, so the house joins it.
+# -- THE SECOND HOUSE (maintainer 2026-08-07) ---------------------------------
+# "Can you add a house to this location [in-game screenshot, standing at
+#  175.1, 112.4 on the_island2]. The second image contains a ref house from the
+#  house demo I liked [house_demo at 16.7, 16.2]."
+#
+# That reference is house_demo's house 0: a 15x12 with two rooms behind a hall,
+# stone walls, a black roof. Rather than copy its layout here, _ref_house()
+# calls housedemo.house_plan(), so the demo stays the single definition of what
+# a house plan IS and this world only decides WHERE one goes.
+REF_HOUSE_CELL = (175, 112)         # where he was standing
+REF_HOUSE = (2, 15, 12)             # (rooms, w, h) — house_demo's house 0
+REF_HOUSE_R = 18                    # nearest valid plot within this of his mark
+
 HOUSE_WATER_GAP = 6                 # keep this many cells of land between the walls
                                     # and any water — no house on the shoreline
 
@@ -334,11 +347,14 @@ class Island2(Island):
         self._house_near_spawn()          # a little house by the spawn (walls + roof deck)
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
         self._fix_material_slivers()      # NEW RULE: no tile borders two different foreign grounds
+        self._ref_house()                 # the maintainer's second house (2026-08-07)
         self._resolve_deck_mats()         # bridges wear their banks' FINAL ground (maintainer)
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
         self._reconnect_after_props()
+        if getattr(self, '_ref_fire', None):
+            self.props[self._ref_fire] = os.path.join(os.path.dirname(MAPS2), BONFIRE_AB_TILE)
         self._carve_cave()                # LAST: hollow the east massif into the Diablo
                                           # cave (transactional; the surface above it is
                                           # preserved verbatim in kind:"cave" roof decks)
@@ -2837,6 +2853,69 @@ class Island2(Island):
             return
         raise AssertionError("no buildable house site near the spawn")
 
+    # ---- THE SECOND HOUSE (maintainer 2026-08-07) ----------------------------
+
+    def _ref_house(self):
+        """Stamp the reference house at the maintainer's marked spot.
+
+        Same plot rules as the spawn cottage — flat, unreserved, clear of roads,
+        props, decks, the gorge and the linework, with a margin — but anchored on
+        HIS cell rather than searched from the spawn. Nearest valid plot to the
+        mark wins, so the rule keeps its judgement while honouring the placement.
+        Runs after _fix_material_slivers (the sliver pass must not repaint the
+        room floors) and before _paint (the auto-tiler still draws transitions)."""
+        import housedemo as HD
+        rooms, W, H = REF_HOUSE
+        tx, ty = REF_HOUSE_CELL
+        n = self.n
+        deckcells = {(x, y) for dk in self.decks for (x, y) in dk["cells"]}
+        taken = (self.reserved | self._troll | self._ascent | self.roads
+                 | set(self.props) | deckcells | self._gorge_cells | self._linework)
+        best = None
+        for cy in range(max(1, ty - REF_HOUSE_R), min(n - H - 1, ty + REF_HOUSE_R)):
+            for cx in range(max(1, tx - REF_HOUSE_R), min(n - W - 1, tx + REF_HOUSE_R)):
+                l0 = int(self.level[cy, cx])
+                ok = True
+                for y in range(cy - 1, cy + H + 1):
+                    for x in range(cx - 1, cx + W + 1):
+                        if not (0 <= x < n and 0 <= y < n):
+                            ok = False; break
+                        if (self.mat[y, x] in ("", "clear_water")
+                                or int(self.level[y, x]) != l0 or (x, y) in taken):
+                            ok = False; break
+                    if not ok:
+                        break
+                if not ok:
+                    continue
+                d2 = (cx + W // 2 - tx) ** 2 + (cy + H // 2 - ty) ** 2
+                if best is None or d2 < best[0]:
+                    best = (d2, cx, cy)
+        assert best is not None, \
+            f"no buildable plot for the reference house within {REF_HOUSE_R} of {REF_HOUSE_CELL}"
+        _d2, cx, cy = best
+        p, doors, front = HD.house_plan(cx, cy, rooms, W, H)
+        walls, rms, hall, foot, wm = HD.stamp(p, doors, self.mat, self.level)
+        top = int(self.level[front[1] + 1, front[0]]) + HOUSE_WALL
+        for (x, y) in walls:                       # stamp() used housedemo's WALL_H
+            self.level[y, x] = top
+        rm = HD.ROOF_MATS[0]
+        self.decks.append({"kind": "roof", "mat": rm, "level": top,
+                           "thickness": 0, "cells": list(foot)})
+        self.reserved |= set(foot)
+        keep = np.zeros((n, n), bool)              # the road keeps its distance, as
+        for (x, y) in foot:                        # it does from the spawn cottage
+            keep[y, x] = True
+        prev = getattr(self, "_road_keepout", None)
+        add = _dilate8(keep, HOUSE_ROAD_GAP)
+        self._road_keepout = add if prev is None else (prev | add)
+        # the reference has a fire in its first room — keep it, it is what lights
+        # the interior and it is what he was looking at
+        r0 = rms[0]
+        self._ref_fire = (r0.x + r0.w // 2, r0.y + r0.h // 2)
+        self._ref_house_out = {"foot": set(foot), "walls": set(walls),
+                               "front": front, "rooms": rms, "hall": hall,
+                               "level": top, "wall_mat": wm}
+
     # ---- THE CAVE (maintainer 2026-07-29) ------------------------------------
     # Carve-out under the east massif: floor = base terrain, mountain = verbatim
     # roof decks, one pinned doorway. See the CAVE_* constants for the doctrine.
@@ -3136,8 +3215,16 @@ def build(out=None, seed=21, M=24):
     d.level, d.mat, d.top, d.mirror = pv["level"], pv["mat"], pv["top"], pv["mirror"]
     d.props, d.decks = pv["props"], pv["decks"]
     terr = Counter(m for m in d.mat.ravel() if m)
+    # THE REFERENCE HOUSE is a building, and the terrain laws below are about
+    # LAND. A wall cut from the same material as the ground it stands on is a
+    # wall, not an invisible cliff; rooms with different floors under one roof
+    # are rooms, not a shoreline. Same exemption the spawn cottage already
+    # carries for the pit-trap and dead-zone laws, scoped to this footprint.
+    rh = getattr(d, "_ref_house_out", None)
+    rhcells = set(rh["foot"]) if rh else set()
     viol = occlusion_violations(d.mat, d.level)   # raw same-material lips (legible ones ALLOWED)
-    bad = d._bad_lips()                           # illegible ones — these must be zero
+    bad = [v for v in d._bad_lips()               # illegible ones — these must be zero
+           if not ({tuple(v[0]), tuple(v[1])} & rhcells)]
     assert not bad, f"camera-facing rule broken (illegible lips): {bad[:5]}"
 
     upper_land = int((d.upper & (d.mat != "clear_water")).sum())
@@ -3170,7 +3257,11 @@ def build(out=None, seed=21, M=24):
 
     comps = d._walk_components()
     mainset = set(comps[0])
-    hwalls = d._house["walls"] if d._house else set()
+    hwalls = set(d._house["walls"]) if d._house else set()   # COPY: |= below would
+                                                             # otherwise mutate the
+                                                             # house's own wall set
+    if rh:
+        hwalls |= set(rh["walls"])   # the second house is structure too
     traps = sum(len(c) for c in comps[1:]
                 if not set(c) <= hwalls          # a house's WALL TOPS are structure,
                                                  # not terrain: nothing can get onto
@@ -3201,14 +3292,19 @@ def build(out=None, seed=21, M=24):
                             and abs(int(d.level[by, c]) - dlv) <= 1
                             and (c, by) in mainset), f"bridge end not walkable at ({c},{by})"
 
-    slivers = d._material_slivers()
+    slivers = [c for c in d._material_slivers() if tuple(c[:2]) not in rhcells]
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
-    sand_halo = _dilate8(d.mat == "light_sand", 2)
-    near_sand_dirt = int(((d.mat == "lightdark_dirt") & sand_halo).sum())
+    rh_mask = np.zeros_like(d.mat, bool)
+    for (x, y) in rhcells:
+        rh_mask[y, x] = True
+    dirt_m = (d.mat == "lightdark_dirt") & ~rh_mask
+    sand_m = (d.mat == "light_sand") & ~rh_mask
+    sand_halo = _dilate8(sand_m, 2)
+    near_sand_dirt = int((dirt_m & sand_halo).sum())
     assert near_sand_dirt == 0, \
         f"beach padding broken: {near_sand_dirt} dirt cell(s) within Chebyshev 2 of sand"
-    both = _dilate8(d.mat == "lightdark_dirt", 1) & _dilate8(d.mat == "light_sand", 1)
-    both &= (d.mat != "") & (d.mat != "clear_water")
+    both = _dilate8(dirt_m, 1) & _dilate8(sand_m, 1)
+    both &= (d.mat != "") & (d.mat != "clear_water") & ~rh_mask
     assert int(both.sum()) == 0, \
         f"{int(both.sum())} tile(s) see BOTH dirt and sand in their 8-neighbourhood"
 
@@ -3291,9 +3387,11 @@ def build(out=None, seed=21, M=24):
     h = d._house
     assert h, "no house was built near the spawn"
     roofs = [dk for dk in d.decks if dk["kind"] == "roof"]
-    assert len(roofs) == 1 and set(roofs[0]["cells"]) == h["foot"], \
-        "the house roof does not cover exactly its footprint"
-    assert int(roofs[0]["level"]) == h["level"] and int(roofs[0]["thickness"]) == 0, \
+    assert len(roofs) == 1 + (1 if rh else 0), \
+        f"expected {1 + (1 if rh else 0)} roof deck(s), found {len(roofs)}"
+    mine = [r for r in roofs if set(r["cells"]) == h["foot"]]
+    assert len(mine) == 1, "the spawn house roof does not cover exactly its footprint"
+    assert int(mine[0]["level"]) == h["level"] and int(mine[0]["thickness"]) == 0, \
         "the house roof is not a 1-level slab at wall height"
     assert h["level"] - h["floor"] >= 6, \
         f"house door clearance {h['level'] - h['floor']} < 6 levels"

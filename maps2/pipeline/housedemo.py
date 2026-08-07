@@ -225,6 +225,44 @@ def doorways(p, rng):
     return doors, front, linked
 
 
+def house_plan(ox, oy, rooms, W, H, seed=SEED):
+    """Reproduce ONE house's floor plan at (ox, oy), exactly as house_demo draws
+    it for (rooms, W, H) under `seed`.
+
+    Exported so another world can stamp a house the maintainer picked out of the
+    demo without a second copy of the layout rules — islandworld2 calls this for
+    the reference house. Note the demo's rng is one stream shared by all six
+    houses, so a FRESH Random(seed) reproduces house 0; later houses would need
+    the stream advanced to their position.
+
+    Returns (plan, doors, front-door cell)."""
+    rng = random.Random(seed)
+    p = plan(ox, oy, rooms, W, H, rng)
+    doors, front, _linked = doorways(p, rng)
+    return p, doors, front
+
+
+def stamp(p, doors, mat, level, hi=0):
+    """Paint a planned house into (mat, level) grids: walls raised to WALL_H in
+    that house's wall material, each room and the hall in its own floor
+    material. Returns (walls, rooms, hall, footprint, wall material)."""
+    walls = [c for c in (p["ring"] + sorted(p["inner_walls"])) if c not in doors]
+    wm = WALL_MATS[hi % len(WALL_MATS)]
+    for (wx, wy) in walls:
+        mat[wy, wx] = wm
+        level[wy, wx] = WALL_H
+    for ri, r in enumerate(p["rooms"]):
+        fm = FLOOR_MATS[(hi * 3 + ri + 1) % len(FLOOR_MATS)]
+        for (fx, fy) in r.cells():
+            mat[fy, fx] = fm
+    hm = FLOOR_MATS[(hi * 3 + len(p["rooms"]) + 2) % len(FLOOR_MATS)]
+    for (fx, fy) in p["hall"].cells():
+        mat[fy, fx] = hm
+    foot = [(fx, fy) for fy in range(p["oy"], p["oy"] + p["h"])
+            for fx in range(p["ox"], p["ox"] + p["w"])]
+    return walls, p["rooms"], p["hall"], foot, wm
+
+
 def build(out=None):
     rng = random.Random(SEED)
     lib = Tiles2()
