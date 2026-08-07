@@ -45,9 +45,40 @@ on:
       - ".github/workflows/nangijala-deploy.yml"
   workflow_dispatch: {}       # manual: force a roll without any commit
 
-# Only the newest deploy matters; cancel superseded runs.
+# CONCURRENCY — NO SHARED GROUP, because a shared one can DEADLOCK THE WHOLE
+# PIPELINE (maintainer 2026-08-07: "I want no deadlock").
+#
+# What happened: `group: nangijala-deploy` was one literal shared by every run
+# of every branch and event, with cancel-in-progress. On 2026-08-06 run #1118
+# ended up wedged in `queued` — and unkillable: the API answers
+# `409 Cannot cancel a workflow re-run that has not yet queued`. From then on
+# every deploy's `build-deploy` job was created, never assigned a runner
+# (`runner_id: 0`) and cancelled at a flat 15 minutes, while the `resolve` and
+# `test` jobs in the SAME runs got runners within seconds. main sat 3 commits
+# ahead of production for ~18 hours with a green test gate the whole time.
+#
+# ROOT CAUSE OF THE ZOMBIE, stated plainly because the lesson is operational:
+# it was created by calling the "re-run workflow" API on a run that was still
+# QUEUED rather than completed. NEVER re-run a run that has not finished —
+# dispatch a new one instead. That is also the documented recovery below.
+#
+# THE FIX is to stop runs sharing a gate at all:
+#   • a PUSH groups by its own commit, so a wedged run can only ever hold the
+#     gate for the commit it belongs to and can never block a later one;
+#   • a DISPATCH groups by run id, so the manual recovery path is unblockable
+#     by construction — which matters because it is the only lever left when
+#     something is stuck.
+# cancel-in-progress still does its real job: superseding a RE-push or re-run
+# of the same commit.
+#
+# WHAT THIS COSTS, honestly: rapid art pushes no longer collapse into the
+# newest run, so N pushes are N deploys. That is affordable here precisely
+# because of the design already documented above — BuildKit's GHA layer cache
+# means an art-only rebuild reuses every untouched layer and uploads megabytes
+# rather than ~500MB, and a Cloud Run rollout is idempotent. A few extra
+# rollouts is a much smaller problem than a pipeline that can stop for a day.
 concurrency:
-  group: nangijala-deploy
+  group: nangijala-deploy-${{ github.event_name == 'workflow_dispatch' && github.run_id || github.sha }}
   cancel-in-progress: true
 
 jobs:
@@ -67,6 +98,7 @@ jobs:
   # commits and the suite would be testing something other than what ships.
   resolve:
     runs-on: ubuntu-latest
+    timeout-minutes: 5 # a two-step API lookup; anything longer is a hang
     permissions:
       contents: read
     outputs:
@@ -89,6 +121,7 @@ jobs:
   test:
     needs: resolve
     runs-on: ubuntu-latest
+    timeout-minutes: 20 # measured ~1 min; a 20x ceiling only catches a hang
     permissions:
       contents: read
     steps:
@@ -121,6 +154,12 @@ jobs:
   build-deploy:
     needs: resolve
     runs-on: ubuntu-latest
+    # The image build is the long pole (layer-cache cold builds run several
+    # minutes). This is a hang-catcher, not a budget — raise it rather than
+    # let a real build be killed. NOTE it cannot help a job that never STARTS:
+    # timeout-minutes only runs once a runner is assigned, which is exactly
+    # why the concurrency fix above is the actual answer to the deadlock.
+    timeout-minutes: 45
     permissions:
       contents: read
       id-token: write          # required for Workload Identity Federation
