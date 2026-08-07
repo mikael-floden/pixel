@@ -227,10 +227,39 @@ unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
 TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
 the types living there, then each type's total spread across its own zones by
-area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
-after regenerating any world (like `minimaps.py`); it validates every zone
-(simple polygon, ≥num standable cells at the claimed elevation) before writing.
-Two placement laws: **`the_island2` MUST contain every monster** (the endgame
+area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by
+habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
+world is written (`save_world` calls `spawns.refresh`), so a terrain edit can
+never leave stale zones behind; it validates every zone (simple polygon, ≥num
+standable cells at the claimed elevation) before writing.
+Four placement laws.
+**DIFFICULTY SCALES WITH DISTANCE FROM THE ARRIVAL POINT** (maintainer
+2026-08-06: "Why do you spawn Duskfang next to newcomers? … Try to make them
+enjoy the game instead"). Habitat alone knows nothing about danger — a level-8
+sabre-toothed tiger lives on grass, the spawn is on grass, so it had a zone
+touching the arrival point while the level-1 frog was 54 cells away and the
+level-4 hedgehog was the most distant monster on the map. Now
+`keep_out = SAFE_R + (level-1)*LVL_STEP + AGGRO_PUSH-if-it-hunts`, measured in
+WALK cells (the island is 168 across in straight line and 467 on foot), with
+`level`/`aggro_radius_wu` taken from the GAME's own combat tuning
+(`live/tuning/monsters.json`) so a rebalance moves the monsters to match. Each
+monster takes the NEAREST habitat it is allowed, and the too-close cells are
+forbidden to `dry_mask()` exactly like water — so a polygon cannot even contain
+one. Nothing at all spawns within SAFE_R of the arrival point; the first things
+a newcomer meets on the_island2 are a level-1 frog and a level-2 poring, both
+passive, and the nearest monster that HUNTS is 55 cells out.
+**NO MONSTER SPAWNS ON WATER** (maintainer 2026-08-05: "monsters can't swim…
+we're gonna soon make water into a safe zone") — not filtered at runtime but
+guaranteed by the GEOMETRY: no zone polygon on any world contains a single
+water-surfaced cell, so the game's "mostly-water zone ⇒ everyone swims" branch
+can never fire. `dry_mask()` keeps generated zones off the water (refusing wet
+diagonal fills, and CUTTING OPEN any pond the single ring would otherwise
+enclose) and `validate_zone()` re-asserts it for every zone of every world,
+hand-written ones included. There is no habitat on water any more: the old
+`water` habitat is now `shore`, the LAND band within 4 cells of water. A bridge
+zone stays legal because the monster stands on the deck — the same polygon at
+ground level under the span fails the assert.
+Then: **`the_island2` MUST contain every monster** (the endgame
 map — build-asserted, with habitat fallback so it can't silently drop one), and
 the four **feature-test maps** (`prop_demo`, `trans_demo`, `glow_test`,
 `occlusion_test`) carry NO monsters (explicit empty `zones: []`).
@@ -238,6 +267,39 @@ the four **feature-test maps** (`prop_demo`, `trans_demo`, `glow_test`,
 stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
+
+## NPCs — `worlds/<name>/npcs.json` (`pixel-maps2/npcs@1`)
+
+maps2 owns WHERE people stand, exactly as it owns where monsters spawn;
+**characters2 owns WHO they are** and this data references it by folder id
+(`characters2/npcs/`) without restating art, role or lore. Two types, the
+maintainer's: **AMBIENT** (the world is more alive for them) and **MERCHANT**
+(has something to sell). Full spec: `spec/NPCS.md`.
+
+A MERCHANT **must look like one**. `MERCHANT_LOOK` in `pipeline/npcs.py` is the
+single hand-curated table in the placement system, deliberately so — "looks like
+a merchant" is a judgement about ART that no terrain rule can make. The `trader`
+ROLE is not sufficient: of characters2' two traders, Joss holds up four filled
+vials and is in; Halvard has a fur collar and a waterskin and is out. The seven
+eligible characters (vendor's tray, breastplate, sword, wand-quiver, potions,
+glowing stone, vials) cover all seven `items/` TYPE tags, and `wares` is
+validated against `items/viewer_data.json`.
+
+Placement is DERIVED from landmarks in world.json — arrival point, a building's
+doorway (`kind:"roof"`), the cave mouth, bridge ends, road junctions, the shore
+— and re-derived automatically whenever a world is written, so a terrain edit
+cannot strand anybody. Eight laws are asserted before the file is written: dry
+standable ground (never water), **walk-reachable from the spawn** using the
+game's own step rule (a shop you can't reach is not a shop), never in a
+chokepoint (doorway, bridge end, cave mouth), never in the SPAWN CAMPFIRE (the game draws it at the arrival point and it is
+not a prop in world.json, so nothing in the terrain says it is there — the first
+cast stood a commoner in the flames), never hidden from the camera
+(derived from the painter order `(x+y, y)`, which catches standing round the
+back of a building), never overlapping another sprite **in screen space** (iso
+puts `(x+2,y+2)` directly below `(x,y)`), never crowding the arrival point,
+never indoors, and every reference resolving — including `name` still matching
+characters2, so an upstream rename fails loudly instead of rotting.
+Gate: `python maps2/pipeline/npcs.py --check`.
 
 ## Image format — lossless WebP (project default, 2026-07-31)
 

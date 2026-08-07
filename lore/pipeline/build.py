@@ -47,6 +47,31 @@ MAX_SUMMARY = 200
 # characters. Catch the syntaxes a writer reaches for by reflex.
 MARKUP = re.compile(r"\[\[|\]\]|<[a-zA-Z/]|\*\*|^#{1,6}\s|^\s*[-*]\s", re.M)
 
+# In-text mentions (maintainer, 2026-08-01): a name in running prose becomes a
+# link to that entity's page. Source syntax [[domain/id|shown text]] (shown
+# text optional — defaults to the target's current display name). The build
+# turns each paragraph into either a plain string (no mentions) or an array of
+# segments [{"t": "..."}, {"t": "...", "ref": {"domain", "id"}}] the wiki can
+# render as text nodes + links. Raw [[ ]] never ships.
+MENTION = re.compile(r"\[\[([a-z0-9_-]+)/([a-z0-9_-]+)(?:\|([^\]\[|]+))?\]\]")
+
+# Length is now editorial law (maintainer, 2026-08-01): entity lore is capped
+# hard — the ceiling is ~2/3 of the longest record of the first generation,
+# and the TYPICAL record should sit near half of that or below. Interest earns
+# length; padding is a build failure, enforced the only way a build can — by
+# the ceiling. Chapters keep their current length (explicitly approved) but a
+# runaway gets reported.
+MAX_ENTITY_LORE_WORDS = 425
+CHAPTER_REPORT_WORDS = 1100
+
+
+def word_count(paragraphs) -> int:
+    total = 0
+    for p in paragraphs or []:
+        text = p if isinstance(p, str) else "".join(seg.get("t", "") for seg in p)
+        total += len(text.split())
+    return total
+
 ID_RE = re.compile(r"^[a-z0-9_-]+$")
 
 # Every entry carries an icon. One that names none falls back to this.
@@ -212,12 +237,58 @@ def check_text(where: str, label: str, text: str, limit: int, problems: list[str
         )
 
 
+def parse_mentions(text: str, where: str, label: str, live, lore_ids, name_of,
+                   problems: list[str], refs_out: list) -> "str | list":
+    """Turn [[domain/id|shown]] into segments; validate every target.
+
+    Returns the paragraph as a plain string when it holds no mentions, else as
+    a list of {"t": ...} / {"t": ..., "ref": {...}} segments. The residual
+    prose (mentions removed) is what gets markup- and length-checked.
+    """
+    segments, pos = [], 0
+    for m in MENTION.finditer(text):
+        dom, rid, shown = m.group(1), m.group(2), m.group(3)
+        if dom == "lore":
+            ok = rid in lore_ids
+        else:
+            ok = dom in live and rid in live[dom]
+        if not ok:
+            problems.append(
+                f"{where}: {label} mentions {dom}/{rid}, which does not exist"
+            )
+            shown = shown or rid
+        else:
+            shown = shown or name_of(dom, rid)
+            refs_out.append({"domain": dom, "id": rid})
+        if m.start() > pos:
+            segments.append({"t": text[pos:m.start()]})
+        segments.append({"t": shown, "ref": {"domain": dom, "id": rid}})
+        pos = m.end()
+    if not segments:
+        return text
+    if pos < len(text):
+        segments.append({"t": text[pos:]})
+    return segments
+
+
+def plain(paragraph) -> str:
+    return paragraph if isinstance(paragraph, str) else "".join(
+        s.get("t", "") for s in paragraph
+    )
+
+
 def validate(entries, entities, live, caps) -> tuple[list[str], list[str], list[str]]:
     problems: list[str] = []
     drift: list[str] = []
     hidden: list[str] = []
 
     lore_ids = {e.get("id") for e in entries}
+    entry_names = {e.get("id"): e.get("name", e.get("id")) for e in entries}
+
+    def name_of(dom: str, rid: str) -> str:
+        if dom == "lore":
+            return entry_names.get(rid, rid)
+        return live.get(dom, {}).get(rid, rid)
     # An entity we have written a `lore` array for has a story to read. The wiki
     # HIDES a cross-reference whose target has none — landing a reader on a stat
     # sheet after they chose "read next" is worse than not offering the link.
@@ -271,11 +342,28 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str], list[
         if not isinstance(body, list) or not body:
             problems.append(f"{where}: body must be a non-empty array of paragraphs")
         else:
+            mention_refs, parsed = [], []
             for n, para in enumerate(body):
                 if not isinstance(para, str):
                     problems.append(f"{where}: body[{n}] is not a string")
-                elif MARKUP.search(para):
+                    continue
+                seg = parse_mentions(para, where, f"body[{n}]", live, lore_ids,
+                                     name_of, problems, mention_refs)
+                if MARKUP.search(plain(seg)):
                     problems.append(f"{where}: body[{n}] contains markup")
+                parsed.append(seg)
+            e["_body_parsed"] = parsed
+            # In-text mentions join related (deduped) so "read next" offers
+            # the names the prose actually drops.
+            seen = {(r["domain"], r["id"]) for r in e.get("related") or []}
+            merged = list(e.get("related") or [])
+            for r in mention_refs:
+                if (r["domain"], r["id"]) not in seen:
+                    seen.add((r["domain"], r["id"])); merged.append(r)
+            e["_related_merged"] = merged
+            words = word_count(parsed)
+            if words > CHAPTER_REPORT_WORDS:
+                drift.append(f"{where}: chapter runs {words} words — is it earning it?")
         icon = e.get("icon", DEFAULT_ICON)
         if not ID_RE.match(icon):
             problems.append(f"{where}: icon {icon!r} must match [a-z0-9_-]+")
@@ -325,11 +413,29 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str], list[
         lore = rec.get("lore")
         if lore is not None and (not isinstance(lore, list) or not lore):
             problems.append(f"{where}: lore must be a non-empty array of paragraphs")
+        mention_refs, parsed = [], []
         for n, para in enumerate(lore or []):
             if not isinstance(para, str):
                 problems.append(f"{where}: lore[{n}] is not a string")
-            elif MARKUP.search(para):
+                continue
+            seg = parse_mentions(para, where, f"lore[{n}]", live, lore_ids,
+                                 name_of, problems, mention_refs)
+            if MARKUP.search(plain(seg)):
                 problems.append(f"{where}: lore[{n}] contains markup")
+            parsed.append(seg)
+        rec["_lore_parsed"] = parsed if lore else None
+        seen = {(r["domain"], r["id"]) for r in rec.get("related") or []}
+        merged = list(rec.get("related") or [])
+        for r in mention_refs:
+            if (r["domain"], r["id"]) not in seen:
+                seen.add((r["domain"], r["id"])); merged.append(r)
+        rec["_related_merged"] = merged
+        words = word_count(parsed)
+        if words > MAX_ENTITY_LORE_WORDS:
+            problems.append(
+                f"{where}: lore runs {words} words, hard cap {MAX_ENTITY_LORE_WORDS} — "
+                f"interest earns length, padding does not (typical target is ~200)"
+            )
         check_related(where, rec.get("related"))
 
     return problems, drift, hidden
@@ -337,14 +443,59 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str], list[
 
 # ---------------------------------------------------------------- rollup
 
-def build(entries, entities, budget) -> dict:
+def check_revelations(entries, entities, problems: list[str]) -> dict:
+    """Validate lore/revelations.json — the GM's map of what the red line has
+    told so far. Every beat is hidden, hinted or revealed; hinted/revealed
+    beats must point at the published text that does the telling, and a hidden
+    beat must point at nothing (if something tells it, it is not hidden).
+    Returns the public-safe summary: counts only, no titles, no truths."""
+    doc = read_json(LORE / "revelations.json")
+    if doc is None:
+        problems.append("lore/revelations.json is missing — the GM progress map is required")
+        return {"revealed": 0, "hinted": 0, "hidden": 0}
+    where = "lore/revelations.json"
+    lore_ids = {e.get("id") for e in entries}
+    told_targets = {("lore", e.get("id")) for e in entries} | {
+        (r.get("domain"), r.get("id")) for r in entities if r.get("lore")
+    }
+    counts = {"revealed": 0, "hinted": 0, "hidden": 0}
+    seen_ids = set()
+    for b in as_list(doc, "beats"):
+        bid = b.get("id", "?")
+        if bid in seen_ids:
+            problems.append(f"{where}: duplicate beat id {bid!r}")
+        seen_ids.add(bid)
+        status = b.get("status")
+        if status not in counts:
+            problems.append(f"{where}: beat {bid} has status {status!r} (hidden|hinted|revealed)")
+            continue
+        counts[status] += 1
+        told = b.get("told_by") or []
+        if status == "hidden" and told:
+            problems.append(
+                f"{where}: beat {bid} is 'hidden' but lists told_by — if something tells it, it is hinted"
+            )
+        if status in ("hinted", "revealed") and not told:
+            problems.append(
+                f"{where}: beat {bid} is '{status}' with an empty told_by — name the text that tells it"
+            )
+        for t in told:
+            key = (t.get("domain"), t.get("id"))
+            if key not in told_targets:
+                problems.append(
+                    f"{where}: beat {bid} told_by {key[0]}/{key[1]}, which has no published text"
+                )
+    return counts
+
+
+def build(entries, entities, budget, progress) -> dict:
     by_domain: dict[str, dict[str, dict]] = {}
     for rec in entities:
         payload = {"description": rec["description"]}
         if rec.get("lore"):
-            payload["lore"] = rec["lore"]
-        if rec.get("related"):
-            payload["related"] = rec["related"]
+            payload["lore"] = rec.get("_lore_parsed") or rec["lore"]
+        if rec.get("_related_merged") or rec.get("related"):
+            payload["related"] = rec.get("_related_merged") or rec["related"]
         by_domain.setdefault(rec["domain"], {})[rec["id"]] = payload
 
     published = []
@@ -358,8 +509,8 @@ def build(entries, entities, budget) -> dict:
             "icon_id": icon,
             "category": e.get("category", "chapter"),
             "summary": e["summary"],
-            "body": e["body"],
-            "related": e.get("related", []),
+            "body": e.get("_body_parsed") or e["body"],
+            "related": e.get("_related_merged") or e.get("related", []),
             "tags": e.get("tags", []),
         }
         if e.get("chapter") is not None:
@@ -369,7 +520,7 @@ def build(entries, entities, budget) -> dict:
         published.append(out)
 
     return {
-        "format": "pixel-lore@1",
+        "format": "pixel-lore@2",
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "note": (
             "Authored by the lore agent, keyed by the owning domain's folder id. "
@@ -380,13 +531,20 @@ def build(entries, entities, budget) -> dict:
             "entities.<domain>.<id>.lore is the LONG read-more text, an array of "
             "paragraphs, shown only if the reader expands it; no length limit. "
             "'entries' are standalone articles (chapters, peoples, places). "
-            "Plain text only — no markup. Cross-references are {domain, id} pairs. "
+            "A paragraph (in lore or body) is EITHER a plain string OR an array "
+            "of segments {t} / {t, ref:{domain,id}} — render t as a text node, "
+            "and a segment with ref as a link to #/domain/id. No markup ever. "
+            "Standalone cross-references are {domain, id} pairs. "
             "Every entry carries an 'icon' (repo-relative path to a 48x48 png) — "
             "draw it at whole multiples of 48 with image-rendering: pixelated, "
             "never at a fractional width. See lore/icons/icons.json."
         ),
         "layout_budget": budget,
         "default_icon": icon_path(DEFAULT_ICON),
+        # Counts only — beat titles and truths are GM material and live in
+        # lore/revelations.json, which is fetched by the wiki's GM view the
+        # same way RED_LINE.md is, never baked into data every player loads.
+        "red_line_progress": progress,
         "entities": by_domain,
         "entries": published,
     }
@@ -400,6 +558,7 @@ def main() -> int:
     entries, entities = load_entries(), load_entities()
     live, caps = live_ids(), domain_caps()
     problems, drift, hidden = validate(entries, entities, live, caps)
+    progress = check_revelations(entries, entities, problems)
 
     for line in drift:
         print(f"DRIFT   {line}")
@@ -435,7 +594,8 @@ def main() -> int:
 
     out = LORE / "lore.json"
     out.write_text(
-        json.dumps(build(entries, entities, caps), indent=2) + "\n", encoding="utf-8"
+        json.dumps(build(entries, entities, caps, progress), indent=2) + "\n",
+        encoding="utf-8",
     )
     print(f"\nCanon whole. Wrote {out.relative_to(ROOT)}")
     return 0

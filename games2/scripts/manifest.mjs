@@ -1,8 +1,8 @@
-// Run the three manifest builders — but only when their INPUTS have actually
+// Run the manifest builders — but only when their INPUTS have actually
 // changed.
 //
 // WHY: `npm test` is `npm run manifest && …`, so every test run, every
-// `npm run dev` and every image build re-derived all three manifests from
+// `npm run dev` and every image build re-derived every manifest from
 // scratch. Measured 1.8s, of which build-monsters-manifest.mjs is ~1.2s
 // because it pngjs-DECODES 384 monster strips (3,608 PNGs, 15 MB) to measure
 // shadow anchors. The art changes a few times a day; the manifests were
@@ -30,7 +30,7 @@ const GAME_ROOT = join(SCRIPT_DIR, "..");
 // (Docker bakes them at /assets) — mirror what the builders themselves do.
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 
-const BUILDERS = ["build-manifest.mjs", "build-worlds.mjs", "build-monsters-manifest.mjs"];
+const BUILDERS = ["build-manifest.mjs", "build-worlds.mjs", "build-monsters-manifest.mjs", "build-npcs-manifest.mjs"];
 // Modules the builders IMPORT. A builder's own mtime is not enough: when the
 // PNG/WebP decode moved out of build-manifest.mjs into imagelib.mjs
 // (f4912fa89), editing the decode stopped invalidating this cache — proven by
@@ -42,8 +42,8 @@ const BUILDERS = ["build-manifest.mjs", "build-worlds.mjs", "build-monsters-mani
 // Listed explicitly rather than globbed: scripts/ holds ~58 files, almost all
 // unrelated verify/debug tools, and the gitignored scripts/_tmp-*.mjs probes
 // would thrash the cache on every session.
-const BUILDER_DEPS = ["imagelib.mjs"];
-const OUTPUTS = ["characters.json", "worlds.json", "monsters.json"].map((f) =>
+const BUILDER_DEPS = ["imagelib.mjs", "anchorlib.mjs"];
+const OUTPUTS = ["characters.json", "worlds.json", "monsters.json", "npcs.json"].map((f) =>
   join(GAME_ROOT, "client", "public", f),
 );
 // Input trees, in the same terms the builders read them.

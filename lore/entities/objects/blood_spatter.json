@@ -1,0 +1,18 @@
+{
+  "domain": "objects",
+  "id": "blood_spatter",
+  "name_seen": "Blood spatter",
+  "law": "III",
+  "description": "A stain is a story that ended at the nearest fire. Almost always.",
+  "lore": [
+    "Fights end. The broken go down where they stand and, some hours on, stand up again beside the nearest tended fire, short a little of whatever they were thinking when it happened. That is the arithmetic of violence here: it costs a thought, not a life. So a stain on the stones is not a marker. It is the start of a story that finished somewhere warmer \u2014 an argument gone too far, a robbery on the road, a creature that had to be released the hard way \u2014 and by the time the rain gets around to it, the person it came out of has usually walked past it twice without looking down.",
+    "Usually. The re-forming needs a tended fire, and the rota has lapsed almost everywhere. Out where the map has gone [[lore/the_quiet|Quiet]], the nearest fire can be a long way to nowhere. The old hands read stains the way trackers read prints: fresh means a scuffle. Faded, far from any light, means don't ask."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
+  ],
+  "gm_notes": "Law III's re-forming demonstrated, plus its cold edge: re-forming presupposes a tended fire, and the lapsed rota (Movement IV) makes remote stains genuinely ominous without any villain. 'Don't ask' is deliberate \u2014 what happens to the broken with no fire in reach is not written anywhere, and should stay a dread, not a rule."
+}

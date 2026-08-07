@@ -252,16 +252,21 @@ export function waterFeature(): AmbientFeature {
 
       const target = forced ? 1 : suppressed ? 0 : waterFrac > 0 ? 1 : 0;
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
+      // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
+      // stop the moment the player steps inside (runtime/outdoor.ts). Applied
+      // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the
+      // crossing snaps today, and when it becomes a fade this carries it.
+      const g = gain * ctx.outdoor;
       const refl = reflection(ctx.env);
       lastMoon = refl.moon;
 
       // Pool sizes follow the visible water area (and, for glints, the sun/moon
       // strength). No water in view → everything empties out.
       const area = view.width * view.height;
-      const wantWave = gain < 0.02
+      const wantWave = g < 0.02
         ? 0
         : Math.min(MAX_WAVE, Math.round((area / AREA_PER_WAVE) * waterFrac));
-      const wantGlint = gain < 0.02
+      const wantGlint = g < 0.02
         ? 0
         : Math.min(MAX_GLINT, Math.round((area / AREA_PER_GLINT) * waterFrac * refl.strength));
 
@@ -284,7 +289,7 @@ export function waterFeature(): AmbientFeature {
           resetWave(m);
         }
         const a = stepMark(m, WAVE_FRAMES, dtc);
-        m.sprite.setTint(waveTint).setPosition(m.x, m.y).setAlpha(gain * a * waveK).setVisible(a > 0.01);
+        m.sprite.setTint(waveTint).setPosition(m.x, m.y).setAlpha(g * a * waveK).setVisible(a > 0.01);
       }
       for (const m of glints) {
         if (m.life <= 0) {
@@ -295,7 +300,7 @@ export function waterFeature(): AmbientFeature {
           resetGlint(m, refl.tint);
         }
         const a = stepMark(m, GLINT_FRAMES, dtc);
-        m.sprite.setPosition(m.x, m.y).setAlpha(gain * refl.strength * a).setVisible(a > 0.01);
+        m.sprite.setPosition(m.x, m.y).setAlpha(g * refl.strength * a).setVisible(a > 0.01);
       }
     },
     setSuppressed(on) {

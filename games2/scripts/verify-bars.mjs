@@ -32,6 +32,16 @@ try {
   await page.evaluate(() => window.__mlSelect.commit());
   // The geometry assertions below check real bounding boxes anyway — a
   // zero-size/hidden chip still fails the corner checks.
+  // The bars mount with the HUD, BEFORE the first server patch lands — wait
+  // for the real level-1 stats to replace the mount defaults, or every number
+  // below races the join.
+  // 60s like the __mlSelect wait above: measured ~21s to the first real patch
+  // at this canvas size on the starved harness GL — 30s flaked.
+  await page.waitForFunction(
+    () => (document.querySelectorAll(".ml-bar-num")[0]?.textContent || "").includes("40"),
+    undefined,
+    { timeout: 60000, polling: 200 },
+  );
   await page.waitForFunction(() => document.querySelectorAll(".ml-bars").length === 2,
     undefined, { timeout: 90000, polling: 250 });
 
@@ -58,9 +68,9 @@ try {
     s[0].color === "red" && goodRow(s[0]) ? ok("health = red DIV fill (width %) in the track, no imgs") : fail(`hp row ${JSON.stringify(s[0])}`);
     s[1].color === "yellow" && goodRow(s[1]) ? ok("energy = yellow DIV fill (width %) in the track, no imgs") : fail(`ep row ${JSON.stringify(s[1])}`);
     s[2].color === "blue" && goodRow(s[2]) ? ok("experience = blue DIV fill (width %) in the track, no imgs") : fail(`xp row ${JSON.stringify(s[2])}`);
-    s[0].num === "10 / 10 HP" ? ok(`hp number "${s[0].num}"`) : fail(`hp number "${s[0].num}" (want "10 / 10 HP")`);
-    s[1].num === "0 / 0 EP" ? ok(`ep number "${s[1].num}"`) : fail(`ep number "${s[1].num}" (want "0 / 0 EP")`);
-    s[2].num === "0 / 10 XP" ? ok(`xp number "${s[2].num}"`) : fail(`xp number "${s[2].num}" (want "0 / 10 XP")`);
+    s[0].num === "40 / 40 HP" ? ok(`hp number "${s[0].num}"`) : fail(`hp number "${s[0].num}" (want "40 / 40 HP" — level-1 server stats)`);
+    s[1].num === "20 / 20 EP" ? ok(`ep number "${s[1].num}"`) : fail(`ep number "${s[1].num}" (want "20 / 20 EP")`);
+    s[2].num === "0 / 50 XP" ? ok(`xp number "${s[2].num}"`) : fail(`xp number "${s[2].num}" (want "0 / 50 XP" — xpToNext(1))`);
   }
 
   // the two chips hang 10px off the top corners (left: HP+EP, right: XP+gold)
@@ -90,7 +100,7 @@ try {
   a.every((c, i) => c === b[i]) ? ok("fills are static (no animation)") : fail(`fill still animating: ${a} -> ${b}`);
   const pa = a.map(pctOf);
   Math.abs(pa[0] - 100) < 1 ? ok(`hp full (${pa[0]}%)`) : fail(`hp fill ${pa[0]}% (want 100)`);
-  Math.abs(pa[1] - 0) < 1 ? ok(`energy empty (${pa[1]}%)`) : fail(`ep fill ${pa[1]}% (want 0)`);
+  Math.abs(pa[1] - 100) < 1 ? ok(`energy full (${pa[1]}%)`) : fail(`ep fill ${pa[1]}% (want 100 — pools start full)`);
   Math.abs(pa[2] - 0) < 1 ? ok(`experience empty (${pa[2]}%)`) : fail(`xp fill ${pa[2]}% (want 0)`);
 
   // ── LEVEL label on the XP row (maintainer 2026-07-25): "LEVEL n" LEFT-aligned

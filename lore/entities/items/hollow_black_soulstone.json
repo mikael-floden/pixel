@@ -5,25 +5,14 @@
   "law": "V",
   "description": "Cracked all the way through, with nothing in the cracks. What reached the bottom of this one was never its own.",
   "lore": [
-    "Every soulstone is the last hard piece of something \u2014 one fact, one appetite, one habit of being, pressed down until it is nearly a mineral. Almost all of them are warm and solid and read, to anyone who has handled a few, like a life that got very small.",
-    "This one is cracked all the way through, and there is nothing in the cracks.",
-    "That is not damage. It came out like that. The people who work the eastern ground have taken enough of them now to be certain, and it has caused a good deal of quiet discussion, because a stone is supposed to be the bottom of a creature and this one appears to be the bottom of something that was never there.",
-    "The working explanation, and it is only that, is that what reached the bottom of Grinmask was not Grinmask. Something else was in the shape, doing the wearing, and when the shape broke it was the visitor's last hard piece that fell into the grass. If that is right, then everyone carrying one of these is carrying a fragment of the thing under the mountain, which several people have pointed out and nobody has stopped doing.",
-    "It cuts through armour the way it cuts through most things. Whatever is compressed in there does not recognise a boundary as an argument."
+    "A soulstone is the bottom of a creature: one fact, one appetite, pressed to mineral. This one comes out of [[monsters/masked_shadow_creature|Grinmask]] cracked all the way through, and there is nothing in the cracks. Not damage — they all come out like that. The trade's working explanation is short and unpleasant: that shape was emptied long before anyone broke it, so what settled to the bottom of it was never the creature's own. It was the visitor's.",
+    "By that reading, everyone who carries one is carrying a fragment of [[lore/the_hole_under_the_mountain|the thing under the mountain]]. Several people have pointed this out. Nobody has stopped. The exception is [[characters/8c41be1e|Hearn]], who has been nearer the source than anyone: he sold his the same evening it was paid to him, under its price, to a buyer he did not look at."
   ],
   "related": [
     {
-      "domain": "monsters",
-      "id": "masked_shadow_creature"
-    },
-    {
       "domain": "lore",
       "id": "the_hard_pieces"
-    },
-    {
-      "domain": "lore",
-      "id": "the_hole_under_the_mountain"
     }
   ],
-  "gm_notes": "Demonstrates the one-to-one stone/creature law carrying real plot weight rather than being a loot rule. This is the first hard hint that the cave's influence is already in the players' inventories. Do not confirm it in shipped text \u2014 RED_LINE.md section 12 keeps the cave unanswered."
+  "gm_notes": "The v1 hook kept at half length: the cave is already in the players' pouches. B6/B7 stay hinted — the visitor is never named, the explanation stays 'working'. Hearn's sale is the only statement he has ever made about the inside, and he did not make it out loud."
 }

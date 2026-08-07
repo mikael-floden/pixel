@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 1,
+  "object_count": 3,
   "target_count": 1,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -19,9 +19,39 @@
     }
   },
   "categories": {
-    "light": 1
+    "effect": 1,
+    "light": 1,
+    "decor": 1
   },
   "objects": [
+    {
+      "id": "blood_spatter",
+      "name": "Blood spatter",
+      "category": "effect",
+      "description": "a burst of blood dispersing into particles \u2014 the game's hit effect",
+      "view": "low top-down",
+      "size": 34,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Overlay effect: rendered 1:1 on the struck body, not placed in the world."
+      },
+      "status": null,
+      "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
+      "sprite": "blood_spatter/sprite.webp",
+      "rotations": {},
+      "animations": [
+        {
+          "key": "spatter",
+          "description": "blood spatter in all directions, trimmed to burst->dispersal",
+          "frames": 6,
+          "preview_gif": null,
+          "directions": {}
+        }
+      ]
+    },
     {
       "id": "campfire",
       "name": "Campfire",
@@ -65,6 +95,43 @@
             "south-west": "campfire/animations/burn__south-west.gif",
             "west": "campfire/animations/burn__west.gif"
           }
+        }
+      ]
+    },
+    {
+      "id": "grave_cross",
+      "name": "Wooden grave cross",
+      "category": "decor",
+      "description": "a wooden grave cross that appears from the ground where something died",
+      "view": "low top-down",
+      "size": 34,
+      "placement": {
+        "world_height_m": 0.9,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": null,
+      "pixellab_object_id": "56b75726-69bd-4b23-a54f-3626b5df3700",
+      "sprite": "grave_cross/sprite.webp",
+      "rotations": {
+        "east": "grave_cross/rotations/east.webp",
+        "north": "grave_cross/rotations/north.webp",
+        "north-east": "grave_cross/rotations/north-east.webp",
+        "north-west": "grave_cross/rotations/north-west.webp",
+        "south": "grave_cross/rotations/south.webp",
+        "south-east": "grave_cross/rotations/south-east.webp",
+        "south-west": "grave_cross/rotations/south-west.webp",
+        "west": "grave_cross/rotations/west.webp"
+      },
+      "animations": [
+        {
+          "key": "appear",
+          "description": "Appears from the ground",
+          "frames": 16,
+          "preview_gif": null,
+          "directions": {}
         }
       ]
     }

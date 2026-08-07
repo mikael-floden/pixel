@@ -598,8 +598,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.728,
-        "crystal_ice": 0.272
+        "saturated_grass": 0.726,
+        "crystal_ice": 0.274
       },
       "edges": {
         "NE": {
@@ -915,8 +915,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.379,
-        "crystal_ice": 0.621
+        "saturated_grass": 0.378,
+        "crystal_ice": 0.622
       },
       "edges": {
         "NE": {
@@ -1322,7 +1322,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

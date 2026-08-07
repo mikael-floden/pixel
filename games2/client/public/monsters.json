@@ -398,6 +398,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 32,
+        "hopFrac": 0.082
+      },
       "groundIdle": {
         "south": {
           "f": 0.8229,
@@ -1032,6 +1036,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 38,
+        "hopFrac": 0.072
       },
       "groundIdle": {
         "south": {
@@ -1773,6 +1781,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 36,
+        "hopFrac": 0.056
       },
       "groundIdle": {
         "south": {
@@ -2761,6 +2773,28 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 36,
+        "hopFrac": 0.305,
+        "travel": [
+          1.125,
+          1.05,
+          0.919,
+          0.828,
+          1.008,
+          1.174,
+          1.255,
+          1.267,
+          1.208,
+          0.986,
+          0.734,
+          0.253,
+          0.912,
+          1.1,
+          1.049,
+          1.133
+        ]
+      },
       "groundIdle": {
         "south": {
           "f": 0.7643,
@@ -3588,6 +3622,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 67,
+        "hopFrac": 0.118
+      },
       "groundIdle": {
         "south": {
           "f": 0.7161,
@@ -4382,6 +4420,28 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 29,
+        "hopFrac": 0.267,
+        "travel": [
+          0.967,
+          0.887,
+          0.786,
+          1.142,
+          1.031,
+          1.436,
+          1.834,
+          1.279,
+          1.097,
+          0.924,
+          0.623,
+          0.595,
+          0.559,
+          0.911,
+          0.959,
+          0.967
+        ]
       },
       "groundIdle": {
         "south": {
@@ -5370,6 +5430,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 27,
+        "hopFrac": 0.028
+      },
       "groundIdle": {
         "south": {
           "f": 0.8065,
@@ -6196,6 +6260,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 32,
+        "hopFrac": 0.044
       },
       "groundIdle": {
         "south": {
@@ -7024,6 +7092,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 29,
+        "hopFrac": 0.037
+      },
       "groundIdle": {
         "south": {
           "f": 0.8132,
@@ -7627,6 +7699,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 28,
+        "hopFrac": 0.025
+      },
       "groundIdle": {
         "south": {
           "f": 0.8842,
@@ -8185,6 +8261,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 51,
+        "hopFrac": 0.046
       },
       "groundIdle": {
         "south": {
@@ -8820,6 +8900,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 39,
+        "hopFrac": 0.031
       },
       "groundIdle": {
         "south": {
@@ -9616,6 +9700,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 38,
+        "hopFrac": 0.04
+      },
       "groundIdle": {
         "south": {
           "f": 0.817,
@@ -10373,6 +10461,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 92,
+        "hopFrac": 0.03
+      },
       "groundIdle": {
         "south": {
           "f": 0.8655,
@@ -11055,6 +11147,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 56,
+        "hopFrac": 0.04
       },
       "groundIdle": {
         "south": {
@@ -11850,6 +11946,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 41,
+        "hopFrac": 0.035
       },
       "groundIdle": {
         "south": {
@@ -12708,6 +12808,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 88,
+        "hopFrac": 0.02
+      },
       "groundIdle": {
         "south": {
           "f": 0.8155,
@@ -13336,6 +13440,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 32,
+        "hopFrac": 0.075
       },
       "groundIdle": {
         "south": {
@@ -14158,6 +14266,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 92,
+        "hopFrac": 0.07
+      },
       "groundIdle": {
         "south": {
           "f": 0.7701,
@@ -14787,6 +14899,16 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 39,
+        "hopFrac": 0.205,
+        "travel": [
+          0.404,
+          1.305,
+          1.648,
+          0.643
+        ]
+      },
       "groundIdle": {
         "south": {
           "f": 0.8232,
@@ -15389,6 +15511,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 56,
+        "hopFrac": 0.017
       },
       "groundIdle": {
         "south": {
@@ -15993,6 +16119,10 @@
           ]
         }
       },
+      "gait": {
+        "cycleWu": 48,
+        "hopFrac": 0.021
+      },
       "groundIdle": {
         "south": {
           "f": 0.7242,
@@ -16595,6 +16725,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 57,
+        "hopFrac": 0.073
       },
       "groundIdle": {
         "south": {
@@ -17278,6 +17412,10 @@
             0
           ]
         }
+      },
+      "gait": {
+        "cycleWu": 92,
+        "hopFrac": 0.017
       },
       "groundIdle": {
         "south": {

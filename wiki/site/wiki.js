@@ -24,7 +24,10 @@ const stripExt = (rel) => rel.replace(/\.(png|webp)$/i, "");
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"];
+// "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs and a
+// rejected entry means UNBIND that sound from that event — the recording is
+// untouched (maintainer 2026-08-06). See live/feedback/bindings.json.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
@@ -121,20 +124,24 @@ function starsWidget(domain, id) {
   render();
   return wrap;
 }
-function verdictWidget(domain, id, { onchange } = {}) {
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
-    if (st === "rejected") return h("span", { class: "pill err" }, "slated for removal");
+    if (st === "rejected") return h("span", { class: "pill err" }, rejectedLabel);
     return h("span");
   }
   const wrap = h("span", { class: "verdict" });
   const render = () => {
     const st = fb(domain, id).status;
-    wrap.replaceChildren(
-      h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
-      h("button", { class: st === "rejected" ? "rejected" : "", title: "Reject = the producing agent removes/replaces this on its next run", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, "✕ remove"),
-    );
+    // NB: replaceChildren stringifies null into a literal "null" text node —
+    // the same trap h() guards against. Filter, never pass a bare null.
+    wrap.replaceChildren(...[
+      // rejectOnly: a per-take unbind on an already-narrow row, where the
+      // approval of the binding as a whole lives one row up.
+      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
+      h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, reject),
+    ].filter(Boolean));
   };
   render();
   return wrap;
@@ -164,7 +171,10 @@ const FILE_FOR = (key) => key.startsWith("feedback/")
 // The current local value of one touched id inside a file (null = deleted).
 function valueOf(key, id) {
   const doc = FILE_FOR(key).get() ?? {};
-  const bucket = key.startsWith("feedback/") ? doc.entries : key === "tuning/monsters" ? doc.monsters : doc.overrides;
+  const bucket = key.startsWith("feedback/") ? doc.entries
+    : key === "tuning/monsters" ? doc.monsters
+    : key === "tuning/sfx_requests" ? doc.requests
+    : doc.overrides;
   const v = bucket?.[id];
   return v === undefined ? null : v;
 }
@@ -178,8 +188,10 @@ async function apiSaveFile(key) {
     body: JSON.stringify({ file: key, set }),
   });
   if (res.status === 401) {
-    // Session expired (server restarts wipe sessions — routine). KEEP the
-    // unsaved edits: drop only the dead token; re-login then re-saves them.
+    // The session is genuinely over — a week has passed, or the server's
+    // secret was rotated. (It is no longer "the server restarted": sessions
+    // are signed and survive deploys since 2026-08-06.) KEEP the unsaved
+    // edits: drop only the dead token; re-login then re-saves them.
     localStorage.removeItem("wiki-admin-token");
     setAdmin(false, { keepEdits: true });
     throw new Error("session expired — sign in again, your edits are kept");
@@ -349,6 +361,16 @@ function makePlayer(entity, kind) {
   rafTimer = requestAnimationFrame(tick);
 
   const stateSeg = h("span", { class: "seg" });
+  // Keep the ACTIVE state visible inside the pannable row — scrollLeft only,
+  // never scrollIntoView: that can drag the whole page along with it.
+  function revealActiveState() {
+    const on = stateSeg.querySelector("button.on");
+    if (!on) return;
+    const pad = 14;
+    if (on.offsetLeft < stateSeg.scrollLeft + pad) stateSeg.scrollLeft = Math.max(0, on.offsetLeft - pad);
+    else if (on.offsetLeft + on.offsetWidth > stateSeg.scrollLeft + stateSeg.clientWidth - pad)
+      stateSeg.scrollLeft = on.offsetLeft + on.offsetWidth - stateSeg.clientWidth + pad;
+  }
   function renderStateSeg() {
     stateSeg.replaceChildren(...stateNames.map((s) =>
       h("button", {
@@ -361,9 +383,9 @@ function makePlayer(entity, kind) {
           if (!anims[s]?.dirs?.[cur.dir]) {
             cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           }
-          loadClip(); renderStateSeg(); renderDirPad(); onStateChange?.(s);
+          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onStateChange?.(s);
         },
-      }, s + (anims[s].fallback ? ` (→${anims[s].fallback})` : ""))));
+      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""))));
   }
 
   const dirPad = h("span", { class: "dirpad" });
@@ -377,6 +399,7 @@ function makePlayer(entity, kind) {
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
   renderStateSeg();
+  requestAnimationFrame(revealActiveState);
   renderDirPad();
 
   const playBtn = h("button", { class: "ghost-btn", onclick: () => { cur.playing = !cur.playing; playBtn.textContent = cur.playing ? "⏸" : "▶"; } }, "⏸");
@@ -422,7 +445,10 @@ const audioEl = () => $("#shared-audio");
 let playingBtn = null;
 function playTake(files, btn) {
   const a = audioEl();
-  const src = files.m4a ?? files.ogg ?? files.wav;
+  // ogg first: Chrome and Firefox both decode it and it is the smaller file;
+  // m4a is Safari's (no ogg); mp3/wav are the fallbacks. Same order as the
+  // WebAudio auditions, so the page and the sound engine agree on formats.
+  const src = files.ogg ?? files.m4a ?? files.mp3 ?? files.wav;
   if (playingBtn === btn && !a.paused) { a.pause(); return; }
   if (playingBtn) { playingBtn.classList.remove("playing"); playingBtn.textContent = "▶"; }
   a.src = assetUrl(src);
@@ -430,6 +456,16 @@ function playTake(files, btn) {
   playingBtn = btn;
   btn.classList.add("playing"); btn.textContent = "⏸";
   a.onpause = a.onended = () => { btn.classList.remove("playing"); btn.textContent = "▶"; if (playingBtn === btn) playingBtn = null; };
+}
+/** Silence everything the WIKI is playing. Two independent players live on
+ *  this page and stopping one leaves the other sounding: the WebAudio
+ *  auditions (sfxEngine) and this shared <audio> element, which carries music
+ *  beds and entity takes. Anything that takes over the screen — the picker,
+ *  a route change — has to cut both. */
+function stopAllAudio() {
+  sfxEngine.stop();
+  const a = audioEl();
+  if (a && !a.paused) a.pause();   // its onpause resets that row's ▶/⏸ button
 }
 function takeRow(domain, entityPath, take, extra = []) {
   const id = `${entityPath}/${take.id}`.replace(/\.(wav|ogg|m4a)$/, "");
@@ -459,9 +495,21 @@ function takeRow(domain, entityPath, take, extra = []) {
 // start page, the headings and the back-links all follow.
 const SECTIONS = {
   monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
-  characters: { label: "Characters",    noun: "heroes",     icon: "characters", count: (d) => d.counts.characters },
-  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles, navCount: (d) => d.counts.tile_types },
-  objects:    { label: "Objects",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
+  // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
+  // close to "Creatures"). The nav counts RACES; the start tile keeps heroes.
+  // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
+  // close to "Creatures"). The count is the WHOLE cast — heroes and NPCs
+  // together — because "2 heroes" undersold a section holding 193 people
+  // (maintainer 2026-08-05). The word "characters" survives here, as the
+  // count noun, which is exactly where it never collided with "creatures".
+  characters: { label: "Races",         noun: "characters", icon: "characters",
+                count: (d) => (d.counts.characters ?? 0) + (d.counts.npcs ?? 0) },
+  // World counted its 8 TERRAIN TYPES in the nav while its card counted all
+  // 4,372 tiles — one section quietly measuring itself two ways (maintainer
+  // 2026-08-06: "use it in the menu as well"). One count per section now, and
+  // `navCount` went with it: tiles was its only user.
+  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
+  objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
   items:      { label: "Items",         noun: "items",      icon: "items",      count: (d) => d.counts.items },
@@ -494,7 +542,7 @@ function renderNav() {
     const s = SECTIONS[slug];
     if (s.adminOnly && !state.admin) continue;
     rows.push(h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
-      s.label, h("span", { class: "count" }, String((s.navCount ?? s.count)(state.data) || ""))));
+      s.label, h("span", { class: "count" }, String(s.count(state.data) || ""))));
   }
   $("#nav").replaceChildren(...rows);
 }
@@ -517,6 +565,9 @@ const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().inc
 const worldInfo = () => state.data.world ?? null;
 const tileUses = (rel) => worldInfo()?.tiles?.[rel] ?? 0;
 const monsterSpawns = (id) => worldInfo()?.monsters?.[id] ?? null;
+/** Where maps2 stands this NPC in the game's default world (npcs@1), keyed by
+ *  the characters2 folder id — the same id this build uses. */
+const npcPlacements = (id) => worldInfo()?.npcs?.[id] ?? null;
 // "Referenced by the game" — bindings.json events / composer lookups for
 // sounds, the director's chosen bed for music (see build.mjs).
 function usePill(usedBy, whatUnused) {
@@ -579,19 +630,64 @@ function viewHome() {
 }
 
 /* --- monsters --- */
+/** Does this creature come for you unprompted? The game's rule exactly: a
+ *  monster proximity-aggros only when its aggro radius is greater than zero,
+ *  and the tuning default is 0 — PASSIVE by default, so most of the roster
+ *  only ever retaliates. Read from the LIVE tuning doc through monsterStats,
+ *  so editing a radius in the wiki re-colours the pill with no rebuild. */
+const isAggressive = (st) => Number(st.aggro_radius_wu ?? 0) > 0;
+function aggroPill(st) {
+  const on = isAggressive(st);
+  return h("span", { class: `pill ${on ? "err" : "ok"}`, title: on
+      ? `Attacks on sight — it hunts anything that comes within ${st.aggro_radius_wu} world units of it.`
+      : "Calm — it will not start a fight. Hit it and it fights back like any creature." },
+    on ? "aggressive" : "calm");
+}
+/** A row of mutually exclusive sort buttons. Its own fixed-height row, so the
+ *  grid below it never shifts as the order changes. */
+function sortBar(key, options, current, onPick) {
+  const row = h("div", { class: "sortbar" });
+  row.append(...options.map(([id, label, title]) => h("button", {
+    class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
+    onclick: () => { try { localStorage.setItem(key, id); } catch { /* private mode */ } onPick(id); },
+  }, label)));
+  return row;
+}
+const MONSTER_SORT_KEY = "wiki-monster-sort";
 function viewMonsters() {
   const q = state.query;
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
+  // Default is BY NAME. The underlying order is the folder id, which reads as
+  // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
+  let sort = "name";
+  try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const lvl = (m) => Number(stat.get(m.id).level ?? 0);
+  const CMP = {
+    name: byName,
+    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
+    // Aggressive first, and hardest first within each half — "what can come
+    // for me, worst first" is the question this sort answers.
+    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+  };
+  const sorted = [...list].sort(CMP[sort] ?? byName);
+  const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
   return h("div", {},
     sectionHead("monsters"),
     h("p", { class: "muted" }, state.admin
-      ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its shadow, edit its stats and loot.`
-      : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
-    h("div", { class: "grid" }, ...list.map((m) => {
+      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight. Click one to preview every animation, check its shadow, edit its stats and loot.`
+      : `${list.length} creatures roam Nangijala, ${nAggro} of them aggressive. Click one to watch every animation and study its stats.`),
+    sortBar(MONSTER_SORT_KEY, [
+      ["name", "by name", "Alphabetical"],
+      ["level", "by level", "Hardest first"],
+      ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+    ], sort, () => route()),
+    h("div", { class: "grid" }, ...sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
-      const st = monsterStats(m.id);
+      const st = stat.get(m.id);
       const sp = monsterSpawns(m.id);
       return h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
@@ -599,9 +695,12 @@ function viewMonsters() {
         h("div", { class: "card-name" }, m.name),
         h("div", { class: "card-sub" },
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
-        h("div", { class: "card-sub" }, sp
-          ? `${sp.spawned} roaming · ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`
-          : "not spawned"),
+        // The habitat count is gone from here (maintainer 2026-08-06) — will
+        // it come for me matters more at a glance, and the count is still on
+        // the creature's own page. "not spawned" stays beside it because it
+        // is a different fact from calm: that one is in no world at all.
+        h("div", { class: "card-sub card-pills" }, aggroPill(st),
+          sp ? null : h("span", { class: "pill", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")),
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }
@@ -614,6 +713,12 @@ const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? `
 /** What a hero IS, in words a player understands — "Human · Female", never
  *  the pipeline folder id (maintainer 2026-07-30). */
 const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
+/** A game state as a READER sees it: "idle" → "Idle", "spell_wand" → "Spell
+ *  wand". The keys are the game's own vocabulary, but they are still code —
+ *  lowercase and underscored — and the viewer prints them on its buttons
+ *  (maintainer 2026-08-01: "no technical names to the end user"). Anything
+ *  genuinely technical is fixed where it is BUILT, not papered over here. */
+const stateLabel = (s) => String(s).replace(/[_-]+/g, " ").replace(/^./, (c) => c.toUpperCase());
 /** Authored in characters2/metadata.json; the placeholder only runs for a
  *  hero the characters agent has not written up yet. */
 const heroLore = (c) => c.loreDesc ?? c.lore ?? (c.kind === "npc"
@@ -639,9 +744,20 @@ let pendingScroll = null;
 const loreList = () => state.data.domains.lore ?? [];   // build.mjs sorted it; never re-sort
 // One table for every category decision — the group heading AND the chip under
 // the picture. An unknown category never throws and never prints a raw slug.
+/** The race a "people" entry is about, taken from the cast's own species so
+ *  the day Elves ship their entry chips itself. */
+function raceOfEntry(e) {
+  const races = [...new Set((state.data?.domains?.characters ?? []).map((c) => c.species || "Human"))];
+  return races.find((r) => new RegExp(`\\b${r}s?\\b`, "i").test(e?.name ?? "")) ?? null;
+}
 const LORE_CATEGORY = {
   chapter: { plural: "Chapters", chip: (e) => (Number.isInteger(e.chapter) ? `Chapter ${e.chapter}` : "A chapter") },
-  people:  { plural: "Peoples",  chip: () => "A people" },
+  // "The Human Race", not "A people" (maintainer 2026-08-05) — the section is
+  // called Races now and the chip should say so. The race is DERIVED from the
+  // cast, not hardcoded: the species whose name appears in the entry's title
+  // ("The Human Dead" → Human). An entry about a people we have no cast for
+  // still reads as a race rather than falling back to the old word.
+  people:  { plural: "Races",    chip: (e) => { const r = raceOfEntry(e); return r ? `The ${r} Race` : "A race"; } },
   place:   { plural: "Places",   chip: () => "A place" },
   faction: { plural: "Factions", chip: () => "A faction" },
 };
@@ -673,18 +789,39 @@ const STORY_ORPHAN_CHARS = 140;
  *  becomes its own page. Never paginate by paragraph COUNT: they run 30 to
  *  1262 characters. A last page that is one short paragraph joins the one
  *  before it rather than dangling. */
+/* Lore v2 (2026-08-05): a paragraph is a STRING, or an array of segments
+   {t, ref?} — the lore agent's inline links, so a name in running prose can
+   point straight at the entity it names. paraText() is the ONE flattener
+   (search, budgets, dedupe all use it); paraNode() is the ONE renderer, and
+   its links follow the established landing rules EXACTLY: a chapter ref
+   starts the reader at the top, an entity ref lands on that page's story
+   card (maintainer 2026-08-05: "maintain the logic we have"). Segment text
+   stays a TEXT NODE — no markup path, same rule as before. */
+const paraText = (p) => (typeof p === "string" ? p : (p ?? []).map((s) => s?.t ?? "").join(""));
+function paraNode(p) {
+  if (typeof p === "string") return h("p", {}, p);
+  return h("p", {}, ...(p ?? []).map((seg) => {
+    const t = seg?.t ?? "";
+    if (!seg?.ref) return t;
+    const r = resolveRef(seg.ref);
+    if (!r) return t;                            // a stale ref reads as prose, never as a broken link
+    const a = h("a", { class: "lore-inline", href: r.href }, t);
+    a.addEventListener("click", () => { pendingScroll = seg.ref.domain === "lore" ? "top" : "story"; });
+    return a;
+  }));
+}
 function paginate(paras, budget = STORY_PAGE_CHARS) {
   const pages = [];
   let cur = [], n = 0;
   for (const raw of paras ?? []) {
-    const p = String(raw ?? "").trim();
-    if (!p) continue;
-    if (cur.length && n + p.length > budget) { pages.push(cur); cur = []; n = 0; }
-    cur.push(p); n += p.length;
+    const len = paraText(raw).trim().length;     // budget by VISIBLE text, rich or plain
+    if (!len) continue;
+    if (cur.length && n + len > budget) { pages.push(cur); cur = []; n = 0; }
+    cur.push(raw); n += len;
   }
   if (cur.length) pages.push(cur);
   const last = pages[pages.length - 1];
-  if (pages.length > 1 && last.length === 1 && last[0].length < STORY_ORPHAN_CHARS) {
+  if (pages.length > 1 && last.length === 1 && paraText(last[0]).length < STORY_ORPHAN_CHARS) {
     pages[pages.length - 2] = pages[pages.length - 2].concat(pages.pop());
   }
   return pages;
@@ -810,7 +947,10 @@ function resolveRef(ref) {
   if (!domain || !id) return null;
   if (domain === "lore")       { const e = loreById(id);      return e  && { href: `#/lore/${e.id}`,       name: e.name,        art: loreIcon(e, 48),    where: chipText(e) }; }
   if (domain === "monsters")   { const m = monsterById(id);   return m  && { href: `#/monsters/${m.id}`,   name: m.name,        art: refPic(m),          where: label("monsters") }; }
-  if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: label("characters") }; }
+  // A person's context is their RACE, not the section they live under
+  // (maintainer 2026-08-05): Jehanne reads as "Human", the way a URL
+  // /races/human/<id> would. Everything else names its section.
+  if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: c.species || label("characters") }; }
   if (domain === "items")      { const it = itemById(id);     return it && { href: `#/items/${it.id}`,     name: itemLabel(it), art: itemSprite(it, 48), where: label("items") }; }
   if (domain === "objects")    { const o = objectById(id);    return o  && { href: `#/objects/${o.id}`,    name: o.name,        art: refPic(o),          where: label("objects") }; }
   if (domain === "tiles")      { const t = tileTypeById(id);  return t  && { href: `#/tiles/${t.id}`,      name: t.name,        art: h("span", { class: "item-icon item-noart" }), where: label("tiles") }; }
@@ -820,7 +960,7 @@ function resolveRef(ref) {
  *  verbatim; exact match only, so a rewritten summary can never silently
  *  swallow a paragraph. Shared with hasStory() so the page and the "Read next"
  *  filter can never disagree about whether a chapter has anything in it. */
-const chapterParas = (e) => (e?.body ?? []).filter((p, n) => !(n === 0 && p === e.summary));
+const chapterParas = (e) => (e?.body ?? []).filter((p, n) => !(n === 0 && paraText(p) === e.summary));
 /** The entity behind a reference, for the four domains that render a story
  *  card. Tiles, sounds and music are absent ON PURPOSE: their pages have no
  *  card, so no amount of loreStory in the record would give a reader anything
@@ -891,7 +1031,7 @@ function storyCard({ label: what, art, name, paras, related }) {
   return pagedPanel({
     title: head, klass: "story-card",
     aside: loreLinks(related),                       // last in the card
-    pages: chunks.map((ps) => () => ps.map((p) => h("p", {}, p))),
+    pages: chunks.map((ps) => () => ps.map(paraNode)),
   });
 }
 const heroStoryTitle = (c) => (c.sex === "Female" ? "Her story" : c.sex === "Male" ? "His story" : "Their story");
@@ -1251,47 +1391,147 @@ function viewMonster(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Stats"),
       statsEditor(m.id)),
+    // This creature's own sound events (none in the game yet — the Game
+    // Master can assign one to any of its actions from here).
+    entitySoundsCard("monsters", m),
     // The long story, last on the page ALWAYS — the pager is the only control
     // above variable-height content, so nothing may be appended below it.
     storyCard({ label: "The story", art: refPic(m), name: m.name, paras: m.loreStory, related: m.loreRelated }));
 }
 
 /* --- characters --- */
+/** "Where you'll find them": the same world minimap the creatures use, with
+ *  this NPC's standing spot marked (maintainer 2026-08-06). Deliberately an
+ *  APPROXIMATE mark, not a pin: maps2 gives an exact cell, but an NPC who can
+ *  walk will not be standing on that exact tile when you arrive — so the spot
+ *  is a soft halo the size of a short wander, with a hard dot at its centre
+ *  for "this is the place". Points, not spans: a person is one cell.
+ *  Projection is the zone map's own affine, so both maps agree by
+ *  construction. */
+function npcMapPanel(c) {
+  const wm = worldInfo()?.map;
+  const spots = wm?.npcs?.[c.id];
+  if (!wm?.proj || !spots?.length) return null;
+  const P = wm.proj;
+  // Cell → minimap px, at the diamond's CENTRE (+tile/2, +dy): where the feet
+  // of a body standing in that cell are drawn.
+  const at = (x, y, lv) => [
+    P.s * (P.ox + (x - y) * P.dx + P.tile / 2) + P.offx,
+    P.s * (P.oy + (x + y) * P.dy - lv * P.levelPx + P.dy) + P.offy,
+  ];
+  // The mark is a CSS overlay in PERCENT, not painted into a canvas: this map
+  // is 1800px wide and shows at ~330 on a phone, so a canvas-drawn dot shrinks
+  // to a speck exactly where it matters most. In percent it keeps its size on
+  // every screen, and stays crisp.
+  const marks = spots.map((sp) => {
+    const [x, y] = at(sp.x, sp.y, sp.elev ?? 0);
+    return h("span", {
+      class: "npc-spot", title: `${sp.name || c.name}${sp.anchor ? ` — ${ANCHOR_WHERE[sp.anchor] ?? sp.anchor}` : ""}`,
+      style: `left:${(x / wm.mapW * 100).toFixed(3)}%; top:${(y / wm.mapH * 100).toFixed(3)}%`,
+    });
+  });
+  const one = spots[0];
+  const where = ANCHOR_WHERE[one.anchor] ?? (one.anchor ? `near the ${one.anchor}` : "in the world");
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "Where you'll find them ",
+      h("span", { class: "pill" }, where),
+      spots.length > 1 ? h("span", { class: "pill" }, `${spots.length} spots`) : null),
+    h("div", { class: "zone-map-wrap npc-map-wrap" },
+      h("img", { class: "zone-map", src: assetUrl(wm.minimap), alt: `${worldInfo()?.name ?? "the world"} map`, loading: "lazy" }),
+      ...marks),
+    h("p", { class: "muted", style: "margin:8px 0 0" },
+      "Roughly here — they keep to this part of the world, but they do not stand on one tile all day.",
+      state.admin ? ` (${spots.map((x) => `${x.id || "?"} @ ${x.x},${x.y}${x.elev ? ` lv${x.elev}` : ""}`).join(" · ")})` : ""));
+}
+/** maps2' placement anchors, said the way a player would say them. */
+const ANCHOR_WHERE = {
+  arrival: "at the arrival point", house: "in the market", cave: "at the cave mouth",
+  bridge: "at the bridge", road: "on the road", shore: "on the shore",
+};
+const npcCard = (c) => h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
+  h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+  // Real names (characters2 2026-08-01), said QUIETLY: one line of name, one
+  // muted line of trade, both truncating — a tile that grows a second line
+  // re-flows the whole grid and the block stops reading as secondary.
+  h("div", { class: "npc-name" }, c.name),
+  // A dot on the tile marks the handful who actually stand in the world —
+  // without it they are unfindable among 191 (it rides ON the thumbnail, so
+  // the tile keeps its two text lines and the grid never re-flows).
+  npcPlacements(c.id)?.length
+    ? h("span", { class: "npc-placed", title: "Stands in the world" }) : null,
+  c.role ? h("div", { class: "npc-role muted" }, c.role) : null,
+  state.admin ? h("div", { class: "card-sub" }, c.id) : null,
+  h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)));
+/** The NPC block, paged INSIDE its card: 20 tiles a page with ‹ › (maintainer
+ *  2026-08-05 — one race's full cast would bury the next race the day a
+ *  second one ships). In-place redraw, same idiom as the story pager; no
+ *  scroll on a page turn, the reader is already looking at the grid. */
+function npcPagedBlock(npcs) {
+  if (!npcs.length) return null;
+  const PER = 20;
+  const pages = Math.ceil(npcs.length / PER);
+  let page = 0;
+  const grid = h("div", { class: "grid npc-grid" });
+  const count = h("span", { class: "detail-count" });
+  const mk = (glyph, lbl, step) => h("button", {
+    class: "nav-btn", type: "button", title: lbl, "aria-label": lbl,
+    onclick: () => { const t = page + step; if (t < 0 || t >= pages) return; page = t; draw(); },
+  }, glyph);
+  const prev = mk("‹", "Previous NPCs", -1), next = mk("›", "Next NPCs", +1);
+  const draw = () => {
+    grid.replaceChildren(...npcs.slice(page * PER, (page + 1) * PER).map(npcCard));
+    count.textContent = `${page + 1} / ${pages}`;
+    prev.disabled = page === 0;
+    next.disabled = page === pages - 1;
+  };
+  draw();
+  return h("div", { class: "npc-block" },
+    h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
+    h("p", { class: "muted" }, state.admin
+      ? "The tag-driven NPC mirror — name, sex and trade authored by the characters agent from the art itself. Review and prune from here."
+      : "The folk you will meet along the way. You cannot set out as one of them."),
+    grid,
+    pages > 1 ? h("div", { class: "page-rail" }, count, prev, next) : null);
+}
+/** The lore agent's write-up of a race — its "people" entry, matched by name
+ *  (Human → "The Human Dead"). Their text wins, as everywhere. */
+const raceLore = (race) => (state.data.domains.lore ?? []).find((e) => e.category === "people" && new RegExp(race, "i").test(e.name));
 function viewCharacters() {
   const all = state.data.domains.characters;
   const heroes = all.filter((c) => c.kind !== "npc" && matches(state.query, c.id, c.name));
-  // Every NPC is named "Villager" (their PixelLab names are prompt junk —
-  // characters2's own README), so players match them only on that word; the
-  // admin can also hit the folder key and the raw PixelLab name.
   const npcs = all.filter((c) => c.kind === "npc" &&
-    matches(state.query, c.name, ...(state.admin ? [c.id, c.pixellabName] : [])));
+    matches(state.query, c.name, c.sex, c.role, ...(state.admin ? [c.id, c.pixellabName] : [])));
+  // RACES (maintainer 2026-08-05): the page is grouped by race, each an inner
+  // topic with the race's own description. Only Humans exist today — the
+  // structure is what matters, so a second race lands as a second block.
+  const races = [...new Set(all.map((c) => c.species || "Human"))].sort();
   return h("div", {},
     sectionHead("characters"),
     h("p", { class: "muted" }, state.admin
-      ? "The heroes from characters2 — every game state, all 8 directions."
-      : "The heroes you can play as — every move, seen from all 8 sides."),
-    h("div", { class: "grid" }, ...heroes.map((c) =>
-      h("a", { class: "card", href: `#/characters/${c.id}` },
-        h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
-        h("div", { class: "card-name" }, c.name),
-        // What the hero IS, not what the folder is called.
-        h("div", { class: "card-sub" }, heroKind(c)),
-        state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
-        h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))),
-    // --- NPCs: deliberately SECOND and visually smaller (maintainer
-    // 2026-08-01: "player selectable Characters foremost ... its own clear
-    // secondary/less important section"). Portrait-only tiles: 191 cards all
-    // captioned "Villager" would be noise, the faces ARE the content.
-    npcs.length ? h("div", { class: "npc-block" },
-      h("h2", {}, "NPCs", h("span", { class: "pill", style: "margin-left:8px" }, npcs.length.toLocaleString())),
-      h("p", { class: "muted" }, state.admin
-        ? "The tag-driven NPC mirror. Names are PixelLab prompt junk, so players see every one as a Villager — review and prune from here."
-        : "The folk you will meet along the way. You cannot set out as one of them."),
-      h("div", { class: "grid npc-grid" }, ...npcs.map((c) =>
-        h("a", { class: "card npc-card", href: `#/characters/${c.id}` },
-          h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
-          state.admin ? h("div", { class: "card-sub" }, c.id.replace(/^npc-/, "")) : null,
-          h("div", { class: "card-badges" }, ...entityBadge("characters", c.path)))))) : null);
+      ? "Every race of Nangijala — its playable heroes first, then its NPCs. From characters2; every game state, all 8 directions."
+      : "The races of Nangijala — the heroes you can set out as, and the folk you will meet."),
+    ...races.map((race) => {
+      const rl = raceLore(race);
+      const rHeroes = heroes.filter((c) => (c.species || "Human") === race);
+      const rNpcs = npcs.filter((c) => (c.species || "Human") === race);
+      if (!rHeroes.length && !rNpcs.length) return null;
+      return h("div", { class: "race-block" },
+        h("h2", {}, `${race}s`,
+          rHeroes.length ? h("span", { class: "pill ok", style: "margin-left:8px" }, `${rHeroes.length} playable`) : null),
+        // The race's short description — the lore agent's "people" entry
+        // where one exists, with the way into the full write-up.
+        rl ? h("p", { class: "muted race-blurb" }, rl.summary, " ", h("a", { href: `#/lore/${rl.id}` }, "Read more →"))
+           : h("p", { class: "muted race-blurb" }, "The chroniclers have not written this race up yet."),
+        rHeroes.length ? h("div", { class: "grid" }, ...rHeroes.map((c) =>
+          h("a", { class: "card", href: `#/characters/${c.id}` },
+            h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+            h("div", { class: "card-name" }, c.name),
+            // What the hero IS, not what the folder is called.
+            h("div", { class: "card-sub" }, heroKind(c)),
+            state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
+            h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))) : null,
+        npcPagedBlock(rNpcs));
+    }));
 }
 function viewCharacter(id) {
   const c = state.data.domains.characters.find((x) => x.id === id);
@@ -1305,8 +1545,9 @@ function viewCharacter(id) {
   };
   player.onStateChange = renderFacet;
   renderFacet();
-  // The character's sounds (e.g. jump) live in the sounds domain — link them in.
-  const related = state.data.domains.sounds.filter((s) => ["movement"].includes(s.category));
+  // (the old Movement-sounds panel listed catalog takes; the entity card
+  //  below replaces it with the character's OWN sound events, played by the
+  //  mirrored engine — maintainer 2026-08-05)
   // Paging stays INSIDE the group: ‹ › from a hero walks the heroes, from an
   // NPC walks the NPCs — 191 Villagers between Man and Woman would bury the
   // playable cast the page is foremost about. Same group feeds the lore
@@ -1314,7 +1555,10 @@ function viewCharacter(id) {
   const isNpc = c.kind === "npc";
   const group = state.data.domains.characters.filter((x) => (x.kind === "npc") === isNpc);
   return h("div", {},
-    crumbRow("#/characters", `← ${label("characters")}`, "characters", group, c.id),
+    // Back-link names the RACE, not the section — the page reads as if it
+    // sat at /races/human/<id> (maintainer 2026-08-05). It still LEADS to
+    // the Races page; there is no per-race route to lead to.
+    crumbRow("#/characters", `← ${c.species || label("characters")}`, "characters", group, c.id),
     h("div", { class: "detail-head" },
       // Species/sex rides under the thumbnail, exactly like a monster's level
       // chip — it balances the two columns (maintainer 2026-07-30).
@@ -1323,6 +1567,30 @@ function viewCharacter(id) {
         heroKind(c) ? h("div", { class: "thumb-chip" }, heroKind(c)) : null),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
+        // The trade, quietly, under the name — WITH the world pills on that
+        // same line. As its own row, "in the world" existed only for the
+        // handful of NPCs maps2 actually places, so paging ‹ › through 191
+        // characters shifted every panel below it up and down (maintainer
+        // 2026-08-07: "I don't want the animation cart to jump up and down
+        // when I press next NPC"). This row is now unconditional and cannot
+        // wrap, so it is exactly one line tall for every character whether
+        // they have a role, pills, both or neither.
+        //
+        // A MERCHANT's wares come straight from maps2' placement (validated
+        // against items/ TYPE tags), so that pill says what you can actually
+        // buy from them. It is the one that can run long, so it is the one
+        // allowed to shrink and ellipsize — the full list stays in its title.
+        h("div", { class: "npc-trade muted" }, ...(() => {
+          const out = c.role ? [h("span", { class: "npc-role" }, c.role)] : [];
+          const sp = npcPlacements(c.id);
+          if (!sp?.length) return out;
+          const merchant = sp.find((x) => x.type === "MERCHANT");
+          const wares = [...new Set(sp.flatMap((x) => x.wares ?? []))].map((w) => w.toLowerCase());
+          out.push(h("span", { class: "pill ok", title: "maps2 stands this character in the game's world" },
+            merchant ? "merchant in the world" : "in the world"));
+          if (wares.length) out.push(h("span", { class: "pill npc-wares", title: `The item types they deal in: ${wares.join(", ")}` }, `sells ${wares.join(", ")}`));
+          return out;
+        })()),
         // Folder id, frame size and state count are PIPELINE facts — admin
         // only (maintainer 2026-07-30). The NPC's PixelLab name is the same
         // class of fact: prompt junk a player must never meet.
@@ -1335,14 +1603,11 @@ function viewCharacter(id) {
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
-    // Movement sounds are the PLAYER's kit — jump, footsteps, splash follow
-    // the hero you steer. An NPC just stands there; no sounds panel.
-    isNpc ? null : h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Movement sounds ", h("span", { class: "pill" }, "from the sounds agent — jump, footsteps, splash")),
-      muteGameBtn(),
-      ...related.map((s) => h("div", {},
-        h("h3", { style: "margin-top:10px" }, s.name, " ", h("span", { class: "pill" }, s.category)),
-        ...s.takes.map((t) => takeRow("sounds", s.path, t))))),
+    // Standing in the world? Then the map showing roughly where.
+    npcMapPanel(c),
+    // The character's OWN sound events — their jump/fall voice today — with
+    // the same cards, engine and admin features as the Sound Effects page.
+    entitySoundsCard("characters", c),
     storyCard({ label: heroStoryTitle(c), art: refPic(c), name: c.name, paras: c.loreStory, related: c.loreRelated }));   // always last
 }
 
@@ -1587,7 +1852,7 @@ function viewObjects() {
   const cats = [...new Set(list.map((o) => o.category))].sort();
   return h("div", {},
     sectionHead("objects"),
-    h("p", { class: "muted" }, "Animated props and map objects from the objects agent."),
+    h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
     ...cats.map((cat) => h("div", {},
       h("h2", {}, cat),
       h("div", { class: "grid" }, ...list.filter((o) => o.category === cat).map((o) =>
@@ -1616,6 +1881,7 @@ function viewObject(id) {
         loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
     hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."),
+    entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last
 }
 
@@ -1624,65 +1890,871 @@ function viewObject(id) {
 // (maintainer 2026-07-30). Only meaningful inside the game's wiki drawer —
 // the parent (wikipanel.ts) flips gameAudio and RESTORES the player's real
 // settings when the drawer closes, so this is never a persistent choice.
+/* --- the game's SOUND ENGINE, mirrored -------------------------------------
+   Playing a sound event here must sound EXACTLY like it does in the game
+   (maintainer 2026-08-05), so this is a faithful mirror of the composer's
+   one-shot player — games2/composer/engine/oneshot.ts — using the SAME data
+   (the catalog, the composer's foley sets, and the engine constants build.mjs
+   reads out of the composer's own source, drift-guarded):
+
+   - take pick: round-robin, never the same take twice (oneshot.pickTake);
+     "primary take only" where the composer pins one (pure-mode/EVENT_FOLEY).
+   - pitch: 2^(semis/12) × the layer's rate. The jitter ranges in data.json
+     are ALREADY scaled by the engine's gentleness factor (×0.35) at build.
+   - gain: mix_gain_db + event trim + the bus fader, ± gentled gain jitter.
+   - per-layer lowpass (grass's hi-hat shave), 30 ms retrigger debounce.
+   - NOT mirrored, honestly: scale-snap (needs the running score), pan and
+     distance (needs a world position), beat quantize. Those apply on top in
+     the game; everything the maintainer tunes per sound is identical here.
+
+   BufferSource, never HTMLAudio: an <audio> el pitch-PRESERVES on rate
+   change by default — 2× would speed a voice up without raising it, which is
+   exactly the wrong sound for the half-speed-authored vocal takes. */
+const sfxPlays = [];                                // test/debug: what actually played
+window.__sfxPlays = sfxPlays;
+const sfxEngine = {
+  ctx: null, buffers: new Map(), lastTake: new Map(), lastAt: new Map(),
+  live: new Set(),                                  // sources still sounding
+  gen: 0,                                           // bumped by stop(); stale decodes check it
+  ac() { return (this.ctx ??= new (window.AudioContext || window.webkitAudioContext)()); },
+  /** Cut everything that is sounding, right now. Auditioning your way down a
+   *  list means each ▶ must replace the last one instantly (maintainer
+   *  2026-08-06) — two overlapping takes tell you nothing about either.
+   *  The generation bump matters as much as the stop: a take whose decode is
+   *  still in flight must not start playing after you have already moved on. */
+  stop() {
+    this.gen++;
+    for (const s of this.live) { try { s.stop(); } catch {} }
+    this.live.clear();
+  },
+  /** Every source goes through here so `stop()` can reach it. */
+  track(src) {
+    this.live.add(src);
+    src.addEventListener("ended", () => this.live.delete(src), { once: true });
+  },
+  /** Decode a take, trying each format the catalog ships until one WORKS.
+   *  Not a nicety: the library auditioned `.m4a` first, and Chromium carries
+   *  no AAC decoder — so every catalog sound in the raw list and the picker
+   *  failed to load while the composer's .wav sets played fine. Order is
+   *  ogg (Chrome/Firefox) → m4a (Safari, which has no ogg) → wav (always).
+   *  Resolves to {buf, file} so callers can report what actually played. */
+  async buffer(rel) {
+    const cands = (Array.isArray(rel) ? rel : [rel]).filter(Boolean);
+    const key = cands.join("|");
+    if (this.buffers.has(key)) return this.buffers.get(key);
+    const p = (async () => {
+      for (const file of cands) {
+        try {
+          const r = await fetch(assetUrl(file));
+          if (!r.ok) continue;
+          const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
+          if (buf) return { buf, file };
+        } catch { /* next format */ }
+      }
+      return null;
+    })();
+    this.buffers.set(key, p);
+    return p;
+  },
+  pickTake(key, takes, primaryOnly) {
+    if (primaryOnly || takes.length === 1) return 0;
+    const last = this.lastTake.get(key) ?? -1;
+    let idx = Math.floor(Math.random() * takes.length);
+    if (idx === last) idx = (idx + 1) % takes.length;   // oneshot.pickFrom, verbatim
+    this.lastTake.set(key, idx);
+    return idx;
+  },
+  /** One LAYER of an event, with the engine's whole chain. */
+  async playLayer(layer, over = {}) {
+    const eng = state.data.sfx?.engine ?? {};
+    const key = layer.set ?? layer.soundId;
+    const now = performance.now();
+    if (now - (this.lastAt.get(key) ?? -1e9) < (eng.debounceMs ?? 30)) return;  // oneshot.play debounce
+    this.lastAt.set(key, now);
+    // Silence the last one BEFORE the fetch, not after: an uncached take takes
+    // a network round-trip to decode, and waiting would leave the two sounds
+    // overlapping for exactly as long as the file is slow to arrive.
+    if (over.solo !== false) this.stop();
+    const gen = this.gen;
+    const idx = this.pickTake(key, layer.takes, /primary/.test(layer.pick ?? ""));
+    const take = layer.takes[idx];
+    const got = await this.buffer(take.file);
+    if (!got) { toast(`Could not load ${take.name}`); return; }
+    if (gen !== this.gen) return;                   // you moved on while it decoded
+    const buf = got.buf;
+    const ctx = this.ac();
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const semis = layer.jitterSemis ? rand(layer.jitterSemis[0], layer.jitterSemis[1]) : 0;
+    const rate = Math.pow(2, semis / 12) * (layer.rate ?? 1) * (over.rate ?? 1);
+    let db = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (eng.busDb?.[layer.bus] ?? 0) + (over.gainDb ?? 0);
+    if (layer.gainJitterDb) db += rand(layer.gainJitterDb[0], layer.gainJitterDb[1]);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+    let head = src;
+    if (layer.lowpassHz) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = layer.lowpassHz;
+      head.connect(lp); head = lp;
+    }
+    const g = ctx.createGain();
+    g.gain.value = Math.pow(10, db / 20);           // catalog.dbToGain
+    head.connect(g); g.connect(ctx.destination);
+    this.track(src);
+    src.start();
+    sfxPlays.push({ file: got.file, rate: +rate.toFixed(4), db: +db.toFixed(2), lowpassHz: layer.lowpassHz ?? null });
+  },
+  /** The whole EVENT: every layer at once — that is what the game does
+   *  (grass footstep = the grass set AND dirt underneath, same instant). */
+  playEvent(ev) {
+    this.stop();                                    // the previous audition, not this event's own layers
+    // TWO KINDS OF MULTI-SOUND EVENT, and they are opposites. A LAYERED event
+    // plays every sound at once (a grass footstep IS grass plus dirt
+    // underneath). Several ASSIGNED sounds ROTATE — one per trigger, the
+    // engine's round-robin — so playing them together would be four thunder
+    // cracks on top of each other, which is not a sound the game can make.
+    const list = ev.rotates ? [ev.sounds[Math.floor(Math.random() * ev.sounds.length)]] : ev.sounds;
+    for (const l of list) void this.playLayer(l, { solo: false });
+  },
+  /** The admin's all-sounds list: raw file, or the audition sliders. */
+  async rawOrAudition(file, { rate = 1, gainDb = 0, maxSemis = 0 } = {}) {
+    this.stop();                                    // before the fetch — see playLayer
+    const gen = this.gen;
+    const got = await this.buffer(file);
+    if (!got) { toast("Could not load the take"); return; }
+    if (gen !== this.gen) return;                   // you moved on while it decoded
+    const ctx = this.ac();
+    const semis = maxSemis ? (Math.random() * 2 - 1) * maxSemis : 0;
+    const r = rate * Math.pow(2, semis / 12);
+    const src = ctx.createBufferSource();
+    src.buffer = got.buf; src.playbackRate.value = r;
+    const g = ctx.createGain();
+    g.gain.value = Math.pow(10, gainDb / 20);
+    src.connect(g); g.connect(ctx.destination);
+    this.track(src);
+    src.start();
+    sfxPlays.push({ file: got.file, rate: +r.toFixed(4), db: +gainDb.toFixed(2), lowpassHz: null, raw: true });
+  },
+};
+
 // A full-page wiki tab has no game to mute → no button.
 let gameMuted = false;
+const muteLabel = (on) => (on ? "🔊 Unmute the game" : "🔇 Mute the game while listening");
+/** The ONE place that flips the game's audio, so the button and the picker
+ *  can never disagree. Labels are refreshed by query rather than through the
+ *  button's own closure, because the picker mutes from outside that scope —
+ *  and a stale label is how someone ends up unable to get their game sound
+ *  back. */
+function setGameMuted(on) {
+  if (window.parent === window || on === gameMuted) return;
+  gameMuted = on;
+  window.parent.postMessage({ type: "wiki:muteGame", on }, location.origin);
+  for (const b of document.querySelectorAll(".mute-game")) b.textContent = muteLabel(on);
+}
 function muteGameBtn() {
   if (window.parent === window) return null;
-  const btn = h("button", { class: "ghost-btn mute-game" });
-  const render = () => { btn.textContent = gameMuted ? "🔊 Unmute the game" : "🔇 Mute the game while listening"; };
-  btn.addEventListener("click", () => {
-    gameMuted = !gameMuted;
-    window.parent.postMessage({ type: "wiki:muteGame", on: gameMuted }, location.origin);
-    render();
-  });
-  render();
+  const btn = h("button", { class: "ghost-btn mute-game" }, muteLabel(gameMuted));
+  btn.addEventListener("click", () => setGameMuted(!gameMuted));
   return btn;
+}
+/* --- Sound Effects, organized by IN-GAME EVENT (maintainer 2026-08-05) ----
+   The unit is the EVENT that triggers sound — "Footsteps · Grass", "Jump" —
+   not the audio file. An event can layer several sounds at once (grass +
+   dirt underneath) or alternate takes; ▶ on the event plays exactly what
+   the game plays, ▶ on a row plays that one sound alone, both through the
+   mirrored engine above. Players see only events that make sound; the
+   silent events, the stars, the add-a-sound requests and the raw all-sounds
+   list at the bottom are the Game Master's. */
+const stFmt = (x) => (Number.isInteger(x) ? String(x) : x.toFixed(2).replace(/0$/, ""));
+/** Every format a catalog take ships, best decoder first. Ogg leads because
+ *  Chrome and Firefox both decode it and it is a tenth of the wav's bytes;
+ *  m4a is there for Safari (no ogg); wav always works. */
+const audioCandidates = (t) => [t?.files?.ogg, t?.files?.m4a, t?.files?.wav].filter(Boolean);
+/** The id of a BINDING — this sound attached to this event. Rating, approving
+ *  and removing here is about the PAIRING, never the recording (maintainer
+ *  2026-08-06: "If I remove a sound from an event doesn't mean I want to
+ *  delete the sound … it just means I want to unbind it"). The file's own
+ *  stars, approval and removal live in All sounds, where "remove" really does
+ *  retire the recording. */
+/** Which binding a verdict is about. Without a take it names the whole
+ *  LAYER — "this sound should not play at this moment". With one it names a
+ *  single RECORDING inside a multi-take binding: "Coin Pickup plays two
+ *  recordings and I only want take02 gone" (maintainer 2026-08-06). Both are
+ *  UNBIND, never delete — the file stays in the library either way. */
+const bindingId = (ev, layer, take) => take
+  ? `${ev.id}#${take.file}`
+  : `${ev.id}#${layer.source === "composer" ? `composer/${layer.set}` : layer.soundId}`;
+/** ONE PLAY BUTTON PER THING YOU CAN ACTUALLY HEAR SEPARATELY (maintainer
+ *  2026-08-06: "why is the group in a group? Why 3 play buttons and not 2? A
+ *  non admin will probably not even understand why we have 2 and not 1").
+ *  A single-sound, single-take event was rendering THREE ▶ — event, layer,
+ *  take — every one of them playing the identical file. A button earns its
+ *  place only by doing something its parent does not:
+ *    · the EVENT's ▶ is always there — it is what the game does at this moment;
+ *    · a LAYER's ▶ only when the event has more than one sound (layered or in
+ *      rotation), because otherwise the event's ▶ already is it;
+ *    · a TAKE's ▶ only when its layer holds more than one recording.
+ *  So one sound = one button, and every extra button means a different sound. */
+function sfxLayerRow(ev, layer, { soleLayer = false } = {}) {
+  const totalDb = (layer.mixGainDb ?? 0) + (layer.trimDb ?? 0) + (state.data.sfx.engine.busDb?.[layer.bus] ?? 0);
+  const jit = layer.jitterSemis;
+  const jitTxt = jit ? (Math.abs(jit[0]) === Math.abs(jit[1]) ? `±${stFmt(Math.abs(jit[1]))} st` : `${stFmt(jit[0])}…${stFmt(jit[1])} st`) : null;
+  const n = layer.takes.length;
+  const rows = [
+    h("div", { class: "sfx-layer-head" },
+      soleLayer ? null
+        : h("button", { class: "play-btn", "aria-label": "play this sound alone", onclick: () => void sfxEngine.playLayer(layer) }, "▶"),
+      h("span", { class: "take-name" }, layer.label),
+      layer.voiceRate ? h("span", { class: "pill ok", title: "The vocal takes are authored at half speed — 2× is the true voice" }, `voice ×${stFmt(layer.voiceRate)}`) : null,
+      layer.rate !== 1 && !layer.voiceRate ? h("span", { class: "pill", title: "playbackRate — pitch and speed together" }, `pitch ×${stFmt(layer.rate)}`) : null,
+      h("span", { class: "pill", title: `How loud it plays: the recording's own level (${stFmt(layer.mixGainDb ?? 0)} dB), this event's trim (${stFmt(layer.trimDb ?? 0)} dB) and the game's ${layer.bus === "ui" ? "interface" : layer.bus === "ambience" ? "ambience" : "sound-effects"} fader (${stFmt(state.data.sfx.engine.busDb?.[layer.bus] ?? 0)} dB), added up` }, `volume ${totalDb > 0 ? "+" : ""}${stFmt(totalDb)} dB`),
+      jitTxt ? h("span", { class: "pill", title: "Random pitch on every play (already scaled by the engine's gentleness ×0.35)" }, `pitch jitter ${jitTxt}`) : null,
+      layer.gainJitterDb ? h("span", { class: "pill", title: "Random volume on every play (gentled)" }, `vol ±${stFmt(Math.abs(layer.gainJitterDb[1]))} dB`) : null,
+      layer.lowpassHz ? h("span", { class: "pill", title: "Fixed tone shaping" }, `lowpass ${layer.lowpassHz} Hz`) : null,
+      // One sound is one sound (maintainer 2026-08-05/06): the engine BINDS
+      // exactly what it plays, so `takes` is the whole truth — a single-take
+      // layer with spare recordings means the set's other takes are unbound
+      // and live only in the admin's All sounds library.
+      // With one recording there is no take row to carry its length, and
+      // "1 take" told nobody anything — show the length itself instead.
+      h("span", { class: "pill muted-pill", title: n > 1
+          ? "Each play picks a take at random, never the same one twice in a row"
+          : layer.spareTakes ? `The one bound recording; the ${layer.spareTakes} other recording(s) of this set are unbound (see All sounds)`
+          : "One recording" },
+        n === 1 ? (layer.takes[0]?.dur != null ? `${stFmt(layer.takes[0].dur)}s` : "1 take") : `${n} takes · equal 1/${n}`),
+      // WHICH recording is bound is the Game Master's business and nobody
+      // else's — it is the difference between take01 and cand07.
+      n === 1 && state.admin && layer.takes[0]
+        ? h("span", { class: "pill", title: "The exact recording this event plays" }, layer.takes[0].name) : null,
+      layer.layerNote ? h("span", { class: "pill", title: layer.layerNote }, "layer") : null),
+  ];
+  // The verdict belongs to the BINDING, and it sits on the binding's own row —
+  // not on each take. A take is a recording; judging it (and deleting it) is
+  // the library's job. Here the question is only "is this the right sound for
+  // this moment", and ✕ detaches it from this event, nothing more.
+  const multi = n > 1;
+  if (state.admin) {
+    const bid = bindingId(ev, layer);
+    rows.push(h("div", { class: "take-row sfx-bind-verdict" },
+      h("span", { class: "muted", style: "font-size:12px" }, multi ? "these sounds, for this event:" : "this sound, for this event:"),
+      h("span", { class: "spacer" }),
+      starsWidget("bindings", bid),
+      verdictWidget("bindings", bid, {
+        reject: multi ? "✕ unbind all" : "✕ unbind",
+        rejectTitle: multi
+          ? `Detach all ${n} recordings from THIS event — they stay in the library. To drop just one, use the ✕ on its own row.`
+          : "Detach this sound from THIS event only — the recording stays in the library. To retire the recording itself, reject it under All sounds.",
+        rejectedLabel: "to be unbound",
+      })));
+  }
+  // Only when there is a CHOICE. A lone recording is the layer, and its row
+  // was a third button playing the same file — its name and length now sit on
+  // the layer's own line instead.
+  for (const t of (n > 1 ? layer.takes : [])) {
+    // PER-RECORDING UNBIND (maintainer 2026-08-06: "I wanted to unbind
+    // coin_pickup__take02.wav from Coin Pickup, but the unbind is not on the
+    // sound itself … I don't want to delete the sound, just unbind it").
+    // An event that plays several recordings has several bindings, and the ✕
+    // has to sit on the one you want gone. Only when there IS a choice: with
+    // one take the layer's own ✕ already means exactly this, and two ✕ for a
+    // single action reads as two different powers.
+    const tid = bindingId(ev, layer, t);
+    const drop = multi && state.admin
+      ? verdictWidget("bindings", tid, {
+        reject: "✕ unbind", rejectOnly: true, rejectedLabel: "to be unbound",
+        rejectTitle: `Remove ONLY ${t.name} from this event — the other ${n - 1} recording(s) keep playing and the file stays in the library.`,
+      })
+      : null;
+    rows.push(h("div", { class: "take-row sfx-take" },
+      h("button", { class: "play-btn", "aria-label": "play take", onclick: () => void sfxEngine.playLayer({ ...layer, takes: [t], pick: "primary take only" }) }, "▶"),
+      h("span", { class: "take-name muted" }, t.name),
+      t.dur ? h("span", { class: "pill" }, `${stFmt(t.dur)}s`) : null,
+      drop));   // right-aligned by CSS margin — a spacer would force the wrap
+  }
+  if (layer.spareTakes > 0 && state.admin) {
+    rows.push(h("p", { class: "muted sfx-unbound-note" },
+      `${layer.spareTakes} more recording(s) of this set exist, unbound to any event — audition them under All sounds.`));
+  }
+  return h("div", { class: "sfx-layer" }, ...rows);
+}
+/** A queued request, said the way it was picked: the exact recording, not the
+ *  folder it came from (older entries carry only `sound`). */
+const reqSound = (r) => (r.take ? r.take.split("/").pop().replace(/\.\w+$/, "") : r.sound);
+function setSfxRequest(id, val) {
+  const doc = state.tuning.sfx_requests ?? (state.tuning.sfx_requests = { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} });
+  if (val === null) delete doc.requests[id];
+  else doc.requests[id] = val;
+  doc.updated_at = new Date().toISOString();
+  touch("tuning/sfx_requests", id);
+  markDirty("tuning/sfx_requests");
+}
+/* ---- the sound PICKER ---------------------------------------------------
+   Assigning a sound is a listening job, not a dropdown job (maintainer
+   2026-08-06: "I must be able to listen to the sound I'm about to add and
+   the UX should make it easy to listen to the next sound … iterate the list
+   and search for the perfect sound"). So it is a real dialog: search, one
+   row per sound with its own ▶ and its length, and Prev/Next (or ↑/↓) that
+   step AND play as they go. Every play cuts the previous one dead —
+   sfxEngine.stop() runs before the fetch, so even an uncached take can't
+   overlap the one you were just listening to. */
+/** The composer ships its candidates as `<action>_<flavour>` siblings — ten
+ *  alternatives for one action (board, 2026-08-05: "ideally grouped by action
+ *  prefix so the ten alternatives for an action sit together"). Derive the
+ *  action instead of hardcoding it: a set's group is its LONGEST underscore
+ *  prefix that at least one sibling shares, so hit_taken_gut and
+ *  hit_taken_oof land together and a lone set falls to "Other". */
+function composerGroups(names) {
+  const count = new Map();
+  for (const n of names) {
+    const parts = n.split("_");
+    for (let i = 1; i <= parts.length; i++) {
+      const p = parts.slice(0, i).join("_");
+      count.set(p, (count.get(p) ?? 0) + 1);
+    }
+  }
+  const of = new Map();
+  for (const n of names) {
+    const parts = n.split("_");
+    let g = null;
+    for (let i = parts.length; i >= 1; i--) {
+      const p = parts.slice(0, i).join("_");
+      if ((count.get(p) ?? 0) >= 2) { g = p; break; }
+    }
+    of.set(n, g);
+  }
+  // A "group" of one is not a group — those read better collected at the end.
+  const size = new Map();
+  for (const g of of.values()) if (g) size.set(g, (size.get(g) ?? 0) + 1);
+  for (const [n, g] of of) if (!g || (size.get(g) ?? 0) < 2) of.set(n, "Other");
+  return of;
+}
+/** Every RECORDING the Game Master can pick — one row per take, not per set
+ *  (maintainer 2026-08-06: "you don't let me select the sound. You point to a
+ *  group! We have way more sounds than this"). A set is a folder of
+ *  alternatives: `ui_tick` holds three different clicks and `jump_voice` four
+ *  different grunts, and picking the set says nothing about WHICH. Listing
+ *  sets showed 128 rows for 183 real recordings, and take 2 of anything was
+ *  unreachable.
+ *
+ *  ...and one row per take was STILL not every generated sound (maintainer,
+ *  same day: "Every single generated sound? Or something else missing?").
+ *  The answer was no: the composer scores a whole POOL per brief and copies
+ *  only the winners out as takes, so 91 generated recordings existed on disk
+ *  that no page in this wiki could reach. They are listed here as
+ *  "alternative", right under the take they lost to — see build.mjs. */
+function sfxLibraryList() {
+  const out = [];
+  // Which recordings the game actually plays today — computed from the event
+  // table's own bound take files, so "in game" is exact per RECORDING rather
+  // than "something in this folder is used".
+  const bound = new Set();
+  for (const e of state.data.sfx.events ?? []) for (const l of e.sounds) for (const t of l.takes) bound.add(t.file);
+
+  // The composer's purpose-made candidates lead: that is what a Game Master
+  // is auditioning through. The catalog follows, grouped by its category.
+  const sets = Object.keys(state.data.sfx.composerSets);
+  const group = composerGroups(sets);
+  const ordered = [...sets].sort((a, b) => {
+    const ga = group.get(a), gb = group.get(b);
+    if (ga !== gb) return ga === "Other" ? 1 : gb === "Other" ? -1 : ga.localeCompare(gb);
+    return a.localeCompare(b);
+  });
+  for (const set of ordered) {
+    const cs = state.data.sfx.composerSets[set];
+    const g = group.get(set);
+    // Under "HIT TAKEN", the row that matters is "armor" / "gut" / "oof" —
+    // repeating the action in every row only truncates the flavour, which is
+    // the one thing you are choosing between. A multi-take set adds "take N".
+    const flavour = g !== "Other" && set.startsWith(`${g}_`) ? set.slice(g.length + 1) : set;
+    const row = (t, key, label) => out.push({
+      key, wire: `composer/${set}`, take: t.file, kind: "composer",
+      name: `${set} ${t.name}`, label,
+      group: g === "Other" ? "Other composer sounds" : titleish(g),
+      sub: cs.voice ? "voice" : "foley", file: t.file, dur: t.dur ?? null,
+      voice: !!cs.voice, used: bound.has(t.file), added: cs.added ?? null,
+    });
+    cs.takes.forEach((t, i) => row(t, `set:${set}#${i}`,
+      cs.takes.length > 1 ? `${flavour} · take ${i + 1}` : flavour));
+    // The rest of the pool this set's take was chosen out of, best-scoring
+    // first. Nothing about them is second-rate for YOUR event — they lost a
+    // contest for a brief that is not the one you are casting.
+    (cs.alts ?? []).forEach((t, i) => row(t, `alt:${set}#${i}`, `${flavour} · alternative ${i + 1}`));
+  }
+  for (const s of [...state.data.domains.sounds].sort((a, b) => (a.category ?? "").localeCompare(b.category ?? "") || a.name.localeCompare(b.name))) {
+    s.takes.forEach((t, i) => out.push({
+      key: `cat:${s.id}#${t.id}`, wire: s.id, take: t.files.wav, kind: "catalog",
+      name: `${s.name} ${s.id} ${t.id}`,
+      label: s.takes.length > 1 ? `${s.name} · take ${i + 1}` : s.name,
+      group: `Catalog · ${titleish(s.category ?? "sounds")}`, sub: s.category,
+      file: audioCandidates(t), dur: t.dur ?? s.duration_s ?? null,
+      voice: false, used: bound.has(t.files.wav), added: null,
+    }));
+  }
+  return out;
+}
+const titleish = (s) => String(s).replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+function openSoundPicker({ title, forWhat, onPick }) {
+  // NOTHING MAY BE SOUNDING WHEN THE PICKER OPENS (maintainer 2026-08-06).
+  // The modal blocks every control that could stop it, and the game's own
+  // "🔇 Mute the game" button exists ONLY on the Sound Effects and Music
+  // pages — so a picker opened from a monster or character card had no way
+  // to reach it at all. Silence the wiki's two players AND the game.
+  stopAllAudio();
+  // Restore only what WE muted: the same contract the drawer keeps with the
+  // player's own switches (wikipanel.ts). If the Game Master had already hit
+  // Mute, closing the picker leaves the game quiet, as they asked.
+  const unmuteOnClose = !gameMuted;
+  setGameMuted(true);
+  const all = sfxLibraryList();
+  let list = all, sel = 0;
+  const search = h("input", { type: "search", class: "picker-search", placeholder: `Search ${all.length} sounds…`, autocomplete: "off" });
+  const listEl = h("div", { class: "picker-list" });
+  // SORT: by action (the folder grouping) or newest first (maintainer
+  // 2026-08-06). `added` is the composer's own per-SET `generated_at`, so a
+  // set's takes and its pool candidates share one date. Newest-first reuses
+  // the existing sticky group headers, grouping by DAY — "Today",
+  // "Yesterday", then the date — so "what did he generate this morning" is
+  // one tap, and no new per-row markup can disturb the layout.
+  let sortMode = "action";
+  const dayLabel = (iso) => {
+    if (!iso) return "Older — the original sound library";
+    const d = new Date(iso);
+    if (Number.isNaN(+d)) return "Undated";
+    const midnight = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+    const days = Math.round((midnight(new Date()) - midnight(d)) / 86400000);
+    if (days === 0) return "Today";
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days} days ago`;
+    return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  };
+  const sortRow = h("div", { class: "picker-sort" });
+  const setSort = (m) => {
+    sortMode = m;
+    for (const b of sortRow.children) b.classList.toggle("sel", b.dataset.mode === m);
+    relist();
+  };
+  sortRow.append(
+    h("button", { class: "picker-sort-btn sel", type: "button", "data-mode": "action",
+      title: "Grouped by the action they were made for — kicks together, footsteps together",
+      onclick: () => setSort("action") }, "by action"),
+    h("button", { class: "picker-sort-btn", type: "button", "data-mode": "newest",
+      title: "Most recently generated first, grouped by the day the composer made them",
+      onclick: () => setSort("newest") }, "newest first"));
+  /** Filter + sort + regroup. The list's height is FIXED in CSS, so whatever
+   *  this produces — 281 rows, 3 rows, none — the Prev/Play/Next bar below it
+   *  never moves. That is the rule this dialog is built around. */
+  const relist = () => {
+    const q = search.value.trim().toLowerCase();
+    const hit = q ? all.filter((it) => `${it.name} ${it.kind} ${it.sub}`.toLowerCase().includes(q)) : all;
+    if (sortMode === "newest") {
+      // Undated (the original catalog) sorts LAST, never interleaved into the
+      // dated run — an unknown date is not a recent one.
+      list = hit.slice()
+        .sort((a, b) => (b.added ?? "").localeCompare(a.added ?? "") || a.name.localeCompare(b.name))
+        .map((it) => ({ ...it, group: dayLabel(it.added) }));
+    } else {
+      list = hit;
+    }
+    sel = 0;
+    paint();
+  };
+  // The audition controls: pitch, volume, max random pitch — the SAME three
+  // numbers the request carries, so what you hear is what you ask for.
+  // Volume's normal value is 0 dB = exactly as recorded (maintainer).
+  // `signed` marks a control whose number is a RANGE either side of the
+  // pitch, not an absolute setting: it reads "±6 st", because 6 st alone says
+  // "six semitones up" and that is not what it does (maintainer 2026-08-06:
+  // "random pitch do work but it says 6st and not ± amount"). Zero stays a
+  // plain "0 st" — "±0" is a contradiction, and 0 means never varies.
+  const ctl = (min, max, step, val, unit, label, hint, signed = false) => {
+    const show = (v) => `${signed && v > 0 ? "±" : ""}${stFmt(v)}${unit}`;
+    const out = h("code", { class: "sfx-val" }, show(val));
+    const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title: hint });
+    inp.addEventListener("input", () => { out.textContent = show(Number(inp.value)); });
+    return { row: h("label", { class: "picker-ctl" }, h("span", {}, label), inp, out), inp,
+      get: () => Number(inp.value), set: (v) => { inp.value = String(v); out.textContent = show(v); } };
+  };
+  const pitch = ctl(0.25, 4, 0.05, 1, "×", "pitch", "Speed and pitch together — 1× is the recording as it is");
+  const vol = ctl(-24, 12, 1, 0, " dB", "volume", "0 dB is the recording as it is; negative is quieter");
+  const rnd = ctl(0, 6, 0.1, 0, " st", "random pitch",
+    "Each play lands within this many semitones EITHER SIDE of the pitch above — 0 means always identical", true);
+  const note = h("input", { type: "text", class: "picker-note", placeholder: "note to the composer (optional)" });
+  const assign = h("button", { class: "primary-btn" }, "Assign this sound");
+  const play = () => {
+    const it = list[sel];
+    if (!it?.file) return;
+    void sfxEngine.rawOrAudition(it.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() });
+  };
+  let rowEls = [];
+  const move = (d) => {
+    if (!list.length) return;
+    sel = (sel + d + list.length) % list.length;
+    paint();
+    rowEls[sel]?.scrollIntoView({ block: "nearest" });
+    play();
+  };
+  const paint = () => {
+    const kids = [];
+    rowEls = [];
+    let g = null;
+    list.forEach((it, i) => {
+      if (it.group && it.group !== g) { g = it.group; kids.push(h("div", { class: "picker-group" }, g)); }
+      const row = h("button", {
+      class: `picker-row${i === sel ? " sel" : ""}`, type: "button",
+      onclick: () => { sel = i; paint(); play(); },
+    },
+      h("span", { class: "play-btn", "aria-hidden": "true" }, "▶"),
+      h("span", { class: "take-name", title: it.name }, it.label ?? it.name),
+      it.dur != null ? h("span", { class: "pill" }, fmtDur(it.dur)) : null,
+      it.voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — 2× is the true voice" }, "voice ×2") : null,
+      it.used ? h("span", { class: "pill ok", title: "The game plays THIS recording somewhere today" }, "in game")
+        : h("span", { class: "pill", title: "Nothing plays this recording yet" }, "unused"));
+      rowEls.push(row);
+      kids.push(row);
+    });
+    // The empty state lives INSIDE the list, whose height is fixed — nothing
+    // below the list may change height, or the modal re-centres and the
+    // buttons move out from under your finger.
+    if (!list.length) kids.push(h("div", { class: "picker-empty muted" }, "Nothing matches that search."));
+    listEl.replaceChildren(...kids);
+    const it = list[sel];
+    assign.disabled = !it;
+    // A voice's honest playback is 2× — snap the slider when you land on one,
+    // exactly like the raw library does, or every voice auditions wrong.
+    if (it?.voice && pitch.get() === 1) pitch.set(2);
+    if (it && !it.voice && pitch.get() === 2) pitch.set(1);
+  };
+  search.addEventListener("input", relist);
+  // `autofocus` + tabindex on the DIALOG is the standards-blessed way to stop
+  // showModal() from focusing the first field (and popping the keyboard):
+  // showModal focuses the autofocus element when there is one.
+  const dlg = h("dialog", { class: "sfx-picker", tabindex: "-1", autofocus: "" },
+    h("h3", {}, title),
+    h("p", { class: "muted picker-for" }, forWhat),
+    search,
+    sortRow,
+    listEl,
+    // Nothing in this row may change size as you step: the modal is centred,
+    // so a line that wraps on a long name moves every button under your
+    // finger (maintainer 2026-08-06 — and the selected row is already marked
+    // in the accent colour, so naming it again was never needed).
+    h("div", { class: "picker-bar" },
+      h("button", { class: "ghost-btn", type: "button", onclick: () => move(-1) }, "← Prev"),
+      h("button", { class: "ghost-btn picker-play", type: "button", onclick: play }, "▶ Play"),
+      h("button", { class: "ghost-btn", type: "button", onclick: () => move(1) }, "Next →")),
+    h("div", { class: "picker-ctls" }, pitch.row, vol.row, rnd.row),
+    note,
+    h("div", { class: "dialog-row" },
+      h("button", { class: "ghost-btn", type: "button", onclick: () => dlg.close() }, "Cancel"),
+      assign));
+  assign.addEventListener("click", () => {
+    const it = list[sel];
+    if (!it) return;
+    // `sound` stays the set/catalog id the composer already parses; `take` is
+    // the EXACT recording that was auditioned — the whole point of listing
+    // takes. Bind that one, not "something from that folder".
+    onPick({ sound: it.wire, take: it.take, pitch: pitch.get(), volume_db: vol.get(), max_random_pitch_semis: rnd.get(), note: note.value.trim() || undefined });
+    dlg.close();
+  });
+  dlg.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    else if (e.key === "Enter" && e.target !== assign) { e.preventDefault(); assign.click(); }
+  });
+  // Closing must silence whatever is playing — a dialog that keeps sounding
+  // after it is gone is a sound you cannot stop. Fires for Cancel, Assign and
+  // Escape alike, so the game always gets its audio back the same way.
+  dlg.addEventListener("close", () => {
+    stopAllAudio();
+    if (unmuteOnClose) setGameMuted(false);
+    dlg.remove();
+  });
+  document.body.append(dlg);
+  paint();
+  dlg.showModal();
+  // NO autofocus on a touch device (maintainer 2026-08-06): focusing the
+  // search box makes the phone keyboard leap up over the list you opened the
+  // dialog to browse. The keyboard belongs to the moment you TAP the search
+  // box, not to opening the picker. A desktop keeps the focus — there the
+  // caret costs nothing and typing straight away is the point.
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    search.focus();
+  } else {
+    // The autofocus attribute above is the standard way to say this, but it is
+    // not honoured everywhere, so take the focus back by hand — synchronously,
+    // in the same task as showModal(), which is why the keyboard never gets a
+    // frame to slide up in.
+    document.activeElement?.blur?.();
+    dlg.focus();
+  }
+  return dlg;
+}
+/** The chain, in the button's own ink. `h()` speaks HTML only, and an SVG
+ *  needs its own namespace, so the markup goes in as a static string. */
+function linkIcon() {
+  const s = h("span", { class: "ico-link", "aria-hidden": "true" });
+  s.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">'
+    + '<path d="M9.5 14.5 14.5 9.5"/>'
+    + '<path d="M12.4 6.6 14.2 4.8a3.9 3.9 0 0 1 5.5 5.5l-1.8 1.8"/>'
+    + '<path d="M11.6 17.4 9.8 19.2a3.9 3.9 0 0 1-5.5-5.5l1.8-1.8"/></svg>';
+  return s;
+}
+/** ONE button for both places (maintainer 2026-08-06: "the same button"): an
+ *  event card's card and an entity's assign card open the same picker and must
+ *  read the same. */
+const assignSoundBtn = (another, onclick) =>
+  h("button", { class: "ghost-btn sfx-add-open", onclick },
+    linkIcon(), " ", another ? "Assign another sound…" : "Assign a sound…");
+function sfxAddForm(ev) {
+  const queue = (req) => {
+    setSfxRequest(`${ev.id}/${Date.now().toString(36)}`, { event: ev.id, ...req, requested_at: new Date().toISOString() });
+    toast("Request queued — Save sends it to the composer.");
+    route();
+  };
+  return h("div", { class: "sfx-add" },
+    // The title NAMES THE TARGET (maintainer 2026-08-06): once you are three
+    // screens down a list of 117 sounds, "Assign a sound" alone no longer
+    // tells you what you are listening for. "Assign a sound to Drop" does.
+    assignSoundBtn(ev.sounds.length > 0, () => openSoundPicker({
+      title: `${ev.sounds.length ? "Assign another sound to" : "Assign a sound to"} ${ev.name}`,
+      forWhat: "Plays whenever the game fires this moment. Listen your way down the list — the composer wires in what you pick.",
+      onPick: queue,
+    })));
+}
+function sfxEventCard(ev, { shared = false } = {}) {
+  const reqs = state.admin ? Object.entries(state.tuning.sfx_requests?.requests ?? {}).filter(([, r]) => r?.event === ev.id) : [];
+  // The event id as a stable hook. The visible id pill is admin-only, so a
+  // gate that identified cards by their first pill silently matched nothing in
+  // the player view and passed vacuously.
+  return h("div", { class: "panel sfx-event", "data-event": ev.id },
+    h("div", { class: "panel-title" },
+      ev.sounds.length ? h("button", { class: "play-btn play-event", "aria-label": "play the event as the game plays it",
+        onclick: () => sfxEngine.playEvent(ev) }, "▶") : null,
+      ev.name,
+      state.admin ? h("span", { class: "pill" }, ev.id) : null,
+      // Shown ONLY on an entity page, where the reasonable assumption is that
+      // a card belongs to the creature you are looking at. It does not.
+      shared ? h("span", { class: "pill warn", title: "The game plays this for EVERY creature — the engine has no per-creature routing for it yet. Changing or unbinding it here changes it for all of them." }, "every creature") : null,
+      ev.duck ? h("span", { class: "pill", title: "The music dips while this plays" }, "ducks music") : null,
+      ev.sounds.length > 1 ? (ev.rotates
+        ? h("span", { class: "pill ok", title: "One of these plays each time, never the same one twice in a row — ▶ picks one, like the game does" }, `${ev.sounds.length} in rotation`)
+        : h("span", { class: "pill ok", title: "All of these play at the same time" }, `${ev.sounds.length} layered`)) : null,
+      // The three states a Game Master needs at a glance: green = players
+      // hear this, coral = nothing assigned, red = assigned but the game
+      // never triggers it (maintainer 2026-08-06). Players only ever see
+      // in-game events, so the green chip is the admin's own signal.
+      !ev.sounds.length ? h("span", { class: "pill warn", title: "Nothing is assigned to this moment yet — assign a sound below" }, "no sound yet") : null,
+      state.admin && ev.bound && !ev.emitted ? h("span", { class: "pill err", title: "A sound is assigned, but no game code triggers this moment — nobody can ever hear it" }, "not fired yet") : null,
+      state.admin && ev.sounds.length && ev.emitted
+        ? h("span", { class: "pill ok", title: "Assigned AND triggered by the game — players hear this" }, "in game") : null),
+    // `note` describes the SOUND ("loops while you are in the region"); the
+    // pipeline line ("assigned by the Game Master in the wiki") is shop talk
+    // and was being shown to players on every creature page.
+    ev.note ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.note) : null,
+    state.admin && ev.adminNote ? h("p", { class: "muted", style: "margin:0 0 6px" }, ev.adminNote) : null,
+    ...ev.sounds.map((l) => sfxLayerRow(ev, l, { soleLayer: ev.sounds.length === 1 })),
+    ...reqs.map(([id, r]) => h("div", { class: "take-row sfx-req" },
+      h("span", { class: "pill warn" }, "requested"),
+      h("span", { class: "take-name" }, `${reqSound(r)} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "spacer" }),
+      h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))),
+    state.admin ? sfxAddForm(ev) : null);
+}
+/** The Game Master's raw library: EVERY take, used or not, played raw —
+ *  except voices, whose honest raw is 2× (authored at half speed) — with
+ *  audition sliders for pitch / volume / max random pitch. */
+function sfxAllSounds() {
+  const rows = [];
+  const slider = (min, max, step, val, unit, title) => {
+    const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
+    const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title });
+    inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+    return { inp, out, get: () => Number(inp.value) };
+  };
+  const entryRow = (name, sub, takes, { voice = false, usedBy = [] } = {}) => {
+    const pitch = slider(0.25, 4, 0.05, voice ? 2 : 1, "×", "pitch");
+    const vol = slider(-24, 12, 1, 0, " dB", "volume");
+    const rnd = slider(0, 6, 0.1, 0, " st", "max random pitch");
+    rows.push(h("div", { class: "sfx-lib-row" },
+      h("div", { class: "sfx-lib-head" },
+        h("span", { class: "take-name" }, name),
+        h("span", { class: "pill" }, sub),
+        voice ? h("span", { class: "pill ok", title: "Vocal takes are authored at half speed — raw playback is 2×" }, "voice · raw ×2") : null,
+        usedBy.length
+          ? h("span", { class: "pill ok", title: usedBy.join(", ") }, `used · ${usedBy.length} event${usedBy.length > 1 ? "s" : ""}`)
+          : h("span", { class: "pill warn", title: "No event or routing references this — auditionable, not played by the game" }, "unused")),
+      h("div", { class: "sfx-lib-ctl" },
+        h("label", { class: "muted" }, "pitch ", pitch.inp, pitch.out),
+        h("label", { class: "muted" }, "vol ", vol.inp, vol.out),
+        h("label", { class: "muted" }, "±pitch ", rnd.inp, rnd.out)),
+      ...takes.map((t) => h("div", { class: "take-row sfx-take" },
+        h("button", { class: "play-btn", "aria-label": "play raw with the sliders", onclick: () =>
+          void sfxEngine.rawOrAudition(t.file, { rate: pitch.get(), gainDb: vol.get(), maxSemis: rnd.get() }) }, "▶"),
+        h("span", { class: "take-name muted" }, t.name),
+        t.dur != null ? h("span", { class: "pill" }, fmtDur(t.dur)) : null,
+        h("span", { class: "spacer" }),
+        // THE recording's own verdict: ✕ here retires the file itself, which
+        // is why it lives down here and not on an event's binding.
+        starsWidget(t.dom, t.fid),
+        verdictWidget(t.dom, t.fid, {
+          rejectTitle: "Retire this RECORDING — the producing agent deletes it on its next run. To take a sound off one event without deleting it, unbind it on that event's card.",
+        })))));
+  };
+  for (const s of state.data.domains.sounds) {
+    entryRow(s.name, s.category, s.takes.map((t) => ({
+      name: t.id, file: audioCandidates(t), dur: t.dur ?? null,
+      dom: "sounds", fid: `${s.path}/${t.id}`.replace(/\.\w+$/, ""),
+    })), { usedBy: s.usedBy ?? [] });
+  }
+  for (const [set, cs] of Object.entries(state.data.sfx.composerSets)) {
+    // Takes and the pool they were picked from, in one row: this page is
+    // "every recording in the library", and the pool is recordings.
+    entryRow(set, "composer", [...cs.takes, ...(cs.alts ?? [])].map((t) => ({
+      name: t.name, file: t.file, dur: t.dur ?? null,
+      dom: "composer", fid: t.file.replace(/\.\w+$/, ""),
+    })), { voice: cs.voice, usedBy: cs.usedBy ?? [] });
+  }
+  return h("div", { class: "sfx-lib" },
+    h("h2", {}, "All sounds ", h("span", { class: "pill" }, "Game Master")),
+    h("p", { class: "muted" }, "Every recording in the library, used or not, played raw — voices at their honest 2×. The sliders audition pitch, volume and a max random pitch without touching the game. This is where a sound is judged as a RECORDING: ✕ here retires the file everywhere. To take a sound off one event and keep it, unbind it on that event's card."),
+    ...rows);
+}
+/* --- an ENTITY's sounds: the same cards, the same engine, the same admin
+   features as the Sound Effects page — scoped to the one entity (maintainer
+   2026-08-05). A hero shows their Jump and Fall (their OWN voice, routed by
+   character in the game); a monster or prop with no sound yet shows nothing
+   to players and an assign card to the Game Master. */
+function entityAddCard(domain, ent) {
+  const actions = Object.keys(ent.animations ?? {});
+  if (!actions.length) return null;
+  const evId = () => `${domain}.${ent.id}.${act.value}`;
+  const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
+  const btn = assignSoundBtn(false, () => openSoundPicker({
+    // Names the target the same way an event card does — here the target is
+    // the entity's own action, read at the moment the button is pressed.
+    title: `Assign a sound to ${ent.name ?? ent.id} · ${stateLabel(act.value)}`,
+    forWhat: "A new sound event for this animation. Listen your way down the list — the composer wires in what you pick.",
+    onPick: (req) => {
+      setSfxRequest(`${evId()}/${Date.now().toString(36)}`, {
+        event: evId(), scope: { domain, id: ent.id }, action: act.value, ...req,
+        requested_at: new Date().toISOString(),
+      });
+      toast("Request queued — Save sends it to the composer.");
+      route();
+    },
+  }));
+  const pending = Object.entries(state.tuning.sfx_requests?.requests ?? {})
+    .filter(([, r]) => r?.scope?.domain === domain && r?.scope?.id === ent.id);
+  return h("div", { class: "panel sfx-entity-add" },
+    // This card MAKES an event — the cards above it are events that already
+    // exist — so it is titled for what it produces (maintainer 2026-08-06).
+    h("div", { class: "panel-title" }, "New sound effect event ", h("span", { class: "pill" }, "Game Master")),
+    h("p", { class: "muted", style: "margin:0 0 6px" }, "Assign a sound effect to a new event: pick one of this page's game actions and the sound it should play — the composer agent wires it into the engine."),
+    h("div", { class: "sfx-add-row" }, h("label", { class: "muted" }, "action ", act), btn),
+    ...pending.map(([id, r]) => h("div", { class: "take-row sfx-req" },
+      h("span", { class: "pill warn" }, "requested"),
+      h("span", { class: "take-name" }, `${stateLabel(r.action ?? "")}: ${reqSound(r)} · pitch ×${stFmt(r.pitch ?? 1)} · ${stFmt(r.volume_db ?? 0)} dB · ±${stFmt(r.max_random_pitch_semis ?? 0)} st${r.note ? ` — ${r.note}` : ""}`),
+      h("span", { class: "spacer" }),
+      h("button", { class: "x-btn", title: "withdraw this request", onclick: () => { setSfxRequest(id, null); route(); } }, "✕"))));
+}
+function entitySoundsCard(domain, ent) {
+  const all = state.data.sfx?.events ?? [];
+  const visible = (e) => state.admin || (e.sounds.length && e.emitted);
+  // This entity's OWN events (a hero's voice — the engine routes them by who
+  // you play).
+  const mine = all.filter((e) => e.scope && e.scope.domain === domain && e.scope.id === ent.id).filter(visible);
+  // …and the events this KIND of entity fires, which the engine does not yet
+  // route per individual. A monster page showed neither, so its sounds looked
+  // unassigned and there was nothing to unbind — the Game Master could only
+  // ever add (maintainer 2026-08-06). They render as full cards, with the
+  // same per-recording unbind, marked `shared` so it is never a surprise that
+  // ✕ here takes the sound off EVERY creature.
+  const shared = all.filter((e) => e.sharedWith === domain).filter(visible);
+  const kids = [
+    ...mine.map((e) => sfxEventCard(e)),
+    ...shared.map((e) => sfxEventCard(e, { shared: true })),
+  ];
+  if (state.admin) { const add = entityAddCard(domain, ent); if (add) kids.push(add); }
+  if (!kids.length) return null;
+  return h("div", { class: "sfx-entity" }, ...kids);
 }
 function viewSounds() {
   const q = state.query;
-  const list = state.data.domains.sounds.filter((s) => matches(q, s.id, s.name, s.category, s.description, s.usage));
-  const cats = [...new Set(list.map((s) => s.category))].sort();
+  const sfx = state.data.sfx;
+  if (!sfx?.events?.length) return h("div", {}, sectionHead("sounds"), h("p", { class: "muted" }, "No sound-event table in this build."));
+  // Entity-SCOPED events (a hero's jump, one day a monster's roar) live on
+  // that entity's page, not here — this page is the GENERIC soundscape.
+  let events = sfx.events.filter((e) => !e.scope)
+    .filter((e) => matches(q, e.id, e.name, e.group, ...e.sounds.map((l) => l.label)));
+  // Players hear what IS IN THE GAME: an event must have a sound AND be fired
+  // by game code. Wired-but-never-fired bindings (chest_open, potions…) were
+  // audible here before — "sounds I have never heard inside the game"
+  // (maintainer 2026-08-05). The admin keeps seeing everything, flagged.
+  if (!state.admin) events = events.filter((e) => e.sounds.length && e.emitted);
+  const groups = [...new Set(events.map((e) => e.group))];
+  const ORDER = ["Movement", "Interface", "Items", "Tools", "Combat", "Progress", "World", "Weather", "Ambience", "System"];
+  groups.sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
   return h("div", {},
     sectionHead("sounds"),
     h("p", { class: "muted" }, state.admin
-      ? "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."
-      : "Every sound of the world — press ▶ to listen. The chosen pill marks what the game currently plays."),
+      ? "Every in-game sound EVENT: ▶ plays it exactly as the game does (same engine, same processing). Rate takes, withdraw or file add-a-sound requests, and audition the raw library at the bottom."
+      : "What the world sounds like, by the moment that triggers it — ▶ plays it exactly as it plays in the game."),
     muteGameBtn(),
-    ...cats.map((cat) => h("div", {},
-      h("h2", {}, cat, " ", h("span", { class: "pill" }, String(list.filter((s) => s.category === cat).length))),
-      ...list.filter((s) => s.category === cat).map((s) =>
-        h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, s.name,
-            h("span", { class: "pill" }, fmtDur(s.duration_s)),
-            s.loop ? h("span", { class: "pill" }, "loop") : null,
-            usePill(s.usedBy, "No game event or composer lookup references this sound yet"),
-            h("span", { class: "spacer" }),
-            starsWidget("sounds", s.path), verdictWidget("sounds", s.path)),
-          h("p", { class: "muted", style: "margin:0 0 6px" }, `${s.description}${s.usage ? ` — ${s.usage}` : ""}`),
-          ...s.takes.map((t) => takeRow("sounds", s.path, t)))))));
+    ...groups.map((g) => h("div", {},
+      h("h2", {}, g, " ", h("span", { class: "pill" }, String(events.filter((e) => e.group === g).length))),
+      ...events.filter((e) => e.group === g).map((e) => sfxEventCard(e)))),
+    state.admin ? sfxAllSounds() : null);
 }
 
 /* --- music --- */
+/** One track panel — the same card for a music-domain track and a composer
+ *  bed; only where its feedback goes and how it says "is this in the game"
+ *  differ. */
+function musicPanel(t) {
+  const composer = t.source === "composer";
+  // Feedback id = the audio file's repo path sans extension (the README
+  // contract), not meta.id — they can diverge. A composer bed belongs to the
+  // composer, so its verdict goes to that domain, next to its foley.
+  const master = t.files.wav ?? t.files.ogg ?? t.files.m4a ?? t.files.mp3;
+  const dir = master.split("/").slice(0, -1).join("/");
+  const takeId = master.split("/").pop().replace(/\.\w+$/, "");
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, t.name,
+      h("span", { class: "pill" }, fmtDur(t.duration_s)),
+      t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
+      t.key ? h("span", { class: "pill" }, `${t.key.root} ${String(t.key.mode).replace(/_/g, " ")}`) : null,
+      t.loopable ? h("span", { class: "pill" }, "loopable") : null,
+      // A bed says whether the GAME can currently reach it — generating a
+      // track and routing it are two different decisions, and the wiki must
+      // not imply the second just because the first happened.
+      composer
+        ? (t.routed
+            ? h("span", { class: "pill ok", title: "The game plays this today" }, "in game")
+            : h("span", { class: "pill warn", title: "Generated and ready — nothing in the game switches to it yet" }, "not routed yet"))
+        : usePill(t.usedBy, "The score's director picks one catalog track as the background bed — this one isn't it")),
+    t.use ? h("p", { class: "muted", style: "margin:0 0 8px" }, t.use) : null,
+    t.sections?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "sections: ", t.sections.join(" → ")) : null,
+    t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
+    state.admin && composer && t.loopStart != null
+      ? h("p", { class: "muted", style: "margin:0 0 8px" }, `loops ${stFmt(t.loopStart)}s → ${stFmt(t.loopEnd)}s${t.lufs != null ? ` · ${stFmt(t.lufs)} LUFS` : ""}`) : null,
+    takeRow(composer ? "composer" : "music", dir, { id: takeId, chosen: true, files: t.files }));
+}
 function viewMusic() {
-  const list = state.data.domains.music.filter((t) => matches(state.query, t.id, t.name, t.use));
+  const list = (state.data.domains.music ?? []).filter((t) => matches(state.query, t.id, t.name, t.use));
+  const domainTracks = list.filter((t) => t.source !== "composer");
+  const beds = list.filter((t) => t.source === "composer");
   return h("div", {},
     sectionHead("music"),
-    h("p", { class: "muted" }, "The score, from the music agent."),
+    h("p", { class: "muted" }, "Everything written for the game to play — the music agent's tracks, and the composer's own situation beds."),
     muteGameBtn(),
-    ...list.map((t) =>
-      h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, t.name,
-          h("span", { class: "pill" }, fmtDur(t.duration_s)),
-          t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
-          t.key ? h("span", { class: "pill" }, `${t.key.root} ${String(t.key.mode).replace(/_/g, " ")}`) : null,
-          t.loopable ? h("span", { class: "pill" }, "loopable") : null,
-          usePill(t.usedBy, "The score's director picks one catalog track as the background bed — this one isn't it")),
-        h("p", { class: "muted", style: "margin:0 0 8px" }, t.use),
-        t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
-        // Feedback id = the audio file's repo path sans extension (the
-        // README contract), not meta.id — they can diverge.
-        takeRow("music", t.files.wav.split("/").slice(0, -1).join("/"),
-          { id: t.files.wav.split("/").pop().replace(/\.wav$/, ""), chosen: true, files: t.files }))));
+    domainTracks.length ? h("h2", {}, "Tracks ", h("span", { class: "pill" }, String(domainTracks.length))) : null,
+    ...domainTracks.map(musicPanel),
+    // The composer's beds are a SECOND source of music and were missing from
+    // this page entirely (maintainer 2026-08-06: "he did 5 new songs and you
+    // are listing nothing but the old 2").
+    beds.length ? h("h2", { style: "margin-top:26px" }, "Situation beds ", h("span", { class: "pill" }, String(beds.length))) : null,
+    beds.length ? h("p", { class: "muted" }, "The composer's own score, one track per situation. What plays where is not wired yet — listen, then say which belongs where.") : null,
+    ...beds.map(musicPanel));
 }
 
 /* --- items --- */
@@ -1901,14 +2973,14 @@ function viewLoreEntry(e) {
       h("div", { class: "meta" },
         h("h1", {}, e.name),
         state.admin ? h("p", { class: "muted" },
-          `${e.id} · ${e.path} · ${e.category}${Number.isInteger(e.chapter) ? ` · chapter ${e.chapter}` : ""} · icon ${e.icon_id ?? "—"}${e.tags?.length ? ` · ${e.tags.join(", ")}` : ""} · ${(e.body ?? []).reduce((n, p) => n + p.split(/\s+/).length, 0).toLocaleString()} words in ${(e.body ?? []).length} paragraphs`) : null,
+          `${e.id} · ${e.path} · ${e.category}${Number.isInteger(e.chapter) ? ` · chapter ${e.chapter}` : ""} · icon ${e.icon_id ?? "—"}${e.tags?.length ? ` · ${e.tags.join(", ")}` : ""} · ${(e.body ?? []).reduce((n, p) => n + paraText(p).split(/\s+/).length, 0).toLocaleString()} words in ${(e.body ?? []).length} paragraphs`) : null,
         loreSlot(e.summary ?? "", list.map((x) => x.summary ?? "")),
         feedbackRow("lore", e.path))),
     // Every paragraph is a TEXT NODE. No innerHTML, no markdown path for
     // lore.json content — "plain text only" is an authoring convention backed
     // by a partial checker, so markup that slips through must show up as
     // literal characters: obvious, and unmistakably the lore agent's bug.
-    h("div", { class: "chapter-body" }, ...bodyParas.map((p) => h("p", {}, p))),
+    h("div", { class: "chapter-body" }, ...bodyParas.map(paraNode)),
     loreLinks(e.related) ? h("div", { class: "panel" }, loreLinks(e.related)) : null,
     // After three screens of prose the crumbRow is far off-screen; the rail
     // names the destination where the reader actually is.
@@ -1990,6 +3062,22 @@ function mdBlocks(lines) {
   }
   return out;
 }
+/** How much of the backbone the published texts actually tell (lore v2,
+ *  2026-08-05): the lore build maps every beat of the root as revealed,
+ *  hinted or hidden and ships the COUNTS. Drawn as one segmented bar — the
+ *  GM's one-glance answer to "how much has the story given away?". */
+function redLineMeter() {
+  const p = state.data.loreMeta?.redLineProgress;
+  if (!p) return null;
+  const total = (p.revealed ?? 0) + (p.hinted ?? 0) + (p.hidden ?? 0);
+  if (!total) return null;
+  const seg = (n, cls, label) => (n ? h("span", { class: `rl-seg ${cls}`, style: `flex:${n}`, title: `${n} ${label}` }) : null);
+  return h("div", { class: "rl-meter-box" },
+    h("div", { class: "rl-meter", role: "img", "aria-label": `${p.revealed} of ${total} beats revealed` },
+      seg(p.revealed, "rl-revealed", "revealed"), seg(p.hinted, "rl-hinted", "hinted"), seg(p.hidden, "rl-hidden", "still hidden")),
+    h("div", { class: "muted rl-meter-legend" },
+      `${p.revealed} of ${total} beats revealed in the published texts · ${p.hinted} hinted · ${p.hidden} still hidden`));
+}
 function viewRedLine() {
   const box = h("div", {}, h("p", { class: "loading" }, "Opening the red line…"));
   const render = (md) => {
@@ -2028,6 +3116,7 @@ function viewRedLine() {
       h("span", { class: "pill warn" }, "not in the game yet")),
     h("p", { class: "muted" }, "Written for you, not for players — they are meant to find this out by reading the chapters and playing."),
     h("p", { class: "muted" }, RED_LINE_HONESTY),
+    redLineMeter(),
     box);
 }
 
@@ -2078,15 +3167,15 @@ function viewSearch() {
   const d = state.data.domains;
   const hits = [];
   d.monsters.forEach((m) => matches(q, m.id, m.name) && hits.push(["monsters", m.name, `#/monsters/${m.id}`, m.preview]));
-  // Heroes search by name; NPCs are 191 identical "Villager"s, so they stay
-  // out of GLOBAL search for players (the Characters page lists them all) and
-  // surface for the admin by folder key / PixelLab name, labelled by key so
-  // the hits are tellable-apart.
+  // The whole cast is searchable now that every NPC has a real name (they
+  // were excluded while all 191 were called "Villager" — 191 identical rows
+  // would have drowned every query). Name, sex and trade for a player; the
+  // folder key and the duplicate PixelLab name stay admin-only.
   d.characters.forEach((c) => {
-    if (c.kind === "npc") {
-      if (state.admin && matches(q, c.id, c.pixellabName))
-        hits.push(["characters", `Villager · ${c.id.replace(/^npc-/, "")}`, `#/characters/${c.id}`, c.preview]);
-    } else if (matches(q, c.id, c.name)) hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
+    if (matches(q, c.name, ...(c.kind === "npc" ? [c.sex, c.role] : [c.id]),
+                ...(state.admin ? [c.id, c.pixellabName] : []))) {
+      hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
+    }
   });
   d.tiles.forEach((t) => matches(q, t.id, t.name, t.description) && hits.push(["tiles", t.name, `#/tiles/${t.id}`, t.groups[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null]));
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
@@ -2094,7 +3183,7 @@ function viewSearch() {
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
   // Entry ids and tags are pipeline slugs — admin only, so a player cannot
   // surface an entry by typing a folder id.
-  (d.lore ?? []).forEach((e) => matches(q, e.name, e.summary, ...(e.body ?? []), ...(state.admin ? [e.id, ...(e.tags ?? [])] : []))
+  (d.lore ?? []).forEach((e) => matches(q, e.name, e.summary, ...(e.body ?? []).map(paraText), ...(state.admin ? [e.id, ...(e.tags ?? [])] : []))
     && hits.push(["lore", e.name, `#/lore/${e.id}`, loreIcon(e, 96)]));
   // A soul stone's name is shared by all of them — search its creature too,
   // and label the hit with the creature so 28 identical rows never appear.
@@ -2117,7 +3206,7 @@ function viewSearch() {
 /* ---------------------------------------------------------------- router */
 function route() {
   destroyPlayers();
-  const a = audioEl(); if (a && !a.paused) a.pause();
+  stopAllAudio();   // both players: a long audition used to survive the nav
   const hash = location.hash.replace(/^#\/?/, "");
   const [page, id, sub] = hash.split("/").map(decodeURIComponent);
   let view;
@@ -2171,16 +3260,18 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, ...fbs] = apiState
-    ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants),
+  const [monTune, constTune, sfxReq, ...fbs] = apiState
+    ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
         fetchJson(new URL("live/tuning/constants.json", ROOT)),
+        fetchJson(new URL("live/tuning/sfx_requests.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
+  state.tuning.sfx_requests = sfxReq ?? { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });
@@ -2196,6 +3287,10 @@ function buildKnownIds() {
   (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
   d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(stripExt(`${g.dir}/${f}`)))); });
   d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
+  // Composer foley recordings (feedback domain "composer") — ids are file
+  // paths, and the generation pool is as rateable as the chosen take.
+  Object.values(state.data.sfx?.composerSets ?? {}).forEach((cs) =>
+    [...cs.takes, ...(cs.alts ?? [])].forEach((t) => add(t.file.replace(/\.\w+$/, ""))));
 }
 
 function initChrome() {

@@ -87,15 +87,27 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 41.5,
-            "y": 49.0,
+            "x": 44.8,
+            "y": 48.9,
             "r": 2.0,
             "color": [
-              0.026,
-              0.437,
-              0.219
+              0.859,
+              0.57,
+              0.158
             ],
-            "s": 0.516,
+            "s": 0.781,
+            "dir": "up"
+          },
+          {
+            "x": 41.2,
+            "y": 48.9,
+            "r": 2.0,
+            "color": [
+              0.871,
+              0.587,
+              0.208
+            ],
+            "s": 0.796,
             "dir": "up"
           }
         ]
@@ -120,7 +132,45 @@
       "index": 5,
       "file": "tile_05.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 31.7,
+            "y": 40.8,
+            "r": 2.0,
+            "color": [
+              0.636,
+              0.467,
+              0.246
+            ],
+            "s": 0.723,
+            "dir": "up"
+          },
+          {
+            "x": 37.0,
+            "y": 43.5,
+            "r": 2.0,
+            "color": [
+              0.687,
+              0.496,
+              0.266
+            ],
+            "s": 0.745,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 6,
@@ -221,7 +271,7 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 3,
+  "emissive_tiles": 4,
   "generated_at": "2026-07-06T17:48:15+00:00",
   "processing": {
     "neutralize_outline": true,
@@ -233,7 +283,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "clear_water",

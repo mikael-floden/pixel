@@ -1,0 +1,12 @@
+{
+  "format": "pixel-wiki-feedback@1",
+  "domain": "bindings",
+  "_comment": "Stars/verdicts on a BINDING — one sound attached to one game event. Ids are `<eventId>#<sound>` (e.g. `player.water_enter#splash`, `ui.press#composer/ui_tick`). A rejected entry means UNBIND that sound from that event; the recording itself stays in the library and is never deleted (maintainer 2026-08-06). To retire a recording, reject it in feedback/sounds.json or feedback/composer.json instead. Consumed by the composer (games-audio) agent.",
+  "updated_at": "2026-08-06T12:10:00.000Z",
+  "entries": {
+    "ambience.town#town_murmur": {
+      "rating": 5,
+      "updated_at": "2026-08-06T05:47:20.185Z"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "domain": "objects",
+  "id": "grave_cross",
+  "name_seen": "Wooden grave cross",
+  "law": "I",
+  "description": "A cross over no grave, raised for someone who never woke.",
+  "lore": [
+    "Nothing is buried under it. Nothing is ever buried here: the Quiet leaves no body, no bone, no weight for a shovel. A grave is a living country's answer to a problem this one does not have.",
+    "The crosses are for the other absence. People die together \u2014 a sickness, a wreck, a winter \u2014 and one of them wakes on the meadow and the other never comes. [[lore/the_waking|The waking]] owes no explanation and gives none. So the woken do the one thing left to do: they cut two pieces of wood, plant them where the missing one would have been welcome, and say the name aloud, on the old understanding that what is spoken holds. It is the only telling in Nangijala that does not work. The name holds nothing, because the person it belongs to is not here to be held. They say it anyway. Every cross on the map is somebody still saying it."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    },
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
+  ],
+  "gm_notes": "The unwoken made visible (B5 revealed). A cross names a person who never arrived \u2014 a ready-made hook: any name on one can become a quest, and the standing dread that somebody knows WHY some never wake stays unresolved. Never put a cross over someone who went Quiet; the woken know the difference and the difference is the point."
+}

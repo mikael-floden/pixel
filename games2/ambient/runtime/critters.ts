@@ -1,130 +1,13 @@
 import Phaser from "phaser";
-import { ISO_DX, ISO_DY, vectorToDirection } from "@nangijala/shared";
 
-// Shared helpers for the SPRITE-ART flocks (birds, bats). The creatures are
-// PixelLab "low top-down" 8-direction objects packed into two spritesheets per
-// type:
-//   • fly.png   — FLY_FRAMES columns (the flap cycle) × 8 rows (one per facing).
-//                 frame index = dir*FLY_FRAMES + f  (see flyFrame()).
-//   • still.png — 8 columns (a still base, one per facing). frame index = dir.
-// The 8 rows are in PixelLab's rotation order (below) — which is the MIRROR of
-// shared/DIRECTIONS — so a facing is resolved by NAME, never by array index.
-export const FRAME_W = 34;
-export const FRAME_H = 34;
-export const FLY_FRAMES = 16;
-
-// PixelLab row order (index 0..7). Do NOT reuse shared/DIRECTIONS.indexOf here —
-// that array rotates the other way (S,SW,W,…) and would swap east/west.
-const DIR_INDEX: Record<string, number> = {
-  south: 0,
-  "south-east": 1,
-  east: 2,
-  "north-east": 3,
-  north: 4,
-  "north-west": 5,
-  west: 6,
-  "south-west": 7,
-};
-
-/** Row-major frame index into a fly spritesheet (16 cols × 8 rows). */
-export const flyFrame = (dir: number, frame = 0): number => dir * FLY_FRAMES + frame;
-
-/** A flock creature's velocity → PixelLab facing index 0..7, or null when there
- * is no meaningful heading (near-zero speed → keep the last facing). The flock
- * gx/gy/vx/vy already live in the DRAWN (iso-projected) space — the same screen
- * vector the player's own facing uses — so the velocity goes straight into the
- * game's shared vectorToDirection (screen +y is down). */
-export function dirFromVel(vx: number, vy: number): number | null {
-  if (Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01) return null;
-  const name = vectorToDirection(vx, vy);
-  return name ? DIR_INDEX[name] ?? null : null;
-}
-
-// The 8 canonical FACING screen directions (unit vectors) the flock art depicts.
-// Cardinals are the screen axes; the DIAGONALS are the shallow ISO tile axes
-// (±ISO_DX, ±ISO_DY) — NOT screen-45° — because this is an iso world: a bird's
-// "north-east" sprite shows it flying along the tile axis, exactly like the
-// player's grid-axis-locked diagonal walk, so the 8 directions are UNEVENLY
-// spaced on screen. A velocity landing on any of these classifies (via
-// vectorToDirection) to a distinct one of the 8 facings, so steering toward the
-// nearest makes a creature fly the way its sprite faces.
-const _DIAG = Math.hypot(ISO_DX, ISO_DY);
-const FACING_DIRS: ReadonlyArray<readonly [number, number]> = [
-  [1, 0], // east
-  [ISO_DX / _DIAG, -ISO_DY / _DIAG], // up-right (shallow iso)
-  [0, -1], // north
-  [-ISO_DX / _DIAG, -ISO_DY / _DIAG], // up-left
-  [-1, 0], // west
-  [-ISO_DX / _DIAG, ISO_DY / _DIAG], // down-left
-  [0, 1], // south
-  [ISO_DX / _DIAG, ISO_DY / _DIAG], // down-right
-];
-
-/** The nearest canonical FACING direction (a unit vector) to a velocity, by max
- * dot product. Steer a flyer's velocity toward this so it moves the way its
- * 8-direction sprite faces. Zero velocity → east (arbitrary; callers are moving). */
-export function nearestFacingDir(vx: number, vy: number): readonly [number, number] {
-  const sp = Math.hypot(vx, vy) || 1;
-  const ux = vx / sp;
-  const uy = vy / sp;
-  let best = FACING_DIRS[0];
-  let bestDot = -Infinity;
-  for (const d of FACING_DIRS) {
-    const dot = ux * d[0] + uy * d[1];
-    if (dot > bestDot) {
-      bestDot = dot;
-      best = d;
-    }
-  }
-  return best;
-}
-
-/** Shortest step count between two 8-way facings (0..4) — a 1-step change is an
- * adjacent-sector flip (hysteresis territory), ≥2 is a real turn. */
-function dirGap(a: number, b: number): number {
-  const d = Math.abs(a - b) % 8;
-  return Math.min(d, 8 - d);
-}
-
-/** The per-agent draw state both flocks share (a Bird/Bat is a structural
- * superset). Advanced together each frame by stepFlapDir. */
-export interface FlapState {
-  dir: number; // current facing (PixelLab index 0..7), hysteretic
-  dirHoldT: number; // ms an adjacent new heading has persisted
-  vx: number;
-  vy: number;
-  frame: number; // flap frame 0..FLY_FRAMES-1
-  flapMs: number; // ms per flap frame
-  flapT: number;
-}
-
-/** Advance a creature's FACING and FLAP frame by dt ms. Facing snaps on a real
- * turn (≥2 sectors) but an adjacent-sector flip must persist `stick` ms first,
- * so a boid wobbling across an 8-way boundary doesn't jitter the sprite;
- * near-zero velocity keeps the last facing. Display-only — never touches the
- * boids force math. Mutates dir/dirHoldT/frame/flapT in place. */
-export function stepFlapDir(b: FlapState, dt: number, stick: number): void {
-  const cand = dirFromVel(b.vx, b.vy);
-  if (cand !== null && cand !== b.dir) {
-    if (dirGap(cand, b.dir) >= 2) {
-      b.dir = cand; // a real turn — snap immediately
-      b.dirHoldT = 0;
-    } else {
-      b.dirHoldT += dt; // an adjacent flip — only turn if it persists
-      if (b.dirHoldT >= stick) {
-        b.dir = cand;
-        b.dirHoldT = 0;
-      }
-    }
-  } else {
-    b.dirHoldT = 0;
-  }
-  b.flapT += dt;
-  if (b.flapT >= b.flapMs) {
-    b.flapT -= b.flapMs;
-    b.frame = (b.frame + 1) % FLY_FRAMES;
-  }
-}
+// The SCENE-BOUND half of the sprite-art flocks (birds, bats): spritesheet
+// loading, per-creature lighting/fog grading, and the shadow decal — everything
+// that needs Phaser. The sheet geometry, the 8-facing model and the flap state
+// machine are PHASER-FREE and live in ./flap so they can be unit-tested; they
+// are re-exported here, so `from "../runtime/critters"` still resolves the whole
+// API and no caller had to change.
+export * from "./flap";
+import { FRAME_W, FRAME_H } from "./flap";
 
 /** The world light + depth-fog haze for one flock creature, PER BIRD, at its own
  * ground point + altitude. `tint` is a MULTIPLY tint (day/night + cloud +
@@ -380,6 +263,7 @@ export function applyShadow(
   gy: number,
   alt: number,
   grade: CritterGrade,
+  alpha = 1,
 ): void {
   ensureCritterShadow(scene);
   const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
@@ -395,8 +279,8 @@ export function applyShadow(
   s.setPosition(grade.shadowFrozen ? grade.frozenX : gx, grade.shadowFrozen ? grade.frozenY : gy - grade.lift)
     .setDepth(grade.shadowFrozen ? grade.frozenD : grade.shadowDepth) // occluder-STABLE (discrete per cell) so it can't blink behind a front tile
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
-    .setAlpha((0.58 - f * 0.24) * grade.shadowA) // base look × the elevation cross-fade
-    .setVisible(grade.shadowA > 0.02);
+    .setAlpha((0.58 - f * 0.24) * grade.shadowA * alpha) // base look × the elevation cross-fade × caller gain
+    .setVisible(grade.shadowA * alpha > 0.02);
   // QA probe state (birds debug .all): frozen-decal phase + fade fraction.
   s.setData("fz", grade.shadowFrozen).setData("fa", grade.shadowA);
 }

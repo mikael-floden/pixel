@@ -50,10 +50,48 @@ import {
   randomPauseMs,
   startTrip,
   stepAutopilot,
+  WALK_SPEED,
+  RUN_SPEED,
+  ISO_DX,
+  ISO_DY,
+  faceDirWorld,
+  attackRange,
+  playerAtk,
+  damageRoll,
+  idSalt,
+  xpToNext,
+  hpMaxFor,
+  epMaxFor,
+  slowFactorAt,
+  SLOW_FACTOR,
+  FLEE_SLOW_FACTOR,
+  provokedChaseSpeed,
+  rollDrops,
+  LEVEL_CAP,
+  PLAYER_ATTACK_MS,
+  PROVOKE_RADIUS_WU,
+  CHASE_SPEED_WU,
+  ESCAPE_RADIUS_WU,
+  MAX_CHASE_WU,
+  ORBIT_SPEED_WU,
+  ORBIT_FLIP_MEAN_S,
+  MONSTER_DIE_MS,
+  MONSTER_RESPAWN_MS,
+  PLAYER_RESPAWN_MS,
+  REGEN_DELAY_MS,
+  HP_REGEN_FRAC_PER_S,
+  EP_REGEN_FRAC_PER_S,
+  DROP_SCATTER_WU,
+  DROP_TTL_MS,
+  PICKUP_RADIUS_WU,
+  DROP_SPACING_WU,
+  INV_MAX_STACK,
+  INV_MAX_SLOTS,
 } from "@nangijala/shared";
-import { WorldState, Player, Monster, MonsterArea } from "../schema/WorldState.js";
+import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
+import { monsterStatsFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning } from "../live.js";
-import { JsonPlayerStore, PlayerStore } from "../store.js";
+import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -205,11 +243,13 @@ export class WorldRoom extends Room<WorldState> {
     auroraChance?: number;
     monsterCount?: number; // per-area monster cap override (default: each area's own `max`)
     monsterSeed?: number; // seed a deterministic PRNG for spawns/roam (tests)
+    lootChance?: number; // TEST override: force every loot entry to this chance (1 = always drop)
   }) {
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     if (typeof options?.monsterCount === "number")
       this.monsterCount = Math.max(0, Math.floor(options.monsterCount));
     if (typeof options?.monsterSeed === "number") this.monsterRng = mulberry32(options.monsterSeed);
+    if (typeof options?.lootChance === "number") this.lootChance = clamp(options.lootChance, 0, 1);
     {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
@@ -250,6 +290,13 @@ export class WorldRoom extends Room<WorldState> {
     this.onMessage("input", (client, message: InputMessage) => {
       const player = this.state.players.get(client.sessionId);
       if (!player) return;
+      // A corpse doesn't move, but its in-flight inputs MUST still be acked:
+      // un-acked seqs stay in the client's pending replay buffer and render
+      // the body offset from where it fell (and pop it off-spawn on revive).
+      if (player.dead) {
+        if (typeof message.seq === "number") player.seq = message.seq;
+        return;
+      }
       // Queue the input with its (bounded) duration; update() integrates the
       // stream so server math matches client prediction exactly.
       if (player.inputQueue.length < 60) {
@@ -285,11 +332,96 @@ export class WorldRoom extends Room<WorldState> {
     // spawn; the client snaps to the teleport (its >2-cell jump threshold).
     this.onMessage("respawn", (client) => {
       const player = this.state.players.get(client.sessionId);
-      if (!player) return;
+      // Dead players ride the death->respawn cycle instead: teleporting the
+      // corpse mid-die-clip would strand a walking body at spawn.
+      if (!player || player.dead) return;
       this.placeAtSpawn(player);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
       player.jumpUntil = 0;
+    });
+
+    // ENGAGE a monster (RO: click a monster to fight it). The client walks
+    // into reach first and then engages; the server drives the swing loop
+    // while the target stays alive, in range and the player stands still.
+    // {id: null} disengages (any movement input also does).
+    this.onMessage("engage", (client, message: { id?: string | null }) => {
+      const player = this.state.players.get(client.sessionId);
+      if (!player || player.dead) return;
+      const id = typeof message?.id === "string" ? message.id : "";
+      if (!id) {
+        player.target = "";
+        return;
+      }
+      const m = this.state.monsters.get(id);
+      if (!m || m.mstate === "die") return;
+      player.target = id;
+    });
+
+    // PICK UP a ground item. Range-validated server-side; the pickup clip is
+    // signalled through action/actionSeq so every client sees the crouch.
+    this.onMessage("pickup", (client, message: { id?: string }) => {
+      const player = this.state.players.get(client.sessionId);
+      const id = typeof message?.id === "string" ? message.id : "";
+      const drop = this.state.drops.get(id);
+      if (!player || player.dead || !drop) return;
+      const now = Date.now();
+      if (now < player.nextItemMsgAt) return; // pickup/drop share a light cadence cap
+      player.nextItemMsgAt = now + 150;
+      if (Math.hypot(drop.x - player.x, drop.y - player.y) > PICKUP_RADIUS_WU) return;
+      // Same layer band as every combat range check — no grabbing through a deck.
+      if (Math.abs(player.elev - drop.elev) > 2) return;
+      if (!this.addInvItem(player, drop.item)) {
+        client.send("chat", { name: "—", text: "Your backpack is full." });
+        return;
+      }
+      this.state.drops.delete(id);
+      player.action = "pickup";
+      player.actionSeq++;
+      // Turn TO the item being grabbed (maintainer 2026-08-05) — the synced
+      // dir is what every other client renders the crouch with.
+      const face = faceDirWorld(player.x, player.y, drop.x, drop.y);
+      if (face) player.dir = face;
+      client.send("inv", { items: player.inv });
+    });
+
+    // DROP an inventory item on the ground (backpack drag-out). Placement is
+    // ALWAYS a pseudo-random scatter around the PLAYER (maintainer
+    // 2026-08-05), spaced off items already lying there — the release point
+    // only expresses "onto the ground", never a throw.
+    this.onMessage("drop", (client, message: { slot?: number; item?: string; n?: number; wx?: number; wy?: number }) => {
+      const player = this.state.players.get(client.sessionId);
+      if (!player || player.dead) return;
+      const now = Date.now();
+      if (now < player.nextItemMsgAt) return;
+      player.nextItemMsgAt = now + 150; // charged before every early return below
+      const slot = typeof message?.slot === "number" ? Math.floor(message.slot) : -1;
+      const entry = player.inv[slot];
+      if (!entry || entry.n < 1) return;
+      // Slot indices go stale the moment a stack empties and the array
+      // compacts (the client learns via the async "inv" refresh) — the item
+      // id in the message is the ground truth for WHICH item the player meant.
+      if (typeof message?.item === "string" && message.item !== entry.item) {
+        client.send("inv", { items: player.inv }); // heal the stale grid now
+        return;
+      }
+      const item = entry.item;
+      // HOW MANY: the backpack's quantity dialog (maintainer 2026-08-05) sends
+      // the count a ×2+ stack was dropped with; anything absent or junk is ONE,
+      // and the stack itself is the ceiling — a client can never drop what it
+      // does not hold. The cadence charge is per ITEM (a flat 150ms per
+      // message would let one tap put a 99-stack on the ground and repeat
+      // 6.7×/s), so a mass drop pays for its own burst.
+      const want = clamp(
+        typeof message?.n === "number" && isFinite(message.n) ? Math.floor(message.n) : 1,
+        1,
+        entry.n,
+      );
+      player.nextItemMsgAt += 20 * (want - 1);
+      entry.n -= want;
+      if (entry.n <= 0) player.inv.splice(slot, 1);
+      for (let i = 0; i < want; i++) this.spawnDrop(item, player.x, player.y, player.elev);
+      client.send("inv", { items: player.inv });
     });
 
     // Teleport: drop the player at an EXACT world coordinate (debug tool —
@@ -299,11 +431,15 @@ export class WorldRoom extends Room<WorldState> {
     // movement + jump so they hold the mark; client snaps via its jump threshold.
     this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
       const player = this.state.players.get(client.sessionId);
-      if (!player) return;
+      if (!player || player.dead) return;
       const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
       const h = this.terrain ? this.terrain.height * CELL_WU : this.worldH;
-      player.x = clamp(message?.x ?? player.x, 0, w - 1);
-      player.y = clamp(message?.y ?? player.y, 0, h - 1);
+      // Finite-number validation, same as the drop handler: NaN/junk here
+      // would poison the synced position and everything downstream of it.
+      const tx = typeof message?.x === "number" && isFinite(message.x) ? message.x : player.x;
+      const ty = typeof message?.y === "number" && isFinite(message.y) ? message.y : player.y;
+      player.x = clamp(tx, 0, w - 1);
+      player.y = clamp(ty, 0, h - 1);
       player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
       player.inputQueue.length = 0;
       player.timeCredit = 0;
@@ -446,7 +582,13 @@ export class WorldRoom extends Room<WorldState> {
         m.moving = false;
         // Stagger first departure a touch so they don't all leave in lockstep.
         m.nextMoveAt = now + Math.floor(this.monsterRng() * 600);
-        this.state.monsters.set(`${z.zone.id}#${n}`, m);
+        const stats = monsterStatsFor(m.kind);
+        m.hp = m.hpMax = stats.max_hp;
+        m.level = stats.level;
+        m.aggro = stats.aggro_radius_wu;
+        const mid = `${z.zone.id}#${n}`;
+        m.orbitSign = idSalt(mid) & 1 ? 1 : -1; // circling handedness varies per monster
+        this.state.monsters.set(mid, m);
       }
     }
   }
@@ -476,6 +618,23 @@ export class WorldRoom extends Room<WorldState> {
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
 
+    // ONE live session per token (RO kicks the older login): a second tab on
+    // the same browser shares the localStorage token, and two live sessions on
+    // one store record dup/eat items on last-writer-wins saves. The newcomer
+    // takes over the LIVE progression (fresher than the store) and the old
+    // session is disconnected.
+    if (player.token) {
+      let oldSid = "";
+      this.state.players.forEach((p: Player, sid: string) => {
+        if (!oldSid && p.token === player.token && sid !== client.sessionId) oldSid = sid;
+      });
+      if (oldSid) {
+        const oldPlayer = this.state.players.get(oldSid);
+        if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
+        this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
+      }
+    }
+
     // Returning player? Restore their last position (server-authoritative),
     // but rescue anyone whose saved spot is now blocked (terrain can change).
     const saved = player.token ? this.store.load(player.token) : undefined;
@@ -487,7 +646,30 @@ export class WorldRoom extends Room<WorldState> {
     } else {
       this.placeAtSpawn(player);
     }
+    // Progression survives relogs (RO: your character IS the level) and is
+    // WORLD-AGNOSTIC — it lives in the shared progress store, not the
+    // per-world position file, so switching worlds never forks the character.
+    // Migration: tokens whose progression still rides an old per-world record
+    // (or none at all — pre-combat records) seed from `saved` once.
+    const prog = player.token ? progressStore().load(player.token) : undefined;
+    player.level = Math.min(LEVEL_CAP, Math.max(1, prog?.level ?? saved?.level ?? 1));
+    player.xp = Math.max(0, prog?.xp ?? saved?.xp ?? 0);
+    player.hpMax = hpMaxFor(player.level);
+    player.epMax = epMaxFor(player.level);
+    // Never restore a corpse: a save written at 0 hp comes back at 1 (limping,
+    // not dead — dying logs you out at the spawn next tick otherwise).
+    player.hp = Math.min(player.hpMax, Math.max(1, prog?.hp ?? saved?.hp ?? player.hpMax));
+    player.ep = Math.min(player.epMax, Math.max(0, prog?.ep ?? saved?.ep ?? player.epMax));
+    const invSrc = prog?.inv ?? saved?.inv;
+    player.inv = Array.isArray(invSrc)
+      ? invSrc
+          .filter((s) => s && typeof s.item === "string" && typeof s.n === "number" && s.n > 0)
+          .map((s) => ({ item: s.item, n: Math.min(INV_MAX_STACK, Math.floor(s.n)) }))
+          .slice(0, INV_MAX_SLOTS)
+      : [];
     this.state.players.set(client.sessionId, player);
+    // The backpack is PRIVATE — targeted message, never schema-synced.
+    client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
     // the sky — the same streak for every player in the world.
     this.broadcast("star", { name: player.name });
@@ -495,15 +677,29 @@ export class WorldRoom extends Room<WorldState> {
 
   onLeave(client: Client) {
     const player = this.state.players.get(client.sessionId);
-    if (player?.token) {
-      this.store.save(player.token, {
-        character: player.character,
-        name: player.name,
-        x: player.x,
-        y: player.y,
-      });
-    }
+    if (player) this.savePlayer(player);
     this.state.players.delete(client.sessionId);
+  }
+
+  /** Persist one player: position to the per-world store, progression to the
+   * shared world-agnostic store. Called on leave, death, level-up and the
+   * periodic flush — onLeave-only persistence meant a crash ate every
+   * connected player's session gains. */
+  private savePlayer(player: Player) {
+    if (!player.token) return;
+    this.store.save(player.token, {
+      character: player.character,
+      name: player.name,
+      x: player.x,
+      y: player.y,
+    });
+    progressStore().save(player.token, {
+      level: player.level,
+      xp: player.xp,
+      hp: player.hp,
+      ep: player.ep,
+      inv: player.inv,
+    });
   }
 
   private update(dt: number) {
@@ -516,9 +712,35 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     const now = Date.now();
+    // Who is being HUNTED by a monster they provoked? Those players carry the
+    // persistent flee slow until the escape line is crossed (the hunter
+    // disengages) — one monster pass here, consumed in the player loop below.
+    const hunted = new Set<string>();
+    this.state.monsters.forEach((m: Monster) => {
+      if (m.provoked && m.targetSid && (m.mstate === "chase" || m.mstate === "combat"))
+        hunted.add(m.targetSid);
+    });
     this.state.players.forEach((player, id) => {
       const jumping = now < player.jumpUntil;
       player.jumping = jumping;
+
+      // The hit stagger + the flee slow: ONE synced factor the client
+      // prediction mirrors (both sides multiply stepMovement's speedScale).
+      player.slow = player.dead
+        ? 1
+        : Math.min(slowFactorAt(player.lastHitAt, now), hunted.has(id) ? FLEE_SLOW_FACTOR : 1);
+      // A corpse doesn't walk: swallow queued input while dead (the client
+      // freezes its own input too; this is the authoritative guard). Ack the
+      // dropped seqs — un-acked entries would sit in the client's pending
+      // replay buffer and render the corpse offset from where it fell.
+      if (player.dead) {
+        for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
+        player.inputQueue.length = 0;
+        player.moving = false;
+        player.running = false;
+        player.lastMoving = false;
+        return;
+      }
 
       // Integrate the queued input stream with each input's own duration —
       // the same (input, dt) sequence the client predicted with, so both
@@ -555,7 +777,7 @@ export class WorldRoom extends Room<WorldState> {
             // they're on (walk ON the bridge/roof vs UNDER it). Non-deck cells
             // resolve exactly as canEnter, so all other worlds are unaffected.
             makeBlockedElev(terrain, ctx, () => player.elev),
-            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1),
+            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1) * player.slow,
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
@@ -596,6 +818,7 @@ export class WorldRoom extends Room<WorldState> {
     // none of the player state (separate MapSchema) — they can't collide-break
     // player movement.
     this.stepMonsters(dt, now);
+    this.stepCombat(dt, now);
   }
 
   /** Advance every roaming monster one tick. Each monster belongs to a maps2
@@ -640,13 +863,29 @@ export class WorldRoom extends Room<WorldState> {
       zone.cellSet.has(Math.floor(x / CELL_WU) + Math.floor(y / CELL_WU) * grid.width);
 
     mons.forEach(({ id, m }, i) => {
+      // Mirror the hunt target into the synced field (colyseus only encodes
+      // changes, so re-assigning the same value each tick costs nothing). The
+      // client draws the red aggro border on monsters whose tsid is its own
+      // session (round 11); roam/return/die always read as "not hunting".
+      m.tsid = (m.mstate === "chase" || m.mstate === "combat") ? m.targetSid : "";
       const zone = zoneById.get(m.areaId);
       if (!zone) {
         m.moving = false;
         return;
       }
+      // A corpse holds its spot for the die clip; stepCombat sweeps it.
+      if (m.mstate === "die") {
+        m.moving = false;
+        return;
+      }
       const ctx = { maxClimb: WALK_CLIMB, canSwim: zone.canSwim };
       const rm = bodies[i].r;
+      // Movement containment depends on the state: roaming stays ON the zone
+      // polygon (the shipped invariant), but a CHASE follows its victim off it
+      // — bounded by the leash box instead, so combat can spill past the edge
+      // without tripping the snap-back teleport mid-fight.
+      const contained = (x: number, y: number) =>
+        m.mstate === "roam" && !m.returning ? inZone(zone, x, y) : this.withinLeash(zone, x, y);
 
       // POSITIONAL separation: overlap beyond (rA+rB+margin) is pushed out at
       // up to MONSTER_SEP_RELAX_SPEED — a firm, visible shove (stacked
@@ -656,13 +895,216 @@ export class WorldRoom extends Room<WorldState> {
       if (push) {
         const nx = clamp(m.x + push.dx, 1, this.worldW - 1);
         const ny = clamp(m.y + push.dy, 1, this.worldH - 1);
-        if (inZone(zone, nx, m.y) && canEnterElev(grid, m.elev, m.x, m.y, nx, m.y, ctx).ok)
+        if (contained(nx, m.y) && canEnterElev(grid, m.elev, m.x, m.y, nx, m.y, ctx).ok)
           m.x = nx;
-        if (inZone(zone, m.x, ny) && canEnterElev(grid, m.elev, m.x, m.y, m.x, ny, ctx).ok)
+        if (contained(m.x, ny) && canEnterElev(grid, m.elev, m.x, m.y, m.x, ny, ctx).ok)
           m.y = ny;
         m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
         bodies[i].x = m.x;
         bodies[i].y = m.y;
+      }
+
+      // --- COMBAT STATES (chase / in-fight) --------------------------------
+      if (m.targetSid) {
+        const tp = this.state.players.get(m.targetSid);
+        if (!tp || tp.dead) this.disengageMonster(m, zone, now);
+      }
+      if (m.mstate === "chase" || m.mstate === "combat") {
+        const tp = this.state.players.get(m.targetSid);
+        if (!tp) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        // WATER SANCTUARY: a swimming victim is untouchable and unhuntable —
+        // reaching the water IS an escape (monsters cannot enter it, and the
+        // swing loop refuses swimming attackers, so there is no water-sniping).
+        if (tp.swimming) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        const stats = monsterStatsFor(m.kind);
+        const dxp = tp.x - m.x;
+        const dyp = tp.y - m.y;
+        const dist = Math.hypot(dxp, dyp);
+        // MAX CHASE — "max chase is 1.5 screens (regardless of how close it
+        // is)" (maintainer 2026-08-06), measured from WHERE THIS HUNT BEGAN.
+        //
+        // This used to be measured from the zone's BOUNDING BOX, and that is
+        // why a hunt could run six screens (maintainer 2026-08-06: "I had to
+        // run so extremely long and the enemy still didn't give up … I said I
+        // wanted them to give up after a single screen"). MEASURED on
+        // the_island2: shore-1's bbox is 10.0 screens tall and shore-2's 8.5,
+        // so "within MAX_CHASE_WU of the box" licensed 13 and 11.5 screens of
+        // pursuit. The box is the monster's HABITAT — its size says nothing
+        // about how far one chase should run, and it grows with every world
+        // maps2 authors.
+        //
+        // It also could not be rescued by the victim-distance rule below: a
+        // PROVOKED hunter moves at 1.12x its victim's speed by design, so the
+        // gap NEVER opens by running and ESCAPE_RADIUS_WU can only fire when
+        // terrain stops the monster. Both exits were shut; this is the one
+        // that has to hold, so it is now anchored to the pursuit itself.
+        const chased = Math.hypot(m.x - m.chaseOx, m.y - m.chaseOy);
+        if (chased > MAX_CHASE_WU) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        // Habitat containment stays as a SECOND, independent bound: a chase
+        // that starts near the rim of a small zone must not tow the monster
+        // into the next biome even if it has not travelled 1.5 screens yet.
+        if (!this.withinLeash(zone, m.x, m.y)) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        const range = attackRange(rm, PLAYER_BODY_RADIUS);
+        // DE-AGGRO BY DISTANCE (maintainer round 9: "aggro monsters should
+        // also stop chasing if the player runs away too far"). The leash box
+        // below is measured from the monster's HOME ZONE, and a big zone's
+        // bbox can be most of the map — a predator that noticed you at the
+        // edge of a huge zone would follow far past any sane give-up point.
+        // This rule is measured monster-to-victim instead, so ~0.75 of a
+        // screen of daylight ends ANY hunt regardless of zone size. (A provoked
+        // hunter paces its victim and never falls this far behind unless
+        // terrain has genuinely stopped it — where giving up is also right.)
+        if (dist > ESCAPE_RADIUS_WU) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        // Give up when the VICTIM has escaped past the leash and is out of
+        // reach: the chase may not follow there, so it cannot be won — and a
+        // terrain-wedged chaser (a lake inside the leash box) must not stand
+        // hunting forever either. Rim-fights survive: in-reach keeps combat.
+        if (dist > range && !this.withinLeash(zone, tp.x, tp.y)) {
+          this.disengageMonster(m, zone, now);
+          return;
+        }
+        const sameLayer = Math.abs(m.elev - tp.elev) <= 2; // no swiping through a deck
+        if (dist <= range && sameLayer) {
+          // IN REACH — the fight. Face the victim; CIRCLE it slowly (the
+          // maintainer's in-a-fight idea: tangential drift plus a soft radial
+          // hold, so attack/angry directions sweep as the pair rotates); swing
+          // on the tuning cooldown. moving stays false: the client shows the
+          // angry between-swings loop, not the walk.
+          m.mstate = "combat";
+          m.moving = false;
+          const face = faceDirWorld(m.x, m.y, tp.x, tp.y);
+          if (face) m.dir = face;
+          // The boxing pair RARELY switches direction — exponential with a
+          // ~ORBIT_FLIP_MEAN_S mean while actively circling (maintainer:
+          // "rarely change orbit direction, once every min on average").
+          if (Math.random() < dt / ORBIT_FLIP_MEAN_S) m.orbitSign = -m.orbitSign;
+          const inv = 1 / (dist || 1);
+          const ux = dxp * inv;
+          const uy = dyp * inv;
+          const radial = (dist - range * 0.88) * 1.4; // hold just inside reach (round 6: a bit farther out)
+          const mx2 = clamp(m.x + (-uy * m.orbitSign * ORBIT_SPEED_WU + ux * radial) * dt, 1, this.worldW - 1);
+          const my2 = clamp(m.y + (ux * m.orbitSign * ORBIT_SPEED_WU + uy * radial) * dt, 1, this.worldH - 1);
+          if (contained(mx2, m.y) && canEnterElev(grid, m.elev, m.x, m.y, mx2, m.y, ctx).ok) m.x = mx2;
+          if (contained(m.x, my2) && canEnterElev(grid, m.elev, m.x, m.y, m.x, my2, ctx).ok) m.y = my2;
+          m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+          if (now >= m.nextAttackAt) {
+            m.nextAttackAt = now + stats.attack_cooldown_ms;
+            m.actionSeq++;
+            this.hurtPlayer(tp, damageRoll(stats.damage, idSalt(m.areaId), m.actionSeq), now);
+          }
+        } else {
+          // OUT OF REACH — the hunt. Direct drive through the same collision
+          // pipeline as roam (wall-slide handles obstacles). UNPROVOKED
+          // (predator noticed you): constant 105 wu/s — an innocent sprinter
+          // (175) always pulls clear. PROVOKED (you started it): the monster
+          // tracks its victim's CURRENT possible speed and stays slightly
+          // above it, so running only postpones the next bite — escape is
+          // crossing the ESCAPE line, not winning a footrace.
+          m.mstate = "chase";
+          let chaseWu = CHASE_SPEED_WU;
+          if (m.provoked) {
+            const victimWu =
+              (tp.moving ? (tp.running ? RUN_SPEED : WALK_SPEED) : 0) *
+              tp.slow *
+              surfaceAtWorld(grid, tp.x, tp.y).speed;
+            chaseWu = provokedChaseSpeed(victimWu);
+          }
+          const sax = dxp - dyp; // world delta -> SCREEN input (iso projection)
+          const say = (dxp + dyp) * (ISO_DY / ISO_DX);
+          const slen = Math.hypot(sax, say) || 1;
+          const surf2 = surfaceAtWorld(grid, m.x, m.y);
+          const r2 = stepMovement(
+            m.x,
+            m.y,
+            sax / slen,
+            say / slen,
+            false,
+            dt,
+            makeBlockedElev(grid, ctx, () => m.elev),
+            surf2.speed * (chaseWu / WALK_SPEED),
+            true,
+            this.worldW,
+            this.worldH,
+            makeSideBlocked(grid, ctx),
+          );
+          if (contained(r2.x, r2.y)) {
+            m.x = r2.x;
+            m.y = r2.y;
+            if (r2.dir) m.dir = r2.dir;
+            m.moving = r2.moving;
+            m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+          } else {
+            // A leash-rejected chase step IS the give-up signal. The :830
+            // position check alone is dead code — every way a chasing monster
+            // moves is gated by withinLeash, so it can reach the rim but never
+            // cross it; without this branch it wedges there in "chase" forever
+            // (walking in place, untargetable-by-others, no way home).
+            this.disengageMonster(m, zone, now);
+            return;
+          }
+        }
+        bodies[i].x = m.x;
+        bodies[i].y = m.y;
+        return; // combat drive replaces roam entirely this tick
+      }
+
+      // --- PROXIMITY AGGRO -------------------------------------------------
+      // Scanned ~2/s, not per tick. Two ways in: a PREDATOR (tuning
+      // aggro_radius_wu > 0) notices anyone close — an UNPROVOKED chase the
+      // victim can simply outrun; and a SWORD-MARKED monster (a player's
+      // engage target — the attack icon hangs over it) aggros the moment that
+      // player closes inside max(its radius, PROVOKE_RADIUS) — a PROVOKED
+      // fight, passive kinds included: raising your sword IS the provocation.
+      // Suppressed while walking home from a given-up chase: a predator that
+      // just disengaged at the leash rim would otherwise re-aggro the same
+      // out-of-reach player every 450ms in a chase/disengage yo-yo (each
+      // round burning a full walk-home A*).
+      if (now >= m.aggroCheckAt && !m.returning) {
+        m.aggroCheckAt = now + 450;
+        const stats = monsterStatsFor(m.kind);
+        let bestSid = "";
+        let bestD = Infinity;
+        let bestProvoked = false;
+        this.state.players.forEach((p, sid) => {
+          if (p.dead || p.swimming || Math.abs(p.elev - m.elev) > 2) return; // water = sanctuary
+          const marked = p.target === id;
+          const radius = marked
+            ? Math.max(stats.aggro_radius_wu, PROVOKE_RADIUS_WU)
+            : stats.aggro_radius_wu;
+          if (radius <= 0) return;
+          const d = Math.hypot(p.x - m.x, p.y - m.y);
+          if (d <= radius && d < bestD) {
+            bestD = d;
+            bestSid = sid;
+            bestProvoked = marked;
+          }
+        });
+        if (bestSid) {
+          m.targetSid = bestSid;
+          m.provoked = bestProvoked;
+          m.mstate = "chase";
+          m.chaseOx = m.x; // the hunt's origin — MAX_CHASE_WU is measured from here
+          m.chaseOy = m.y;
+          m.tripActive = false;
+          m.trip = null;
+          m.returning = false;
+          return;
+        }
       }
 
       // Idle → pick the next target once the pause has elapsed.
@@ -675,7 +1117,7 @@ export class WorldRoom extends Room<WorldState> {
         // Budgeted A*: a roam leg is a wander, not a commute — cap the search
         // so one unlucky path can't overrun the 20Hz tick (see
         // MONSTER_ROAM_MAX_NODES). Player taps are unbudgeted.
-        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES);
+        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES, false);
         m.tripActive = !!m.trip;
         if (!m.tripActive) {
           // No route (rare — target boxed in): pause and retry shortly.
@@ -700,6 +1142,7 @@ export class WorldRoom extends Room<WorldState> {
         m.tripActive = false;
         m.trip = null;
         m.moving = false;
+        m.returning = false; // if this was the walk home, we have arrived
         m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
         return;
       }
@@ -761,7 +1204,7 @@ export class WorldRoom extends Room<WorldState> {
       // offender (a body-radius slide past an edge cell).
       const mc = Math.floor(m.x / CELL_WU);
       const mr = Math.floor(m.y / CELL_WU);
-      if (!zone.cellSet.has(mc + mr * grid.width)) {
+      if (!m.returning && !zone.cellSet.has(mc + mr * grid.width)) {
         let best = zone.cells[0];
         let bestD = Infinity;
         for (const cell of zone.cells) {
@@ -781,6 +1224,392 @@ export class WorldRoom extends Room<WorldState> {
       // Keep the snapshot current for the monsters that step after this one.
       bodies[i].x = m.x;
       bodies[i].y = m.y;
+    });
+  }
+
+  // --- COMBAT -----------------------------------------------------------
+
+  private lootChance: number | null = null; // test knob — see onCreate
+  private respawnQueue: Array<{ areaId: string; at: number }> = [];
+  private respawnCounter = 0;
+  private dropCounter = 0;
+  private dropSweepAt = 0;
+  private storeFlushAt = 0;
+  private leashBoxes = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
+
+  /** True while (x,y) is within MAX_CHASE_WU (~1.5 screens) of the zone's
+   * bounding box — the LEASH: a chase may spill this far from home and no
+   * further, whatever the victim does. Separate from ESCAPE_RADIUS_WU, which
+   * ends a hunt on monster-to-victim daylight (~0.75 screens). Cheap: clamp
+   * + hypot. */
+  private withinLeash(zone: ZoneRuntime, x: number, y: number): boolean {
+    let box = this.leashBoxes.get(zone.zone.id);
+    if (!box) {
+      box = zoneBBox(zone.zone);
+      this.leashBoxes.set(zone.zone.id, box);
+    }
+    const cx = clamp(x, box.x0, box.x1);
+    const cy = clamp(y, box.y0, box.y1);
+    return Math.hypot(x - cx, y - cy) <= MAX_CHASE_WU;
+  }
+
+  /** End a monster's fight: clear the target and, if the chase carried it off
+   * its polygon, walk it home (a legal out-of-zone trip the snap-back ignores;
+   * if no route exists, snap immediately — never leave a stray). */
+  private disengageMonster(m: Monster, zone: ZoneRuntime, now: number) {
+    m.targetSid = "";
+    m.provoked = false; // the hunt is over — the victim's flee slow lifts
+    if (m.mstate !== "die") m.mstate = "roam";
+    m.tripActive = false;
+    m.trip = null;
+    const grid = this.terrain!;
+    const mc = Math.floor(m.x / CELL_WU);
+    const mr = Math.floor(m.y / CELL_WU);
+    if (!zone.cellSet.has(mc + mr * grid.width)) {
+      let best = zone.cells[0];
+      let bestD = Infinity;
+      for (const cell of zone.cells) {
+        const d = Math.hypot(cell.c - mc, cell.r - mr);
+        if (d < bestD) {
+          bestD = d;
+          best = cell;
+        }
+      }
+      m.targetX = (best.c + 0.5) * CELL_WU;
+      m.targetY = (best.r + 0.5) * CELL_WU;
+      m.trip = startTrip(grid, m.x, m.y, m.targetX, m.targetY, false, now, m.elev, undefined, 900, false);
+      m.tripActive = !!m.trip;
+      m.returning = m.tripActive;
+      if (!m.tripActive) {
+        // Boxed in outside the zone — hard snap, same as the roam safety net.
+        m.x = m.targetX;
+        m.y = m.targetY;
+        m.elev = best.lvl;
+      }
+    }
+    m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
+  }
+
+  /** Damage LANDING on a player: hp, the hurt flinch, the hit-slow window —
+   * and death when it empties (die clip holds until the respawn snap). */
+  private hurtPlayer(player: Player, dmg: number, now: number) {
+    player.hp = Math.max(0, player.hp - dmg);
+    player.hitSeq++;
+    player.lastHitAt = now;
+    player.lastCombatAt = now;
+    player.regenAccHp = 0;
+    player.regenAccEp = 0;
+    // Mirror the slow into the synced field NOW, not at the next tick top —
+    // otherwise the patch carrying hitSeq precedes the one carrying slow and
+    // the client integrates a full-speed tick the server didn't.
+    if (!player.dead) player.slow = SLOW_FACTOR;
+    if (player.hp <= 0 && !player.dead) {
+      player.dead = true;
+      player.action = "die";
+      player.actionSeq++;
+      player.slow = 1;
+      player.target = "";
+      player.respawnAt = now + PLAYER_RESPAWN_MS;
+      for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
+      player.inputQueue.length = 0;
+      player.moving = false;
+      player.running = false;
+      this.broadcast("chat", { name: "—", text: `${player.name} was slain.` });
+      this.savePlayer(player); // a crash between here and respawn loses nothing
+    }
+  }
+
+  /** A monster dies: start the die clip (the schema entry lingers so every
+   * client renders the death), award xp + level-ups to the killer. Drops and
+   * removal happen MONSTER_DIE_MS later in stepCombat. */
+  private killMonster(killer: Player, m: Monster, now: number) {
+    m.mstate = "die";
+    m.moving = false;
+    m.targetSid = "";
+    m.provoked = false;
+    m.diedAt = now;
+    killer.target = "";
+    const stats = monsterStatsFor(m.kind);
+    // At the cap xp has nowhere to go (RO shows a frozen bar) — don't let it
+    // accumulate into a meaningless ever-growing number in the save file.
+    if (killer.level < LEVEL_CAP) killer.xp += stats.xp;
+    let leveled = false;
+    while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
+      killer.xp -= xpToNext(killer.level);
+      killer.level++;
+      leveled = true;
+      // Level-up burst: full pools at the new maxima (the RO ding feel).
+      killer.hpMax = hpMaxFor(killer.level);
+      killer.epMax = epMaxFor(killer.level);
+      killer.hp = killer.hpMax;
+      killer.ep = killer.epMax;
+    }
+    if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
+    if (leveled) {
+      this.broadcast("levelup", { name: killer.name, level: killer.level });
+      this.savePlayer(killer); // the worst thing a crash could eat is a ding
+    }
+  }
+
+  /** Put one item on the ground near (x,y): a pseudo-random scatter that
+   * KEEPS ITS DISTANCE from items already lying there (maintainer 2026-08-05:
+   * "close and not on top of each other" — a pile of loot must read as
+   * distinct sprites). srcElev threads the dropper's layer through: a drop
+   * made ON a bridge deck stays on the deck (deck-aware elevation) instead of
+   * rendering in the water under the span. Placement prefers reachable ground
+   * clear of other drops (the ring grows as the ground crowds), then the
+   * best-spaced reachable point, then the nearest standable cell — and only a
+   * corpse floating in open water (swim zones) keeps its exact spot, where
+   * swimmers can still grab it. */
+  private spawnDrop(item: string, x: number, y: number, srcElev = 0) {
+    if (!item) return;
+    const terr = this.terrain;
+    let gx = clamp(x, 1, this.worldW - 1);
+    let gy = clamp(y, 1, this.worldH - 1);
+    const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
+    const ok = (px: number, py: number) =>
+      !terr ||
+      isStandableAtWorld(terr, px, py) ||
+      resolveElevAt(terr, srcElev, px, py, ctx) > levelAtWorld(terr, px, py); // on a deck
+    const nearestDrop = (px: number, py: number) => {
+      let d = Infinity;
+      this.state.drops.forEach((g: GroundItem) => {
+        d = Math.min(d, Math.hypot(g.x - px, g.y - py));
+      });
+      return d;
+    };
+    let bestScore = -1; // the source point itself is only the last-resort fallback
+    let placed = false;
+    for (let t = 0; t < 12 && !placed; t++) {
+      const a = Math.random() * Math.PI * 2;
+      // Never right ON the source: the grave cross rises exactly there, and
+      // loot must not cover it (maintainer: "a small margin away from the
+      // cross is enough, not much") — so the ring starts ~21wu out.
+      const r = (0.8 + Math.random() * 0.5) * DROP_SCATTER_WU * (1 + t / 6);
+      const cx = clamp(x + Math.cos(a) * r, 1, this.worldW - 1);
+      const cy = clamp(y + Math.sin(a) * r, 1, this.worldH - 1);
+      if (!ok(cx, cy)) continue;
+      const score = nearestDrop(cx, cy);
+      if (score > bestScore) {
+        bestScore = score;
+        gx = cx;
+        gy = cy;
+      }
+      if (score >= DROP_SPACING_WU) placed = true;
+    }
+    if (bestScore < 0 && terr && !ok(gx, gy)) {
+      // All probes wet/blocked: take the nearest standable cell centre within
+      // a short ring-scan before giving up to the open-water fallback.
+      const c0 = Math.floor(gx / CELL_WU);
+      const r0 = Math.floor(gy / CELL_WU);
+      let best: { x: number; y: number; d: number } | null = null;
+      for (let dr = -3; dr <= 3; dr++) {
+        for (let dc = -3; dc <= 3; dc++) {
+          const px = (c0 + dc + 0.5) * CELL_WU;
+          const py = (r0 + dr + 0.5) * CELL_WU;
+          if (px < 1 || py < 1 || px > this.worldW - 1 || py > this.worldH - 1) continue;
+          if (!isStandableAtWorld(terr, px, py)) continue;
+          const d = Math.hypot(px - gx, py - gy);
+          if (!best || d < best.d) best = { x: px, y: py, d };
+        }
+      }
+      if (best) {
+        gx = best.x;
+        gy = best.y;
+      }
+    }
+    const g = new GroundItem();
+    g.item = item;
+    g.x = gx;
+    g.y = gy;
+    g.elev = terr ? resolveElevAt(terr, srcElev, gx, gy, ctx) : 0;
+    g.bornAt = Date.now();
+    this.state.drops.set(`d${this.dropCounter++}`, g);
+  }
+
+  /** One replacement monster in a zone, MONSTER_RESPAWN_MS after a death —
+   * the zone's `num` stays the concurrent cap (RO-style repop). */
+  private respawnMonster(areaId: string, now: number) {
+    const z = this.zones.find((zz) => zz.zone.id === areaId);
+    if (!z || !z.cells.length) return;
+    const m = new Monster();
+    m.kind = z.zone.monster;
+    m.areaId = areaId;
+    const cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+    m.x = (cell.c + 0.5) * CELL_WU;
+    m.y = (cell.r + 0.5) * CELL_WU;
+    m.elev = cell.lvl;
+    m.dir = "south";
+    m.moving = false;
+    m.nextMoveAt = now + 400;
+    const stats = monsterStatsFor(m.kind);
+    m.hp = m.hpMax = stats.max_hp;
+    m.level = stats.level;
+    m.aggro = stats.aggro_radius_wu;
+    const id = `${areaId}#r${this.respawnCounter++}`;
+    m.orbitSign = idSalt(id) & 1 ? 1 : -1;
+    this.state.monsters.set(id, m);
+  }
+
+  /** Stack an item into the backpack. False = full (slot cap hit). */
+  private addInvItem(player: Player, item: string): boolean {
+    const slot = player.inv.find((s) => s.item === item && s.n < INV_MAX_STACK);
+    if (slot) {
+      slot.n++;
+      return true;
+    }
+    if (player.inv.length >= INV_MAX_SLOTS) return false;
+    player.inv.push({ item, n: 1 });
+    return true;
+  }
+
+  /** Everything combat that is not monster movement: corpse sweep -> drops ->
+   * repop scheduling, ground-item TTL, player death/respawn timers, regen and
+   * the player swing loop. Runs each tick after stepMonsters. */
+  private stepCombat(dt: number, now: number) {
+    // Corpses whose die clip has finished -> loot + removal + repop timer.
+    const swept: string[] = [];
+    this.state.monsters.forEach((m: Monster, id: string) => {
+      if (m.mstate === "die" && now >= m.diedAt + MONSTER_DIE_MS) swept.push(id);
+    });
+    for (const id of swept) {
+      const m = this.state.monsters.get(id)!;
+      const stats = monsterStatsFor(m.kind);
+      const loot =
+        this.lootChance === null ? stats.loot : stats.loot.map((l) => ({ ...l, chance: this.lootChance! }));
+      for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y, m.elev);
+      this.state.monsters.delete(id);
+      this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+    }
+    if (this.respawnQueue.length && this.respawnQueue.some((r) => now >= r.at)) {
+      const due = this.respawnQueue.filter((r) => now >= r.at);
+      this.respawnQueue = this.respawnQueue.filter((r) => now < r.at);
+      for (const r of due) this.respawnMonster(r.areaId, now);
+    }
+    // Periodic progression flush: bounds crash loss to ~30s of play (leave,
+    // death and level-up flush eagerly on top of this).
+    if (now >= this.storeFlushAt) {
+      this.storeFlushAt = now + 30_000;
+      this.state.players.forEach((p: Player) => this.savePlayer(p));
+    }
+    // Ground items despawn (1s sweep granularity is plenty for a 90s TTL).
+    if (now >= this.dropSweepAt) {
+      this.dropSweepAt = now + 1000;
+      const stale: string[] = [];
+      this.state.drops.forEach((g: GroundItem, id: string) => {
+        if (now >= g.bornAt + DROP_TTL_MS) stale.push(id);
+      });
+      for (const id of stale) this.state.drops.delete(id);
+    }
+    // Players: respawn timers, out-of-combat regen, the swing loop.
+    const radii = monsterRadii();
+    this.state.players.forEach((player: Player, sid: string) => {
+      if (player.dead) {
+        if (now >= player.respawnAt) {
+          this.placeAtSpawn(player);
+          player.hp = player.hpMax;
+          player.ep = player.epMax;
+          player.dead = false;
+          player.action = "";
+          player.slow = 1;
+          player.lastHitAt = -100000;
+          player.regenAccHp = 0;
+          player.regenAccEp = 0;
+          for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
+          player.inputQueue.length = 0;
+          player.timeCredit = 0;
+        }
+        return;
+      }
+      if (now - player.lastCombatAt > REGEN_DELAY_MS) {
+        // Whole points only: the fraction accrues server-side so the synced
+        // hp/ep (and every client's HUD write) change ~2x/s, not 20x/s.
+        if (player.hp < player.hpMax) {
+          player.regenAccHp += player.hpMax * HP_REGEN_FRAC_PER_S * dt;
+          const whole = Math.floor(player.regenAccHp);
+          if (whole >= 1) {
+            player.regenAccHp -= whole;
+            player.hp = Math.min(player.hpMax, player.hp + whole);
+          }
+        }
+        if (player.ep < player.epMax) {
+          player.regenAccEp += player.epMax * EP_REGEN_FRAC_PER_S * dt;
+          const whole = Math.floor(player.regenAccEp);
+          if (whole >= 1) {
+            player.regenAccEp -= whole;
+            player.ep = Math.min(player.epMax, player.ep + whole);
+          }
+        }
+      }
+      if (!player.target) return;
+      const m = this.state.monsters.get(player.target);
+      if (!m || m.mstate === "die") {
+        player.target = "";
+        return;
+      }
+      // RO: SWINGS require standing still — but the TARGET persists while
+      // moving (the attack icon hangs over it and approach-aggro reads it);
+      // ground taps / movement keys disengage explicitly from the client.
+      if (player.moving) return;
+      // No fighting FROM the water either — sanctuary cuts both ways, or a
+      // swimmer could snipe shore monsters that can never reach back.
+      if (player.swimming) return;
+      const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
+      const range = attackRange(PLAYER_BODY_RADIUS, rm);
+      // A grace band past swing range: the circling must not flicker the
+      // engagement off every time the pair drifts a few wu apart.
+      const pdx = m.x - player.x;
+      const pdy = m.y - player.y;
+      const pdist = Math.hypot(pdx, pdy);
+      if (pdist > range * 1.2) return;
+      if (Math.abs(m.elev - player.elev) > 2) return;
+      // THE BOXING SHUFFLE (maintainer: "both the player and the monster
+      // should walk around each other"): a standing engaged fighter drifts
+      // tangentially around its opponent with the SAME rotational sense as
+      // the monster's orbit — the pair revolves about its midpoint. Ground-
+      // validated per axis (never into water — the sanctuary — or off a
+      // cliff); no `moving` flag, so the stance stays the fight idle. The
+      // client needs no prediction: with no input pending, its predicted
+      // position IS the synced one, and the render ease glides the 20Hz
+      // steps.
+      if (this.terrain) {
+        const pin = 1 / (pdist || 1);
+        const pux = pdx * pin; // player -> monster
+        const puy = pdy * pin;
+        const bctx = { maxClimb: WALK_CLIMB, canSwim: false };
+        // OPPOSITE tangential to the monster's (its u points monster->player,
+        // ours player->monster — same formula on mirrored vectors gives
+        // PARALLEL strafing, the round-5 report): with the flip the pair
+        // truly revolves about its midpoint like boxers.
+        const bx = clamp(player.x - puy * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldW - 1);
+        const by = clamp(player.y + pux * m.orbitSign * ORBIT_SPEED_WU * dt, 1, this.worldH - 1);
+        if (canEnterElev(this.terrain, player.elev, player.x, player.y, bx, player.y, bctx).ok) player.x = bx;
+        if (canEnterElev(this.terrain, player.elev, player.x, player.y, player.x, by, bctx).ok) player.y = by;
+        player.elev = resolveElevAt(this.terrain, player.elev, player.x, player.y, bctx);
+      }
+      if (now < player.nextSwingAt) return;
+      player.nextSwingAt = now + PLAYER_ATTACK_MS;
+      player.action = "attack";
+      player.actionSeq++;
+      player.lastCombatAt = now;
+      const face = faceDirWorld(player.x, player.y, m.x, m.y);
+      if (face) player.dir = face;
+      const dmg = damageRoll(playerAtk(player.level), idSalt(sid), player.actionSeq);
+      m.hp = Math.max(0, m.hp - dmg);
+      // Retaliation: hitting anything wakes it (passive kinds included) —
+      // and a fight the PLAYER started is PROVOKED: the hunter paces its
+      // victim and pins the flee slow on them until the escape line.
+      if (!m.targetSid) {
+        m.targetSid = sid;
+        m.provoked = true;
+        m.mstate = "chase";
+        m.chaseOx = m.x; // the hunt's origin — MAX_CHASE_WU is measured from here
+        m.chaseOy = m.y;
+        m.tripActive = false;
+        m.trip = null;
+        m.returning = false;
+      }
+      if (m.hp <= 0) this.killMonster(player, m, now);
     });
   }
 

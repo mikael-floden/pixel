@@ -36,11 +36,166 @@ decides what sounds.
 | footstep stone | okey-ish, not great | composer regenerates |
 | footstep ice (pitched stone) | okey-ish, not great | composer generates a real ice set |
 | footstep wood | unrated | regenerated alongside the rest |
-| UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm, ui_cancel) — wooden-button thocks matching the carved HUD, explicitly non-musical |
-| thunder | **"doesn't sound like thunder"** (2026-07-18) | verdict: the COMPOSER's fault, not an asset — there was no thunder asset, so the composer disguised `explosion` (0.4× rate + lowpass) and the disguise reads as mush. Fix: real generated `foley/thunder` set (6 s natural rolls), preferred automatically; the disguise stays only as fallback |
+| UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm) — wooden-button thocks matching the carved HUD, explicitly non-musical. `ui_cancel` (the duller release recording) was **rejected wholesale in the wiki 2026-08-05 and deleted**, so `ui.press` clicks and `ui.release` is silent until he assigns a release sound |
+| thunder | **"doesn't sound like thunder"** (2026-07-18); all four rolls **rejected in the wiki** (2026-08-06); rebuilt the same day to **"the exact high loud thunder after a lightning strike close by … synced to the white flash … immediate and loud"**, **"a group with several sounds, but they should not be long"** | Two wrong sets before the right one. The `explosion` disguise (0.4x rate + lowpass, 1-2.5 s after the flash) read as mush; the real generated set that replaced it was briefed as DISTANT ROLLING thunder "from a storm beyond the horizon" — a different sound from the one the game needs. Measured, the rejected takes were **11-12 s long, peaking 0.7-3.9 SECONDS into the file, with 0.0-0.2% of their energy in the 150-4000 Hz band** — so the crack could not land on the flash no matter how the engine timed the call, and no phone speaker could reproduce what did arrive. Round 8 is the CLOSE strike: 6 takes, 1.40 s each, peak at 3-30 ms, mid-band energy 24-66%, +14 dB, and a `rotate` entry that binds all six (the old click entry played take01 on every strike for weeks). `attack_ms <= 60` is now a hard gate, not a ranking nudge. |
 | composer foley round 1 | **stone (black_mountain) GOOD — "I like that one"; other footsteps "still not good enough (but better than before)"** (2026-07-18) | the liked set trims to tight varied lengths = a discrete impact; every disliked set sat at full clip length = continuous texture instead of one step. Round 2: briefs rewritten on stone's "one compact impact" formula + `max_ms` transient tightening cuts the step out of any texture bed in post. **Stone's recipe is FROZEN — never regenerate a liked set.** |
 | footsteps, final directive | **"Only use the stone footsteps for now (regardless of tile-type). Water can be different."** (2026-07-18) | playback routes EVERY dry surface to the stone set (`FOOTSTEP_SET` in engine/api.ts); water keeps splash/swim. The per-surface sets stay generated + auditionable at /#foley but are NOT played until something earns approval. Re-enabling per-surface = change one constant back to `f.surface` routing. |
 | jump/fall VOICE grunts | **girl + boy each APPROVED at rate 2.0** — "2.0 sounds like a normal man … put the girl at 2.0 also, I want her real voice" (2026-07-25) | per-character `JUMP_VOICE` sets in engine/api.ts (`jump_voice` = girl, `jump_voice_boy` = boy), routed by character uid (`opts.voice` from WorldScene), each on the SFX bus, round-robin, −12 dB, on both jump AND fall-start (0.28 s debounce). **⭐ LESSON — ElevenLabs vocal takes are authored at HALF speed: play them at RATE 2.0 to hear the true, normal voice.** We wasted a long tuning loop pitching the girl up by ear (1.12→…→1.75) chasing "normal" before realizing 2× is the honest baseline — start any new character voice at 2.0, then nudge. Male-brief lessons: lean YOUNG/LIGHT/BRIGHT/HUMAN (round-1 male read as an "orc") and say "young MAN/youthful" not "boy/young boy" (child-voice wording gets moderation-blocked, same as "girl"). |
+
+### Music-generation lessons (ElevenLabs Music, `music_v1`)
+
+- **Never name real IP or artists.** "Ragnarök Online / Studio Ghibli / Joe
+  Hisaishi" in a prompt is a 400 `bad_prompt` ToS block, not a style hint.
+  Describe the style and the *feeling*; the maintainer's references translate
+  fine as adjectives.
+- **Negative prompts backfire** (same as foley): the generator weights the words
+  you forbid. Say what you want.
+- **Say "it starts immediately".** A bed that fades in from ambience reads as
+  broken audio — the maintainer rejected a theme for exactly this ("the start is
+  important because you might click away fast"). Every brief says the first bar
+  is already music, and `lead_in_s` is a scored gate on top.
+- **Ask for a tempo, then measure it — and expect the measurement to lie.**
+  Autocorrelation cannot tell a tempo from its multiples: it came back at 2× for
+  the night bed (123 for 62) and 3/2× for the title theme (140 for 92). The
+  brief's BPM is used as a prior to snap the raw peak onto the right member of
+  the simple-ratio family.
+- **Generate lossless, master once.** Asking for `pcm_44100` and encoding at the
+  end avoids mastering a lossy file (decode + re-encode = two generations of
+  artefacts on a track the player hears for hours).
+
+### The wiki assignment loop (maintainer 2026-08-05)
+
+The Game Master auditions sounds in the wiki and assigns them to in-game
+events; the game never plays unapproved audio. The machinery:
+
+- The engine is **silent-by-default** (`engine/api.ts`): an emitted event
+  resolves through `EVENT_ASSIGNMENTS` (the Game Master's wiki picks) → the
+  approved voice branch / `EVENT_FOLEY` → `bindings.json` for
+  `BINDINGS_APPROVED` names only. Everything else plays nothing.
+- Assignment requests land in **`live/tuning/sfx_requests.json`**
+  (`pixel-wiki-sfx-requests@1`): `{event, sound (catalog id or
+  composer/<set>), take, pitch, volume_db, max_random_pitch_semis, note}`.
+  **Read it at every run start**, wire accepted entries into
+  `EVENT_ASSIGNMENTS` verbatim (the fields map 1:1), and DELETE the entries
+  acted on (read-modify-write). Feedback on takes:
+  `live/feedback/composer.json`.
+- **A REQUEST IS A MESSAGE, NOT A RECORD** — maintainer 2026-08-06: *"You
+  consume the request when you implement it … the request itself is not a
+  ground truth."* Consuming one is **ONE COMMIT** that both wires it into
+  `EVENT_ASSIGNMENTS` and deletes the request entry. Never one without the
+  other: delete-first loses the ask with nothing to show for it, wire-first
+  leaves a request the next run re-applies over a setting he has since
+  changed. Because the queue is empty straight afterwards, it can never be
+  read back to find out what he chose.
+- **`composer/assignments.json` is therefore the ground truth**
+  (`pixel-composer-assignments@1`, generated by
+  `scripts/build-assignments.mjs`, staleness-gated by `verify-quiet`). It says
+  what the engine ACTUALLY plays per assigned event — sound, take, pitch,
+  volume, jitter, bus. Any tool reporting "what does this event play" reads
+  that file. **Falling back to `EVENT_FOLEY` / `bindings.json` for an assigned
+  event is worse than showing nothing**: those layers are *outranked*, so
+  displaying one reads as live when it is not. That is the whole 2026-08-06
+  bug — the wiki showed `ui.press → ui_tick, −24 dB` and `ui.release → no
+  sound yet` while the engine played his `ui_click_bead` / `ui_click_latch`,
+  and it was indistinguishable from his assignments having been reverted.
+- Candidate SFX are generated as foley sets, served at
+  `/assets/composer/foley`, auditioned in the wiki, played nowhere until
+  assigned. **A rejected take is DELETED, not left lying around** (wiki pass
+  2026-08-05 removed 164 takes; a set whose every take was rejected — the
+  whole round-5 candidate batch, plus `sand`, `thunder`, `ui_cancel` — is
+  gone, directory and all). What survives is the maintainer's keep list: the
+  footstep/voice/click sets in playback, plus the ten single-take candidates
+  he liked (`cross_rise_roots`, `cross_sink_swallow`, `hit_taken_gut`,
+  `item_drop_mudplop`, `kick_bamboo`, `level_up_choir`, `level_up_harp`,
+  `monster_die_bubble`, `monster_die_splat`, `monster_hit_splat`) — kept and
+  **unwired**: liking a sound is not assigning it.
+- **Round 7** (2026-08-06, "10 more level_up, taking_dmg, kick, punch and
+  die sound effects. All different vibes."): fifty fresh candidates, ten per
+  action, none repeating a round-6 brief and **none spent on arcade** — the
+  `retro` alternative lost 10 times out of 10, so that lane is closed. The
+  other read from his keep list: impacts want ORGANIC and PHYSICAL, the
+  level-up wants WARM ACOUSTIC, and bright struck metal (bells, chimes,
+  glockenspiel, gong) lost everywhere it was tried. player_die restarts from
+  scratch — round 6 spent all ten on one slow-solemn-fade idea and lost all
+  ten. `generate.py:REJECTED_SETS` keeps a bare run from resurrecting any of
+  it; naming a set on the command line still works, which is the deliberate
+  act.
+- **Round 9** (2026-08-06, "more button click/press/release sounds, like 10
+  to pick from"): ten tactile MECHANISMS — the variety is in what physically
+  makes the click (spring, plastic, metal catch, stone, leather, wood, cork,
+  flint), and they deliberately span both halves of the tactile pair, since
+  `ui.release` has been silent since ui_cancel was rejected. Their briefs are
+  **purely positive**, unlike the ui_tick/ui_confirm ones above, which are the
+  most negative in the pipeline and predate the backfire lesson; the anti-piano
+  job belongs to the `click` GATE, which measures tonality and cannot be
+  talked into the thing it is filtering. They are the first alternatives with a
+  POOL (3) and a judge — the gate cannot narrow variety when variety lives
+  across the ten briefs and the judge only picks among three renditions of one.
+- ⭐ **LESSON — the click gate does not predict his UI verdicts** (measured the
+  same day, by replaying every UI take he has ruled on back through the
+  feature). KEPT measure 0.238/0.276/0.429 (ui_tick) and 0.239/0.252
+  (ui_confirm); REJECTED measure 0.000/0.268/0.340/0.352 (ui_cancel),
+  0.250/0.251 (ui_confirm) and 0.397 (ui_tick). The ranges overlap almost
+  entirely: the gate would have **passed seven of the seven takes he threw
+  away** — including one measuring a perfect 0.000 — while failing one he
+  kept. Same shape as the `grain` gate's metal lesson: tonality measures a
+  real thing that is not what makes a click good to him. A pool + judge buys
+  more attempts and a deterministic tie-break, nothing more, and its verdict
+  is not worth passing on as a quality signal.
+- ⭐ **LESSON — the "game from the 90ths" defect was the DECODE, and here is
+  how far the fix actually goes** (maintainer 2026-08-06). Every take in the
+  library arrived at exactly 2.00x the requested length and carried aliasing
+  junk in its top octaves; `_generate` now picks the delivered format BY
+  RESULT (first rung whose decoded length matches what was asked for) and
+  `_decode` resamples any raw pcm rate that is not ours. Lengths are now
+  1.00x and the junk is gone. **Do not over-claim what that bought**: an
+  earlier note here said `ui_tick` was "the one full-band set" — it was not,
+  its apparent 16-24 kHz energy WAS the aliasing artifact, and collapsing the
+  file makes it vanish. Measured after the fix: both pcm rungs still return
+  the wrong length, `mp3_44100_192` wins, and the ceiling moved ~16 kHz ->
+  ~19 kHz (ui_down_dome's 16-20 kHz band went 8.4e-08 -> 5.4e-03 on the same
+  brief). But IMPACT sets did not move at all: punch_anvil and thunder are
+  ~100% below 4 kHz in both renders. **That residue is the MODEL, not the
+  pipeline** — an anvil punch that ships no metallic ring was never given one
+  to ship. The lever for a dull impact is the BRIEF (ask for the bright half
+  of the sound out loud), not another decode change.
+- **Round 13** (2026-08-06, "Can you generate 20 level up sounds"): twenty,
+  varied by **shape and mood rather than by instrument**. Round 7 had already
+  spent ten on warm acoustic level-ups (strings, lute, flute, organ, voices,
+  whistle, accordion, marimba, bowl, handdrum) and every one of them was the
+  same gesture — a phrase RISING and RESOLVING BRIGHTLY. Ten timbres of one
+  idea; he kept none and asked again, so timbre was not the missing variable.
+  So each brief fixes a different ARRIVAL: a two-note call answered from far
+  off (`panpipes`), one tone blooming with no melody at all (`glassbloom`,
+  `reed`), a flourish that stops dead on its top note (`fiddle`), a sweep that
+  lands DOWN (`koto`), a shimmer that decays instead of holding (`dulcimer`),
+  a resolve that is tender rather than triumphant (`nylon`). Two are not music
+  — the reward as an OBJECT (`chestlatch`, `forgequench`) — because twelve
+  musical takes cannot be compared against a non-musical one until it exists.
+  Kept from his keep list: warm and acoustic, and NO bright struck metal.
+  Measured after generation: lengths 1.00× (0.83–0.77× on `emberrise` /
+  `chestlatch`, the model returning less than asked — not the decode bug), and
+  the shapes really did separate — attack peaks land at 0.01 s for
+  `hurdygurdy`/`kalimba`/`nylon` versus 1.2–1.5 s for `hymn`/`glassbloom`/
+  `sunrise`/`reed`. Candidates only; nothing is wired.
+- Gate: `scripts/verify-quiet.mjs` — the can-sound surface must equal the
+  approved list + assignments, every assignable action must stay emitted, and
+  every foley set an active route names must EXIST (deleting a rejected set
+  must not leave a route pointing at nothing).
+
+### Background behavior (maintainer 2026-08-05)
+
+- **Hidden page → master ducks to 50%** (`BACKGROUND_DUCK`, context.ts) and
+  eases back on return — every bus together; the deploy chime stays audible.
+- **The score keeps looping in background.** The crossfade scheduler is
+  setTimeout-armed and background tabs throttle/freeze timers — the music
+  died the moment its pass ended. While hidden, MusicDirector hands the score
+  to ONE native-looping source (`loopStart/loopEnd` at the measured points,
+  zero JS, immune to throttling), with a click-free handoff at the pass's own
+  fade-out; on return the scheduler resumes at the position the loop reached.
+  Title theme + night bed already loop natively and never had the bug. Gate:
+  `scripts/verify-background.mjs` (covers both the early return AND the real
+  handoff-then-return leg).
 
 ### ENFORCE UNMODIFIED AUDIO (Settings switch)
 
@@ -92,7 +247,7 @@ buses: music / sfx / ui / ambience               ┘
 | `dropAvatar(id)` | avatar removed |
 | `setEnv({sun, cloud, mist})` | world mood, pushed each frame by the scene |
 | `setFieldSampler(fn)` | scene-provided terrain fractions `{forest, water, town, fire}` around the listener |
-| `thunder(strength)` | with a lightning flash — rumble arrives 1–2.5 s later |
+| `thunder(strength)` | with a lightning flash — in sync with the flash; **silent today**, its set was rejected and deleted |
 | `star()` | shooting star — chime snapped into key **on the next beat** |
 | `toggleSound() / toggleMusic()` | HUD settings switches (persisted in localStorage) |
 | `debug()` | QA probe (`__ml.audio()`) |
@@ -115,6 +270,110 @@ is a whisper.**
   scaled ×0.35 at playback — the composer overrides the producer's ranges.
 - When tuning any future effect: start from imperceptible and increase only
   with explicit approval, never the reverse.
+
+## The music beds — generated, NOT yet routed
+
+**The in-world score is unchanged**: the sound-domain catalog bed by day,
+cross-faded into the mystical `night` bed after dark. The five new beds are
+generated and auditionable, and nothing plays them automatically —
+the maintainer listens first and then says what plays where (2026-08-05:
+"I didnt tell you to change the music in the game. Just generate more music").
+GENERATING an asset and ROUTING it are two separate decisions.
+
+**Listen at `/#score`** (`scoreAudition.ts`): every bed with what it was written
+for, its measured facts, and a button that jumps to the measured loop point so
+the seam can be judged in seconds.
+
+`engine/contextMusic.ts` + `engine/bedSelect.ts` hold the routing machinery,
+dormant, for when that call is made. A bed only takes the music bus during an
+explicit audition (`__ml.audioBed("cave")`, `__ml.audioBed()` to release).
+The intended mapping, when it is wanted:
+
+| bed | when | what triggers it |
+|---|---|---|
+| `battle` | monsters are fighting you | a monster in `mstate` `chase`/`combat` within ~7 cells (the combat brain's own state — a *roaming* monster is scenery however close) |
+| `cave` | underground | world@2 deck slabs overhead (≥1.5 levels above your surface, so a bridge you stand ON never counts) |
+| `home` | at the spawn bonfire | the campfire proximity the ambience bed already measures — the "you are home" landmark |
+| `town` | village / market / farmland | fraction of `road_*`/`farm`/`vineyard`/`mosaic_floor` tiles in earshot |
+| `night` | the overworld after dark | sun strength |
+| `adventure` | anywhere else | the default, and by far the most-heard track |
+
+Selection (unused until routed) lives in **`engine/bedSelect.ts` as pure functions**, tested in
+`test/bedSelect.test.ts` (`npx tsx composer/test/bedSelect.test.ts`), because a
+wrong answer is only audible if you stand in the right place on the right map at
+the right time of day. Three rules the tests pin:
+
+- **PLACE BEATS TIME.** A town at night is still a town. Night only decides when
+  nowhere in particular has a claim — otherwise half the day/night cycle would
+  erase every other bed.
+- **HYSTERESIS EVERYWHERE.** Every trigger is a Schmitt trigger (`BED_ON` /
+  `BED_OFF`) plus a 6 s minimum hold, so standing on a boundary can never make
+  the music dither. Battle is the one thing allowed to interrupt instantly.
+- **NEVER SILENT.** A bed that has not been generated falls back down a
+  documented chain (`BED_FALLBACK`), and an empty chain hands back to the
+  sound-domain catalog track — which is exactly the behaviour that shipped
+  before the context score existed.
+
+Audition any bed in-game without hunting for its trigger:
+`__ml.audioBed("cave")`, and `__ml.audioBed()` to release. `__ml.audioField()`
+shows what the score is reading from the world; `__ml.audio().beds` shows what
+is loaded, wanted and playing.
+
+### Why these tracks sound like a score and not six mp3s on repeat
+
+All three come out of `music/pipeline/master.py`, and all three are *measured*,
+never eyeballed — the numbers land in `music/tracks.json`, which the engine reads.
+
+1. **Loudness matching.** Beds cross-fade into each other, and two takes from the
+   same model routinely land 4–6 LU apart; un-matched, every context switch is a
+   volume jump. Every bed is normalised to the same ITU-R BS.1770 loudness
+   (−18 LUFS) with a true-peak ceiling. **The meter is validated against the
+   standard's own calibration tone** — and note that deriving K-weighting from
+   the usual RBJ cookbook formulas does *not* reproduce the standard: the shelf
+   lands 0.2577 dB low at 997 Hz, which is exactly how far the calibration tone
+   then misses −3.01 LKFS. The tabulated 48 kHz coefficients are round-tripped
+   through their analog prototype instead.
+2. **Measured loop points.** Generated music is never sample-loop-perfect, so
+   the seam is *searched for*: the (start, end) pair whose surrounding audio best
+   matches in timbre and level, beat-snapped when a tempo is known. The engine
+   crossfades exactly there instead of hard-wrapping at end of file.
+3. **Position memory.** A bed that fades out remembers where it was and resumes
+   there — the maintainer's rule for the night bed ("we only get to listen to the
+   start of the song if it restarts each cycle"), now true of all six. Walking in
+   and out of town does not restart the town tune.
+
+Key and tempo are measured too, so `gameAudio.clock()` and the tonal-SFX
+scale-snap keep working once these beds are the score rather than the catalog
+track. Delivery is **opus + AAC**, not mp3: better quality per byte, every
+browser covered, one format downloaded per player.
+
+**`title` and `night` are approved takes and are never regenerated.** They are
+*adopted* into the same system (`generate.py adopt`) — measured as they stand,
+carrying a `trim_db` instead of being re-mastered, so the approved bytes keep
+playing. The night bed's shipped loudness is in fact where the shared bed level
+comes from: it measures −16.79 LUFS and played at −5 dB, so −18 LUFS at −3.8 dB
+reproduces it exactly.
+
+### Regenerating
+
+`composer-theme` workflow (dispatch) with `track` = a name, `new` (the five
+context beds) or `all`; or locally with `ELEVENLABS_API_KEY`:
+
+```
+python games2/composer/music/pipeline/generate.py new
+python games2/composer/music/pipeline/generate.py adopt   # no API key needed
+python games2/composer/music/pipeline/test_master.py      # DSP self-test
+```
+
+Each track composes from a `/v1/music/plan` **composition plan** (structured
+sections) rather than a flat prompt, generates several candidates, and keeps the
+best by measured quality — lead-in, loop seam, dead air, dynamics, brightness,
+stereo phase. Every candidate's card is kept in `tracks.json` so the choice is
+auditable. Budget: the run checks remaining credits and scales candidates down,
+never below a floor that would starve the sound/music agents.
+
+To nudge a bed's level **by ear** without regenerating anything, edit its
+`trim_db` in `music/tracks.json` and redeploy.
 
 ## Mixing decisions (composer authority)
 

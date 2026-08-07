@@ -25,6 +25,12 @@ import {
   startTrip,
   stepAutopilot,
   AutopilotTrip,
+  findIndoorSpace,
+  roofAbove,
+  type IndoorSpace,
+  INDOOR_DEPTH,
+  INDOOR_WALL_RATIO,
+  MIN_ROOM_CELLS,
   surfaceAtWorld,
   levelAtWorld,
   integrateFall,
@@ -48,11 +54,25 @@ import {
   WEATHER_COUNT,
   parseSpawns,
   type SpawnZone,
+  unarmedClip,
+  idSalt,
+  xpToNext,
+  faceDirWorld,
+  PICKUP_RADIUS_WU,
+  attackRange,
+  PLAYER_BODY_RADIUS,
+  PROVOKE_RADIUS_WU,
+  DROP_TTL_MS,
+  DROP_FLASH_MS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
+import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
+import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "../indoorcut";
 import { withV } from "../assetver";
-import { MonsterManifest, MonsterDef, monsterWalkKey } from "../monsterManifest";
+import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
+import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
+import { setBar, setLevel } from "../bars";
 import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -74,6 +94,7 @@ import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
+import { getHand, setHand } from "../controls";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
@@ -103,7 +124,87 @@ import {
 // buildAnimations (frames / JUMP_MS) so the clip always spans the hop arc —
 // the art agent resizes it freely (the 2026-07-29 overhaul cut it 9→4 frames,
 // and the old fixed 18fps would have frozen a 4-frame clip mid-air at ~222ms).
-const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
+const ANIM_FPS: Record<string, number> = {
+  idle: 6,
+  walk: 12,
+  run: 14,
+  // One-shot combat clips: strikes read snappy, the pickup crouch and the
+  // death fall read deliberate. (Movement clips use measured gaitFps instead.)
+  kick: 12,
+  punch: 12,
+  hurt: 16, // round 7 (maintainer): the got-hit flinch plays FAST
+  pickup: 9,
+  die: 8,
+};
+// The blood spatter's 8 direction variants (objects/blood_spatter, trimmed to
+// burst->dispersal) — one is picked at random per landed hit, played forward
+// or reversed at random.
+const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
+// The target/aggro border palettes (maintainer rounds 9-11). Each border is a
+// GENERATED outline texture — see ringTextureFor: 4-NEIGHBOUR dilation only,
+// so a diagonal silhouette step yields single diagonally-touching border
+// pixels, the way pixel art draws its own outlines (round 10: 8-direction
+// dilation read THICK). Round 11: the border is 2px — an inner line in the
+// base colour and an outer line slightly BRIGHTER in the same palette.
+// RED = monsters: the one you clicked (the whole fight through) and every
+// monster currently hunting YOU. LIGHT-LIGHT-BLUE = the ground item you are
+// fetching (tap or PICK UP), replacing the old hand icon.
+const TARGET_RING_COLOR = 0x8e2222; // dark red, inner (round 9's approved tone)
+const TARGET_RING_BRIGHT = 0xb83a3a; // outer line, same palette a step brighter
+const ITEM_RING_COLOR = 0x9adcf0; // light-light-blue, inner
+const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
+/** THE OCCLUSION OUTLINE (maintainer 2026-08-07: "my solution was to go with a
+ * white pixel outline on parts being behind something"). The other half of the
+ * indoor cut-away: the cut shortens a wall so you can see over it, and this
+ * keeps whoever is behind what remains readable — without making anything
+ * transparent, which is the feature he rejected. Not indoor-only: a body behind
+ * any terrain gets it, which is what the deleted see-through-walls sweep was
+ * for and this replaces at a fraction of the cost (one image per COVERED body,
+ * not an alpha pass over thousands of occluders).
+ *
+ * These two must differ from every other ring's INNER colour: ringTextureFor's
+ * cache key hashes the inner one alone, so two palettes sharing it would
+ * silently share the first-baked outer line too. */
+const HIDDEN_RING_COLOR = 0xf0f0f0; // inner, a hair off white
+const HIDDEN_RING_BRIGHT = 0xffffff; // outer — the white the maintainer asked for
+const RING_PAD = 2; // outline canvas pad = border width in art pixels
+// Tap hitboxes (maintainer round 12: taps kept missing small targets). World
+// px ≈ screen px at zoom 1; phones run integer zoom ≥1, so these are AT
+// LEAST fingertip-scale on every device.
+// MONSTER GAIT SYNC (maintainer round 13: monsters "jump" or the walk clip
+// "is limping forward" — the animation must sync with the actual movement).
+// A monster's speed spans 42 wu/s (roam) → 105 (chase) → 220 (a provoked
+// hunt), but every walk clip used to play ONE fixed rate (6 or 10 fps picked
+// from the frame count alone), so the feet could only match the ground at one
+// of those speeds. The clip is now paced by DISTANCE: one cycle per the
+// manifest's measured gait.cycleWu, i.e. fps = frames × speed / cycleWu.
+const GAIT_REF_WU = 42; // roam speed (WALK_SPEED × MONSTER_SPEED_SCALE) — the clips' base rate
+const GAIT_FPS_MIN = 3; // a heavy body may pace slowly, but never freeze mid-stride
+const GAIT_FPS_MAX = 26; // …nor blur at a provoked sprint
+const GAIT_HOP_EASE = 10; // hop-offset smoothing (per second) — no pops on frame changes
+// THE GRAB (maintainer 2026-08-06): the player walks to the spot where the
+// pickup gesture's hand actually reaches the item, and the item vanishes on
+// the exact frame the hand closes on it. How near that spot counts as
+// "standing on it" — the autopilot's own arrival tolerance is a few wu, so a
+// tighter number would just stall the grab.
+// NPCs stand around town breathing. The generated idle is short and would
+// read as a room full of metronomes if every one of them looped it back to
+// back (maintainer 2026-08-06: "I want a more calm idle … freeze on the first
+// frame for a pseudo-random duration between 0.1s and 5s so they don't repeat
+// the idle animation too often and too regularly"). So each NPC plays its clip
+// ONCE, then holds frame 0 for a fresh random pause before the next one.
+const NPC_HOLD_MIN_MS = 100;
+const NPC_HOLD_MAX_MS = 5000;
+const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collision)
+const GRAB_ALIGN_WU = 10;
+/** Frame index out of a character frame's texture key (f:<uid>:<state>:<dir>:<n>). */
+const frameIndexOf = (key?: string): number => {
+  const m = key ? /:(\d+)$/.exec(key) : null;
+  return m ? +m[1] : 0;
+};
+const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
+const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
+const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -340,6 +441,19 @@ const OCC_CULL_PAD = OCC_STEP + 64 + 200;
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
+// Per-monster SFX cadence (games-audio 2026-08-06). Idle and angry LOOP, so
+// they fire on a jittered per-individual interval — a pack must breathe out of
+// phase, not in chorus. The per-second budget is the herd guard: at most this
+// many monster sounds may START in any one second across the whole view, which
+// is what keeps a visible mammoth herd from machine-gunning.
+const MONSTER_IDLE_GAP_MS: [number, number] = [5200, 12800];
+const MONSTER_ANGRY_GAP_MS: [number, number] = [2200, 4600];
+const MONSTER_SFX_PER_SEC = 10;
+
+// Battle music (composer): how close a HUNTING monster (mstate chase/combat)
+// has to be for the fight to count as mine — world units, 32/cell, so ~7
+// cells. Roaming monsters score zero at any distance.
+const THREAT_NEAR_WU = 220;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
@@ -371,6 +485,7 @@ interface Avatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
+  hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
@@ -394,6 +509,12 @@ interface Avatar {
   foamTilt?: number; // current foam crest tilt variant (-1/0/+1), the lapping frame
   foamNextAt?: number; // time.now when the foam rolls to a new tilt
   baseTint: number;
+  // Combat mirrors (server action/actionSeq/hitSeq/dead drive one-shot clips).
+  actionKey?: string;
+  actionUntil?: number;
+  lastActionSeq?: number;
+  lastHitSeq?: number;
+  lastHp?: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
   // Direction hysteresis (stableDir): the direction currently DISPLAYED, and
@@ -427,6 +548,113 @@ const DIR_STICK_MS = 160;
 // the residual previously misread as edge-alpha inset).
 const TILE_DIAMOND_TOP = 5;
 
+// ===========================================================================
+// INDOORS — the renderer half of shared/src/indoor.ts
+// ===========================================================================
+// The module answers "am I under a roof, and is that a ROOM?"; everything
+// below is what the picture then does about it (maintainer 2026-08-06):
+//
+//   "we should automatically detect when a player walks into a house/cave…
+//    The game does this by removing the roof and everything over the roof. The
+//    game also renders everything outside the house (not under the roof)
+//    black, but we have to still be able to show the walls facing the inside
+//    of the house/cave, but only the part that faces the inside. Not the
+//    entire tile."
+//   "The lighting indoors is always dark as during the night, but with a less
+//    'blue moonlight ambient' tone. It's up to each individual room to place
+//    lights."
+//   "It's also important to re-enable the players torch even if it's day."
+//
+// IT IS A CUT-AWAY, NOT AN X-RAY. The building is drawn WHOLE and simply
+// TRUNCATED: every one of its columns — floor, near wall, far wall, corner —
+// stops at `indoorTop` levels, and what stood above that is not drawn. The
+// roof goes because it is above the cut; the near walls become a low parapet
+// you look over. Nothing is hidden, nothing is made transparent, nothing is
+// half a tile.
+//
+// THE HISTORY IS WORTH ONE PARAGRAPH, because the obvious idea is the wrong
+// one. The first cut CULLED: no roof, no near walls at all, and a 32px
+// half-face "skirt" of each far wall. It shipped holes — wall slabs floating
+// disconnected in the void, black wedges through a solid roof line — and the
+// holes were structural rather than a tuning miss. Culling has to ask "whose
+// inward face does the camera see", and a room's own CORNER has no inward
+// face, so no wall set could contain it, so nobody drew it; the same for every
+// T-junction where an interior partition meets an outer wall. See `shell` in
+// shared/src/indoor.ts. Maintainer 2026-08-07, who had asked for the cut-away
+// in the first place: "You added a transparent wall feature where my idea was
+// to instead cut all walls at roof-1, roof-2, etc. Even making this
+// configurable in settings so I can test what looks best... my solution was to
+// go with a white pixel outline on parts being behind something."
+//
+// So the two halves of the design are: this truncation, and the white
+// silhouette outline that keeps a body readable when a parapet still covers
+// its legs. The cut DEPTH is the maintainer's dial — see indoorcut.ts.
+//
+// THE OUTSIDE IS A VOID, NOT A BLACK TILE. "Draw the outside black" is
+// implemented as "draw nothing and make the ground RT's backdrop black",
+// because a black TILE is strictly worse: the ground RT paints in painter
+// order (v = col+row ascending), so a black copy of the outside terrain
+// down-screen of the house would be drawn AFTER the interior and cover it.
+// Drawing nothing against a black backdrop IS "rendered black", at no cost.
+//
+// The per-cell verdict is a BITMASK, one entry per cell of the current space,
+// rebuilt only when the space changes (see refreshIndoorMask). It is also the
+// hook the ray-traced doorway daylight will want: keep the mask a plain
+// bitfield and add a PARALLEL Map<cellIndex, number> of light, rather than
+// turning these into objects — the mask is walked once per cell per ground
+// redraw and per occluder rebuild.
+//
+// Both bits draw the SAME truncated column; they are kept apart because other
+// passes genuinely mean "the floor of the room" — props only stand on IN_ROOF
+// cells, and a light must be inside the room to count.
+const IN_ROOF = 1; // under the same roof as me: interior floor
+const IN_WALL = 2; // the building itself: any solid cell of the enclosure
+
+/** Indoor ambient — "always dark as during the night, but with a less blue
+ * moonlight ambient tone" (maintainer). Derived from TIME_PHASES[0] Night
+ * [0.075, 0.09, 0.14] by holding LUMINANCE and rotating the hue about green:
+ *
+ *   Rec.709 luma  night 0.09042 → indoor 0.09016   (−0.3%: equally dark)
+ *   B ÷ R         night 1.867   → indoor 1.209     (76% of the blue tilt gone)
+ *   chroma        night 0.639   → indoor 0.193     (30% of night's saturation)
+ *
+ * Equal luminance is the load-bearing half: stepping inside at midnight must be
+ * a HUE change, not a brightness pop. G is left at night's own 0.090 and only
+ * R/B move, which is why the luma barely shifts (G carries 71% of Rec.709).
+ * The residual +21% blue is deliberate — unlit stone and wood are cool; going
+ * fully neutral reads as flat grey and going warm reads as if a fire were
+ * already lit, which would pre-empt "it's up to each individual room to place
+ * lights". TUNE ALONG [0.09 − k·0.015, 0.090, 0.09 + k·0.050]: k=1 is Night
+ * itself, k=0.28 is this. Every point on that line holds luma within 1%.
+ *
+ * THE BRIGHTNESS IS NOW A SETTINGS SLIDER (maintainer 2026-08-06: "a slider on
+ * the settings page … 0% = BLACK, 100% = THE TILE WILL LOOK JUST LIKE THE PNG").
+ * indoorlight.ts owns the dial and derives the triple from it, keeping the hue
+ * above as RATIOS so moving the slider changes brightness and nothing else —
+ * until the very top, where the tint fades out so 100% is exactly [1,1,1] (a
+ * tinted 100% would render every tile faintly blue and would not be the source
+ * art). The dial defaults to 0.104, which reproduces the triple this comment
+ * derives, so the shipped look is unchanged until someone drags it. */
+
+/** Time constant of the indoor LIGHT cross-fade (seconds). The geometry snaps
+ * — a half-faded roof is just a wrong roof — but the grade must not, or a
+ * doorstep reads as a camera cut. Same exponential-roll idiom as the cloud /
+ * mist / aurora eases (frame-rate independent, and retarget-safe: turn round in
+ * the doorway and it simply reverses from wherever it is). 0.35s is ~93% of the
+ * way in 1s — an eye adapting, and finished before you have walked one cell in.
+ * The weather roll's 4s is far too slow for a doorway. */
+const INDOOR_TAU = 0.35;
+
+/** Minimum wall-clock between APPLIED indoor transitions. Layers 1 and 2 of the
+ * hysteresis (the relaxed leave bar and the space identity, see
+ * `indoorVerdict`) cannot smooth the last case: a player standing astride a
+ * doorway steps between two cells that differ by ROOF MEMBERSHIP, and no depth
+ * bar reaches that. A deferred verdict is never discarded — it is re-checked
+ * every recompute and lands the moment this expires — so this can only DELAY a
+ * flip, never lose one. It matters because a flip rebuilds the whole ground RT
+ * AND ~3,900 occluder sprites. */
+const INDOOR_DWELL_MS = 250;
+
 // A roaming MONSTER (the poring family) rendered from the authoritative
 // server-synced Monster schema. Much lighter than an Avatar: no swim/torch/
 // footstep/label machinery — porings just hop (walk == jump), so we ease the
@@ -448,6 +676,7 @@ interface MonsterAvatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
+  hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
@@ -462,6 +691,9 @@ interface MonsterAvatar {
   // playMonsterAnim behind that coincidence, and the moment the manifest
   // resolved properly every monster froze mid-slide (maintainer 2026-07-30).
   walkKey: string;
+  attackKey?: string; // resolved attack anim (undefined: art has none)
+  angryKey?: string; // between-swings loop (6 of 24 kinds ship none)
+  dieKey?: string;
   idleKey?: string; // resolved idle anim (undefined: no idle art — park on walk contact)
   // PER-DIRECTION ground contract (manifest `ground`): originY feet line,
   // originX foot centre, and the planted `contact` frame a pause parks on.
@@ -483,6 +715,66 @@ interface MonsterAvatar {
   // CAMERA GATE (see MONSTER_CULL_SLACK): true while the body's art cannot
   // touch the view, so its render pipeline is parked. Positions keep syncing.
   culled?: boolean;
+  // COMBAT mirrors (server mstate/actionSeq drive the clips).
+  mstate?: string;
+  lastActionSeq?: number;
+  combatClip?: boolean; // current clip is attack/angry/die — per-frame walk drift must not index into it
+  // ---- per-monster SFX bookkeeping (games-audio 2026-08-06) ----
+  // The wiki assigns a sound per (monster, animation state); these fields are
+  // what keep a LOOPING state from firing every frame and a herd from firing
+  // at once. All silent until the Game Master assigns something.
+  sfxIdleAt?: number; // ms of the last idle call
+  sfxIdleGap?: number; // this individual's current idle interval (jittered)
+  sfxAngryAt?: number;
+  sfxAngryGap?: number;
+  sfxWalkProg?: number; // last seen anim progress — a wrap is one gait cycle
+  sfxLastSwing?: number; // actionSeq the attack sound last fired on
+  hpBg?: Phaser.GameObjects.Rectangle;
+  hpFill?: Phaser.GameObjects.Rectangle;
+  nameText?: Phaser.GameObjects.Text; // display name — left-aligned OVER the bar
+  lvText?: Phaser.GameObjects.Text; // "Lv N" — left-aligned UNDER the bar
+  hpText?: Phaser.GameObjects.Text; // "hp/max" — right-aligned UNDER the bar
+  label?: string; // manifest display name ("Dewling"), resolved once at spawn
+  lastHp?: number;
+  // GAIT SYNC (round 13). cycleWu = world units one walk cycle covers, so the
+  // clip is paced by DISTANCE travelled; travel[] = per-frame ground-track
+  // weights (mean 1) for real hoppers. spdWu/scrPerWu are measured from the
+  // body's own drawn motion each frame.
+  cycleWu?: number;
+  travel?: number[];
+  travelCum?: number[]; // prefix sums of travel/frames — the hop offset curve
+  spdWu?: number; // EMA of world speed (wu/s)
+  scrPerWu?: number; // EMA of drawn screen px per world unit (iso projection)
+  hdx?: number; // EMA of the drawn heading (screen unit vector)
+  hdy?: number;
+  hopOff?: number; // current mean-zero ground-track offset (screen px)
+}
+
+/** A placed NPC. Client-only decor with NO server state: maps2' npcs.json says
+ * where it stands and which way it faces, characters2 says what it looks like.
+ * Satisfies BodyVisual, so it renders through the exact same depth / nadir
+ * shadow / lit-copy path as players and monsters. */
+interface NpcAvatar {
+  sprite: Phaser.GameObjects.Sprite;
+  shadow: Phaser.GameObjects.Image;
+  lx: number;
+  lyFlat: number;
+  ly: number;
+  elev: number;
+  fx: number; // flat world position (fixed — they never walk)
+  fy: number;
+  lit?: Phaser.GameObjects.Sprite;
+  hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
+  coverY?: number;
+  surfLevel?: number;
+  charId: string;
+  name: string;
+  type: string;
+  dir: string;
+  animKey: string | null; // the idle clip for THIS facing, when the art has one
+  pendingAnim?: { key: string; frames: string[] }; // queued art, registered when it lands
+  holdUntil: number; // frame-0 pause deadline — the "calm idle" (see NPC_HOLD_*)
+  culled?: boolean;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -502,6 +794,7 @@ interface BodyVisual {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite;
+  hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
   surfLevel?: number;
   swimming?: boolean;
@@ -515,10 +808,21 @@ export class WorldScene extends Phaser.Scene {
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
+  // Rolling one-second window for the monster-SFX budget (see monsterSfx).
+  private monSfxWindowAt = 0;
+  private monSfxInWindow = 0;
   // How many monsters passed the camera gate last frame (QA: __ml.monsterGate).
   private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
   private monsterManifest: MonsterManifest | null = null;
+  private npcManifest: NpcManifest | null = null;
+  /** Placed NPCs, rendered through the SAME body pipeline as players and
+   * monsters (depth, nadir shadow, lit copy). Client-only decor: they have no
+   * server state at all — position and facing come straight from maps2' file. */
+  private npcs = new Map<string, NpcAvatar>();
+  private npcPlacement: NpcPlacement[] = [];
+  /** NPC idle frames waiting for the DEFERRED batch (never the boot one). */
+  private npcIdleQueue: Array<{ key: string; url: string }> = [];
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
   // later the maps agent owns real areas). World-anchored via this.project.
   private spawnAreaGfx?: Phaser.GameObjects.Graphics;
@@ -538,7 +842,8 @@ export class WorldScene extends Phaser.Scene {
   // re-blocked at the ledge (walk climb) — the anchor briefly rolls back to
   // the wall base until the server acks, and auto-jump saw that phantom wall
   // and fired a silly second hop on the hilltop.
-  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean }[] = [];
+  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean; slow: number }[] = [];
+  private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
@@ -563,6 +868,18 @@ export class WorldScene extends Phaser.Scene {
   // would eat whole frames on phones; each replan schedules the next at
   // cost×8, floored at 50ms).
   private holdPointerId: number | null = null;
+  /** A HUD modal (the drop-quantity dialog) owns the screen: the world
+   * ignores pointer input entirely. NOT decorative — Phaser's window-level
+   * listeners deliberately process events whose target is NOT the canvas
+   * (TouchManager.onTouchStartWindow), so a tap on a DOM overlay reaches the
+   * scene and armed a walk-to trip THROUGH the dialog (maintainer 2026-08-05:
+   * cancelling a drop ran the player to where he tapped). */
+  private uiLocked = false;
+  /** …and the tap that CLOSES a modal must not become a trip either: the
+   * close handler runs on the element, Phaser's window listener runs after it
+   * in the same dispatch, so the lock is lifted a beat later than it is
+   * released. */
+  private uiLockLiftAt = 0;
   private holdGround: { x: number; y: number; lvl: number } | null = null;
   private holdRepathAt = 0;
   private keysActive = false;
@@ -576,6 +893,46 @@ export class WorldScene extends Phaser.Scene {
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
+  // ---- INDOOR MODE (see the constants block above) ------------------------
+  // ONE state, the LOCAL player's. Every consumer the renderer has is a
+  // singleton — one ground RenderTexture, one occluder set, one ambient
+  // uniform, one "the outside is black" decision about MY room — so a
+  // per-avatar boolean would have nothing to drive. The one place per-body
+  // really differs is the torch day-gate, and that is answered by an O(1)
+  // `indoorContains` lookup into MY space's roof set (no second flood fill).
+  private indoorSpace: IndoorSpace | null = null;
+  private indoorInside = false; // the APPLIED verdict the renderer obeys
+  private indoorPending = false; // verdict waiting on the dwell timer
+  private indoorKey = -1; // canonical space id = min(roof); -1 = none
+  private indoorFlipAt = -Infinity; // time.now of the last applied transition
+  private indoorMix = 0; // 0..1 eased light blend toward INDOOR_AMBIENT
+  /** Per-cell render verdict for the current space: cellIndex → IN_ROOF |
+   * IN_WALL. A cell that is ABSENT is outside and draws nothing.
+   * Rebuilt only when the space (or its cut level) changes. */
+  private indoorMask: Map<number, number> | null = null;
+  private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
+  /** The room's CEILING level — the slab's UNDERSIDE over the player's own
+   * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
+   * differ by the slab's thickness and the gap is the whole wall height:
+   * measured on the_island2, the house is level 6 / thickness 0 (ceiling 6 ==
+   * roofLevel), but every one of the cave's 12 decks is level 24-40 with
+   * thickness 16-32 and they ALL have deckBot 8 — a uniform 8-level (128px)
+   * void. Cutting the cave's walls at roofLevel 24 would leave 16 levels of
+   * rock standing above a ceiling that is no longer drawn. */
+  private indoorCut = 0;
+  /** THE CUT — the highest level any column of the building still draws, i.e.
+   * `indoorCut - indoorCutDrop()`, clamped at 0. Everything above it is simply
+   * not drawn: that is what takes the roof off AND what shortens the walls, in
+   * one rule. Kept beside `indoorCut` rather than replacing it because the two
+   * mean different things and both have consumers — the CEILING still decides
+   * which lights are in the room, while THIS decides what is painted. */
+  private indoorTop = 0;
+  private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
+  private indoorAtRow = NaN;
+  private indoorAtElev = NaN;
+  private indoorDirty = true; // world load / teleport: force the next recompute
+  private indoorFlips = 0; // QA: applied transitions (hysteresis is assertable)
+  private indoorComputes = 0; // QA: findIndoorSpace calls (never per frame)
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -621,27 +978,52 @@ export class WorldScene extends Phaser.Scene {
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
-  // --- Occlusion fade: tall geometry ABOVE the local player's level near the
-  // player is faded to a faint ghost (moved behind the player) so it stops
-  // hiding the character; a REVEAL layer redraws the player-level ground the
-  // tower was covering (so you see the grass/level you're walking on, NOT the
-  // tower), and drops a BLACK diamond at each faded tower's ROOT (its base
-  // footprint — the one spot with nothing behind it, so it must read as void).
-  // Masked to a soft bubble around the player (distance falloff).
-  private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
-  private occFocus: { col: number; row: number } | null = null; // debug focus override
-  // Does the CURRENT occluder set carry ghost depth/alpha from a fade pass?
-  // While the feature is OFF (the default) this stays false, which lets
-  // updateOcclusionFade skip its restore sweep entirely — see there.
-  private occGhosted = false;
-  private occRevealRT?: Phaser.GameObjects.RenderTexture; // player-level ground + black roots
-  private lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
   private jumpReadyAt = 0;
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
+  private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  private engagedId: string | null = null; // monster I tapped to fight (client intent)
+  private pendingPickupId: string | null = null; // walk-to-item, grab on arrival
+  private pickupIntentUntil = 0; // give up on a pickup intent after this
+  private nextPickupSendAt = 0; // pickup re-send throttle (server race under latency)
+  private lastHudSig = ""; // last hp/ep/xp/level pushed to the DOM bars
+  // How the last grabbed drop was retired (round-15 gate reads it via grabInfo).
+  private lastGrabRetire?: {
+    frame: number; grabFrame: number | null; anim: string; via: string; heldMs: number;
+  };
+  private monsterRings = new Map<string, Phaser.GameObjects.Image>(); // red outlines: engaged + hunters
+  private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
+  private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
+  private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
+  private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
+  private joinQuietUntil = 0; // drops synced in at (re)join are not events
+  private drops = new Map<
+    string,
+    {
+      img: Phaser.GameObjects.Image;
+      shadow: Phaser.GameObjects.Image;
+      wx: number;
+      wy: number;
+      item: string;
+      bornAt: number;
+      // Held past the server's removal until my pickup clip reaches the frame
+      // the hand closes on it (removeDrop / stepGroundDecor).
+      grabbedAt?: number;
+      grabFrame?: number;
+      sawPickup?: boolean; // the clip has actually started (see stepGroundDecor)
+    }
+  >();
+  private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
+  // Grave crosses (objects/grave_cross): appear where a monster died, hold on
+  // the last frame, then REVERSE back into the ground and vanish.
+  private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
+  private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
+  private crossLoadQueued = false;
+  private bloodSeen = 0; // QA counter: blood spatters spawned this session
   private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
@@ -669,6 +1051,10 @@ export class WorldScene extends Phaser.Scene {
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
   private campfireSprite?: Phaser.GameObjects.Sprite;
   private campfireLit?: Phaser.GameObjects.Sprite;
+  /** 1 while the bonfire's light counts, easing to 0 as I close a door on it.
+   * Set once per frame in update(); read by everything that draws the fire
+   * ABOVE the darkness overlay, which no amount of zero ambient can dim. */
+  private fireRoomK = 1;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
   // [6] toggles the spawn bonfire — firelight drowns self-emission QA nearby.
@@ -713,6 +1099,8 @@ export class WorldScene extends Phaser.Scene {
   init() {
     this.manifest = this.registry.get("manifest") as Manifest;
     this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
+    this.npcManifest = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
+    this.npcPlacement = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
@@ -725,6 +1113,17 @@ export class WorldScene extends Phaser.Scene {
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
+      // New grid ⇒ every cached indoor verdict is about a world that no longer
+      // exists. Start outdoors and force the first recompute.
+      this.indoorSpace = null;
+      this.indoorMask = null;
+      this.indoorMaskSig = "";
+      this.indoorInside = false;
+      this.indoorPending = false;
+      this.indoorKey = -1;
+      this.indoorMix = 0;
+      this.indoorAtCol = NaN;
+      this.indoorDirty = true;
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -745,6 +1144,10 @@ export class WorldScene extends Phaser.Scene {
     this.load.on("progress", (f: number) => {
       if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * 0.85, "Loading art…");
     });
+    // The world's NPCs stand there from the first frame: their standing art
+    // joins THIS batch (one small image per distinct character) instead of
+    // starting a second loader run mid-create.
+    this.preloadNpcArt();
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
     // strips — load each frame as its own texture. BOOT loads only the
     // movement states (BOOT_ANIM_STATES); the 9 action states (~800 PNGs the
@@ -820,6 +1223,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
+    // The world's people (maps2 npcs.json). AFTER the world/projection exist —
+    // projectFlat is meaningless in init(), and the registry's "world" key is
+    // the parsed World OBJECT; the id lives in "worldName".
+    this.spawnNpcs();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
@@ -869,6 +1276,9 @@ export class WorldScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
+    // F = pick up nearest ground item (the gamepad pickup button synthesizes
+    // this same key, exactly like its jump button synthesizes SPACE).
+    this.input.keyboard!.on("keydown-F", () => this.pickupNearest());
 
     // Tap/hold-to-move. A tap RUNS to the tapped point — nobody walks when
     // they can run (maintainer), so there is no double-tap gesture; the
@@ -880,7 +1290,40 @@ export class WorldScene extends Phaser.Scene {
     // stops retargeting — the trip finishes at the last touched point.
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
+      // A HUD modal is up (or just closed under this very gesture): the world
+      // takes no input at all — no trip, no engage, no fetch.
+      if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
+      // TAP TARGETS outrank ground movement (RO: click a monster to fight it,
+      // click an item to fetch it). Hit-tested against the drawn art boxes in
+      // world coords; a miss falls straight through to the movement path, so
+      // the hold-to-move machinery (and its wedge-proofing) is untouched.
+      const tgt = this.tapTarget(p.worldX, p.worldY);
+      if (tgt) {
+        if (tgt.kind === "drop") {
+          this.pendingPickupId = tgt.id;
+          this.pickupIntentUntil = this.time.now + 6000;
+          this.engagedId = null;
+          const d = this.drops.get(tgt.id)!;
+          const meNow = this.avatars.get(this.room!.sessionId);
+          if (meNow) this.walkToGrab(meNow, d.wx, d.wy);
+          else this.setMoveTarget(d.wx, d.wy, true, false, undefined, false);
+        } else {
+          this.engagedId = tgt.id;
+          this.pendingPickupId = null;
+          const mv = this.monsters.get(tgt.id)!;
+          this.setMoveTarget(mv.fx, mv.fy, true, false, undefined, false); // sword mark, no beacon
+          this.nextChaseRepathAt = 0;
+          // Tell the server NOW, not on arrival: the target persists while
+          // moving and the sword-marked monster aggros as we close in.
+          this.room?.send("engage", { id: tgt.id });
+          this.nextEngageSendAt = this.time.now + 700;
+        }
+        return; // no hold armed: the walk-to is driven by driveCombatIntent
+      }
+      // A plain ground tap breaks off any fight/fetch (RO: moving cancels).
+      this.engagedId = null;
+      this.pendingPickupId = null;
       this.holdPointerId = p.id;
       this.holdGround = this.pickGround(p.worldX, p.worldY);
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
@@ -958,7 +1401,6 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
     this.input.keyboard!.on("keydown-FIVE", sync(() => this.toggleTorch()));
     this.input.keyboard!.on("keydown-SIX", sync(() => this.toggleBonfire()));
-    this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
     // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
     // game viewport itself gets the matching pixel frame overlay.
     this.hud = new HudBar({
@@ -966,6 +1408,41 @@ export class WorldScene extends Phaser.Scene {
       // The Chat page's bottom input sends through the SAME rate-limited path
       // as the on-screen chat box.
       onChat: (text) => this.room?.send("chat", { text }),
+      // Backpack drag-out: client coords -> canvas coords -> world point ->
+      // the server's "drop" (which clamps to a short reach + standable
+      // ground, so the client conversion only has to be roughly right).
+      onDropItem: (slot, item, cx, cy, n) => {
+        if (!this.room) return;
+        const rect = this.game.canvas.getBoundingClientRect();
+        const px = ((cx - rect.left) / Math.max(1, rect.width)) * this.scale.width;
+        const py = ((cy - rect.top) / Math.max(1, rect.height)) * this.scale.height;
+        const wp = this.cameras.main.getWorldPoint(px, py);
+        const g = this.pickGround(wp.x, wp.y);
+        if (g) this.room.send("drop", { slot, item, n, wx: g.x, wy: g.y });
+        else this.room.send("drop", { slot, item, n }); // void/solid target: at my feet
+      },
+      // A HUD modal is up (the drop-quantity dialog): FREEZE the player —
+      // "when this dialog is open the player can't walk" (maintainer
+      // 2026-08-05). Same gate the chat input uses (Phaser's keyboard, which
+      // is also what the analog stick synthesizes into), plus a reset so a
+      // key held at the moment it opened can't stick, and any autopilot trip
+      // or hold in flight is dropped. The dialog's own backdrop swallows
+      // taps, so tap-to-move can't start a new one either.
+      onUiLock: (locked) => {
+        // …and never hand the keys back to a chat box that is still typing.
+        this.input.keyboard!.enabled = !locked && !this.chat?.open;
+        this.uiLocked = locked;
+        // Lift the pointer lock a beat AFTER the modal closes: the tap that
+        // dismissed it is still being dispatched, and Phaser's window-level
+        // listener sees it after the DOM handler that closed the dialog.
+        if (!locked) {
+          this.uiLockLiftAt = performance.now() + 150;
+          return;
+        }
+        this.input.keyboard!.resetKeys();
+        this.dropHold();
+        this.clearMoveTarget();
+      },
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
@@ -1002,10 +1479,13 @@ export class WorldScene extends Phaser.Scene {
         { label: "respawn", act: () => this.room?.send("respawn") },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
-        { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
+        // Aggro radii (combat round 2) — DEBUG rings, off by default: red =
+        // a predator's proximity radius, gold = the provoke radius on the
+        // sword-marked target.
+        { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
@@ -1048,6 +1528,17 @@ export class WorldScene extends Phaser.Scene {
     }
     window.addEventListener("pagehide", () => (this.unloading = true), { once: true });
 
+    // The Settings "Indoor wall cut" slider changes GEOMETRY, so unlike the
+    // indoor LIGHT dial (read fresh every frame in ambEff, and free) it has to
+    // invalidate the mask and repaint. Clearing the signature is what forces
+    // the rebuild — refreshIndoorMask is otherwise a no-op while you stand in
+    // one room, which is the whole point of it.
+    window.addEventListener("ml-indoor-cut", () => {
+      if (!this.indoorInside) return; // outdoors there is nothing cut to redraw
+      this.indoorMaskSig = "";
+      if (this.refreshIndoorMask()) this.repaintWorld();
+    });
+
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
       players: () => this.avatars.size,
@@ -1077,6 +1568,86 @@ export class WorldScene extends Phaser.Scene {
           col,
           row,
           level: w?.rows[ri]?.[ci]?.l ?? 0,
+        };
+      },
+      /** INDOOR MODE — the whole verdict, for gate assertions.
+       *
+       * `indoor` is what the renderer obeys; `pending` differs only while the
+       * dwell timer holds a flip. The raw module fields are exposed so a gate
+       * can assert WHY a verdict came out the way it did (a space that failed
+       * on `capped` and one that failed on `wallRatio` are very different
+       * bugs), and the two COUNTERS make the two performance/robustness claims
+       * assertable rather than merely asserted: stand still for 200 frames and
+       * `computes` must not move (the fill is not per-frame); walk a doorway
+       * back and forth ten times and `flips` must not track your steps (the
+       * hysteresis holds).
+       *
+       * `elev` is the RESOLVED SURFACE LEVEL fed to the module; `renderedLvl`
+       * is the WRONG basis (`elev px / lh`) printed beside it, because the two
+       * disagree exactly when it matters — while swimming and mid-fall. */
+      // The Settings "Indoor light" dial (indoorlight.ts). No arg reads it;
+      // a number 0..1 drives it, so a gate can walk both ends without a
+      // pointer drag. Returns the dial AND the ambient triple it resolves to.
+      indoorLight: (v?: number) => {
+        if (typeof v === "number") setIndoorLight(v);
+        return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
+      },
+      // The Settings "Indoor wall cut" dial (indoorcut.ts). No arg reads it; a
+      // number sets it, so a gate can walk every level without a pointer drag.
+      // Returns the dial AND what it resolves to for the room you are in — the
+      // dial is levels-below-the-ceiling and `top` is the level it lands on,
+      // which is the number the picture is actually made of.
+      indoorCut: (v?: number) => {
+        if (typeof v === "number") setIndoorCut(v);
+        return {
+          cut: indoorCut(),
+          min: INDOOR_CUT_MIN,
+          max: INDOOR_CUT_MAX,
+          ceiling: this.indoorCut,
+          top: this.indoorTop,
+        };
+      },
+      // Is the room mask really reaching the shader? The one failure this
+      // feature has that is INVISIBLE on the headless harness and fatal on a
+      // phone: an unbound uRoom sampler reads texture unit 0 (the heightmap)
+      // and blacks out the ROOM instead of the outside. `bound` is the answer.
+      roomTex: () => this.night?.roomDebug() ?? null,
+      // The torch, for gates that must shoot the same frame lit and unlit —
+      // with the outside at zero ambient a drawn tile and a missing one are
+      // pixel-identical, so a light is the only instrument that tells them
+      // apart (see verify-indoor's beam assertions).
+      torchOn: () => this.torchOn,
+      toggleTorch: () => this.toggleTorch(),
+      indoor: () => {
+        const s = this.indoorSpace;
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        return {
+          indoor: this.indoorInside,
+          roofLevel: s?.roofLevel ?? null,
+          depth: s ? s.depth : null,
+          wallRatio: s ? +s.wallRatio.toFixed(4) : null,
+          roof: s?.roof.size ?? 0,
+          entrances: s?.entrances.size ?? 0,
+          capped: s?.capped ?? false,
+          // Renderer-side state (what the mask is doing about that verdict).
+          pending: this.indoorPending,
+          mix: +this.indoorMix.toFixed(3),
+          ceiling: this.indoorCut, // deckBot — the CUT, not roofLevel
+          key: this.indoorKey,
+          mask: this.indoorMask?.size ?? 0,
+          wallLeft: s?.wallLeft.size ?? 0,
+          wallRight: s?.wallRight.size ?? 0,
+          shell: s?.shell.size ?? 0,
+          top: this.indoorTop, // the cut level the picture is drawn at
+          fringe: s?.fringe.size ?? 0,
+          cell: [this.indoorAtCol, this.indoorAtRow],
+          elev: this.indoorAtElev,
+          renderedLvl: av ? +(av.elev / MAP_GEOMETRY.lh).toFixed(2) : null,
+          swimming: av?.swimming ?? null,
+          flips: this.indoorFlips,
+          computes: this.indoorComputes,
+          sinceFlipMs: Number.isFinite(this.indoorFlipAt) ? Math.round(this.time.now - this.indoorFlipAt) : null,
+          torchF: +this.curTorchF.toFixed(3),
         };
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
@@ -1236,6 +1807,9 @@ export class WorldScene extends Phaser.Scene {
         return { c0, r0, rows };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      // What a tap at these WORLD (iso screen-space) coords would select —
+      // the exact hit test pointerdown runs (round 12 hitbox QA).
+      tapAt: (wx: number, wy: number) => this.tapTarget(wx, wy),
       camZoom: () => this.cameras.main.zoom,
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
       // Weather probes: info + LOCAL force (headless QA without the server).
@@ -1353,6 +1927,20 @@ export class WorldScene extends Phaser.Scene {
           elev: +(av.elev / MAP_GEOMETRY.lh).toFixed(2),
           litVisible: av.lit ? av.lit.visible : null,
           litCropped: av.lit ? !!av.lit.isCropped : null,
+          // The WHITE OCCLUSION OUTLINE over the covered part (syncCoverOutline).
+          // `hiddenFrac` is the share of the art box the outline claims is
+          // behind terrain — 0 when nothing is, 1 when the body is entirely
+          // swallowed. It is the number to assert on, because "the ring exists"
+          // is true even when it is cropped to nothing.
+          hidden: av.hidden ? av.hidden.visible : null,
+          hiddenCropped: av.hidden ? !!av.hidden.isCropped : null,
+          hiddenFrac: (() => {
+            if (!av.hidden?.visible || av.coverY === undefined) return 0;
+            const ab = this.artBounds(av.sprite);
+            const top = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
+            const cut = Math.min(Math.max((av.coverY - top) / av.sprite.scaleY, ab.y0), ab.y1);
+            return +((ab.y1 - cut) / (ab.y1 - ab.y0)).toFixed(3);
+          })(),
         };
       },
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
@@ -1407,32 +1995,10 @@ export class WorldScene extends Phaser.Scene {
           ?.connection;
         (conn?.close ?? conn?.transport?.close)?.call(conn?.close ? conn : conn?.transport);
       },
-      // Occlusion-fade debug: force the fade focus to a cell (null → follow the
-      // player), and toggle the feature. Lets headless probes frame the effect.
-      occFocus: (col?: number, row?: number) => {
-        this.occFocus = col === undefined || row === undefined ? null : { col, row };
-        return this.occFocus;
-      },
-      occFade: (on?: boolean) => {
-        if (on !== undefined) this.occFadeOn = on;
-        return this.occFadeOn;
-      },
-      // Force one fade pass now (headless render loop is throttled) and report
-      // how many occluders were tagged vs ghosted-to-black.
       worldInfo: () => {
         let maxL = 0;
         if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
         return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
-      },
-      occApply: () => {
-        this.lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN }; // force a reveal redraw
-        this.updateOcclusionFade();
-        const fc = this.occFocus;
-        let fLevel = null,
-          ghosted = 0;
-        for (const o of this.occluders) if (o.getData("oc") !== undefined && o.depth < -1000) ghosted++;
-        if (fc && this.world) fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
-        return { occluders: this.occluders.length, ghosted, revealVisible: !!this.occRevealRT?.visible, focus: fc, fLevel };
       },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
@@ -1459,7 +2025,17 @@ export class WorldScene extends Phaser.Scene {
       // beat-reactive visuals read), and a manual event trigger for QA.
       audio: () => gameAudio.debug(),
       audioClock: () => gameAudio.clock(),
-      audioEvent: (name: string) => gameAudio.event(name),
+      // opts rides along so a VOICE-SCOPED assignment is testable: the engine
+      // resolves `player.die@default_girl` off opts.voice, and a probe that
+      // dropped opts could only ever exercise the shared, unscoped route.
+      audioEvent: (name: string, opts?: Parameters<typeof gameAudio.event>[1]) =>
+        gameAudio.event(name, opts ?? {}),
+      // Force a music bed to audition it: __ml.audioBed("battle"); no argument
+      // hands control back to the situation. Returns what is playing + which
+      // beds are actually bundled.
+      audioBed: (name?: string) => gameAudio.auditionBed(name ?? null),
+      // What the context score is reading from the world right now.
+      audioField: () => this.sampleAudioField(),
       audioPure: () => {
         gameAudio.togglePure();
         this.hud?.refreshSettings();
@@ -1562,6 +2138,10 @@ export class WorldScene extends Phaser.Scene {
         if (typeof v === "number") this.room?.send("timespeed", { v });
         return this.timeSpeed;
       },
+      // Get/set handedness (controls.ts) — the same toggle the Settings
+      // "controls" button drives; setting re-anchors the layout via the
+      // "ml-hand" event. QA hook for the landscape gate.
+      hand: (h?: "right" | "left") => (h ? setHand(h) : getHand()),
       // Place/clear a debug light at a grid position (headless probes).
       probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
         this.probeLight =
@@ -1584,6 +2164,10 @@ export class WorldScene extends Phaser.Scene {
           x: (wx - cam.worldView.x) * cam.zoom,
           y: (wy - cam.worldView.y) * cam.zoom,
           zoom: cam.zoom,
+          // The camera's own origin, so a caller can undo the transform and
+          // hand pickGround the WORLD coords its pointerdown works in.
+          camX: cam.worldView.x,
+          camY: cam.worldView.y,
           level: cell.l,
           t: cell.t,
           v: cell.v ?? 0,
@@ -1742,6 +2326,202 @@ export class WorldScene extends Phaser.Scene {
           // Camera-gated (off-screen): its pipeline is parked this frame, so
           // `playing`/`depth`/`lit` are deliberately stale — QA must skip it.
           culled: !!mv.culled,
+          // Combat mirrors (verify-combat drives fights through these).
+          x: mv.fx,
+          y: mv.fy,
+          // The DRAWN sprite in iso screen-space (what tapAt compares
+          // against) + its display box — round-12 hitbox QA aims with these.
+          sx: mv.sprite.x,
+          sy: mv.sprite.y,
+          dw: mv.sprite.displayWidth,
+          dh: mv.sprite.displayHeight,
+          lx: mv.lx,
+          hp: (this.room?.state as any)?.monsters?.get(id)?.hp ?? null,
+          hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
+          level: (this.room?.state as any)?.monsters?.get(id)?.level ?? null,
+          aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
+          mstate: mv.mstate ?? "roam",
+          hpBar: !!mv.hpBg?.visible,
+          hpBarText:
+            mv.lvText?.visible && mv.hpText?.visible ? `${mv.lvText.text}|${mv.hpText.text}` : null,
+          // the three-line readout, for the gate: name OVER the bar, Lv + hp
+          // UNDER it (each as [text, x, y] so the alignment is checkable)
+          readout:
+            mv.hpBg?.visible && mv.nameText && mv.lvText && mv.hpText
+              ? {
+                  name: [mv.nameText.text, Math.round(mv.nameText.x), Math.round(mv.nameText.y)],
+                  lv: [mv.lvText.text, Math.round(mv.lvText.x), Math.round(mv.lvText.y)],
+                  hp: [mv.hpText.text, Math.round(mv.hpText.x), Math.round(mv.hpText.y)],
+                  bar: [Math.round(mv.hpBg.x), Math.round(mv.hpBg.y), Math.round(mv.hpBg.width)],
+                }
+              : null,
+        })),
+      // The target overlays, for the gate: the red monster borders (engaged +
+      // hunters), the blue item border, whether a walk-to beacon is up, the
+      // debug rings. (The in-fight hp/level readout is per monster —
+      // monsterInfo().)
+      targetOverlay: () => ({
+        icon: !!(this.engagedId && this.monsterRings.get(this.engagedId)?.visible), // engaged border
+        ringTint:
+          this.engagedId && this.monsterRings.get(this.engagedId)?.visible
+            ? TARGET_RING_COLOR
+            : null,
+        rings: [...this.monsterRings.values()].filter((r) => r.visible).length,
+        itemRing: !!this.itemRingImg?.visible,
+        itemRingTint: this.itemRingImg?.visible ? ITEM_RING_COLOR : null,
+        beacon: !!this.tapMarker,
+        engaged: this.engagedId,
+        pendingPickup: this.pendingPickupId,
+        aggroRings: this.aggroRadiusOn,
+        loaderState: this.load.state,
+      }),
+      // Debug: the generated outline images' live state (rounds 10-11 QA).
+      ringInfo: () => {
+        const describe = (img?: Phaser.GameObjects.Image) => {
+          if (!img) return null;
+          const tex = this.textures.get(img.texture.key);
+          const src = tex?.getSourceImage() as HTMLCanvasElement | undefined;
+          let filled = -1;
+          try {
+            const c = src?.getContext?.("2d");
+            if (c && src) {
+              const d = c.getImageData(0, 0, src.width, src.height).data;
+              filled = 0;
+              for (let i = 3; i < d.length; i += 4) if (d[i] > 0) filled++;
+            }
+          } catch {
+            /* not a canvas source */
+          }
+          return {
+            key: img.texture.key,
+            visible: img.visible,
+            x: img.x,
+            y: img.y,
+            depth: img.depth,
+            originX: img.originX,
+            originY: img.originY,
+            scaleX: img.scaleX,
+            alpha: img.alpha,
+            texW: src?.width ?? null,
+            texH: src?.height ?? null,
+            filled,
+          };
+        };
+        return {
+          monsters: Object.fromEntries(
+            [...this.monsterRings.entries()].map(([id, img]) => [id, describe(img)]),
+          ),
+          item: describe(this.itemRingImg),
+        };
+      },
+      // The loaded monster manifest's gait contract, per kind (round-13 QA).
+      monsterDefs: () =>
+        (this.monsterManifest?.monsters ?? []).map((d) => ({
+          id: d.id,
+          bodyW: d.bodyW ?? null,
+          frames: Object.values(d.animations?.[d.walkAnim] ?? {})[0] ?? 0,
+          gait: d.gait ?? null,
+        })),
+      // GAIT SYNC probe (round 13): per active monster, the measured drawn
+      // speed, the clip's base rate + live timeScale, and the resulting
+      // effective fps — so a gate can assert cadence-true playback (one walk
+      // cycle per gait.cycleWu of ground) instead of eyeballing a screenshot.
+      monsterGait: () =>
+        [...this.monsters.entries()]
+          .filter(([, mv]) => !mv.culled)
+          .map(([id, mv]) => {
+            const a = mv.sprite.anims;
+            const base = a.currentAnim?.frameRate ?? 0;
+            const frames = a.currentAnim?.getTotalFrames?.() ?? 0;
+            return {
+              id,
+              kind: mv.kind,
+              anim: a.getName() || null,
+              walking: a.getName() === monsterAnimKey(mv.kind, mv.walkKey, mv.dispDir),
+              spdWu: mv.spdWu !== undefined ? +mv.spdWu.toFixed(1) : null,
+              cycleWu: mv.cycleWu ?? null,
+              frames,
+              baseFps: +base.toFixed(2),
+              timeScale: +a.timeScale.toFixed(3),
+              fps: +(base * a.timeScale).toFixed(2),
+              // Ground covered per completed cycle — the invariant: ≈ cycleWu
+              // whenever the clamps are not binding.
+              wuPerCycle:
+                base * a.timeScale > 0 && frames
+                  ? +(((mv.spdWu ?? 0) * frames) / (base * a.timeScale)).toFixed(1)
+                  : null,
+              hop: !!mv.travel,
+              hopOff: mv.hopOff !== undefined ? +mv.hopOff.toFixed(2) : null,
+            };
+          }),
+      // THE GRAB (round 15): where my character must stand for the pickup
+      // gesture to land on a given drop, how far off it currently is, and the
+      // live state of a drop being held for its grab frame.
+      grabInfo: (dropId?: string) => {
+        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        if (!me) return null;
+        const id = dropId ?? this.pendingPickupId ?? [...this.drops.keys()][0];
+        const rec = id ? this.drops.get(id) : undefined;
+        const def = this.manifest.characters.find((c) => c.uid === me.character);
+        const spot = rec ? this.grabStandSpot(me, rec.wx, rec.wy) : null;
+        const anim = me.sprite.anims.getName() ?? "";
+        return {
+          id: id ?? null,
+          hasGrabData: !!def?.grab,
+          dir: me.dispDir,
+          grabFrame: (me.dispDir && def?.grab?.[me.dispDir]?.f) ?? null,
+          approx: (me.dispDir && def?.grab?.[me.dispDir]?.approx) ?? false,
+          spot: spot ? { x: +spot.x.toFixed(1), y: +spot.y.toFixed(1), dir: spot.dir } : null,
+          // How far the body is from the aligned spot (wu) — 0 = the hand
+          // lands exactly on the item.
+          offBy: spot ? +Math.hypot(spot.x - me.fx, spot.y - me.fy).toFixed(1) : null,
+          anim,
+          frame: frameIndexOf(me.sprite.texture.key),
+          held: rec ? { grabbedAt: rec.grabbedAt ?? null, grabFrame: rec.grabFrame ?? null } : null,
+          lastRetire: this.lastGrabRetire ?? null,
+          drops: this.drops.size,
+        };
+      },
+      // The world's NPCs (round 16): placement, art state and the calm-idle
+      // clock, for the gate.
+      npcInfo: () =>
+        [...this.npcs.entries()].map(([id, n]) => ({
+          id,
+          charId: n.charId,
+          name: n.name,
+          type: n.type,
+          dir: n.dir,
+          x: Math.round(n.fx),
+          y: Math.round(n.fy),
+          // Drawn geometry, for the anchor gate: where the sprite is pinned,
+          // its origin, and where the nadir shadow sits. The feet must land on
+          // the shadow's centre or the NPC reads as flying.
+          sx: +n.sprite.x.toFixed(1),
+          sy: +n.sprite.y.toFixed(1),
+          originX: +n.sprite.originX.toFixed(4),
+          originY: +n.sprite.originY.toFixed(4),
+          dw: n.sprite.displayWidth,
+          dh: n.sprite.displayHeight,
+          shadowX: +n.shadow.x.toFixed(1),
+          shadowY: +n.shadow.y.toFixed(1),
+          culled: !!n.culled,
+          hasAnim: !!n.animKey,
+          playing: n.sprite.anims.isPlaying,
+          holdMs: n.holdUntil ? Math.max(0, Math.round(n.holdUntil - this.time.now)) : 0,
+          tex: n.sprite.texture.key,
+          depth: +n.sprite.depth.toFixed(1),
+          shadow: n.shadow.visible,
+          lit: !!n.lit?.visible,
+        })),
+      toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
+      bloodFx: () => this.bloodSeen,
+      graveCrosses: () =>
+        this.graveCrosses.map((gc) => ({
+          x: Math.round(gc.sprite.x),
+          y: Math.round(gc.sprite.y),
+          frame: gc.sprite.frame.name,
+          playing: gc.sprite.anims.isPlaying,
+          reversing: gc.reversing,
         })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
@@ -1829,6 +2609,74 @@ export class WorldScene extends Phaser.Scene {
         });
         return best;
       },
+      // --- combat probes -------------------------------------------------
+      engage: (id?: string | null) => {
+        if (id === null) {
+          this.engagedId = null;
+          this.room?.send("engage", { id: null });
+          return null;
+        }
+        if (id) {
+          this.engagedId = id;
+          this.pendingPickupId = null;
+          this.nextChaseRepathAt = 0;
+          this.nextEngageSendAt = 0;
+        }
+        return this.engagedId;
+      },
+      combat: () => {
+        const p = this.room ? (this.room.state as any).players.get(this.room.sessionId) : null;
+        return {
+          engaged: this.engagedId,
+          pendingPickup: this.pendingPickupId,
+          hp: p?.hp,
+          hpMax: p?.hpMax,
+          ep: p?.ep,
+          level: p?.level,
+          xp: p?.xp,
+          dead: !!p?.dead,
+          slow: p?.slow ?? 1,
+          action: p?.action,
+          actionSeq: p?.actionSeq,
+          hitSeq: p?.hitSeq,
+        };
+      },
+      dropsList: () => {
+        const out: Array<{
+          id: string; item: string; x: number; y: number; shown: boolean; sx: number; sy: number;
+        }> = [];
+        // x/y = FLAT world units (server space); sx/sy = the drawn image in
+        // iso screen-space (what tapAt compares against — round-12 QA).
+        this.drops.forEach((d, id) =>
+          out.push({ id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible, sx: d.img.x, sy: d.img.y }),
+        );
+        return out;
+      },
+      pickupNearest: () => this.pickupNearest(),
+      inv: () => this.hud?.invSnapshot?.() ?? [],
+      // QA (local only, like __ml.weather): paint a backpack WITHOUT farming
+      // the stacks — the server owns the real one and never sends a ×3 on
+      // demand. Drops made from a faked slot are healed by the server's item
+      // check, so this exercises the DIALOG, not the economy.
+      invFake: (items: { item: string; n: number }[]) => this.hud?.setInventory(items ?? []),
+      /** Is the player allowed to walk right now? (chat typing and the HUD's
+       * drop-quantity modal both freeze Phaser's keyboard — the stick
+       * synthesizes into it too, so this covers every input path.) */
+      canWalk: () => !!this.input.keyboard?.enabled,
+      myAnim: () => {
+        const av = this.room ? this.avatars.get(this.room.sessionId) : null;
+        return av?.sprite.anims.getName() ?? "";
+      },
+      monsterAnimReady: (kind: string) => {
+        const def = this.monsterManifest?.monsters.find((d) => d.id === kind);
+        if (!def) return false;
+        const attack = resolveMonsterAnim(def, "attack");
+        if (!attack) return true; // no attack art = nothing to wait for
+        for (const dir of Object.keys(def.animations?.[attack] ?? {}))
+          if (this.anims.exists(monsterAnimKey(kind, attack, dir))) return true;
+        return false;
+      },
+      roomSend: (type: string, msg: unknown) => this.room?.send(type, msg),
     };
   }
 
@@ -1836,9 +2684,14 @@ export class WorldScene extends Phaser.Scene {
    * the dead-connection recovery. Called for the initial join and for every
    * in-place rejoin. */
   private bindRoom(room: Room) {
+    // The state flood right after (re)bind replays every EXISTING ground drop
+    // through drops.onAdd — inherited loot is scenery, not a drop happening,
+    // so item.drop only fires for drops witnessed after this window.
+    this.joinQuietUntil = this.time.now + 1500;
     this.room = room;
     this.connected = true;
     this.reconnectRetries = 0;
+    this.roomBoundAt = this.time.now;
     const cam = this.cameras.main;
     const $ = getStateCallbacks(room);
     // Shared time-of-day: fires immediately with the current phase (instant
@@ -1846,6 +2699,13 @@ export class WorldScene extends Phaser.Scene {
     let firstTimeSync = true;
     $(room.state).listen("timeIdx", (idx: number) => {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
+      // The Settings button PRINTS the phase, and the world clock advances by
+      // itself every 20-40s — so the label has to be re-read here or it keeps
+      // whatever phase happened to be current when the page was last built
+      // (maintainer 2026-08-06: "often gets out of sync with the real time").
+      // frozen/timeSpeed/weather all do this; time-of-day was the one listener
+      // that didn't, which is why IT was the button that drifted.
+      this.hud?.refreshSettings();
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
     });
@@ -1909,6 +2769,8 @@ export class WorldScene extends Phaser.Scene {
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
     $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
+    $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
+    $(room.state).drops.onRemove((_g: any, id: string) => this.removeDrop(id));
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
     $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
@@ -1922,6 +2784,16 @@ export class WorldScene extends Phaser.Scene {
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
+    room.onMessage("inv", (msg: { items?: { item: string; n: number }[] }) => {
+      this.hud?.setInventory(msg?.items ?? []);
+    });
+    room.onMessage("levelup", (msg: { name?: string; level?: number }) => {
+      if (!msg?.name || !msg?.level) return;
+      this.chat.addLog("—", `${msg.name} reached level ${msg.level}!`);
+      // BOUND BUT EMPTY (maintainer 2026-08-05): the action fires so the wiki
+      // can list it and assign a sound to it; nothing plays until they do.
+      gameAudio.event("progress.level_up");
+    });
     room.onMessage("star", (msg: { name?: string }) => {
       this.shootingStar(msg?.name);
       gameAudio.star(); // a chime in key, on the beat
@@ -1945,6 +2817,7 @@ export class WorldScene extends Phaser.Scene {
     if (!av) return;
     av.sprite.destroy();
     av.lit?.destroy();
+    av.hidden?.destroy();
     av.shadow.destroy();
     av.label.destroy();
     av.waterMask?.destroy();
@@ -1961,6 +2834,10 @@ export class WorldScene extends Phaser.Scene {
    * frame as the initial texture. No label/torch/footstep machinery. */
   private addMonster(id: string, m: any) {
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
+    // The roster's own display name ("Dewling" for forest_poring) — resolved
+    // HERE, once, because updateMonsterHpBar runs per monster per frame and a
+    // manifest scan there would be 24 finds × 160 monsters × 60fps.
+    const label = def?.name || m.kind;
     const f0 = this.projectFlat(m.x, m.y);
     const elev0 = (m.elev ?? f0.lvl) * MAP_GEOMETRY.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
@@ -1993,6 +2870,7 @@ export class WorldScene extends Phaser.Scene {
       sprite,
       shadow,
       kind: m.kind,
+      label,
       lx: p0.x,
       ly: p0.y,
       lyFlat: f0.y,
@@ -2007,22 +2885,908 @@ export class WorldScene extends Phaser.Scene {
       radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
       hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
+      attackKey: def ? resolveMonsterAnim(def, "attack") : undefined,
+      angryKey: def ? resolveMonsterAnim(def, "angry") : undefined,
+      dieKey: def ? resolveMonsterAnim(def, "die") : undefined,
       idleKey: def?.idleAnim ?? undefined,
       ground: def?.ground,
       groundIdle: def?.groundIdle ?? undefined,
+      cycleWu: def?.gait?.cycleWu,
+      travel: def?.gait?.travel,
+      // Prefix sums of the travel weights: cum[i] = the fraction of the
+      // cycle's ground already covered when frame i STARTS. The hop offset is
+      // (cum − uniform progress) × cycleWu, which is 0 at both ends of the
+      // cycle — so the surge never accumulates into drift.
+      travelCum: def?.gait?.travel
+        ? (() => {
+            const t = def.gait!.travel!;
+            const cum = [0];
+            for (let i = 0; i < t.length; i++) cum.push(cum[i] + t[i] / t.length);
+            return cum;
+          })()
+        : undefined,
     };
     sprite.y = p0.y - mv.hoverPx;
+    // Joining mid-fight must not replay a stale swing: start from the synced seq.
+    mv.lastActionSeq = m.actionSeq ?? 0;
+    mv.lastHp = m.hp;
     this.monsters.set(id, mv);
-    this.playMonsterAnim(mv, !!m.moving, m.dir);
+    this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+  }
+
+  /** Ground loot: one Image + a soft shadow per drop, y-sorted with the
+   * bodies. Item sprites are UNIFORM at items/<id>/sprite.webp (verified over
+   * all 105 items), so no manifest fetch is needed — textures lazy-load per
+   * KIND the first time one drops. */
+  private addDrop(id: string, g: any) {
+    const p = this.projectFlat(g.x, g.y);
+    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * MAP_GEOMETRY.lh;
+    if (this.time.now > this.joinQuietUntil) {
+      const spG = this.worldSpatial(p.x, y);
+      gameAudio.event("item.drop", { pan: spG.pan, dist: spG.dist });
+    }
+    const shadow = this.add
+      .image(p.x, y, SHADOW_TEX)
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(20, 9)
+      .setAlpha(0.55)
+      .setDepth(y - 0.6);
+    const img = this.add.image(p.x, y - 7, "__MISSING").setVisible(false).setDepth(y);
+    // Witnessed drops carry their local birth time (drives the end-of-life
+    // flash); join-inherited ones (the state flood right after bind) start
+    // the clock at join — their flash can come late, and the server's sweep
+    // is the ground truth either way.
+    const rec = {
+      img,
+      shadow,
+      wx: g.x,
+      wy: g.y,
+      item: g.item,
+      bornAt: this.time.now,
+    };
+    this.drops.set(id, rec);
+    this.withItemTexture(g.item, (key) => {
+      if (this.drops.get(id) !== rec) return; // picked up before the art landed
+      img.setTexture(key).setScale(0.6).setVisible(true);
+      // The little TOSS (maintainer: "thrown up from the ground", subtle):
+      // freshly witnessed drops pop up a few px and settle; the join flood
+      // (< 2s after bind) lands silent so a full field doesn't bounce at us.
+      if (this.time.now - this.roomBoundAt > 2000) {
+        const rest = y - 7;
+        img.setY(y); // out of the ground…
+        this.tweens.add({ targets: img, y: rest - 8, duration: 190, ease: "Quad.easeOut", yoyo: false,
+          onComplete: () => {
+            this.tweens.add({ targets: img, y: rest, duration: 240, ease: "Bounce.easeOut" });
+          } });
+      }
+    });
+  }
+
+  private removeDrop(id: string) {
+    const rec = this.drops.get(id);
+    if (!rec) return;
+    // GRAB ON THE EXACT FRAME (maintainer 2026-08-06: the item should vanish
+    // "the exact frame the hand is closest to the ground actually picking up
+    // that item"). The server removes the drop the moment it validates the
+    // pickup, which is ~half the gesture EARLIER than the hand arrives — the
+    // loot used to blink out while the character was still bending down. When
+    // this is MY pickup and my avatar is playing the clip, hold the sprite and
+    // let stepGroundDecor retire it on the measured grab frame. Everyone
+    // else's pickups, TTL despawns and my own un-animated grabs are unchanged.
+    if (id === this.pendingPickupId && !rec.grabbedAt) {
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const g = me && this.grabFrameFor(me);
+      if (me && g) {
+        rec.grabbedAt = this.time.now;
+        rec.grabFrame = g.f;
+        this.pendingPickupId = null; // the intent is satisfied; the art plays on
+        return;
+      }
+    }
+    rec.img.destroy();
+    rec.shadow.destroy();
+    this.drops.delete(id);
+    if (this.pendingPickupId === id) this.pendingPickupId = null;
+  }
+
+  /** The measured grab frame for the avatar's CURRENT facing (the pickup
+   * handler has already turned it toward the drop). Deliberately does NOT
+   * require the clip to be playing yet: the drop's removal and the player's
+   * `action` field arrive in the same state patch, and the removal listener
+   * runs FIRST — demanding a live pickup clip here made the deferral never
+   * engage at all. null → this character ships no measured grab. */
+  private grabFrameFor(av: Avatar): { f: number } | null {
+    const def = this.manifest.characters.find((c) => c.uid === av.character);
+    const g = av.dispDir ? def?.grab?.[av.dispDir] : undefined;
+    return g ? { f: g.f } : null;
+  }
+
+  /** Lazy per-kind item texture (48x48 webp). The callback fires immediately
+   * when cached, else when the background load lands. */
+  private withItemTexture(item: string, cb: (key: string) => void) {
+    const key = `item:${item}`;
+    if (this.textures.exists(key)) {
+      cb(key);
+      return;
+    }
+    this.load.image(key, withV(`/assets/items/${item}/sprite.webp`));
+    this.load.once(`filecomplete-image-${key}`, () => cb(key));
+    this.load.start();
+  }
+
+  /** What did a world-coords tap land on? Drops first (small, precise
+   * intent), then monsters. Culled monsters are not drawn, so they are not
+   * tappable. Hitboxes are FINGER-SIZED, not art-sized (maintainer round 12:
+   * "less hard/annoying by constantly miss clicking", explicitly incl. small
+   * monsters like the sprigling): every box is the art box grown by a pad
+   * and clamped to a minimum, and when the fat boxes overlap in a crowd the
+   * CLOSEST candidate wins — generosity must never select the wrong body. */
+  private tapTarget(wx: number, wy: number): { kind: "drop" | "monster"; id: string } | null {
+    let best: { kind: "drop" | "monster"; id: string; d: number } | null = null;
+    for (const [id, d] of this.drops) {
+      if (!d.img.visible) continue;
+      const dx = wx - d.img.x;
+      const dy = wy - d.img.y;
+      if (Math.abs(dx) <= DROP_TAP_HALF && Math.abs(dy) <= DROP_TAP_HALF) {
+        const dist = Math.hypot(dx, dy);
+        if (!best || dist < best.d) best = { kind: "drop", id, d: dist };
+      }
+    }
+    // A drop tap is deliberate and drops are tiny — they keep priority over
+    // any monster box lying across them.
+    if (best) return { kind: best.kind, id: best.id };
+    for (const [id, mv] of this.monsters) {
+      if (mv.culled || mv.mstate === "die") continue;
+      const sp = mv.sprite;
+      const halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
+      let top = sp.y - sp.displayHeight * sp.originY - 8;
+      const bottom = sp.y + 10;
+      // A sprigling-sized body still gets a full fingertip of height.
+      if (bottom - top < MONSTER_TAP_MIN_H) top = bottom - MONSTER_TAP_MIN_H;
+      if (wx < mv.lx - halfW || wx > mv.lx + halfW || wy < top || wy > bottom) continue;
+      const dist = Math.hypot(wx - mv.lx, wy - (top + bottom) / 2);
+      if (!best || dist < best.d) best = { kind: "monster", id, d: dist };
+    }
+    return best ? { kind: best.kind, id: best.id } : null;
+  }
+
+  /** Per-frame combat/fetch intent: walk to the engaged monster (which
+   * moves), stand and engage in reach; walk to a tapped item and grab it.
+   * The SERVER owns everything that happens after the messages land. */
+  private driveCombatIntent() {
+    if (this.selfDead || !this.room) return;
+    const me = this.avatars.get(this.room.sessionId);
+    if (!me) return;
+    if (this.pendingPickupId) {
+      const d = this.drops.get(this.pendingPickupId);
+      const nowP = this.time.now;
+      // The intent stays ARMED until the drop actually disappears (its
+      // onRemove clears us) or a timeout gives up: the server validates
+      // against ITS position, which trails the predicted one by the unacked
+      // input window, so a single fire-and-forget send silently loses the
+      // race on laggy links and the player stands next to untouched loot.
+      if (!d || nowP >= this.pickupIntentUntil) this.pendingPickupId = null;
+      else if (Math.hypot(d.wx - me.fx, d.wy - me.fy) <= PICKUP_RADIUS_WU * 0.8) {
+        // WAIT FOR THE ALIGNED SPOT before grabbing (maintainer 2026-08-06):
+        // being merely inside the pickup radius means the gesture would reach
+        // into empty ground beside the loot. Hold until we are standing where
+        // the hand actually lands on it — unless the trip has already ended
+        // (path blocked / autopilot arrived as close as it can), which must
+        // still grab rather than stand there forever.
+        const spot = this.grabStandSpot(me, d.wx, d.wy);
+        const aligned =
+          !spot || !this.trip || Math.hypot(spot.x - me.fx, spot.y - me.fy) <= GRAB_ALIGN_WU;
+        if (aligned && nowP >= this.nextPickupSendAt) {
+          this.nextPickupSendAt = nowP + 400;
+          this.room.send("pickup", { id: this.pendingPickupId });
+        }
+        if (aligned && this.trip) this.clearMoveTarget(); // arrived: stand for the grab
+      }
+    }
+    if (!this.engagedId) return;
+    const mv = this.monsters.get(this.engagedId);
+    if (!mv || mv.mstate === "die") {
+      this.engagedId = null;
+      return;
+    }
+    const now = this.time.now;
+    // Re-assert ~1/s the whole time we hold the intent — walking OR standing:
+    // the server keeps the target across movement now (the sword mark), so
+    // this only guards against ordering/reconnect losses.
+    if (now >= this.nextEngageSendAt) {
+      this.nextEngageSendAt = now + 700;
+      this.room.send("engage", { id: this.engagedId });
+    }
+    const range = attackRange(PLAYER_BODY_RADIUS, mv.radius);
+    const dist = Math.hypot(mv.fx - me.fx, mv.fy - me.fy);
+    if (dist <= range) {
+      if (this.trip) this.clearMoveTarget(); // arrived: stand and fight
+    } else if (now >= this.nextChaseRepathAt) {
+      this.nextChaseRepathAt = now + 300; // the target roams/circles — retarget
+      this.setMoveTarget(mv.fx, mv.fy, true, false, undefined, false); // sword mark, no beacon
+    }
+  }
+
+  /** A marked body's OUTLINE texture for its current frame, built on first
+   * sight and cached in the texture manager: the frame is drawn into a
+   * canvas padded RING_PAD px on every side, its alpha read back, and a 2px
+   * two-tone border grown out of the silhouette — the INNER line in the
+   * palette's base colour, the OUTER line a step brighter (maintainer round
+   * 11). Each line is a 4-NEIGHBOUR dilation (N/S/E/W — never diagonals:
+   * side-dilation leaves single diagonally-touching pixels across the art's
+   * diagonal steps, the thin connected border pixel art itself outlines
+   * with; 8-way dilation doubles up there and reads thick — round 10). The
+   * pad is symmetric, so a setFlipX mirror still lines up with the mirrored
+   * art. ~1 tiny canvas per (strip, frame, palette) actually marked. */
+  private ringTextureFor(
+    sp: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    inner: number,
+    outer: number,
+  ): string | null {
+    const frame = sp.frame;
+    const key = `ring:${inner.toString(16)}:${sp.texture.key}|${frame.name}`;
+    if (this.textures.exists(key)) return key;
+    const fw = frame.cutWidth;
+    const fh = frame.cutHeight;
+    if (!fw || !fh) return null;
+    const w = fw + RING_PAD * 2;
+    const h = fh + RING_PAD * 2;
+    const cnv = document.createElement("canvas");
+    cnv.width = w;
+    cnv.height = h;
+    const ctx = cnv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(
+      frame.source.image as CanvasImageSource,
+      frame.cutX, frame.cutY, fw, fh,
+      RING_PAD, RING_PAD, fw, fh,
+    );
+    const a = ctx.getImageData(0, 0, w, h).data;
+    // Solid = the art's own opacity threshold; soft anti-alias fringes on
+    // generated strips stay outside the border.
+    const n = w * h;
+    const solid = new Uint8Array(n);
+    for (let i = 0; i < n; i++) if (a[i * 4 + 3] >= 128) solid[i] = 1;
+    // One 4-neighbour dilation ring: mask=1 where a transparent-in-`base`
+    // pixel touches a `base` pixel on a side.
+    const growRing = (base: Uint8Array) => {
+      const ring = new Uint8Array(n);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = y * w + x;
+          if (base[i]) continue;
+          if (
+            (x > 0 && base[i - 1]) ||
+            (x < w - 1 && base[i + 1]) ||
+            (y > 0 && base[i - w]) ||
+            (y < h - 1 && base[i + w])
+          )
+            ring[i] = 1;
+        }
+      }
+      return ring;
+    };
+    const ring1 = growRing(solid);
+    const filled = new Uint8Array(n);
+    for (let i = 0; i < n; i++) filled[i] = solid[i] | ring1[i];
+    const ring2 = growRing(filled);
+    const out = ctx.createImageData(w, h);
+    const od = out.data;
+    const paint = (ring: Uint8Array, c: number) => {
+      const r = (c >> 16) & 0xff;
+      const g = (c >> 8) & 0xff;
+      const b = c & 0xff;
+      for (let i = 0; i < n; i++) {
+        if (!ring[i]) continue;
+        od[i * 4] = r;
+        od[i * 4 + 1] = g;
+        od[i * 4 + 2] = b;
+        od[i * 4 + 3] = 255;
+      }
+    };
+    paint(ring1, inner);
+    paint(ring2, outer);
+    ctx.putImageData(out, 0, 0);
+    // NEAREST explicitly: addCanvas does not inherit pixelArt's default the
+    // way loaded textures do, and LINEAR smears the outline into a soft
+    // translucent halo at any fractional camera zoom (measured).
+    this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    return key;
+  }
+
+  /** The engagement overlays, per frame after the monster loop: (1) the red
+   * target/aggro borders + the blue item border; (2) the settings debug
+   * rings: every monster's aggro radius, plus the provoke radius on the
+   * marked one. (The in-fight hp/level readout lives ON the monster —
+   * updateMonsterHpBar.) */
+  /**
+   * THE WHITE OCCLUSION OUTLINE — the second half of the indoor cut-away
+   * (maintainer 2026-08-07: "my solution was to go with a white pixel outline
+   * on parts being behind something").
+   *
+   * The cut shortens a wall so you can look over it; this keeps whoever is
+   * still behind what remains readable. It is the EXACT COMPLEMENT of the lit
+   * copy: `syncLitCopy` crops that copy to [0, coverY) — the part of the body
+   * you can see — so this draws the silhouette ring over [coverY, bottom), the
+   * part you cannot. Between them they tile the figure with no seam and no
+   * double-draw, because both are cut on the same number.
+   *
+   * WHY AN OUTLINE AND NOT TRANSPARENCY. The deleted see-through-walls sweep
+   * (see games2/CLAUDE.md) re-tinted thousands of occluder images every frame
+   * at 1.33ms/frame and never looked good; the culled-wall design after it left
+   * holes. An outline costs ONE image per COVERED body, adds no state to the
+   * terrain, and — being a border with no interior — cannot wash out the art it
+   * marks. Not indoor-only: a body behind any cliff or tower gets it.
+   *
+   * Drawn at 900_001.43 — above the darkness overlay and every lit copy, below
+   * the item ring (.44) and the monster target ring (.45), and far above every
+   * occluder sprite (those sort at world y, in the low thousands). So no depth
+   * work is needed to get the line over the wall; the band already does it.
+   */
+  private syncCoverOutline(b: BodyVisual) {
+    const sp = b.sprite;
+    const hide = () => {
+      if (b.hidden?.visible) b.hidden.setVisible(false);
+    };
+    // A body that is not drawn has nothing hidden — this also covers the
+    // camera-culled monsters (whose coverY is deliberately stale).
+    if (!sp.visible || b.coverY === undefined) return hide();
+    // INDOORS, nobody outside my room gets an outline. The line draws at
+    // 900_001.43, ABOVE the darkness overlay, so it is immune to the zero
+    // ambient that makes those bodies black — and a crisp white silhouette
+    // around a figure you are meant to barely see out there inverts the whole
+    // feature. The outline exists to show you who is behind YOUR walls.
+    if (this.indoorOutside(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
+    // Frame-space y of the covering terrain's top line, exactly as syncLitCopy
+    // computes it — the two MUST agree or the body shows a gap or a seam.
+    const frameTop = sp.y - sp.displayHeight * sp.originY;
+    const cropH = (b.coverY - frameTop) / sp.scaleY;
+    const ab = this.artBounds(sp);
+    if (cropH >= ab.y1) return hide(); // the cover line is below the art: nothing is hidden
+    const key = this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
+    if (!key) return hide();
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
+    let img = b.hidden;
+    if (!img) {
+      img = this.add.image(0, 0, key).setVisible(false);
+      b.hidden = img;
+    }
+    // Same sync chain as the target rings, and for the same reasons: position
+    // from the LIVE sprite (lit copies sync later in the frame and smear a
+    // hopping body sideways), and shift the origin by RING_PAD because the
+    // outline canvas is the frame padded on every side.
+    img
+      .setTexture(key)
+      .setOrigin(
+        (sp.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
+        (sp.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
+      )
+      .setScale(sp.scaleX, sp.scaleY)
+      .setFlipX(sp.flipX)
+      .setPosition(sp.x, sp.y)
+      .setAlpha(1)
+      .setDepth(900_001.43)
+      .setVisible(true);
+    // The crop lives in the PADDED frame, so every sprite-frame y needs
+    // + RING_PAD — a crop computed in sprite-frame pixels is silently 2px high
+    // and clips the top row of the line off.
+    if (cropH <= ab.y0 + 2) {
+      // Completely hidden — the whole silhouette is the outline. This is the
+      // case the feature exists for, and the inverse of syncLitCopy's
+      // setVisible(false) on the very same test.
+      if (img.isCropped) img.setCrop();
+    } else {
+      const cut = cropH + RING_PAD;
+      img.setCrop(0, cut, fw + RING_PAD * 2, fh + RING_PAD * 2 - cut);
+    }
+  }
+
+  private updateTargetOverlays() {
+    const state = this.room?.state as any;
+
+    // (1) The RED BORDERS (maintainer rounds 9-11): a 2-MONSTER-PIXEL dark
+    // red two-tone outline hugging the body's own silhouette — on the
+    // monster I clicked (from the tap through the ENTIRE fight, round 11)
+    // AND on every monster currently hunting ME (synced Monster.tsid). The
+    // outline is a GENERATED texture (ringTextureFor — thin 4-neighbour
+    // lines, inner base + outer brighter) drawn ABOVE the darkness overlay
+    // and every lit copy at FULL alpha, whatever the hour — the mark is UI,
+    // and lighting/shadow/fog never touch it (round 10). An outline has no
+    // interior, so nothing bleeds through the body it surrounds.
+    const mySid = this.room?.sessionId;
+    for (const [id, mv2] of this.monsters) {
+      const sm = state?.monsters?.get(id);
+      const hunting =
+        !!sm && sm.tsid === mySid && !!mySid && (mv2.mstate === "chase" || mv2.mstate === "combat");
+      const on =
+        (this.engagedId === id || hunting) &&
+        !!sm &&
+        mv2.mstate !== "die" &&
+        !mv2.culled &&
+        mv2.sprite.visible &&
+        // Above the overlay (900_001.45), so zero ambient cannot dim it — a
+        // monster outside my room keeps no red ring while I am indoors.
+        !this.indoorOutside(mv2.fx, mv2.fy, mv2.surfLevel);
+      let ring = this.monsterRings.get(id);
+      if (!on) {
+        ring?.setVisible(false);
+        continue;
+      }
+      const sp = mv2.sprite;
+      const ringKey = this.ringTextureFor(sp, TARGET_RING_COLOR, TARGET_RING_BRIGHT);
+      if (!ringKey) {
+        ring?.setVisible(false);
+        continue;
+      }
+      if (!ring) {
+        ring = this.add.image(0, 0, ringKey).setVisible(false);
+        this.monsterRings.set(id, ring);
+      }
+      // POSITION ALWAYS FROM THE LIVE SPRITE, never from the lit copy:
+      // applyObjectLights syncs lit copies LATER in the frame, so its x/y
+      // is one frame stale — on a hopping monster that lag smeared the
+      // ring sideways instead of hugging the silhouette. The outline canvas
+      // is the frame padded RING_PAD px on every side, so the origin shifts
+      // by that pad to keep the art aligned under the sprite's own origin
+      // (which the walk shift[] moves per frame).
+      const fw = sp.frame.cutWidth;
+      const fh = sp.frame.cutHeight;
+      ring
+        .setTexture(ringKey)
+        .setOrigin(
+          (sp.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
+          (sp.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
+        )
+        .setScale(sp.scaleX, sp.scaleY)
+        .setFlipX(sp.flipX)
+        .setPosition(sp.x, sp.y)
+        .setAlpha(1)
+        .setDepth(900_001.45) // above every lit copy, below the hp bar
+        .setVisible(true);
+    }
+    // THE WHITE OCCLUSION OUTLINE, for every body the camera can see. Here and
+    // not in the body loops because `coverY` is written by resolveBodyDepth,
+    // which runs for NPCs, avatars and monsters BEFORE this — and read by
+    // syncLitCopy in applyObjectLights, which runs AFTER. This is the one point
+    // in the frame where the number is fresh for all three.
+    for (const av of this.avatars.values()) this.syncCoverOutline(av);
+    for (const mv2 of this.monsters.values()) this.syncCoverOutline(mv2);
+    for (const nv of this.npcs.values()) this.syncCoverOutline(nv);
+
+    // Rings for monsters that left the room entirely.
+    for (const [id, ring] of this.monsterRings) {
+      if (!this.monsters.has(id)) {
+        ring.destroy();
+        this.monsterRings.delete(id);
+      }
+    }
+
+    // (1b) The ITEM BORDER (maintainer round 11, replacing the round-8/9
+    // hand icon): the drop I am fetching — a tap on it, or the nearest one
+    // via PICK UP / F — gets the same generated outline in light-light-blue,
+    // until it is picked up. Rendered exactly like the red one: above the
+    // lighting at full alpha; the item itself stays an ordinary world-layer
+    // drop (shadow, night dimming and the end-of-life flash untouched).
+    let itemRingOn = false;
+    const pd = this.pendingPickupId ? this.drops.get(this.pendingPickupId) : undefined;
+    if (pd && pd.img.visible) {
+      const ringKey = this.ringTextureFor(pd.img, ITEM_RING_COLOR, ITEM_RING_BRIGHT);
+      if (ringKey) {
+        itemRingOn = true;
+        if (!this.itemRingImg) {
+          this.itemRingImg = this.add.image(0, 0, ringKey).setVisible(false);
+        }
+        const fw = pd.img.frame.cutWidth;
+        const fh = pd.img.frame.cutHeight;
+        this.itemRingImg
+          .setTexture(ringKey)
+          .setOrigin(
+            (pd.img.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
+            (pd.img.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
+          )
+          .setScale(pd.img.scaleX, pd.img.scaleY)
+          // Live img position: the spawn TOSS tween owns y while it runs and
+          // the border rides along with it.
+          .setPosition(pd.img.x, pd.img.y)
+          .setAlpha(1)
+          .setDepth(900_001.44) // unlit, beside the monster rings
+          .setVisible(true);
+      }
+    }
+    if (!itemRingOn) this.itemRingImg?.setVisible(false);
+
+    // (2) Aggro-radius debug rings.
+    if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
+    if (this.aggroGfx) {
+      this.aggroGfx.clear();
+      if (this.aggroRadiusOn && state?.monsters) {
+        state.monsters.forEach((sm: any, id: string) => {
+          if (sm.mstate === "die") return;
+          const marked = id === this.engagedId;
+          const r = marked ? Math.max(sm.aggro ?? 0, PROVOKE_RADIUS_WU) : (sm.aggro ?? 0);
+          if (r <= 0) return;
+          // A world-space circle projected point by point — correct in iso
+          // (an ellipse on screen) and following the ground under it.
+          const lift = (sm.elev ?? 0) * MAP_GEOMETRY.lh;
+          const pts: { x: number; y: number }[] = [];
+          for (let i = 0; i < 28; i++) {
+            const a = (i / 28) * Math.PI * 2;
+            const p = this.projectFlat(sm.x + Math.cos(a) * r, sm.y + Math.sin(a) * r);
+            pts.push({ x: p.x, y: p.y - lift });
+          }
+          this.aggroGfx!.lineStyle(1, marked ? 0xffd166 : 0xf25d5d, marked ? 0.9 : 0.55);
+          this.aggroGfx!.strokePoints(pts, true);
+        });
+      }
+    }
+  }
+
+  private toggleAggroRadius(on = !this.aggroRadiusOn) {
+    this.aggroRadiusOn = on;
+    try {
+      localStorage.setItem("ml-aggro-radius", on ? "1" : "0");
+    } catch {}
+    this.chat.addLog("—", `Aggro radius: ${on ? "on" : "off"}`);
+    return this.aggroRadiusOn;
+  }
+
+  /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
+   * when in reach, else walk to it first (same flow as tapping it). */
+  /** WHERE TO STAND so the pickup gesture lands ON the item (maintainer
+   * 2026-08-06: "walk to the location where the hand in the pick up animation
+   * is as close as possible … so the animation at that angle align perfectly
+   * with the item"). The manifest measures, per direction, the screen offset
+   * from the character's foot anchor to the spot its hand reaches — so the
+   * stand position is simply itemPos − thatOffset, back-projected into world
+   * units. We get to choose the FACING, so try all eight and take the one
+   * whose stand spot is the shortest walk from here: the character then
+   * approaches naturally and ends up reaching exactly at the loot.
+   * Returns null when the character ships no measured grab (older art) — the
+   * caller then falls back to walking at the item itself, as before. */
+  private grabStandSpot(
+    av: Avatar,
+    wx: number,
+    wy: number,
+  ): { x: number; y: number; dir: string } | null {
+    const def = this.manifest.characters.find((c) => c.uid === av.character);
+    const grab = def?.grab;
+    if (!grab) return null;
+    const fw = def?.frameW ?? 0;
+    const fh = def?.frameH ?? 0;
+    if (!fw || !fh) return null;
+    let best: { x: number; y: number; dir: string; d: number } | null = null;
+    for (const [dir, g] of Object.entries(grab)) {
+      // Frame fractions → screen px → world units (the same inverse iso the
+      // gait speed measurement uses: Δsx = Δ(x−y)·dx/CELL, Δsy = Δ(x+y)·dy/CELL).
+      const sx = g.x * fw;
+      const sy = g.y * fh;
+      let ox: number;
+      let oy: number;
+      if (this.world) {
+        const dDiff = (sx * CELL_WU) / MAP_GEOMETRY.dx; // Δ(x−y)
+        const dSum = (sy * CELL_WU) / MAP_GEOMETRY.dy; // Δ(x+y)
+        ox = (dSum + dDiff) / 2;
+        oy = (dSum - dDiff) / 2;
+      } else {
+        ox = sx;
+        oy = sy;
+      }
+      const px = wx - ox;
+      const py = wy - oy;
+      const d = Math.hypot(px - av.fx, py - av.fy);
+      if (!best || d < best.d) best = { x: px, y: py, dir, d };
+    }
+    return best ? { x: best.x, y: best.y, dir: best.dir } : null;
+  }
+
+  private pickupNearest() {
+    if (this.selfDead || !this.room) return;
+    const me = this.avatars.get(this.room.sessionId);
+    if (!me) return;
+    let bestId: string | null = null;
+    let bestD = CELL_WU * 5; // don't sprint across the map for a mis-tap
+    for (const [id, d] of this.drops) {
+      const dist = Math.hypot(d.wx - me.fx, d.wy - me.fy);
+      if (dist < bestD) {
+        bestD = dist;
+        bestId = id;
+      }
+    }
+    if (!bestId) return;
+    // Arm the intent either way — driveCombatIntent retries until the drop
+    // vanishes, which absorbs the predicted-vs-server position skew.
+    this.pendingPickupId = bestId;
+    this.pickupIntentUntil = this.time.now + 6000;
+    if (bestD <= PICKUP_RADIUS_WU * 0.8) {
+      this.nextPickupSendAt = this.time.now + 400;
+      this.room.send("pickup", { id: bestId });
+    } else {
+      const d = this.drops.get(bestId)!;
+      this.walkToGrab(me, d.wx, d.wy);
+    }
+  }
+
+  /** Walk to the spot where the pickup gesture reaches the item (grabStandSpot),
+   * falling back to the item itself when the character ships no measured grab.
+   * Blue item border, never the ground beacon. */
+  private walkToGrab(av: Avatar, wx: number, wy: number) {
+    const spot = this.grabStandSpot(av, wx, wy);
+    const tx = spot ? spot.x : wx;
+    const ty = spot ? spot.y : wy;
+    this.setMoveTarget(tx, ty, true, false, undefined, false);
   }
 
   private removeMonster(id: string) {
     const mv = this.monsters.get(id);
     if (!mv) return;
-    mv.sprite.destroy();
-    mv.shadow.destroy();
     mv.lit?.destroy();
+    mv.hidden?.destroy();
+    mv.hpBg?.destroy();
+    mv.hpFill?.destroy();
+    mv.nameText?.destroy();
+    mv.lvText?.destroy();
+    mv.hpText?.destroy();
+    if (mv.mstate === "die" && mv.sprite.visible && !mv.culled) {
+      // The server held the schema entry for the die clip; now the corpse
+      // FADES instead of popping off (RO body dissolve). The sprites are
+      // detached from the map first, so a respawn under the same id can't
+      // fight the tween.
+      const corpse = mv.sprite;
+      const shadow = mv.shadow;
+      this.tweens.add({
+        targets: [corpse, shadow],
+        alpha: 0,
+        duration: 450,
+        onComplete: () => {
+          corpse.destroy();
+          shadow.destroy();
+        },
+      });
+      // …and the GRAVE CROSS rises where it fell (maintainer 2026-08-05),
+      // right as the loot appears beside it.
+      this.spawnGraveCross(mv.lx, mv.lyFlat, mv.elev);
+      const spM = this.worldSpatial(mv.lx, mv.lyFlat - mv.elev);
+      gameAudio.event("combat.monster_die", { pan: spM.pan, dist: spM.dist });
+    } else {
+      mv.sprite.destroy();
+      mv.shadow.destroy();
+    }
     this.monsters.delete(id);
+  }
+
+  /** The wooden grave cross (objects/grave_cross, the maintainer's PixelLab
+   * object): plays its 16-frame SOUTH "appear" once at the death spot, holds
+   * on the LAST frame, and after a minute plays the same clip REVERSED —
+   * sinking back into the ground — and vanishes. Client-local decoration:
+   * every client witnesses the same death via the synced die state. Spawns
+   * QUEUE while the strip loads (appending to a busy loader is fine — a
+   * kill during the deferred-anim batch must not silently drop its cross). */
+  private spawnGraveCross(lx: number, lyFlat: number, elevPx: number) {
+    const KEY = "grave-cross-appear";
+    if (this.textures.exists(KEY)) {
+      this.materializeCross(lx, lyFlat, elevPx);
+      return;
+    }
+    this.pendingCrosses.push({ lx, lyFlat, elevPx });
+    if (!this.crossLoadQueued) {
+      this.crossLoadQueued = true;
+      this.load.spritesheet(KEY, withV("/assets/objects/grave_cross/animations/appear__south.webp"), {
+        frameWidth: 34,
+        frameHeight: 34,
+      });
+      this.load.once(`filecomplete-spritesheet-${KEY}`, () => {
+        for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx);
+      });
+      this.load.start();
+    }
+  }
+
+  private materializeCross(lx: number, lyFlat: number, elevPx: number) {
+    const KEY = "grave-cross-appear";
+    if (!this.anims.exists(KEY)) {
+      this.anims.create({
+        key: KEY,
+        frames: this.anims.generateFrameNumbers(KEY, {}),
+        frameRate: 13,
+        repeat: 0,
+      });
+    }
+    const y = lyFlat - elevPx;
+    const sprite = this.add
+      .sprite(lx, y, KEY, 0)
+      .setOrigin(0.5, 1)
+      .setDepth(y - 0.5); // ground decor: just under bodies standing on the spot
+    sprite.y += 2; // the mound reads planted, not floating
+    sprite.play(KEY);
+    sprite.once("animationcomplete", () => {
+      sprite.anims.pause(); // hold the standing cross (last frame)
+    });
+    this.graveCrosses.push({ sprite, bornAt: this.time.now, reversing: false });
+    const spC = this.worldSpatial(lx, y);
+    gameAudio.event("combat.cross_on", { pan: spC.pan, dist: spC.dist });
+  }
+
+  /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
+  private stepGroundDecor() {
+    const now = this.time.now;
+    // A drop being GRABBED lingers past the server's removal until my pickup
+    // clip reaches the measured frame the hand closes on it. Safety valve: if
+    // the clip is interrupted (a hit, a respawn, the tab hidden), retire it on
+    // a timeout instead of leaving a phantom item lying there forever.
+    for (const [id, rec] of [...this.drops]) {
+      if (!rec.grabbedAt) continue;
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const anim = me?.sprite.anims.getName() ?? "";
+      // Character frames are PER-FRAME TEXTURES keyed f:<uid>:<state>:<dir>:<n>
+      // (only monsters use numbered spritesheet frames), so the index comes
+      // from the texture key — frame.name is not a number here and parsing it
+      // pinned every read at 0, which let the clip run to its end instead.
+      const frame = frameIndexOf(me?.sprite.texture.key);
+      const playing = /:pickup:/.test(anim);
+      if (playing) rec.sawPickup = true;
+      // Retire when the hand closes on it; or when the clip has come and gone
+      // (interrupted by a hit/respawn); or on a timeout, so a pickup clip that
+      // never starts cannot strand a phantom item on the ground.
+      const grabbed = playing && frame >= (rec.grabFrame ?? 0);
+      const clipOver = rec.sawPickup && !playing;
+      if (grabbed || clipOver || now - rec.grabbedAt > 1200) {
+        // Record WHY and WHEN, for the gate: polling from the outside cannot
+        // resolve a ~77ms animation frame, so the client reports the exact
+        // frame it retired the item on.
+        this.lastGrabRetire = {
+          frame,
+          grabFrame: rec.grabFrame ?? null,
+          anim,
+          via: grabbed ? "grab-frame" : clipOver ? "clip-ended" : "timeout",
+          heldMs: Math.round(now - rec.grabbedAt),
+        };
+        rec.img.destroy();
+        rec.shadow.destroy();
+        this.drops.delete(id);
+      }
+    }
+    for (let i = this.graveCrosses.length - 1; i >= 0; i--) {
+      const gc = this.graveCrosses[i];
+      if (!gc.reversing && now - gc.bornAt >= 60_000) {
+        gc.reversing = true;
+        gc.sprite.anims.resume();
+        gc.sprite.playReverse("grave-cross-appear");
+        const spX = this.worldSpatial(gc.sprite.x, gc.sprite.y);
+        gameAudio.event("combat.cross_off", { pan: spX.pan, dist: spX.dist });
+        gc.sprite.once("animationcomplete", () => gc.sprite.destroy());
+        // If the reverse somehow never completes (tab hidden through it),
+        // the sweep below still drops the record; the sprite dies with it.
+      }
+      if (gc.reversing && (!gc.sprite.active || now - gc.bornAt >= 70_000)) {
+        if (gc.sprite.active) gc.sprite.destroy();
+        this.graveCrosses.splice(i, 1);
+      }
+    }
+    // Ground items: the last DROP_FLASH_MS before the server sweeps them,
+    // flash transparent FASTER AND FASTER until gone (maintainer). Timed
+    // from the witnessed birth; the server's sweep is authoritative.
+    for (const rec of this.drops.values()) {
+      // A drop lying outside my room is DRAWN and goes black with the ground
+      // under it — no special case. The art only shows once its texture has
+      // landed: a drop still on "__MISSING" must stay hidden.
+      const out = rec.img.texture.key === "__MISSING";
+      rec.img.setVisible(!out);
+      rec.shadow.setVisible(!out);
+      const left = DROP_TTL_MS - (now - rec.bornAt);
+      if (left <= DROP_FLASH_MS) {
+        const t = Math.max(0, 1 - left / DROP_FLASH_MS); // 0 → 1 over the final stretch
+        const hz = 2 + t * 8; // 2Hz ramping to 10Hz
+        const s = 0.5 + 0.5 * Math.sin((now / 1000) * hz * Math.PI * 2);
+        const a = 0.15 + 0.85 * s;
+        rec.img.setAlpha(a);
+        rec.shadow.setAlpha(0.55 * a);
+      }
+    }
+  }
+
+  /** The slim in-fight readout floating over a monster, styled after the
+   * player's own HP bar. THREE LINES (maintainer 2026-08-05): the monster's
+   * NAME left-aligned OVER the bar, then the bar, then "Lv N" left-aligned
+   * and "hp/max" right-aligned UNDER it — a clear gap between the two even
+   * at 4-digit HP, which is what the bar's width is sized for. (Rounds 5-9
+   * kept Lv/hp on the bar's own line with no name at all; the name is his
+   * call to add now, and it needed that line freed up.) Drawn ABOVE the
+   * darkness overlay (900_000) and the lit copies, UNDER the damage floats
+   * (900_002): day, night and shadow never touch it. Shown while the monster
+   * is wounded, in combat, or MY engaged target. */
+  private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
+    const inFight =
+      m.hpMax > 0 &&
+      m.mstate !== "die" &&
+      (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id) &&
+      // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
+      // darkness overlay: indoors they would be the only readable thing on a
+      // monster that is otherwise a black silhouette out on the grass.
+      !this.indoorOutside(mv.fx, mv.fy, mv.surfLevel);
+    if (!inFight) {
+      mv.hpBg?.setVisible(false);
+      mv.hpFill?.setVisible(false);
+      mv.nameText?.setVisible(false);
+      mv.lvText?.setVisible(false);
+      mv.hpText?.setVisible(false);
+      return;
+    }
+    const W = 76; // fits "Lv 19" + gap + "9999/9999" at 8px monospace
+    if (!mv.hpBg) {
+      const style = {
+        fontFamily: "monospace",
+        fontSize: "8px",
+        color: "#f4efe4",
+        stroke: "#10101c",
+        strokeThickness: 2,
+      };
+      mv.hpBg = this.add.rectangle(0, 0, W, 6, 0x10101c, 0.85).setDepth(900_001.5).setOrigin(0.5, 0.5);
+      mv.hpFill = this.add.rectangle(0, 0, W - 2, 4, 0xf25d5d, 1).setDepth(900_001.6).setOrigin(0, 0.5);
+      // name ABOVE (origin bottom-left), Lv + hp BELOW (origin top-left /
+      // top-right) — the bar's own line is the name's now.
+      mv.nameText = this.add.text(0, 0, "", style).setOrigin(0, 1).setDepth(900_001.7).setResolution(2);
+      mv.lvText = this.add.text(0, 0, "", style).setOrigin(0, 0).setDepth(900_001.7).setResolution(2);
+      mv.hpText = this.add.text(0, 0, "", style).setOrigin(1, 0).setDepth(900_001.7).setResolution(2);
+    }
+    const frac = Math.max(0, Math.min(1, m.hp / m.hpMax));
+    const topY = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY - 8;
+    mv.hpBg.setPosition(mv.lx, topY).setVisible(true);
+    mv.hpFill!
+      .setPosition(mv.lx - (W - 2) / 2, topY)
+      .setVisible(true)
+      .setSize(Math.max(1, (W - 2) * frac), 4);
+    const name = mv.label ?? mv.kind;
+    const lv = `Lv ${m.level ?? 1}`;
+    const hp = `${Math.ceil(m.hp)}/${m.hpMax}`;
+    if (mv.nameText!.text !== name) mv.nameText!.setText(name);
+    if (mv.lvText!.text !== lv) mv.lvText!.setText(lv);
+    if (mv.hpText!.text !== hp) mv.hpText!.setText(hp);
+    // All three hang off the BAR's own edges, so the three lines share one
+    // left margin and the stack stays centred on the monster.
+    mv.nameText!.setPosition(mv.lx - W / 2, topY - 5).setVisible(true);
+    mv.lvText!.setPosition(mv.lx - W / 2, topY + 5).setVisible(true);
+    mv.hpText!.setPosition(mv.lx + W / 2, topY + 5).setVisible(true);
+  }
+
+  /** A small rising damage number (world-space, above the night overlay). */
+  private spawnDamageFloat(x: number, y: number, text: string, color: number) {
+    // Round 7 (maintainer): twice as big, on screen 0.2s longer.
+    const t = this.add
+      .text(x, y, text, {
+        fontFamily: "monospace",
+        fontSize: "26px",
+        fontStyle: "bold",
+        color: `#${color.toString(16).padStart(6, "0")}`,
+        stroke: "#101018",
+        strokeThickness: 5,
+      })
+      .setOrigin(0.5, 1)
+      .setDepth(900_002)
+      .setResolution(2);
+    this.tweens.add({
+      targets: t,
+      y: y - 30,
+      alpha: { from: 1, to: 0 },
+      duration: 850,
+      ease: "Cubic.easeOut",
+      onComplete: () => t.destroy(),
+    });
+  }
+
+  /** A blood spatter on a struck body (objects/blood_spatter, the
+   * maintainer's PixelLab object trimmed to burst->dispersal): one of the 8
+   * direction variants at random, played forward or REVERSED at random —
+   * reversed reads as the burst converging, so no two hits look alike. */
+  private spawnBloodFx(x: number, y: number) {
+    const dir = BLOOD_DIRS[Math.floor(Math.random() * BLOOD_DIRS.length)];
+    const key = `blood:${dir}`;
+    if (!this.anims.exists(key)) return; // strips still background-loading — skip quietly
+    const s = this.add.sprite(x, y, key, 0).setOrigin(0.5, 0.5).setDepth(900_001.95);
+    this.bloodSeen++;
+    if (Math.random() < 0.5) s.play(key);
+    else s.playReverse(key);
+    s.once("animationcomplete", () => s.destroy());
   }
 
   /** Drive a monster's 8-dir WALK clip (mv.walkKey — the manifest-resolved
@@ -2034,7 +3798,83 @@ export class WorldScene extends Phaser.Scene {
    * sector-boundary angles — the identical jitter the player fix killed):
    * a 45° change must persist DIR_STICK_MS before the sprite turns, 90°+
    * turns switch instantly. */
-  private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
+  /** Per-monster SEMANTIC EVENTS for the wiki's sound card: one per animation
+   * state, `monsters.<kind>.<idle|walk|angry|attack>` — the id shape the wiki
+   * agent specified (`<domain>.<entityId>.<action>`, e.g. monsters.mammoth.attack).
+   * Every one of them is SILENT until the Game Master assigns a sound on the
+   * monster's wiki page; emitting them is what makes the card able to offer
+   * them at all.
+   *
+   * The whole difficulty here is CADENCE, because two of the four states LOOP
+   * and the_island2 ships 160 monsters:
+   *   · attack — a true one-shot, fired off the same `actionSeq` change that
+   *     restarts the swing clip, so the sound lands exactly on the swing.
+   *   · walk  — once per GAIT CYCLE, detected by the clip's own progress
+   *     wrapping. That makes it a footfall: it already scales with speed,
+   *     because round 13 paces the walk clip by ground covered, so a chasing
+   *     body steps faster without a second cadence to keep in sync.
+   *   · idle / angry — periodic with a per-individual jittered gap, so a pack
+   *     breathes and growls out of phase instead of in chorus.
+   * On top of that: culled (off-screen) bodies are silent, the dying are left
+   * to combat.monster_die, and a GLOBAL budget caps how many monster sounds
+   * may start in any one second — a visible herd must never machine-gun. */
+  private monsterSfx(mv: MonsterAvatar, moving: boolean, mstate: string, actionSeq: number): void {
+    if (mv.culled || mstate === "die") return;
+    const now = this.time.now;
+    const fire = (action: string) => {
+      // Global budget, oldest-window: a herd cresting a hill is exactly when
+      // this matters, and it is cheaper to drop a call than to duck later.
+      if (now - this.monSfxWindowAt > 1000) {
+        this.monSfxWindowAt = now;
+        this.monSfxInWindow = 0;
+      }
+      if (this.monSfxInWindow >= MONSTER_SFX_PER_SEC) return;
+      this.monSfxInWindow++;
+      const sp = this.worldSpatial(mv.sprite.x, mv.sprite.y);
+      gameAudio.event(`monsters.${mv.kind}.${action}`, { pan: sp.pan, dist: sp.dist });
+    };
+
+    // ATTACK — the swing itself. Same signal the clip restarts on, so an
+    // assigned sound cannot drift off the animation.
+    if (mstate === "combat" && actionSeq !== (mv.sfxLastSwing ?? mv.lastActionSeq ?? 0)) {
+      mv.sfxLastSwing = actionSeq;
+      fire("attack");
+      return; // the swing IS this frame's monster sound
+    }
+    if (mstate === "chase" || mstate === "combat") {
+      // ANGRY IDLE — the growl between swings, and while closing in.
+      if (mv.sfxAngryGap === undefined) mv.sfxAngryGap = MONSTER_ANGRY_GAP_MS[0];
+      if (now - (mv.sfxAngryAt ?? 0) >= mv.sfxAngryGap) {
+        mv.sfxAngryAt = now;
+        mv.sfxAngryGap = MONSTER_ANGRY_GAP_MS[0] + Math.random() * (MONSTER_ANGRY_GAP_MS[1] - MONSTER_ANGRY_GAP_MS[0]);
+        fire("angry");
+      }
+    }
+    if (moving) {
+      // WALK / hop forward — once per gait cycle. Progress running backwards
+      // is a wrap; a state change resets it so a fresh clip cannot fire on
+      // its first frame.
+      const prog = mv.sprite.anims.isPlaying ? mv.sprite.anims.getProgress() : 0;
+      const prev = mv.sfxWalkProg;
+      mv.sfxWalkProg = prog;
+      if (prev !== undefined && prog < prev - 0.25) fire("walk");
+      return;
+    }
+    mv.sfxWalkProg = undefined;
+    if (mstate === "chase" || mstate === "combat") return; // angry owns the stopped case
+    // IDLE — a resting creature's own noise, jittered per individual.
+    if (mv.sfxIdleGap === undefined) {
+      mv.sfxIdleGap = MONSTER_IDLE_GAP_MS[0] + Math.random() * (MONSTER_IDLE_GAP_MS[1] - MONSTER_IDLE_GAP_MS[0]);
+      mv.sfxIdleAt = now; // never on the first frame a body appears
+    }
+    if (now - (mv.sfxIdleAt ?? 0) >= mv.sfxIdleGap) {
+      mv.sfxIdleAt = now;
+      mv.sfxIdleGap = MONSTER_IDLE_GAP_MS[0] + Math.random() * (MONSTER_IDLE_GAP_MS[1] - MONSTER_IDLE_GAP_MS[0]);
+      fire("idle");
+    }
+  }
+
+  private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
     // remote puppets, so a 160ms facing lag is invisible — while autopilot
@@ -2042,6 +3882,62 @@ export class WorldScene extends Phaser.Scene {
     // right before stopping (maintainer 2026-07-30). Players keep instant
     // large turns for input feel.
     const d = this.stableDir(mv, want, true);
+    mv.mstate = mstate;
+    // Phaser's timeScale lives on the sprite's ANIMATION STATE, not on the
+    // clip, so it survives every play() — a monster that broke off a 3.5×
+    // chase would swing/die at 3.5× too. Reset to the authored rate here; the
+    // walk branch below re-applies the gait scale when it is actually walking.
+    mv.sprite.anims.timeScale = 1;
+
+    // --- COMBAT CLIPS (attack / angry / die — deferred-loaded strips). The
+    // anims.exists guards make every branch degrade to the walk-park below
+    // until the background load lands and buildMonsterAnimations re-runs;
+    // 6 of 24 kinds ship no angry at all and park between swings instead.
+    // combatClip gates the per-frame walk-drift compensation: shift[]/air[]
+    // are measured on the WALK/IDLE strips and must never index into an
+    // attack frame.
+    if (mstate === "die") {
+      const dieAnim = mv.dieKey ? monsterAnimKey(mv.kind, mv.dieKey, d) : null;
+      if (dieAnim && this.anims.exists(dieAnim)) {
+        mv.combatClip = true;
+        if (mv.sprite.anims.getName() !== dieAnim) mv.sprite.play(dieAnim);
+        return;
+      }
+      // No die art: freeze on the parked contact frame (better than looping).
+      mv.combatClip = false;
+      mv.sprite.anims.stop();
+      const skD = monsterSheetKey(mv.kind, mv.walkKey, d);
+      const gD = mv.ground?.[d];
+      if (this.textures.exists(skD)) mv.sprite.setTexture(skD, gD?.contact ?? 0);
+      return;
+    }
+    if (mstate === "combat") {
+      const attackAnim = mv.attackKey ? monsterAnimKey(mv.kind, mv.attackKey, d) : null;
+      if (actionSeq !== (mv.lastActionSeq ?? 0)) {
+        mv.lastActionSeq = actionSeq;
+        if (attackAnim && this.anims.exists(attackAnim)) {
+          mv.combatClip = true;
+          mv.sprite.play(attackAnim); // restart even mid-clip: a new swing IS a restart
+          return;
+        }
+      }
+      // Let a running swing finish before falling back to the angry loop.
+      const cur = mv.sprite.anims.getName();
+      if (attackAnim && cur === attackAnim && mv.sprite.anims.isPlaying) {
+        mv.combatClip = true;
+        return;
+      }
+      const angryAnim = mv.angryKey ? monsterAnimKey(mv.kind, mv.angryKey, d) : null;
+      if (angryAnim && this.anims.exists(angryAnim)) {
+        mv.combatClip = true;
+        if (cur !== angryAnim || !mv.sprite.anims.isPlaying) mv.sprite.play(angryAnim, true);
+        return;
+      }
+      // No angry art (6 kinds): fall through to the stopped walk-park below.
+    }
+    mv.combatClip = false;
+    mv.lastActionSeq = actionSeq;
+
     // Re-anchor to the ACTIVE STATE's measured ground contract for this
     // direction: idle strips are framed independently of walk (their own
     // stripDims + anchors), and per-direction margins differ after art
@@ -2063,6 +3959,14 @@ export class WorldScene extends Phaser.Scene {
         mv.sprite.play(key, true);
         if (progress > 0) mv.sprite.anims.setProgress(progress);
       }
+      // CADENCE ∝ SPEED (round 13). The walk clip's base rate plants the gait
+      // at ROAM speed; a monster that breaks into a chase covers 2.5× the
+      // ground per second and must cycle 2.5× faster or its legs skate — the
+      // old fixed 6/10 fps could only be right at one speed, which is what
+      // read as "limping" / "jumping". Effective fps = frames × speed /
+      // cycleWu, clamped so a heavy body never freezes mid-stride and a
+      // provoked sprint never blurs. Idle keeps its own breathing rate.
+      mv.sprite.anims.timeScale = moving ? this.gaitScaleFor(mv) : 1;
     } else {
       // No idle art (legacy poring family): park on the walk strip's PLANTED
       // CONTACT FRAME (frame 0 is airborne for hop gaits — parked frogs
@@ -2073,6 +3977,238 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Playback scale for a monster's WALK clip so the cycle completes once per
+   * `gait.cycleWu` of ground actually covered (round 13). The clip's base rate
+   * was authored for GAIT_REF_WU, so the scale is just speed/ref — with the
+   * effective fps clamped into a readable band (a mammoth paces slowly, but
+   * never freezes; a provoked hunter never blurs). Reads the body's OWN
+   * measured drawn speed, so easing, water, chases and the flee-slow all pace
+   * continuously with no per-state pops. */
+  private gaitScaleFor(mv: MonsterAvatar): number {
+    const base = mv.sprite.anims.currentAnim?.frameRate ?? 0;
+    if (!base) return 1;
+    const spd = mv.spdWu ?? GAIT_REF_WU;
+    const frames = mv.sprite.anims.currentAnim?.getTotalFrames?.() ?? 0;
+    const cycleWu = mv.cycleWu ?? 36;
+    const wantFps = frames > 0 ? (frames * spd) / cycleWu : base * (spd / GAIT_REF_WU);
+    return Phaser.Math.Clamp(wantFps, GAIT_FPS_MIN, GAIT_FPS_MAX) / base;
+  }
+
+  /** The hop's mean-zero ground-track offset in SCREEN px (round 13), eased so
+   * a frame change can't pop the body. `travelCum[i]` is the fraction of the
+   * cycle's ground the ART has covered when frame i starts, so the body should
+   * lead (or lag) the even glide by (travelled − progress) × cycleWu: a frog
+   * surges through its leap and stands still while it gathers, instead of
+   * sliding forward at a constant rate through a hop it is clearly not making.
+   * Only real hoppers ship `travel` — everyone else glides evenly, as before. */
+  private hopOffsetFor(mv: MonsterAvatar, dt: number): number {
+    const cum = mv.travelCum;
+    let want = 0;
+    if (
+      cum &&
+      mv.cycleWu &&
+      !mv.combatClip &&
+      mv.sprite.anims.isPlaying &&
+      (mv.spdWu ?? 0) > 1 &&
+      mv.sprite.anims.getName() === monsterAnimKey(mv.kind, mv.walkKey, mv.dispDir)
+    ) {
+      const n = cum.length - 1;
+      const p = Phaser.Math.Clamp(mv.sprite.anims.getProgress(), 0, 1);
+      const t = p * n;
+      const i = Math.min(n - 1, Math.max(0, Math.floor(t)));
+      const travelled = cum[i] + (cum[i + 1] - cum[i]) * (t - i);
+      want = (travelled - p) * mv.cycleWu * (mv.scrPerWu ?? 1);
+    }
+    const cur = mv.hopOff ?? 0;
+    return cur + (want - cur) * Math.min(1, dt * GAIT_HOP_EASE);
+  }
+
+  /** Spawn the world's NPCs (maps2 npcs.json). Art loads lazily per character:
+   * a world places a couple of dozen people out of a 191-strong roster, so
+   * pulling the whole catalog would be pure waste. Nothing here touches the
+   * server — NPCs are client-side decor. */
+  private spawnNpcs() {
+    if (!this.npcManifest || !this.npcPlacement.length) return;
+    const byId = new Map(this.npcManifest.npcs.map((d) => [d.id, d]));
+    for (const p of this.npcPlacement) {
+      const def = byId.get(p.character);
+      if (def) this.addNpc(p, def);
+    }
+  }
+
+  /** Queue the placed NPCs' STANDING art in preload, so they are on screen the
+   * moment the world is — one small image per distinct character (a world
+   * places ~20 people, mostly different ones). Their idle FRAMES are NOT here:
+   * those ride the deferred batch after the join, and the calm idle hides that
+   * wait completely, because an NPC parks on the standing pose anyway. */
+  private preloadNpcArt() {
+    const man = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
+    const placed = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
+    if (!man || !placed.length) return;
+    const byId = new Map(man.npcs.map((d) => [d.id, d]));
+    const seen = new Set<string>();
+    for (const p of placed) {
+      const def = byId.get(p.character);
+      if (!def || seen.has(def.id)) continue;
+      seen.add(def.id);
+      const url = def.base[DEFAULT_DIRECTION];
+      const key = `npc:${def.id}:${DEFAULT_DIRECTION}`;
+      if (url && !this.textures.exists(key)) this.load.image(key, withV(url));
+    }
+  }
+
+  private addNpc(p: NpcPlacement, def: NpcDef) {
+    // ALWAYS SOUTH for now (maintainer 2026-08-06): the generated idle exists
+    // for south alone, so an NPC placed facing any other way would stand
+    // frozen on a static rotation while its neighbours breathe. maps2' own
+    // `facing` is deliberately ignored until characters2 generates the other
+    // seven rotations — then this becomes `p.facing` again and nothing else
+    // changes. They never walk either; there is no walk art and no server body.
+    const dir = DEFAULT_DIRECTION;
+    // maps2 gives a TILE cell; bodies stand at the cell CENTRE like everything
+    // else that is placed by cell (the campfire, spawn scatter).
+    const fx = (p.x + 0.5) * CELL_WU;
+    const fy = (p.y + 0.5) * CELL_WU;
+    const g = this.projectFlat(fx, fy);
+    const elev = (p.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+    const shadow = this.add
+      .image(g.x, g.y - elev, SHADOW_TEX)
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(34, 14)
+      .setAlpha(0.5);
+    // ORIGIN = THE MEASURED FOOT ANCHOR, never a guess. It is the point
+    // between the two feet at their underside, so the drawn soles land exactly
+    // on the ground point placeBodyShadow puts the nadir shadow at — the whole
+    // difference between standing and hovering (measured: the eyeballed 0.9
+    // this replaces was up to 9px off, and the monsters' "flying" rounds were
+    // this same mistake).
+    const a = def.anchors?.[dir];
+    const sprite = this.add
+      .sprite(g.x, g.y - elev, PLACEHOLDER_TEX)
+      .setOrigin(a?.x ?? 0.5, a?.y ?? 0.84);
+    const npc: NpcAvatar = {
+      sprite,
+      shadow,
+      lx: g.x,
+      lyFlat: g.y,
+      ly: g.y - elev,
+      elev,
+      fx,
+      fy,
+      charId: def.id,
+      name: p.name || def.name,
+      type: p.type,
+      dir,
+      animKey: null,
+      holdUntil: 0,
+      surfLevel: p.elev ?? g.lvl,
+    };
+    this.npcs.set(p.id, npc);
+    this.loadNpcArt(npc, def);
+  }
+
+  /** Lazy art for ONE npc: the static rotation for its facing always, plus the
+   * idle clip when the art ships one for that direction. The generated idle is
+   * SOUTH-ONLY today, so most NPCs correctly stand still on their rotation —
+   * when characters2 generates the rest they animate with no client change. */
+  private loadNpcArt(npc: NpcAvatar, def: NpcDef) {
+    const baseKey = `npc:${def.id}:${npc.dir}`;
+    const frames = def.idle?.[npc.dir] ?? 0;
+    const animKey = `npcanim:${def.id}:${npc.dir}`;
+    // The standing pose arrived with the BOOT batch (preloadNpcArt), so the
+    // NPC is drawn the instant the world is. Loading it lazily here is what
+    // restarted the loading bar and popped them in half a second late
+    // (maintainer 2026-08-06).
+    if (this.textures.exists(baseKey)) npc.sprite.setTexture(baseKey);
+    if (frames > 0 && def.idleAnim) {
+      const keys: string[] = [];
+      for (let i = 0; i < frames; i++) {
+        const k = `npcf:${def.id}:${npc.dir}:${i}`;
+        keys.push(k);
+        if (!this.textures.exists(k)) {
+          this.npcIdleQueue.push({
+            key: k,
+            url: `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${npc.dir}/${i}.webp`,
+          });
+        }
+      }
+      // Registered LAZILY by stepNpcs once every frame texture exists — NOT on
+      // a one-shot loader COMPLETE. A world queues ~20 NPCs back to back, so
+      // COMPLETE fires between batches while later files are still pending and
+      // a one-shot handler finds its own textures missing and gives up
+      // silently: measured 0 of 19 clips registering. Same shape as the
+      // monsters' single-call-site trap.
+      npc.pendingAnim = { key: animKey, frames: keys };
+    }
+  }
+
+  /** Per frame: place every NPC through the shared body pipeline and drive the
+   * CALM IDLE — play the clip once, then freeze on frame 0 for a fresh random
+   * 0.1-5s pause, so a street full of people never breathes in unison or
+   * loops often enough to read as a machine. Off-screen bodies are parked
+   * exactly like culled monsters (no depth ray, no shadow, no lit copy). */
+  private stepNpcs() {
+    if (!this.npcs.size) return;
+    const cam = this.cameras.main.worldView;
+    const now = this.time.now;
+    for (const npc of this.npcs.values()) {
+      const sp = npc.sprite;
+      const halfW = Math.max(sp.displayWidth, 40) * 0.5;
+      const on =
+        npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
+        npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
+        npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
+      // NB no indoor test: a villager on the street outside my room is drawn
+      // and lit like the street is — black, until my torch finds them.
+      if (!on) {
+        if (!npc.culled) {
+          npc.culled = true;
+          sp.setVisible(false);
+          npc.shadow.setVisible(false);
+          npc.lit?.setVisible(false);
+          sp.anims.pause();
+        }
+        continue;
+      }
+      if (npc.culled) {
+        npc.culled = false;
+        sp.setVisible(true);
+        npc.shadow.setVisible(true);
+        sp.anims.resume();
+      }
+      sp.x = npc.lx;
+      sp.y = npc.ly;
+      if (!npc.animKey && npc.pendingAnim) {
+        const pa = npc.pendingAnim;
+        if (pa.frames.every((k) => this.textures.exists(k))) {
+          if (!this.anims.exists(pa.key)) {
+            this.anims.create({
+              key: pa.key,
+              frames: pa.frames.map((k) => ({ key: k })),
+              frameRate: ANIM_FPS.idle ?? 6,
+              repeat: 0, // ONE pass, then the calm hold below
+            });
+          }
+          npc.animKey = pa.key;
+          npc.pendingAnim = undefined;
+        }
+      }
+      // THE CALM IDLE: a finished (or never started) clip parks on frame 0
+      // until its own random deadline passes, then plays once more.
+      if (npc.animKey && !sp.anims.isPlaying) {
+        if (!npc.holdUntil) {
+          npc.holdUntil = now + NPC_HOLD_MIN_MS + Math.random() * (NPC_HOLD_MAX_MS - NPC_HOLD_MIN_MS);
+        } else if (now >= npc.holdUntil) {
+          npc.holdUntil = 0;
+          sp.play(npc.animKey);
+        }
+      }
+      this.resolveBodyDepth(npc, npc.surfLevel ?? 0);
+      this.placeBodyShadow(npc, npc.elev, 0, 34, 14);
+    }
+  }
+
   /** Stereo position of an avatar relative to the camera view — pan (-1..1)
    * and distance (0 at centre, 1 at the edge of earshot) for the composer's
    * spatialized one-shots. The local player is always centred. */
@@ -2080,9 +4216,15 @@ export class WorldScene extends Phaser.Scene {
     if (!id || id === this.room?.sessionId) return { pan: 0, dist: 0 };
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return { pan: 0, dist: 0.5 };
+    return this.worldSpatial(av.sprite.x, av.sprite.y);
+  }
+
+  /** Pan/dist for any world-space point (monster deaths, grave crosses,
+   * ground drops) — the same camera-relative math avatarSpatial uses. */
+  private worldSpatial(sx: number, sy: number): { pan: number; dist: number } {
     const view = this.cameras.main.worldView;
-    const nx = (av.sprite.x - view.centerX) / Math.max(1, view.width * 0.55);
-    const ny = (av.sprite.y - view.centerY) / Math.max(1, view.height * 0.55);
+    const nx = (sx - view.centerX) / Math.max(1, view.width * 0.55);
+    const ny = (sy - view.centerY) / Math.max(1, view.height * 0.55);
     return {
       pan: Math.max(-1, Math.min(1, nx)),
       dist: Math.min(1, Math.hypot(nx, ny) * 0.75),
@@ -2093,8 +4235,10 @@ export class WorldScene extends Phaser.Scene {
    * fractions (0..1) of forest / water / town cells in earshot, plus
    * campfire proximity. Sampled by the composer at ~4 Hz — keep it cheap
    * (a 15×15 cell window ≈ 225 string checks). */
-  private sampleAudioField(): { forest: number; water: number; town: number; fire: number } {
-    const none = { forest: 0, water: 0, town: 0, fire: 0 };
+  private sampleAudioField(): {
+    forest: number; water: number; town: number; fire: number; cave: number; threat: number;
+  } {
+    const none = { forest: 0, water: 0, town: 0, fire: 0, cave: 0, threat: 0 };
     const g = this.terrain;
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!g || !me) return none;
@@ -2104,13 +4248,24 @@ export class WorldScene extends Phaser.Scene {
     let forest = 0;
     let water = 0;
     let town = 0;
+    let roofed = 0;
     let n = 0;
+    // My own surface height, in LEVELS — the same px→level basis the lit copy
+    // and torch use. A deck only counts as a roof when it is above ME, so
+    // walking ACROSS a bridge (deck == my own surface) is never "in a cave".
+    const myLevel = Math.max(0, me.elev / MAP_GEOMETRY.lh);
     for (let r = cr - R; r <= cr + R; r++) {
       if (r < 0 || r >= g.height) continue;
       for (let c = cc - R; c <= cc + R; c++) {
         if (c < 0 || c >= g.width) continue;
         n++;
-        const t = g.type[r * g.width + c];
+        const i = r * g.width + c;
+        // Roofed: a world@2 deck slab overhead (cave ceiling, house roof, the
+        // span you are walking UNDER). 1.5 levels of clearance keeps a deck at
+        // my own height — the bridge I am standing on — out of the count.
+        const dk = g.deck?.[i] ?? -1;
+        if (dk >= 0 && dk > myLevel + 1.5) roofed++;
+        const t = g.type[i];
         if (!t) continue;
         if (
           t.includes("tree") || t.includes("forest") || t === "jungle" || t === "mushroom_grove"
@@ -2130,7 +4285,29 @@ export class WorldScene extends Phaser.Scene {
       const d = Math.hypot(me.fx / CELL_WU - this.campfire.col, me.fy / CELL_WU - this.campfire.row);
       fire = Math.max(0, 1 - d / 7);
     }
-    return { forest: frac(forest), water: frac(water), town: frac(town), fire };
+    // THREAT — am I in a FIGHT, for the battle bed. The monster brain's own
+    // `mstate` is the honest signal: a monster that is merely roaming past is
+    // scenery however close it gets, while one in `chase`/`combat` is hunting.
+    // Proximity then decides whether the fight is MINE (a monster chasing
+    // someone else across the valley must not score my music). Summed over
+    // attackers so a pack reads hotter than a single donkey, and a dying
+    // monster stops counting immediately so the music can let go.
+    let threat = 0;
+    if (this.monsters.size) {
+      const mx = me.fx;
+      const my = me.fy;
+      this.monsters.forEach((mv) => {
+        const w = mv.mstate === "combat" ? 1 : mv.mstate === "chase" ? 0.75 : 0;
+        if (!w) return;
+        const d = Math.hypot(mv.fx - mx, mv.fy - my);
+        threat += w * Math.max(0, 1 - d / THREAT_NEAR_WU);
+      });
+      threat = Math.min(1, threat);
+    }
+    return {
+      forest: frac(forest), water: frac(water), town: frac(town), fire,
+      cave: frac(roofed), threat,
+    };
   }
 
   /** The connection died: freeze input, rejoin in place (immediately when
@@ -2153,6 +4330,12 @@ export class WorldScene extends Phaser.Scene {
         // sessionIds), so drop all old sprites + prediction/input state.
         for (const id of [...this.avatars.keys()]) this.removeAvatar(id);
         for (const id of [...this.monsters.keys()]) this.removeMonster(id);
+        // Ground drops too: the fresh room re-sends its whole drops map via
+        // onAdd — stale sprites from the dead room would double every item.
+        for (const id of [...this.drops.keys()]) this.removeDrop(id);
+        this.engagedId = null;
+        this.pendingPickupId = null;
+        this.selfDead = false;
         this.pending = [];
         this.inputSeq = 0;
         this.sendAccum = 0;
@@ -2344,6 +4527,13 @@ export class WorldScene extends Phaser.Scene {
       swimT: 0,
       bobPhase: (uid.charCodeAt(0) + uid.length * 7) % 100, // deterministic per char
       baseTint,
+      // Seed the combat counters from the synced values (monsters do the
+      // same): a fighter's actionSeq/hitSeq are already >0 when a joiner
+      // first sees them, and an unseeded 0 would replay one stale
+      // kick/punch/pickup/flinch the moment the avatar appears.
+      lastActionSeq: player.actionSeq ?? 0,
+      lastHitSeq: player.hitSeq ?? 0,
+      lastHp: player.hp,
     });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
   }
@@ -2404,7 +4594,16 @@ export class WorldScene extends Phaser.Scene {
         // Each input replays with the jump state it was ORIGINALLY integrated
         // under (see the `pending` field note) — using "jumping right now" for
         // historical inputs rolled the anchor back below ledges after landing.
-        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean) => {
+        // The hit stagger mirrors the server through the SYNCED factor — both
+        // sides multiply the same stepMovement speedScale. Historical inputs
+        // must replay under the factor they were ORIGINALLY integrated with
+        // (like `jumping`): replaying an RTT-deep pending buffer with the
+        // CURRENT factor rewrote history at every slow onset/expiry — a
+        // rubber-band tug backward on the hit (fine, reads as hit-stop) and
+        // an uncommanded forward teleport when the slow expired (not fine,
+        // fired exactly as you broke free of a chase).
+        this.curSlowFactor = player.slow || 1;
+        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean, slowF: number) => {
           let blocked;
           let sideBlocked;
           let speed = 1;
@@ -2416,7 +4615,10 @@ export class WorldScene extends Phaser.Scene {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
-            speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
+            speed =
+              surfaceAtWorld(this.terrain, rx, ry).speed *
+              (jumping ? JUMP_SPEED_FACTOR : 1) *
+              slowF;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
@@ -2427,11 +4629,11 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
         if (this.sendAccum > 0)
-          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow);
+          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow, this.curSlowFactor);
         tx = rx;
         ty = ry;
         surfLevel = predElev;
@@ -2447,6 +4649,114 @@ export class WorldScene extends Phaser.Scene {
         moving = player.moving;
         running = player.running;
         dir = player.dir;
+      }
+
+      // --- COMBAT SIGNALS (both self and remote) -------------------------
+      // One-shot clips ride action/actionSeq; hits ride hitSeq; death rides
+      // dead. All server-owned — the client only ever mirrors.
+      const nowMs = this.time.now;
+      if ((player.actionSeq ?? 0) !== (av.lastActionSeq ?? 0)) {
+        av.lastActionSeq = player.actionSeq;
+        if (player.action === "attack") {
+          // Unarmed: pseudo-random kick/punch, deterministic from the synced
+          // swing counter so every client shows the same move (shared
+          // unarmedClip; no weapons yet — maintainer).
+          av.actionKey = unarmedClip(player.actionSeq, idSalt(id));
+          av.actionUntil = nowMs + 600;
+          // SILENT semantic events (composer plays nothing until the Game
+          // Master assigns a sound in the wiki — engine/api.ts). Two literal
+          // names, not a ternary: the wiki lists events by scanning literal
+          // gameAudio.event("...") call sites.
+          const spA = this.avatarSpatial(id);
+          if (av.actionKey === "kick") gameAudio.event("combat.kick", { pan: spA.pan, dist: spA.dist });
+          else gameAudio.event("combat.punch", { pan: spA.pan, dist: spA.dist });
+        } else if (player.action === "pickup") {
+          av.actionKey = "pickup";
+          av.actionUntil = nowMs + 850;
+          const spP = this.avatarSpatial(id);
+          gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
+        } else if (player.action === "die") {
+          av.actionKey = "die";
+          av.actionUntil = nowMs + 10_000; // held below while dead anyway
+          const spD = this.avatarSpatial(id);
+          // `voice` carries WHOSE death this is, exactly as the jump grunt
+          // does — the maintainer wants the die sound to be the character's
+          // own male/female voice, and an event that does not say which
+          // character died can never route to one. Silent either way: nothing
+          // is assigned to player.die yet.
+          gameAudio.event("player.die", { pan: spD.pan, dist: spD.dist, voice: av.character });
+        }
+      }
+      if ((player.hitSeq ?? 0) !== (av.lastHitSeq ?? 0)) {
+        const first = av.lastHitSeq === undefined;
+        av.lastHitSeq = player.hitSeq;
+        if (!first && !player.dead) {
+          // The flinch — unless a stronger clip (attack/die) is mid-play.
+          // FAST since round 7 (16fps clip, short overlay window)…
+          if (!av.actionUntil || nowMs >= av.actionUntil || av.actionKey === "hurt") {
+            av.actionKey = "hurt";
+            av.actionUntil = nowMs + 300;
+          }
+          // …with the blood ON the body (maintainer round 7).
+          this.spawnBloodFx(av.lx, av.sprite.y - av.sprite.displayHeight * 0.45);
+          const spH = this.avatarSpatial(id);
+          gameAudio.event("combat.hit_taken", { pan: spH.pan, dist: spH.dist });
+        }
+      }
+      if ((av.lastHp ?? player.hp) > player.hp)
+        this.spawnDamageFloat(av.lx, av.sprite.y - av.sprite.displayHeight * 0.8, `${Math.round((av.lastHp ?? player.hp) - player.hp)}`, 0xf25d5d);
+      av.lastHp = player.hp;
+      if (player.dead) {
+        // Death: the die clip HOLDS (no overlay expiry) until the server
+        // revives us; movement input is pointless meanwhile.
+        av.actionKey = "die";
+        av.actionUntil = nowMs + 1000;
+        moving = false;
+        running = false;
+        if (id === myId && !this.selfDead) {
+          this.selfDead = true;
+          this.clearMoveTarget();
+          this.dropHold();
+          this.engagedId = null;
+          this.pendingPickupId = null; // no surprise auto-grab after respawn
+        }
+      } else {
+        // Respawn: the hold-loop above kept re-arming the die overlay ~1s
+        // ahead, so without this clear the revived avatar walks around as a
+        // corpse until it expires — every client, not just our own.
+        if (av.actionKey === "die") {
+          av.actionKey = undefined;
+          av.actionUntil = 0;
+        }
+        if (id === myId && this.selfDead) {
+          this.selfDead = false; // respawned: the >2-cell snap does the rest
+        }
+      }
+
+      // Facing in a fight: a stationary engaged player LOOKS AT its target
+      // (the circling monster sweeps around, so this is what makes the
+      // kick/punch directions vary — the other half of the maintainer's
+      // circling idea).
+      if (id === myId && this.engagedId && !moving && !player.dead) {
+        const tgt = this.monsters.get(this.engagedId);
+        if (tgt) dir = faceDirWorld(av.fx, av.fy, tgt.fx, tgt.fy) ?? dir;
+      } else if (id === myId && this.pendingPickupId && !moving && !player.dead) {
+        // …and a player grabbing an item TURNS TO it (maintainer 2026-08-05:
+        // "always turn/face the item currently being picked up").
+        const d = this.drops.get(this.pendingPickupId);
+        if (d) dir = faceDirWorld(av.fx, av.fy, d.wx, d.wy) ?? dir;
+      }
+
+      // HUD: hp/ep/xp/level are server-owned; push only on change (DOM).
+      if (id === myId) {
+        const sig = `${player.hp}|${player.hpMax}|${player.ep}|${player.epMax}|${player.xp}|${player.level}`;
+        if (sig !== this.lastHudSig) {
+          this.lastHudSig = sig;
+          setBar("hp", Math.ceil(player.hp), player.hpMax);
+          setBar("ep", Math.floor(player.ep), player.epMax);
+          setBar("xp", Math.floor(player.xp), xpToNext(player.level));
+          setLevel(player.level);
+        }
       }
 
       // Project onto the iso ground with the FLAT (unlifted) point + cell level
@@ -2514,6 +4824,10 @@ export class WorldScene extends Phaser.Scene {
           this.clearMoveTarget();
           this.dropHold();
         }
+        // …and the indoor verdict: a snap across the map must not spend 250ms
+        // of dwell rendering the room you left, nor cross-fade the grade over
+        // what is really a cut.
+        if (id === myId) this.indoorSnap();
       } else {
         const px0 = av.lx;
         const py0 = av.lyFlat;
@@ -2623,6 +4937,14 @@ export class WorldScene extends Phaser.Scene {
       av.surfLevel = surfLevel; // for lighting: swimmers sample HERE, not the sunk elev
       this.resolveBodyDepth(av, surfLevel);
       this.placeBodyShadow(av, targetElev, hop, 34, 14, 9, 4);
+      // INDOORS a REMOTE player standing outside my room is DRAWN and goes
+      // black with the ground under them — but their NAME TAG is not, because
+      // it draws at depth 900_100, above the darkness overlay. A readable name
+      // floating in the black is the one thing that would give away a body you
+      // are meant to barely see, so the label and the chat bubble follow the
+      // room while the body follows the light. I am never outside my own room.
+      const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
+      av.label.setVisible(!away);
       av.shadow.setVisible(!av.swimming);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
@@ -2648,7 +4970,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18);
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -2693,6 +5015,15 @@ export class WorldScene extends Phaser.Scene {
       });
     });
 
+    // INDOORS — run it HERE, not at the top of update(): this is the earliest
+    // point at which the local player's fx/fy AND surfLevel are all fresh (the
+    // loop above writes surfLevel), and it is still upstream of the torch loop
+    // and the ambient blend, so the lighting reacts in the SAME frame. The
+    // ground RT + occluders ran at the top of the frame; on a transition
+    // commitIndoor re-runs them immediately rather than showing one frame of
+    // stale roof (both are self-gating no-ops the rest of the time).
+    this.updateIndoor();
+
     // Roaming monsters: authoritative server positions, eased exactly like a
     // remote player (rate 12, snap on a big jump). Server owns the movement —
     // the client only interpolates + renders the hop.
@@ -2725,6 +5056,9 @@ export class WorldScene extends Phaser.Scene {
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
           ay - sp.displayHeight <= vB;
+        // NB no indoor test: a monster outside my room is drawn and lit like
+        // the ground under it. Its ABOVE-OVERLAY chrome is another matter —
+        // see indoorOutside and updateMonsterHpBar.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -2739,11 +5073,18 @@ export class WorldScene extends Phaser.Scene {
           sp.x = mv.lx;
           sp.y = ay;
           mv.surfLevel = m.elev ?? g.lvl;
+          // Track hp while parked too, or damage dealt off-screen aggregates
+          // into one phantom float the frame the body scrolls back into view.
+          mv.lastHp = m.hp;
           if (!mv.culled) {
             mv.culled = true;
             sp.setVisible(false);
             mv.shadow.setVisible(false);
             mv.lit?.setVisible(false);
+            mv.hpBg?.setVisible(false);
+            mv.hpFill?.setVisible(false);
+            mv.lvText?.setVisible(false);
+            mv.hpText?.setVisible(false);
             // Phaser's UpdateList advances anims on invisible sprites too.
             sp.anims.pause();
           }
@@ -2765,8 +5106,36 @@ export class WorldScene extends Phaser.Scene {
           mv.falling = false;
         } else {
           const k = Math.min(1, dt * 12);
+          const px0 = mv.lx;
+          const py0 = mv.lyFlat;
           mv.lx += (g.x - mv.lx) * k;
           mv.lyFlat += (g.y - mv.lyFlat) * k;
+          // GAIT SYNC (round 13): measure this body's own DRAWN motion — the
+          // gait must match what the eye sees, not the 20Hz server steps.
+          // Screen delta back-projects to world units exactly like the
+          // player's spdWu (Δsx = Δ(x−y)·dx/CELL, Δsy = Δ(x+y)·dy/CELL), so a
+          // screen-north walk counts the ~2.13× more world ground it really
+          // covers. scrPerWu is the local iso scale along THIS heading, which
+          // converts the hop's world-unit surge back into screen px for free.
+          if (dt > 0.001) {
+            const dsx = mv.lx - px0;
+            const dsy = mv.lyFlat - py0;
+            const scr = Math.hypot(dsx, dsy);
+            const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy);
+            const v = this.world
+              ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
+              : scr / dt;
+            const ema = Math.min(1, dt * 8); // ~125ms — irons out the ease ripple
+            mv.spdWu = mv.spdWu === undefined ? v : mv.spdWu + (v - mv.spdWu) * ema;
+            if (scr > 0.01) {
+              const r = scr / dt / Math.max(1e-3, v);
+              mv.scrPerWu = mv.scrPerWu === undefined ? r : mv.scrPerWu + (r - mv.scrPerWu) * ema;
+              const ux = dsx / scr;
+              const uy = dsy / scr;
+              mv.hdx = mv.hdx === undefined ? ux : mv.hdx + (ux - mv.hdx) * ema;
+              mv.hdy = mv.hdy === undefined ? uy : mv.hdy + (uy - mv.hdy) * ema;
+            }
+          }
           // Elevation eases/falls via the shared integrator, like avatars.
           const s = integrateFall(
             { elev: mv.elev, fallV: mv.fallV, falling: mv.falling },
@@ -2779,28 +5148,53 @@ export class WorldScene extends Phaser.Scene {
           mv.falling = s.falling;
         }
         mv.ly = mv.lyFlat - mv.elev;
-        mv.sprite.x = mv.lx;
-        // Winged flyers levitate hoverPx above the ground anchor; the nadir
-        // shadow stays ON the ground (placeBodyShadow gets the hover as air
-        // height, so it shrinks/fades slightly — the bird pattern).
-        mv.sprite.y = mv.ly - mv.hoverPx;
         // SHARED body pipeline (same code as players — maintainer 2026-07-29:
         // the naive painter depth drew terrace tiles over monsters and their
         // shadows in front): occluder-aware depth + landing-ground shadow.
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
-        this.playMonsterAnim(mv, !!m.moving, m.dir);
+        this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // …and the per-state semantic events the wiki's sound card assigns to
+        // (silent until it does). AFTER playMonsterAnim, so the walk cadence
+        // reads the clip that is actually running this frame.
+        this.monsterSfx(mv, !!m.moving, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // HOP TRAVEL (round 13): a hopper covers its ground DURING the leap,
+        // so glide it along the heading by (travel-so-far − even progress) ×
+        // cycleWu. The curve returns to 0 at both ends of the cycle, so this
+        // is a pure mean-zero lead/lag — it never moves the body off the
+        // server position it is easing toward. Applied to the drawn anchor
+        // (never to mv.lx, which IS the ease state and would absorb it), so
+        // the shadow and the lit copy travel with the body as they must.
+        mv.hopOff = this.hopOffsetFor(mv, dt);
+        const hx = (mv.hopOff ?? 0) * (mv.hdx ?? 0);
+        const hy = (mv.hopOff ?? 0) * (mv.hdy ?? 0);
+        mv.sprite.x = mv.lx + hx;
+        // Winged flyers levitate hoverPx above the ground anchor; the nadir
+        // shadow stays ON the ground (placeBodyShadow gets the hover as air
+        // height, so it shrinks/fades slightly — the bird pattern).
+        mv.sprite.y = mv.ly - mv.hoverPx + hy;
         // PER-FRAME drift compensation (the safe equivalent of the player
         // art's nadir postprocess — measured in the manifest, art untouched):
         // pin THIS frame's own body-mass origin-x so baked horizontal
         // translation never slides the body off its shadow; per-frame `air`
         // (deepest point risen vs the planted frame) feeds the hop shrink so
         // real levitation (demon stone, hops) reads as airborne on purpose.
-        const gd = (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
+        // NEVER during a combat clip: shift[]/air[] are indexed by WALK/IDLE
+        // frame numbers and an attack strip has different counts.
+        const gd = mv.combatClip
+          ? undefined
+          : (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
         const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
         const ox = gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
         const airPx = gd?.air?.[fi] ?? 0;
+        // Damage float + blood + hp bar (RO: you SEE the number and the wound).
+        if (mv.lastHp !== undefined && m.hp < mv.lastHp) {
+          this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
+          this.spawnBloodFx(mv.lx, mv.sprite.y - mv.sprite.displayHeight * 0.45);
+        }
+        mv.lastHp = m.hp;
+        this.updateMonsterHpBar(mv, m, id);
         this.resolveBodyDepth(mv, sLvl);
         // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
         // ~140px, its south one ~90 — one size can't fit both facings).
@@ -2819,14 +5213,43 @@ export class WorldScene extends Phaser.Scene {
           0,
           Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
         );
+        // A hopping body's shadow travels WITH it — placeBodyShadow anchors on
+        // the ease state (mv.lx), which is deliberately free of the surge.
+        if (hx || hy) mv.shadow.setPosition(mv.shadow.x + hx, mv.shadow.y + hy);
       });
       this.monstersActive = active;
     }
 
+    // The world's people: placed by maps2, drawn through the shared body
+    // pipeline, breathing on their own calm clocks.
+    this.stepNpcs();
+    // Sword marker + target frame + aggro-radius debug rings (all read the
+    // freshly-updated monster sprites above).
+    this.updateTargetOverlays();
+    // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
+    this.stepGroundDecor();
+
     this.updateChaseCam(delta);
 
-    // See-through tall geometry above the player's level (occlusion fade).
-    this.updateOcclusionFade();
+    // The bonfire is world ART and is DRAWN wherever it stands — indoors the
+    // outside is no longer a void, so nothing about the room hides it. Its
+    // LIGHT is a different question, answered below with every other light
+    // source: while indoors, only lights inside my room count (the maintainer
+    // 2026-08-07, "point light from outside has to be turned off" —
+    // the_island2 puts this fire ~5 cells from the house door, well inside its
+    // radius-7 pool, so leaving it alone pours firelight through the wall onto
+    // the floor). Its lit copy is gated to match, in syncLitCopies.
+    this.campfireSprite?.setVisible(this.fireOn);
+    const fireLit = !!this.campfire && this.fireOn;
+    // How much of the fire's LIGHT survives — 1 outdoors or when it shares my
+    // room, easing to 0 as I shut the door on it. The shader light is faded by
+    // the room filter below; this is the same factor for everything the shader
+    // cannot reach: the two additive blooms and the flame's full-bright lit
+    // copy, all of which draw ABOVE the darkness overlay.
+    this.fireRoomK =
+      fireLit && this.campfire && !this.inMyRoom(this.campfire.col, this.campfire.row)
+        ? 1 - this.indoorMix
+        : 1;
 
     // Night lighting (always on): per-pixel point lights with heightmap
     // line-of-sight when WebGL is available; the multiply grade otherwise.
@@ -2839,7 +5262,7 @@ export class WorldScene extends Phaser.Scene {
       // verification place a light at an exact grid position, since walking
       // there is dt-clamped to a crawl on slow headless clients.
       if (this.probeLight) sl.push(this.probeLight);
-      if (this.campfire && this.fireOn) {
+      if (fireLit && this.campfire) {
         const c = this.campfire;
         // Overbright core: the shader clamps the multiplier at 1.25, so values
         // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
@@ -2848,9 +5271,20 @@ export class WorldScene extends Phaser.Scene {
       }
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
-      const tf = this.curTorchF;
+      // (Filtered to my own room at the end of this block while indoors.)
       for (const [id, a] of this.avatars.entries()) {
-        if (tf <= 0.01) break; // full Day: torches have no impact
+        // The day gate is now PER BODY: "re-enable the player's torch even if
+        // it's day outside" (maintainer) — but only for bodies sharing MY room,
+        // which is an O(1) Set lookup into the space I already have, not a
+        // second flood fill. Everyone else keeps the global fade.
+        // `continue`, NOT `break`: the old gate broke the whole loop because
+        // curTorchF was loop-INVARIANT. Per-body, one daylit outdoor avatar
+        // early in the Map's join order would silently cancel every indoor
+        // torch behind it. max() is the right combiner — it never dims a torch
+        // daylight already allows, and it is continuous in both arguments, so
+        // the day fade and the doorway fade compose without a step.
+        const tf = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
+        if (tf <= 0.01) continue; // full Day, outdoors: torches have no impact
         if (!this.torchLit(id, myId, state)) continue;
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
@@ -2874,6 +5308,34 @@ export class WorldScene extends Phaser.Scene {
           flicker: 0.35, // hand torch: gentle fire flicker
         });
       }
+      // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
+      // "point light from outside has to be turned off"). This became load
+      // bearing the moment the outside stopped being a void: it is drawn now
+      // and lit only by point lights, so an un-filtered bonfire in the street
+      // would be the ONE thing illuminating everything you are supposed to
+      // have shut the door on — and it would pour back through the doorway.
+      //
+      // The gate is the light's own CELL against the room mask, which is the
+      // same set the shader gives ambient to, so "what is lit" and "what lights
+      // it" can never disagree. My torch is inside by construction, so its
+      // spill through the doorway — the reveal he asked for — survives.
+      //
+      // FADED on indoorMix, not switched: an outside light dies over the same
+      // 0.35s roll the outside ambient does, so nothing on screen steps.
+      // The debug PROBE is exempt. It is the only instrument a headless gate
+      // has for "the outside tiles really are drawn" — with ambient at zero a
+      // drawn tile and a missing one are pixel-identical, and a light is the
+      // only thing that tells them apart. Filtering it would make the gate
+      // unable to see the very property this change exists to create.
+      if (this.indoorInside && this.indoorMask)
+        for (let i = sl.length - 1; i >= 0; i--) {
+          const L = sl[i];
+          if (L === this.probeLight) continue;
+          if (this.inMyRoom(L.col, L.row)) continue;
+          const k = 1 - this.indoorMix;
+          if (k <= 0.01) sl.splice(i, 1);
+          else L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
+        }
       // Time-of-day: ease the on-screen grade toward the target phase.
       // Wall-clock driven — the physics dt is clamped per frame and would
       // crawl on slow clients. Night's values are the calibrated reference.
@@ -2917,11 +5379,67 @@ export class WorldScene extends Phaser.Scene {
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
       if (Math.abs(this.curAurora - auroraTo) < 0.005) this.curAurora = auroraTo;
+      // INDOOR GRADE. Blend the FINISHED outdoor ambient (cloud grey + rain
+      // gloom already applied) toward INDOOR_AMBIENT, rather than mutating
+      // `curAmbient`: a storm outside has no bearing on a sealed room, mix=1
+      // lands exactly on INDOOR_AMBIENT whatever the weather is doing, and
+      // `curAmbient` stays the OUTDOOR world clock — which matters because
+      // setTimeOfDay snapshots it as `timeFromAmbient` (writing the interior
+      // grade there would ease FROM it toward the next phase and pop bright)
+      // and `__ml.timeOfDay()` / verify-timecycle read it.
+      const iF = this.indoorMix;
+      // The interior target is READ PER FRAME from the Settings slider — it is
+      // a live tuning dial, so a drag has to show while you stand in the room.
+      // Cheap: three multiplies, no allocation beyond the triple itself.
+      const indoorTarget = indoorAmbient();
       const ambEff = this.curAmbient.map((v, i) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
-        return clouded * (1 - this.curPrecipDim);
+        const outdoor = clouded * (1 - this.curPrecipDim);
+        return outdoor + (indoorTarget[i] - outdoor) * iF;
       }) as [number, number, number];
+      // …and the SKY terms have to go with it, or the roof we just deleted
+      // stops being the only thing keeping the room dark:
+      //   uSun.w is `sunShare` — `sunF = (1-sunShare) + sunShare*sunVis` — so
+      //     zeroing it gives sunF = 1.0 exactly: no directional term, no cast
+      //     shadows, and the interior sits on INDOOR_AMBIENT at EVERY hour.
+      //     Left alone, a day interior would be 0.55x a night one, and the
+      //     maintainer's rule is "always dark as during the night". This is
+      //     also precisely the knob the future doorway daylight turns back up
+      //     (per cell, for cells with line of sight to an `entrances` cell).
+      //   cloud/aurora/mist: you cannot see the sky from inside.
+      // this.curSun itself is untouched — __ml.sunAt/sunInfo keep reporting the
+      // WORLD clock, which is what they are for.
+      const sunIn: [number, number, number, number] = [
+        this.curSun[0],
+        this.curSun[1],
+        this.curSun[2],
+        this.curSun[3] * (1 - iF),
+      ];
+      // The cel-shaded DISTANCE fog is a distance cue for open country; indoors
+      // it paints its teal/pale bands over the black void that is supposed to
+      // BE the outside. `fogScale` is a separate multiplier from `fogStrength`
+      // so the __ml.depthFog debug knob keeps owning the master value.
+      if (this.night) this.night.fogScale = 1 - iF;
+      // THE SURFACE RESOLVE MUST FORGET THE ROOF TOO. uHeight reports
+      // max(terrain, deck), so with the roof culled every floor pixel still
+      // resolves to the CEILING's level and the torch — held at z 0.55 — is
+      // attenuated as if it were ~3.3 cells above the ground it stands on
+      // (measured: 0.631 -> 0.211 at the player's own cell). Flip it on the
+      // GEOMETRY, not the light blend: the roof is drawn or it is not, and
+      // indoorInside is what the ground RT and the occluders already switch on,
+      // so the height map can never disagree with the art on screen.
+      if (this.night) {
+        // The BOOLEAN geometry state, never indoorMix — the mask flips with the
+        // verdict and the light eases behind it, so a resolve driven by the ease
+        // would read half-cut geometry for a quarter-second on every doorway.
+        this.night.indoor = this.indoorInside;
+        this.night.indoorTop = this.indoorTop;
+        // The LIGHT half of the same state does ride the ease: the outside
+        // fades to black on indoorMix while the interior's own ambient rolls
+        // down on it, so the two halves of a doorway crossing move together.
+        this.night.indoorMix = this.indoorMix;
+      }
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
@@ -2934,10 +5452,10 @@ export class WorldScene extends Phaser.Scene {
         sl,
         ambEff,
         this.glowStamps,
-        this.curSun,
-        this.curCloud,
-        this.curAurora,
-        this.curMist,
+        sunIn,
+        this.curCloud * (1 - iF),
+        this.curAurora * (1 - iF),
+        this.curMist * (1 - iF),
         playerZ,
         playerCol,
         playerRow,
@@ -2945,13 +5463,17 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const lights: LightSource[] = [];
-    if (this.campfire && this.fireOn) {
+    if (fireLit && this.campfire && this.fireRoomK > 0.01) {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
       // Slow breathing, not a strobe: ~4s and ~1.4s periods, small swing.
+      // Both alphas are scaled by fireRoomK: they are ADDITIVE, so nothing
+      // else can take them away when the fire is out on the grass and I have
+      // closed the door on it.
       const flick = 0.52 + Math.sin(this.time.now / 640) * 0.05 + Math.sin(this.time.now / 225) * 0.03;
-      lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick, depth: c.depth + 0.2 });
+      const k = this.fireRoomK;
+      lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick * k, depth: c.depth + 0.2 });
       // Flame-core bloom ABOVE the night grade + vignette so the flame never
       // goes dull at screen edges — but sized to HUG the flame (a big fixed
       // disc read as a floating ball from afar) and scaled by proximity, so
@@ -2959,13 +5481,15 @@ export class WorldScene extends Phaser.Scene {
       const camMid = this.cameras.main.midPoint;
       const camDist = Math.hypot(c.x - camMid.x, c.y - camMid.y);
       const near = Math.max(0.45, Math.min(1, 1.15 - camDist / 1400));
-      lights.push({ x: c.x, y: c.y - 12, color: 0xffb75a, radius: 12, alpha: (flick + 0.2) * near, depth: 900_005 });
+      lights.push({ x: c.x, y: c.y - 12, color: 0xffb75a, radius: 12, alpha: (flick + 0.2) * near * k, depth: 900_005 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
     if (!shaderNight) {
       for (const [id, a] of this.avatars.entries()) {
-        if (this.curTorchF <= 0.5) break; // canvas fallback: no per-light tint
+        // Same per-body gate as the shader path, same `continue`-not-`break`
+        // reason (the scalar is no longer loop-invariant).
+        if (Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0) <= 0.5) continue;
         if (!this.torchLit(id, myId, this.room?.state as any)) continue;
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
@@ -3008,10 +5532,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Is a player's torch lit? Mine reads the instant local mirror; everyone
-   * else reads their synced player state (default lit). NOBODY'S torch burns
-   * during Day (maintainer: torches are an evening/night/morning feature) —
-   * the switch keeps the preference, the flame just waits for the light to
-   * fade. */
+   * else reads their synced player state (default lit). This is the PREFERENCE
+   * only and has never held a day gate — that lives at the two consumption
+   * sites, which scale by `curTorchF` (0 at full Day: torches are an
+   * evening/night/morning feature, the switch keeps the preference and the
+   * flame waits for the light to fade). Since 2026-08-06 that gate is per body
+   * and INDOORS overrides it: "it's important to re-enable the players torch
+   * even if it's day outside" (maintainer). */
   private torchLit(id: string, myId: string, state: any): boolean {
     if (id === myId) return this.torchOn;
     return state?.players?.get?.(id)?.torch ?? true;
@@ -3041,11 +5568,6 @@ export class WorldScene extends Phaser.Scene {
       .forEach((e) => (e.style.display = color ? "none" : ""));
     this.hud?.refreshSettings();
     return this.overlayIdx;
-  }
-
-  private toggleWalls() {
-    this.occFadeOn = !this.occFadeOn;
-    this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
   }
 
   /** Show/hide the maps2 monster spawn-zone outlines (debug). Persisted so a
@@ -3174,6 +5696,17 @@ export class WorldScene extends Phaser.Scene {
     // and syncLitCopy samples the CPU light AND the depth fog per call.
     for (const mv of this.monsters.values())
       if (!mv.culled) this.syncLitCopy(mv, on, 0xffffff);
+    // NPCs ride it too. They were the ONE body type without a lit copy, which
+    // meant their light came entirely from the multiply overlay — and the
+    // overlay is per SCREEN PIXEL, lighting each pixel by the terrain cell the
+    // ray resolves BEHIND it. For a 64px-tall sprite that is the cell several
+    // steps UP-SCREEN of its feet, which outdoors is close enough to pass and
+    // indoors is plainly wrong: a villager standing one step outside my door
+    // had black legs and a fully lit head and shoulders, because her head
+    // pixels resolved to my floor. The lit copy samples the light at the
+    // BODY's own cell, once, like players and monsters already do.
+    for (const nv of this.npcs.values())
+      if (!nv.culled) this.syncLitCopy(nv, on, 0xffffff);
     if (this.campfireSprite) {
       if (!this.campfireLit) {
         this.campfireLit = this.add
@@ -3181,8 +5714,18 @@ export class WorldScene extends Phaser.Scene {
           .setOrigin(0.5, CAMPFIRE_BASE)
           .setScale(CAMPFIRE_SCALE);
       }
+      // INDOORS the flame's lit copy follows fireRoomK. Everything else on this
+      // pass is tinted by the CPU light field, which already zeroes the ambient
+      // outside the room — but this copy carries no tint at all (the fire is
+      // its own light, at full brightness by definition), so without the gate a
+      // bonfire out on the grass keeps burning bright above the darkness
+      // overlay while its LIGHT has been filtered out of the shader. Art and
+      // light have to agree: hide the copy and the base sprite is left to the
+      // shader, which paints it black out there and lets a torch reveal it like
+      // any other outside pixel.
       this.campfireLit
-        .setVisible(on && this.fireOn)
+        .setVisible(on && this.fireOn && this.campfireSprite.visible && this.fireRoomK > 0.01)
+        .setAlpha(this.fireRoomK)
         .setFrame(this.campfireSprite.frame.name)
         .setPosition(this.campfireSprite.x, this.campfireSprite.y)
         .setDepth(litDepth(this.campfireSprite.depth));
@@ -3214,6 +5757,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private predictAndSend(dt: number) {
+    if (this.selfDead) {
+      this.sendAccum = 0;
+      this.jumpQueued = false;
+      return;
+    }
     // Self-heal a wedged hold gesture: if Phaser's own pointer slot says the
     // finger is no longer down but the scene never got its pointerup (overlay
     // races, touchcancel), the hold would otherwise persist forever — every
@@ -3234,6 +5782,8 @@ export class WorldScene extends Phaser.Scene {
     this.keysActive = ax !== 0 || ay !== 0;
     if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
+      this.engagedId = null; // RO: moving breaks the attack / the fetch
+      this.pendingPickupId = null;
       // STEER ASSIST: an accidental run into a solid prop's corner slips
       // around it when the tiles right beside the blocked cell allow it —
       // strictly local, no pathfinding (shared steerAssist). Applies to
@@ -3254,6 +5804,9 @@ export class WorldScene extends Phaser.Scene {
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.
       this.holdRepath(performance.now());
+      // Fight/fetch intent runs with OR without a trip: standing in reach it
+      // re-asserts the engagement; walking it retargets the moving monster.
+      this.driveCombatIntent();
       if (this.trip) {
         const drive = this.driveAutopilot();
         ax = drive.ax;
@@ -3267,7 +5820,7 @@ export class WorldScene extends Phaser.Scene {
     // slips around a prop corner. Applies to keys AND the autopilot; the
     // deflected vector is what gets predicted AND sent, so the server
     // integrates the same move and nothing rubber-bands.
-    if ((ax !== 0 || ay !== 0) && this.monsters.size) {
+    if ((ax !== 0 || ay !== 0) && (this.monsters.size || this.npcs.size)) {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
       if (me) {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
@@ -3277,6 +5830,15 @@ export class WorldScene extends Phaser.Scene {
         this.monsters.forEach((mv, id) => {
           if (Math.abs(mv.fx - me.fx) < 140 && Math.abs(mv.fy - me.fy) < 140)
             near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
+        });
+        // NPCs get the SAME faked collision (maintainer 2026-08-06). They are
+        // client-side decor with no server body, so — exactly like monsters —
+        // the INPUT slips around them rather than the grid blocking: you walk
+        // around the shopkeeper instead of through her, and the server
+        // integrates the identical deflected vector, so nothing rubber-bands.
+        this.npcs.forEach((npc, id) => {
+          if (Math.abs(npc.fx - me.fx) < 140 && Math.abs(npc.fy - me.fy) < 140)
+            near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
         });
         const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
         if (dodge) {
@@ -3405,6 +5967,31 @@ export class WorldScene extends Phaser.Scene {
       if (cell && cell.l >= l) { col = c; row = r; L = l; cellL = cell.l; break; } // L = DRAWN level (ramps up a face); cellL = the column's TOP (cell.l) — lifts a flyer's shadow off the face onto the flat top
     }
     const z = L + altPx / lh;
+    // INDOORS a flyer outside my room needs NO special case any more. lightAt
+    // now returns ~zero there by itself (the ambient is gated on the room mask,
+    // and `l` is a MULTIPLY tint in critters.ts), so a bird over the grass goes
+    // black on its own — and correctly lights up again when it crosses my
+    // torch's spill through the doorway, which a hard [0,0,0] could never do.
+    // The shadow follows the same reasoning: there IS drawn ground under it
+    // now, so suppressing the shadow would be the artefact.
+    //
+    // The one case still worth stating is a flyer AT OR ABOVE MY CEILING. Its
+    // ground point is honestly inside the room — a bird cruising 70-120px up
+    // over the house has its cell on the interior floor — but it is outside the
+    // room and above the cut, so it must not take the room's ambient. Blacking
+    // it here is exactly the `z < indoorCut` half of indoorOutside.
+    if (
+      this.indoorInside &&
+      this.indoorMask &&
+      z >= this.indoorCut &&
+      (this.indoorMask.get(Math.floor(row) * this.world.width + Math.floor(col)) ?? 0) !== 0
+    )
+      return {
+        l: [0, 0, 0], fog: 0, fogCol: [0, 0, 0],
+        // `lift` > alt is applyShadow's own "draw no shadow" case, and it is
+        // right here: the ceiling this thing is flying above is not drawn.
+        col, row, L, cellL, lift: altPx + 1, shadowDepth: gy + 3, z,
+      };
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
     // Depth to sort a critter's ground SHADOW at. The naive `gy + L*lh + 3` uses
@@ -3450,7 +6037,17 @@ export class WorldScene extends Phaser.Scene {
     if (!this.world) return clampW(wx, wy, 0); // plain-ground fallback: screen == flat world
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (wx - this.iso.ox - tile / 2) / dx;
-    for (let l = this.maxLevel; l >= 0; l--) {
+    // A TAP MUST RESOLVE AGAINST WHAT IS ON SCREEN, and indoors that is the
+    // CUT-AWAY: nothing above `indoorTop` is drawn and the roof slab is not
+    // drawn at all. Resolving against the untruncated data instead put EVERY
+    // indoor tap on the roof deck — the scan runs top-down and the house's
+    // slab matched at level 6 before the floor could match at 0, so the walk
+    // target landed 6 levels' worth of screen y down-screen of the finger
+    // (maintainer 2026-08-07: "the player walks to a spot about a full
+    // character in length under the spot I actually clicked on. This makes it
+    // really hard to point and click navigate indoors").
+    const cut = this.indoorInside && this.indoorMask ? this.indoorTop : -1;
+    for (let l = cut >= 0 ? cut : this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
@@ -3459,9 +6056,24 @@ export class WorldScene extends Phaser.Scene {
       const cell = this.world.rows[ri]?.[ci];
       if (!cell) continue;
       // world@2: a deck slab drawn at level l here is the TOP surface — tapping
-      // it targets the deck (bridge/roof), not the base underneath.
-      const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
-      if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+      // it targets the deck (bridge/roof), not the base underneath. Skipped
+      // indoors, where the slab over your head is exactly what is NOT drawn.
+      if (cut < 0) {
+        const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
+        if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+      }
+      // THE CUT TRUNCATES THE DRAWING, NOT THE WORLD. A parapet you can see
+      // over is still a full-height wall you cannot stand on, so a tap that
+      // lands on its drawn top means the FLOOR BEYOND it — keep scanning down.
+      // Resolving to the parapet instead put the target 2 levels (2.13 cells)
+      // past the finger for every tap near a wall, which is the same bug as
+      // the roof deck one level down and just as invisible from the code.
+      // A wall SHORTER than the cut is not truncated and stays tappable: its
+      // top is a real sill, and it is drawn exactly where it is.
+      // Every column in the world is truncated indoors, not just my building's
+      // (see redrawGround), so this asks about the CUT alone — a hillside stump
+      // out on the grass is exactly as unstandable as a parapet.
+      if (cut >= 0 && cell.l > cut) continue;
       if (cell.l !== l) continue;
       const s = surfaceFor(cell.t);
       if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
@@ -3523,7 +6135,7 @@ export class WorldScene extends Phaser.Scene {
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
-  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number) {
+  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number, showMarker = true) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
@@ -3542,6 +6154,14 @@ export class WorldScene extends Phaser.Scene {
     // every retarget and oscillate run/walk forever.
     if (hold && this.trip) trip.slow = this.trip.slow;
     this.trip = trip;
+    // Engaging a MONSTER shows the sword mark instead of a destination — the
+    // beacon would double-flag the same intent (maintainer 2026-08-05); a
+    // plain ground tap keeps the beacon and never the sword.
+    if (!showMarker) {
+      this.tapMarker?.destroy();
+      this.tapMarker = undefined;
+      return;
+    }
     const end = trip.target;
     this.ensureTapAssets();
     const p = this.projectFlat(end.x, end.y);
@@ -3695,10 +6315,11 @@ export class WorldScene extends Phaser.Scene {
       ay: li.ay,
       running: li.running,
       dt: this.sendAccum,
-      // The jump state this window was integrated under — replays must match
-      // (jump flushes immediately in predictAndSend, so windows never straddle
-      // a jump onset).
+      // The jump/slow state this window was integrated under — replays must
+      // match (jump flushes immediately in predictAndSend, so windows never
+      // straddle a jump onset).
       jumping: this.time.now < this.jumpUntil,
+      slow: this.curSlowFactor,
     });
     const msg: InputMessage = { ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum };
     if (this.jumpQueued) {
@@ -3713,13 +6334,17 @@ export class WorldScene extends Phaser.Scene {
     // Airborne overrides ground gait. ONE jump clip (art overhaul 2026-07-29):
     // the standing high-jump was retired on PixelLab and the steeplechase leap
     // now covers standing and running hops alike, timed to the hop arc.
-    const state = jumping
+    let state = jumping
       ? "jump"
       : moving
         ? running
           ? "run"
           : "walk"
         : "idle";
+    // One-shot combat/pickup overlays (kick/punch/hurt/pickup/die) outrank
+    // the movement state while their window runs; die holds via the update
+    // loop refreshing actionUntil for as long as the player is dead.
+    if (av.actionUntil && this.time.now < av.actionUntil && av.actionKey) state = av.actionKey;
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const d = this.stableDir(av, want);
     const key = this.resolveAnim(av.character, state, d);
@@ -4291,7 +6916,11 @@ export class WorldScene extends Phaser.Scene {
             ? ["run", "walk", "idle"]
             : state === "walk"
               ? ["walk", "idle"]
-              : ["idle"];
+              : state === "kick" || state === "punch"
+                ? [state, state === "kick" ? "punch" : "kick", "idle"] // deferred art mid-load: try the twin strike
+                : state === "hurt" || state === "pickup" || state === "die"
+                  ? [state, "idle"]
+                  : ["idle"];
     for (const s of order) {
       for (const d of [dir, DEFAULT_DIRECTION]) {
         const key = animKey(uid, s, d);
@@ -4310,6 +6939,18 @@ export class WorldScene extends Phaser.Scene {
     if (this.deferredAnimsKicked) return;
     this.deferredAnimsKicked = true;
     let queued = 0;
+    // NPC IDLE FRAMES GO FIRST. They ride the deferred batch (never boot — a
+    // second loader run mid-create restarted the loading bar), but queued
+    // LAST they landed 18s in, behind ~800 action-state frames and every
+    // monster combat strip, so a town stood frozen the whole time. They are
+    // ~95 tiny images: first in the queue they arrive in a second or two, and
+    // the calm idle's frame-0 hold covers even that.
+    for (const f of this.npcIdleQueue) {
+      if (this.textures.exists(f.key)) continue;
+      this.load.image(f.key, withV(f.url));
+      queued++;
+    }
+    this.npcIdleQueue = [];
     for (const def of this.manifest.characters) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         if (BOOT_ANIM_STATES.includes(state)) continue;
@@ -4323,8 +6964,61 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    // MONSTER combat strips (attack/angry/die — 525 strips, ~3.1 MB) join the
+    // SAME background batch: boot stays walk+idle only (the loading-time work
+    // must not regress), and the fight art streams in behind the live world.
+    // Sliced with each strip's OWN measured frame size (stripDims) — the
+    // monster-level size goes stale on in-place art repairs and frames bleed.
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      for (const state of ["attack", "angry", "die"]) {
+        const anim = resolveMonsterAnim(def, state);
+        if (!anim) continue;
+        const dirStrips = def.strips?.[anim] ?? {};
+        for (const [dir, url] of Object.entries(dirStrips)) {
+          if (!url) continue;
+          const sk = monsterSheetKey(def.id, anim, dir);
+          if (this.textures.exists(sk)) continue;
+          const dims = def.stripDims?.[anim]?.[dir];
+          this.load.spritesheet(sk, withV(url), {
+            frameWidth: dims?.w ?? def.frameW,
+            frameHeight: dims?.h ?? def.frameH,
+          });
+          queued++;
+        }
+      }
+    }
+    // The BLOOD SPATTER variants (objects/blood_spatter, trimmed) ride the
+    // same batch — tiny (8 strips, 34px frames), ready before the first hit.
+    for (const dir of BLOOD_DIRS) {
+      const bk = `blood:${dir}`;
+      if (this.textures.exists(bk)) continue;
+      this.load.spritesheet(bk, withV(`/assets/objects/blood_spatter/animations/spatter__${dir}.webp`), {
+        frameWidth: 34,
+        frameHeight: 34,
+      });
+      queued++;
+    }
+    // (Neither target marker needs an asset since rounds 9-11 — both borders
+    // are drawn from the marked body's own silhouette.)
     if (!queued) return;
-    this.load.once(Phaser.Loader.Events.COMPLETE, () => this.buildAnimations());
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.buildAnimations();
+      // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
+      // true does NOT register anims — without this re-run every late-loaded
+      // combat strip would stay a texture no clip ever plays.
+      this.buildMonsterAnimations();
+      for (const dir of BLOOD_DIRS) {
+        const bk = `blood:${dir}`;
+        if (this.textures.exists(bk) && !this.anims.exists(bk)) {
+          this.anims.create({
+            key: bk,
+            frames: this.anims.generateFrameNumbers(bk, {}),
+            frameRate: 14,
+            repeat: 0,
+          });
+        }
+      }
+    });
     this.load.start();
   }
 
@@ -4350,7 +7044,13 @@ export class WorldScene extends Phaser.Scene {
           // from its own frame count so the once-through clip spans the whole
           // ~JUMP_MS hop and lands on its feet regardless of how many frames
           // the art ships (currently 4; was 9).
-          const once = state === "jump" || state === "kick";
+          const once =
+            state === "jump" ||
+            state === "kick" ||
+            state === "punch" ||
+            state === "hurt" ||
+            state === "pickup" ||
+            state === "die";
           const rate =
             state === "jump"
               ? frames.length / (JUMP_MS / 1000)
@@ -4373,21 +7073,50 @@ export class WorldScene extends Phaser.Scene {
   private buildMonsterAnimations() {
     for (const def of this.monsterManifest?.monsters ?? []) {
       const walk = monsterWalkKey(def);
-      const states: Array<[string, boolean]> = [[walk, false]];
-      if (def.idleAnim && def.idleAnim !== walk) states.push([def.idleAnim, true]);
-      for (const [anim, isIdle] of states) {
+      // kind: loop (walk/idle/angry) vs once (attack spans ~0.7s, die spans
+      // the server's MONSTER_DIE_MS corpse window so the clip and the sweep
+      // agree). Combat strips background-load AFTER join — this builder is
+      // idempotent and re-runs on that loader's COMPLETE, registering whatever
+      // arrived (the single-call-site trap, documented in CLAUDE.md).
+      const states: Array<[string, "loop" | "idle" | "attack" | "die"]> = [[walk, "loop"]];
+      if (def.idleAnim && def.idleAnim !== walk) states.push([def.idleAnim, "idle"]);
+      const angry = resolveMonsterAnim(def, "angry");
+      const attack = resolveMonsterAnim(def, "attack");
+      const die = resolveMonsterAnim(def, "die");
+      if (angry && angry !== walk) states.push([angry, "idle"]);
+      if (attack) states.push([attack, "attack"]);
+      if (die) states.push([die, "die"]);
+      for (const [anim, kind] of states) {
+        const isIdle = kind === "idle";
         const dirCounts = def.animations?.[anim] ?? {};
         for (const [dir, frames] of Object.entries(dirCounts)) {
           const sk = monsterSheetKey(def.id, anim, dir);
           if (!this.textures.exists(sk) || frames <= 0) continue; // strip missing
           const key = monsterAnimKey(def.id, anim, dir);
           if (this.anims.exists(key)) continue;
+          const rate =
+            kind === "attack"
+              ? Math.max(5, frames / 0.7) // one swing ≈ 700ms whatever the art ships
+              : kind === "die"
+                ? Math.max(3, frames / 1.05) // ≈ MONSTER_DIE_MS before the corpse sweeps
+                : isIdle
+                  ? frames <= 6
+                    ? 4
+                    : 7 // idle/angry breathe slower than a gait reads
+                  : // WALK: the base rate is the art-measured gait at ROAM speed
+                    // (one cycle per gait.cycleWu), and playMonsterAnim scales
+                    // it by the body's live speed every frame. The old rate was
+                    // a flat 6/10 from the frame count — unrelated to how far
+                    // the art strides or how fast the monster is going.
+                    Math.max(
+                      GAIT_FPS_MIN,
+                      Math.min(GAIT_FPS_MAX, (frames * GAIT_REF_WU) / (def.gait?.cycleWu || 36)),
+                    );
           this.anims.create({
             key,
             frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
-            // Idle breathes slower than a gait reads.
-            frameRate: isIdle ? (frames <= 6 ? 4 : 7) : frames <= 6 ? 6 : 10,
-            repeat: -1,
+            frameRate: rate,
+            repeat: kind === "attack" || kind === "die" ? 0 : -1,
           });
         }
       }
@@ -4498,6 +7227,324 @@ export class WorldScene extends Phaser.Scene {
     return fp && this.textures.exists(pathTileKey(fp)) ? pathTileKey(fp) : topKey;
   }
 
+  // =========================================================================
+  // INDOOR STATE MACHINE
+  // =========================================================================
+
+  /**
+   * Re-derive the module's own room rule at an arbitrary DEPTH bar.
+   *
+   * Identical to `space.indoor` when `bar === INDOOR_DEPTH` (indoor.ts) — that
+   * equality is the whole point: ENTER uses the shipped rule untouched, and
+   * only LEAVE relaxes. `IndoorOptions` has no depth knob, so the re-derivation
+   * has to live here.
+   *
+   * HYSTERESIS LAYER 1. The module's own note says `depth` is a property of the
+   * QUERIED CELL, not of the space, so `indoor` can flip while you walk INSIDE
+   * one cave and a player straddling the boundary flips it every step. Enter at
+   * INDOOR_DEPTH (4), leave at 3. The relaxed bar is safe against bridges
+   * because ENTERING still needs 4, which no shipped bridge cell reaches (the
+   * measured maxima are 2 / 2 / 3) — so a bridge can never be entered, and the
+   * relaxed bar can only ever apply inside a space you are already in. Only the
+   * DEPTH branch needs it: `wallRatio` is a property of the whole space and
+   * cannot flicker per step, which is why the house's doorway cell (depth 1,
+   * ratio 0.9286) never dithers.
+   */
+  private indoorVerdict(space: IndoorSpace, bar: number): boolean {
+    return (
+      !space.capped &&
+      space.roof.size >= MIN_ROOM_CELLS &&
+      (space.wallRatio > INDOOR_WALL_RATIO || space.depth >= bar)
+    );
+  }
+
+  /**
+   * THE INDOOR STATE MACHINE — called ONCE per frame from update(), right after
+   * the avatar loop writes `av.surfLevel` and BEFORE the torch loop and the
+   * `ambEff` blend consume the result, so the lighting reacts in the SAME
+   * frame. Costs one Math.floor and three comparisons while nothing changes.
+   *
+   * THE ELEVATION IS `av.surfLevel`, NOT `av.elev / lh`. findIndoorSpace
+   * ENFORCES that `elev` is a RESOLVED SURFACE LEVEL (|grid.level[i] − elev| <=
+   * 1e-6) and returns null otherwise, and `av.elev` is PIXELS eased by
+   * integrateFall. Two cases where the rendered basis is not merely imprecise
+   * but wrong: while SWIMMING the drawn body is deliberately sunk `swimDrop` px
+   * below the pool surface, so elev/lh is a fraction strictly under
+   * grid.level[i] and the precondition rejects it — the maintainer's
+   * swim-into-a-water-cave case could never fire; and mid-FALL it is a
+   * non-surface float, so the verdict would blink outdoors for the whole drop.
+   * `surfLevel` is exactly what `resolveElevAt` returned (or the authoritative
+   * `player.elev` for a remote), i.e. grid.level[i] or grid.deck[i].
+   */
+  private updateIndoor() {
+    const now = this.time.now;
+    const g = this.terrain;
+    const av = this.avatars.get(this.room?.sessionId ?? "");
+    if (!g || !av || av.surfLevel === undefined) {
+      // No grid / no body yet: outdoors, and forget the cache so the next real
+      // frame recomputes instead of trusting a stale space.
+      this.indoorAtCol = NaN;
+      this.setIndoor(false, null, -1, now, true);
+      this.easeIndoorMix();
+      return;
+    }
+    const col = Math.floor(av.fx / CELL_WU);
+    const row = Math.floor(av.fy / CELL_WU);
+    const elev = av.surfLevel;
+    if (!this.indoorDirty && col === this.indoorAtCol && row === this.indoorAtRow && elev === this.indoorAtElev) {
+      // Nothing that can change the answer has changed. Still service the dwell
+      // timer — a verdict deferred on the doorstep must land even if you then
+      // stand perfectly still.
+      this.applyPendingIndoor(now);
+      this.easeIndoorMix();
+      return;
+    }
+    this.indoorAtCol = col;
+    this.indoorAtRow = row;
+    this.indoorAtElev = elev;
+    this.indoorDirty = false;
+
+    // FAST PATH: O(1), zero allocation. findIndoorSpace allocates a
+    // Uint8Array(w*h) + an Int32Array(w*h) — ~307 KB on the_island2's 248×248 —
+    // and a walking body crosses a cell several times a second, so it must
+    // never run under open sky. `roofAbove` is the same test findIndoorSpace
+    // opens with, so this can only skip calls that would have returned null.
+    if (roofAbove(g, col, row, elev) === null) {
+      this.setIndoor(false, null, -1, now, false);
+      this.easeIndoorMix();
+      return;
+    }
+    this.indoorComputes++;
+    const space = findIndoorSpace(g, col, row, elev);
+    if (!space) {
+      // The precondition rejected us (an elev that is not one of this cell's
+      // resolved surfaces). Fail OUTDOORS exactly as the module does: a wrong
+      // room hides the map, a missing one does not.
+      this.setIndoor(false, null, -1, now, false);
+      this.easeIndoorMix();
+      return;
+    }
+    // HYSTERESIS LAYER 2 — space identity. min(roof) is canonical for a
+    // connected component whatever cell seeded the fill, so "am I still in the
+    // same room?" is exact, and the relaxed LEAVE bar can apply inside the
+    // space we entered without also relaxing the ENTER bar for the next one.
+    let key = Infinity;
+    for (const i of space.roof) if (i < key) key = i;
+    const sameSpace = this.indoorInside && key === this.indoorKey;
+    this.setIndoor(this.indoorVerdict(space, sameSpace ? INDOOR_DEPTH - 1 : INDOOR_DEPTH), space, key, now, false);
+    this.easeIndoorMix();
+  }
+
+  /** Record a verdict, gated by the dwell timer (HYSTERESIS LAYER 3). */
+  private setIndoor(inside: boolean, space: IndoorSpace | null, key: number, now: number, force: boolean) {
+    this.indoorPending = inside;
+    const flip = inside !== this.indoorInside;
+    const held = flip && !force && now - this.indoorFlipAt < INDOOR_DWELL_MS;
+    // A held LEAVE must KEEP the room it is still drawing. The mask, the torch
+    // gate and the outside-body cull all read `indoorSpace`, so dropping it to
+    // null the moment the raw verdict says "outside" would put the torches out
+    // and bring the whole village back for a quarter of a second while the
+    // ground RT still showed the interior. A held ENTER has the opposite need —
+    // nothing is drawn from it yet, and the space must be remembered for when
+    // the timer expires and applyPendingIndoor lands it.
+    if (!held || inside) {
+      this.indoorSpace = space;
+      this.indoorKey = key;
+    }
+    if (held) return; // applyPendingIndoor lands it
+    if (!flip) {
+      // Same verdict, possibly a DIFFERENT room — a door between two spaces, or
+      // a cave whose ceiling steps to another height. The mask has to follow,
+      // and if it really changed the two caches are now stale even though
+      // nothing "flipped": repaint them exactly as commitIndoor would.
+      if (inside && this.refreshIndoorMask()) this.repaintWorld();
+      return;
+    }
+    this.commitIndoor(inside, now);
+  }
+
+  /** Land a verdict the dwell timer deferred. */
+  private applyPendingIndoor(now: number) {
+    if (this.indoorPending !== this.indoorInside && now - this.indoorFlipAt >= INDOOR_DWELL_MS)
+      this.commitIndoor(this.indoorPending, now);
+  }
+
+  /**
+   * THE TRANSITION. Everything that CACHES world art has to be rebuilt here.
+   *
+   * NOT rebuilt, deliberately: the light/occlusion HEIGHTMAP (the roof is still
+   * physically there and must keep blocking the sun — that is what keeps the
+   * room dark, and it is the field the future doorway raytracing marches
+   * through). Only what is DRAWN changes.
+   */
+  private commitIndoor(inside: boolean, now: number) {
+    this.indoorInside = inside;
+    this.indoorPending = inside;
+    this.indoorFlipAt = now;
+    this.indoorFlips++;
+    this.refreshIndoorMask();
+    this.repaintWorld();
+  }
+
+  /** Throw away both terrain caches and rebuild them THIS frame.
+   *
+   * Poison BOTH latches together, always. They fire on different thresholds
+   * (the ground RT on 256px of camera drift, the occluders on 96px), and
+   * flipping one without the other brings the hidden roof straight back as ~30
+   * occluder SPRITES floating over a ground RT that has already deleted it.
+   * NaN short-circuits both guards — the existing idiom (see the night shader /
+   * resize paths). Re-running them here rather than waiting for the top of the
+   * next frame costs one extra rebuild on a transition frame (a handful per
+   * session) and buys a frame with no stale roof on screen; both are
+   * self-gating no-ops the rest of the time. */
+  private repaintWorld() {
+    this.lastGround = { x: NaN, y: NaN };
+    this.lastOccl = { x: NaN, y: NaN };
+    this.redrawGround();
+    this.rebuildOccluders();
+  }
+
+  /** Is this world cell part of the room I am standing in?
+   *
+   * TRUE whenever I am not indoors at all — outdoors there is no "my room", so
+   * every caller that asks "may this thing light / shine / be lit?" gets the
+   * unrestricted answer and needs no `indoorInside` check of its own.
+   *
+   * The mask is floor ∪ shell, so a torch mounted ON the wall of my room
+   * counts as mine, which is what you want: the wall is part of the room.
+   * Anything else — the bonfire on the grass, a lamp in the house next door,
+   * a brazier upstairs — is outside, and both its light and any full-bright
+   * copy of its art are dropped. (The maintainer 2026-08-07: "yes — point
+   * light from outside has to be turned off".) */
+  private inMyRoom(col: number, row: number): boolean {
+    if (!this.indoorInside || !this.indoorMask || !this.world) return true;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= this.world.width || r >= this.world.height) return false;
+    return (this.indoorMask.get(r * this.world.width + c) ?? 0) !== 0;
+  }
+
+  /** Rebuild the per-cell mask when the SPACE or its CUT changed; a no-op
+   * otherwise, so walking around one room costs nothing. Returns whether it
+   * really rebuilt — the caller must repaint when it did. */
+  private refreshIndoorMask(): boolean {
+    const g = this.terrain;
+    const s = this.indoorSpace;
+    if (!this.indoorInside || !s || !g) {
+      const had = !!this.indoorMask;
+      this.indoorMask = null;
+      this.indoorMaskSig = "";
+      if (had) this.night?.setRoom(null); // outdoors: the whole world is lit again
+      return had;
+    }
+    // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
+    // the player's head actually meets; roofLevel is the slab's top (see the
+    // indoorCut field note for the measured 24-vs-8 case).
+    const i = this.indoorAtRow * g.width + this.indoorAtCol;
+    const cut = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
+    // The CUT-AWAY: take the dial's levels off this room's own ceiling. Both
+    // numbers go in the signature — turning the Settings slider must rebuild
+    // the mask exactly the way walking into a taller room does.
+    const top = Math.max(0, cut - indoorCut());
+    const sig = `${this.indoorKey}:${cut}:${top}`;
+    if (sig === this.indoorMaskSig && this.indoorMask) return false;
+    this.indoorMaskSig = sig;
+    this.indoorCut = cut;
+    this.indoorTop = top;
+    const m = new Map<number, number>();
+    for (const ci of s.roof) m.set(ci, IN_ROOF);
+    // THE WHOLE BUILDING, with no attempt to work out which of its faces the
+    // camera can see — `shell` is every solid cell of the enclosure, near and
+    // far walls, corners and T-junctions alike. Classifying was what left holes
+    // (see the constants block and `shell` in shared/src/indoor.ts); truncating
+    // has nothing to classify.
+    for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
+    this.indoorMask = m;
+    // Publish the room to the LIGHT. This is what makes the outside black:
+    // the renderer draws it like any other terrain, and the shader gives every
+    // cell outside this set zero ambient — so a point light inside can still
+    // reach it (the torch through the doorway) while the sky cannot.
+    this.night?.setRoom(m.keys());
+    return true;
+  }
+
+  /** Ease the LIGHT blend toward the current geometric state. Exponential roll
+   * on the frame delta (the cloud/mist idiom), with the same `< 0.005 → snap`
+   * clamp so it settles exactly instead of asymptotically. */
+  private easeIndoorMix() {
+    const to = this.indoorInside ? 1 : 0;
+    const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
+    this.indoorMix += (to - this.indoorMix) * k;
+    if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
+  }
+
+  /** Teleport / respawn: apply the next verdict instantly. A snap across the
+   * map must not spend 250ms of dwell rendering the room you left, nor
+   * cross-fade the grade over what is really a cut. */
+  private indoorSnap() {
+    this.indoorDirty = true;
+    this.indoorFlipAt = -Infinity;
+    this.indoorMix = this.indoorInside ? 1 : 0;
+  }
+
+  /** Indoors, is this body outside MY room?
+   *
+   * NOT a visibility test. Bodies are always DRAWN — a villager outside the
+   * door is black at zero ambient and your torch reaching through the doorway
+   * reveals them, which is the whole point of the change (maintainer
+   * 2026-08-07). The earlier cut of this feature hid them, because the ground
+   * under them was not drawn either and they would have hung in a black void at
+   * sprite depth; that reason is gone.
+   *
+   * What this IS for is the chrome drawn ABOVE the darkness overlay — name
+   * labels, chat bubbles, hp bars, target rings, the white cover outline. No
+   * amount of zero ambient touches those, so a pitch-black villager out on the
+   * grass would still wear a crisp readable name tag. Anything at depth
+   * 900_001+ has to ask this question itself.
+   *
+   * `z` in LEVELS: a body up on the roof is outside even though the cell under
+   * it is my floor. */
+  private indoorOutside(fx: number, fy: number, z = 0): boolean {
+    const w = this.world;
+    if (!this.indoorInside || !this.indoorMask || !w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
+    return !((this.indoorMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
+  }
+
+  /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
+   * gate so a torch is re-enabled in daylight for bodies sharing my space and
+   * for nobody else (everyone outside is drawn black anyway). */
+  private indoorContains(fx: number, fy: number): boolean {
+    const g = this.terrain;
+    const s = this.indoorSpace;
+    if (!this.indoorInside || !s || !g) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= g.width || row >= g.height) return false;
+    return s.roof.has(row * g.width + col);
+  }
+
+  /**
+   * Register the two 32×64 screen-space HALVES of a tile texture as named
+   * sub-frames, so `batchDrawFrame` / `add.image(x, y, key, frame)` can draw one
+   * inward-facing wall face without the other. RenderTexture.batchDraw cannot
+   * crop; a sub-frame is the crop primitive.
+   *
+   * THE TRAP, paid for once: `Texture.add` HIJACKS `firstFrame` —
+   * `if (this.firstFrame === "__BASE") this.firstFrame = name;` — and every
+   * plain `batchDraw(key, …)` / `add.image(x, y, key)` resolves its frame
+   * through `texture.get(undefined)` → `frames[firstFrame]`. Measured live:
+   * after one `add()`, a default-frame Image on that texture reported 32×64 and
+   * the ground RT drew the LEFT HALF of every tile using it. Putting
+   * `firstFrame` back is MANDATORY, not tidiness.
+   *
+   * Only ever called on FACE textures, which are never mirrored (redrawGround
+   * flips the TOP tile for `cell.flip` and leaves `fk` alone), so the other
+   * half-frame trap — `setFlipX` mirrors WITHIN the sub-frame's own 32px box,
+   * landing the half mirrored AND on the wrong side — cannot be reached here.
+   */
   private makeGroundRT() {
     this.groundRT?.destroy();
     const rs = this.renderScale();
@@ -4538,7 +7585,13 @@ export class WorldScene extends Phaser.Scene {
     const ay = Math.round(ccy - rt.height / 2);
     rt.setPosition(ax, ay);
     rt.clear();
-    rt.fill(0x181c28, 1);
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop; // the cut: highest level any column still draws
+    // The colour behind everything. Outdoors the usual night-navy; INDOORS
+    // BLACK, because indoors this fill is what shows through the sky band
+    // above the cut-away and in genuine void cells — and navy times the indoor
+    // ambient still reads as a faintly lit sky over an unlit world.
+    rt.fill(mask ? 0x000000 : 0x181c28, 1);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
@@ -4573,6 +7626,41 @@ export class WorldScene extends Phaser.Scene {
           const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
           const faceKey = faceKeyFor(world, cell);
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
+          if (mask) {
+            // ---- THE CUT-AWAY, one rule for every cell of the WORLD ----
+            // Floor, near wall, far wall, corner, and the hillside a hundred
+            // cells away — all the same: draw this column from the ground up
+            // and STOP at `top`. Whatever stood above is not drawn, which is
+            // what takes the roof off and what shortens the walls, in a single
+            // expression.
+            //
+            // WHY THE WHOLE WORLD AND NOT JUST MY BUILDING. Painter order sorts
+            // by (col+row) ascending, so a tall column down-screen of the room
+            // draws AFTER the room and over it: a column k steps down-screen
+            // buries an interior cell once it is ≳0.94·k levels taller. Around
+            // the_island2's house that never happens (633 of the 650 cells
+            // within ±10 are level 0), which is why cutting only the building
+            // looked right there. In its CAVES the surrounding rock is terrain
+            // at level 24-40 and it hides 417 of 417 interior cells — you walk
+            // in and the room is replaced by solid mountain. One rule for every
+            // column removes that outright, and it is also what the shader's
+            // `heightAt` clamp already assumes: that clamp is global, so any
+            // column drawn taller than `top` would resolve to the wrong cell.
+            //
+            // The tile at the top of the drawn stack is a FACE, not the baked
+            // top diamond, whenever the column was cut: the baked top is the
+            // outdoor grass/rock SURFACE of that cell and reads as a lid on a
+            // wall stump. Only a column that reached its own real top gets it —
+            // which is the floor (level 0, its top IS the floor art) and any
+            // wall shorter than the cut, whose top is a genuine sill you look
+            // down on.
+            const hi = Math.min(cell.l, top);
+            if (hi >= 0) {
+              for (let lvl = 0; lvl < hi; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
+              rt.batchDraw(hi === cell.l ? topKey : fk, bx, by - hi * lh);
+            }
+            continue; // never the deck slab — that IS the roof
+          }
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
           rt.batchDraw(topKey, bx, by - cell.l * lh);
           // world@2 deck slab (roof / bridge span) at this cell, drawn right
@@ -4758,175 +7846,27 @@ export class WorldScene extends Phaser.Scene {
     return off;
   }
 
+  /** Stamp a maps2 terrain occluder image with the CELL it was built for — that
+   * is all these tags carry. The ONE reader is the cull audit
+   * (`__ml.occAudit`), which uses them to answer "which cells contributed at
+   * least one image this rebuild?" and so to compute `metaWithoutArt`. Nothing
+   * reads a depth or a level from here: the audit measures geometry with
+   * Phaser's own `getBounds()` and takes each column's top level, cell and
+   * bounds (`top`, `col`/`row`, `solid`, `x0`/`x1`/`y0`/`y1`) from
+   * `occluderMeta`. Keep this cheap — a rebuild runs it ~3,885 times at
+   * the_island2's mountain. */
+  private tagOccluder(img: Phaser.GameObjects.Image, col: number, row: number): Phaser.GameObjects.Image {
+    img.setData("oc", col);
+    img.setData("or", row);
+    return img;
+  }
+
   /**
    * Rebuild the occluder set: every raised (l>0) or solid non-water tile near
    * the camera gets real depth-sorted images (depth = its footprint's TOP
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
-  /** Tag a maps2 terrain occluder image with its cell, top level and original
-   * depth so the occlusion-fade pass can find/ghost/restore it. */
-  private tagOccluder(
-    img: Phaser.GameObjects.Image,
-    col: number,
-    row: number,
-    top: number,
-    od: number,
-  ): Phaser.GameObjects.Image {
-    img.setData("oc", col);
-    img.setData("or", row);
-    img.setData("ot", top);
-    img.setData("od", od);
-    return img;
-  }
-
-  /**
-   * Occlusion fade (see the field note). Two parts, both keyed to the local
-   * player (or debug `occFocus`):
-   *  (1) tall occluders ABOVE the focus level, camera-closer than it, within a
-   *      radius are dimmed to a faint GHOST and moved behind the player so they
-   *      stop hiding the character;
-   *  (2) a REVEAL render-texture redraws the player-level GROUND those towers
-   *      were covering (so you see the grass/level you walk on, not the tower)
-   *      and drops a BLACK diamond at each tower's ROOT (base footprint = void).
-   */
-  private updateOcclusionFade() {
-    const world = this.world;
-    const R = 14; // bubble radius in cells
-    const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
-    let fc = this.occFocus;
-    const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    if (!fc && pav) fc = { col: Math.floor(pav.fx / CELL_WU), row: Math.floor(pav.fy / CELL_WU) };
-    const active = this.occFadeOn && this.maps2 && !!world && !!fc;
-    if (active && world && fc) {
-      const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
-      const fSum = fc.col + fc.row;
-      for (const o of this.occluders) {
-        const col = o.getData("oc") as number | undefined;
-        if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
-        const row = o.getData("or") as number;
-        const top = o.getData("ot") as number;
-        const od = o.getData("od") as number;
-        const dist = Math.hypot(col - fc.col, row - fc.row);
-        if (top > fLevel && dist < R && col + row > fSum) {
-          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
-          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
-        } else {
-          o.setDepth(od).setAlpha(1);
-        }
-      }
-      this.occGhosted = true;
-    } else if (this.occGhosted) {
-      // ONE restore sweep, on the frame the feature (or the focus) goes away.
-      // This used to run EVERY frame with the feature OFF — a getData +
-      // setDepth + setAlpha over the whole occluder set, which on the_island2's
-      // cave/mountain region is 6-15k Images, and every setDepth re-queues
-      // Phaser's display-list sort. Measured 1.33ms/frame at (120,32) for a
-      // feature that is off by default (ULTRACODE lag investigation, fix #1).
-      // Fresh occluders are born with their natural depth/alpha, so
-      // rebuildOccluders clears the flag rather than needing a sweep.
-      for (const o of this.occluders) {
-        const od = o.getData("od") as number | undefined;
-        if (od !== undefined) o.setDepth(od).setAlpha(1);
-      }
-      this.occGhosted = false;
-    }
-    this.updateOccReveal(active && fc ? fc : null, pav, R);
-  }
-
-  /** Lazily build the occlusion-fade assets: a black cell-diamond (tower roots)
-   * drawn into the reveal layer. */
-  private ensureOccAssets() {
-    const { tile, dy } = MAP_GEOMETRY;
-    if (this.textures.exists("occ-root")) return;
-    const g = this.make.graphics({ x: 0, y: 0 }, false);
-    g.fillStyle(0x000000, 1).beginPath();
-    g.moveTo(tile / 2, 0);
-    g.lineTo(tile, dy);
-    g.lineTo(tile / 2, dy * 2);
-    g.lineTo(0, dy);
-    g.closePath();
-    g.fillPath();
-    g.generateTexture("occ-root", tile, dy * 2);
-    g.destroy();
-  }
-
-  /**
-   * Reveal layer: a world-anchored RenderTexture drawn just above the ground RT
-   * (−900k) but below the faded ghosts + sprites. Within `R` cells of the focus
-   * it redraws the player-level GROUND (walkable cells at/below the focus level)
-   * — so a faded tower reveals the grass you walk on — and paints a BLACK
-   * diamond at every taller cell's ROOT so the tower's own footprint reads as
-   * void, never walkable. Redrawn only when the player/camera moves.
-   */
-  private updateOccReveal(fc: { col: number; row: number } | null, pav: Avatar | undefined, R: number) {
-    if (!fc || !this.world || !pav) {
-      this.occRevealRT?.setVisible(false);
-      return;
-    }
-    this.ensureOccAssets();
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
-    if (!this.occRevealRT) {
-      const rs = this.renderScale(); // world-space RT — size in world px (see makeGroundRT)
-      this.occRevealRT = this.add
-        .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
-        .setOrigin(0, 0)
-        .setDepth(-900_000);
-    }
-    const rt = this.occRevealRT;
-    rt.setVisible(true);
-    const cam = this.cameras.main;
-    const ccx = cam.worldView.centerX; // zoom-correct world centre (see redrawGround)
-    const ccy = cam.worldView.centerY;
-    // Redraw only when the player or camera drifts — otherwise the texture holds.
-    if (
-      !Number.isNaN(this.lastReveal.x) &&
-      Math.abs(pav.fx - this.lastReveal.x) < 4 &&
-      Math.abs(pav.fy - this.lastReveal.y) < 4 &&
-      Math.abs(ccx - this.lastReveal.cx) < 4 &&
-      Math.abs(ccy - this.lastReveal.cy) < 4
-    )
-      return;
-    this.lastReveal = { x: pav.fx, y: pav.fy, cx: ccx, cy: ccy };
-    const world = this.world;
-    const ax = Math.round(ccx - rt.width / 2);
-    const ay = Math.round(ccy - rt.height / 2);
-    rt.setPosition(ax, ay);
-    rt.clear();
-    const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
-    const fSum = fc.col + fc.row;
-    const x0 = ax - tile;
-    const x1 = ax + rt.width + tile;
-    const y0 = ay - tile;
-    const y1 = ay + rt.height + tile + this.maxLevel * lh;
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-    rt.beginDraw();
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = world.rows[row]?.[col];
-        if (!cell) continue;
-        if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
-        const bx = this.iso.ox + u * dx - ax;
-        const by = this.iso.oy + v * dy - ay;
-        if (cell.l > fLevel && col + row > fSum) {
-          // Taller than the player, in front of them → black root diamond (void).
-          rt.batchDraw("occ-root", bx, by);
-        } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
-          // The ground the player walks on — re-expose it over the towers above.
-          const k0 = topKeyFor(cell);
-          if (k0 && this.textures.exists(k0)) rt.batchDraw(cell.flip ? this.flippedKey(k0) : k0, bx, by - cell.l * lh);
-        }
-      }
-    }
-    rt.endDraw();
-  }
-
   private rebuildOccluders() {
     if (!this.world) return;
     const cam = this.cameras.main;
@@ -4941,13 +7881,19 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     for (const lo of this.litOccluders) lo.img.destroy();
-    // The new set is built fresh at natural depth/alpha — no ghost state to
-    // restore (updateOcclusionFade re-applies it next frame if the fade is on).
-    this.occGhosted = false;
     this.litOccluders = [];
     this.occluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
+
+    // ONE mask, TWO consumers — the ground RT and this pass are independent
+    // renderings of the same terrain, and deriving the verdict twice guarantees
+    // they drift. Roof art suppressed only in the RT comes straight back here
+    // as a sprite at depth `by+dy`, floating over a ground that has already
+    // deleted it. (commitIndoor poisons BOTH camera latches for the same
+    // reason — they fire on different thresholds.)
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop; // the cut: highest level any column still draws
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
@@ -5009,7 +7955,15 @@ export class WorldScene extends Phaser.Scene {
           // l=0, which the terrain branch below skips). Where the deck coincides
           // with its base top (deck.level == base l — a roof lapping its own
           // walls), the terrain occluder already covers it, so skip.
-          const dk = this.deckIndex.get(row * this.world.width + col);
+          // INDOORS NO DECK DRAWS ANYWHERE. My own ceiling is the obvious one —
+          // every cell of my room is under it by construction, and it IS the
+          // roof the cut takes off. But the ground RT stops drawing decks for
+          // the whole world indoors (one truncation rule, no slabs), so
+          // building an occluder for the neighbour's roof or a distant bridge
+          // would register meta whose art was never painted — and a meta record
+          // without art crops a body's lit copy against terrain that is not
+          // there. Art and meta agree, in both directions.
+          const dk = mask ? undefined : this.deckIndex.get(row * this.world.width + col);
           if (dk && dk.cell.path && dk.deck.level > cell.l) {
             const dTop0 = pathTileKey(dk.cell.path);
             if (this.textures.exists(dTop0)) {
@@ -5030,7 +7984,7 @@ export class WorldScene extends Phaser.Scene {
                   continue;
                 }
                 this.occluders.push(
-                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row, dk.deck.level, dDepth),
+                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row),
                 );
               }
               culled += dFrom - lvl0;
@@ -5043,7 +7997,7 @@ export class WorldScene extends Phaser.Scene {
                 this.occluders.push(
                   this.tagOccluder(
                     this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
-                    col, row, dk.deck.level, dDepth,
+                    col, row,
                   ),
                 );
               else culled++;
@@ -5067,46 +8021,58 @@ export class WorldScene extends Phaser.Scene {
           const bx = this.iso.ox + u * dx;
           const by = this.iso.oy + v * dy;
           const oDepth = by + dy;
+          // Indoors this is EVERY cell of the building — floor, near wall, far
+          // wall, corner — truncated at the cut; outdoors it is the whole
+          // column. The occluder copy must draw exactly what the ground RT
+          // drew, or the difference comes back as a sprite at sprite depth:
+          // draw taller here and the battlement the RT no longer has reappears
+          // above the cut. `topL < cell.l` means the column was cut, and the
+          // surviving top is a FACE tile — the baked top diamond is the outdoor
+          // grass/rock surface and would read as a lid on a wall stump.
+          const topL = mask ? Math.min(cell.l, top) : cell.l;
+          if (topL < 0) continue;
           // Draw only the EXPOSED cliff faces (from the lowest front neighbour
           // up). The ground RT already bakes every cell's full face stack with
           // the lower front cells drawn OVER it; redrawing the covered lower
           // faces here — on top of the RT at a high depth — re-exposed them,
           // painting the front cell's ground back into a wall (the "half-tile"
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++) {
+          for (let lvl = this.stackFrom(col, row, topL, false); lvl < topL; lvl++) {
             if (!shows(bx, by - lvl * lh)) {
               culled++;
               continue;
             }
             this.occluders.push(
-              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
+              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
             );
           }
           // Keep the top whenever the COLUMN reaches the cull box, so every
           // meta record in range still has drawn art behind it (see
           // columnShows).
-          if (columnShows(bx, by - cell.l * lh, by + tileSize))
+          if (columnShows(bx, by - topL * lh, by + tileSize))
             this.occluders.push(
               // Occluder images CAN flip directly (setFlipX) — matches the RT's
               // mirrored top so the two layers stay pixel-aligned for flipped cells.
               this.tagOccluder(
-                this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+                this.add
+                  .image(bx, by - topL * lh, topL === cell.l ? topKey : fk)
+                  .setOrigin(0, 0)
+                  .setFlipX(topL === cell.l && !!cell.flip)
+                  .setDepth(oDepth),
                 col,
                 row,
-                cell.l,
-                oDepth,
               ),
             );
           else culled++;
           this.occluderMeta.push({
             col,
             row,
-            top: cell.l, // maps2 terrain is all standable ground: visual top = level
+            top: topL, // maps2 terrain is all standable ground: visual top = level
             solid: false,
             depth: oDepth,
             x0: bx,
             x1: bx + tileSize,
-            y0: by - cell.l * lh,
+            y0: by - topL * lh,
             y1: by + tileSize,
           });
           continue;
@@ -5266,11 +8232,26 @@ export class WorldScene extends Phaser.Scene {
     // ended up under the grid V (playtester). The skirt is the flat tile's own
     // front face; a prop is not part of that face.
     const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
+    // INDOORS a prop outside my room is DRAWN like the ground it stands on —
+    // it renders below the multiply overlay, so zero ambient blacks it out for
+    // free and a torch through the doorway finds it. Its GLOW STAMP is another
+    // matter: that is a light source, additive into the glow field, and a
+    // glowing mushroom out on the grass would be the one thing lighting the
+    // world you shut the door on. Art drawn, light suppressed — the same split
+    // the bonfire gets. (Measured on the shipped worlds: 3 props, all deep in
+    // the_island2's caves, can reach a room interior at all; none near a house.)
+    const mask = this.indoorInside ? this.indoorMask : null;
+    const top = this.indoorTop;
     for (const p of props) {
+      const propOut = !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF);
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;
-      const lvl = cell?.l ?? 0;
+      // Indoors every column in the world is drawn truncated at the cut, so a
+      // prop rides its stump instead of hanging where the vanished hilltop
+      // used to be. Its own art is never shortened — it is one object, like a
+      // tree, and the occluder pass treats it the same way.
+      const lvl = mask ? Math.min(cell?.l ?? 0, top) : cell?.l ?? 0;
       const u = p.col - p.row;
       const v = p.col + p.row;
       const bx = this.iso.ox + u * dx;
@@ -5292,7 +8273,7 @@ export class WorldScene extends Phaser.Scene {
       //     tall tile so the runes/crystals bloom — cosmetic only (litChar
       //     false), because sampling a HIGH point from the character's feet
       //     made it brighter-then-darker as you approached.
-      const srcs = this.night ? this.tiles2Src[p.path] : undefined;
+      const srcs = this.night && !propOut ? this.tiles2Src[p.path] : undefined;
       if (srcs?.length) {
         const mat = p.path.split("/")[1]; // tiles2/<material>/…
         const em = this.tiles2Mat[mat];

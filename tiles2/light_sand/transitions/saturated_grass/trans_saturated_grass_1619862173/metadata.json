@@ -177,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.259,
-        "light_sand": 0.741
+        "saturated_grass": 0.258,
+        "light_sand": 0.742
       },
       "edges": {
         "NE": {
@@ -488,8 +488,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.568,
-        "light_sand": 0.432
+        "saturated_grass": 0.567,
+        "light_sand": 0.433
       },
       "edges": {
         "NE": {
@@ -960,8 +960,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.933,
-        "light_sand": 0.067
+        "saturated_grass": 0.932,
+        "light_sand": 0.068
       },
       "edges": {
         "NE": {
@@ -1271,7 +1271,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

@@ -183,7 +183,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     });
     const labels = await page.evaluate(() =>
       [...document.querySelectorAll(".ml-pad-label")].map((l) => l.textContent));
-    labels.join("+") === "Jump+Walk" ? ok("JUMP/WALK labels mounted") : fail(`labels [${labels}]`);
+    labels.join("+") === "Jump+Pick up+Walk" ? ok("JUMP/PICK UP/WALK labels mounted") : fail(`labels [${labels}]`);
     if (!jb) fail("jump button not mounted");
     else {
       await page.mouse.move(jb.x, jb.y);

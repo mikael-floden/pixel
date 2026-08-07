@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.262,
-        "saturated_grass": 0.738
+        "regular_snow": 0.266,
+        "saturated_grass": 0.734
       },
       "edges": {
         "NE": {
@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.464,
-        "saturated_grass": 0.536
+        "regular_snow": 0.468,
+        "saturated_grass": 0.532
       },
       "edges": {
         "NE": {
@@ -265,8 +265,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.608,
-        "saturated_grass": 0.392
+        "regular_snow": 0.613,
+        "saturated_grass": 0.387
       },
       "edges": {
         "NE": {
@@ -334,10 +334,8 @@
           "divider": 0.25
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow blending to saturated grass with a small detail"
+      "features": [],
+      "description": "snow blending to saturated grass"
     },
     {
       "index": 4,
@@ -581,8 +579,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.597,
-        "saturated_grass": 0.403
+        "regular_snow": 0.598,
+        "saturated_grass": 0.402
       },
       "edges": {
         "NE": {
@@ -963,8 +961,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.775,
-        "regular_snow": 0.225
+        "saturated_grass": 0.754,
+        "regular_snow": 0.246
       },
       "edges": {
         "NE": {
@@ -1004,14 +1002,14 @@
             "saturated_grass",
             "saturated_grass",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "regular_snow": 0.25
+            "saturated_grass": 0.625,
+            "regular_snow": 0.375
           }
         },
         "NW": {
@@ -1030,10 +1028,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to snow with a small detail"
+      "features": [],
+      "description": "saturated grass blending to snow"
     },
     {
       "index": 13,
@@ -1121,8 +1117,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.653,
-        "regular_snow": 0.347
+        "saturated_grass": 0.647,
+        "regular_snow": 0.353
       },
       "edges": {
         "NE": {
@@ -1280,7 +1276,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

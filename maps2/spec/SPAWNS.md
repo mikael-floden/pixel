@@ -33,10 +33,43 @@ rectangles clustered near the player spawn are explicitly fake debug areas
 - A zone's cells are the cells whose **CENTER lies inside** the polygon
   (even-odd rule).
 - The area is where the monster **MAY** be. The game must validate every actual
-  spawn/roam point (standable/swimmable surface within `elev`, no prop) — so a
-  polygon may freely span the odd water speck, boulder or wall cell.
+  spawn/roam point (standable surface within `elev`, no prop) — so a polygon may
+  freely span the odd boulder or wall cell.
+- **NEVER water** — see the water law below. This is the one thing a polygon may
+  not contain, and it is guaranteed by the geometry rather than left to the game.
 - Zones **may overlap** each other: different monsters share ground, and two
   zones can even cover the SAME cells at different elevations (see `elev`).
+
+## The water law
+
+> "You need to fix so no monster can spawn on water. Monsters can't swim. We're
+> gonna soon make water into a safe zone." — maintainer, 2026-08-05
+
+**No zone polygon on any world contains a single water-surfaced cell.** Not "the
+game filters them out" — the polygons themselves are dry, so the guarantee holds
+however the game evolves. That matters concretely: the game's `buildZoneRuntimes`
+flips an ENTIRE zone to swimming when its swim cells outnumber its standable
+ones, which is exactly what used to put frogs in the ocean. With zero water
+inside any polygon that branch can never fire, and a water safe zone cannot be
+violated from the map side.
+
+A cell is **water-surfaced** for a zone banded `[lo,hi]` when its base material
+is water **and** no deck inside that band covers it. So the bridge guard is legal
+(it stands ON the span, `elev [24,24]`) while the water *under* the same span is
+not — the identical polygon at `elev [0,0]` fails the assert.
+
+Enforcement is two-sided, in `spawns.py`:
+
+- `dry_mask()` builds every generated zone dry. A diagonal fill that would land
+  on water is refused; a pond the outer ring would enclose is **cut open** —
+  spawns@1 rings have no holes, so the cheapest straight corridor from the pond
+  to outside the ring is removed and the boundary snakes around it instead.
+- `validate_zone()` re-asserts it for **every zone of every world**, including
+  hand-written and builder-owned files, so the law also covers zones `dry_mask`
+  never touched.
+
+There is no habitat that puts a monster on water; the former `water` habitat is
+now `shore`, the **land** band within 4 cells of water.
 
 ## `elev` — which surface is meant (caves & bridges)
 
@@ -48,7 +81,7 @@ range. This single field disambiguates every layered case:
   (base), while the snowfield zones above it ride the `kind:"cave"` roof decks
   at `[24,40]` — same cells, different zones, no ambiguity;
 - **bridges**: a zone on the span uses the deck level (`[24,24]` for the high
-  gorge bridge); the water below belongs to shore zones at `[0,0]`;
+  gorge bridge); the water below belongs to nobody — see the water law;
 - sloping ground (a grass trail climbing benches) simply widens the range.
 
 ## `num` — population
@@ -90,7 +123,7 @@ home for brand-new ids until the table is extended). Habitat keys:
 | dark    | black_mountain rock | malformed_creature, lava_salamander(+_2), lava_poring |
 | stone   | stone_mountain | stone_turtle (also the bridge guard), stone_golem |
 | sand    | beaches | (heuristic home for future `*sand*` ids) |
-| water   | water within 4 cells of land | mystical_frog, water_poring |
+| shore   | **land** within 4 cells of water — the bank | mystical_frog, water_poring |
 | cave    | THE CAVE floor, `elev [0,1]` | masked_shadow_creature, night_beast, diablo, diablo_2 |
 
 Per habitat: 4-connected components ≥ ~30 cells (forest 12), biggest kept;
@@ -101,7 +134,84 @@ way). Diagonal contacts are healed so every traced boundary is provably simple.
 Validation asserts each zone has at least `num` valid standable cells at its
 claimed elevation before the file is written.
 
-Two placement laws (maintainer 2026-07-29):
+Zones are re-derived automatically whenever a world is written: `save_world()`
+calls `spawns.refresh()` for the world it just saved, so `build.py <world>` and
+running a builder directly both re-check the zones against the new terrain. A
+terrain edit therefore cannot leave a stale zone sitting on new water — the
+build fails instead.
+
+## The difficulty gradient
+
+> "Why do you spawn Duskfang next to newcomers? They are aggressive and will
+> kill them immediately. What's wrong with Mirewart? Why not scale up the
+> difficulty as you progress? Quillkin should also be closer. You just want
+> Newbies to have a hard time. Try to make them enjoy the game instead."
+> — maintainer, 2026-08-06
+
+Habitat alone decided placement before this, and habitat knows nothing about
+danger. Duskfang is a sabre-toothed tiger, tigers live on grass, the arrival
+point is grass — so a level-8 hunter that kills a fresh 40 HP player in three
+hits had a zone **touching the spawn**, while Mirewart (level 1) sat 54 cells
+away and Quillkin (level 4) was the most distant monster on the map at 152. The
+correlation between level and distance was nil.
+
+**Distance from the arrival point is now a function of difficulty**, measured in
+WALK cells — what the player actually travels — not straight line, which on a
+map with a mountain, a gorge and an ocean are very different numbers (the
+island is 168 cells across in straight line and 467 on foot).
+
+    keep_out(monster) = SAFE_R + (level - 1) * LVL_STEP + AGGRO_PUSH if it hunts
+                      = 6      + (level - 1) * 5        + 14
+
+The ranking is **not invented here**: `level` and `aggro_radius_wu` come from the
+game's own combat tuning (`live/tuning/monsters.json`, the same file
+`games2/server/src/tuning.ts` fights with), so a rebalance there moves the
+monsters on the map instead of silently disagreeing with it.
+
+`LVL_STEP` is calibrated against the terrain rather than picked: THE CAVE is a
+single component 112 walk-cells out holding all four cave dwellers, the worst of
+them Balefiend (L18, aggressive). 6 + 17·5 + 14 = 105 ≤ 112, so every monster on
+the_island2 satisfies its own floor with none falling back.
+
+Two mechanisms enforce it, and the second is the one that matters:
+
+- each monster takes the **nearest** habitat it is allowed — so easy monsters
+  come as close as the terrain permits rather than ending up wherever;
+- the too-close cells are handed to `dry_mask()` as **forbidden ground**, the
+  same machinery as the water law. Picking a far-enough *component* is not
+  enough on its own: a habitat is often one sprawl covering half the map, and
+  the polygon fill can bulge back toward the spawn. Forbidding by cell means the
+  polygon **cannot contain** a cell inside the floor, so the game cannot roam a
+  monster back toward the newcomers.
+
+`assert_gradient()` then enforces two rules before the file is written: **nothing
+at all** within `SAFE_R` walk-cells of the arrival point (absolute — a fresh
+player has 40 HP and the map may not spend any of it before they have looked
+around), and every monster at or beyond its `keep_out`, *unless* its habitat
+genuinely offers nowhere further, which is **reported** rather than hidden.
+
+Result on the_island2 — the first things a newcomer meets are a level-1 frog and
+a level-2 poring, both passive, 14 cells out; the nearest thing that **hunts** is
+55 cells away:
+
+| walk | monster | lvl | hunts | was |
+|---|---|---|---|---|
+| 14 | Mirewart | 1 | – | 54 |
+| 14 | Puddling | 2 | – | 14 |
+| 29 | Quillkin | 4 | – | **152** |
+| 55 | Duskfang | 8 | **yes** | **0** |
+| 56 | Nightmule | 11 | – | **5** |
+| 112 | Balefiend | 18 | yes | 79 |
+| 150 | Rimeshard | 19 | – | 100 |
+
+The floor is a **minimum**, not an exact ordering: Fluffang (L5) sits at 121
+because snow only exists on the mountain. Terrain may push a monster further
+than its level requires; it may never pull one closer.
+
+Four placement laws (maintainer 2026-07-29, 2026-08-05, 2026-08-06):
+
+- **difficulty scales with distance from the arrival point** — the gradient above.
+- **no monster spawns on water** — the water law above.
 
 - **`the_island2` MUST contain every monster** — it is the map closest to the
   end game (`MUST_HAVE_ALL` in spawns.py). Generation guarantees a zone for
@@ -120,7 +230,8 @@ explicit pad zones (`BUILDER_OWNS`).
 ## The demo world — `monster_demo`
 
 Like `prop_demo` demos tile props: one **5×5 pad per monster**, floored with
-the tile that creature most likely lives on (water = a swimmable pond), on a
+the tile that creature most likely lives on (no pad is water — the water law;
+the amphibious-looking ones get a beach), on a
 neutral stone courtyard so every pad — and therefore every spawn area — is
 visible at a glance. Each pad is one zone (`num 2`, `elev [0,0]`), big enough
 to watch the monster wander. Rebuild: `python maps2/pipeline/build.py

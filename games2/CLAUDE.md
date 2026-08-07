@@ -180,8 +180,30 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   (byte-identical). The stall-replan is already deck-aware (`findPath` with
   `fromElev`/`goalLevel`). Gate: `server/test/navigation.sim.test.ts` "leave the
   bridge onto same-level ground" scans every the_island2 span cell and drives the
-  real follower off it (fails on the base-only baseline, 4/40 stuck). TODO:
-  occlusion-FADE when standing under a deck (see yourself inside the house).
+  real follower off it (fails on the base-only baseline, 4/40 stuck). SEEING
+  YOURSELF UNDER A DECK (inside the house, inside the cave) is answered by
+  INDOOR MODE — see the entry under Night lighting.
+- **SEE-THROUGH WALLS IS DELETED — do NOT reintroduce a per-frame occluder
+  alpha sweep** (2026-08-06). The prototype (~196 lines, the `[7]` key, a
+  Settings switch "see-through walls" and the `__ml.occFade`/`occFocus`/
+  `occApply` probes) ran a GHOST PASS EVERY FRAME: it walked the whole
+  occluder set and, for every image whose cell was taller than the player's
+  level, inside a 14-cell bubble AND in front of the player (`col+row >`
+  the player's `fSum`), dropped its alpha and pushed it behind
+  the player — plus a REVEAL RenderTexture at depth −900_000 that redrew the
+  player-level ground the tower was covering and stamped a BLACK diamond at
+  each faded tower's root so its footprint still read as void. It was OFF by
+  default and never persisted (no localStorage), so nobody but QA ever saw it.
+  The maintainer removed it as SLOW and never good-looking: the sweep is a
+  getData + setDepth + setAlpha over the live occluder set (3.9k images after
+  the view-cull, 13k before), and every setDepth re-queues Phaser's
+  display-list sort — 1.33ms/frame measured for a feature that was off. Its
+  replacement shipped 2026-08-07 as INDOOR MODE + the WHITE OCCLUSION OUTLINE:
+  the first decides per CELL what is indoors instead of re-tinting thousands of
+  images per frame, and the second costs ONE image per COVERED body instead of
+  an alpha sweep over the whole occluder set. The dead `"ot"`/`"od"` occluder
+  tags went with the prototype — `tagOccluder` now stamps the cell only.
+  History in git.
 - **OCCLUDER VIEW-CULL + DECK EXPOSURE** (perf #2/#3, 2026-07-31 — the walking
   hitch). `rebuildOccluders` destroys and recreates the whole occluder set
   whenever the camera centre drifts `OCC_STEP` (96px), and it built **14.4
@@ -666,6 +688,57 @@ visible head/shoulders are ABOVE the surface).
   (players keep instant large turns for input feel). QA probe: 25s room
   sweep — all 24 kinds sampled playing idle when stopped, zero frozen,
   worst flip rate 0.76/s.
+- **GAIT SYNC — the walk clip is paced by DISTANCE, not by time** (maintainer
+  2026-08-05: monsters "either jump or the walk forward animation is limping
+  forward … adjust the position/velocity at certain times to sync with the
+  animation"). A monster's speed spans **42 wu/s roaming → 105 chasing → up
+  to 220 in a provoked hunt**, but every walk clip used to play ONE fixed
+  rate picked from the frame count alone (6 fps at ≤6 frames, 10 above), so
+  the feet could only track the ground at a single speed — measured, the old
+  rate was off by 0.30× (mammoth: legs churning 3.3× faster than the ground
+  moved) to 2.49× (hedgehog, skating) at ROAM, and 0.76×–6.22× at chase.
+  Now: `fps = frames × speed / gait.cycleWu`, so one cycle completes per
+  `cycleWu` of ground however fast the body is going.
+  - `gait.cycleWu` is emitted per kind by `build-monsters-manifest.mjs`,
+    derived from the art-measured body length (`0.9 × bodyW`, clamped
+    26–92wu). **Do NOT try to measure it from the art's foot excursion** —
+    that was tried and it does not work: the leading-contact swing is 1px on
+    a poring and 18px on a saber-tooth, uncorrelated with size, because half
+    the roster has no visible legs (blobs, monoliths, the tree stump). Body
+    length is the one signal every kind has, and stride ∝ body size is the
+    real biomechanics.
+  - The rate is clamped to **3–26 fps**: a mammoth may pace slowly but must
+    never freeze mid-stride, and a hunter sprinting at 195 wu/s would
+    otherwise demand ~108 fps of a 16-frame clip. When a clamp binds the
+    body does skate — that is the art's frame budget, not a bug, and the
+    gate only asserts cadence-true playback where the clamps are slack.
+  - Speed is measured from the body's OWN DRAWN motion (the eased screen
+    delta back-projected to world units, exactly like the player's `spdWu`),
+    so easing, water, the flee-slow and chases all pace continuously. The
+    same measurement yields `scrPerWu`, the local iso scale along the current
+    heading — which converts world-unit gait maths back to screen px free.
+  - **HOP TRAVEL** for kinds that genuinely leap: `gait.travel[]`, per-frame
+    ground-track weights (mean 1), integrated into a mean-zero lead/lag along
+    the heading so a frog covers its ground DURING the leap and stands still
+    while it gathers, instead of gliding evenly through a hop it is visibly
+    not making. Measured by the body's vertical MASS CENTROID rise over the
+    cycle ÷ figure height — **not** `air[]`, which under-reports a leap badly
+    because a frog's legs DANGLE and keep its lowest pixel low. Only kinds
+    over 15% rise ship a profile: water_poring .31, mystical_frog .27,
+    diablo .21; everything else is ≤ .12 and glides evenly, as before.
+    The offset is applied to the DRAWN anchor (sprite + shadow + lit copy),
+    never to `mv.lx` — that IS the ease state and would absorb the surge —
+    so it can never drift the body off its server position.
+  - TRAP, paid for once: Phaser's `timeScale` lives on the sprite's
+    ANIMATION STATE, not on the clip, so it survives every `play()`. Without
+    an explicit reset at the top of `playMonsterAnim`, a monster that broke
+    off a 3.5× chase swung, raged and DIED at 3.5× too.
+  - Gate: `scripts/verify-monstergait.mjs` (dev stack) — every kind ships a
+    measured stride, every sampled kind completes one cycle per that stride,
+    the cadence measurably rises when a monster starts hunting, combat clips
+    keep their authored rate, and the hop weights stay mean-1. Probes:
+    `__ml.monsterGait()` (live speed/base fps/timeScale/effective fps/
+    wuPerCycle/hopOff per body) and `__ml.monsterDefs()` (the manifest gait).
 - **CAMERA GATE on the body pipeline** (perf, 2026-07-31): the_island2 ships
   **160 monsters** and every one of them used to run the full shared body
   pipeline EVERY FRAME regardless of where the camera was — stableDir + anim
@@ -741,6 +814,452 @@ visible head/shoulders are ABOVE the surface).
   (avatar 34×14; monsters pass their art-measured size — see the
   ART-MEASURED bullet). Probe: `__ml.monsterInfo()` (per monster: depth,
   coverY, originY, hover, shadow anchor/size/depth, lit visible+tint).
+
+## Combat, items & progression (RO-flavoured; maintainer 2026-07-31)
+
+- **The player state OWNS level/xp/hp/hpMax/ep/epMax** (Player schema, synced;
+  ep is reserved — no skill spends it yet). Curves + every number both sides
+  must agree on live in `shared/src/combat.ts` (xpToNext, hpMaxFor, damageRoll,
+  unarmedClip, the slow window, chase/orbit/drop constants). Progression +
+  inventory PERSIST by token (store.ts); the backpack is PRIVATE — targeted
+  "inv" messages, never schema. PERSISTENCE SHAPE (review 2026-08-05):
+  position is per-world (`.data/players-<world>.json`) but progression +
+  backpack are WORLD-AGNOSTIC — one shared `.data/players-progress.json`
+  (store.ts progressStore(); old per-world progression seeds it once, lazily).
+  Both stores DEEP-COPY at load/save — a live Player.inv aliasing the store
+  record silently corrupted saves. One live session per token: a second join
+  (two tabs, one localStorage token) kicks the older session and takes over
+  the LIVE progression — two sessions on one record dup/eat items on
+  last-writer-wins saves. savePlayer flushes on leave, death, level-up and a
+  30s room timer, so a crash costs seconds, not the session.
+- **Tap a monster to engage** (RO): the client autopilots into radius-aware
+  reach (attackRange = rA+rB+12), then the SERVER drives the swing loop while
+  the target lives, stays in reach (×1.2 grace for the circling drift) and the
+  player stands still — any movement input breaks the fight. No weapons yet:
+  each swing's clip is kick or punch, pseudo-random but DETERMINISTIC from the
+  synced actionSeq + an id salt (shared unarmedClip) so every client shows the
+  same move. Signals: Player.action/actionSeq (one-shots: attack/pickup/die),
+  hitSeq (hurt flinch + damage float), dead (die clip holds → respawn snap).
+- **Monster brain states** (Monster.mstate, server-only fields beside it):
+  roam (the shipped wander) → chase → combat → die. PASSIVE BY DEFAULT: the
+  tuning default aggro_radius_wu is 0 — everything retaliates when hit; only
+  predators (saber/night_beast/diablos/snow_demon/salamanders/masked/malformed,
+  64-96wu after round 2's "smaller" pass) proximity-aggro (~2 scans/s). A
+  SWORD-MARKED monster (a player's engage target) also aggros when that player
+  closes inside max(its radius, PROVOKE_RADIUS 4 cells) — raising your sword
+  IS the provocation, passive kinds included; `player.target` persists while
+  MOVING now (swings still require standing), which is what the approach scan
+  reads. Monster.level + Monster.aggro are synced (target frame + debug rings).
+- **ESCAPE MATH, round 2 (maintainer 2026-08-05) — two chase kinds** via the
+  server-only `m.provoked` flag: UNPROVOKED (a predator noticed you) chases at
+  the constant 105 — an innocent full run (175) always pulls clear, a
+  hit-slowed one (96) does not. PROVOKED (retaliation or the sword mark — YOU
+  started it) is personal: chase speed = provokedChaseSpeed(victim's current
+  possible speed) — always ~12% above whatever the victim can do right now
+  (floor 60 closes on a stander), so running never opens the gap; AND the
+  victim carries the persistent FLEE_SLOW_FACTOR 0.8 for the whole hunt (the
+  synced `slow` = min(hit-slow 0.55/1.5s, flee 0.8) — the client predicts from
+  the synced field, pending inputs carry their factor). The way OUT is the
+  RUN-AWAY LINE: ESCAPE_RADIUS_WU **390 ≈ 0.75 of a screen** (camera frames
+  ~520wu, zoomFor) beyond the home ZONE bbox — crossing it makes the hunter
+  give up, walk home (m.returning, aggro-scan suppressed), and the flee slow
+  lifts. DE-AGGRO BY DISTANCE (round 9) is its own rule on top: ANY hunt —
+  predator or provoked — ends the moment the victim is more than
+  ESCAPE_RADIUS_WU from THE MONSTER. The leash box alone could not promise
+  that, because it is measured from the home ZONE and a big zone's bbox is
+  most of the map; a predator that noticed you at its edge would follow far
+  past any sane point. combat.review.test.ts proves it on an unprovoked
+  saber-tooth. HALVED from 780 (2026-08-06: "aggro monster chase the player
+  for too long … cut in half"), and BOTH uses had to halve for that to be
+  felt — a provoked hunter paces its victim, so the gap never opens by
+  running; it opens when the monster stops at its LEASH, and shortening only
+  the give-up distance would barely change how long a hunt lasts. The floor
+  on this constant is the PROVOKE radius (128wu): drop it near that and a
+  marked monster aggros and gives up in the same breath instead of committing
+  — combat.unit.test.ts pins both the screen fraction and that margin.
+  IN-FIGHT CIRCLING, rounds 4-6 ("more like a boxing fight"): BOTH bodies
+  strafe tangentially with the same rotational sense (ORBIT_SPEED 6 — the
+  maintainer slowed it twice) — the monster holds ~0.88 reach radially (pad
+  16: the pair fights a bit farther apart), the standing engaged player is
+  drifted by the SERVER around its opponent — with the OPPOSITE tangential
+  formula: same-formula-on-mirrored-radius made them strafe in parallel
+  (round-5 bug) (stepCombat; ground-validated, never into water,
+  moving stays false so the stance is the fight idle — and the client needs
+  NO prediction: with no input pending its predicted position IS the synced
+  one, the render ease glides the 20Hz steps). Handedness starts id-hashed
+  and RARELY flips (exponential, ~ORBIT_FLIP_MEAN_S 60s while circling).
+  Facing tracks the opponent on both sides, so attack/angry directions sweep.
+  ENGAGING SHOWS THE SWORD, NEVER THE BEACON: monster taps and chase repaths
+  pass showMarker=false to setMoveTarget — ground taps keep the beacon and
+  never the sword (maintainer round 4).
+  THE GIVE-UP IS THE REJECTED STEP: chase movement is leash-gated (withinLeash
+  = zone bbox + ESCAPE_RADIUS), so the monster reaches the rim but never
+  crosses it — a "give up when beyond the leash" position check is provably
+  dead code (pre-deploy review 2026-08-05: every fight-and-flee wedged a
+  monster at the rim in chase, forever). A chase ends when (a) its contained()
+  step is rejected at the rim, or (b) the victim is past the line AND out of
+  reach (covers a chaser wall-wedged INSIDE the box). combat.review.test.ts
+  kites a frog, asserts the give-up, the approach-provocation and the slow
+  lifting on escape.
+- **The two TARGET MARKERS** (rounds 2-11). Neither coexists with the walk-to
+  beacon: monster taps, chase repaths and item walk-tos all pass
+  showMarker=false to setMoveTarget — the ground beacon is for plain ground
+  taps only. Both markers are BORDERS built from the marked body's own
+  silhouette — a GENERATED outline texture per (strip, frame, palette):
+  ringTextureFor reads the frame's alpha into a RING_PAD(2)px-padded canvas
+  and grows a 2px TWO-TONE border (round 11) — the INNER line in the base
+  colour, the OUTER line a step brighter — each line one 4-NEIGHBOUR
+  dilation. SIDES ONLY, never diagonals: side-dilation leaves single
+  diagonally-touching pixels across the art's diagonal steps, the thin
+  connected border pixel art itself outlines with — round 10 killed the
+  original 8-offset-silhouette-copies approach because dilating diagonally
+  too doubled the border at every step and it read THICK. Drawn at depth
+  ~900_001.44-.45 (above the darkness overlay and every lit copy, below the
+  hp bar) at FULL alpha whatever the hour — the mark is UI and
+  lighting/shadow/fog never touch it (round 9 matched the body's
+  layer+alpha, which dimmed the red with the world; an outline has no
+  interior, so nothing bleeds through the body). RED (0x8e2222 inner /
+  0xb83a3a outer) marks MONSTERS — the one you clicked for the ENTIRE fight
+  (round 11; it used to hide when battle began) AND every monster currently
+  hunting YOU: Monster.tsid (synced, mirrored each tick from the server-only
+  targetSid while mstate is chase/combat, "" otherwise) — one ring image per
+  bordered monster in WorldScene.monsterRings, destroyed when the monster
+  leaves. LIGHT-LIGHT-BLUE (0x9adcf0 inner / 0xc4ecfa outer) marks the
+  GROUND ITEM being fetched — a tap on it or PICK UP/F's nearest target —
+  until it is picked up; it REPLACED the round-8/9 hand icon
+  (ui2/icon-pickup-target.webp deleted; the item itself stays an ordinary
+  world-layer drop, shadow and night dimming untouched). Three traps paid
+  for in screenshots: position from the LIVE sprite, never from `mv.lit` —
+  lit copies sync later in the frame, so a hopping monster smeared the ring
+  sideways; shift the origin by the pad ((originX·fw+RING_PAD)/(fw+2·
+  RING_PAD)) so the outline tracks the per-frame walk shift[]; and set the
+  canvas texture's filter to NEAREST explicitly — addCanvas does not inherit
+  pixelArt's default, and LINEAR smears the thin lines into a soft halo at
+  fractional camera zoom (measured: zero exact-tint pixels on screen).
+  Probes: `__ml.ringInfo()` (per-monster + item outline state),
+  targetOverlay().rings/itemRing/itemRingTint. TAP HITBOXES ARE FINGER-
+  SIZED, not art-sized (round 12: "constantly miss clicking", explicitly
+  incl. sprigling-class small bodies — sprigling = lore's name for
+  forest_poring_2): tapTarget grows every box by a pad and clamps to
+  minimums (drops ±26px, was ±16; monsters half-width max(26, dw·0.5+6)
+  and ≥48px tall with −8/+10 vertical pads), and when fat boxes overlap
+  the CLOSEST candidate wins, so generosity never selects the wrong body —
+  a matching drop still beats any monster box lying across it. Probe:
+  `__ml.tapAt(wx,wy)` (the exact pointerdown hit test; monsterInfo sx/sy/
+  dw/dh/lx and dropsList sx/sy carry the drawn-sprite coords to aim with).
+  (The retired marker art —
+  the sword icons of rounds 2-8 and the round-8/9 pick-up hand — lives in
+  git history.) The in-fight readout lives ON
+  the monster (maintainer: keep it SMALL — he rejected a separate top-centre
+  frame): updateMonsterHpBar draws a slim player-style bar (76×6 dark track,
+  red fill) in a THREE-LINE stack (2026-08-05) — the monster's NAME
+  left-aligned OVER the bar, then the bar, then "Lv N" left-aligned and
+  "hp/max" right-aligned UNDER it, sharing one line with a middle gap that
+  survives 4-digit HP (what the bar's width is sized for). All three hang off
+  the BAR's own edges, so the lines share a left margin and the stack stays
+  centred on the body. Rounds 5-9 had Lv/hp ON the bar's line and NO name —
+  the name is the maintainer's later call, and it needed that line freed.
+  The name is the ROSTER's display name (monsters.json `name` — "Dewling",
+  not forest_poring), resolved ONCE in addMonster onto mv.label: this runs
+  per monster per frame, and a manifest scan here would be 24 finds × 160
+  monsters × 60fps. Shown while wounded, in combat, or my engaged target. Bar, texts and the target
+  borders live ABOVE the darkness overlay (depths 900_001.44-1.9 — under the
+  damage floats at 900_002), so day/night/shadow never touch them — combat
+  UI at 890k was dimming with the world. When adding HUD chrome NEVER reuse
+  .ml-bars/.ml-bar-row classes — verify-bars counts them (2 chips, 3 rows).
+  The "aggro radius" settings switch (debug, off by default, ml-aggro-radius
+  in localStorage) draws each monster's synced radius as a projectFlat-
+  sampled ring (red; gold provoke ring on the marked target).
+- **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
+  enter/go on water … the player can always use the water to escape/hide").
+  Enforced at every layer: buildZoneRuntimes never returns swim cells
+  (canSwim is always false — a PURE-water zone polygon adopts its SHORE, the
+  nearest standable ring, so pond kinds live at the water's edge instead of
+  dying out); monster roam/chase/orbit/separation contexts and both monster
+  startTrip call sites route with canSwim false; a SWIMMING victim instantly
+  disengages its hunter (reaching water IS the escape) and swimmers can
+  neither swing nor provoke (no water-sniping from the sanctuary — cuts both
+  ways). Players keep canSwim true everywhere.
+- **Monster combat clips**: attack/angry/die strips (525 files, ~3.1MB)
+  background-load in the SAME deferred batch as the player's action states —
+  boot stays walk+idle (the loading-time work must not regress). The COMPLETE
+  handler re-runs buildMonsterAnimations (the single-call-site trap: a late
+  texture never registers a clip by itself). attack/die are once-through (die
+  paced to MONSTER_DIE_MS so the clip and the server's corpse sweep agree);
+  angry loops between swings; 6 kinds ship NO angry (forest_poring x2,
+  lava_poring, ice_crystal_golem, diablo x2) and park on the walk contact frame
+  instead — anims.exists guards make every gap degrade to the parked pose.
+  `combatClip` gates the per-frame walk drift compensation: shift[]/air[] are
+  measured on walk/idle strips and must never be indexed by an attack frame.
+  Corpses: the schema entry lingers MONSTER_DIE_MS, then the client fades the
+  detached sprite 450ms on onRemove. Small hp bar floats over a WOUNDED
+  monster only (890_000 depth, culled with the body).
+- **Loot**: on the corpse sweep the tuning loot table rolls per entry
+  (rollDrops, deterministic from id+diedAt). PLACEMENT (round 2, maintainer:
+  "close and not on top of each other") is a pseudo-random scatter around the
+  corpse/player that keeps DROP_SPACING_WU 24 from items already lying there
+  (candidates scored by nearest-drop distance, the ring grows as the ground
+  crowds, best-spaced wins when nothing clears; the ring STARTS ~21wu out so
+  loot never covers the grave cross rising at the death spot) — deck-aware
+  (the dropper's elev threads through spawnDrop so a bridge drop stays ON
+  the deck), last resort ring-scans the nearest standable cell; only
+  open-water corpses keep their spot, where swimmers can grab. GroundItems sync in state.drops,
+  despawn after DROP_TTL 60s; the last DROP_FLASH 5s the client flashes them
+  transparent FASTER AND FASTER (2→10Hz, timed from the witnessed onAdd —
+  join-inherited drops restart the clock, the server sweep stays the truth).
+  Freshly witnessed drops TOSS UP a few px and bounce to rest (subtle; the
+  join flood lands silent). THE GRAVE CROSS (objects/grave_cross — the
+  maintainer's PixelLab object, synced 2026-08-05 with config pin + README
+  note in objects/): when the corpse fades, the 16-frame SOUTH "appear" clip
+  rises at the death spot alongside the loot, HOLDS its last frame, and
+  after a minute plays REVERSED — sinking away. Client-local decor driven by
+  the synced die state; `graveCrosses()` probe + verify-combat assert it.
+  A player grabbing an item TURNS TO it: predicted locally (pendingPickup
+  facing) and synced for everyone (the pickup handler faces the drop).
+  **THE GRAB LANDS ON THE ITEM** (maintainer 2026-08-06: walk so "the hand in
+  the pick up animation is as close as possible … looking like it actually
+  picks up that exact item", and the item must vanish "the exact frame the
+  hand is closest to the ground"). THE ART ANSWERS BOTH QUESTIONS ITSELF: the
+  pickup clip DRAWS a little item lying on the ground in front of the
+  character, the hand comes down, and it disappears from the ground on the
+  frame it is grabbed (re-appearing in the hands a frame or two later).
+  `build-manifest.mjs grabOf` measures that per direction into `grab[dir] =
+  {f, x, y}`: the drawn item's offset from the FOOT ANCHOR (frame fractions)
+  and the frame it vanishes. Every candidate blob is VALIDATED before it is
+  believed — it must lie at/below the foot line and on the side the character
+  faces — because a late frame splits off the hair or the item already held,
+  and the naive "lowest detached blob" put north's target 24px out to the
+  side. SOUTH and NORTH draw the item merged into the body silhouette (the
+  character is face-on/back-on), so those two are interpolated from their
+  neighbours and flagged `approx` — never invented. Runtime:
+  `grabStandSpot` back-projects the offset into world units and, since we get
+  to choose the FACING, tries all eight and takes the stand spot that is the
+  shortest walk from here; `walkToGrab` sends the autopilot THERE instead of
+  at the item, and driveCombatIntent holds the grab until the body is within
+  GRAB_ALIGN_WU of it (falling through the moment the trip ends, so a blocked
+  path still picks up rather than standing there forever). THE ITEM OUTLIVES
+  ITS OWN REMOVAL: the server deletes the drop the instant it validates the
+  pickup, which is ~half a gesture EARLIER than the hand arrives, so the loot
+  used to blink out while the character was still bending down. `removeDrop`
+  now parks MY pickup's drop and `stepGroundDecor` retires it on the measured
+  grab frame (or when the clip ends / a 1.2s valve, so an interrupted gesture
+  cannot strand a phantom item). Two traps paid for: the drop's removal and
+  the player's `action` field arrive in the SAME state patch and the removal
+  listener runs FIRST, so requiring a live pickup clip made the deferral never
+  engage at all; and character frames are PER-FRAME TEXTURES keyed
+  `f:<uid>:<state>:<dir>:<n>` (only monsters use numbered spritesheet frames),
+  so the frame index must come from the texture key — parsing `frame.name`
+  pinned every read at 0 and the clip always ran to its end. Gate:
+  `scripts/verify-pickup.mjs`; probe `__ml.grabInfo()` (stand spot, how far
+  off the body is, and the client-recorded retirement — polling from outside
+  cannot resolve a ~77ms animation frame).
+  Item sprites are uniform `items/<id>/sprite.webp` 48×48
+  (verified across all 105) — the client lazy-loads per KIND, no manifest
+  fetch. TAP an item to fetch it (walk + grab), or the PICKUP button beside
+  jump / the F key (nearest within 5 cells; the gamepad button synthesizes F
+  exactly like jump→SPACE). Server validates PICKUP_RADIUS_WU + the elev
+  band; the client's pickup intent RETRIES (~400ms) until the drop vanishes
+  or 6s pass — a single fire-and-forget send loses the predicted-vs-server
+  position race on laggy links. BACKPACK (hud.ts): server-owned slots render
+  in the 5-col grid; DRAG a slot out over the game view to drop it —
+  pointer-captured ghost (the bird-slider pattern; Phaser never sees the
+  gesture); the release point only means "onto the ground" — the server
+  ALWAYS scatters near the player, verifies the ITEM ID (slot indices go
+  stale in flight when a stack empties) and rate-caps pickup/drop at 150ms.
+  An "inv" refresh mid-drag cancels the gesture (renderInventory would
+  orphan the ghost). INV_MAX_SLOTS 30, stacks of 99.
+- **HOW MANY — the drop dialog** (maintainer 2026-08-05, three refinement
+  rounds the same day). Every filled slot badges its count in the lower-right
+  corner, **×1 included**; every drag-out then opens a card centred in the
+  GAME VIEW — a stack asks how many, a lone item is the plain confirm ("this
+  dialog acts as a nice confirm dialog"). ONE row: item + a TYPABLE count box
+  + "of N" hugging the LEFT edge, **−** and **+** together on the RIGHT; a
+  full-width **DROP** word underneath. The box is `inputMode numeric`, CLEARS
+  ON FOCUS (type the number you want, never "delete the 1 first"), and junk
+  or an out-of-range value leaves the amount exactly as it was — blur
+  repaints from it. No cancel button and no max button — tapping OUTSIDE the
+  card closes it, and −/+ WRAP AROUND, so one tap on − from ×1 is "all of
+  them". The backdrop is `rgba(0,0,0,.5)` — DARKENING in both themes (a
+  `color-mix` of the theme's own `--bg` brightened the light theme, which
+  read as the dialog lighting the room). The card is absolutely placed off
+  `--gv-left/--gv-right/--hud-h`: horizontally centred in the game view,
+  vertically at **45%** of its height (**40%** in landscape, where the view is
+  ~393px tall and the keyboard eats a bigger share). That step up is the whole
+  number-keyboard story — it keeps the box above the keys in both
+  orientations WITHOUT the card moving when they open (a `.ml-kb-up` lift was
+  tried first and rejected: a dialog that jumps out from under your finger is
+  worse than the few px it buys, so the drop dialog's box deliberately does
+  NOT register with mountChatKeyboardLift). MOVEMENT IS FROZEN while
+  it's open, and the halves are worth knowing because the obvious one is a
+  LIE: a DOM overlay does NOT keep pointers away from Phaser. Its
+  window-level listeners deliberately process events whose target is not the
+  canvas (TouchManager.onTouchStartWindow), so a tap on the backdrop reached
+  the world's tap-to-move and CANCELLING A DROP RAN THE PLAYER TO WHERE YOU
+  TAPPED (maintainer 2026-08-05). So: `HudActions.onUiLock` disables Phaser's
+  keyboard (which the analog stick synthesizes into), resets held keys, drops
+  any trip or hold in flight, AND sets `uiLocked` — the scene's pointerdown
+  returns early while a modal is up. The lock LIFTS 150ms LATE (uiLockLiftAt),
+  because the tap that closes the dialog is still being dispatched: the DOM
+  handler that closes it runs before Phaser's window listener sees the same
+  event. Belt and braces, the backdrop also preventDefault()s its OWN events
+  (never the card's — that would eat the buttons' clicks on touch), which
+  Phaser skips. SERVER: `"drop"` takes an `n`, clamped to `1..entry.n` — a
+  client can never drop what it does not hold — and the 150ms item cadence is
+  charged PER ITEM (+20ms each) so one tap can't put a 99-stack on the ground
+  6.7×/s. Gates: `scripts/verify-dropqty.mjs` (badges, both orientations, the
+  wrap-around, typed junk, the movement lock) + the clamp test in
+  `server/test/combat.review.test.ts`. QA probe `__ml.invFake(items)` paints a
+  backpack locally (the server never hands out a ×3 on demand);
+  `__ml.canWalk()` reports the movement gate.
+- **LEVELLING UP — "Thunderclap"** (maintainer 2026-08-06, chosen from a page
+  of eleven alternatives and tuned on it: "the level up graphics is perfect! I
+  love it! Now get it into the game!"). It lives entirely in `bars.ts` and runs
+  off `setLevel()` — the level going up IS the event, so no scene wiring, no
+  message, nothing to keep in sync. The gauge climbs to full on the level you
+  just FINISHED, then three effects peak on ONE frame (the fill flashes
+  brightness 1.95, the chip recoils, the LEVEL number stamps down from ×2)
+  while a shockwave ring is thrown off the chip and a light sweeps the track —
+  then a beat, and the bar drains to the carry-over. What the game has to add
+  on top of the approved page, because the SERVER NEVER SENDS THE FULL BAR:
+  a level-up arrives as one sync carrying the NEW level and the carry-over xp,
+  and WorldScene pushes `setBar("xp", …)` BEFORE `setLevel()`, so by the time
+  the animation knows it is happening the frame it must start from is gone.
+  setBar therefore remembers the fraction and requirement it is overwriting,
+  and the animation replays from there — nothing has painted in between, so
+  the jump is never seen. Same reason the LEVEL label is held on the old
+  number until the stamp lands. While it runs it OWNS the gauge (a kill
+  mid-animation still drains onto the newest sync), a watchdog hands the
+  gauge back if a backgrounded tab freezes rAF, and reduced motion just lands
+  the values. No sound — that is the audio agent's, and only when asked for.
+  Gate: `scripts/verify-levelup.mjs`. QA probe `__mlBars` (its own namespace,
+  since WorldScene assigns `__ml` wholesale): `levelUp(carry, need)` fakes
+  exactly the pair of calls a real one arrives as, `state()` reports the label,
+  the numbers, the fill and each punch's live transform.
+- **Monster stats come from the LIVE TUNING channel** — the wiki agent's
+  document (live/tuning/monsters.json, format @1), adopted exactly as they
+  requested: server/src/tuning.ts resolves live doc <- baked file <- builtin.
+  CAREFUL: liveTuning() serves an EMPTY-but-truthy placeholder before
+  initLive's fetch lands — the resolver checks for CONTENT, not truthiness
+  (tests run without initLive at all). Real values were written into the file
+  from each monster's curated level (hp 15+10L, dmg 2+1.6L, xp 8·L^1.35);
+  a wiki admin edit re-tunes live rooms with no deploy. `speed_wu` and
+  `scale` resolve but have NO consumer yet — chase speed is the shared
+  CHASE_SPEED_WU constant because the escape math depends on it; wiring
+  per-monster speed means re-deriving that triangle first.
+- **Client prediction under combat**: pending inputs carry the slow factor
+  they were ORIGINALLY integrated under (exactly like `jumping`) and replays
+  use it — replaying an RTT-deep buffer with the CURRENT synced slow rewrote
+  history at every slow boundary (review: an uncommanded forward teleport
+  right as you broke free of a chase). The server also mirrors slow into the
+  synced field inside hurtPlayer (not the next tick top), and ACKS the seqs
+  it swallows while dead — un-acked seqs kept replaying and rendered the
+  corpse offset, then popped it off-spawn on revive.
+- **Hit feedback (round 7)**: damage floats are 26px and linger 850ms
+  (maintainer: twice as big, 0.2s longer); every landed hit — player or
+  monster — plays a BLOOD SPATTER (objects/blood_spatter, the maintainer's
+  PixelLab object stored TRIMMED to the already-scattered dispersal window he
+  green-circled; see object.json:edited before any resync): one of the 8
+  direction variants at random, forward or REVERSED at random, 14fps, at
+  depth 900_001.95 (lighting never dims it), preloaded in the deferred batch
+  with the sword marker (a lazy first-engage load lost the walk-to race).
+  The got-hit flinch is FAST now (hurt 16fps, 300ms overlay). `bloodFx()`
+  probe counts spawns; verify-combat asserts ≥1 during the fight.
+- **Gates**: combat.unit.test.ts (curves/determinism/escape math),
+  combat.test.ts (2 live rooms: full fight loop + death/respawn),
+  combat.review.test.ts (leash give-up on a kited frog; world-agnostic
+  progression; one-session-per-token), store.test.ts (deep-copy boundaries),
+  verify-combat.mjs (dev stack: clips alternate kick+punch, monster
+  attack/angry play, hp bar, loot, pickup, backpack DOM, drop-out).
+  verify-bars asserts the REAL level-1 stats (40/40 HP, 20/20 EP, 0/50 XP)
+  after waiting out the join race; verify-gamepad expects Jump+Pick up+Walk.
+
+## NPCs (maps2 placement + characters2 art, client-side decor)
+
+The maps2 agent places people (`maps2/worlds/<name>/npcs.json`,
+`pixel-maps2/npcs@1`, spec `maps2/spec/NPCS.md`); characters2 owns who they
+are (`characters2/npcs/<id>/`). The game just draws them (maintainer
+2026-08-06: "we just have to draw them at the current location and play the
+idle animation … rendered similar to monsters/players and have faked client
+side collision just like monsters").
+
+- **NO SERVER STATE AT ALL.** NPCs are client-side decor: the placement file
+  says where they stand and which way they face, and that is the whole truth.
+  Nothing is synced, nothing is validated, and they cost the room nothing.
+- `scripts/build-npcs-manifest.mjs` -> `client/public/npcs.json`: per NPC
+  character, the frame size, the eight static `base/<dir>` rotations, and the
+  idle clip's frame count PER DIRECTION. Art loads LAZILY per character — a
+  world places ~20 people out of a 191-strong roster, so fetching the catalog
+  would be pure waste.
+- **THEY ALL FACE SOUTH, and never walk** (maintainer 2026-08-06). maps2'
+  `facing` is deliberately IGNORED for now: only south has an idle clip, so
+  honouring the placement would leave most of a street frozen on a static
+  rotation while their neighbours breathe. One line in `addNpc` goes back to
+  `p.facing` the day the other rotations exist.
+- **THE NADIR SHADOW SITS BETWEEN THE FEET.** The sprite origin is the
+  ART-MEASURED foot anchor (`anchorlib.footAnchor`, the point between the two
+  feet at their underside — the SAME function and numbers the player
+  characters use), so the drawn soles land exactly on the ground point
+  `placeBodyShadow` draws the shadow at. **Never eyeball this**: the first cut
+  guessed `originY 0.9` and was up to 9px off, which is exactly the "flying"
+  bug the monsters took three rounds to kill. Verified against the ART, not
+  just the code: every one of the 191 anchors lands 1.5-3px above its own
+  drawn sole line, which is the designed mid-foot lift.
+  CLOAK GUARD, NPC-only: a floor-length cloak puts the frame's lowest mass at
+  the HEM and the foot-blob pass then anchors on the boots ABOVE it (2 of 191
+  measured ~7px high, one of them placed in five worlds). A hem that reaches
+  the floor IS the ground contact, so an anchor drifting >4px above the sole
+  falls back to the sole line. The player measurement is never touched by
+  this — it is approved art and lives in the shared module unchanged.
+- **THE IDLE IS SOUTH-ONLY** (measured: 188 of 191 characters ship a 5-frame
+  idle, all of them for `south` alone). So an NPC facing any other way
+  correctly stands on its static rotation. `idle` is keyed per direction
+  precisely so the other seven appear with NO client change the day
+  characters2 generates them — do not hardcode "south" anywhere.
+- **THE CALM IDLE** (maintainer: "since the NPCs will at some point fill an
+  entire city I want a more calm idle … freeze on the first frame for a
+  pseudo-random duration between 0.1s and 5s so they don't repeat the idle
+  animation too often and too regularly"): the clip is created with
+  `repeat: 0` and `stepNpcs` plays it ONCE, then parks on frame 0 until a
+  fresh random NPC_HOLD_MIN_MS..NPC_HOLD_MAX_MS deadline passes. Each NPC
+  rolls its own, so a street never breathes in unison. Measured on
+  the_island2: parked ~78% of samples, 16 distinct hold buckets.
+- Rendering goes through the SAME shared body pipeline as players and
+  monsters (`resolveBodyDepth` + `placeBodyShadow` + the lit copy) — an
+  NpcAvatar satisfies BodyVisual. Never hand-roll a second path here; that
+  mistake already cost the monsters a round of terrace-tile overdraw and
+  detached shadows. Off-screen NPCs park exactly like culled monsters.
+- **FAKED CLIENT-SIDE COLLISION**, the monster pattern: NPCs join the same
+  `monsterDodge` near-list at NPC_BODY_RADIUS, so the INPUT slips around them
+  and the server integrates the identical deflected vector (no rubber-band).
+  They are not in the collision grid and not in findPath.
+- **LOADING: standing art at BOOT, idle frames FIRST in the deferred batch**
+  (maintainer 2026-08-06: "the loading restarts just before the game loads and
+  once loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
+  mistake — spawnNpcs fetched the placement in create() and then started its
+  OWN loader run, which re-fired the scene loader's progress events the
+  loading overlay is driven by (the bar restarted) and delivered the art after
+  the world was already up (the pop-in). Now: main.ts fetches the placement at
+  boot beside the world; `preloadNpcArt` queues one standing image per
+  DISTINCT placed character into the boot batch (measured: 0 bar restarts, 0ms
+  between the world appearing and the NPCs being drawn); and the idle FRAMES
+  go into the deferred batch — but FIRST in it. Queued last they landed 18.3s
+  in, behind ~800 action-state frames and every monster combat strip, so a
+  town stood frozen; first, they arrive in 0.2s. **Never put the idle frames
+  in the boot batch** — that is the loading-bar regression.
+- The idle clip is registered LAZILY, per NPC, once its frame textures exist
+  — NOT on a one-shot loader COMPLETE. A world queues ~20 NPCs back to back,
+  so COMPLETE fires between batches while later files are still pending and a
+  one-shot handler finds its own textures missing and gives up silently:
+  measured 0 of 19 clips registering. Same shape as the monsters'
+  single-call-site trap.
+- Gate: `scripts/verify-npcs.mjs` (dev stack, the_island2's 19 NPCs) — every
+  placed NPC spawns at its cell, all face south, on-screen ones carry a sorted
+  depth + a ground shadow ON their measured foot anchor, the idle is
+  measurably calm, its holds measurably vary, and neighbours are out of phase.
+  Probe: `__ml.npcInfo()` (incl. the drawn origin/shadow geometry).
+- TRAPS: the registry's `world` key holds the parsed World OBJECT (the id is
+  `worldName`), and spawning must happen in `create()` — `projectFlat` is
+  meaningless in `init()`.
 
 ## Depth-fog on BODIES (syncLitCopy)
 
@@ -823,16 +1342,25 @@ visible head/shoulders are ABOVE the surface).
   state.phaseT inside setTimeOfDay once clobbered the probe keyframe
   (only worked because fresh rooms default to 0.5). WorldState.timeSpeed (settings "time speed"
   button, "timespeed" message) scales the clock: the button CYCLES
-  shared TIME_SPEEDS x0 (freeze) -> x0.5 -> x1 -> x2 -> x5 -> x10 -> x0
-  (an explicit {v} in the message jumps straight to a valid value —
-  tests use { v: 1 }); x0 is the frozen default for now, mirrored into
-  WorldState.frozen for the pressed-switch look. Speed changes resume
+  shared TIME_SPEEDS, and THE ARRAY'S ORDER IS THE BUTTON'S ORDER —
+  x1 (the boot default) -> x0 FREEZE -> x0.5 -> x2 -> x5 -> x10 -> x1
+  (maintainer 2026-08-06: freeze is one tap from rest, "unlogical yes,
+  makes me develop faster, yes" — do not "fix" it back to sorted).
+  An explicit {v} in the message jumps straight to a valid value (tests
+  use { v: 1 }); x0 is mirrored into WorldState.frozen for the
+  pressed-switch look. Speed changes resume
   from the current phaseT (never restart the phase). Manual skips still
   work while frozen; tests must set a speed before expecting
   auto-advance. The settings buttons PRINT THEIR STATE (maintainer):
   "time-of-day: Day", "time speed: x2" / "time speed: frozen",
   "weather: Clear sky" — hud.ts `state` callbacks re-read on
-  refreshSettings, which every relevant state listener calls. The [1] key / HUD button send
+  refreshSettings, which EVERY relevant state listener must call. The
+  time-of-day one did not, and since the world clock advances by itself
+  every 20-40s that button printed whatever phase happened to be current
+  when the page was last built (maintainer 2026-08-06: "often gets out of
+  sync with the real time"). A new synced field that a Settings button
+  prints needs the same one line in its listener; verify-smoke now asserts
+  the printed phase against the world's. The [1] key / HUD button send
   "timeofday" — a SKIP that also restarts the phase timer (room option
   phaseSeconds overrides durations for tests). Every client's state
   listener applies the change (instant + logless on the initial sync,
@@ -899,6 +1427,18 @@ visible head/shoulders are ABOVE the surface).
   (`:focus::placeholder{color:transparent}`) — the prompt is an
   invitation, not a label. Gate: verify-chatpage (margins, both lifts,
   same line, placeholder).
+  A TAP ON THE WORLD ALWAYS BLURS THE BOX (maintainer 2026-08-05: "select
+  the input and then close the keyboard — if I now attack an enemy or click
+  the game-view the keyboard will open again"). Android's ▼/Back hides the
+  keyboard WITHOUT blurring the field, and Phaser preventDefault()s the
+  canvas pointerdown so nothing else ever takes focus away — Chrome then
+  re-opens the keyboard on the next tap anywhere. The lift's
+  blur-on-outside-tap is therefore gated on FOCUS, not on the box still
+  floating (it used to check `lifted`, which a device that DOES report a
+  keyboard height clears the moment ▼ is pressed, leaving the field focused
+  and the trap armed). ChatUI closes on blur for the same reason — an
+  open-but-blurred in-world box would leave WorldScene's Phaser keyboard
+  disabled forever and the player unable to walk.
   THE MOTION — TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is
   the design). The first cut alternated a SINGLE travelling orb on a belt
   (each body drawn three times, one pill-width apart, so an exit right was
@@ -1229,6 +1769,15 @@ visible head/shoulders are ABOVE the surface).
   its `demo` room + `buildDemoWorld`, per-cell glow floors/pools for v1
   categories, `analyze-emission.mjs`, `demo-shots.mjs`, `verify-emission*`,
   and `tile-bases.json`. History in git if the techniques are needed again.)
+- The light/mist/depth-fog overlay quads BLEED ~1% past every screen edge
+  (nightlight.ts spanScale = 1.02, overlays drawn at invZoom*k while uCam
+  spans k× the view — the stretches cancel, so the world→screen mapping is
+  EXACT and every calibrated sample is unchanged): without the bleed,
+  fractional camera zooms left the quad a sub-pixel short of an edge, which
+  on a high-DPR phone read as a 1px UNSHADED bright line at night
+  (maintainer device screenshot, 2026-08-05). TEST PATTERNS (nightCal ≥3)
+  render with k=1: the raw-field readbacks treat canvas pixels as field
+  texels 1:1, and the stretch resamples rows into phantom straight seams.
 - Debug: `__ml.nightCal(flip,span,test)` drives the field test patterns
   (gradient/grid/uv/classification/raw field — headless probes only; the
   old [6]-[9] calibration keys are retired);
@@ -1383,8 +1932,55 @@ visible head/shoulders are ABOVE the surface).
   `ambient/thunder` are the audio agent's wiring; **don't remove them**, and
   emit new semantic events (`gameAudio.event("item.get")` etc.,
   names from `sounds/bindings.json`) when adding gameplay that should sound.
+- **MUSIC BEDS, generated but NOT routed (2026-08-05)**: five new tracks
+  (`battle`, `cave`, `home`, `town`, `adventure`) exist and are auditionable at
+  **`/#score`**, but the IN-WORLD SCORE IS UNCHANGED (catalog bed by day, the
+  `night` bed after dark) — the maintainer picks what plays where before any of
+  it is wired. The routing machinery is dormant in
+  `composer/engine/contextMusic.ts`. When it IS turned on: battle reads the
+  monster brain's own `mstate` (`chase`/`combat`); a ROAMING monster scores zero
+  however close, so the score reacts to real fights only. Cave reads world@2
+  deck slabs overhead; home reads the spawn bonfire; town reads road/farm tiles.
+  Selection is PURE and TESTED (`composer/engine/bedSelect.ts`,
+  `composer/test/bedSelect.test.ts`): priority + Schmitt-trigger hysteresis so a
+  boundary can't dither, PLACE BEATS TIME (a town at night is still a town), and
+  a fallback chain so an un-generated bed degrades to the catalog track instead
+  of silence. Every bed is loudness-matched (−18 LUFS) with measured loop points
+  and resumes where it left off. Audition without hunting for the trigger:
+  `__ml.audioBed("cave")`, `__ml.audioBed()` to release, `__ml.audioField()` for
+  what the score is reading. Gate: `scripts/verify-beds.mjs` (dev stack).
+- **A SOUND PLAYS ONLY WHEN IT WAS ASKED FOR — and the wiki is where it gets
+  asked for** (maintainer 2026-08-05). The engine is **silent-by-default**:
+  an emitted event plays NOTHING unless it is (a) on the small approved list
+  (jump/fall grunts, UI clicks, chat notify) or (b) assigned by the Game
+  Master in the wiki (requests land in `live/tuning/sfx_requests.json`; the
+  composer wires them into `EVENT_ASSIGNMENTS` in `composer/engine/api.ts` and
+  deletes the acted-on entry **in the same commit** — a request is a message,
+  not a record, so once implemented it is gone and cannot be read back. The
+  record of what an assigned event really plays is
+  **`composer/assignments.json`** (`pixel-composer-assignments@1`, generated by
+  `scripts/build-assignments.mjs`, staleness-gated by `verify-quiet`); read
+  THAT rather than parsing `api.ts`, and never fall back to `EVENT_FOLEY` /
+  `bindings.json` to describe an assigned event — they are outranked, so
+  showing one looks like the assignment was reverted).
+  `sounds/bindings.json` is a recommendation, not
+  an approval — it resolves only for `BINDINGS_APPROVED` names, which is how
+  unapproved catalog stand-ins got in last time. **So: EMIT semantic events
+  freely** — `gameAudio.event("...")` with a LITERAL name (the wiki scans call
+  sites; a ternary hides the name) — silent events are exactly what the Game
+  Master assigns sounds to. Assignable actions already emitted: `combat.kick`,
+  `combat.punch`, `combat.hit_taken`, `combat.monster_die`, `combat.cross_on`,
+  `combat.cross_off`, `player.die`, `item.pickup`, `item.drop`. Gate:
+  `scripts/verify-quiet.mjs` (source check: the can-sound surface must not
+  grow without approval; the assignable actions must keep being emitted).
+- **Background**: hidden page → master ducks to 50% and the score keeps
+  looping (native-loop handoff in `composer/engine/music.ts` — background
+  timer throttling used to kill the crossfade scheduler). Gate:
+  `scripts/verify-background.mjs`.
 - `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
   beat/bar phase + section intensity — use it to sync visuals to the music.
+  It follows whichever score is playing (context bed or catalog track), and the
+  context beds carry MEASURED key + tempo so tonal-SFX scale-snap keeps working.
 - QA: `__ml.audio()` state probe; `scripts/verify-audio.mjs` (needs the dev
   stack) checks contracts→engine→footsteps→clock→ambience end to end.
 
@@ -1405,7 +2001,181 @@ visible head/shoulders are ABOVE the surface).
   press-and-drag hold-to-move steering, keyboard cancel, jump anim states,
   measured anim rates, in-place reconnect (last — it swaps the session),
   then one reload for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
-  -reconnect/-animrates/-navigation/-longwalk) remain for deep dives.
+  -reconnect/-animrates/-navigation/-longwalk/-indoor) remain for deep dives.
+- **INDOOR MODE IS A CUT-AWAY, NOT AN X-RAY** (maintainer 2026-08-07). Walk
+  under a roof and the building is drawn WHOLE but TRUNCATED: every one of its
+  columns — floor, near wall, far wall, corner — stops at
+  `indoorTop = ceiling − <the Settings dial>` and nothing above that is drawn.
+  The roof goes because it is above the cut; the near walls become a low
+  parapet you look over. **Nothing is hidden, nothing is transparent, nothing
+  is half a tile.** The dial is `client/src/indoorcut.ts` ("Indoor wall cut" in
+  Settings, roof−1 … roof−5, default **roof−4**); brightness is the separate
+  `indoorlight.ts` dial, default **40%**. BOTH DEFAULTS ARE THE MAINTAINER'S
+  OWN PICKS (2026-08-07, from a device screenshot and a contact sheet of the
+  same room at every level) — I proposed roof−3 from the art (a body is ~4
+  levels tall) and 0.104 from the pre-slider grade; he went one cut deeper and
+  four times brighter. Do not "restore" either. The MAX is 5 and not 8 because
+  the cut is relative and a shipped house is 6 levels: roof−5 leaves one level
+  of wall and roof−6 leaves none, so anything past it is dead travel
+  ("the slider can now be dragged way too long also"). Probes
+  `__ml.indoorCut(v?)` / `__ml.indoor()`.
+  - **DO NOT GO BACK TO CULLING.** The first cut drew no roof, no near walls
+    and a 32px "skirt" half of each far wall, and it shipped HOLES — wall slabs
+    floating disconnected in the void, black wedges through a solid roof line
+    (maintainer: "you introduced a lot of rendering bugs I have never seen
+    before"). The failure is structural, not a tuning miss: culling has to ask
+    "whose inward face does the camera see", and a room's own CORNER has no
+    inward face, so no wall set can hold it and nobody draws it — likewise
+    every T-junction where an interior partition meets an outer wall. Truncating
+    has nothing to classify, so it cannot have that bug.
+  - **THE OUTSIDE IS DRAWN AT ZERO AMBIENT — IT IS NOT SKIPPED** (maintainer
+    2026-08-07: "why didn't we go with my original idea to set the ambient
+    light to 0 for everything outdoor... I was really hoping for that
+    transition where your TORCH can start to reveal the outdoor before you're
+    really outside. Yes — point light from outside has to be turned off").
+    Skipping it cost three separate bugs at once: the grass POPPED into
+    existence as you stepped through the door, a torch could not light what was
+    not there, and a tile whose down-screen neighbour was missing showed its own
+    side. So the renderer draws every cell and the SHADER kills the light:
+    `nightlight.ts` carries a per-cell mask texture `uRoom` (`world-room-mask`,
+    one texel per world cell, R=255 in-room, NEAREST, unit 4, published by
+    `setRoom()` on a doorway crossing or a turn of the dial — never per frame),
+    and `roomAt()` gates AMBIENT, the aurora and the emission floor and NOTHING
+    ELSE. Point lights stay additive, which is exactly the thing he asked for:
+    the torch spills through the doorway and reveals the ground beyond it, with
+    the opening's own shadow, before you have stepped out (measured: 5.2x
+    brighter down the doorway than at the flanks behind the wall).
+    - **THE CUT APPLIES TO EVERY COLUMN IN THE WORLD, not just the building.**
+      Painter order sorts by `col+row` ASCENDING, so a column DOWN-SCREEN of
+      the room draws over it — it buries an interior cell once it is ~0.94·k
+      levels taller at k steps. Around the shipped house that never fires (633
+      of the 650 cells within ±10 are level 0), which is why cutting only the
+      building looked right there; in the_island2's CAVES the surrounding rock
+      is terrain at level 24–40 and it hides **417 of 417** interior cells,
+      worst case 595px of solid mountain over the room you are standing in.
+      One rule for every column removes it, and it is what the shader's global
+      `heightAt` clamp already assumes. Gate: verify-indoor section 7.
+    - `roomAt()` FAILS LIT (`uRoomOn`, same guard as `uGlowOn`): an unbound
+      sampler2D reads texture unit 0 — the heightmap — so the failure mode
+      without it is a BLACK ROOM on a real phone while headless SwiftShader
+      looks fine.
+    - **Anything drawn ABOVE the darkness overlay must gate itself** — no
+      amount of zero ambient touches depth 900_001+. `indoorOutside(fx,fy,z)`
+      is that predicate, and it is NOT a visibility test: bodies are always
+      drawn. It gates name labels and chat bubbles (900_100), monster hp/Lv
+      bars (900_001.5–1.7), the red target ring (.45), the white cover outline
+      (.43), and the bonfire's blooms + full-bright lit copy (`fireRoomK`).
+      A pitch-black villager wearing a crisp readable name tag is the tell.
+    - **NPCs get a lit copy like every other body.** They were the one body
+      type without one, so their light came entirely from the multiply overlay
+      — which is per SCREEN PIXEL, lighting each pixel by the terrain cell the
+      ray resolves BEHIND it. For a 64px sprite that is a cell several steps
+      up-screen of its feet: outdoors close enough to pass, indoors plainly
+      wrong (a villager one step outside the door had black legs and a fully
+      lit head, because her head pixels resolved to my floor).
+    - The eased half of the state is `uIndoorMix`, the same 0.35s roll the
+      indoor grade rides — the outside FADES to black instead of popping a
+      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the mask)
+      stays boolean and snaps. The CPU twin mirrors the ease exactly.
+  - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
+    openings excluded. That is the ONLY set the renderer reads;
+    `wallLeft`/`wallRight` survive as detector output with no consumer. The fill
+    and the fringe stay 4-CONNECTED (a diagonal is not a step); `shell` is
+    8-connected because a point-touch is a visible seam.
+  - **The SURFACE resolve is clamped to the cut, the OCCLUSION march is not**
+    (`nightlight.ts` `uIndoorTop`). What the camera sees is truncated; what the
+    light travels through is not — the building is still solid to the sun, and
+    a cut-away that let daylight through its own missing roof would light the
+    room from above as you turned the dial. Skipping the surface clamp re-creates
+    the roof-in-the-heightmap bug one level up: the floor behind a wall drawn at
+    level 3 would resolve at 6 and every torch lighting it would be attenuated
+    across 48px of gap that is not there.
+  - **A TAP RESOLVES AGAINST WHAT IS DRAWN, AND ONLY THE FLOOR IS A TARGET**
+    (maintainer 2026-08-07: indoors "the player walks to a spot about a full
+    character in length under the spot I actually clicked on"). `pickGround`
+    scans levels TOP-DOWN, so two things in the untruncated data outranked the
+    floor and both had to go. (1) The ROOF SLAB is still in `terrain.deck` over
+    every interior cell, so every indoor tap matched it at level 6 — measured
+    6.40 cells (96px) down-screen of the finger, every time. (2) A PARAPET's
+    drawn top is at the cut, so a tap near a wall resolved onto it — 2.13 cells
+    off — even though the cut truncates the DRAWING, not the world: that is
+    still a full-height wall you cannot stand on, and the tap means the floor
+    beyond it. So indoors the scan starts at `indoorTop`, skips decks, and
+    SKIPS any building cell taller than the cut. A wall shorter than the cut is
+    not truncated and stays tappable — its top is a real sill. Gate: the tap
+    round-trip in verify-indoor (project every interior cell to screen, feed
+    that point to the REAL hit test, require the cell back at level 0).
+  - **THE WHITE OCCLUSION OUTLINE** (`syncCoverOutline`) is the other half of
+    the design, and it is not indoor-only: any body a parapet, cliff or tower
+    covers gets a white silhouette ring (`HIDDEN_RING_COLOR`) over the hidden
+    part, at depth 900_001.43. It is the exact COMPLEMENT of the lit copy —
+    `syncLitCopy` crops to [0, coverY), this draws [coverY, bottom) — so the two
+    tile the figure with no seam. Measured on the shipped house: roof−1 hides
+    61% of the figure, roof−3 41%, roof−5 (one level of wall) far less, and
+    outdoors in the open none at all — the gate asserts that CHAIN rather than
+    any single number, because a monotone response to the dial is something an
+    outline stuck on or stuck off cannot fake.
+- **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
+  browser gate for "walk into a house and the roof comes off". It frames
+  the_island2's house with ONE pinned camera from outside and from within and
+  compares the two frames on REAL PIXELS at points derived from maps2'
+  `world.json` (deck footprint + terrain levels, so a re-authored house moves
+  the samples with it): the roof plane is pure void wherever no drawn column
+  can reach it; the ground outside the room reads median 0 while the interior
+  floor still carries art. **Those two frames are shot with the TORCH OFF** —
+  the outside is drawn now, so a lit torch legitimately lifts nearby outside
+  ground and would put both tests on their own boundary for a reason that is
+  the feature working. Then the three that pin THIS design —
+  **the mask is exactly floor + building** (the gate derives the 8-connected
+  footprint from world.json itself, so a corner the client forgets is a failure
+  and not a silent pass); **the building is SOLID**, every enclosure cell
+  carrying art at its cut top — sampled in the FACE tile's 16px SKIRT BAND
+  (+39/+46 of the cap tile's box), never at the diamond centre, which is
+  transparent for a truncated column: that probe used to sample the centre and
+  passed only because the indoor ground RT filled NAVY behind it, which is why
+  the fill is black now; and **the dial IS the cut**, sweeping roof−1..4 and
+  requiring the picture inside the house to change strictly MORE at every step
+  while nothing outside it changes at all. (It used to hunt a "wall crown" — the
+  topmost non-void row of one screen column. That is not sound once every column
+  in the world is drawn: the topmost lit pixel of a column belongs to whichever
+  cell the painter last put there, usually a NEIGHBOUR whose 64px art box
+  overlaps. Eight different wall cells all reported the same crown offset at
+  roof−1, −3 and −5 while the frames plainly differed.) Then the OUTLINE,
+  asserted as a monotone response rather than a magic number: a taller parapet
+  must hide more of the figure and a cut that removes every wall must hide
+  none. Then the LIGHT. Note WHAT is pinned there: the default is a maintainer
+  choice (40%) and asserting it would be asserting taste, so the gate pins the
+  DERIVATION instead — at the dial's original 0.104 the grade must still land
+  on night's own luma, which is what makes indoorlight.ts's hue line a measured
+  relationship and not three numbers someone liked. The default only has to
+  stay in the room: brighter than the tuned-dark end, well under daylight,
+  still cool (B/R 1.21 against night's 1.87). And the local torch is lit with
+  the global day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet). NOTE the
+  indoor ambient is now read at the ROOM CENTRE, not at the far outdoor probe
+  cell: that cell's ambient is identically ZERO from indoors, which is the whole
+  point (2b asserts exactly that). Three sections turn on the zero-ambient
+  design and cannot be satisfied by the old one: **2b** (the far cell is 0,0,0,
+  and the room centre equals the indoor dial exactly — the bonfire ~5 cells out
+  the door with radius 7 contributes nothing); **2g**, the DOORWAY BEAM (the
+  torch reaches the cells beyond the opening at 5.2× the flanks behind the wall,
+  a ratio and never "the flank is black", because the shader's `occ = max(occ,
+  0.22)` bounce floor guarantees it never is — then a debug probe light is
+  parked ON those cells and their pixels must go from black to real, since at
+  zero ambient a DRAWN tile and a MISSING one composite identically and a light
+  is the only instrument that tells them apart; this is why `probeLight` is
+  exempt from the room filter); and **7**, the CAVE, which is the only shipped
+  geometry where "is the cut world-wide?" is answerable at all. Finally the two
+  OUTDOOR controls: standing ON the same roof (the gate walks there off a wall
+  top — teleport always lands on the base surface) and swimming UNDER a bridge
+  both read outdoors with nothing blacked out.
+  `SHOT_DIR=<dir>` keeps every frame it judges. TWO THINGS IT DELIBERATELY
+  TOLERATES, both documented at the assertions: the ambient agent's fireflies /
+  birds / bats (`games2/ambient/`, not this game agent's files) and footstep
+  marks + grave crosses still paint over the void, so every "is it black?" test
+  is a MEDIAN over a wide patch — scattered single pixels can't move it, a
+  terrain tile that is wrongly LIT fills the patch and does; and the avatar
+  itself is never hidden indoors, so sample points inside its drawn art box are
+  dropped using Phaser's own `myScreen()` anchor.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
   speed first and ABORTS ("HARNESS STARVED") if the harness is too slow —
   software-GL at big viewports throttles the frame loop into slow motion
@@ -1502,9 +2272,197 @@ visible head/shoulders are ABOVE the surface).
   DOM UI no longer compensates: the wiki-style UI is ordinary responsive
   CSS, exactly like the wiki page itself (the maintainer plays in normal
   mobile view). uiscale.ts remains ONLY for loading.ts + the toast.
-- **Portrait-only (for now)**: manifest locks the installed app; in-browser
-  landscape on a small touch screen shows the `#ml-rotate` prompt
-  (index.html media query — coarse pointer + landscape + max-height 520px).
+- **LANDSCAPE + HANDEDNESS (maintainer 2026-08-05 — the WORLD plays
+  landscape; title/select/loading stay portrait-only)**: in-game, on a
+  TOUCH device, a landscape viewport turns the golden-ratio split on its
+  side — the game view keeps 61.8% of the long axis at FULL height and
+  the menu becomes a 38.2vw SIDE COLUMN with a VERTICAL tab strip
+  hugging the game-view edge ("buttons always closest to the game-view").
+  Which side is HANDEDNESS (`client/src/controls.ts`, localStorage
+  `ml-hand`, DEFAULT RIGHT, Settings button "controls", change event
+  "ml-hand", probe `__ml.hand(h?)`): the promise is the STICK's side —
+  right-handed keeps the stick on the right in every orientation (the
+  portrait layout the maintainer approved is exactly right-handed), so
+  the landscape menu goes LEFT; left-handed mirrors everything. The
+  MECHANISM is one function: `hud.ts applyLayout()` classes the root
+  (`ml-ingame`/`ml-land`/`ml-lh`) and publishes px vars — `--menu-w`,
+  `--hud-h` (0 in landscape, so every "above the HUD rail" consumer
+  lands on the bottom edge), and `--gv-left`/`--gv-right`, the game
+  view's insets. #game (index.html), the bars chips, the chat overlay
+  and the clock pill all anchor off the gv vars and TRANSITION their
+  anchor property, so orientation/handedness swaps glide (the animate
+  nice-to-have; the column itself snaps — display swaps don't animate).
+  ONE EXCEPTION to "corners stay corners": in RIGHT-handed landscape the
+  time-of-day pill leaves the game view's bottom-right corner — that is
+  the thumb stick's — and parks under the XP chip instead, right edges
+  aligned, 10px below it (maintainer 2026-08-05). It reads --bars-r-h,
+  the chip's MEASURED height, which bars.ts publishes from a
+  ResizeObserver (theme font metrics + the gold row move it).
+  Left-handed keeps the corner: the stick is bottom-LEFT there.
+  ICONS ARE NOT ROTATED: the maintainer's "icons rotate 90°" described
+  the locked-page mental model; the real re-layout keeps every icon and
+  all text upright, which is the intent (a sideways backpack is not a
+  backpack), and the gate PINS transform:none on them. GAMEPAD: in
+  landscape the stick is REPARENTED TO <body> — visible and usable on
+  EVERY tab, not just the gamepad page (maintainer 2026-08-05); a HUD
+  rebuild clears strays first — floating in the game view's very BOTTOM
+  CORNER on the thumb's side (gamepad.ts LAND_INSET, 38px — the centre the
+  maintainer marked in red on two device screenshots, ~112 css px in from
+  BOTH edges, equal margins by his instruction. MEASURE A DEVICE SCREENSHOT'S
+  SCALE, NEVER ASSUME THE PORTRAIT DPR: his phone is 393 css px wide in
+  portrait, dpr 2.75, but its LANDSCAPE viewport is ~988 css px = 2.28 device
+  px per css px. Reading the marks at 2.75 said "move it 10px" when the real
+  answer was 28 — he pushed back, and fitting a circle to the ghost's own
+  blur disc in the screenshot settled it: r = 169 device px for the known
+  148px well ⇒ dpr 2.284, shipped centre 186/188 device px from the edges =
+  exactly the 84 css the old 10px inset gives), GHOSTED (see below) and BEHIND the corner chrome — position:fixed, z 4, under the
+  chat overlay (5) and the pill/chips (8), all of which are
+  pointer-events:none so the thumb steers straight through them; hidden
+  with the page when another tab is up. THE GHOST IS TWO PAINTED PARTS, EACH WITH ITS OWN ALPHA
+  (maintainer 2026-08-05, two rounds): .ml-pad-well (the basin) and
+  .ml-pad-top (the inner ring/cap), inside a .ml-pad-stick frame that
+  paints nothing. It HAS to be built that way — the cap must read
+  STRONGER than the well, and a parent's group opacity can only ever
+  make a child fainter (child effective = parent x child). Rest alphas:
+  LIGHT well .15 / cap .25 (85% / 75% transparent), DARK well .4 /
+  cap .5 (60% / 50%) — dark carries much further because a faint grey
+  ghost vanishes against dark terrain. Dark is both the explicit
+  data-theme AND the OS default (theme.ts deletes the attribute when
+  following the OS), so every dark rule needs its prefers-color-scheme
+  twin. WHILE HELD both parts go to 1 (.held on the frame; their
+  opacity transitions are the only always-on ones) — and that rule is
+  written :root.ml-land .ml-pad-stick.held ... ON PURPOSE: the dark
+  rest rules carry an attribute selector, so the shorter form LOST the
+  specificity race and the ghost stayed faint while held in dark
+  (light won only by source order). It is also BACKED BY A BLUR DISC
+  — the bars chips' same blur(5px), but as its OWN full-opacity
+  transparent element (.ml-pad-blur, z 3) pinned to the stick's rect:
+  backdrop-filter ON the stick cannot work, because the stick's opaque
+  background paints over its own blurred backdrop and the 0.25 ghost
+  opacity would dilute the remainder to nothing (a child or ::before
+  inherits that opacity too). Portrait hides the disc — the stick sits
+  on the opaque HUD page there. PICK UP stacks ABOVE JUMP on
+  the menu column's centre line under the other thumb, and the vertical
+  tab strip is CENTERED (equal top/bottom gaps). Portrait mirrors the
+  stick/jump/pick-up fractions by hand.
+  ANYTHING THAT POSITIONS ITSELF AGAINST ml-land / THE GV VARS MUST
+  LISTEN TO "ml-layout", NEVER THE RAW RESIZE (maintainer 2026-08-05:
+  left-handed players "always see and be able to use" the stick — but
+  the bug was never handedness, it was WHICH TAB was open). applyLayout
+  fires "ml-layout" as its last act; gamepad.ts's own resize listener
+  is registered BEFORE hud's (WorldScene calls mountPageFrame AFTER new
+  HudBar), so on rotation it read the PREVIOUS ml-land, skipped the
+  landscape branch entirely and left the floating stick parented to a
+  display:none page at 0x0 — invisible and untappable. A hidden page
+  never resizes, so its ResizeObserver could not heal it either: the
+  stick only reappeared when you opened the gamepad tab. Both hands
+  were affected. Gate 4d rotates from portrait with the BACKPACK tab
+  open, for each hand, and asserts the stick is body-parented,
+  hit-tested at its centre, and actually steers the player.
+  Page-RELATIVE writes in layout() are skipped while the page is
+  display:none (its width reads 0 — the buttons would park at garbage
+  coordinates and visibly correct on tab entry; the maintainer's
+  backpack -> rotate -> gamepad repro is pinned frame-by-frame in the
+  gate). The position glide is
+  .anim-GATED and fires ONLY on a handedness change while the page is
+  visible (maintainer 2026-08-05, twice refined: first "not when
+  clicking from and to the game-controller page", then "the UI
+  animation feels laggy when switching orientation" — a glide that runs
+  DURING the rotation fights the canvas resize and the OS's own
+  rotation animation).
+  ROTATION SNAPS UNDER A VEIL (maintainer 2026-08-05, FIVE rounds —
+  keep the arc, do not relearn it): anchor-transition glides, an
+  outright snap and a FLIP pin-then-glide were ALL tried and rejected.
+  The closing insight (round 5): Chrome/the OS already play their own
+  rotation animation over the app's surface, so ANY chrome animation on
+  top reads as a broken DOUBLE animation — "the menu shows up on the
+  correct spot immediately and looks good", and the corner chrome must
+  do the same. So on an orientation flip every anchor jumps straight to
+  its final value (:root.ml-noanim pins the anchor transitions off for
+  the whole flip); the HANDEDNESS glide stays (anchor transitions + the
+  gamepad's .anim) — nothing else moves during a hand switch.
+  **A TAP MUST STILL LAND WHERE YOU TAPPED AFTER A ROTATION** (maintainer
+  2026-08-06). Phaser derives its pointer mapping — `displayScale` — from
+  `canvasBounds`, filled from getBoundingClientRect() during ITS own resize
+  pass. main.ts's fitCanvas sets the canvas CSS size AFTER that pass, so the
+  cached bounds kept the PRE-rotation size: measured in landscape, the real
+  canvas 526x393 against bounds still reading the portrait 393x526, giving
+  displayScale 2.677/1.494 where the truth is 2.0/2.0 — every tap scaled by
+  that error, ~98wu off in landscape and ~134wu after rotating back (0.0 in
+  all three states now). fitCanvas calls `updateBounds()` and recomputes
+  `displayScale` with Phaser's own formula (ScaleManager.js ~line 976,
+  `baseSize / canvasBounds`). **Do NOT "fix" this with `scale.refresh()`**: in
+  RESIZE mode its updateScale() re-derives gameSize/baseSize/canvas.width from
+  the PARENT, throwing away the deliberate resolution scaling (a 393x526 box
+  backed by 786x1052). fitCanvas also runs on `ml-hand`, because handedness
+  MOVES the game view without resizing it — the ResizeObserver never fires and
+  only the bounds POSITION goes stale. Gate: section 4e of verify-landscape
+  (tap your own feet through portrait → landscape → portrait; the walk target
+  must stay on you).
+  What the flip machinery (hud.ts beginFlip) DOES own is the HEAVY part
+  (rounds 3-4, from his frozen mid-rotation screenshots): a real
+  rotation restages the viewport several times, and a full scale.resize
+  per stage — framebuffer realloc + whole-world redraw, back to back,
+  traced at ~2s PER resize — stalls the main thread so long the OS
+  composites stale letterboxed frames. main.ts fitCanvas therefore
+  holds fire while :root.ml-flip is up — AND, because the #game
+  ResizeObserver delivers BEFORE the resize event that starts the flip
+  (traced: it beat beginFlip by 3ms), also whenever in-game + touch +
+  the viewport aspect disagrees with ml-land. A THEME-SURFACE VEIL
+  (.ml-flip-veil, z 3 — over the canvas, under stick/HUD/chat/chips)
+  hides the stale-sized world; at quiet (~300ms without a resize) the
+  controller emits ONE "ml-flip-flush" and the canvas re-fits in a
+  single resize under the veil; after two calm frames (hard cap 2.5s)
+  the veil fades, revealing the world with every piece of chrome
+  already exactly where it belongs. The in-game html/body also wear the
+  THEME background (index.html ships #000 for the pre-game screens), so
+  any page the browser exposes mid-rotation reads as surface, not a
+  black hole. Gate sections 4b + 4c (verify-landscape) watch a clean
+  and a STAGED rotation frame-by-frame from inside the page: zero
+  transforms and zero glide classes on the chrome, the veil up during
+  and gone after, ZERO canvas resizes before the flush, the single
+  re-fit after, and the pill on its true final anchor. The gate's
+  settle() treats a live veil as "not settled".
+  LANDSCAPE COLUMN SIZING (same round, from device screenshots): tabs
+  keep their full 56px in landscape — the global ≤640px-HEIGHT rule was
+  written for short PORTRAIT phones but every landscape phone is under
+  640px tall, so it silently shrank the strip (a media ≤388px height
+  keeps 48px for genuinely tiny screens); the strip is 84px wide; the
+  BACKPACK grid turns with the layout (3 wide × 5 tall via
+  :root.ml-land .ml-slots, capped 320px); and the keyboard-floated Chat
+  page input takes the gv insets so it floats INSIDE the game view
+  instead of spanning the whole screen. The backpack grid's width cap is
+  HEIGHT-derived (calc((100dvh − 72px)*0.6 + 20px)) so all five rows fit
+  without the "ugly 1px scroll"; the MAP sizes itself to the SHORT
+  viewport side minus margins in landscape — the same size portrait
+  gives it — and .ml-map's overflow:hidden clips the open-water sides
+  evenly (the frame stays == the image box, so the you-are-here dot's
+  percent offsets keep landing true). A ONE-TIME help chip on the
+  gamepad page points at Settings → controls; the × dismisses it forever
+  (`ml-hand-help`), it's an absolute overlay so it can never move the
+  controls, and its BODY is pointer-events:none so it can't eat their
+  input either (on a short viewport it can lie over the stick — caught
+  by verify-gamepad). Desktop (no touch — `touchDevice()`, shared with
+  the keyboard lift) keeps the portrait split at ANY aspect, which is
+  also what keeps every 480×320 desktop-context e2e gate on the portrait
+  coordinate model. Gate: `scripts/verify-landscape.mjs` (both hands,
+  portrait return, floating-stick input path, help persistence, desktop
+  immunity; reads settle-polled — the anchors transition, and the
+  starved compositor reports mid-flight values long after wall-clock).
+- **Portrait-only OUTSIDE the world**: the `#ml-rotate` prompt
+  (index.html media query — coarse pointer + landscape + max-height
+  520px) still covers the title/select/loading screens; `html.ml-ingame`
+  (set by mountPageFrame) suppresses it in the world. The manifest is
+  `orientation: any` now (was portrait-primary), AND — the real gate —
+  main.ts's boot-time `screen.orientation.lock("portrait")` (which
+  covers the installed app's pre-game screens) is RE-LOCKED to "any" by
+  mountPageFrame when the world mounts: that boot lock silently kept
+  the phone portrait in-game no matter what the manifest said
+  (maintainer: "nothing happens when I tilt"). Logout reloads, so the
+  portrait lock returns for the select screen. In a browser tab both
+  lock() calls reject harmlessly (not fullscreen) and rotation is
+  native. An already-installed WebAPK may also need a reinstall to shed
+  the OLD manifest's lock, and Android's system auto-rotate must be on.
 - **Dead-connection recovery**: backgrounding a phone tab freezes JS; the
   server drops the client and the room turns into a ZOMBIE (no patches/acks
   — prediction replays an ever-growing unacked history; the old "teleport

@@ -424,6 +424,43 @@ try {
   sent ? ok("typing + Enter sends a chat that returns to the log") : fail("input did not send / round-trip");
   const cleared = await page.evaluate(() => document.querySelector(".ml-chat-input").value);
   cleared === "" ? ok("input clears after send") : fail(`input not cleared ("${cleared}")`);
+
+  // ── req 9: A TAP ON THE WORLD ALWAYS DROPS THE BOX'S FOCUS (maintainer
+  //    2026-08-05: "select the input, close the keyboard, now attack an enemy
+  //    or click the game-view and the keyboard will open again"). Android's
+  //    ▼ hides the keyboard WITHOUT blurring, and Phaser preventDefault()s the
+  //    canvas pointerdown, so nothing else ever takes focus away — Chrome then
+  //    re-opens the keyboard on the next tap. The lift's blur-on-outside-tap
+  //    must therefore be gated on FOCUS, not on the box still floating. ──
+  const focusDrop = await page.evaluate(() => {
+    const el = document.querySelector(".ml-chat-input");
+    el.focus();
+    const was = document.activeElement === el;
+    // a real tap in the game view, captured on the way down
+    const c = document.querySelector("#game canvas") || document.querySelector("canvas");
+    const r = c.getBoundingClientRect();
+    c.dispatchEvent(new PointerEvent("pointerdown", {
+      bubbles: true, cancelable: true,
+      clientX: r.left + r.width / 2, clientY: r.top + r.height / 2,
+    }));
+    return { was, still: document.activeElement === el };
+  });
+  focusDrop.was && !focusDrop.still
+    ? ok("a tap on the game view blurs the chat box (no phantom keyboard on the next tap)")
+    : fail(`chat box kept focus after a world tap: ${JSON.stringify(focusDrop)}`);
+  // …and the IN-WORLD box closes on blur, or the world scene would keep
+  // Phaser's keyboard disabled forever and the player could never walk.
+  const worldBox = await page.evaluate(() => {
+    const el = document.querySelector(".ml-chatinput");
+    if (!el) return null;
+    el.style.display = "block";
+    el.focus();
+    el.blur();
+    return { walk: window.__ml.canWalk() };
+  });
+  worldBox && worldBox.walk
+    ? ok("blurring the in-world chat box hands movement back")
+    : fail(`in-world box left the player frozen: ${JSON.stringify(worldBox)}`);
 } finally { await browser.close(); }
 console.log(bad ? "\n=== FAIL ===" : "\n=== PASS ===");
 process.exit(bad ? 1 : 0);

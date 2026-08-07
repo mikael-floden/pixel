@@ -16,6 +16,7 @@
 // (existing edits are always preserved).
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
@@ -124,6 +125,42 @@ function imageSize(path) {
     }
     return null;
   } catch { return null; }
+}
+
+/** Seconds of a PCM .wav, read from its RIFF header — zero dependencies, same
+ *  rule as imageSize (this runs inside the Docker build). EVERY take shows its
+ *  length as a chip (maintainer 2026-08-06); the composer's foley.json ships
+ *  `durations_s`, the sounds catalog ships none, so we read the header:
+ *  data-chunk bytes ÷ byteRate is exact for PCM. A chunk walk, not a fixed
+ *  offset — real files carry LIST/fact chunks before `data`. */
+const wavDurCache = new Map();
+function wavDuration(path) {
+  if (wavDurCache.has(path)) return wavDurCache.get(path);
+  let dur = null;
+  try {
+    const fd = openSync(path, "r");
+    const buf = Buffer.alloc(4096);
+    const n = readSync(fd, buf, 0, 4096, 0);
+    closeSync(fd);
+    if (n >= 44 && buf.toString("ascii", 0, 4) === "RIFF" && buf.toString("ascii", 8, 12) === "WAVE") {
+      let off = 12, byteRate = 0;
+      while (off + 8 <= n) {
+        const id = buf.toString("ascii", off, off + 4);
+        const sz = buf.readUInt32LE(off + 4);
+        if (id === "fmt " && off + 24 <= n) byteRate = buf.readUInt32LE(off + 16);
+        if (id === "data") {
+          // A streamed file can carry a 0/0xffffffff placeholder size; the real
+          // length is then whatever follows the header on disk.
+          const bytes = sz > 0 && sz < 0xffffffff ? sz : statSync(path).size - (off + 8);
+          if (byteRate > 0 && bytes > 0) dur = +(bytes / byteRate).toFixed(2);
+          break;
+        }
+        off += 8 + sz + (sz & 1);
+      }
+    }
+  } catch { dur = null; }
+  wavDurCache.set(path, dur);
+  return dur;
 }
 
 const titleCase = (id) => id.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -237,6 +274,46 @@ function buildMonsters() {
 // only so a brand-new hero without a record still gets a sensible name; an
 // unlisted hero gets NO species/sex line rather than a guessed one.
 const HERO_NAMES = { default_boy: "Man", default_girl: "Woman" }; // mirrors games2/scripts/build-manifest.mjs
+/** The GAME STATE an NPC's PixelLab folder is really showing.
+ *
+ *  The heroes get this for free: animation_map.json maps `idle` →
+ *  `custom-calm-idle`, and the viewer prints the left-hand side. NPCs are not
+ *  in that file, so without this the viewer would print the folder itself —
+ *  "custom-calm-still-idle-breathing", and on 39 of them the upstream typo
+ *  "custom-calm-stili-idle-breathing".
+ *
+ *  Matched on WORDS, not on the whole string, so a new animation slug lands on
+ *  the right state without anyone editing a table, and a typo elsewhere in the
+ *  slug cannot hide the keyword. Longest keyword first: "spell_channel" must
+ *  win over "spell". Anything unrecognised is cleaned rather than passed
+ *  through — the reader never meets a `custom-` prefix. */
+const NPC_STATES = [
+  ["spell_channel", ["channel", "channeled"]], ["spell_wand", ["wand"]],
+  ["idle", ["idle", "breathing", "still", "calm"]], ["walk", ["walk", "walking"]],
+  ["run", ["run", "running"]], ["jump", ["jump"]], ["attack", ["attack", "swing", "slash"]],
+  ["sword", ["sword"]], ["bow", ["bow", "arrow"]], ["kick", ["kick"]], ["punch", ["punch"]],
+  ["hurt", ["hurt", "hit", "damaged"]], ["die", ["die", "dead", "death"]],
+  ["sit", ["sit", "sitting"]], ["talk", ["talk", "talking", "speak"]],
+  ["wave", ["wave", "waving", "greet"]], ["work", ["work", "working", "hammer", "craft"]],
+];
+function npcState(folder) {
+  const words = new Set(String(folder).toLowerCase().replace(/^custom[-_]/, "").split(/[-_\s]+/));
+  for (const [state, keys] of NPC_STATES) if (keys.some((k) => words.has(k))) return state;
+  return [...words].join("_") || "idle";
+}
+/** The 8 base rotations as a one-frame "standing" clip, for a character that
+ *  has no animation art yet. Emits ONLY the directions whose file is actually
+ *  on disk — a clip pointing at a missing rotation would trade an empty
+ *  viewer for a broken image, which is worse. Returns {} when there is
+ *  nothing at all, so the caller can still tell the difference. */
+function baseRotationClip(baseDir) {
+  const dirs = {};
+  for (const d of DIRS) {
+    const p = art(`${baseDir}/${d}`);
+    if (p) dirs[d] = { frames: 1, strip: p };
+  }
+  return Object.keys(dirs).length ? { standing: { folder: "base", dirs } } : {};
+}
 function buildCharacters() {
   const base = join(ROOT, "characters2", "humans");
   if (!isDir(base)) return null;
@@ -280,12 +357,19 @@ function buildCharacters() {
   // --- NPCs (characters2/npcs/, tag-driven mirror; landed 2026-08-01) -------
   // Same array, kind:"npc": the page splits on it, and everything shared —
   // routing, feedback, the animation player, lore joins — keeps working with
-  // one code path. Folders are keyed by the PixelLab id's first 8 hex chars
-  // because the NPC NAMES ARE PROMPT JUNK ("No boots, no gloves, (copy 5)") —
-  // the characters2 README says so outright. So players see none of them:
-  // every NPC is a "Villager" until someone authors a real name; the PixelLab
-  // name rides along for the admin, who reviews these. States are discovered
-  // from the folders on disk — NPCs are not in animation_map.json.
+  // one code path.
+  //
+  // The id is the FOLDER KEY exactly as characters2 publishes it, with no
+  // prefix of ours: the lore fold below matches loreEntities[dom][e.id], so a
+  // prefix would quietly fail to join the day the lore agent writes an NPC up.
+  //
+  // Every NPC is authored (characters2 2026-08-01): display_name, species,
+  // sex, role and lore ride on character.json, read from the ART rather than
+  // from pixellab_prompt — which is the same copy-pasted "young female
+  // adventurer" text on all 191 and says female for every one of them. That
+  // prompt, and the duplicate PixelLab name it produced, stay admin-only.
+  // States are discovered from the folders on disk: NPCs are not in
+  // animation_map.json.
   const npcBase = join(ROOT, "characters2", "npcs");
   for (const key of listDirs(npcBase)) {
     const cj = readJson(join(npcBase, key, "character.json"));
@@ -301,21 +385,44 @@ function buildCharacters() {
         const frames = listFiles(frameDir, artRe("\\d+")).length;
         if (frames) dirs[dir] = { frames, framesDir: `characters2/npcs/${key}/animations/${folder}/${dir}`, ...frameNaming(frameDir) };
       }
-      if (Object.keys(dirs).length) anims[folder] = { folder, dirs };
+      // KEYED BY GAME STATE, never by the PixelLab folder. The state name is
+      // what the viewer prints on its buttons, and the folder is a prompt
+      // slug — "custom-calm-still-idle-breathing", plus an upstream typo
+      // variant "…stili…" on 39 of them (maintainer 2026-08-01: "no technical
+      // names to the end user").
+      if (Object.keys(dirs).length) {
+        let state = npcState(folder);
+        while (anims[state]) state = /_\d+$/.test(state) ? state.replace(/_(\d+)$/, (_, n) => `_${+n + 1}`) : `${state}_2`;
+        anims[state] = { folder, dirs };
+      }
     }
     chars.push({
-      id: `npc-${key}`,
+      id: key,
       kind: "npc",
-      name: "Villager",
-      pixellabName: cj.name ?? null,             // admin-only display
-      species: "Human",
-      sex: null,
-      lore: null,
+      // "Villager" only survives as the fallback for an NPC synced before the
+      // agent has authored it — a nameless card, not a broken one.
+      name: cj.display_name ?? "Villager",
+      role: cj.role ? titleCase(cj.role) : null,   // "elder_scholar" → "Elder Scholar"
+      pixellabName: cj.name ?? null,               // admin-only display
+      species: cj.species ?? "Human",
+      sex: cj.sex ?? null,
+      lore: cj.lore ?? null,
       path: `characters2/npcs/${key}`,
       preview: art(`characters2/npcs/${key}/base/south`),
       baseStrip: art(`characters2/npcs/${key}/base/preview`),
       frameW, frameH,
-      animations: anims,
+      // NO ANIMATION ART? Then the 8 STANDING ROTATIONS are the art, and they
+      // become a one-frame "standing" clip so the viewer has something real to
+      // show (maintainer 2026-08-07: "Why is Morwenna not visible in the
+      // animation viewer?" — 3 of the 191 NPCs are synced with a base/ folder
+      // and no animations/ folder at all, so the player drew an empty
+      // chessboard with a "—" frame counter and no explanation).
+      //
+      // A synthesised clip, not a special case in the UI: the player, the
+      // direction buttons and the state chip all work unchanged, and the
+      // 8 rotations are genuinely worth flipping through. `standing` is the
+      // state name, so the card says plainly what it is showing.
+      animations: Object.keys(anims).length ? anims : baseRotationClip(`characters2/npcs/${key}/base`),
     });
   }
   return chars;
@@ -453,6 +560,7 @@ function buildSounds() {
         return {
           id: rel.replace(/^.*\//, "").replace(/\.wav$/, ""),
           chosen: rel === meta.file,
+          dur: wavDuration(join(ROOT, relPath)),
           files: audioSiblings(relPath),
         };
       }).filter((t) => isFile(join(ROOT, t.files.wav)));
@@ -500,7 +608,62 @@ function buildMusic() {
       files: audioSiblings(wav),
     });
   }
-  return tracks;
+  return [...tracks, ...buildComposerMusic()];
+}
+
+/* The COMPOSER's own score (games2/composer/music/tracks.json,
+   `composer-music@1`). Two sources make the game's music and the page listed
+   only one, so the five context beds the composer generated on 2026-08-05
+   were invisible (maintainer 2026-08-06: "he did 5 new songs and you are
+   listing nothing but the old 2"). These are not the music DOMAIN's tracks —
+   different owner, different folder, different manifest — so they carry
+   `source: "composer"` and their feedback goes to the composer.
+
+   WHAT PLAYS TODAY is deliberately a separate axis from what EXISTS: the
+   context score is generated but dormant (games2/CLAUDE.md — the maintainer
+   picks what plays where before it is wired), so a bed's `routed` flag says
+   plainly whether the game can currently reach it. */
+const BED_ROLE = {
+  title: { when: "The title and character-select screen", live: true },
+  night: { when: "In the world, after dark — cross-faded by the sun", live: true },
+  battle: { when: "A real fight: a monster actually chasing or fighting you", live: false },
+  cave: { when: "Under a deck slab — inside the mountain", live: false },
+  home: { when: "Near the spawn bonfire", live: false },
+  town: { when: "Standing on roads and farm tiles", live: false },
+  adventure: { when: "Everywhere else — the default bed", live: false },
+};
+function buildComposerMusic() {
+  const dir = composerDir() ? join(composerDir(), "music") : null;
+  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  if (!doc?.tracks) return [];
+  // A bed the composer added that this build has no role text for is still
+  // LISTED (never hidden), just without the routing line — and it warns, the
+  // same contract as the sfx drift sentinel.
+  for (const id of Object.keys(doc.tracks)) if (!BED_ROLE[id]) sfxDrift.push(`composer music "${id}" has no role in BED_ROLE`);
+  return Object.entries(doc.tracks).map(([id, t]) => {
+    const files = {};
+    for (const f of t.files ?? []) {
+      const ext = (f.file.split(".").pop() ?? "").toLowerCase();
+      files[ext] = `composer/music/${f.file}`;
+    }
+    const role = BED_ROLE[id] ?? {};
+    return {
+      id, name: titleCase(id), source: "composer",
+      use: role.when ?? "",
+      routed: !!role.live,
+      feeling: (t.sections ?? []).flatMap((s) => s.styles ?? []).slice(0, 6),
+      sections: (t.sections ?? []).map((s) => s.name).filter(Boolean),
+      duration_s: t.duration_s ?? null,
+      bpm: t.bpm != null ? Math.round(t.bpm) : null,
+      key: t.musical?.root ? { root: t.musical.root, mode: t.musical.mode } : null,
+      loopable: !!t.loop,
+      loopStart: t.loop?.loop_start_s ?? null,
+      loopEnd: t.loop?.loop_end_s ?? null,
+      lufs: t.measured?.lufs ?? null,
+      path: `composer/music/${id}`,
+      files,
+    };
+  });
 }
 
 // -------------------------------------------------------------------- items
@@ -588,6 +751,10 @@ function buildLore() {
     // A MARKER ONLY, never the contents: 26 KB of Game-Master markdown must not
     // ride in a file every player fetches on every load. The page fetches it.
     redLine: isFile(rl) ? { path: "lore/RED_LINE.md", bytes: statSync(rl).size } : null,
+    // v2: how much of the backbone the published texts actually tell — counts
+    // only ({revealed, hinted, hidden}); the beat-by-beat map stays in
+    // lore/canon/revelations.json, which is the GM's file, not the player's.
+    redLineProgress: doc.red_line_progress ?? null,
   };
   return (doc.entries ?? [])
     // Normalise ONCE so no view can reach an undefined chapter or an unnamed
@@ -661,19 +828,682 @@ function buildWorldUsage() {
     m.spawned += Number(z.num) || 0;
     m.zones += 1;
   }
-  // Spawn zones projected onto the world's minimap (wiki/world_map.json,
-  // written by wiki/tools/world-map.py) — the monster pages' "where it
-  // lives" map. Only used when it describes THIS world.
+  // NPCs: maps2 stands a cast in the world (npcs@1) and keys each one by the
+  // characters2 FOLDER id, which is exactly this build's NPC id — so the join
+  // needs no translation table.
+  const npcs = {};
+  for (const n of readJson(join(dir, "npcs.json"))?.npcs ?? []) {
+    if (!n?.character) continue;
+    (npcs[n.character] ??= []).push({ id: n.id ?? "", type: n.type ?? "", anchor: n.anchor ?? "", wares: n.wares ?? [] });
+  }
+  // Spawn zones and the NPC cast projected onto the world's minimap
+  // (wiki/world_map.json, written by wiki/tools/world-map.py) — the monster
+  // pages' "where it lives" map and the NPC pages' "where you'll find them".
+  // Only used when it describes THIS world.
   const wm = readJson(join(ROOT, "wiki", "world_map.json"));
   const map = wm?.world === name
-    ? { minimap: reArt(wm.minimap), mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj, monsters: wm.monsters ?? {} }
+    ? { minimap: reArt(wm.minimap), mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj,
+        monsters: wm.monsters ?? {}, npcs: wm.npcs ?? {} }
     : null;
 
   return {
     name, w: world.size?.w ?? null, h: world.size?.h ?? null,
     cells, props, distinctTiles: Object.keys(tiles).length,
-    tiles, monsters, map,
+    tiles, monsters, npcs, map,
   };
+}
+
+/* ------------------------------------------------- sfx: the game's EVENTS
+   The Sound Effects page is organized by IN-GAME EVENT (maintainer
+   2026-08-05): what triggers a sound, which sounds play (layered, or
+   alternating takes), and with exactly which processing. The authority is
+   the COMPOSER's engine (games2/composer/engine/api.ts + oneshot.ts) — the
+   sound domain's bindings.json is only its input — so this builder derives
+   the table from the same sources the engine compiles from:
+
+   - sounds/bindings.json events[]  (the catalog bindings)
+   - gameAudio.event("...") call sites in the game client (what is EMITTED —
+     an emitted event with no sound is a real, listable thing)
+   - the composer's own takeover tables, parsed out of api.ts (EVENT_FOLEY,
+     the JUMP_VOICE sets, the FOOTSTEP_* routing/trim/layer tables)
+
+   The parse is a DRIFT SENTINEL like the sidecar one: the composer owns
+   those constants and edits them freely, so every regex miss is collected
+   and printed loudly rather than silently shipping a stale event table.
+   (Board request filed for a published composer/events.json to replace the
+   parsing; until then the wiki reads the truth out of the source.) */
+const sfxDrift = [];
+function tsScalar(src, name, dflt) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*(-?\\d+(?:\\.\\d+)?)`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return dflt; }
+  return Number(m[1]);
+}
+function tsRecord(src, name) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*\\{([\\s\\S]*?)\\};`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return null; }
+  const body = m[1].replace(/\/\/[^\n]*/g, "");
+  const out = {};
+  const entry = /(?:"([^"]+)"|([$\w.]+))\s*:\s*(?:"([^"]+)"|(-?\d+(?:\.\d+)?)|(\{[^{}]*\}))/g;
+  for (let e; (e = entry.exec(body)); ) {
+    const key = e[1] ?? e[2];
+    if (e[3] != null) out[key] = e[3];
+    else if (e[4] != null) out[key] = Number(e[4]);
+    else {
+      const inner = {};
+      const sub = /([$\w]+)\s*:\s*(?:"([^"]+)"|(-?\d+(?:\.\d+)?))/g;
+      for (let s; (s = sub.exec(e[5])); ) inner[s[1]] = s[2] ?? Number(s[3]);
+      out[key] = inner;
+    }
+  }
+  if (!Object.keys(out).length) sfxDrift.push(`const ${name} parsed empty`);
+  return out;
+}
+/** `new Set<string>([...])` in the engine source. */
+function tsSet(src, name) {
+  const m = src.match(new RegExp(`const ${name}(?:\\s*:[^=]+)?\\s*=\\s*new Set<[^>]*>\\(\\[([\\s\\S]*?)\\]\\)`));
+  if (!m) { sfxDrift.push(`const ${name} not found`); return new Set(); }
+  return new Set([...m[1].replace(/\/\/[^\n]*/g, "").matchAll(/"([^"]+)"/g)].map((x) => x[1]));
+}
+/** The engine's own splitComposerId: an assignment may name a set OR one
+ *  recording inside it ("composer/punch", "composer/punch/punch__take02",
+ *  "composer/punch#take02", or a separate `take`). */
+function splitComposerId(id, take) {
+  const body = id.slice("composer/".length);
+  const cut = body.search(/[#/]/);
+  return cut >= 0 ? { set: body.slice(0, cut), take: body.slice(cut + 1) } : { set: body, take };
+}
+/** Resolve `take` against a layer's recordings, matching the engine: a bare
+ *  index is 1-based, a name matches with or without the `<set>__` prefix and
+ *  extension. A take that is NOT there resolves to SILENCE — never to a
+ *  neighbouring recording, or a deleted take would quietly become a different
+ *  sound (api.ts says so explicitly, and the wiki must show the same). */
+function pickTake(takes, take) {
+  if (take == null || take === "") return takes;
+  if (typeof take === "number") return takes[take - 1] ? [takes[take - 1]] : [];
+  const want = String(take).replace(/\.\w+$/, "");
+  if (/^\d+$/.test(want)) return takes[Number(want) - 1] ? [takes[Number(want) - 1]] : [];
+  const hit = takes.find((t) => {
+    const n = t.name.replace(/\.\w+$/, "");
+    return n === want || n.endsWith(`__${want}`) || t.file.replace(/\.\w+$/, "").endsWith(want);
+  });
+  return hit ? [hit] : [];
+}
+/** The composer source, wherever this build runs: repo (games2/composer) or
+ *  the Docker image (/assets/composer — Dockerfile copies foley/ there; the
+ *  engine sources are only in the repo, so inside Docker the parse would come
+ *  up empty. The committed data.json is built in-repo, and Docker's rebuild
+ *  keeps the committed sfx block when the sources are absent — see below). */
+function composerDir() {
+  for (const p of [join(GAMES2, "composer"), join(ROOT, "composer")]) if (isDir(p)) return p;
+  return null;
+}
+/** Content hash, memoised — the ONLY way to tell a pool candidate that was
+ *  promoted to a take from one that was passed over: the promotion is a plain
+ *  file copy under a new name, so the paths never match and the bytes always
+ *  do. Reading the whole foley pool costs ~8 MB once per build, and only the
+ *  in-repo build pays it (Docker keeps the committed sfx block). */
+const hashCache = new Map();
+function fileHash(p) {
+  if (!hashCache.has(p)) {
+    let v = null;
+    try { v = createHash("md5").update(readFileSync(p)).digest("hex"); } catch { /* absent */ }
+    hashCache.set(p, v);
+  }
+  return hashCache.get(p);
+}
+function buildSfx(soundEntries, entityIds = {}) {
+  const cat = readJson(join(ROOT, "sounds", "viewer_data.json"))?.sounds ?? [];
+  const catById = new Map(cat.map((s) => [s.id, s]));
+  const bindings = readJson(join(ROOT, "sounds", "bindings.json")) ?? {};
+  const comp = composerDir();
+  const apiSrc = comp ? (() => { try { return readFileSync(join(comp, "engine", "api.ts"), "utf8"); } catch { return ""; } })() : "";
+  const oneSrc = comp ? (() => { try { return readFileSync(join(comp, "engine", "oneshot.ts"), "utf8"); } catch { return ""; } })() : "";
+  if (!apiSrc) {
+    // No engine source to read (the Docker rebuild): keep the committed table.
+    const prev = readJson(OUT)?.sfx ?? readJson(join(WIKI_DIR, "site", "data.json"))?.sfx;
+    if (prev) return prev;
+    sfxDrift.push("composer engine sources unavailable and no committed sfx to keep");
+    return null;
+  }
+
+  // ---- engine constants the wiki's player mirrors (each pinned to source) --
+  const gentleM = oneSrc.match(/const gentle = sound\.urls \? 1 : ([\d.]+)/);
+  if (!gentleM) sfxDrift.push("gentle factor not found in oneshot.ts");
+  if (!/gainDb: \(opts\.gainDb \?\? 0\) - 12,/.test(apiSrc)) sfxDrift.push("the −12 dB EVENT_FOLEY trim moved in api.ts");
+  const engine = {
+    gentle: gentleM ? Number(gentleM[1]) : 0.35,
+    debounceMs: 30,
+    busDb: { ui: -12, sfx: -14, music: -20, ambience: -24, ...(bindings.buses ?? {}) },
+    uiTrimDb: -12,
+    voiceGainDb: tsScalar(apiSrc, "JUMP_VOICE_GAIN_DB", -12),
+    stepBaseDb: -8,
+    walkPenaltyDb: tsScalar(apiSrc, "WALK_PENALTY_DEFAULT_DB", -3),
+    runBonusDb: 0.8,
+    wetStepRate: tsScalar(apiSrc, "WET_STEP_RATE", 1.15),
+  };
+  if (!/gainDb: -8 \+ \(FOOTSTEP_TRIM_DB/.test(apiSrc)) sfxDrift.push("the −8 dB step base moved in api.ts");
+
+  // ---- composer takeover tables ----
+  const EVENT_FOLEY = tsRecord(apiSrc, "GameAudio\\.EVENT_FOLEY|EVENT_FOLEY") ?? {};
+  // The Game Master's own assignments — the engine's FIRST lookup, and the
+  // one this build used to miss entirely (see resolveEvent below).
+  //
+  // READ THE COMPOSER'S PUBLISHED MANIFEST, not their source. games-audio ship
+  // `composer/assignments.json` (pixel-composer-assignments@1) generated by
+  // their own build-assignments.mjs, and their verify-quiet gate fails if it
+  // drifts from the engine — so it "cannot go stale on you the way an api.ts
+  // regex can" (their words, 2026-08-06). Proven the same day: a regex on
+  // `const assigned = EVENT_ASSIGNMENTS[name]` broke the moment they added
+  // per-character voices, which is a table this wiki was reading correctly.
+  // The source parse stays as a fallback so an unbuilt manifest degrades to
+  // stale-but-present rather than to a page claiming everything is silent.
+  const assignDoc = comp ? readJson(join(comp, "assignments.json")) : null;
+  const EVENT_ASSIGN = assignDoc?.events ?? tsRecord(apiSrc, "EVENT_ASSIGNMENTS") ?? {};
+  if (!assignDoc?.events) sfxDrift.push("composer/assignments.json missing or malformed — fell back to parsing api.ts");
+  const BIND_OK = tsSet(apiSrc, "BINDINGS_APPROVED");
+  if (!/EVENT_ASSIGNMENTS\[/.test(apiSrc)) sfxDrift.push("EVENT_ASSIGNMENTS is no longer consulted by the engine");
+  if (!/if \(!BINDINGS_APPROVED\.has\(name\)\) return;/.test(apiSrc)) sfxDrift.push("the BINDINGS_APPROVED gate moved in api.ts");
+  const FOOT_SETS = tsRecord(apiSrc, "FOOTSTEP_SETS") ?? {};
+  const FOOT_CAT = tsRecord(apiSrc, "FOOTSTEP_CATALOG") ?? {};
+  const FOOT_TRIM = tsRecord(apiSrc, "FOOTSTEP_TRIM_DB") ?? {};
+  const FOOT_LP = tsRecord(apiSrc, "FOOTSTEP_LOWPASS_HZ") ?? {};
+  const FOOT_RATE = tsRecord(apiSrc, "FOOTSTEP_RATE") ?? {};
+  const FOOT_LAYER = tsRecord(apiSrc, "FOOTSTEP_LAYER") ?? {};
+  const JUMP_VOICE = tsRecord(apiSrc, "JUMP_VOICE") ?? {};
+  const footDefault = apiSrc.match(/const FOOTSTEP_DEFAULT = "([^"]+)"/)?.[1] ?? (sfxDrift.push("FOOTSTEP_DEFAULT not found"), "stone");
+
+  // ---- composer's own foley sets (takes on disk, served at /assets/composer) --
+  const foleyDir = comp ? join(comp, "foley") : null;
+  const foleyMeta = foleyDir ? readJson(join(foleyDir, "foley.json")) ?? {} : {};
+  const composerSets = {};
+  for (const [set, meta] of Object.entries(foleyMeta)) {
+    if (!meta?.takes) continue;
+    composerSets[set] = {
+      takes: meta.takes.map((t, i) => ({
+        name: t.split("/").pop(),
+        file: `composer/foley/${t}`,
+        dur: meta.durations_s?.[i] ?? null,
+      })),
+      // ---- THE GENERATION POOL — the takes' unpicked siblings ----------
+      // The composer generates a POOL per brief, scores it and copies the
+      // winner(s) out as takes; 23 of the 91 sets kept their pool on disk.
+      // That is 130 more files nothing ever listed — and of those, 91 are
+      // audio that existed NOWHERE in the wiki (the other 39 are byte
+      // copies of the take that was chosen out of them, hence the hash
+      // dedupe: same bytes at two paths must never become two rows).
+      // They ship because the score answers "does this fit the brief it was
+      // generated for", which is a DIFFERENT question from "is this the
+      // sound I want for my event" — a candidate rejected as a grass
+      // footstep is still a fine rustle for an item pickup, and only the
+      // Game Master can say so (maintainer 2026-08-06: "Every single
+      // generated sound?"). Best-scoring first; `rank` ascends.
+      alts: (() => {
+        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, t))).filter(Boolean));
+        return (meta.pool_candidates ?? [])
+          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, c.file))))
+          .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+          .map((c) => ({
+            name: c.file.split("/").pop(),
+            file: `composer/foley/${c.file}`,
+            dur: c.features?.duration_s ?? null,
+          }));
+      })(),
+      voice: set.startsWith("jump_voice"),
+      // When the composer generated this set — the ONLY real "date added" in
+      // the project, and it is per SET, so every take and candidate in the
+      // folder shares it. The sound catalog carries no timestamp anywhere
+      // (checked: neither viewer_data.json nor any metadata.json), so those
+      // sort last rather than being given a made-up date. File mtimes are NOT
+      // a substitute: a fresh clone and the Docker build stamp them all alike.
+      added: meta.generated_at ?? null,
+      usedBy: [],
+    };
+  }
+  const useSet = (set, why) => { const s = composerSets[set]; if (s && !s.usedBy.includes(why)) s.usedBy.push(why); };
+
+  // ---- what the game actually EMITS (an event nobody emits is "wired, not
+  //      fired"; an emitted event with no sound is "silent") ----
+  const emitted = new Set();
+  // Static prefixes of DYNAMIC event names (see the template-literal scan
+  // below): "monsters." means every `monsters.<kind>.<action>` is fired.
+  const emittedPrefixes = new Set();
+  for (const f of [...walkTs(join(GAMES2, "client", "src")), ...walkTs(join(comp ?? "", "engine"))]) {
+    const src = (() => { try { return readFileSync(f, "utf8"); } catch { return ""; } })();
+    // COMMENTS ARE NOT CALL SITES: api.ts's own doc header shows
+    // `audio.event("ui.confirm")` as an example, which made a never-fired
+    // event read as live to players (maintainer 2026-08-05). Filtered per
+    // LINE — a whole-file comment strip is a trap, because one unmatched
+    // /* inside a string or regex literal swallows real code after it.
+    for (const line of src.split("\n")) {
+      const t = line.trimStart();
+      if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
+      for (const m of line.matchAll(/(?:gameAudio|audio)\.event\(\s*["']([^"']+)["']/g)) {
+        if (line.slice(0, m.index).includes("//")) continue;
+        emitted.add(m[1]);
+      }
+      // DYNAMIC names. A PER-ENTITY event cannot be a literal — the game fires
+      // `monsters.${mv.kind}.${action}` once per gait cycle, per swing, per
+      // growl (WorldScene.monsterSfx). A literal-only scan called every one of
+      // those "not fired yet", i.e. told the Game Master that the sound he had
+      // just bound to Sprigling could never be heard, while the game played it
+      // on every step. The static PREFIX before the first ${ is the family.
+      for (const m of line.matchAll(/(?:gameAudio|audio)\.event\(\s*`([^`$]*)\$\{/g)) {
+        if (line.slice(0, m.index).includes("//")) continue;
+        if (m[1].includes(".")) emittedPrefixes.add(m[1]);
+      }
+    }
+  }
+  /** Does the game fire this event? A literal call site, or a dynamic one
+   *  whose static prefix this id falls under. */
+  const isEmitted = (id) => emitted.has(id) || [...emittedPrefixes].some((p) => id.startsWith(p));
+  // Sounds the ENGINE drives without a semantic event() call — the ambience
+  // beds (region changes via setEnv) and the water-entry splash (avatarFrame).
+  // They play in the real game every session; hiding them from players as
+  // "never fired" would be the opposite of the truth.
+  // Fired by the engine through its OWN method, not a `gameAudio.event("…")`
+  // call site the emitted-scan can see: thunder() on every lightning strike,
+  // star() on every shooting star. They became assignable 2026-08-06, and
+  // without this they land on the assignment path and read "not fired yet" —
+  // claiming nobody can hear a sound the game plays on every storm.
+  const ENGINE_DRIVEN = new Set(["player.water_enter", "weather.thunder", "progress.star"]);
+
+  // ---- assemble the events ----
+  const events = [];
+  const GROUPS = { ui: "Interface", item: "Items", tool: "Tools", player: "Movement", footsteps: "Movement", combat: "Combat", progress: "Progress", consume: "World", container: "World", door: "World", region: "Ambience", ambience: "Ambience", weather: "Weather", system: "System" };
+  const nice = (id) => titleCase(id.replace(/^[a-z]+\./, "").replace(/[._]/g, " "));
+  // over.primary mirrors the engine's ONE-SOUND-IS-ONE-SOUND binding
+  // (2026-08-05: catalogStepEntry / foleyEntry bind takes.slice(0, 1) — the
+  // approved primary take IS the sound; the set's other recordings are not
+  // part of the event and live only in the admin's All sounds library).
+  const catLayer = (soundId, over = {}) => {
+    const s = catById.get(soundId);
+    if (!s) return null;
+    const g = engine.gentle;
+    const v = s.variation ?? {};
+    const all = (s.takes?.length ? s.takes : [s.file]).map((t) =>
+      ({ name: t.split("/").pop(), file: `sounds/${t}`, dur: wavDuration(join(ROOT, "sounds", t)) }));
+    // An assignment may name ONE recording; then that is the whole layer.
+    const chosen = over.take != null ? pickTake(all, over.take) : null;
+    return {
+      source: "catalog", soundId, label: s.name ?? soundId,
+      takes: chosen ?? (over.primary ? all.slice(0, 1) : all),
+      spareTakes: all.length - (chosen ?? (over.primary ? all.slice(0, 1) : all)).length,
+      pick: chosen ? "the one chosen recording" : over.primary ? "the one bound take" : v.round_robin === false ? "primary take only" : "round-robin, never the same twice",
+      rate: over.rate ?? 1,
+      mixGainDb: s.mix_gain_db ?? 0,
+      trimDb: over.trimDb ?? 0,
+      bus: over.bus ?? "sfx",
+      jitterSemis: v.pitch_jitter_semitones ? v.pitch_jitter_semitones.map((x) => +(x * g).toFixed(2)) : null,
+      gainJitterDb: v.gain_jitter_db ? v.gain_jitter_db.map((x) => +(x * g).toFixed(2)) : null,
+      lowpassHz: over.lowpassHz ?? null,
+      layerNote: over.layerNote ?? null,
+      voiceRate: null,
+      loop: !!s.loop,
+    };
+  };
+  const setLayer = (set, over = {}) => {
+    const cs = composerSets[set];
+    if (!cs) return null;
+    useSet(set, over.usedBy ?? "event");
+    // THE POOL IS A SOURCE OF RECORDINGS, not just the selected takes — the
+    // engine's composerFoleyTake searches both, and the maintainer went
+    // straight for them once the picker listed them (weather.thunder is four
+    // pool candidates, cand07/08/09/17). Searching only `takes` resolved every
+    // one of those to an empty layer: the card would claim a sound while
+    // showing nothing under it.
+    const pickable = [...cs.takes, ...cs.alts];
+    const chosen = over.take != null ? pickTake(pickable, over.take) : null;
+    const takes = chosen ?? (over.primary ? cs.takes.slice(0, 1) : cs.takes);
+    return {
+      source: "composer", set, label: `${set} (composer)`,
+      takes,
+      // Everything else in the folder the Game Master could swap in — the
+      // set's other takes AND its unpicked generation candidates.
+      spareTakes: pickable.length - takes.length,
+      pick: chosen ? "the one chosen recording" : over.primary ? "the one bound take" : over.pick ?? "round-robin, never the same twice",
+      rate: over.rate ?? 1,
+      mixGainDb: 0, trimDb: over.trimDb ?? 0, bus: over.bus ?? "sfx",
+      // Composer sets carry no catalog variation block: the engine's jitter
+      // comes from the entry the composer builds (small, authored ranges).
+      jitterSemis: over.jitterSemis ?? null,
+      gainJitterDb: null,
+      lowpassHz: over.lowpassHz ?? null,
+      layerNote: over.layerNote ?? null,
+      voiceRate: over.voiceRate ?? null,
+      loop: false,
+    };
+  };
+
+  // ---- THE ENGINE'S OWN RESOLUTION ORDER, mirrored exactly ---------------
+  // api.ts is SILENT BY DEFAULT (2026-08-05) and resolves an emitted event as:
+  //   1. EVENT_ASSIGNMENTS — what the Game Master assigned in the wiki
+  //   2. the voice branch + EVENT_FOLEY — approved in their own rounds
+  //   3. sounds/bindings.json — ONLY for the two BINDINGS_APPROVED events
+  //   4. otherwise SILENCE.
+  // This wiki read #2 and then fell through to bindings.json for EVERYTHING,
+  // which is two lies at once (maintainer 2026-08-06: "the wiki is showing old
+  // sound mappings not the one playing in the game"): every sound he had
+  // assigned was invisible — ui.press showed the old `ui_tick` when the game
+  // plays `ui_click_bead` — and dozens of unapproved library RECOMMENDATIONS
+  // rendered as bound sounds that the engine never plays at all. bindings.json
+  // is a suggestion; only these tables are the game.
+  /** An event's assigned sounds. The manifest ships a LIST per event — several
+   *  assigned sounds ROTATE round-robin on that event, each keeping its own
+   *  pitch/volume/jitter — and it used to ship a single object, THROUGH THE
+   *  SAME `@1` format string. So accept both shapes, and shout when it is
+   *  neither: a shape this reader cannot parse must never quietly render as
+   *  "no sound yet" (maintainer 2026-08-06 — "WTF! … Who is undoing all my
+   *  work!" — an array-blind read wiped all 14 of his assignments off the page
+   *  while the game went on playing every one of them). Silent degradation to
+   *  "nothing is assigned" is the worst failure this page has. */
+  const assignList = (id) => {
+    const raw = EVENT_ASSIGN[id];
+    if (!raw) return [];
+    const arr = Array.isArray(raw) ? raw : [raw];
+    const good = arr.filter((a) => a && typeof a === "object" && typeof a.sound === "string");
+    if (good.length !== arr.length) sfxDrift.push(`assignments.json: ${id} carries an entry shape this build cannot read`);
+    return good;
+  };
+  const assignLayer = (a, id) => {
+    if (!a?.sound) return null;
+    const over = {
+      trimDb: a.volume_db ?? 0,
+      rate: a.pitch ?? 1,
+      bus: a.bus ?? "sfx", usedBy: id, assigned: true,
+    };
+    if (String(a.sound).startsWith("composer/")) {
+      const { set, take } = splitComposerId(a.sound, a.take);
+      // NOT GENTLED. oneshot.ts:135 is `gentle = sound.urls ? 1 : 0.35`, and
+      // the engine's assigned-composer branch builds its entry WITH `urls`,
+      // so the full ±j is applied. Scaling by 0.35 here (as the catalog path
+      // rightly does) made the card understate the Game Master's own setting
+      // by 65% — item.drop read ±0.14 st while the game plays ±0.4.
+      const j = Math.abs(a.max_random_pitch_semis ?? 0);
+      return setLayer(set, { ...over, take: take ?? null, primary: take == null,
+        jitterSemis: j ? [-j, j] : null });
+    }
+    // A CATALOG assignment carries no jitter of its own: the engine plays the
+    // catalog entry as-is (`oneShots.play(snd, …)` with only rate/gainDb), so
+    // `max_random_pitch_semis` is silently IGNORED for these and the sound's
+    // own variation — gentled at 0.35, since a catalog entry has no `urls` —
+    // is the truth. catLayer already computes exactly that. Reported to
+    // games-audio 2026-08-06.
+    return catLayer(a.sound, { ...over, take: a.take ?? null, primary: a.take == null });
+  };
+  /** What the game ACTUALLY plays for this event, and why. */
+  const resolveEvent = (id, ev) => {
+    const asg = assignList(id).map((a) => assignLayer(a, id)).filter(Boolean);
+    if (asg.length) return { sounds: asg, bound: true, via: "assigned",
+      // Several assigned sounds ROTATE — one per trigger, never all at once.
+      // That is the opposite of a layered event (grass + dirt underneath play
+      // together), so the flag has to travel with the card or ▶ would fire
+      // four thunder cracks simultaneously.
+      rotates: asg.length > 1,
+      // adminNote, not note: "assigned by the Game Master in the wiki" is
+      // pipeline shop talk. It was being shown to PLAYERS on every creature
+      // page (maintainer 2026-08-06). The "N in rotation" chip already tells
+      // everyone what they need about several sounds taking turns.
+      adminNote: asg.length > 1
+        ? `assigned by the Game Master in the wiki — these ${asg.length} take turns, one per trigger`
+        : "assigned by the Game Master in the wiki" };
+    if (EVENT_FOLEY[id]) {
+      const l = setLayer(EVENT_FOLEY[id], { bus: "ui", trimDb: engine.uiTrimDb, primary: true, usedBy: id });
+      return { sounds: l ? [l] : [], bound: !!l, via: "foley",
+        note: "every UI event is bound to the approved click — one single sound" };
+    }
+    if (BIND_OK.has(id) && ev?.sound) {
+      const l = catLayer(ev.sound, { bus: ev.bus ?? "sfx" });
+      return { sounds: l ? [l] : [], bound: !!l, via: "bindings", note: null };
+    }
+    // A library suggestion the engine does NOT honour. Say so rather than
+    // dropping it — it tells the Game Master what is on offer, and why the
+    // event is still silent.
+    return { sounds: [], bound: false, via: null,
+      note: ev?.sound ? `the sound library suggests “${ev.sound}”, but nothing plays until you assign a sound here` : null };
+  };
+
+  const droppedDead = [];   // bindings.json rows no code fires — see below
+  for (const ev of bindings.events ?? []) {
+    const id = ev.event;
+    if (id === "player.footstep") continue;           // replaced by the real per-surface routing below
+    if (ev.ambience_by_region) {
+      for (const [region, soundId] of Object.entries(ev.ambience_by_region)) {
+        const l = catLayer(soundId, { bus: ev.bus ?? "ambience" });
+        events.push({ id: `ambience.${region}`, group: "Ambience", name: `Ambience · ${titleCase(region)}`,
+          bus: ev.bus ?? "ambience", duck: false, emitted: true, bound: true,   // engine-driven: plays whenever you are in the region
+          note: "loops while you are in the region; night adds crickets, rain adds rain",
+          sounds: l ? [l] : [] });
+      }
+      continue;
+    }
+    if (id === "player.jump") continue;              // per-character events, added below
+    const r = resolveEvent(id, ev);
+    // A NAME IN THE LIBRARY IS NOT A MOMENT IN THE GAME (maintainer
+    // 2026-08-06, on combat.enemy_defeat: "Please remove … This is madness").
+    // sounds/bindings.json carries rows the game never emits — older or
+    // aspirational spellings like `combat.enemy_defeat` (the game fires
+    // `combat.monster_die`), plus tools and containers no code has yet. They
+    // rendered as ordinary empty cards, indistinguishable from a live event
+    // waiting for a sound: 16 of the 23 assignable-looking cards were ones
+    // where auditioning, picking and assigning buys you silence and no
+    // explanation. If nothing fires it and nothing is bound to it, it is not
+    // a card — it is a line in somebody else's file.
+    //
+    // ANYTHING BOUND STILL SHOWS, even when nothing fires it: that is the
+    // red "not fired yet" case, and hiding it would strand a sound the Game
+    // Master assigned with no way to see or unbind it.
+    if (!r.bound && !isEmitted(id) && !ENGINE_DRIVEN.has(id)) { droppedDead.push(id); continue; }
+    events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
+      bus: r.sounds[0]?.bus ?? ev.bus ?? "sfx", duck: !!ev.duck,
+      emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note ?? null, adminNote: r.adminNote ?? null, sounds: r.sounds });
+  }
+  // Everything else the engine knows about: events the game EMITS, and events
+  // the Game Master has ASSIGNED (an assignment for an event no binding ever
+  // mentioned would otherwise never appear on this page at all).
+  for (const id of [...emitted, ...Object.keys(EVENT_ASSIGN)]) {
+    if (events.some((e) => e.id === id)) continue;
+    // Per-character events get their own scoped rows further down; listing
+    // them here too would render `player.die@default_girl` twice, once
+    // unscoped on the Sound Effects page and once on her own page.
+    if (id === "player.fall" || id === "player.jump" || id === "player.die") continue;
+    if (id.includes("@")) continue;
+    const r = resolveEvent(id, null);
+    events.push({ id, group: GROUPS[id.split(".")[0]] ?? "World", name: nice(id),
+      bus: r.sounds[0]?.bus ?? "sfx", duck: false,
+      emitted: isEmitted(id) || ENGINE_DRIVEN.has(id),
+      bound: r.bound, via: r.via, rotates: !!r.rotates, note: r.note ?? null, adminNote: r.adminNote ?? null, sounds: r.sounds });
+  }
+  // Footsteps: the real per-surface routing (api.ts FOOTSTEP_*). Every dry
+  // surface resolves to a composer set or a catalog sound, with per-surface
+  // trim / lowpass / rate, and grass ALSO layers dirt underneath at −6 dB
+  // relative to what dirt itself plays at.
+  const surfaces = [...new Set(["grass", "dirt", "sand", "snow", "stone", "wood", "ice", "swamp", ...Object.keys(FOOT_SETS), ...Object.keys(FOOT_CAT)])].sort();
+  for (const surf of surfaces) {
+    const layers = [];
+    const level = (s) => engine.stepBaseDb + (Number(FOOT_TRIM[s]) || 0);
+    const one = (s, extraDb, layerNote) => {
+      const catId = FOOT_CAT[s];
+      // Steps bind their primary take too (foleyEntry/catalogStepEntry both
+      // slice to one url — the approved take, every step, micro-jitter only).
+      if (catId) return catLayer(catId, { trimDb: level(s) + extraDb, layerNote, primary: true, usedBy: `footsteps.${s}` });
+      const set = FOOT_SETS[s] ?? footDefault;
+      return setLayer(set, {
+        trimDb: level(s) + extraDb,
+        lowpassHz: FOOT_LP[s] != null ? Number(FOOT_LP[s]) : null,
+        rate: FOOT_RATE[s] != null ? Number(FOOT_RATE[s]) : 1,
+        layerNote, primary: true, usedBy: `footsteps.${s}`,
+      });
+    };
+    const main = one(surf, 0, null);
+    if (main) layers.push(main);
+    const lay = FOOT_LAYER[surf];
+    if (lay?.surface) {
+      const under = one(lay.surface, Number(lay.relDb) || 0, `layered under, at ${lay.surface}'s own level ${lay.relDb} dB`);
+      if (under) layers.push(under);
+    }
+    events.push({ id: `footsteps.${surf}`, group: "Movement", name: `Footsteps · ${titleCase(surf)}`,
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: `walk ${engine.walkPenaltyDb} dB, run +${engine.runBonusDb} dB on the base; both feet alternate with the gait`,
+      sounds: layers });
+  }
+  // The wet shoreline step and the composer's own flourishes.
+  const wet = catLayer("splash", { rate: engine.wetStepRate, primary: true, layerNote: "the water-exit splash, pitched brighter" });
+  if (wet) events.push({ id: "footsteps.wet", group: "Movement", name: "Footsteps · Wet shoreline", bus: "sfx", duck: false, emitted: true, bound: true, note: null, sounds: [wet] });
+  // AN ASSIGNMENT OUTRANKS THESE HARDCODED ROUTES. Both thunder and the
+  // shooting star were engine-only when they were written here; the composer
+  // has since made them assignable, and the Game Master assigned thunder four
+  // pool candidates. Pushing our own card anyway gave TWO `weather.thunder`
+  // cards — his four candidates, and a stale one still claiming the six
+  // shipped takes. Whatever he assigned is the truth; skip ours.
+  const already = (id) => events.some((e) => e.id === id);
+  const star = catLayer("gem_pickup", { trimDb: -10 });
+  if (star && !already("progress.star")) events.push({ id: "progress.star", group: "Progress", name: "Star Earned", bus: "sfx", duck: false, emitted: true, bound: true,
+    note: "played on the music's beat, in the track's key (scale-snapped)", sounds: [star] });
+  // ROTATE, not primary: api.ts plays thunder through foleyEntry(…, "rotate"),
+  // whose `many` branch binds EVERY url — the maintainer asked to hear thunder
+  // as "a group with several sounds". The wiki said "1 take" while the game
+  // rotated all six (found by check-mapping.mjs, 2026-08-06).
+  const thunder = setLayer("thunder", { trimDb: 6, usedBy: "weather.thunder", pick: "round-robin, never the same twice" });
+  if (thunder && !already("weather.thunder")) events.push({ id: "weather.thunder", group: "Weather", name: "Thunder", bus: "sfx", duck: false, emitted: true, bound: true,
+    note: "in sync with the lightning flash; up to +6 dB with strike strength", sounds: [thunder] });
+
+  // Jump and Fall are PER-CHARACTER (maintainer 2026-08-05): the game routes
+  // the grunt by who you play — one voice each, never both at once. So they
+  // are SCOPED events, one per hero, listed on that hero's page rather than
+  // under Sound Effects. `scope` is the type the maintainer asked for: an
+  // event either belongs to an entity or it is generic.
+  for (const [uid, cfg] of Object.entries(JUMP_VOICE)) {
+    if (!cfg?.set) continue;
+    const voice = (extra) => {
+      const l = setLayer(cfg.set, {
+        rate: Number(cfg.rate) || 2, trimDb: engine.voiceGainDb,
+        pick: "round-robin, never the same twice",
+        voiceRate: Number(cfg.rate) || 2, usedBy: `player.jump@${uid}`, ...extra,
+      });
+      return l ? [l] : [];
+    };
+    events.push({ id: `player.jump@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Jump",
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: "their own voice — the takes are authored at half speed, ×2 is the true pitch", sounds: voice({}) });
+    events.push({ id: `player.fall@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Fall",
+      bus: "sfx", duck: false, emitted: true, bound: true,
+      note: "the same grunt when a fall starts (0.28 s of dedupe against the jump)", sounds: voice({}) });
+  }
+  // DIE IS PER-CHARACTER TOO (games-audio's ask, 2026-08-06, quoting the
+  // maintainer on his die-voice request: "This is the female die sound
+  // effect. Can't assign a separate voice to the male (you need to fix
+  // that)"). Only Jump and Fall had per-hero rows, so there was ONE shared
+  // Die card and no way to give the boy his own cry. The engine already
+  // resolves `player.die@<uid>` ahead of the unscoped `player.die` — using
+  // this wiki's own spelling — so a scoped request wires straight in.
+  // Every hero gets a row whether or not a voice is assigned yet: an empty
+  // one is exactly the card you assign from.
+  // The heroes the engine knows a voice for, plus anyone already assigned a
+  // death cry — so a hero can never be assigned one and then not be listed.
+  const dieHeroes = [...new Set([
+    ...Object.keys(JUMP_VOICE),
+    ...Object.keys(EVENT_ASSIGN).filter((k) => k.startsWith("player.die@")).map((k) => k.slice("player.die@".length)),
+  ])].sort();
+  for (const uid of dieHeroes) {
+    // The engine resolves `player.die@<uid>` and FALLS BACK to the unscoped
+    // `player.die` ("this voice for everyone"), so the row has to show which
+    // of the two this hero actually gets — a card reading "no sound yet"
+    // while a shared cry plays would be the same class of lie as the old
+    // mappings. The unscoped event is not listed separately; these rows are
+    // the whole truth about who dies with which voice.
+    const own = !!EVENT_ASSIGN[`player.die@${uid}`];
+    const r = resolveEvent(own ? `player.die@${uid}` : "player.die", null);
+    events.push({ id: `player.die@${uid}`, scope: { domain: "characters", id: uid }, group: "Movement", name: "Die",
+      bus: "sfx", duck: false, emitted: isEmitted("player.die"), ...r,
+      note: own ? "their own death cry"
+        : r.bound ? "the shared death cry — assign one here to give this hero their own"
+        : "no death cry yet; an unassigned voice stays silent rather than borrowing the other hero's" });
+  }
+  // AN ENTITY'S OWN EVENT BELONGS ON ITS OWN PAGE. The entity assign card
+  // mints `<domain>.<entity id>.<action>` (wiki.js entityAddCard), and the
+  // composer wires those verbatim — `monsters.forest_poring_2.walk` is
+  // Sprigling's footstep. Without this they came back through the generic
+  // path as unscoped cards filed under "World" on the Sound Effects page, so
+  // the maintainer could bind a sound to a creature and then never find it
+  // again: "I have bound sound to Sprigling, can't unbind in the UI".
+  // Only a THREE-part id whose middle segment is a real entity of that domain
+  // qualifies — `item.drop` and `combat.monster_die` are two parts and must
+  // stay generic, and an id naming an entity that no longer exists stays
+  // generic too rather than scoping itself onto a page that isn't there.
+  for (const e of events) {
+    if (e.scope) continue;
+    const [dom, id, ...rest] = e.id.split(".");
+    if (!rest.length || !entityIds[dom]?.has(id)) continue;
+    const action = rest.join(".");
+    e.scope = { domain: dom, id };
+    e.name = titleCase(action.replace(/[._]/g, " "));
+    e.group = GROUPS[dom] ?? "World";
+  }
+  for (const e of events) if (!("scope" in e)) e.scope = null;
+  for (const e of events) if (!("rotates" in e)) e.rotates = false;
+  // A creature's page should show what that creature SOUNDS LIKE. These
+  // events are fired BY a monster but are not scoped to one — the engine has
+  // no per-monster routing yet, the way heroes got `player.die@<uid>` — so
+  // they are shared by every creature and the card has to say so, or
+  // unbinding on a mammoth's page would silently change every monster in the
+  // game (maintainer 2026-08-06: "I can't see already mapped sound effects on
+  // monsters … How do I unbind individual sounds like I can do on the Player
+  // page?"). Verified against the CALL SITES, not the names: monster_die and
+  // both cross events fire off a monster's death (WorldScene 3188/3245/3294);
+  // combat.hit_taken is the PLAYER being hurt (4329) and combat.kick/punch are
+  // the player's own swings, so none of those three belong here.
+  const SHARED_WITH = {
+    "combat.monster_die": "monsters",
+    "combat.cross_on": "monsters",
+    "combat.cross_off": "monsters",
+  };
+  for (const e of events) e.sharedWith = e.scope ? null : SHARED_WITH[e.id] ?? null;
+  // EVERY ASSIGNMENT MUST HAVE LANDED. This is the check that would have
+  // caught the array change on the build that shipped it, instead of the
+  // maintainer finding a page full of "no sound yet" over work he had done.
+  // Cheap, total, and it does not care WHY an assignment failed to resolve.
+  const landed = new Set(events.filter((e) => e.via === "assigned").map((e) => e.id));
+  const lost = Object.keys(EVENT_ASSIGN).filter((id) => !landed.has(id));
+  if (lost.length) sfxDrift.push(`${lost.length} of ${Object.keys(EVENT_ASSIGN).length} assignment(s) did not reach the page: ${lost.join(", ")}`);
+  events.sort((a, b) => a.group.localeCompare(b.group) || a.id.localeCompare(b.id));
+
+  // Which catalog sounds an event references — feeds the used/unused pill on
+  // the admin's all-sounds list (markSoundUsage already covers bindings; this
+  // adds the composer-side routes like sand→jump).
+  if (soundEntries?.length) {
+    const byId = new Map(soundEntries.map((s) => [s.id, s]));
+    for (const e of events) for (const l of e.sounds) if (l.source === "catalog") {
+      const s = byId.get(l.soundId);
+      if (s && !(s.usedBy ?? (s.usedBy = [])).includes(e.id)) s.usedBy.push(e.id);
+    }
+  }
+  // Not a warning — dropping these is correct. But say it out loud, because
+  // the list IS the sounds agent's stale-binding report, and the day one of
+  // them starts being emitted it should reappear on the page by itself.
+  if (droppedDead.length) {
+    console.log(`[wiki] ${droppedDead.length} bindings.json event(s) hidden — nothing in the game fires them: ${droppedDead.join(", ")}`);
+  }
+  return { engine, events, composerSets, hiddenDeadEvents: droppedDead };
+}
+/** The per-character jump/fall voice layers — both characters' sets, each at
+ *  its authored rate (2.0: the takes are recorded at half speed; see the
+ *  composer README's ⭐ lesson). */
+function jumpVoiceLayers(JUMP_VOICE, setLayer, engine) {
+  const out = [];
+  for (const [uid, cfg] of Object.entries(JUMP_VOICE)) {
+    if (!cfg?.set) continue;
+    const l = setLayer(cfg.set, {
+      rate: Number(cfg.rate) || 2,
+      trimDb: engine.voiceGainDb,
+      pick: "round-robin, never the same twice",
+      voiceRate: Number(cfg.rate) || 2,
+      layerNote: `${uid}'s voice — picked by character, not at random`,
+      usedBy: "player.jump",
+    });
+    if (l) out.push(l);
+  }
+  return out;
 }
 
 // ------------------------------------------------ audio usage (in game?)
@@ -729,7 +1559,12 @@ function markMusicUsage(music) {
     return s;
   };
   const bed = [...tracks].sort((a, b) => score(b) - score(a))[0];
-  for (const t of music) t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
+  // Catalog tracks only: a composer BED is not a candidate for this pick, and
+  // says what it is for through its own `routed` flag.
+  for (const t of music) {
+    if (t.source === "composer") { t.usedBy = t.routed ? ["the game's own score"] : []; continue; }
+    t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
+  }
 }
 
 // ------------------------------------------------------------ monster LEVEL
@@ -844,6 +1679,11 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 }
 const world = buildWorldUsage();
 markSoundUsage(sounds);
+const sfx = buildSfx(sounds, {
+  monsters: new Set(monsters.map((m) => m.id)),
+  characters: new Set(characters.map((c) => c.id)),
+  objects: new Set(objects.map((o) => o.id)),
+});
 markMusicUsage(music);
 const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
 // Both directions of "who drops what", precomputed from the SEEDED tuning so
@@ -872,6 +1712,9 @@ const data = {
   generated_at: new Date().toISOString(),
   git_sha: gitSha(),
   root_hint: "asset paths are relative to the directory that serves the domains (/assets in the game, the repo root locally)",
+  // The in-game sound EVENTS (see buildSfx): what triggers a sound, what
+  // plays, with which processing — derived from the composer's own engine.
+  sfx,
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
@@ -924,6 +1767,11 @@ console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added
 // The build carries on regardless — resolving keeps every page correct — but a
 // stale sidecar is a real fault at its SOURCE, and silence is what let the last
 // one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
+if (sfxDrift.length) {
+  console.warn(`[wiki] WARNING: ${sfxDrift.length} sfx-parse miss(es) — the composer's engine moved; the event table may be stale:`);
+  for (const x of sfxDrift) console.warn(`         ${x}`);
+  console.warn("       Update buildSfx() in wiki/build.mjs to match games2/composer/engine.");
+}
 if (staleSidecar.length) {
   const gone = staleSidecar.filter((x) => x.endsWith("GONE"));
   console.warn(`[wiki] WARNING: ${staleSidecar.length} stale path(s) in the committed sidecars, resolved on the fly:`);

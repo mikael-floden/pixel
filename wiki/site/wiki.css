@@ -170,10 +170,21 @@ button { font: inherit; cursor: pointer; }
   border: 1px solid var(--border); border-radius: 9px; padding: 6px 12px;
 }
 .ghost-btn:hover { background: var(--surface-2); }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); }
+/* A hero now has more animation states than fit one drawer-width row
+   (maintainer 2026-08-05: keep this layout, let the finger scroll). The seg
+   LOOKS identical — no scrollbar, same border, same pills — but pans
+   horizontally when it overflows; the half-cut button at the edge is the
+   affordance. max-width pins it to its column so the PAGE never scrolls. */
+.seg {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 9px;
+  overflow-x: auto; overflow-y: hidden; background: var(--surface);
+  max-width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.seg::-webkit-scrollbar { display: none; }
 .seg button {
   background: transparent; border: none; padding: 5px 10px; color: var(--muted);
   border-right: 1px solid var(--border); font-size: 13px;
+  flex: 0 0 auto; white-space: nowrap;   /* buttons keep their size; the ROW pans */
 }
 .seg button:last-child { border-right: none; }
 .seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
@@ -409,7 +420,11 @@ dialog {
   box-shadow: var(--shadow); padding: 20px; max-width: 460px;
 }
 dialog::backdrop { background: rgba(20, 18, 12, 0.45); }
-dialog input {
+/* The full-width stacked field is the SIGN-IN dialog's look. Scoped on
+   purpose: the sound picker holds sliders and a search box in rows, and the
+   blanket rule stretched every one of them to full width with 10px of
+   margin — the "bad CSS input" (maintainer 2026-08-06). */
+dialog:not(.sfx-picker) input {
   width: 100%; background: var(--bg); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
   font: inherit; margin: 10px 0;
@@ -547,6 +562,22 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 
 /* ---- spawn-zone map (monster pages) ---- */
 .zone-map-wrap { overflow-x: auto; }
+/* An NPC is a POINT on the map, and the mark is an overlay rather than paint:
+   the minimap is ~1800px wide and shows at ~330 on a phone, so anything drawn
+   into the canvas shrinks to a speck. In percent it holds its size and stays
+   crisp on every screen. The halo says APPROXIMATE — the maintainer's own
+   framing: an NPC who walks will not be on that exact tile. */
+.npc-map-wrap { position: relative; display: inline-block; max-width: 100%; }
+.npc-spot {
+  position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px;
+  border-radius: 999px; background: var(--accent); border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+.npc-spot::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px;
+  margin: -23px 0 0 -23px; border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 70%);
+}
 .zone-map {
   image-rendering: auto;   /* a downscaled world overview, not 1:1 pixel art */
   max-width: 100%; height: auto; display: block;
@@ -639,8 +670,208 @@ button.drop-row {
    would just repeat one word down the page. */
 .npc-block { margin-top: 26px; }
 .npc-block h2 { display: flex; align-items: center; }
-.npc-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
-.npc-grid .npc-card { padding: 6px; gap: 4px; border-radius: 9px; }
+.npc-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.npc-grid .npc-card { padding: 6px; gap: 3px; border-radius: 9px; }
 .npc-grid .npc-card .thumb { height: 72px; border-radius: 6px; }
 .npc-grid .npc-card .card-sub { font-size: 10.5px; text-align: center; }
 .npc-grid .card-badges { justify-content: center; }
+/* They have real names now, so the tiles say who they are — quietly. ONE line
+   each, ellipsised rather than wrapped: a tile that grows a second line
+   re-flows all 191 and the block stops reading as secondary. */
+.npc-name, .npc-role {
+  text-align: center; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.npc-name { font-size: 12px; font-weight: 600; }
+.npc-role { font-size: 10.5px; }
+/* The trade under an NPC's name on its own page — a subtitle, not a heading. */
+/* The role + world pills, on ONE line that is always the same height. The
+   pills used to be their own row and only the placed NPCs had it, so paging
+   through the 191 moved every panel below (maintainer 2026-08-07). nowrap +
+   min-height is what makes the promise unconditional: role only, pills only,
+   both, or neither all measure the same. */
+.npc-trade {
+  font-size: 13px; margin: -2px 0 2px;
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: nowrap; min-height: 22px;
+}
+/* nowrap on the ROW is not enough: a pill is an inline-block, so when the row
+   runs out of room the pill wraps its OWN text to a second line and the row
+   grows anyway. Every child has to refuse to wrap. */
+.npc-trade > * { white-space: nowrap; }
+/* "in the world" is the fact worth keeping whole, so it never shrinks. The
+   role and the wares list both ellipsize instead — min-width:0 is what
+   actually lets a flex item do that. */
+.npc-trade .pill.ok { flex: none; }
+.npc-trade .npc-role,
+.npc-trade .npc-wares { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* The few NPCs maps2 actually stands in the world, marked ON the portrait so
+   the tile keeps its fixed two text lines (a third would re-flow all 191). */
+.npc-grid .npc-card { position: relative; }
+.npc-placed {
+  position: absolute; top: 10px; right: 10px; width: 9px; height: 9px;
+  border-radius: 999px; background: var(--accent); border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Sound EVENTS (maintainer 2026-08-05): the unit is the in-game moment,
+   its layers beneath it, the Game Master's raw library at the bottom. */
+.sfx-event .play-event { margin-right: 4px; }
+.sfx-layer { border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
+.sfx-layer-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sfx-take { margin-left: 22px; }
+/* The per-recording unbind. A filename like `notification__take01.wav` plus
+   its length plus the button will not fit one phone line, so the row wraps —
+   `margin-left:auto` keeps the button hard RIGHT on whichever line it lands
+   on, so it reads as belonging to the take above it instead of introducing
+   the one below. (A `.spacer` cannot do this: it sits on line 1 and leaves
+   the button left-aligned on line 2.) */
+.sfx-take .verdict { margin-left: auto; }
+.sfx-take .verdict button { padding: 3px 9px; font-size: 12px; }
+/* The BINDING's verdict — one row per attached sound, above its recordings,
+   so "✕ unbind" can never be mistaken for "delete this file" (which lives in
+   All sounds). Quietly inset like the takes it governs. */
+.sfx-bind-verdict { margin-left: 22px; flex-wrap: wrap; row-gap: 4px; }
+.sfx-req { background: color-mix(in srgb, var(--warn, #b58900) 8%, transparent); border-radius: 6px; }
+.sfx-add { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
+.sfx-add-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.sfx-add-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
+/* The action dropdown is a wiki control, not browser chrome: unstyled, it
+   shipped as a bare grey box that ignored the dark theme entirely. Native
+   `appearance` is kept so the platform draws its own arrow and opens its own
+   picker — only the box is ours. */
+.sfx-pick {
+  /* Sized by its CONTENT, capped in em. The old `max-width: 46%` resolved
+     against a shrink-to-fit flex parent, so the box collapsed to ~85px and
+     "Idle" rendered as "Idl" — a percentage cap needs a parent with a width
+     of its own. `flex: none` keeps the row from squeezing it again. */
+  flex: none; max-width: 16em;
+  background: var(--bg); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 9px;
+  padding: 6px 8px; font: inherit; line-height: 1.3;
+}
+.sfx-pick:focus { outline: none; border-color: var(--accent); }
+/* A chain, drawn rather than typed: U+1F517 is an EMOJI codepoint, so a phone
+   renders it as a colour picture no matter what the text around it does
+   (maintainer 2026-08-06: "should not be a colored smiley"). An inline SVG in
+   currentColor is the same glyph in the button's own ink, on every device. */
+.ico-link { display: inline-flex; width: 15px; height: 15px; vertical-align: -2px; }
+.ico-link svg { width: 100%; height: 100%; display: block; }
+.sfx-note { flex: 1; min-width: 140px; }
+
+/* The audition sliders are wiki furniture, not browser chrome. */
+input[type="range"] { accent-color: var(--accent); }
+
+/* ---- the sound picker dialog: a listening tool. The list is the tall part
+   (that is where the iterating happens); the transport, the three audition
+   controls and the note sit under it, in rows, at their natural widths. */
+.sfx-picker { width: min(560px, calc(100vw - 24px)); max-width: none; padding: 18px; }
+/* The dialog itself takes focus on a touch device (that is how the keyboard is
+   kept down); it is a container, not a control, so it must not wear a focus
+   ring — the ring belongs to whatever you actually tap. */
+.sfx-picker:focus, .sfx-picker:focus-visible { outline: none; }
+.sfx-picker h3 { margin: 0 0 2px; }
+.picker-for { margin: 0 0 10px; font-size: 12.5px; }
+.sfx-picker input[type="search"], .sfx-picker .picker-note {
+  width: 100%; background: var(--bg); color: var(--ink); font: inherit;
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
+}
+.sfx-picker .picker-note { margin-top: 8px; }
+.picker-list {
+  /* A FIXED height, not a max: a search that matches three sounds must not
+     shrink the list and drag every control up the screen with it. */
+  margin-top: 8px; height: min(46vh, 340px); overflow-y: auto;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+}
+.picker-row {
+  display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
+  padding: 7px 9px; background: none; border: none; border-bottom: 1px solid var(--border);
+  color: inherit; font: inherit;
+}
+.picker-row:last-child { border-bottom: none; }
+/* The composer ships ~10 alternatives per action; the header keeps a run of
+   them together so stepping through one action's candidates is one gesture. */
+.picker-group {
+  position: sticky; top: 0; z-index: 1;
+  padding: 5px 9px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface-2); border-bottom: 1px solid var(--border);
+}
+/* One line per sound, always: the NAME gives up its width (ellipsis) so the
+   chips at the right — length, and whether the game uses it — survive a
+   393px phone instead of being clipped by the list's own overflow. */
+.picker-row .take-name { font-size: 13px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker-row .pill { flex: none; }
+.picker-row .play-btn { pointer-events: none; flex: none; }
+.picker-row.sel { background: var(--accent-soft); }
+.picker-row.sel .take-name { color: var(--accent-ink); font-weight: 600; }
+/* The sort toggle. Its own fixed-height row ABOVE the list, so it can never
+   change size with the list's contents — the bar below stays put whichever
+   order you choose and however few rows a search leaves. */
+/* The section sort row, same control as the picker's. Its own fixed-height
+   row so the grid below can reorder without anything above it moving. */
+.sortbar { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; }
+.picker-sort { display: flex; gap: 6px; margin-top: 8px; }
+.sortbar-btn,
+.picker-sort-btn {
+  flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;
+  border: 1px solid var(--border); border-radius: 9px;
+  background: transparent; color: var(--muted);
+}
+/* On a page the bar is not sharing a fixed modal width, so the buttons hug
+   their text instead of stretching across a desktop column. */
+.sortbar-btn { flex: 0 0 auto; padding: 7px 14px; }
+.sortbar-btn.sel,
+.picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+/* Card pill row: replaces the habitat line, so it keeps that line's rhythm. */
+.card-pills { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+/* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
+   height change here shifts every control — Next must be where it was after
+   you press Next. */
+.picker-bar { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; margin-top: 10px; }
+/* These three are the WORK of the dialog — you hammer Next/Play down a list of
+   281 sounds hunting for the right one — so they get real thumb-sized targets
+   rather than the compact ghost button (maintainer 2026-08-06). Equal `flex:1`
+   shares the row: all three labels are fixed strings, so the widths are
+   decided by the dialog and CANNOT shift under your finger as you step, which
+   is the rule this row exists to keep. */
+.picker-bar .ghost-btn {
+  flex: 1; min-height: 46px; padding: 11px 8px;
+  font-size: 15px; font-weight: 600; border-radius: 11px;
+}
+.picker-bar .picker-play { flex: 1.15; }   /* the one pressed most, a touch wider */
+.picker-empty { padding: 14px 10px; font-size: 13px; text-align: center; }
+.picker-ctls { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.picker-ctl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.picker-ctl > span:first-child { min-width: 84px; }
+.picker-ctl input[type="range"] { flex: 1; min-width: 120px; }
+.sfx-picker .dialog-row { margin-top: 12px; }
+.sfx-lib { margin-top: 26px; }
+.sfx-lib-row { border-top: 1px solid var(--border); padding: 8px 0; }
+.sfx-lib-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sfx-lib-ctl { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 2px; }
+.sfx-lib-ctl label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.sfx-lib-ctl input[type="range"] { width: 96px; }
+.sfx-val { min-width: 46px; text-align: right; font-size: 12px; }
+.muted-pill { opacity: 0.75; }
+
+/* The red line's reveal meter — how much of the backbone the published
+   chapters and entity texts actually tell. Segments share one bar so the
+   proportions read at a glance. */
+.rl-meter-box { margin: 4px 0 10px; }
+.rl-meter { display: flex; height: 10px; border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+.rl-seg.rl-revealed { background: var(--ok, #4a8f5c); }
+.rl-seg.rl-hinted { background: color-mix(in srgb, var(--ok, #4a8f5c) 45%, var(--surface)); }
+.rl-seg.rl-hidden { background: var(--border); }
+.rl-meter-legend { font-size: 12px; margin-top: 3px; }
+
+/* Inline lore links — a name in running prose that IS the entity. Underlined
+   subtly so the prose stays prose; same landing rules as "Read next". */
+.lore-inline { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); }
+
+/* Races (2026-08-05): each race is an inner topic — heading, the lore
+   agent's blurb, its playable heroes, then its paged NPC grid. */
+.race-block { margin-top: 18px; }
+.race-block h2 { display: flex; align-items: center; }
+.race-blurb { margin: 2px 0 10px; }
+.npc-block .page-rail { display: flex; align-items: center; gap: 6px; justify-content: flex-end; margin-top: 8px; }

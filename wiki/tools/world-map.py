@@ -20,8 +20,9 @@ Run from the repo root whenever a world's spawns or minimap change:
     python3 wiki/tools/world-map.py            # the game's DEFAULT world
     python3 wiki/tools/world-map.py ring_test  # a specific world
 
-Output: wiki/world_map.json — minimap size/path + per-monster zone polygons
-already in MINIMAP PIXEL coordinates (the wiki just strokes them).
+Output: wiki/world_map.json — minimap size/path, the cell→pixel transform, the
+per-monster zone spans and the per-NPC standing cells (maps2 npcs@1), which the
+wiki projects with that same transform.
 build.mjs folds it into site/data.json; a missing file simply means no map.
 """
 import json, os, re, sys, datetime
@@ -44,6 +45,7 @@ def default_world() -> str:
 def build(name: str) -> dict | None:
     wdir = os.path.join(ROOT, "maps2", "worlds", name)
     wpath, spath = (os.path.join(wdir, f) for f in ("world.json", "spawns.json"))
+    npath = os.path.join(wdir, "npcs.json")            # optional (pixel-maps2/npcs@1)
     # The minimap's FORMAT is maps2's business, not ours (it became .webp on the
     # 2026-07-31 flip). Find it rather than naming it: this file is a snapshot
     # of their art, and a snapshot that hardcodes an extension rots silently.
@@ -187,11 +189,37 @@ def build(name: str) -> dict | None:
                 x, y = int(px), int(py)
                 if 0 <= x < img.width and 0 <= y < img.height and alpha[y, x] > 0:
                     hit += 1
+    # NPCs are POINTS, not zones: maps2 stands each one on an exact cell
+    # (npcs@1 x/y/elev). The wiki draws them as an APPROXIMATE spot — the
+    # maintainer's framing, and the honest one, because an NPC that can walk
+    # will not be on that exact tile when you get there. Same validation as a
+    # zone: the cell must land on drawn map.
+    npcs: dict[str, list] = {}
+    for n in (json.load(open(npath)).get("npcs", []) if os.path.isfile(npath) else []):
+        cid = n.get("character")
+        if not cid or n.get("x") is None or n.get("y") is None:
+            continue
+        c, r, lv = int(n["x"]), int(n["y"]), int(n.get("elev") or 0)
+        px, py = project(c, r, lv)
+        checked += 1
+        x, y = int(px), int(py)
+        if 0 <= x < img.width and 0 <= y < img.height and alpha[y, x] > 0:
+            hit += 1
+        else:
+            print(f"    note: npc {n.get('id')} ({cid}) at {c},{r} lands off the drawn map")
+        npcs.setdefault(cid, []).append({
+            "id": n.get("id", ""), "name": n.get("name", ""), "type": n.get("type", ""),
+            "anchor": n.get("anchor", ""), "facing": n.get("facing", ""),
+            "x": c, "y": r, "elev": lv, "wares": n.get("wares") or [],
+        })
+
     ratio = hit / max(1, checked)
     total = sum(len(v) for v in monsters.values())
     cells = sum(cb - ca + 1 for v in monsters.values() for z in v for _, _, ca, cb in z["spans"])
+    placed = sum(len(v) for v in npcs.values())
     print(f"  {name}: scale {s:.5f} offset ({offx:.1f},{offy:.1f}) · {len(monsters)} monsters / "
-          f"{total} zones / {cells} cells · {ratio * 100:.1f}% of sampled cells on drawn map")
+          f"{total} zones / {cells} cells · {len(npcs)} npcs / {placed} placements · "
+          f"{ratio * 100:.1f}% of sampled cells on drawn map")
     if ratio < 0.9:
         print("  refusing to write: zone cells do not land on the drawn map")
         return None
@@ -205,6 +233,7 @@ def build(name: str) -> dict | None:
         "proj": {"ox": ox, "oy": oy, "dx": DX, "dy": DY, "levelPx": LEVEL_PX,
                  "tile": TILE, "s": round(s, 6), "offx": round(offx, 2), "offy": round(offy, 2)},
         "monsters": monsters,
+        "npcs": npcs,
     }
 
 

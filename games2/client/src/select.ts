@@ -180,7 +180,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         worldRows.forEach((r, j) => r.classList.toggle("sel", j === selectedWorld));
         label.textContent = worlds[selectedWorld].label;
       }
-      head.addEventListener("click", () => setOpen(list.hidden));
+      // `!!`: lib.dom now types HTMLElement.hidden as string | boolean (for
+      // hidden="until-found"). We only ever assign a boolean below.
+      head.addEventListener("click", () => setOpen(!!list.hidden));
       // tapping anywhere else on the screen folds the list back up
       overlay.addEventListener("pointerdown", (e) => {
         if (!list.hidden && !(e.target as HTMLElement).closest(".ml-dd")) setOpen(false);

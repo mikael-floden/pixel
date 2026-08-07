@@ -39,7 +39,13 @@ _emission_set: set | None = None
 
 def emissive_paths() -> set:
     """Repo-relative paths of every self-emissive tile, per tiles2's authoritative
-    emission.json (`sources` = tiles with an extracted night-glow cluster)."""
+    emission.json (`sources` = tiles with an extracted night-glow cluster).
+
+    Used by glowdemo.py to CHOOSE which props to place in the glow showcase.
+    world.json deliberately does NOT bake this: the game reads emission.json
+    itself (WorldScene.tiles2Src, keyed by tile path), so a copy in every world
+    was 9.2 KB of duplicated state that could only ever go stale — and did,
+    twice. Read the source of truth."""
     global _emission_set
     if _emission_set is None:
         _emission_set = set()
@@ -49,10 +55,6 @@ def emissive_paths() -> set:
         except Exception:
             pass
     return _emission_set
-
-
-def _is_emissive(rel_path: str) -> bool:
-    return rel_path in emissive_paths()
 
 
 def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
@@ -170,10 +172,6 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
         "top": top_ix,
         "mirror": [[int(mirror[y, x]) for x in range(W)] for y in range(H)],
         "collision": collide,
-        # which entries of `paths` are self-emissive (tiles2 features.shiny) — a
-        # convenience so a consumer can light emissive cells without re-reading
-        # tiles2 metadata: top[y][x] indexes paths; emissive[that index] == 1.
-        "emissive": [1 if _is_emissive(p) else 0 for p in paths],
         "props": prop_list,
     }
     # decks are the sole world@2 addition: a strict superset, so emit them (and the
@@ -186,7 +184,35 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(doc, f, separators=(",", ":"))
+    _refresh_sidecars(name, path)
     return doc
+
+
+def _refresh_sidecars(name, path):
+    """Re-derive the world's monster spawn zones and NPC placements from the
+    world.json just written.
+
+    Both are DERIVED data — habitat rules and landmark rules over the terrain —
+    so the moment the terrain changes they are stale, and stale is not merely
+    wrong: a zone can end up on WATER (which the water law forbids outright) and
+    an NPC can end up in the sea, sealed inside a wall, or stranded somewhere no
+    player can walk to. Deriving them HERE rather than in each builder is what
+    makes that a RULE: every world goes through save_world, whether by
+    `build.py <name>` or by running a builder directly, so no route can ship a
+    world whose sidecars were never re-checked. Builders that own their own
+    file (monster_demo's spawns.json) are skipped by refresh() itself.
+
+    Deliberately NOT guarded by try/except: if they cannot be re-derived — a
+    habitat wiped out by a terrain edit, a monster with nowhere dry to stand, a
+    shop with no reachable ground — the build must FAIL rather than quietly keep
+    the old file."""
+    import spawns                       # local: both read world.json, not worldio
+    import npcs
+    shipped = os.path.join(spawns.WORLDS, name, "world.json")
+    if os.path.abspath(path) != os.path.abspath(shipped):
+        return                          # scratch/experiment render, not a shipped world
+    spawns.refresh(name)
+    npcs.refresh(name)
 
 
 class World:
@@ -208,7 +234,6 @@ class World:
         inv = {i: m for i, m in enumerate(self.materials)}
         self.mat = np.vectorize(lambda i: inv[i])(matarr).astype(object)
         self.collision = np.array(d["collision"], np.uint8)
-        self.emissive = d.get("emissive", [0] * len(self.paths))
         self.props = d.get("props", [])
         self.decks = d.get("decks", [])       # world@2: elevated walkable slabs
         self.meta = d.get("meta", {})

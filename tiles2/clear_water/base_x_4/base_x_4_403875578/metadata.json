@@ -44,7 +44,45 @@
       "index": 1,
       "file": "tile_01.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.3,
+            "y": 54.1,
+            "r": 2.0,
+            "color": [
+              0.558,
+              0.415,
+              0.178
+            ],
+            "s": 0.68,
+            "dir": "up"
+          },
+          {
+            "x": 29.0,
+            "y": 47.5,
+            "r": 2.0,
+            "color": [
+              0.619,
+              0.463,
+              0.207
+            ],
+            "s": 0.715,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 2,
@@ -131,7 +169,7 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 0,
+  "emissive_tiles": 1,
   "generated_at": "2026-07-06T15:11:12+00:00",
   "processing": {
     "neutralize_outline": true,
@@ -143,7 +181,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "clear_water",

@@ -5,7 +5,9 @@ the monster can wander), floored with the tile that creature is expected to
 live on — so the spawn area is easy to see/debug and the monster is judged
 against its most likely ground. Pads sit on a neutral stone courtyard; a pad
 whose habitat tile IS the courtyard stone gets a 1-cell dirt ring so its area
-still reads. Water habitats become swimmable ponds.
+still reads. No pad is water: monsters can't swim (the water law in spawns.py),
+so the amphibious-looking ones get a beach pad and spawns.validate_file() would
+reject a wet one anyway.
 
 The pads ARE the spawn zones: this builder writes its own explicit
 `spawns.json` (pixel-maps2/spawns@1, one zone per pad, num 2, elev [0,0]) —
@@ -44,7 +46,7 @@ HABITAT_TILE = {
     "dark": "black_mountain",
     "stone": "stone_mountain",
     "sand": "light_sand",
-    "water": "clear_water",          # a pond — swimmers
+    "shore": "light_sand",           # THE BANK — never water (the water law)
     "cave": "black_mountain",        # cave-floor look
 }
 BASE = "stone_mountain"              # neutral courtyard

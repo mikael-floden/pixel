@@ -30,6 +30,7 @@
  */
 
 import { gameAudio } from "../../composer/index";
+import { getHand } from "./controls";
 
 // Full-gate travel is derived from the WELL since the wiki remake (maintainer
 // 2026-07-30: "you should be able to drag the thumbstick a longer distance" —
@@ -45,6 +46,19 @@ const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // the cap's centre moves less than the thumb; the input circle (dead zone,
 // run, full gate) is untouched.
 const CAP_VISUAL_FRAC = 0.65;
+// LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
+// marked the centre he wants in red on two device screenshots (2026-08-05):
+// ~257 DEVICE px in from the side edge AND from the bottom, "the margins
+// should of course be the same on both sides".
+// SCALE, measured the hard way — do not eyeball it from the portrait
+// viewport: this phone is 393 css px wide in PORTRAIT (dpr 2.75) but its
+// LANDSCAPE viewport is ~988 css px, so its screenshots are only ~2.28
+// device px per css px. Fitting a circle to the ghost's own blur disc in the
+// screenshot gives r = 169 device px for the 148px well ⇒ dpr 2.284, and the
+// SHIPPED centre measures 186/188 device px from the edges = the 84 css the
+// 10px inset produces. The mark is therefore ~112 css px in, i.e. a 38px
+// corner inset — a 28px move, not the 10px a portrait-dpr reading suggested.
+const LAND_INSET = 38;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -58,7 +72,7 @@ const SECTOR_KEYS: string[][] = [
   ["W"],
   ["W", "D"],
 ];
-const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16, SPACE: 32 };
+const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16, SPACE: 32, F: 70 };
 
 function synthKey(kind: "keydown" | "keyup", k: string) {
   const e = new KeyboardEvent(
@@ -79,10 +93,33 @@ function synthKey(kind: "keydown" | "keyup", k: string) {
 /** Mount the stick into the gamepad page. Idempotent per page element. */
 export function mountGamepadStick(page: HTMLElement) {
   injectStyles();
+  // A HUD rebuild (rejoin) hands us a FRESH page element; the landscape stick
+  // may be parented to <body> (see layout) and would survive the old HUD's
+  // removal as a zombie — clear any strays first.
+  document.querySelectorAll(".ml-pad-stick, .ml-pad-blur").forEach((e) => e.remove());
+  // The stick is a TRANSPARENT frame holding two painted parts: the WELL
+  // (the basin) and the CAP (the inner ring). They must carry INDEPENDENT
+  // alphas — the maintainer wants the cap read stronger than the well, and
+  // group opacity on a parent can only ever make a child fainter (child
+  // effective = parent × child). So the frame itself never paints or fades;
+  // each part owns its opacity, per theme (see injectStyles).
   const pad = mk("div", "ml-pad-stick");
+  const basin = mk("div", "ml-pad-well"); // `well` is the DIAMETER, below
   const top = mk("div", "ml-pad-top");
-  pad.append(top);
+  pad.append(basin, top);
   page.appendChild(pad);
+
+  // ── the landscape ghost's BLUR DISC (maintainer 2026-08-05: "the same blur
+  // you use for the other on-top-of-game-view UI boxes"). It has to be its
+  // OWN element, not backdrop-filter on the stick: the stick's background is
+  // opaque, so it would paint straight over its own blurred backdrop — and
+  // the 0.25 ghost opacity would then dilute whatever survived to nothing
+  // (a child or ::before can't escape it either; parent opacity applies to
+  // the whole group). So the blur is a full-opacity, transparent disc pinned
+  // under the stick (z 3 vs 4), carrying exactly the bars chips' blur(5px).
+  // Landscape only — the portrait stick sits on the opaque HUD page.
+  const padBlur = mk("div", "ml-pad-blur");
+  page.appendChild(padBlur);
 
   // ── JUMP BUTTON (maintainer's spot: left side at the stick's mirror
   // height): a round wiki button. A press synthesizes SPACE (WorldScene:
@@ -92,14 +129,44 @@ export function mountGamepadStick(page: HTMLElement) {
   const jump = mk("button", "ml-pad-jump");
   page.appendChild(jump);
 
+  // ── PICK UP BUTTON (maintainer 2026-07-31: "a pick up-button next to the
+  // jump button"): same round wiki look, a size down. A press synthesizes F
+  // (WorldScene: keydown-F -> pickupNearest) — walks to the nearest ground
+  // item and grabs it, exactly like the keyboard.
+  const pickup = mk("button", "ml-pad-pickup");
+  page.appendChild(pickup);
+
   // labels over each control (maintainer: "write JUMP over it… WALK over
   // the button to the right") — the wiki section-label look, same as the
   // Settings "Ambient effects" header.
   const jumpLabel = mk("div", "ml-pad-label");
   jumpLabel.textContent = "Jump";
+  const pickupLabel = mk("div", "ml-pad-label");
+  pickupLabel.textContent = "Pick up";
   const walkLabel = mk("div", "ml-pad-label");
   walkLabel.textContent = "Walk";
-  page.append(jumpLabel, walkLabel);
+  page.append(jumpLabel, pickupLabel, walkLabel);
+
+  // ── ONE-TIME HELP (maintainer 2026-08-05): tell new players the stick side
+  // is theirs to choose. An absolute overlay chip at the top of the page, so
+  // it NEVER moves the controls; the × dismisses it forever (localStorage).
+  if (!localStorage.getItem("ml-hand-help")) {
+    const help = mk("div", "ml-pad-help");
+    const txt = mk("span", "");
+    txt.textContent = "Playing left-handed? Swap the stick side any time in Settings → controls.";
+    const x = mk("button", "ml-pad-help-x") as HTMLButtonElement;
+    x.type = "button";
+    x.textContent = "×";
+    x.setAttribute("aria-label", "Dismiss");
+    x.addEventListener("click", () => {
+      try {
+        localStorage.setItem("ml-hand-help", "1");
+      } catch {}
+      help.remove();
+    });
+    help.append(txt, x);
+    page.appendChild(help);
+  }
 
   // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
   // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
@@ -112,6 +179,23 @@ export function mountGamepadStick(page: HTMLElement) {
   // amplitude"). Radius kept in css px.
   let visSector = -1;
   let visRadius = 0;
+  // Animate INTO position only on HANDEDNESS changes (maintainer 2026-08-05,
+  // twice refined: "not when clicking from and to the game-controller page",
+  // then "the UI animation feels laggy when switching orientation" — the
+  // rotation glide fought the canvas resize + the OS's own rotation
+  // animation, so orientation snaps like everything else now). The left/top
+  // transitions live under a transient .anim class; page entry, resizes and
+  // rotation reposition instantly.
+  let lastHand: boolean | null = null;
+  let animTimer = 0;
+  const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel, walkLabel];
+  const armAnim = () => {
+    for (const el of controls()) el.classList.add("anim");
+    window.clearTimeout(animTimer);
+    animTimer = window.setTimeout(() => {
+      for (const el of controls()) el.classList.remove("anim");
+    }, 350);
+  };
   const setCap = (sector: number, radiusCss: number) => {
     visSector = sector;
     visRadius = sector < 0 ? 0 : radiusCss;
@@ -133,24 +217,111 @@ export function mountGamepadStick(page: HTMLElement) {
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const midY = padTop + (page.clientHeight - padTop - padBot) * 0.5;
-    pad.style.left = `${Math.round(page.clientWidth * 0.705 - well / 2)}px`;
-    pad.style.top = `${Math.round(midY - well / 2)}px`;
-    jump.style.width = jump.style.height = `${jumpD}px`;
-    jump.style.left = `${Math.round(page.clientWidth * 0.25 - jumpD / 2)}px`;
-    jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
-    // labels share one row, floating a fixed gap above the taller control
-    const labelY = Math.round(midY - well / 2 - 10);
-    for (const [el, fx] of [
-      [jumpLabel, 0.25],
-      [walkLabel, 0.705],
-    ] as const) {
-      el.style.left = `${Math.round(page.clientWidth * fx)}px`;
-      el.style.top = `${labelY}px`;
+    // HANDEDNESS (controls.ts): right-handed (default) keeps the maintainer's
+    // marked spots — stick 70.5% across, pick-up 46.5%, jump 25%; left-handed
+    // mirrors all three. The stick side is the promise ("always on the right
+    // / always on the left"), portrait and landscape alike. Pick up sits
+    // between jump and the stick, a size down so the jump stays the primary
+    // thumb target (games agent, 2026-08-05 — merged with handedness here).
+    const leftHand = getHand() === "left";
+    const stickFx = leftHand ? 1 - 0.705 : 0.705;
+    const jumpFx = leftHand ? 1 - 0.25 : 0.25;
+    const pickFx = leftHand ? 1 - 0.465 : 0.465;
+    const pickD = Math.round(jumpD * 0.72);
+    const land = document.documentElement.classList.contains("ml-land");
+    // glide only when HANDEDNESS changes and the page is actually visible —
+    // never on page entry, plain resizes or rotation
+    const vis = page.clientWidth > 0;
+    if (vis && lastHand !== null && leftHand !== lastHand) armAnim();
+    lastHand = leftHand;
+    if (land) {
+      // LANDSCAPE: the stick leaves the page ENTIRELY — reparented to <body>
+      // so it shows on EVERY tab (maintainer 2026-08-05: "always display the
+      // analog thumbstick when in landscape, regardless of active menu
+      // item"), floating in the game view's very bottom corner on the
+      // thumb's side, GHOSTED at 0.15 alpha ("85% transparency"; fades to 1
+      // while held). z-index 4 keeps it UNDER the chat overlay (5), the pill
+      // and the chips (8); chat lines and the pill are pointer-events:none,
+      // so the thumb steers straight through them. Jump + pick up stay IN
+      // the gamepad page under the other thumb. Reparenting keeps all the
+      // pointer listeners — and its viewport-based fixed position is valid
+      // even while the HUD shows another page, so there is nothing stale to
+      // animate from when tabs change.
+      if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
+      pad.style.position = "fixed";
+      pad.style.zIndex = "4";
+      pad.style.left = `${leftHand ? LAND_INSET : window.innerWidth - LAND_INSET - well}px`;
+      pad.style.top = `${window.innerHeight - LAND_INSET - well}px`;
+      // the blur disc rides exactly under it
+      padBlur.style.display = "block";
+      padBlur.style.width = padBlur.style.height = `${well}px`;
+      padBlur.style.left = pad.style.left;
+      padBlur.style.top = pad.style.top;
+      // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
+      // stack around the column's midline, label above each button. Page-
+      // relative writes only while the page is VISIBLE: while it is
+      // display:none its width reads 0 and these would park the buttons at
+      // garbage coordinates — the source of the "controller graphics
+      // animate" glitch when opening the tab after a hidden re-layout. The
+      // ResizeObserver re-runs this before the first visible paint.
+      if (vis) {
+        const cx = Math.round(page.clientWidth / 2);
+        const gap = 34; // room for the lower button's label between the two
+        pickup.style.width = pickup.style.height = `${pickD}px`;
+        pickup.style.left = `${cx - Math.round(pickD / 2)}px`;
+        pickup.style.top = `${Math.round(midY - gap / 2 - pickD)}px`;
+        jump.style.width = jump.style.height = `${jumpD}px`;
+        jump.style.left = `${cx - Math.round(jumpD / 2)}px`;
+        jump.style.top = `${Math.round(midY + gap / 2)}px`;
+        pickupLabel.style.left = `${cx}px`;
+        pickupLabel.style.top = `${Math.round(midY - gap / 2 - pickD - 10)}px`;
+        jumpLabel.style.left = `${cx}px`;
+        jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
+      }
+      walkLabel.style.display = "none"; // a floating label over world art is noise
+    } else {
+      // PORTRAIT: back into the page (absolute inside it), opaque.
+      if (pad.parentElement !== page) {
+        page.insertBefore(pad, page.firstChild);
+        page.insertBefore(padBlur, pad);
+      }
+      pad.style.position = "";
+      pad.style.zIndex = "";
+      padBlur.style.display = "none"; // portrait sits on the opaque HUD page
+      if (vis) {
+        pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
+        pad.style.top = `${Math.round(midY - well / 2)}px`;
+        jump.style.width = jump.style.height = `${jumpD}px`;
+        jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
+        jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+        pickup.style.width = pickup.style.height = `${pickD}px`;
+        pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
+        pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
+        // labels share one row, floating a fixed gap above the taller control
+        const labelY = Math.round(midY - well / 2 - 10);
+        walkLabel.style.display = "";
+        for (const [el, fx] of [
+          [jumpLabel, jumpFx],
+          [pickupLabel, pickFx],
+          [walkLabel, stickFx],
+        ] as const) {
+          el.style.left = `${Math.round(page.clientWidth * fx)}px`;
+          el.style.top = `${labelY}px`;
+        }
+      }
     }
     setCap(visSector, visRadius);
   };
   layout();
-  window.addEventListener("resize", layout);
+  // "ml-layout" — hud.ts applyLayout fires this AFTER it has published
+  // ml-land + the gv vars. Listening to the raw resize instead is a real bug
+  // (fixed 2026-08-05): this module's resize listener is registered BEFORE
+  // hud's, so it read the PREVIOUS orientation, skipped the landscape branch
+  // and stranded the floating stick inside a display:none page — and since a
+  // hidden page never resizes, the ResizeObserver below could not heal it.
+  // Rotating with any non-gamepad tab open simply lost the stick.
+  window.addEventListener("ml-layout", layout);
+  window.addEventListener("ml-hand", layout);
   new ResizeObserver(layout).observe(page);
 
   // ── input ──
@@ -194,11 +365,16 @@ export function mountGamepadStick(page: HTMLElement) {
     dragging = false;
     setKeys(-1, false);
     setCap(-1, 0); // glide back to centre
+    pad.classList.remove("held"); // the landscape ghost fades back to rest
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {
     dragging = true;
     pad.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
+    // IN USE = fully visible (maintainer 2026-08-05): both parts of the
+    // landscape ghost fade to 1 while the thumb holds it (their opacity
+    // transitions are always on).
+    pad.classList.add("held");
     gameAudio.event("ui.press");
     apply(ev);
   });
@@ -226,15 +402,29 @@ export function mountGamepadStick(page: HTMLElement) {
   jump.addEventListener("pointerdown", jumpDown);
   jump.addEventListener("pointerup", jumpUp);
   jump.addEventListener("pointercancel", jumpUp);
+  const pickDown = (e: PointerEvent) => {
+    e.preventDefault();
+    pickup.classList.add("press");
+    synthKey("keydown", "F");
+  };
+  const pickUp = () => {
+    pickup.classList.remove("press");
+    synthKey("keyup", "F");
+  };
+  pickup.addEventListener("pointerdown", pickDown);
+  pickup.addEventListener("pointerup", pickUp);
+  pickup.addEventListener("pointercancel", pickUp);
   // never leave keys stuck if the tab/page goes away mid-drag
   window.addEventListener("blur", () => {
     release();
     jumpUp();
+    pickUp();
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       release();
       jumpUp();
+      pickUp();
     }
   });
 }
@@ -251,17 +441,67 @@ function injectStyles() {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* the WELL: a round surface-2 basin with an inset shade */
+  /* the WELL: a round surface-2 basin with an inset shade. The OPACITY
+     transition is always on (the landscape ghost fades to 1 while the thumb
+     holds it); left/top glide ONLY under the transient .anim class, which
+     layout() arms for orientation/handedness changes — page entry and plain
+     resizes reposition instantly (maintainer 2026-08-05). */
   .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
-    background:var(--surface-2);border:1px solid var(--border-strong);
-    box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
+    box-sizing:border-box;transition:none;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .ml-pad-stick.anim{transition:left .25s ease,top .25s ease}
+  /* the WELL — the basin. Its own element (not the frame's background) so the
+     cap can be MORE opaque than it: a parent's group opacity can only ever
+     make a child fainter (child effective = parent x child). */
+  .ml-pad-well{position:absolute;inset:0;border-radius:50%;box-sizing:border-box;
+    background:var(--surface-2);border:1px solid var(--border-strong);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.12);pointer-events:none;
+    transition:opacity .25s ease}
+  .ml-pad-jump.anim,.ml-pad-pickup.anim,.ml-pad-label.anim,.ml-pad-blur.anim{
+    transition:left .25s ease,top .25s ease}
+  /* the ghost stick's backdrop blur — its own disc, see the note at the
+     element. Same blur(5px) as the .ml-bars chips; no background of its own,
+     so ONLY the blur reads. z 3 keeps it under the stick (4) and therefore
+     under the chat log (5) and the pill (8) too. */
+  .ml-pad-blur{position:fixed;z-index:3;display:none;border-radius:50%;
+    pointer-events:none;
+    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
-    transition:transform ${SNAP_MS}ms ease-out}
+    transition:transform ${SNAP_MS}ms ease-out,opacity .25s ease}
+  /* ── the LANDSCAPE ghost's rest alphas (maintainer 2026-08-05, two
+     rounds). The cap always reads a step stronger than the well, and DARK
+     carries both a good deal further — a faint grey ghost vanishes against
+     dark terrain:
+       light: well .15 (85% transparent), cap .25 (75%)
+       dark:  well .40 (60% transparent), cap .50 (50%)
+     Dark is BOTH the explicit choice and the OS default, exactly like the
+     theme tokens (theme.ts deletes data-theme when following the OS), so
+     each dark rule needs its media twin. Portrait is fully opaque — the
+     stick sits on the solid HUD page there. ── */
+  :root.ml-land .ml-pad-well{opacity:.15}
+  :root.ml-land .ml-pad-top{opacity:.25}
+  :root[data-theme="dark"].ml-land .ml-pad-well{opacity:.4}
+  :root[data-theme="dark"].ml-land .ml-pad-top{opacity:.5}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme]).ml-land .ml-pad-well{opacity:.4}
+    :root:not([data-theme]).ml-land .ml-pad-top{opacity:.5}
+  }
+  /* IN USE both parts go fully visible, whatever their rest alpha. The
+     :root.ml-land prefix is LOAD-BEARING: the dark rest rules above carry an
+     attribute selector, so a plain .ml-pad-stick.held .ml-pad-well loses
+     the specificity race to them and the ghost stayed faint while held in
+     dark mode (light mode won only by source order — measured, not
+     theorised). */
+  :root.ml-land .ml-pad-stick.held .ml-pad-well,
+  :root.ml-land .ml-pad-stick.held .ml-pad-top{opacity:1}
   /* JUMP: a round wiki button */
+  .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
+    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
+    box-sizing:border-box}
+  .ml-pad-pickup.press{background:var(--surface-2);border-color:var(--border-strong)}
   .ml-pad-jump{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
     box-sizing:border-box;padding:0;
@@ -271,6 +511,21 @@ function injectStyles() {
   /* the wiki section-label look — matches the Settings "Ambient effects" header */
   .ml-pad-label{position:absolute;transform:translate(-50%,-100%);
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
-    text-transform:uppercase;pointer-events:none;user-select:none}`;
+    text-transform:uppercase;pointer-events:none;user-select:none}
+  /* the one-time handedness tip: an overlay chip, so it can never move the
+     controls under it (maintainer) — and pointer-events:none on the BODY so
+     it can't eat their input either (on a short viewport the chip can lie
+     over the stick; a drag must start on the stick, not on a tooltip). Only
+     the × is clickable. */
+  .ml-pad-help{position:absolute;left:16px;right:16px;top:10px;z-index:2;
+    display:flex;align-items:center;gap:8px;text-align:left;pointer-events:none;
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:8px 10px;color:var(--muted);font:500 12px/1.4 var(--sans);
+    box-shadow:var(--shadow)}
+  .ml-pad-help-x{flex:none;width:28px;height:28px;border-radius:8px;cursor:pointer;
+    pointer-events:auto;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--ink);
+    font:600 16px/1 var(--sans);padding:0;
+    -webkit-tap-highlight-color:transparent}`;
   document.head.appendChild(s);
 }

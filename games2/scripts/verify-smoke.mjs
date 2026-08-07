@@ -205,7 +205,21 @@ try {
       t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
     }
     if (t0 === t1) fail(`HUD time-of-day button did not cycle (${t0})`);
-    console.log(`HUD tabs OK (6 tabs; settings time button ${t0} → ${t1})`);
+    // …AND THE BUTTON PRINTS THE PHASE IT IS ON. The world clock advances by
+    // itself every 20-40s, so a label that only refreshes when something else
+    // happens drifts away from the real time (maintainer 2026-08-06). The
+    // timeIdx listener is the one that has to re-read it — same path a manual
+    // skip takes, which is what this click is.
+    let label = "";
+    for (let i = 0; i < 15; i++) {
+      label = await page.evaluate(
+        () => document.querySelector(".ml-hudbtn")?.textContent.trim() || "",
+      );
+      if (label.endsWith(t1)) break;
+      await page.waitForTimeout(200);
+    }
+    if (!label.endsWith(t1)) fail(`time-of-day button reads "${label}" while the world is ${t1}`);
+    console.log(`HUD tabs OK (6 tabs; settings time button ${t0} → ${t1}, label "${label}")`);
   }
 
   // ---- keyboard cancels the trip ----

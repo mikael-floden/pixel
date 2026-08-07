@@ -76,9 +76,13 @@ export const DEFAULT_TIME_IDX = 2; // Day
 // one speed and the pill design breaks.
 export const TIME_PHASE_SECONDS = [40, 20, 40, 20];
 
-// Time-speed steps the settings button cycles through (maintainer):
-// x0 freeze, x0.5 twice as slow, x1 normal, x2/x5/x10 faster.
-export const TIME_SPEEDS = [0, 0.5, 1, 2, 5, 10];
+// Time-speed steps the settings button cycles through. THE ORDER IS THE
+// BUTTON'S ORDER, and it starts at the x1 boot default with FREEZE as the
+// very next press (maintainer 2026-08-06: "unlogical yes, makes me develop
+// faster, yes") — then it climbs: x0.5, x2, x5, x10, back to x1. Freezing is
+// the thing you reach for constantly while building; making it one tap from
+// rest beats keeping the list sorted.
+export const TIME_SPEEDS = [1, 0, 0.5, 2, 5, 10];
 
 // WEATHER is a second server-owned world-state layer on top of time-of-day
 // (maintainer: "the final game should have a combination of time-of-day and
@@ -121,6 +125,17 @@ export function vectorToDirection(dx: number, dy: number): Direction | null {
     }
   }
   return best[1];
+}
+
+/** The 8-way SCREEN facing from one world point toward another — what a body
+ * should display while looking at a target (combat: the monster faces its
+ * victim, the victim faces back). World deltas must go through the iso
+ * projection first: a pure +x world step draws down-RIGHT on screen, not
+ * right. Uses the same ISO_DX/ISO_DY the renderer projects with. */
+export function faceDirWorld(fromX: number, fromY: number, toX: number, toY: number): Direction | null {
+  const vx = toX - fromX;
+  const vy = toY - fromY;
+  return vectorToDirection((vx - vy) * ISO_DX, (vx + vy) * ISO_DY);
 }
 
 // --- Networking --------------------------------------------------------------
@@ -1798,9 +1813,17 @@ export function startTrip(
   // roam legs pass MONSTER_ROAM_MAX_NODES so one unlucky search can't blow the
   // server tick — see that constant.
   maxNodes?: number,
+  // Monsters route with canSwim false (water is a player sanctuary); player
+  // taps omit it and keep findPath's swimming default.
+  canSwim?: boolean,
 ): AutopilotTrip | null {
   const path = grid
-    ? (findPath(grid, fromX, fromY, toX, toY, { fromElev, goalLevel, ...(maxNodes ? { maxNodes } : {}) }) ?? [])
+    ? (findPath(grid, fromX, fromY, toX, toY, {
+        fromElev,
+        goalLevel,
+        ...(maxNodes ? { maxNodes } : {}),
+        ...(canSwim === undefined ? {} : { canSwim }),
+      }) ?? [])
     : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
@@ -2011,6 +2034,9 @@ export function stepAutopilot(
 }
 
 export * from "./monsters";
+export * from "./combat";
+// indoor.ts — "am I under a roof, and is it a room?" (pure; reads TerrainGrid).
+export * from "./indoor";
 
 // ---------------------------------------------------------------------------
 // Spawn-zone runtimes (the terrain-aware half of spawns@1 — the pure geometry
@@ -2142,8 +2168,37 @@ export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRu
       const d = grid.deck[i];
       if (d >= 0 && d >= lo && d <= hi) decks.push({ c, r, lvl: d });
     }
-    const canSwim = swim.length > stand.length;
-    const cells = canSwim ? [...stand, ...swim, ...decks] : [...stand, ...decks];
+    // WATER IS A PLAYER SANCTUARY (maintainer 2026-08-05: "no monster can
+    // enter/go on water … a player can always use the water to escape/hide")
+    // — no monster ever lives on, roams onto or chases into swimmable cells.
+    // A zone whose polygon is pure water (a pond pad) doesn't die: its
+    // monsters live on the SHORE — the nearest standable ring around the
+    // polygon (one ring at a time, elev band relaxed by ±1 for the bank).
+    const canSwim = false;
+    const cells = [...stand, ...decks];
+    if (!cells.length && swim.length) {
+      const seen = new Set(swim.map((p) => p.c + p.r * grid.width));
+      let frontier = [...swim];
+      for (let ring = 0; ring < 4 && !cells.length && frontier.length; ring++) {
+        const next: typeof swim = [];
+        for (const p of frontier) {
+          for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+            const c = p.c + dc;
+            const r = p.r + dr;
+            if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+            const i = r * grid.width + c;
+            if (seen.has(i)) continue;
+            seen.add(i);
+            if (grid.blocked[i]) continue;
+            const lvl = grid.level[i];
+            const s = surfaceFor(grid.type[i]);
+            if (s.standable && lvl >= lo - 1 && lvl <= hi + 1) cells.push({ c, r, lvl });
+            else if (s.swimmable) next.push({ c, r, lvl });
+          }
+        }
+        frontier = next;
+      }
+    }
     if (!cells.length) continue; // nothing valid — skip (caller may log)
     const cellSet = new Set(cells.map((p) => p.c + p.r * grid.width));
     out.push({ zone, cells, cellSet, canSwim });

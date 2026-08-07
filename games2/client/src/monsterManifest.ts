@@ -44,6 +44,18 @@ export interface MonsterDef {
   /** The idle state's own per-direction ground contract (independent
    * framing from walk); null when the art ships no idle animation. */
   groundIdle?: MonsterDef["ground"] | null;
+  /** GAIT contract measured from the walk art (round 13). `cycleWu` = world
+   * units one walk cycle should cover, so the clip is paced by DISTANCE
+   * travelled and stays synced across roam/chase/hunt speeds. `travel` (real
+   * HOPPERS only — body centroid rises >= 15% of figure height) = per-frame
+   * ground-track weights, mean 1: a frog covers ground during its leap and
+   * stands still while gathering, so an even glide fights its own art.
+   * `hopFrac` is the measured rise that decided it. */
+  gait?: {
+    cycleWu: number;
+    hopFrac?: number;
+    travel?: number[];
+  };
   artBottom?: number; // pooled fallback feet line (median of per-dir anchors)
   footW?: number; // ground-contact footprint width (px, contact frames)
   bodyW?: number; // widest body width (px)
@@ -72,4 +84,13 @@ export async function loadMonsterManifest(): Promise<MonsterManifest> {
 /** Resolve a monster's WALK animation key through its aliases (walk -> jump). */
 export function monsterWalkKey(def: MonsterDef): string {
   return def.walkAnim || def.aliases?.walk || "jump";
+}
+
+/** Resolve a COMBAT state (attack/angry/die) to the anim key the strips ship
+ * under, or undefined when the art has none (6 kinds have no angry — the
+ * caller degrades to the parked walk frame between swings). */
+export function resolveMonsterAnim(def: MonsterDef, state: string): string | undefined {
+  if (def.animations?.[state]) return state;
+  const alias = def.aliases?.[state];
+  return alias && def.animations?.[alias] ? alias : undefined;
 }

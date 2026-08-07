@@ -89,7 +89,12 @@ export function firefliesFeature(): AmbientFeature {
       // still keeps a few — mystery beats realism).
       const target = forced ? 1 : suppressed ? 0 : ctx.env.night * (1 - 0.4 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
-      const visible = gain > 0.02;
+      // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
+      // stop the moment the player steps inside (runtime/outdoor.ts). Applied
+      // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the
+      // crossing snaps today, and when it becomes a fade this carries it.
+      const g = gain * ctx.outdoor;
+      const visible = g > 0.02;
 
       // Population follows the view size (zoom/resize aware).
       const want = targetCount(view);
@@ -131,7 +136,7 @@ export function firefliesFeature(): AmbientFeature {
         // Pulse with dark rests: the lantern breathes bright, then truly rests.
         const s = Math.sin(f.t * f.pf + f.p0);
         const pulse = s > -0.35 ? 0.35 + 0.65 * ((s + 0.35) / 1.35) : 0.06;
-        f.sprite.setPosition(x, y).setAlpha(gain * f.bright * pulse).setVisible(true);
+        f.sprite.setPosition(x, y).setAlpha(g * f.bright * pulse).setVisible(true);
       }
     },
     setSuppressed(on) {

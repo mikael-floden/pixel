@@ -76,7 +76,7 @@ def material_target(images):
 
 
 def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42,
-              avoid_hue=None, avoid_value=None, min_value=0, dark_include=0):
+              avoid_hue=None, avoid_value=None, min_value=0, dark_include=0, max_value=None):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
     mean brightness, keeping texture. The material is SELECTED by the hue of its own
     RAW colour (`target['select_hue']` — the auto-detected pre-palette hue) so that a
@@ -101,6 +101,17 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, h
         if avoid_hue is not None:                        # transition: claim only if nearer to US
             da = np.abs(((h - float(avoid_hue) + 128) % 256) - 128)
             m = m & (dh <= da)
+        # LIGHT SOURCES are not terrain. A bonfire, ember bed, lantern or glowing
+        # crystal sitting on a prop is BRIGHTER than the material can ever be lit —
+        # grass on the bonfire tile tops out at value 190, the flame core runs 191-255.
+        # Without this guard the wide hue_band (65, needed so props pick up the palette)
+        # reaches from the grass hue all the way to hue 17 and swallows the flame's
+        # yellow-hot core, recolouring fire to teal while leaving only its orange rim.
+        # Skipping pixels above the material's own lit ceiling keeps flames, embers and
+        # lamps their real colour. No effect on BRIGHT materials (snow/ice sit near the
+        # top already, so their ceiling lands past 255 and nothing is excluded).
+        if max_value is not None:
+            m = m & (v <= float(max_value))
     else:                                                # achromatic: desaturated + value BAND
         # Two-sided value window around the material's RAW value (select_value, not the
         # possibly-far palette value) — so a pale grey-stone variant (value ~178) still

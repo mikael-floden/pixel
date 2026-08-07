@@ -42,9 +42,20 @@
       :root { --hud-h: 38.2vh; --hud-h-inv: 61.8vh; }
       @supports (height: 1dvh) { :root { --hud-h: 38.2dvh; --hud-h-inv: 61.8dvh; } }
       #game { width: 100vw; height: var(--hud-h-inv); touch-action: none; }
+      /* IN-GAME LANDSCAPE (hud.ts applyLayout sets .ml-land + the px vars):
+         the split turns on its side — the menu is a --menu-w side column and
+         the game view takes the rest at full height (--hud-h-inv is published
+         as the full innerHeight then). --gv-left is the menu's width when the
+         menu sits on the LEFT (right-handed, the default) and 0 when it sits
+         on the right (left-handed), so this one margin places the view for
+         both. The canvas follows #game via main.ts's ResizeObserver. */
+      html.ml-land #game { width: calc(100vw - var(--menu-w, 38.2vw));
+        margin-left: var(--gv-left, 0px); }
       canvas { display: block; image-rendering: pixelated; }
-      /* Portrait-only on phones (for now): landscape on a small touch screen
-         gets a full-screen "rotate back" prompt instead of a broken layout.
+      /* Portrait-only OUTSIDE the world: on the title/select/loading screens,
+         landscape on a small touch screen still gets the "rotate back"
+         prompt. Once in the world (hud.ts sets html.ml-ingame) the prompt
+         stays hidden — landscape is a real layout there since 2026-08-05.
          Desktops/laptops (fine pointer) and tall tablets are unaffected. */
       #ml-rotate { display: none; }
       @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
@@ -53,11 +64,12 @@
           background: #000; color: #e8e8f0; font: 600 20px system-ui, sans-serif; }
         #ml-rotate small { display: block; margin-top: 8px; font: 400 13px system-ui, sans-serif; color: #9aa0bf; }
       }
+      html.ml-ingame #ml-rotate { display: none !important; }
     </style>
   </head>
   <body>
     <div id="game"></div>
-    <div id="ml-rotate"><div>📱<br />Rotate your phone<small>Nangijala plays upright (portrait) for now</small></div></div>
+    <div id="ml-rotate"><div>📱<br />Rotate your phone<small>The menus play upright — landscape unlocks once you enter the world</small></div></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

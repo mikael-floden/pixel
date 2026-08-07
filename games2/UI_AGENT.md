@@ -44,6 +44,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `setClockTime(timeIdx + phaseT)` + `clockStar()`. See the CLOCK PILL
   section of `games2/CLAUDE.md` before changing the art, the motion, or
   TIME_PHASE_SECONDS (day and night must stay equal).
+- `client/src/controls.ts` — handedness (right/left, default right): which
+  side the analog stick lives on, and in landscape which side the whole menu
+  column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
+  hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -68,7 +72,11 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   as a build step: a Dockerfile conversion would add minutes to every deploy
   and bust the layer cache).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
-  `scripts/verify-mobile.mjs`.
+  `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
+  `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
+  orientations; the SERVER's count clamp is unit-tested in
+  `server/test/combat.review.test.ts` instead),
+  `scripts/verify-levelup.mjs` (the XP bar's level-up).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -145,6 +153,15 @@ from the games agent), #18 (title/landing screen).
   dark. The desktop-site squeeze (viewport 980×2123, screen 393×851) still
   matters for the CANVAS (WorldScene.zoomFor) and the wiki drawer's iframe
   scaling — check it when touching those.
+- **A DEVICE SCREENSHOT'S SCALE IS NOT THE PORTRAIT DPR — MEASURE IT.** The
+  maintainer's phone is 393 css px wide in portrait (dpr 2.75) but its
+  LANDSCAPE viewport is ~988 css px, i.e. **2.28** device px per css px, and
+  a landscape screenshot also carries a ~152px black cutout band on one side
+  that is NOT viewport. Converting one of his red position marks with the
+  portrait dpr under-reported the move by 3× ("10px" when he had marked 28)
+  and he caught it. Anchor every measurement to something whose CSS size you
+  KNOW and can find in the image — the analog stick's 148px well (fit a
+  circle to its blur disc), the clock pill's 80×32 — then convert.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.
@@ -155,6 +172,24 @@ from the games agent), #18 (title/landing screen).
 - Suppress `contextmenu` on roots containing `<img>` (Android long-press).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
+- **To TIME a DOM animation on this harness, drop the WebGL context first.**
+  The software GL renders the world at ~5fps (measured at every viewport and
+  on the lightest worlds), and WAAPI clocks run on the document timeline — at
+  that rate an animation's own `currentTime` can still read 0 after a whole
+  interval of wall time, and every sampled film collapses. `verify-levelup`
+  joins, waits for the real stats, then calls `WEBGL_lose_context.loseContext()`
+  on the game canvas: Phaser stops rasterising, the thread comes free (~42fps,
+  zero page errors) and the animation runs at something like device speed.
+  Everything DOM keeps working — the socket, the synced state, the HUD. It
+  BLANKS the canvas, so it is useless for a screenshot of anything over the
+  world, and useless for anything Phaser draws.
+- **Film DOM animations with a MutationObserver, not a sampler.** It fires per
+  mutation BATCH, so every paint is one ordered snapshot however slow the page
+  is, and reading `getComputedStyle` inside the callback flushes style — which
+  resolves animations created in that same block to their offset-0 values, i.e.
+  the impact frame, exactly. For "did these start together", read the browser's
+  own `Animation.startTime` instead of any pixel: grab the objects when their
+  effect appears and read them at the end (a finished animation keeps it).
 
 ## Don't
 

@@ -18,6 +18,9 @@
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
+import { getHand, toggleHand, handLabel } from "./controls";
+import { indoorLight, setIndoorLight } from "./indoorlight";
+import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "./indoorcut";
 import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
@@ -79,6 +82,17 @@ let ambPoll: ReturnType<typeof setInterval> | null = null;
  * Module-level so a HUD rebuild on rejoin doesn't re-probe. */
 const minimapExt = new Map<string, string>();
 
+/** A REAL touch device (a finger keyboard/thumbs are coming). Shared by the
+ * chat keyboard lift and the landscape layout — under Chrome's "Request
+ * Desktop Site" it reads false, which both consumers accept (no lift, no
+ * landscape layout: the desktop-shaped page keeps the portrait split). */
+function touchDevice(): boolean {
+  return (
+    (navigator.maxTouchPoints || 0) > 0 ||
+    window.matchMedia?.("(pointer: coarse)").matches === true
+  );
+}
+
 export interface HudActions {
   onLogout: () => void;
   /** Send a line from the Chat page's bottom input (same server path as the
@@ -97,6 +111,17 @@ export interface HudActions {
      * buttons show their current state — "time-of-day: Day", "speed: x2"). */
     state?: () => string;
   }[];
+  /** Backpack drag-out: an item slot was released over the GAME VIEW at
+   * client coords (cx, cy) — the game converts to a world point and asks the
+   * server to drop it there (clamped + ground-snapped server-side). `n` is
+   * HOW MANY of the stack to drop (the quantity dialog's answer; 1 for a
+   * lone item, which never opens the dialog). */
+  onDropItem?: (slot: number, item: string, cx: number, cy: number, n: number) => void;
+  /** A modal (the drop-quantity dialog) opened/closed. While locked the game
+   * freezes movement — the chat-input pattern (Phaser keyboard off, which
+   * also blocks the stick's synthesized keys; the dialog's own full-screen
+   * backdrop swallows every tap before Phaser can see it). */
+  onUiLock?: (locked: boolean) => void;
 }
 
 // Tab icons: the maintainer's 1x pixel-art set (client/ui-src/icons/, baked
@@ -123,24 +148,189 @@ export function mountPageFrame() {
   injectStyles();
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
+  // In the WORLD now: landscape becomes a real layout instead of the
+  // "rotate your phone" prompt (index.html hides #ml-rotate under this
+  // class). The title/select/loading screens never set it, so they keep
+  // their portrait-only behavior (maintainer 2026-08-05).
+  document.documentElement.classList.add("ml-ingame");
+  // …and UNLOCK rotation for the installed app: main.ts locks "portrait" at
+  // boot (the pre-game screens stay upright), so without this re-lock the
+  // phone never rotates in the world at all — lock("any") overrides both
+  // that and the manifest default. Rejects harmlessly in a browser tab
+  // (rotation is native there). Logout reloads the page, so the boot-time
+  // portrait lock returns for the select screen on the way out.
+  (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.("any")
+    .catch(() => {});
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;
     window.addEventListener("resize", applyLayout);
+    window.addEventListener("ml-hand", applyLayout);
   }
 }
 
 let layoutHooked = false;
+let lastLandState: boolean | null = null;
+/** Cancels any orientation flip's veil cleanup in flight (bumped per flip). */
+let flipToken = 0;
 
-/** Publish the golden-ratio split in REAL px on :root. index.html's dvh CSS
- * draws the same split; these px twins exist for the px consumers — the
+/** The live flip transition, if one is running. */
+let flipCtl: {
+  token: number;
+  started: number;
+  lastResize: number;
+  lastFrame: number;
+  calm: number;
+  flushed: boolean;
+} | null = null;
+
+/** The theme-surface VEIL over the game view during a flip. The world canvas
+ * cannot morph its aspect smoothly, and mid-rotation it shows either black
+ * (buffer cleared) or a stale-sized frame — so it reloads DISCREETLY behind
+ * the theme background while the chrome glides on top. z 3: above the
+ * canvas, below the stick (4) / HUD column (4) / chat (5) / chips (8). */
+let flipVeil: HTMLElement | null = null;
+
+/** The orientation flip (maintainer 2026-08-05, five rounds — the arc
+ * matters, do not relearn it):
+ *  - Anchor-transition glides and a FLIP pin-then-glide were BOTH tried and
+ *    both rejected. The final insight (round 5): Chrome/the OS already play
+ *    their own rotation animation over the app's surface, so ANY chrome
+ *    animation on top reads as a broken DOUBLE animation — "the menu shows
+ *    up on the correct spot immediately and looks good", and the corner
+ *    chrome must do the same. ORIENTATION SNAPS. The handedness glide
+ *    (anchor transitions + the gamepad's .anim) is untouched — nothing else
+ *    is moving during a hand switch, so it stays smooth and wanted.
+ *  - What the flip DOES own is the heavy part (rounds 3-4): a real rotation
+ *    restages the viewport several times, and a full scale.resize per stage
+ *    — framebuffer realloc + whole-world redraw, back to back — stalls the
+ *    main thread for seconds (the filmed stale letterboxed frames). So
+ *    while the flip is live, :root.ml-flip suspends main.ts's fitCanvas and
+ *    :root.ml-noanim freezes the anchor transitions (that is what makes the
+ *    snap a SNAP); the game view sits behind a theme-surface veil; once
+ *    resize events have been quiet ~300ms, ONE "ml-flip-flush" re-fits the
+ *    canvas at its final size under the veil; and after two calm frames
+ *    (hard cap 2.5s) the veil fades, revealing the freshly-sized world with
+ *    every piece of chrome ALREADY at its final anchor. */
+function beginFlip() {
+  const now = performance.now();
+  if (flipCtl) {
+    // Rotation staged again (or rotated back) mid-transition: just keep the
+    // transition open until the viewport truly settles.
+    flipCtl.lastResize = now;
+    flipCtl.flushed = false; // the final size changed again — re-flush at quiet
+    return;
+  }
+  const token = ++flipToken;
+  flipCtl = { token, started: now, lastResize: now, lastFrame: now, calm: 0, flushed: false };
+  const root = document.documentElement;
+  root.classList.add("ml-noanim");
+  root.classList.add("ml-flip"); // suspends main.ts fitCanvas until the flush
+  if (!flipVeil) {
+    flipVeil = mk("div", "ml-flip-veil");
+    document.body.appendChild(flipVeil);
+  }
+  flipVeil.style.opacity = "1";
+  const step = (t: number) => {
+    const c = flipCtl;
+    if (!c || c.token !== token) return;
+    // SETTLE — quiet resizes first, then ONE canvas flush, then calm frames.
+    const dt = t - c.lastFrame;
+    c.lastFrame = t;
+    c.calm = dt < 34 ? c.calm + 1 : 0;
+    const quiet = t - c.lastResize > 300;
+    const capped = t - c.started > 2500;
+    if (!c.flushed && (quiet || capped)) {
+      // The viewport has stopped restaging: let the canvas take its final
+      // size NOW, in one go, under the veil. This is the heavy frame —
+      // framebuffer realloc + world redraw — so the calm counter resets and
+      // the reveal waits for the frames after it.
+      c.flushed = true;
+      root.classList.remove("ml-flip");
+      window.dispatchEvent(new Event("ml-flip-flush"));
+      c.calm = 0;
+    }
+    if (c.flushed && ((c.calm >= 2 && t - c.started >= 120) || capped)) reveal();
+    else requestAnimationFrame(step);
+  };
+  const reveal = () => {
+    flipCtl = null;
+    root.classList.remove("ml-noanim");
+    root.classList.remove("ml-flip"); // belt — the flush path already did
+    // the veil fades out, revealing the re-fitted world under chrome that is
+    // already exactly where it belongs
+    if (flipVeil) flipVeil.style.opacity = "0";
+    const doneVeil = flipVeil;
+    window.setTimeout(() => {
+      if (token !== flipToken) return; // a newer flip owns the veil now
+      if (doneVeil && doneVeil === flipVeil) {
+        doneVeil.remove();
+        flipVeil = null;
+      }
+    }, 450);
+  };
+  requestAnimationFrame(step);
+}
+
+/** Publish the layout in REAL px on :root. index.html's dvh CSS draws the
+ * same portrait split; these px twins exist for the px consumers — the
  * keyboard lift's floor, the chat overlay's bottom anchor — which parseFloat
- * a px value (a raw "38.2dvh" string would read as 38.2). */
+ * a px value (a raw "38.2dvh" string would read as 38.2).
+ *
+ * LANDSCAPE (maintainer 2026-08-05, in-game only, touch devices only): the
+ * same golden-ratio split turned on its side — the game view keeps 61.8% of
+ * the LONG axis and the menu takes the other 38.2% as a SIDE COLUMN. Which
+ * side follows handedness (controls.ts): right-handed puts the menu LEFT so
+ * the stick can live under the right thumb; left-handed mirrors. Everything
+ * that anchors to the game view's edges reads the --gv-left/--gv-right px
+ * insets published here (bars chips, chat overlay, clock pill, #game
+ * itself), so the whole chrome re-anchors from one function — and because
+ * those consumers transition their anchor properties, the swap glides.
+ * Desktop (no touch) keeps the portrait split at any aspect — unchanged. */
 function applyLayout() {
   const root = document.documentElement;
-  const hudH = Math.round(window.innerHeight * 0.382);
-  root.style.setProperty("--hud-h", `${hudH}px`);
-  root.style.setProperty("--hud-h-inv", `${window.innerHeight - hudH}px`);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
+  const left = getHand() === "left";
+  // ORIENTATION changes run the flip (beginFlip above: veil + one canvas
+  // resize, anchors snapping); handedness changes keep the plain anchor
+  // transitions. Any FURTHER resize while the flip is live (real rotations
+  // arrive in several stages) just refreshes its quiet-timer.
+  if (lastLandState !== null && land !== lastLandState) beginFlip();
+  else if (flipCtl) flipCtl.lastResize = performance.now();
+  lastLandState = land;
+  root.classList.toggle("ml-land", land);
+  root.classList.toggle("ml-lh", left);
+  if (land) {
+    const menuW = Math.round(w * 0.382);
+    root.style.setProperty("--menu-w", `${menuW}px`);
+    // The game view runs the full height: consumers of --hud-h ("px above
+    // the HUD rail") get 0 and land on the bottom edge, which is exactly
+    // where the chat overlay and the clock pill belong in landscape.
+    root.style.setProperty("--hud-h", `0px`);
+    root.style.setProperty("--hud-h-inv", `${h}px`);
+    root.style.setProperty("--gv-left", `${left ? 0 : menuW}px`);
+    root.style.setProperty("--gv-right", `${left ? menuW : 0}px`);
+  } else {
+    const hudH = Math.round(h * 0.382);
+    root.style.setProperty("--menu-w", `0px`);
+    root.style.setProperty("--hud-h", `${hudH}px`);
+    root.style.setProperty("--hud-h-inv", `${h - hudH}px`);
+    root.style.setProperty("--gv-left", `0px`);
+    root.style.setProperty("--gv-right", `0px`);
+  }
+  // THE LAYOUT IS PUBLISHED — everything that positions itself against
+  // ml-land / the gv vars must run AFTER this, never on the raw resize.
+  // gamepad.ts learned this the hard way: its own resize listener fires
+  // BEFORE this one (mountPageFrame hooks resize at mountPageFrame() time,
+  // which WorldScene calls AFTER new HudBar()), so it read a STALE ml-land
+  // and skipped the landscape branch — leaving the floating stick parented
+  // to a display:none page, 0×0 and unusable, until something else nudged
+  // it. The hidden page never resizes, so its ResizeObserver could not heal
+  // it either: rotating with any non-gamepad tab open lost the stick
+  // entirely (maintainer 2026-08-05). Order-proof by construction now.
+  window.dispatchEvent(new Event("ml-layout"));
 }
 
 /** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
@@ -177,6 +367,11 @@ function minimapDotPct(m: MinimapFeed): [number, number] {
 
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
+  private invGrid: HTMLElement | null = null;
+  private invItems: { item: string; n: number }[] = [];
+  private activeDrag: { cancel: () => void } | null = null;
+  /** Close hook for the open drop-quantity dialog (null = none open). */
+  private qtyClose: (() => void) | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
@@ -204,6 +399,9 @@ export class HudBar {
   constructor(private actions: HudActions) {
     injectStyles();
     document.querySelector(".ml-hud")?.remove(); // idempotent across re-joins
+    // A stray quantity dialog from a torn-down HUD would hold a dead closure —
+    // remove it like the gamepad clears its floating stick.
+    document.querySelectorAll(".ml-qty-back").forEach((e) => e.remove());
     const hud = mk("div", "ml-hud");
     const tabRow = mk("div", "ml-tabrow");
     const pageWrap = mk("div", "ml-pages");
@@ -324,7 +522,16 @@ export class HudBar {
     const box = els.wrap.getBoundingClientRect();
     if (!nw || !nh || box.width < 2 || box.height < 2) return;
     const ar = nw / nh;
-    let w = box.width, h = w / ar;
+    // LANDSCAPE (maintainer 2026-08-05: "the map should look the same size"
+    // as portrait): size it as if the page were still the PORTRAIT page —
+    // the short viewport side minus the page margins — and let the sides
+    // overflow. The frame stays == the image box, so the "you are here"
+    // dot's percent offsets keep landing on the right pixel; .ml-map is
+    // overflow:hidden + centred, so the overhang clips evenly left and
+    // right — and an iso minimap's left/right margins are open water.
+    const land = document.documentElement.classList.contains("ml-land");
+    let w = land ? Math.min(window.innerWidth, window.innerHeight) - 32 : box.width;
+    let h = w / ar;
     if (h > box.height) { h = box.height; w = h * ar; }
     els.frame.style.width = `${Math.floor(w)}px`;
     els.frame.style.height = `${Math.floor(h)}px`;
@@ -512,13 +719,16 @@ export class HudBar {
     // the keyboard, jump button TBD.
     mountGamepadStick(this.pages.get("gamepad")!);
 
-    // Backpack: 5×3 empty item slots — wiki-style empty cells (surface-2
-    // well, 1px border, rounded), same count and layout as before. Real
-    // inventory comes later.
+    // Backpack: the REAL inventory (server-owned, arrives as targeted "inv"
+    // messages -> setInventory). 5-col grid, padded to at least 15 cells so
+    // an empty pack still reads as the familiar wall of slots. A filled slot
+    // DRAGS: pointer-captured ghost (the bird-density slider pattern);
+    // releasing over the game view (top 61.8%) asks the game to drop it
+    // there — releasing anywhere else snaps back.
     const bp = this.pages.get("backpack")!;
-    const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
-    bp.append(slots);
+    this.invGrid = mk("div", "ml-slots");
+    bp.append(this.invGrid);
+    this.renderInventory();
 
     // Equipment page: bare stone until its real content lands
     // (maintainer 2026-07-17: no placeholder text).
@@ -565,6 +775,23 @@ export class HudBar {
     });
     this.stateful.push([themeBtn, themeEntry]);
     row.appendChild(themeBtn);
+    // CONTROLS: right-handed (default) or left-handed — which side the
+    // analog stick lives on, and in landscape which side the whole menu
+    // column takes (maintainer 2026-08-05). controls.ts owns the state; the
+    // "ml-hand" event re-anchors the layout (applyLayout) and the gamepad.
+    const handEntry: HudActions["settings"][number] = {
+      label: "controls",
+      act: () => toggleHand(),
+      state: () => handLabel(),
+    };
+    const handBtn = plateButton("controls", () => {
+      handEntry.act();
+      this.refreshSettings();
+    });
+    handBtn.classList.add("ml-handbtn"); // stable hook for the landscape gate
+    this.stateful.push([handBtn, handEntry]);
+    row.appendChild(handBtn);
+    window.addEventListener("ml-hand", () => this.refreshSettings());
     // …and follow toggles from the WIKI side (its write → storage event →
     // theme.ts re-applies → "ml-theme") so the printed state never goes stale.
     window.addEventListener("ml-theme", () => this.refreshSettings());
@@ -584,6 +811,33 @@ export class HudBar {
         }
       });
     }).observe(row, { childList: true });
+
+    // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
+    // 2026-08-06: "a slider on the settings page … 0% = BLACK, 100% = THE TILE
+    // WILL LOOK JUST LIKE THE PNG"). Lives on the Settings page proper, NOT in
+    // the Ambient-effects section below — that section is the ambient agent's
+    // and is built lazily from its registry. indoorlight.ts owns the value and
+    // its persistence; the scene listens for "ml-indoor-light".
+    wrap.appendChild(
+      pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
+    );
+
+    // INDOOR WALL CUT: how far down from each room's own ceiling the cut-away
+    // takes the building (maintainer 2026-08-07: "cut all walls at 'roof - 1',
+    // 'roof - 2', etc. Even making this configurable in settings so I can test
+    // what looks best"). STEPPED, because the underlying quantity is a whole
+    // number of 16px levels — a continuous slider would show the same picture
+    // across a third of its travel and then jump. indoorcut.ts owns the value
+    // and its persistence; the scene rebuilds its mask on "ml-indoor-cut".
+    const cutSpan = INDOOR_CUT_MAX - INDOOR_CUT_MIN;
+    const p2cut = (p: number) => INDOOR_CUT_MIN + Math.round(p * cutSpan);
+    const cut2p = (v: number) => (v - INDOOR_CUT_MIN) / cutSpan;
+    wrap.appendChild(
+      pctSlider("Indoor wall cut", () => cut2p(indoorCut()), (p) => setIndoorCut(p2cut(p)), {
+        snap: (p) => cut2p(p2cut(p)),
+        format: (p) => `roof \u2212${p2cut(p)}`,
+      }),
+    );
 
     // Ambient-effect checklist: one checkbox row per effect (+ an AUTO row).
     // Rows are built lazily once window.__mlAmbient is up (tickAmbient); the
@@ -641,6 +895,256 @@ export class HudBar {
   /** Append a log line to the persistent Chat history (called for EVERY line the
    * on-screen chat shows — system + player). Caps at CHAT_HISTORY_MAX, dropping
    * the oldest, and re-renders if the Chat tab is currently visible. */
+  /** The server-owned backpack (targeted "inv" messages). Rerenders the grid. */
+  setInventory(items: { item: string; n: number }[]) {
+    this.invItems = Array.isArray(items) ? items : [];
+    this.renderInventory();
+  }
+
+  /** QA probe: what the backpack currently shows. */
+  invSnapshot(): { item: string; n: number }[] {
+    return this.invItems.map((s) => ({ ...s }));
+  }
+
+  private renderInventory() {
+    const grid = this.invGrid;
+    if (!grid) return;
+    // An "inv" refresh can land MID-DRAG (auto-pickup on arrival, a join
+    // refresh): rebuilding the grid detaches the captured cell, whose
+    // pointerup can then never fire — cancel the gesture explicitly or the
+    // ghost sprite is orphaned on screen until reload.
+    this.activeDrag?.cancel();
+    grid.textContent = "";
+    const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
+    for (let i = 0; i < total; i++) {
+      const entry = this.invItems[i];
+      const cell = mk(entry ? "div" : "i", "ml-slot");
+      if (entry) {
+        cell.classList.add("filled");
+        const img = document.createElement("img");
+        img.src = `/assets/items/${entry.item}/sprite.webp`;
+        img.alt = entry.item;
+        img.draggable = false;
+        cell.appendChild(img);
+        // EVERY filled slot prints its count, ×1 included (maintainer
+        // 2026-08-05: "'×1', '×2', '×3', etc") — lower-right corner badge.
+        const badge = document.createElement("b");
+        badge.textContent = `×${entry.n}`;
+        cell.appendChild(badge);
+        this.armSlotDrag(cell, img, i, entry.item, entry.n);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  /** Pointer-captured drag (the bird-density slider pattern): a ghost sprite
+   * rides the finger; releasing over the game view (above the HUD line) hands
+   * the client coords to the game, anywhere else snaps back. Capture keeps
+   * every move/up on the slot element, so Phaser never sees the gesture and
+   * cannot arm a move trip from it. */
+  private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string, count: number) {
+    cell.addEventListener("pointerdown", (e: PointerEvent) => {
+      e.preventDefault();
+      this.activeDrag?.cancel(); // one gesture at a time
+      cell.setPointerCapture(e.pointerId);
+      let ghost: HTMLImageElement | null = null;
+      const move = (ev: PointerEvent) => {
+        if (!ghost) {
+          ghost = img.cloneNode(true) as HTMLImageElement;
+          ghost.className = "ml-slot-ghost";
+          document.body.appendChild(ghost);
+          cell.classList.add("dragging");
+        }
+        ghost.style.left = `${ev.clientX - 20}px`;
+        ghost.style.top = `${ev.clientY - 20}px`;
+      };
+      const cleanup = () => {
+        cell.removeEventListener("pointermove", move);
+        cell.removeEventListener("pointerup", finish);
+        cell.removeEventListener("pointercancel", cancel);
+        cell.classList.remove("dragging");
+        ghost?.remove();
+        ghost = null;
+        this.activeDrag = null;
+      };
+      const finish = (ev: PointerEvent) => {
+        const dragged = !!ghost;
+        cleanup();
+        if (dragged) {
+          // Over the GAME VIEW (top 61.8% — everything above the HUD's own
+          // top edge) => drop it into the world at that point. The item id
+          // rides along: slot indices go stale in flight when a stack
+          // empties, and the server drops whatever the index NAMES NOW.
+          const hudTop = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hud-h")) || window.innerHeight * 0.382);
+          // ALWAYS ask (maintainer 2026-08-05: "since this dialog acts as a
+          // nice confirm dialog, we want it for dropping 1 item when you only
+          // have ×1 as well") — a stack asks HOW MANY, a lone item asks
+          // WHETHER. The dialog keeps the release point, so the eventual drop
+          // lands where the finger let go.
+          if (ev.clientY < hudTop) this.openDropQty(slot, item, count, ev.clientX, ev.clientY);
+        }
+      };
+      const cancel = () => cleanup();
+      cell.addEventListener("pointermove", move);
+      cell.addEventListener("pointerup", finish);
+      cell.addEventListener("pointercancel", cancel);
+      this.activeDrag = { cancel: cleanup };
+    });
+  }
+
+  /** The drop-quantity dialog (maintainer 2026-08-05, refined the same day):
+   * EVERY backpack drag-out lands here first — a stack asks how many, a lone
+   * item is a plain confirm. A wiki-style card centred in the GAME VIEW
+   * (positioned off the layout vars, so it lands mid-view in portrait AND
+   * landscape) over a DARKENING backdrop that swallows every pointer;
+   * movement is frozen while it's open (onUiLock).
+   *
+   * ONE ROW of controls — item, −, the count, + — over a full-width DROP.
+   * There is no cancel button and no max button (maintainer: "remove the close
+   * button to make it cleaner… remove the MAX button"): tapping OUTSIDE the
+   * card closes it, and −/+ WRAP AROUND, so one tap on − from ×1 is "all of
+   * them". The count itself is TYPABLE on the numeric keyboard; junk in the
+   * field never moves the amount. */
+  private openDropQty(slot: number, item: string, max: number, cx: number, cy: number) {
+    this.qtyClose?.(); // one dialog at a time
+    const back = mk("div", "ml-qty-back");
+    const card = mk("div", "ml-qty");
+    const head = mk("div", "ml-qty-head");
+    const img = document.createElement("img");
+    img.src = `/assets/items/${item}/sprite.webp`;
+    img.alt = item;
+    img.draggable = false;
+
+    // Inline stroke SVGs, not font glyphs: they inherit the theme ink via
+    // currentColor and can't fall out of a phone font's coverage.
+    const icon = (d: string) => {
+      const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      s.setAttribute("viewBox", "0 0 20 20");
+      s.setAttribute("aria-hidden", "true");
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", d);
+      s.appendChild(p);
+      return s;
+    };
+    const btn = (cls: string, label: string, d: string, act: () => void) => {
+      const b = mk("button", `ml-plate-btn ml-qty-btn ${cls}`) as HTMLButtonElement;
+      b.type = "button";
+      b.setAttribute("aria-label", label);
+      b.title = label;
+      b.appendChild(icon(d));
+      b.addEventListener("click", act);
+      return b;
+    };
+    let want = 1;
+    // WRAP-AROUND (maintainer): past the top comes 1 again, below 1 comes the
+    // whole stack — which is what replaced the max button.
+    const dec = btn("ml-qty-dec", "fewer", "M5 10h10", () => {
+      want = want <= 1 ? max : want - 1;
+      paint();
+    });
+    const inc = btn("ml-qty-inc", "more", "M10 5v10M5 10h10", () => {
+      want = want >= max ? 1 : want + 1;
+      paint();
+    });
+    // The count is an INPUT: tap it and type the amount on the phone's number
+    // keyboard (inputmode numeric + a digits-only pattern). It stays free-form
+    // while focused so a field can be cleared mid-edit; only a whole number
+    // inside 1..max moves `want`, and leaving the box repaints from `want` —
+    // so "1e9", "abc" or an empty box leave the amount exactly as it was.
+    const count = mk("input", "ml-qty-count") as HTMLInputElement;
+    count.type = "text";
+    count.inputMode = "numeric";
+    count.pattern = "[0-9]*";
+    count.maxLength = 3; // INV_MAX_STACK is 99
+    count.setAttribute("aria-label", `How many to drop, up to ${max}`);
+    // Tapping the box CLEARS it (maintainer): you type the number you want,
+    // never "delete the 1 first". Leaving it empty is not a change — blur
+    // repaints the amount that was there.
+    count.addEventListener("focus", () => {
+      count.value = "";
+    });
+    count.addEventListener("input", () => {
+      const v = count.value.trim();
+      if (!/^\d+$/.test(v)) return; // mid-edit junk: hold the amount
+      const n = parseInt(v, 10);
+      if (n >= 1 && n <= max) want = n;
+    });
+    count.addEventListener("blur", () => paint());
+    count.addEventListener("keydown", (e) => {
+      // Never let the world see these keys, and Enter commits the box.
+      e.stopPropagation();
+      if (e.key === "Enter") count.blur();
+    });
+    const of = mk("span", "ml-qty-of");
+    of.textContent = `of ${max}`;
+    // ONE line — count box and "of N" side by side, so the box can stand as
+    // tall as the ± buttons (maintainer). The item + count group hugs the
+    // LEFT edge, the two steppers sit together on the RIGHT.
+    const countWrap = mk("div", "ml-qty-countwrap");
+    const times = mk("span", "ml-qty-x");
+    times.textContent = "×";
+    countWrap.append(times, count, of);
+    const steppers = mk("div", "ml-qty-steppers");
+    steppers.append(dec, inc);
+    head.append(img, countWrap, steppers);
+
+    const paint = () => {
+      count.value = `${want}`;
+    };
+    paint();
+    let closed = false;
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      window.removeEventListener("keydown", onKey, true);
+      back.remove();
+      if (this.qtyClose === close) this.qtyClose = null;
+      this.actions.onUiLock?.(false);
+    };
+    // The one action: the WORD, no icon (maintainer) — it is the confirm.
+    const dropB = mk("button", "ml-plate-btn ml-qty-btn ml-qty-drop") as HTMLButtonElement;
+    dropB.type = "button";
+    dropB.setAttribute("aria-label", "drop");
+    const dropTxt = mk("span", "");
+    dropTxt.textContent = "Drop";
+    dropB.appendChild(dropTxt);
+    dropB.addEventListener("click", () => {
+      const n = want;
+      close();
+      this.actions.onDropItem?.(slot, item, cx, cy, n);
+    });
+    card.append(head, dropB);
+    back.appendChild(card);
+    // A tap OUTSIDE the card is the CANCEL (maintainer: no close button).
+    // Removing the card blurs the number box with it, so the phone keyboard
+    // leaves too. preventDefault on the BACKDROP's own events (never the
+    // card's — that would eat the buttons' clicks on touch) is the first of
+    // two layers keeping that tap out of the world: Phaser's window-level
+    // listeners process events whose target is not the canvas, but skip any
+    // that are defaultPrevented. The second layer is WorldScene's uiLock,
+    // which also covers taps on the card itself.
+    const swallow = (e: Event) => {
+      if (e.target === back && e.cancelable) e.preventDefault();
+    };
+    back.addEventListener("touchstart", swallow, { passive: false });
+    back.addEventListener("mousedown", swallow);
+    back.addEventListener("pointerdown", (e) => {
+      if (e.target !== back) return;
+      if (e.cancelable) e.preventDefault();
+      close();
+    });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        close();
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    document.body.appendChild(back);
+    this.actions.onUiLock?.(true);
+    this.qtyClose = close;
+  }
+
   pushChat(name: string, text: string, t: Date = new Date()) {
     this.chatMsgs.push({ name, text, t });
     if (this.chatMsgs.length > CHAT_HISTORY_MAX)
@@ -795,6 +1299,87 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   return wrap;
 }
 
+/** A Settings slider on a LINEAR 0-100% axis — same wiki look and the same
+ * pointer-capture drag as birdSlider above, but no log axis and no detent.
+ * Split out rather than generalising birdSlider: that one's log scale, its 1x
+ * detent and its "×N" formatting are its whole point, and folding two axes into
+ * one function would make both harder to read than the ~30 duplicated lines. */
+function pctSlider(
+  labelText: string,
+  get: () => number,
+  set: (v: number) => void,
+  // A STEPPED slider is the same widget with two hooks: `snap` pulls a raw
+  // 0..1 drag onto the nearest legal position, and `format` writes the readout
+  // in the setting's own units. Defaults give the plain percent slider back,
+  // so the Indoor light one is untouched.
+  opts: { snap?: (p: number) => number; format?: (p: number) => string } = {},
+): HTMLElement {
+  const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  const snap = opts.snap ?? ((p: number) => p);
+  const format = opts.format ?? ((p: number) => `${Math.round(p * 100)}%`);
+  const wrap = mk("div", "ml-amb-slider");
+  const head = mk("div", "ml-amb-slider-head");
+  const label = mk("span", "ml-amb-slider-label");
+  label.textContent = labelText;
+  const valEl = mk("span", "ml-amb-slider-val");
+  head.append(label, valEl);
+  const track = mk("div", "ml-slider");
+  const fill = mk("div", "ml-slider-fill");
+  const knob = mk("div", "ml-slider-knob");
+  track.append(fill, knob);
+  wrap.append(head, track);
+
+  let curP = snap(clamp01(get()));
+  const render = (p: number) => {
+    curP = p;
+    fill.style.width = `${(p * 100).toFixed(2)}%`;
+    const trackW = track.clientWidth;
+    const kw = knob.offsetWidth || 22;
+    knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
+    valEl.textContent = format(p);
+  };
+  new ResizeObserver(() => render(curP)).observe(track);
+
+  const clientToP = (clientX: number) => {
+    const rect = track.getBoundingClientRect();
+    return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : curP;
+  };
+  const applyP = (raw: number) => {
+    const p = snap(raw);
+    render(p);
+    set(p);
+  };
+  let dragging = false;
+  track.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    knob.classList.add("grabbing");
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture unsupported — moves still work via the track listener */
+    }
+    applyP(clientToP(e.clientX));
+    e.preventDefault();
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging) applyP(clientToP(e.clientX));
+  });
+  for (const ev of ["pointerup", "pointercancel"] as const)
+    track.addEventListener(ev, (e) => {
+      if (!dragging) return;
+      dragging = false;
+      knob.classList.remove("grabbing");
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch {
+        /* nothing captured */
+      }
+    });
+
+  render(curP);
+  return wrap;
+}
+
 /** Momentary pressed-plate feedback via pointer events: CSS :active is
  * hover-only (mobile Chrome keeps it sticky on the last tap), so touch needs
  * its own press state — added on finger-down, gone the instant the finger
@@ -898,15 +1483,11 @@ function mountChatKeyboardLift() {
   let focusedAt = 0;
   let sawReport = false; // a source has, at least once, given a real keyboard height
 
-  // A REAL touch device (finger keyboard is coming). The maintainer runs the
-  // game in normal mobile mode now, where this is reliable — it only reads 0 /
-  // false under Chrome's "Request Desktop Site", which the maintainer has
-  // accepted won't get the lift ("if that's what they want they should blame
-  // themselves"). So this is exactly the right gate: it floats the box on every
-  // phone, and leaves a real mouse desktop (no keyboard) alone.
-  const touchDevice = () =>
-    (navigator.maxTouchPoints || 0) > 0 ||
-    window.matchMedia?.("(pointer: coarse)").matches === true;
+  // touchDevice() (module-level now — shared with the landscape layout) is
+  // the gate: it floats the box on every phone, and leaves a real mouse
+  // desktop (no finger keyboard) alone. Under Chrome's "Request Desktop
+  // Site" it reads false — accepted (maintainer: "if that's what they want
+  // they should blame themselves").
 
   /** Keyboard height in CSS px from whichever source actually reports one. */
   const reported = () =>
@@ -1002,6 +1583,10 @@ function mountChatKeyboardLift() {
   // BOTH chat boxes: the Chat page's (.ml-chat-input) and the in-world
   // overlay's (.ml-chatinput, chat.ts). Either one focused means a keyboard is
   // coming, and everything anchored to the bottom has to get out of its way.
+  // The drop dialog's number box deliberately does NOT ride along: it floats
+  // nothing, and lifting the card when the number keyboard opened moved the
+  // dialog out from under the maintainer's finger. It clears the keys by
+  // sitting at 45% of the view instead (see .ml-qty).
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement &&
     (t.classList.contains("ml-chat-input") || t.classList.contains("ml-chatinput"));
@@ -1022,13 +1607,18 @@ function mountChatKeyboardLift() {
     poll = 0;
     drop();
   });
-  // Android ▼/Back hides the keyboard WITHOUT blurring the field, and on a device
-  // that reports no keyboard height we can't detect that — the floated box would
-  // hover over the game with no keyboard beneath it. The user's next tap OUTSIDE
-  // the box means they're done: blur it (→ focusout → drop). Tapping the box
-  // itself keeps focus so you can keep typing.
+  // Android ▼/Back hides the keyboard WITHOUT blurring the field. The user's
+  // next tap OUTSIDE the box means they're done: blur it (→ focusout → drop).
+  // Tapping the box itself keeps focus so you can keep typing.
+  // THE GATE IS FOCUS, NOT `lifted` (maintainer 2026-08-05: "closes the
+  // keyboard… now attacks an enemy or clicks the game-view and the keyboard
+  // will open again"): once a device HAS reported a keyboard height, the ▼
+  // close drops the float but the field keeps focus, and Chrome re-opens the
+  // keyboard on the next tap because a text field is still focused — Phaser
+  // preventDefault()s the canvas pointerdown, so nothing else ever takes
+  // focus away. Capture phase, so it can't be swallowed on the way down.
   addEventListener("pointerdown", (e) => {
-    if (lifted && input && e.target !== input) input.blur();
+    if (input && e.target !== input) input.blur();
   }, { capture: true, passive: true });
   vk?.addEventListener("geometrychange", sync);
   vv?.addEventListener("resize", sync);
@@ -1065,6 +1655,62 @@ function injectStyles() {
      grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
      hand-drawn art; a fixed square box distorted + fractionally scaled them) */
   .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* rotation = SNAP (beginFlip holds ml-noanim through the whole flip):
+     Chrome/the OS already animate the rotation itself, so any chrome
+     animation on top reads as a broken double animation (maintainer round
+     5). Every anchor jumps straight to its final value; only the veil
+     fades. Handedness changes keep the plain anchor transitions — nothing
+     else moves during a hand switch. !important — these transitions live
+     in four different injected sheets. */
+  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
+  :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
+  /* the rotation veil: theme surface over the game view while the canvas
+     re-fits (beginFlip). Fades on the compositor once the world is ready. */
+  .ml-flip-veil{position:fixed;inset:0;z-index:3;background:var(--bg);
+    pointer-events:none;opacity:1;transition:opacity .35s ease}
+  /* Rotation exposes raw page behind the canvas for a few frames while the
+     browser restages the viewport (maintainer screenshots 2026-08-05:
+     "buggy black"). index.html paints #000 for the pre-game screens; in the
+     world, the exposed area wears the theme background instead, so a
+     mid-rotation frame reads as chrome-on-surface, not a black hole. */
+  html.ml-ingame, html.ml-ingame body{background:var(--bg)}
+  /* ── LANDSCAPE (maintainer 2026-08-05): the same 61.8/38.2 split turned on
+     its side — the menu becomes a full-height SIDE COLUMN (--menu-w, set by
+     applyLayout) and the tab row a VERTICAL strip. "Buttons always closest
+     to the game-view": right-handed (default) puts the menu on the LEFT with
+     the tabs on its right edge; left-handed (.ml-lh) mirrors the whole
+     column. The icons stay upright — the strip re-flows, the art never
+     rotates (a sideways backpack is not a backpack). In-game + touch only:
+     applyLayout sets .ml-land, so desktop keeps the portrait split. ── */
+  :root.ml-land .ml-hud{top:0;bottom:0;left:0;right:auto;width:var(--menu-w,38.2vw);
+    flex-direction:row;border-top:none;border-right:1px solid var(--border)}
+  :root.ml-land.ml-lh .ml-hud{left:auto;right:0;
+    border-right:none;border-left:1px solid var(--border)}
+  :root.ml-land .ml-tabrow{flex-direction:column;flex:none;width:84px;height:auto;
+    padding:12px 8px;gap:6px;order:2;justify-content:center;
+    border-bottom:none;border-left:1px solid var(--border)}
+  :root.ml-land.ml-lh .ml-tabrow{order:0;border-left:none;border-right:1px solid var(--border)}
+  /* full-size buttons (maintainer 2026-08-05: "the menu buttons … look
+     smaller in landscape"): the global ≤640px-HEIGHT rule was written for
+     SHORT PORTRAIT phones, but every landscape phone is ≤640px tall, so it
+     silently shrank the strip to 48px. Landscape keeps the 56px buttons —
+     6×56 + gaps + padding = 390px, which fits any ≥393px-tall viewport —
+     and only genuinely tiny phones drop back to 48. */
+  :root.ml-land .ml-tab{flex:0 0 auto;width:100%;height:56px}
+  @media (max-height:388px){ :root.ml-land .ml-tab{height:48px} }
+  :root.ml-land .ml-pages{order:1;min-width:0}
+  /* the settings grid drops to two columns in the narrow landscape column —
+     three squeezed the labels into clipped fragments ("weathe…") */
+  :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
+  /* the backpack turns its grid on its side with the layout (maintainer
+     2026-08-05: rows & cols switch — 3 wide × 5 tall): five 1fr columns in
+     the narrow menu column made ~33px slots; three make them page-filling.
+     The width cap is HEIGHT-derived so all 5 rows always fit WITHOUT the
+     ugly 1px scroll (same maintainer, next round): slot = (100dvh − 72px)/5
+     — 72 = the page's 26px padding + 4×10px gaps + slack — and grid width =
+     3 slots + 2 gaps. The 320px cap keeps tablet columns from ballooning. */
+  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);
+    max-width:min(320px, calc((100dvh - 72px)*0.6 + 20px))}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the
@@ -1097,6 +1743,73 @@ function injectStyles() {
   /* ── backpack slots: wiki empty cells ── */
   .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
     width:100%;max-width:560px;margin:auto 0}
+  .ml-slot.filled{position:relative;cursor:grab;touch-action:none}
+  .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
+    position:absolute;left:10%;top:10%;pointer-events:none}
+  /* the ×N count, lower-right of EVERY filled slot (maintainer 2026-08-05).
+     A small chip rather than bare text: it sits over the sprite's corner on a
+     crowded icon, and the ×1 case must stay quiet. */
+  .ml-slot.filled b{position:absolute;right:3px;bottom:2px;pointer-events:none;
+    padding:0 3px;border-radius:6px;font:700 11px/1.5 var(--sans);color:var(--ink);
+    background:color-mix(in srgb, var(--surface) 82%, transparent)}
+  .ml-slot.dragging{opacity:.45}
+  .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
+    image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+  /* ── drop-quantity dialog: centred in the GAME VIEW, over a backdrop that
+     eats every pointer (that IS the movement lock's first half; the second is
+     onUiLock → Phaser's keyboard). The gv insets + --hud-h centre it inside
+     the view in BOTH orientations: portrait subtracts the HUD rail at the
+     bottom, landscape the menu column at one side. z 70 clears every other
+     overlay (slot ghost 60, floated chat input 50, chips 8). ── */
+  /* The backdrop DARKENS in BOTH themes (maintainer 2026-08-05) — a
+     theme-coloured wash brightened the world in light mode, which read as the
+     dialog lighting the room instead of dimming it. */
+  .ml-qty-back{position:fixed;inset:0;z-index:70;
+    background:rgba(0,0,0,.5);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  /* The card sits at 45% of the GAME VIEW's height, not 50% (maintainer
+     2026-08-05): a hair above centre, which keeps the number box clear of
+     the phone's number keyboard WITHOUT the card jumping when it opens —
+     a lift that moves the dialog under your finger is worse than the few
+     px it saves. Horizontally it is centred between the gv insets.
+     LANDSCAPE takes 40%: the view is ~393px tall there and the keyboard
+     eats a bigger share of it, so the card needs the extra step up. */
+  .ml-qty{position:absolute;
+    left:calc(var(--gv-left,0px) + (100vw - var(--gv-left,0px) - var(--gv-right,0px)) / 2);
+    top:calc((100dvh - var(--hud-h,0px)) * .45);
+    transform:translate(-50%,-50%);
+    width:min(320px, calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 40px));
+    box-sizing:border-box;display:flex;flex-direction:column;gap:10px;
+    background:var(--bg);border:1px solid var(--border);border-radius:14px;
+    padding:14px;box-shadow:var(--shadow)}
+  :root.ml-land .ml-qty{top:calc((100dvh - var(--hud-h,0px)) * .4)}
+  /* ONE row: item + count LEFT, the two steppers together RIGHT (maintainer:
+     "the + and minus buttons should be left aligned on the right side. The
+     ×1 of 5 input should be left aligned on the left side") */
+  .ml-qty-head{display:flex;align-items:center;gap:8px}
+  .ml-qty-steppers{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .ml-qty-head img{width:44px;height:44px;flex:none;object-fit:contain;
+    image-rendering:pixelated}
+  .ml-qty-countwrap{flex:0 1 auto;min-width:0;display:flex;align-items:center;
+    justify-content:flex-start;gap:5px}
+  .ml-qty-x{font:700 20px/1.15 var(--sans);color:var(--muted)}
+  .ml-qty-count{width:2.6em;height:44px;box-sizing:border-box;text-align:center;
+    background:var(--surface);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:0 4px;
+    font:700 22px/1.2 var(--sans);font-variant-numeric:tabular-nums;outline:none}
+  .ml-qty-count:focus{border-color:var(--accent)}
+  .ml-qty-of{font:500 13px/1.3 var(--sans);color:var(--muted);white-space:nowrap}
+  .ml-qty-btn{padding:8px;flex:none}
+  .ml-qty-dec,.ml-qty-inc{width:44px}
+  .ml-qty-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  /* the only action button: full width, and it SAYS what it does (maintainer).
+     .ml-plate-btn's own background rule is later in this sheet, so the accent
+     needs the extra class to win. */
+  .ml-plate-btn.ml-qty-drop{width:100%;background:var(--accent-soft);
+    border-color:var(--accent);font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase}
+  .ml-plate-btn:disabled{opacity:.4;cursor:default}
   .ml-slot{display:block;aspect-ratio:1;background:var(--surface-2);
     border:1px solid var(--border);border-radius:10px}
   /* ── buttons: .ml-plate-btn survives as a CLASS (the ambient agent injects
@@ -1181,8 +1894,13 @@ function injectStyles() {
      Never fires on desktop (no keyboard → --ml-kb stays 0, the class never
      sets). */
   :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
+  /* The floated box lives INSIDE the game view (maintainer 2026-08-05: "not
+     stretch all the way from side to side") — the gv insets are 0 in
+     portrait, so there this is the same full-width-minus-10px it always was;
+     in landscape they subtract the menu column. */
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
-    left:10px;right:10px;bottom:var(--ml-inputlift);
+    left:calc(var(--gv-left,0px) + 10px);right:calc(var(--gv-right,0px) + 10px);
+    bottom:var(--ml-inputlift);
     box-shadow:var(--shadow);transition:bottom .15s ease-out}
   /* The floated box takes the full width just above the keys, so EVERYTHING
      else that lives on the bottom edge steps up over it: the on-screen chat

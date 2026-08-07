@@ -48,6 +48,17 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
+  // An ISOLATED world (its own room): the pill is world-independent, but a
+  // shared room feeds this page "star" broadcasts — every join by a
+  // concurrent gate, and the server's wild night stars — and each one
+  // repaints the pill with a 900ms streak whose alpha-blended tail lands
+  // inside the moon detector's colour window (caught 2026-08-05: "the moon
+  // is up 3px while it is still day" whenever the battery froze the shared
+  // clock mid-NIGHT and the wild-star timer kept firing).
+  await page.evaluate(() => {
+    const i = window.__mlSelect.worlds().findIndex((w) => /ring/i.test(w));
+    if (i >= 0) window.__mlSelect.pickWorld(i);
+  });
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 30000 });
   // ms-polled (NOT waitForSelector): the software-GL page starves rAF, which
@@ -62,6 +73,17 @@ try {
   // would drag every sample off its keyframe within a frame or two.
   await page.evaluate(() => window.__ml.timeSpeed(0));
   await page.waitForFunction(() => window.__ml.timeSpeed() === 0, null, { timeout: 10000, polling: 100 });
+  // …and park the SERVER phase off Night (the settings button sends the real
+  // "timeofday" skip): while the server sits in Night its wild-star timer
+  // fires every 8-25s, and each star would streak the pill mid-measurement.
+  // The local pins below don't touch the server, so this holds for the run.
+  for (let i = 0; i < 4; i++) {
+    const n = await page.evaluate(() => window.__ml.timeOfDay().name);
+    if (n !== "Night") break;
+    await page.evaluate(() => document.querySelector(".ml-hudbtn").click());
+    await page.waitForFunction(() => window.__ml.timeOfDay().name !== "Night", null, { timeout: 8000, polling: 100 }).catch(() => {});
+  }
+  await page.waitForTimeout(1000); // let any join-star streak (900ms) die out
 
   await page.evaluate(
     ([AW, AH]) => {

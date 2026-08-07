@@ -117,7 +117,12 @@ export function sandstormFeature(): AmbientFeature {
       sandEased += (ctx.env.sand - sandEased) * Math.min(1, (wallDt / 1500) * 3);
       const target = active ? 0.35 + 0.65 * sandEased : 0;
       gain += (target - gain) * Math.min(1, (wallDt / GAIN_TAU) * 3);
-      const visible = gain > 0.02;
+      // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
+      // stop the moment the player steps inside (runtime/outdoor.ts). Applied
+      // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the
+      // crossing snaps today, and when it becomes a fade this carries it.
+      const g = gain * ctx.outdoor;
+      const visible = g > 0.02;
       // Slow gust surges + a faster flutter — the storm BREATHES.
       const gust = 0.62 + 0.28 * Math.sin(gustT * 0.55) + 0.1 * Math.sin(gustT * 2.1);
 
@@ -128,7 +133,7 @@ export function sandstormFeature(): AmbientFeature {
           haze
             .setPosition(view.x, view.y)
             .setSize(view.width, view.height)
-            .setAlpha(0.34 * gain * (0.75 + 0.25 * gust))
+            .setAlpha(0.34 * g * (0.75 + 0.25 * gust))
             .setVisible(true);
         }
       }
@@ -158,7 +163,7 @@ export function sandstormFeature(): AmbientFeature {
         gr.sprite
           .setPosition(gr.x, gr.y)
           .setScale(0.8 + (v / 460) * 1.2, 1)
-          .setAlpha(gr.a * gain * 0.75);
+          .setAlpha(gr.a * g * 0.75);
       }
     },
     debug() {

@@ -28,18 +28,23 @@ on a longer clock.
 
 ## Arrival
 
-**the Fall** — the act of arriving in Nangijala. Everyone falls exactly once.
+**the Waking** — how the dead arrive: you wake in the meadow grass, within
+sight of the stone house and the fire. There is no gate, no door, no journey
+anyone remembers. Everyone begins on that meadow.
 
-**a starfall**, or **a new star** — a newly arrived soul. Used of people, warmly.
+**the woken** — those who have arrived. **a waking** — one arrival, the event.
 
-**a wild star** — a star that falls at night with nobody findable inside it. A
-soul that arrived with too little left to arrive with. Common, and quietly sad.
+**to meet a waking** — to sit with a newly woken soul, tell them what happened,
+and ask their name and one true thing while somebody listens. The oldest
+courtesy in the world; Solveig keeps it on the meadow now.
 
-**to meet a star** — to go to a landing and tell the new arrival what has
-happened to them, before they lose the ability to say their own name. The
-oldest courtesy in the world.
+**the unwoken** — the dead who never arrive. People die together and one wakes
+and the other never does, and no one knows why, and everyone is afraid that
+somebody does. The heaviest word in the language; use it sparingly.
 
----
+**DISOWNED — never use:** starfall, new star, wild star, "meet a star",
+falling-star imagery for arrival. The shooting star on player join is a
+leftover mechanic the maintainer intends to remove; it was never canon.
 
 ## Losing
 
@@ -128,6 +133,25 @@ because a face is the easiest part of a person to remember and the last part to
 go.
 
 ---
+
+## The named cast (who may appear in shipped text)
+
+**Historical, revealed:** Signe (lit the first fire), her son Emil (lost to
+her silence), Britt (Bettany's sister, who went on). They have no sprites and
+need none — they are the past.
+
+**Living, always link them:** Solveig [[characters/6bb1eb5a|Solveig]], keeper
+of the meadow fire · Bettany [[characters/ef25b1f0|Bettany]], scribe of the
+Chronicle · Sigrun [[characters/646b922c|Sigrun]], weaponsmith, who released
+her own husband · Wendell [[characters/7a779de1|Wendell]], elder · Osric
+[[characters/54bead23|Osric]], blacksmith, recently woken · Jehanne
+[[characters/cfe826c1|Jehanne]], priestess of a faith she practises without
+believing · Gunnar [[characters/a6d7323d|Gunnar]], wanderer mapping the Drift
+· Hearn [[characters/8c41be1e|Hearn]], veteran of the cave, "it asked
+politely."
+
+**GM-only, NEVER in shipped text:** Valter, Liv, Stig. (Stig may be referred
+to as "her husband"; the name is Sigrun's withheld word.)
 
 ## Words we do NOT use
 

@@ -127,7 +127,12 @@ export function leavesFeature(): AmbientFeature {
       const view = ctx.view;
       const dts = Math.min(dt, 100) / 1000;
       gain += ((active ? 1 : 0) - gain) * Math.min(1, (dt / 1600) * 3);
-      const visible = gain > 0.02;
+      // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
+      // stop the moment the player steps inside (runtime/outdoor.ts). Applied
+      // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the
+      // crossing snaps today, and when it becomes a fade this carries it.
+      const g = gain * ctx.outdoor;
+      const visible = g > 0.02;
 
       const want = visible ? targetCount(view) : 0;
       while (leaves.length < want) {
@@ -186,7 +191,7 @@ export function leavesFeature(): AmbientFeature {
           .setPosition(drawX, lf.gy - lf.h) // drawn lifted by the height; lands at gy
           .setRotation(lf.spin)
           .setScale(lf.scale * flut, lf.scale)
-          .setAlpha(gain * 0.95 * lf.alpha);
+          .setAlpha(g * 0.95 * lf.alpha);
       }
     },
     debug() {

@@ -13,9 +13,11 @@ import { Bindings, Catalog, SoundEntry, dbToGain, loadCatalog, soundUrl } from "
 import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
-import { OneShotPlayer, PlayOpts } from "./oneshot";
-import { composerFoley, composerFoleySurfaces } from "./foley";
-import { titleThemeUrl, nightMusicUrl } from "./titleTheme";
+import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
+import { composerFoley, composerFoleySurfaces, composerFoleyTake } from "./foley";
+import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
+import { ContextMusic, hasBed } from "./contextMusic";
+import { BED_MIN_HOLD_S, BED_NAMES, BedName, desiredBed, resolveBed } from "./bedSelect";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -60,6 +62,12 @@ export interface FieldSample {
   water: number;
   town: number;
   fire: number;
+  /** 0..1 — how enclosed the player is (under a deck / inside the mountain).
+   * Drives the cave bed. Optional: absent reads as "outdoors". */
+  cave?: number;
+  /** 0..1 — how close/numerous the nearest monsters are. Drives the battle
+   * bed. Optional: absent reads as "nothing nearby". */
+  threat?: number;
 }
 
 // Footfall cadence fallback: distance between footfalls in world units —
@@ -89,12 +97,188 @@ const SWIM_EXIT_DB = -4;
 // The character-select TITLE THEME plays on the music bus (respects the music
 // toggle); trimmed a touch so it sits under the SFX, never blaring on load.
 const TITLE_THEME_DB = -4;
-// The mystical NIGHT bed: a second looping music layer cross-faded IN as the
-// sun sets and OUT at dawn (maintainer 2026-07-19). It loops CONTINUOUSLY —
-// never stopped on the day/night flip — so each night you hear a different
-// stretch, not just its opening. Level at full night; the day score fades to
-// a low floor so the night bed takes over.
+// The mystical NIGHT bed's level (maintainer 2026-07-19) — this IS the
+// in-world night score: a second looping layer cross-faded IN as the sun sets
+// and OUT at dawn, looping continuously so each night you hear a different
+// stretch rather than only its opening.
 const NIGHT_MUSIC_DB = -5;
+
+// The context-score thresholds, fallback chain and hold time live in
+// bedSelect.ts as pure functions — see test/bedSelect.test.ts.
+
+// ---- SILENT-BY-DEFAULT EVENTS + THE WIKI ASSIGNMENT LOOP -----------------
+// A sound plays only when the maintainer asked for it (2026-08-05, twice).
+// The engine used to resolve ANY emitted event through sounds/bindings.json —
+// the sound agent's RECOMMENDATIONS — which is exactly how unapproved catalog
+// stand-ins started playing the moment the combat work emitted event names
+// that happened to be bound. Resolution is now:
+//   1. EVENT_ASSIGNMENTS — sounds the maintainer assigned in the wiki
+//      (live/tuning/sfx_requests.json → wired here by the composer, the
+//      request entry then deleted). The Game Master's explicit choice, so it
+//      outranks everything.
+//
+// A REQUEST IS A MESSAGE, NOT A RECORD (maintainer 2026-08-06: "You consume
+// the request when you implement it … the request itself is not a ground
+// truth"). Consuming one is a SINGLE COMMIT that both wires it into the table
+// below and deletes the entry from sfx_requests.json — never one without the
+// other. Deleting first loses the ask with nothing to show for it; wiring
+// first leaves a request that the next run re-applies over a setting he has
+// since changed. After that commit the queue is empty by design, so NOTHING
+// can reconstruct the assignment from it: this table is the only record, and
+// it is published as composer/assignments.json for everything outside this
+// engine (scripts/build-assignments.mjs, kept honest by verify-quiet).
+// Anything reporting "what this event plays" reads THAT — never the request
+// queue, and never the layer underneath. Falling back to EVENT_FOLEY or
+// bindings.json for an ASSIGNED event is worse than showing nothing: it
+// displays an outranked sound as if it were live, which is exactly how his
+// ui.press/ui.release picks read as reverted on 2026-08-06.
+//   2. the jump/fall VOICE branch and EVENT_FOLEY — approved in their rounds.
+//   3. bindings.json — consulted ONLY for BINDINGS_APPROVED events.
+// Anything else is SILENT, deliberately: the game may emit any semantic event
+// (the wiki lists emitted-but-silent events so the Game Master can assign a
+// sound to them), and silence is the correct sound for an unassigned one.
+const BINDINGS_APPROVED = new Set<string>([
+  "ui.notify", // the chat ping (approved long before combat)
+  "player.jump", // the catalog fallback when the voice set isn't bundled
+]);
+
+/** One wiki assignment: `sound` is a catalog id or "composer/<set>". The
+ * pitch/volume/jitter fields mirror pixel-wiki-sfx-requests@1 verbatim so a
+ * request wires in as data, not as new code.
+ *
+ * A SET IS NOT A SOUND (maintainer 2026-08-06, and the wiki fixed its picker
+ * the same day: it "was listing sets, not recordings … with no way to pick
+ * take 2"). A ten-take set played round-robin is ten different sounds on one
+ * event, which is only what he meant if he picked the set. So an assignment
+ * may name ONE recording, and this engine accepts every spelling the picker
+ * might send rather than making the format a negotiation:
+ *   "composer/punch"                  → the whole set, round-robin
+ *   "composer/punch/punch__take02"    → that recording only
+ *   "composer/punch#take02"           → that recording only
+ *   "composer/punch" + take: "take02" → that recording only
+ *   … and `take` may be a bare index (2 = the second take).
+ * A take that is not bundled resolves to SILENCE, never to a different
+ * recording — a deleted take must not quietly become its neighbour. */
+interface EventAssignment {
+  sound: string;
+  take?: string | number;
+  pitch?: number; // playbackRate multiplier
+  volume_db?: number;
+  max_random_pitch_semis?: number;
+  bus?: BusName;
+}
+/** Filled ONLY from the Game Master's wiki requests — never by the composer's
+ * own taste. Empty means every assignable event is silent.
+ *
+ * THE RECORD OF EVERY ASSIGNMENT, because the request that created it was
+ * deleted in the same commit that added it here (see the consume-and-delete
+ * note above). Editing this table means re-running scripts/build-assignments.mjs
+ * so composer/assignments.json still matches; verify-quiet fails if it doesn't.
+ *
+ * AN EVENT HOLDS A LIST, not one sound (2026-08-06). The wiki's dialog says
+ * "Assign ANOTHER sound to X" and its card unbinds per sound, so several
+ * assignments for one event are an ADDITION, not a correction — and he proved
+ * it by assigning four different thunder candidates to weather.thunder inside
+ * one minute, and two to player.water_enter. A single-slot table could only
+ * have honoured one of each and silently dropped the rest, which is the
+ * dangling-request bug wearing a different hat. Several sounds ROTATE
+ * (round-robin, never the same one twice running) and each keeps its OWN
+ * pitch/volume/jitter, so a rotation is not forced to share one setting.
+ *
+ * Wired 2026-08-06 from live/tuning/sfx_requests.json, entries then deleted
+ * per the contract.
+ * ONE CLICK EVERYWHERE still holds — it is just his new click now (ui_click_bead
+ * on every UI event, the dedicated ui_click_latch on release). */
+const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
+  "item.drop": [{ sound: "composer/dirt", pitch: 1.35, volume_db: -8, max_random_pitch_semis: 0.4 }],
+  "ui.press": [{ sound: "composer/ui_click_bead" }],
+  "ui.release": [{ sound: "composer/ui_click_latch" }],
+  "combat.punch": [{ sound: "composer/punch", pitch: 0.9, max_random_pitch_semis: 0.2 }],
+  "combat.kick": [{ sound: "hit_hurt" }],
+  // Her death cry, one named take, no jitter — exactly as he auditioned it.
+  // Scoped to the GIRL because he said so in the request's note; default_boy
+  // has no die assignment yet and is therefore silent, which is the right
+  // sound for a voice he has not chosen. He could not pick one: the wiki puts
+  // only Jump and Fall on the per-hero rows, so Die has a single shared card.
+  // Asked them for a Die row per hero (coordination/games-audio.json).
+  // REPLACES monster_die_crumble rather than joining it, and that is a
+  // judgement — flag it if it is wrong. Several assignments on one event
+  // normally ADD (see the list note above), but crumble was picked at 05:57,
+  // BEFORE he asked for cross_on candidates at all; the 50 sets in rounds 14
+  // and 15 exist precisely because nothing he had was the right cross_on, and
+  // peat is the end of that hunt. crumble is also a monster-death brief ("a
+  // body crumbling into dry dust"), at 0 dB against peat's deliberately tuned
+  // -6 dB — alternating them on every kill would swing loud/quiet, which is
+  // not a designed pair. Recovery decided the tie: re-assigning crumble in the
+  // wiki works, while un-assigning it needs the per-take unbind that is still
+  // broken there.
+  "combat.cross_on": [{ sound: "composer/cross_on_peat", take: "cross_on_peat__take01", volume_db: -6 }],
+  "combat.cross_off": [{ sound: "composer/monster_die_twigs", take: "monster_die_twigs__take01", pitch: 1.85 }],
+  "item.pickup": [{ sound: "composer/kick_earthmound", take: "kick_earthmound__take01" }],
+  "combat.hit_taken": [{ sound: "composer/kick_bamboo", take: "kick_bamboo__take01" }],
+  // Levelling up finally has a sound. progress.level_up has been emitted and
+  // deliberately EMPTY since 2026-08-05 (its old binding was stripped because
+  // nothing had asked for it) — this is the first thing he has assigned to it.
+  "progress.level_up": [{ sound: "composer/level_up_harp", take: "level_up_harp__take01" }],
+  // TWO sounds, 20 seconds apart, so both play — see the list note above.
+  // These REPLACE the catalog splash on entering water; exiting still splashes
+  // because he has assigned nothing to player.water_exit.
+  "player.water_enter": [
+    { sound: "composer/cross_rise_water", take: "cross_rise_water__take01" },
+    { sound: "composer/mon_water_poring_attack", take: "mon_water_poring_attack__take01" },
+  ],
+  // FOUR candidates inside one minute — "a group with several sounds"
+  // (2026-08-06) delivered as an assignment rather than as a set. All four are
+  // POOL files, which is why take lookup now searches the pool too.
+  // THREE cries each, rotating — a death you hear more than once should not be
+  // the same performance every time. He assigned these in one sitting (three
+  // girl, two boy) and unbound nothing, so die_voice_boy__take06 stays: he has
+  // shown he unbinds what he does not want, and silently dropping a pick he
+  // kept would be the engine deciding for him.
+  "player.die@default_boy": [
+    { sound: "composer/die_voice_boy", take: "die_voice_boy__take06" },
+    { sound: "composer/die_boy_grunt", take: "die_boy_grunt__take01" },
+    { sound: "composer/die_boy_rattle", take: "die_boy_rattle__take01" },
+  ],
+  // Her first cries since die_voice was unbound. inhale carries his 0.9 pitch.
+  "player.die@default_girl": [
+    { sound: "composer/die_girl_gasp", take: "die_girl_gasp__take01" },
+    { sound: "composer/die_girl_groan", take: "die_girl_groan__take01" },
+    { sound: "composer/die_girl_inhale", take: "die_girl_inhale__take01", pitch: 0.9 },
+  ],
+  // First per-monster assignments. The id is `monsters.<kind>.<action>`, built
+  // from data in WorldScene rather than written as a literal anywhere.
+  // WALK, not idle. The request was filed against `.idle` but its note said
+  // "Only use this walk sound", so the event and the words disagreed and I
+  // asked rather than guessed: he wants the bubble on WALK and nothing else
+  // there, so mon_forest_poring_walk is dropped and idle stays silent.
+  "monsters.forest_poring_2.walk": [{ sound: "composer/monster_die_bubble", take: "monster_die_bubble__take01" }],
+  "monsters.forest_poring_2.attack": [{ sound: "composer/mon_lava_poring_attack", take: "mon_lava_poring_attack__take01" }],
+  // -12 dB on all four (maintainer 2026-08-06: "lower the volume on all sounds
+  // attached to Thunder", then "Lower them even more" after -6). Equal cuts,
+  // so the four still sit level with each other and only the strike gets
+  // quieter. THUNDER_GAIN_DB adds +14, so the net at full strength is +2 dB —
+  // twelve down from where it was blasting. -14 here would be the point where
+  // the game matches the wiki's audition exactly, one step further on. The trim lives HERE rather than in THUNDER_GAIN_DB because this is
+  // the layer the wiki can see: assignments.json carries volume_db, so the
+  // audition and the game agree, and he can move it himself next time. The
+  // engine still adds THUNDER_GAIN_DB * strength on top, which is what keeps a
+  // near strike loud and a distant one soft.
+  "weather.thunder": [
+    { sound: "composer/thunder", take: "thunder__cand07", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand08", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand09", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand17", volume_db: -12 },
+  ],
+};
+
+/** Split a wiki `sound` id into its set and (optional) chosen recording. */
+function splitComposerId(id: string, take?: string | number): { set: string; take?: string | number } {
+  const body = id.slice("composer/".length);
+  const cut = body.search(/[#/]/);
+  if (cut >= 0) return { set: body.slice(0, cut), take: body.slice(cut + 1) };
+  return { set: body, take };
+}
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -167,6 +351,12 @@ const JUMP_VOICE_MIN_GAP_S = 0.28;
 // −12 dB ≈ quarter amplitude (maintainer 2026-07-19: "lower by 50%" twice —
 // first −6, then "lower again"). A static level balance → pure mode too.
 const JUMP_VOICE_GAIN_DB = -12;
+// Thunder from a strike directly overhead (maintainer 2026-08-06: "the exact
+// high loud thunder after a lightning strike close by … immediate and loud").
+// Takes master at -1 dBFS and the sfx bus is -14 dB, so +14 dB here puts the
+// crack at roughly full scale on the master — the limiter (-8 dB threshold,
+// 12:1) turns the overshoot into punch instead of clipping.
+const THUNDER_GAIN_DB = 14;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -218,6 +408,16 @@ export class GameAudio {
   private titleSrc: AudioBufferSourceNode | null = null;
   private titleGain: GainNode | null = null;
   private titleLoading = false;
+  // The CONTEXT SCORE (contextMusic.ts): one bed per situation — battle, cave,
+  // home, town, night, adventure — cross-faded as the player moves through the
+  // world. Replaces the single night-bed layer. Until the beds are generated
+  // `resolveBed` finds nothing and the sound-domain catalog bed keeps playing,
+  // exactly as before.
+  private beds: ContextMusic | null = null;
+  private bedWanted = false;
+  private bedNow: BedName | null = null;
+  private bedSince = 0;
+  private bedOverride: BedName | null = null;
   // Night music bed (in-world): a second looping layer, cross-faded by the sun.
   private nightWanted = false;
   private nightSrc: AudioBufferSourceNode | null = null;
@@ -266,7 +466,17 @@ export class GameAudio {
     }
     this.buffers = new BufferCache(this.graph.ctx);
     this.music = new MusicDirector(this.graph, this.buffers);
-    this.oneShots = new OneShotPlayer(this.graph, this.buffers, this.music);
+    this.beds = new ContextMusic(this.graph, this.buffers);
+    // Tonal SFX snap to whichever score is actually playing — the context bed
+    // when one is up, the catalog track otherwise. Without this delegation the
+    // scale-snap and beat-quantize would go dead the moment the context score
+    // took over from the catalog bed.
+    const musical: MusicalContext = {
+      scalePitchClasses: () => this.beds?.scalePitchClasses() ?? this.music.scalePitchClasses(),
+      nextBeatIn: (maxWaitS: number) =>
+        this.beds?.activeBed() ? this.beds.nextBeatIn(maxWaitS) : this.music.nextBeatIn(maxWaitS),
+    };
+    this.oneShots = new OneShotPlayer(this.graph, this.buffers, musical);
     this.oneShots.pure = this.pureOn;
     this.applySfxMute();
 
@@ -284,7 +494,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "jump_voice_boy", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "jump_voice_boy", "ui_tick", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -306,6 +516,7 @@ export class GameAudio {
   startMusic(): void {
     this.musicWanted = true;
     this.nightWanted = true; // arm the night bed; slowTick cross-fades it
+    this.bedWanted = true; // context beds: audition-only until routed (see slowTick)
     this.stopTitleTheme();
     this.ensureNightMusic();
     if (this.catalog && this.graph) void this.music.start(this.catalog.music);
@@ -335,12 +546,55 @@ export class GameAudio {
   }
 
   /** Cross-fade the night bed by how dark it is (0 day → 1 night); silent when
-   * music is off or in pure mode. Called from slowTick with the live sun. */
+   * music is off, in pure mode, or while a bed audition has the music bus. */
   private applyNightLevel(night: number, tauS: number): void {
     if (!this.nightGain || !this.graph) return;
     const amt = this.pureOn ? 0 : Math.min(1, Math.max(0, night));
     const target = this.musicOn && this.nightWanted ? dbToGain(NIGHT_MUSIC_DB) * amt : 0;
     this.nightGain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, tauS);
+  }
+
+  /** AUDITION a bed in-game (`__ml.audioBed("cave")`), overriding the
+   * situation until released with no argument. This is how the maintainer
+   * judges a new track without hunting the map for the place that triggers it.
+   * Returns the bed list so the console call is self-documenting. */
+  auditionBed(name?: string | null): { playing: BedName | null; available: BedName[]; all: BedName[] } {
+    const match = BED_NAMES.find((n) => n === name) ?? null;
+    this.bedOverride = match;
+    if (!match) this.bedSince = 0; // let the situation retake it immediately
+    this.slowTick();
+    return {
+      playing: this.beds?.activeBed() ?? null,
+      available: BED_NAMES.filter((n) => hasBed(n)),
+      all: [...BED_NAMES],
+    };
+  }
+
+  /** Pick + apply the context bed. Battle may interrupt immediately; every
+   * other change waits out BED_MIN_HOLD_S so a bed always gets to be music
+   * rather than a fragment. */
+  private updateBeds(field: FieldSample, sun: number, level: number): boolean {
+    if (!this.beds || !this.bedWanted) return false;
+    const want =
+      this.bedOverride ??
+      resolveBed(desiredBed({ ...field, sun }, this.bedNow), (n) => hasBed(n));
+    const now = this.graph ? this.graph.now : 0;
+    const held = now - this.bedSince;
+    // An explicit audition must not wait out the minimum hold — the maintainer
+    // types __ml.audioBed("cave") and expects to hear cave, not silence for six
+    // seconds followed by a switch they have stopped listening for.
+    const urgent = want === "battle" || this.bedNow === null || this.bedOverride !== null;
+    if (want !== this.bedNow && (urgent || held >= BED_MIN_HOLD_S)) {
+      this.bedNow = want;
+      this.bedSince = now;
+      this.beds.setContext(want);
+    }
+    this.beds.setLevel(level);
+    // Report AUDIBLE, not merely wanted: a bed is a ~1 MB fetch the first time
+    // its context comes up, and silencing the catalog bed the instant we chose
+    // one would leave a hole of silence until it decoded. The catalog keeps
+    // playing and cross-fades out the moment the bed is really up.
+    return this.beds.activeBed() !== null;
   }
 
   /** Start the character-select TITLE THEME (composer-generated, looping on the
@@ -405,25 +659,91 @@ export class GameAudio {
   /** Events whose sound the composer has taken in-house. MAINTAINER
    * 2026-07-18: the tab click (ui_tick) is THE approved button sound —
    * "I want the backpack button sound" — so every UI event plays it (one
-   * sound, everywhere, like the stone footsteps). The ui_confirm/ui_cancel
-   * sets stay bundled + auditionable at /#foley for a future opt-in. */
+   * sound, everywhere, like the stone footsteps). The ui_confirm set stays
+   * bundled + auditionable at /#foley for a future opt-in. */
   private static EVENT_FOLEY: Record<string, string> = {
-    // Tactile pair (maintainer 2026-07-18: distinct down/up for immersive
-    // touch feedback): press = the approved tab click, release = the
-    // dedicated duller release recording (ui_cancel — generated for this).
+    // The approved tab click on press. The tactile PAIR is gone: `ui.release`
+    // used to play the dedicated duller ui_cancel recording, but the
+    // maintainer rejected all four ui_cancel takes in the wiki (2026-08-05)
+    // and the set is deleted — so the release is SILENT rather than quietly
+    // reusing a sound he approved for something else. `ui.release` is still
+    // emitted, so the wiki can assign it whenever he picks a release sound.
     "ui.press": "ui_tick",
-    "ui.release": "ui_cancel",
     // Legacy single-click events any game code may still emit.
-    "ui.cursor_move": "ui_tick",
-    "ui.confirm": "ui_tick",
-    "ui.cancel": "ui_tick",
-    "ui.error": "ui_tick",
   };
+
+  /** Which of an event's assigned sounds plays this time. Round-robin, so N
+   * sounds on one event each get their turn and none repeats back-to-back —
+   * the same contract a multi-take set already gets, lifted one level up.
+   * Deliberately NOT random: he assigned four thunders to hear four thunders,
+   * and random selection would replay one twice in a row often enough to read
+   * as "it only picked up some of them". */
+  private assignTurn = new Map<string, number>();
+  private pickAssigned(name: string, list: EventAssignment[]): EventAssignment {
+    if (list.length === 1) return list[0];
+    const i = (this.assignTurn.get(name) ?? -1) + 1;
+    this.assignTurn.set(name, i);
+    return list[i % list.length];
+  }
 
   /** Fire a bound event (sounds/bindings.json names: "ui.confirm",
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    // The Game Master's wiki assignment outranks every built-in route.
+    // A PER-CHARACTER assignment wins over the shared one: the wiki already
+    // scopes an event to a hero as `player.jump@<uid>`, so the same spelling
+    // gives each character their own death cry (maintainer 2026-08-06, on the
+    // die-voice request: "This is the female die sound effect. Can't assign a
+    // separate voice to the male (you need to fix that)"). Unscoped stays the
+    // everyone-sound; nothing is inherited, so an unassigned voice is silent.
+    const list =
+      (opts.voice ? EVENT_ASSIGNMENTS[`${name}@${opts.voice}`] : undefined) ??
+      EVENT_ASSIGNMENTS[name];
+    const assigned = list?.length ? this.pickAssigned(name, list) : undefined;
+    if (assigned) {
+      const rate = (opts.rate ?? 1) * (assigned.pitch ?? 1);
+      const gainDb = (opts.gainDb ?? 0) + (assigned.volume_db ?? 0);
+      const j = assigned.max_random_pitch_semis ?? 0;
+      if (assigned.sound.startsWith("composer/")) {
+        const { set, take } = splitComposerId(assigned.sound, assigned.take);
+        // One chosen recording plays ALONE; a whole set rotates. Binding the
+        // url list IS how many sounds the event has — never a set of ten with
+        // rotation switched off (maintainer 2026-08-05).
+        const one = take === undefined ? null : composerFoleyTake(set, take);
+        const urls = take === undefined ? composerFoley(set) : one ? [one] : null;
+        if (urls) {
+          this.oneShots.play(
+            {
+              id: `assigned:${name}`,
+              category: "feedback",
+              loop: false,
+              file: "",
+              urls,
+              variation: {
+                round_robin: true,
+                no_immediate_repeat: true,
+                pitch_jitter_semitones: [-j, j],
+                // NO GAIN JITTER on an assigned sound. He sets
+                // max_random_pitch_semis himself — cross_on_peat is 0, meaning
+                // "play it the same every time" — and the engine was still
+                // adding a random -0.75/+0.5 dB per fire that he never asked
+                // for. On a sound that fires after EVERY kill that is audible
+                // wobble, and it is the engine overruling the one knob he set.
+                // An assignment plays as assigned.
+                gain_jitter_db: [0, 0],
+              },
+            },
+            assigned.bus ?? "sfx",
+            { ...opts, rate, gainDb },
+          );
+        }
+        return;
+      }
+      const snd = this.catalog?.sounds.get(assigned.sound);
+      if (snd) this.oneShots.play(snd, assigned.bus ?? "sfx", { ...opts, rate, gainDb });
+      return;
+    }
     // The jump grunt (maintainer 2026-07-19: a Link-style vocal effort) is a
     // composer set on the SFX bus, spatialized, NOT a −12 dB UI click — so it
     // gets its own branch. The SAME grunt plays when she starts to FALL off a
@@ -468,6 +788,10 @@ export class GameAudio {
       });
       return;
     }
+    // bindings.json is the sound agent's RECOMMENDATION, not an approval —
+    // only events the maintainer signed off may resolve through it. Every
+    // other emitted event is silent until a wiki assignment exists.
+    if (!BINDINGS_APPROVED.has(name)) return;
     const bound = this.bindings.get(name);
     if (!bound) return;
     const sound = this.catalog!.sounds.get(bound.sound);
@@ -501,25 +825,36 @@ export class GameAudio {
    * "I want it in sync with the flashes" — the earlier 0.8-2.3s realism
    * delay read as silence). GENTLENESS: the primary real roll (take01)
    * every strike, micro pitch jitter, near-center pan, level with real
-   * presence (the roll's low end barely reproduces on small speakers). */
+   * presence (the roll's low end barely reproduces on small speakers).
+   *
+   * ASSIGNABLE since 2026-08-06 as `weather.thunder`. It used to play the
+   * whole regenerated set, because thunder is not fired by a
+   * `gameAudio.event(...)` call site and so had no name the wiki could offer.
+   * It has one now, and he immediately used it: four different candidates
+   * (cand07/08/09/17) assigned inside a minute, which ROTATE. An assignment
+   * replaces the set — picking four means those four, not those four plus the
+   * six selected takes. The old catalog fallback (a pitched-down `explosion`
+   * arriving 1-2.5 s after the flash) stays deleted: an empty set must not
+   * silently promote the exact disguise-and-delay behaviour he rejected.
+   *
+   * The gain and the near-center pan stay HERE rather than coming from the
+   * assignment: they are what puts the crack on the white flash, and they
+   * apply whichever recording he picks.
+   *
+   * NO SET FALLBACK (maintainer 2026-08-06, and this one was mine to fix:
+   * "I'm really mad of me having to unassign a list of crappy thunder I never
+   * mapped! I'm the one who map sound to events! NOT YOU!"). This used to
+   * rotate the whole foley/thunder set whenever no assignment existed, which
+   * put six recordings on weather.thunder that he never chose — and he then
+   * had to unbind all six by hand. Rotating a set IS mapping sounds to an
+   * event. An unassigned event is SILENT, with no exception for the set that
+   * happens to share the event's name. */
   thunder(strength = 1): void {
     if (!this.ready()) return;
-    const own = composerFoley("thunder");
-    if (own) {
-      this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
-        gainDb: 6 * Math.min(1, strength),
-        pan: (Math.random() - 0.5) * 0.16,
-      });
-      return;
-    }
-    const sound = this.catalog!.sounds.get("explosion");
-    if (!sound) return;
-    this.oneShots.play(sound, "sfx", {
-      rate: 0.38 + Math.random() * 0.14,
-      lowpassHz: 300 + Math.random() * 200,
-      gainDb: 2 + 5 * Math.min(1, strength),
-      delayS: 1.0 + Math.random() * 1.5,
-      pan: (Math.random() - 0.5) * 0.8,
+    if (!EVENT_ASSIGNMENTS["weather.thunder"]?.length) return;
+    this.event("weather.thunder", {
+      gainDb: THUNDER_GAIN_DB * Math.min(1, strength),
+      pan: (Math.random() - 0.5) * 0.16,
     });
   }
 
@@ -541,14 +876,28 @@ export class GameAudio {
 
     // Enter/exit water: a catalog `splash`. A fuller plunge going IN, a
     // lighter + brighter (pitched-up) splash climbing OUT.
+    //
+    // ASSIGNABLE since 2026-08-06. This moment was driven straight off the
+    // swimming flag and never passed through event(), so `player.water_enter`
+    // existed only as a line in sounds/bindings.json — the wiki listed it, he
+    // assigned a sound to it, and there was nothing for the assignment to
+    // attach to. Now the transition names itself, and an assignment REPLACES
+    // the splash. With no assignment the catalog splash plays exactly as
+    // before: this sound was approved long before the assignment loop existed,
+    // so "unassigned" must not silence it the way it does for a fresh event.
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
-      this.play("splash", "sfx", {
-        pan: f.pan,
-        dist: f.dist,
-        gainDb: f.swimming ? SWIM_ENTER_DB : SWIM_EXIT_DB,
-        rate: f.swimming ? 1 : 1.2,
-      });
+      const evt = f.swimming ? "player.water_enter" : "player.water_exit";
+      if (EVENT_ASSIGNMENTS[evt]) {
+        this.event(evt, { pan: f.pan, dist: f.dist });
+      } else {
+        this.play("splash", "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: f.swimming ? SWIM_ENTER_DB : SWIM_EXIT_DB,
+          rate: f.swimming ? 1 : 1.2,
+        });
+      }
     }
 
     // SWIMMING: ONE looping water source whose volume follows swim speed in
@@ -756,19 +1105,24 @@ export class GameAudio {
   private stepCache = new Map<string, SoundEntry>();
   private lastJumpVoiceT = 0; // ctx-time of the last jump/fall grunt (debounce)
 
-  /** A CATALOG sound (e.g. `splash`) played as a footstep: its primary take
-   * every step (no rotation) with the gentle step micro-jitter — the same
-   * doctrine as the composer foley sets, but sourced from the catalog. */
+  /** A CATALOG sound (e.g. `splash`) played as a footstep: the approved
+   * PRIMARY take with the gentle step micro-jitter — the same doctrine as the
+   * composer foley sets, but sourced from the catalog. Like those, it BINDS
+   * the one take it plays rather than carrying the catalog's whole take list
+   * behind a disabled rotation (maintainer 2026-08-05: one sound is one
+   * sound). Audibly identical — the same primary file played before. */
   private catalogStepEntry(base: SoundEntry): SoundEntry {
     let e = this.stepCache.get(base.id);
     if (!e) {
+      const primary = base.takes?.length ? [base.takes[0]] : undefined;
       e = {
         ...base,
         id: `catstep_${base.id}`,
+        takes: primary,
         mix_gain_db: 0, // level decided per-play
         variation: {
-          round_robin: false, // the approved primary take, every step
-          no_immediate_repeat: false,
+          round_robin: true,
+          no_immediate_repeat: true,
           pitch_jitter_semitones: [-0.2, 0.2],
           gain_jitter_db: [-0.7, 0.4],
           start_jitter_ms: [0, 0],
@@ -792,7 +1146,7 @@ export class GameAudio {
    * sound for clicks and steps alike — no take rotation; repeat plays get
    * only barely-perceptible micro-jitter (steps a touch more than clicks,
    * so a walk doesn't read as a machine gun). */
-  private foleyEntry(set: string, urls: string[], profile: "step" | "click" | "voice"): SoundEntry {
+  private foleyEntry(set: string, urls: string[], profile: "step" | "click" | "voice" | "rotate"): SoundEntry {
     let e = this.foleyCache.get(set);
     if (!e) {
       const step = profile === "step";
@@ -800,17 +1154,29 @@ export class GameAudio {
       // exact same waveform every jump reads as robotic — real games (OoT's
       // Link) rotate a few efforts. Round-robin, no immediate repeat, plus a
       // natural pitch spread (a voice never lands twice at the same pitch).
+      // `rotate` is the same deal for a non-vocal set the maintainer asked to
+      // hear as a GROUP: thunder ("a group with several sounds", 2026-08-06).
       const voice = profile === "voice";
+      const many = voice || profile === "rotate";
+      // ONE SOUND MEANS ONE SOUND (maintainer 2026-08-05). Steps and clicks
+      // play the set's APPROVED PRIMARY take and only that, so the entry binds
+      // that one url — it does not carry every take and then switch rotation
+      // off. The old shape advertised four sounds and played one, which the
+      // wiki had to mirror as a `round_robin: false` workaround. The variation
+      // contract below is now the plain one for every profile; how many sounds
+      // an event has is expressed by the URL LIST, which is the honest place
+      // for it. Audibly identical: the same primary file plays as before.
+      const takes = many ? urls : urls.slice(0, 1);
       e = {
         id: `composer_foley_${set}`,
         category: voice ? "movement" : step ? "movement" : "ui",
         loop: false,
-        file: urls[0],
-        urls,
+        file: takes[0],
+        urls: takes,
         mix_gain_db: 0, // level is decided per-play by the caller
         variation: {
-          round_robin: voice, // steps/clicks: primary take; voice: rotate
-          no_immediate_repeat: voice,
+          round_robin: true,
+          no_immediate_repeat: true,
           pitch_jitter_semitones: voice
             ? [-0.4, 0.4]
             : step
@@ -859,7 +1225,8 @@ export class GameAudio {
         nextBeatIn: 0, section: null, intensity: 0, scale: null,
       };
     }
-    return this.music.clock();
+    // Whichever score is live owns the clock.
+    return this.beds?.activeBed() ? this.beds.clock() : this.music.clock();
   }
 
   // ---- modes (mixing scenes) ----
@@ -936,6 +1303,30 @@ export class GameAudio {
       fire_crackle: field.fire,
     });
 
+    // THE SCORE. The generated context beds (town/cave/home/battle/adventure)
+    // are NOT routed to situations — the maintainer wants to audition them
+    // first and then say what plays where (2026-08-05), so the in-world score
+    // is exactly what it has always been: the sound-domain catalog bed by day,
+    // cross-faded into the mystical NIGHT bed after dark. The bed machinery
+    // only takes the music bus while an explicit audition is running
+    // (auditionBed / __ml.audioBed / the /#score page).
+    const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
+    const tau = this.musicToggleFast ? 0.06 : 0.4;
+
+    if (this.bedOverride) {
+      // Auditioning: the bed owns the bus, everything else steps aside.
+      this.updateBeds(field, sun, this.pureOn ? 1 : this.musicOn ? modeMul : 0);
+      this.music.setLevel(0, tau);
+      this.applyNightLevel(0, tau);
+      this.musicToggleFast = false;
+      return;
+    }
+    // Not auditioning — make sure no bed is left holding the bus.
+    if (this.bedNow !== null) {
+      this.bedNow = null;
+      this.beds?.setContext(null);
+    }
+
     // DAY/NIGHT MUSIC CROSS-FADE (maintainer 2026-07-19: "more mystical bg
     // music during night"). When a night bed exists the DAY score fades to a
     // low floor at night while the mystical NIGHT bed cross-fades UP, so nights
@@ -943,12 +1334,10 @@ export class GameAudio {
     // cycle, never just its opening). Without a night bed yet, keep the old
     // gentle dip so nights aren't silent. Pure mode freezes at the authored
     // score. The toggle snaps; mood changes keep the slow ease.
-    const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
     const nightAmt = Math.min(1, Math.max(0, 1 - sun));
     const haveNight = !!this.nightGain || !!nightMusicUrl();
     const dayFloor = haveNight ? 0.12 : 0.45;
     const dayLevel = this.pureOn ? 1 : (dayFloor + (1 - dayFloor) * sun) * modeMul;
-    const tau = this.musicToggleFast ? 0.06 : 0.4;
     this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
     if (this.nightWanted) this.ensureNightMusic(); // covers the async unlock/load
     this.applyNightLevel(nightAmt, tau);
@@ -1044,9 +1433,15 @@ export class GameAudio {
       foley: composerFoleySurfaces(),
       mode: this.mode,
       underwater: this.underwater,
+      // Background behavior (maintainer 2026-08-05): master ducks to 0.5
+      // hidden, and music.backgroundLoop shows the native-loop handoff.
+      master: this.graph ? Math.round(this.graph.master.gain.value * 1000) / 1000 : null,
+      hidden: typeof document !== "undefined" ? document.hidden : false,
       music: this.graph ? this.music.debug() : null,
+      beds: this.beds?.debug() ?? null,
       ambience: this.ambience?.debug() ?? null,
       env: { ...this.env },
+      field: this.fieldSampler?.() ?? null,
     };
   }
 }

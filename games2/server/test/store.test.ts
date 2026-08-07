@@ -25,3 +25,23 @@ test("empty token is ignored", () => {
   s.save("", { character: "x", name: "y", x: 0, y: 0 });
   assert.equal(s.load(""), undefined);
 });
+
+test("records never alias live objects (deep-copied at both boundaries)", () => {
+  // The review repro: a live Player.inv aliased the persisted record, so
+  // mid-play slot.n++ mutated the "saved" state and another leaver's save
+  // then persisted the half-live blend.
+  const file = join(mkdtempSync(join(tmpdir(), "ml-store-")), "players.json");
+  const s = new JsonPlayerStore(file);
+  const rec = { character: "c", name: "n", x: 1, y: 2, inv: [{ item: "apple", n: 3 }] };
+  s.save("tok", rec);
+  rec.inv[0].n = 99; // mutate the object we handed in
+  assert.equal(s.load("tok")!.inv![0].n, 3, "save() detached from the caller's object");
+  const a = s.load("tok")!;
+  a.inv![0].n = 50; // mutate a loaded copy
+  assert.equal(s.load("tok")!.inv![0].n, 3, "load() hands out fresh copies");
+
+  const m = new MemoryPlayerStore();
+  m.save("tok", rec);
+  rec.inv[0].n = 7;
+  assert.equal(m.load("tok")!.inv![0].n, 99, "memory store detached too");
+});

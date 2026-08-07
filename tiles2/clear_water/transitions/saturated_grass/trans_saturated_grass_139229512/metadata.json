@@ -261,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.642,
-        "clear_water": 0.358
+        "saturated_grass": 0.64,
+        "clear_water": 0.36
       },
       "edges": {
         "NE": {
@@ -331,9 +331,10 @@
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "flowers"
       ],
-      "description": "saturated grass blending to clear water with a small detail, pebbles"
+      "description": "saturated grass blending to clear water with a small detail, pebbles, small flowers"
     },
     {
       "index": 4,
@@ -963,8 +964,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.093,
-        "saturated_grass": 0.907
+        "clear_water": 0.11,
+        "saturated_grass": 0.89
       },
       "edges": {
         "NE": {
@@ -1014,7 +1015,7 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "saturated_grass",
             "saturated_grass",
@@ -1024,16 +1025,18 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "clear_water": 0.125
-          }
+            "clear_water": 0.25,
+            "saturated_grass": 0.75
+          },
+          "divider": 0.25
         }
       },
       "features": [
+        "flowers",
         "accent",
         "pebbles"
       ],
-      "description": "saturated grass blending to clear water with a small detail, pebbles"
+      "description": "saturated grass blending to clear water with small flowers, a small detail, pebbles"
     },
     {
       "index": 13,
@@ -1278,7 +1281,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

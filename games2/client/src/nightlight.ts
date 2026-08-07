@@ -166,6 +166,11 @@ uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
+uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
+uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
+uniform sampler2D uRoom;  // per-cell: 1 where the cell is in MY room (see roomAt)
+uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
+uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -208,12 +213,99 @@ float baseTerrAt(vec2 cr) {
   return texture2D(uHeightL, uv).b * 255.0 / uHScale;
 }
 
+// The GROUND COLUMN's own top (A of the linear map): terrain + its solid/prop
+// bump, but NEVER a deck. Bilinear like heightAtSoft, because the LOS march
+// wants the same soft blocker ramp.
+//
+// Why this channel has to exist: R is max(ground, deck), ONE number per column,
+// and the marches test "is the column taller than the ray". That is only true
+// of terrain, which really is solid from 0 to its top. A DECK IS A FLOATING
+// SLAB — a roof at level 6 over a floor at 0 leaves 6 levels of open air you
+// walk through — so R makes the shader treat every roof and bridge as a solid
+// pillar standing on the ground beneath it. MEASURED cost of that on live: a
+// torch under the_island2's pier lights the water at 0.221 one cell away where
+// the same torch on open water five cells south reaches 0.585 (-62%), and a
+// torch inside the house dies from 0.640 to 0.186 in one cell. The room was
+// never dark because of the ambient; its own ceiling was eating the light.
+float groundAtSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).a * 255.0 / uHScale;
+}
 
-
+// The SURFACE height a screen pixel resolves to.
+//
+// INDOORS THIS MUST IGNORE DECKS. uHeight's R is max(terrain, deck), so every
+// cell under a roof reports the ROOF's level — and indoor mode has just
+// stopped drawing that roof, so the pixel on screen is the FLOOR while the map
+// still says 6. The resolve puts the floor 6 levels up, and a point light's
+// attenuation counts the VERTICAL gap
+// (dist = sqrt(horizontal^2 + ((lp.z - z)*0.6)^2)), so the player's own torch
+// at z 0.55 is treated as ~3.3 cells from the ground it stands on before any
+// horizontal distance: att = (1 - 3.27/6)^2 = 0.21.
+//
+// MEASURED in one of maps2' houses at (215,121) — torch-only light at the
+// player's OWN cell: 0.631 resolved at the true floor, 0.211 at the deck level
+// the map reports. A third of the light, which is exactly the "yes I can see
+// something very very dim happens if I toggle it on/off in-door" the
+// maintainer reported (2026-08-07) while the same torch throws a wide pool
+// outdoors.
+//
+// SAME CLASS AS THE FLOATING-SLAB FIX in the LOS march (groundAtSoft above):
+// a roof removed from the RENDER still living in a height map. That one was
+// the OCCLUSION map; this is the SURFACE map, and fixing one without the other
+// left the light crippled by the half that was missed.
+//
+// THE CUT-AWAY MAKES IT TWO CLAMPS, NOT ONE. Indoors the renderer draws every
+// column of the building TRUNCATED at uIndoorTop levels (WorldScene's
+// indoorTop = ceiling - the Settings dial), so the drawn surface is neither the
+// deck-inflated height NOR the wall's full terrain level: it is
+// min(base terrain, the cut). Leaving the cut out re-creates the very bug
+// above one level up — a wall the picture ends at level 3 would still resolve
+// at 6, putting the floor behind it 3 levels (48px) from where it is drawn and
+// crippling every torch that lights it. This is the SURFACE resolve only.
+//
+// THE OCCLUSION MARCH (heightAtSoft / groundAtSoft / uHeightL) IS DELIBERATELY
+// NOT CLAMPED. The roof and the full wall are still physically there — the sun
+// really is blocked by a building whose top half we are choosing not to paint,
+// and a cut-away that let daylight in through its own missing roof would light
+// the room from above as you turned the dial. So: what the camera SEES is
+// truncated, what the light TRAVELS THROUGH is not. The asymmetry is the point.
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
+}
+
+// IS THIS CELL IN THE ROOM I AM STANDING IN? 1 inside, 0 outside; 1 everywhere
+// while outdoors, so every outdoor pixel is byte-identical to before.
+//
+// This is what makes "the outside is dark" a LIGHTING fact instead of a
+// rendering one (maintainer 2026-08-07). The renderer draws the whole world
+// indoors — skipping it was the old design and it cost three separate bugs:
+// the grass POPPED into existence as you stepped out, a torch could not light
+// what was not there, and a tile whose down-screen neighbour was missing had
+// its own side exposed. Drawing everything and giving the outside ZERO AMBIENT
+// fixes all three at once, and buys the thing he actually wanted: the ambient
+// is the only term that goes to zero, so a POINT light still reaches those
+// pixels and a torch indoors spills through the doorway and reveals the ground
+// beyond it, with the opening's own shadow, before you have stepped out.
+//
+// NEAREST-filtered and read at the texel CENTRE, like every other per-cell
+// map here — a smoothed room boundary would bleed a half-cell of ambient
+// through the walls.
+float roomAt(vec2 cr) {
+  if (uIndoor < 0.5) return 1.0;
+  // FAIL LIT, never dark. An unbound sampler2D reads texture unit 0 — here the
+  // HEIGHTMAP — whose red channel is terrain height, so a missing bind would
+  // not merely be wrong, it would black out the parts of the ROOM that happen
+  // to sit at height 0 while leaving the outside lit. That is the exact
+  // failure uGlowOn exists to prevent, and it is invisible on the headless
+  // harness (SwiftShader binds every declared sampler) and fatal on a phone.
+  if (uRoomOn < 0.5) return 1.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uRoom, uv).r;
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -367,8 +459,11 @@ void main() {
     vHi = vLo;
   }
   if (!found) {
-    // Off-map / unresolved: plain ambient.
-    gl_FragColor = vec4(uAmbient, 1.0);
+    // Off-map / unresolved: plain ambient — but INDOORS that pixel is the sky
+    // band above the cut-away, i.e. outside the room by definition. No cell was
+    // resolved, so roomAt has nothing to sample; the rule has to be stated
+    // outright or the one region with no geometry stays lit over a black world.
+    gl_FragColor = vec4(uAmbient * (1.0 - uIndoorMix), 1.0);
     return;
   }
 
@@ -536,7 +631,17 @@ void main() {
     // shade stays as muted as before (no sun to block).
     cloudF = 1.0 - cover * 0.62 * uCloud * mix(0.13, 1.0, uSun.w);
   }
-  vec3 light = uAmbient * sunF * cloudF;
+  // THE ONE TERM THAT GOES TO ZERO OUTSIDE MY ROOM. Ambient (and the sky/sun
+  // and cloud factors folded into it) is what makes the world visible by
+  // default; killing it there — and NOTHING else — is what "render everything
+  // outside black" means, while leaving every additive term below free to
+  // light those pixels. See roomAt.
+  // EASED with the grade, not snapped with the geometry: uIndoorMix is the same
+  // 0.35s roll the indoor ambient itself rides, so crossing a doorway FADES the
+  // outside to black under an interior that is still dimming, instead of
+  // blacking half the screen a frame before the room has caught up.
+  float inRoom = mix(1.0, roomAt(cell), uIndoorMix);
+  vec3 light = uAmbient * sunF * cloudF * inRoom;
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
   // slow drifting curtains of arctic green/violet ADDED to the ambient (the
   // ground and everyone standing on it glows with the sky), auto-fading as
@@ -547,7 +652,7 @@ void main() {
     float curtain = smoothstep(0.40, 0.80, an);
     float hue = 0.5 + 0.5 * sin(uAnimTime * 0.12 + wx * 0.0011);
     vec3 acol = mix(vec3(0.10, 0.85, 0.45), vec3(0.45, 0.25, 0.85), hue);
-    light += acol * curtain * 0.18 * uAurora * (1.0 - uSun.w);
+    light += acol * curtain * 0.18 * uAurora * (1.0 - uSun.w) * inRoom;
   }
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
@@ -588,8 +693,18 @@ void main() {
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
+        // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
+        // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
+        // under it. A slab can therefore only block a ray whose LIGHT is on the
+        // far side of it — sun/lamp above, ray below. A torch under the same
+        // slab is in the open air with it and must shine straight through.
+        // (The sun march is deliberately untouched: it wants the deck to block,
+        // and its cliff look is locked.)
         float H = heightAtSoft(p);
-        if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
+        float hg = groundAtSoft(p);
+        float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
+        if (blocker < 90.0 && blocker > hRay)
+          occ *= mix(0.8, 0.45, clamp((blocker - hRay) * 1.5, 0.0, 1.0));
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -688,7 +803,11 @@ void main() {
     // inverse — glowing substance then reads the SAME on wall and top, and
     // the boost exactly cancels the baked shading (no visible seam).
     float eBoost = isFace ? 1.4 : 1.0;
-    light = max(light, eCol * ePar.g * fv * eBoost);
+    // Gated by inRoom for the same reason the aurora is: a glowing tile is a
+    // LIGHT SOURCE, and the maintainer's rule is that light sources outside
+    // the room you are in do not reach it ("point light from outside has to be
+    // turned off"). Inside the room an emissive tile glows exactly as before.
+    light = max(light, eCol * ePar.g * fv * eBoost * inRoom);
   }
 
   // Per-source glow halos (tile-emission@2 sources): a world-anchored field
@@ -714,6 +833,9 @@ void main() {
 `;
 
 const FIELD_KEY = "night-light-field";
+/** Per-cell ROOM MASK: R = 255 where the cell belongs to the room the local
+ * player is standing in. One texel per world cell, NEAREST — see roomAt(). */
+const ROOM_KEY = "world-room-mask";
 const MIST_KEY = "mist-field";
 const DEPTHFOG_KEY = "depthfog-field";
 
@@ -1183,6 +1305,12 @@ export class NightLights {
   /** Master strength of the elevation depth-fog (0 = off). Tunable via
    *  `__ml.depthFog(v)`; the maintainer may roll it to 0 to disable. */
   fogStrength = 1;
+  /** Per-frame SCENE scale on top of `fogStrength`, kept separate so the debug
+   * knob above still owns the master value. WorldScene drives it to 0 while the
+   * player is INDOORS: the fog is a distance cue for open country, and inside a
+   * room its teal/pale bands paint over the black void that is supposed to BE
+   * the outside. 1 outdoors ⇒ every existing reading is unchanged. */
+  fogScale = 1;
   /** Headless QA only: force the player level / cell the fog keys off (null = live). */
   fogTestZ: number | null = null;
   fogTestXY: [number, number] | null = null;
@@ -1194,7 +1322,37 @@ export class NightLights {
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
+  /** 1 while the local player is INDOORS: the surface resolve then ignores
+   * decks, because indoor mode has culled every one of them from the render.
+   * See heightAt() in the fragment for the measured reason. Mirrored into the
+   * CPU twin (tAt) so sprite tints agree with the ground under them. */
+  indoor = false;
+  /** The cut-away's top level while `indoor` — WorldScene.indoorTop. The
+   * building is DRAWN truncated here, so the surface resolve must be too, or
+   * the floor behind a shortened wall resolves at the wall's full height and
+   * every torch lighting it is attenuated across a gap that is not there. Only
+   * the SURFACE resolve clamps; the occlusion march does not (the building is
+   * still solid to the sun). See heightAt(). */
+  indoorTop = 0;
+  /** WorldScene.indoorMix — the eased 0..1 the indoor GRADE rides. The outside
+   * fades to black on it instead of snapping, so a doorway crossing is a fade
+   * rather than half the screen going out one frame ahead of the room. Applied
+   * to the light only, never to geometry (`indoor`/`indoorTop` stay boolean —
+   * the roof and the truncated columns flip on the same frame regardless). */
+  indoorMix = 0;
+  /** The cells of the room the local player is in (cell indices). Drives BOTH
+   * the shader's mask texture and the CPU twin, so a sprite tint and the
+   * ground under it can never disagree about which side of a wall they are on.
+   * Empty while outdoors, where roomAt() short-circuits to 1 anyway. */
+  private roomCells = new Set<number>();
+  /** The room mask's pixel buffer, kept across calls so publishing a room is
+   * one full-grid rewrite + one upload. See setRoom(). */
+  private roomImg: ImageData | null = null;
+  /** Did buildShader actually bind uRoom on the CURRENT shader? Re-derived on
+   * every rebuild (a resize builds a new shader object). Drives uRoomOn. */
+  private roomBound = false;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
+  private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curStamps: GlowStamp[] = [];
@@ -1214,7 +1372,16 @@ export class NightLights {
   // reproduce — let the tester find the correct combo on THEIR machine.
   fieldFlip = 0; // gradient ground-truth: this stack needs NO y-inversion
   overlayFlip = false; // additionally mirror the composited image
-  spanScale = 1; // field world-span multiplier around the view centre
+  // Field world-span multiplier around the view centre. 1.02 since
+  // 2026-08-05: the overlays are drawn scale invZoom*k while uCam spans k×
+  // the camera view — the two stretches cancel, so the world→screen mapping
+  // is IDENTICAL to k=1 (screen-left still lands exactly on worldView.x; the
+  // verify scripts' calibrated samples are untouched) but the drawn quad
+  // overshoots the screen by ~1% per side. Without the bleed, fractional
+  // camera zooms leave the quad a sub-pixel short of an edge, and on a
+  // high-DPR phone that showed as a 1px UNSHADED bright line at the screen
+  // edge at night (maintainer, device screenshot).
+  spanScale = 1.02;
   testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
 
   constructor(
@@ -1290,6 +1457,20 @@ export class NightLights {
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
+      // 1 while the local player is INDOORS — see heightAt(). Declared here
+      // because an UNDECLARED uniform silently never syncs on real phone GPUs
+      // (the uSun lesson, already paid for twice in this file).
+      uIndoor: { type: "1f", value: 0 },
+      // DECLARED, like every other uniform here — the uSun lesson: a uniform
+      // missing from this config gets no GL setter and silently never reaches
+      // real phone GPUs, where headless SwiftShader would never show it.
+      uIndoorTop: { type: "1f", value: 0 },
+      uIndoorMix: { type: "1f", value: 0 },
+      // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
+      // bind can never black out the room itself. Same guard as uGlowOn, for
+      // the same reason: an unbound sampler silently reads texture unit 0.
+      uRoomOn: { type: "1f", value: 0 },
+      uRoom: { type: "sampler2D", value: null },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1441,6 +1622,11 @@ export class NightLights {
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
+    // The room mask (unit 4). Built lazily the first time the player steps
+    // indoors — a world nobody ever enters a building in never pays for it.
+    this.ensureRoomTexture();
+    this.roomBound = this.scene.textures.exists(ROOM_KEY);
+    if (this.roomBound) s.setSampler2D("uRoom", ROOM_KEY, 4);
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
@@ -1469,6 +1655,90 @@ export class NightLights {
    * soft, bounce-floored shadow. The bilinear read rounds the block into a
    * plausible blob. B = BASE terrain level (never deck-inflated), read at
    * texel centres by the AO seam term so floating slabs don't fake walls. */
+  /** Create the room-mask texture (all zeros) if it does not exist yet. Same
+   * size and convention as the heightmaps, so roomAt() can reuse their uv. */
+  private ensureRoomTexture() {
+    if (this.scene.textures.exists(ROOM_KEY)) return;
+    const t = this.scene.textures.createCanvas(ROOM_KEY, this.world.width, this.world.height);
+    if (!t) return;
+    t.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    t.refresh();
+  }
+
+  /** Publish the set of cells that count as "my room" to the shader AND to the
+   * CPU twin. Called by WorldScene whenever the indoor mask is rebuilt — a
+   * doorway crossing or a turn of the wall-cut dial — and never per frame.
+   *
+   * ONE full-grid rewrite, not a per-cell patch. `CanvasTexture.refresh()`
+   * re-uploads the WHOLE canvas (Phaser has no sub-image path), so painting
+   * each changed cell with its own putImageData buys nothing and costs a lot:
+   * the_island2's 472-cell cave would do 944 canvas calls to produce the same
+   * single texImage2D. Rewriting all 61,504 bytes of the worst-case grid and
+   * pushing once is O(1) in room size and lands around 0.3 ms — on a doorway
+   * crossing or a turn of the cut dial, never on a frame.
+   *
+   * R = 255 inside, 0 outside; A pinned at 255 everywhere because canvas
+   * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
+   * an A below 255 would scale the R the shader reads.
+   */
+  setRoom(cells: Iterable<number> | null) {
+    this.ensureRoomTexture();
+    const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
+    const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
+    if (!t || !src) return;
+    const next = new Set<number>(cells ?? []);
+    // Nothing to do if the room did not actually change (the scene guards this
+    // too, but the mask is also rebuilt for the CUT, which does not move it).
+    if (next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
+    const ctx = t.getContext();
+    const w = this.world.width;
+    const h = this.world.height;
+    if (!this.roomImg) {
+      this.roomImg = ctx.createImageData(w, h);
+      for (let p = 3; p < this.roomImg.data.length; p += 4) this.roomImg.data[p] = 255;
+    }
+    const d = this.roomImg.data;
+    for (const i of this.roomCells) d[i * 4] = 0;
+    for (const i of next) if (i >= 0 && i < w * h) d[i * 4] = 255;
+    ctx.putImageData(this.roomImg, 0, 0);
+    this.roomCells = next;
+    t.refresh();
+    // refresh() re-runs canvasToTexture, which re-applies the source's scale
+    // mode — re-assert NEAREST rather than trust that it survived. A LINEAR
+    // room mask would bleed a half-cell of ambient straight through the walls.
+    t.setFilter(Phaser.Textures.FilterMode.NEAREST);
+  }
+
+  /** What the room mask really holds, and whether the shader really has it.
+   *
+   * `lit` counts texels the SHADER would read as in-room, straight off the
+   * canvas; `cells` is what the scene last published. They must match — a
+   * divergence means an upload was lost. `bound`/`roomOn` are the guard against
+   * the one silent, phone-only failure: an unbound sampler2D reads texture
+   * unit 0 (the heightmap), which would black out the ROOM and light the
+   * outside. Read by __ml.roomTex() and by verify-indoor. */
+  roomDebug() {
+    const t = this.scene.textures.get(ROOM_KEY);
+    const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
+    if (!src) return { exists: false };
+    const ctx = (t as Phaser.Textures.CanvasTexture).getContext();
+    const d = ctx.getImageData(0, 0, src.width, src.height).data;
+    let on = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i] > 127) on++;
+    return {
+      exists: true,
+      w: src.width,
+      h: src.height,
+      lit: on,
+      cells: this.roomCells.size,
+      indoor: this.indoor,
+      bound: this.roomBound,
+      roomOn: (this.shader as any)?.uniforms?.uRoomOn?.value,
+      uIndoor: (this.shader as any)?.uniforms?.uIndoor?.value,
+      mix: +this.indoorMix.toFixed(3),
+    };
+  }
+
   private buildHeightmap() {
     if (this.scene.textures.exists("world-heightmap")) return;
     const w = this.world.width;
@@ -1490,6 +1760,7 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
+    this.gArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
@@ -1544,13 +1815,18 @@ export class NightLights {
         const solid = !s.standable && !s.swimmable;
         const pl = propLvl.get(r * w + c) ?? 0;
         const deckL = deckH[r * w + c];
+        // The GROUND column on its own: terrain plus its solid/prop bump, with
+        // no deck. This is the real solid span from 0 upward; the deck is a
+        // separate floating slab (see groundAtSoft / the LOS march).
+        const groundH = cell.l + Math.max(solid ? 1 : 0, pl);
         // Occlusion: the taller of the terrain (+ solid/prop bump) and any deck
         // slab, so a roof/bridge casts a real cast shadow on the ground below.
-        const occH = Math.max(cell.l + Math.max(solid ? 1 : 0, pl), deckL);
+        const occH = Math.max(groundH, deckL);
         // The lit SURFACE height: the deck slab when one caps this cell, else the terrain.
         const surfL = Math.max(cell.l, deckL);
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
+        this.gArr[r * w + c] = groundH;
         this.tArr[r * w + c] = surfL;
         this.bArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
@@ -1581,7 +1857,12 @@ export class NightLights {
         const ei = glows ? emitIdx.get(cell.t) : undefined;
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
-        imgL.data[i + 3] = 255;
+        // A = the GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED)
+        // — see groundAtSoft. R stays max(ground, deck) so every existing reader
+        // is byte-identical; this channel is what lets the point-light march
+        // tell a floating slab from a solid pillar. On a deck-free world it
+        // equals R exactly, so those worlds march identically to before.
+        imgL.data[i + 3] = Math.min(255, groundH * hScale);
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -1774,16 +2055,19 @@ export class NightLights {
       return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
     };
     // Bilinear twin of the shader's heightAtSoft (LOS penumbra).
-    const hAtSoft = (c: number, r: number) => {
+    const soft2 = (arr: Float32Array) => (c: number, r: number) => {
       const cf = c - 0.5, rf = r - 0.5;
       const c0 = Math.floor(cf), r0 = Math.floor(rf);
       const fx = cf - c0, fy = rf - r0;
       const v = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : arr[ri * W + ci];
       const a = v(c0, r0), b = v(c0 + 1, r0), d = v(c0, r0 + 1), e = v(c0 + 1, r0 + 1);
       if (a > 90 || b > 90 || d > 90 || e > 90) return hAt(c, r);
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
+    const hAtSoft = soft2(this.hArr);
+    // Twin of groundAtSoft: the ground column alone, deck excluded.
+    const gAtSoft = soft2(this.gArr);
     const t = this.scene.game.loop.getDuration();
     // Directional-sun + cloud twins (see the shader): shade the ambient term.
     const geo = MAP_GEOMETRY;
@@ -1791,10 +2075,18 @@ export class NightLights {
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
     const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
+    // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a cell outside
+    // MY room gets no ambient and no sky glow — only the point lights below.
+    // The shader and this must agree or a body standing just outside the
+    // doorway is tinted for a different world than the ground it stands on.
+    // Eased on indoorMix exactly like the fragment's mix(1.0, roomAt, uIndoorMix).
+    const hit =
+      this.indoor && this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0;
+    const inRoom = 1 + (hit - 1) * this.indoorMix;
     const out: [number, number, number] = [
-      this.curAmbient[0] * sunF + aur[0],
-      this.curAmbient[1] * sunF + aur[1],
-      this.curAmbient[2] * sunF + aur[2],
+      (this.curAmbient[0] * sunF + aur[0]) * inRoom,
+      (this.curAmbient[1] * sunF + aur[1]) * inRoom,
+      (this.curAmbient[2] * sunF + aur[2]) * inRoom,
     ];
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
@@ -1814,8 +2106,13 @@ export class NightLights {
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
           const hRay = z + (L.z - z) * tt + 0.2;
+          // EXACT twin of the shader's two-span test: a deck is a floating
+          // slab, so it only blocks a ray whose light is on its far side.
           const hh = hAtSoft(px, py);
-          if (hh < 90 && hh > hRay) occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (hh - hRay) * 1.5);
+          const hg = gAtSoft(px, py);
+          const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
+          if (blocker < 90 && blocker > hRay)
+            occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
         }
         occ = Math.max(occ, 0.22); // bounce floor — same as the shader
       }
@@ -1838,8 +2135,14 @@ export class NightLights {
     {
       const W2 = this.world.width;
       const H2 = this.world.height;
-      const tAt = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W2 || ri >= H2 ? 99 : this.bArr[ri * W2 + ci];
+      // Clamped to the cut-away indoors, for the same reason heightAt is: the
+      // seam is between a body and the wall AS DRAWN, and a wall truncated to
+      // level 3 must not cast a level-6 wall's shading onto the floor beside it.
+      const tAt = (ci: number, ri: number) => {
+        if (ci < 0 || ri < 0 || ci >= W2 || ri >= H2) return 99;
+        const b = this.bArr[ri * W2 + ci];
+        return this.indoor ? Math.min(b, this.indoorTop) : b;
+      };
       const ci = Math.floor(col);
       const ri = Math.floor(row);
       const vColLo = 2 * ci - (col - row);
@@ -1949,10 +2252,16 @@ export class NightLights {
     // camera view (× spanScale) and the field maps 1:1 to what the camera shows.
     const zoom = cam.zoom || 1;
     const invZoom = 1 / zoom;
-    this.overlay?.setScale(invZoom);
-    this.mistOverlay?.setScale(invZoom);
-    this.depthFogOverlay?.setScale(invZoom);
-    const k = this.spanScale;
+    // ×k: the drawn quad grows with the field window (see spanScale) — the
+    // stretches cancel, the mapping stays exact, and the quad bleeds past
+    // every screen edge so rounding can never expose an unshaded line.
+    // TEST PATTERNS opt out (k = 1): the raw-field readbacks (nightCal
+    // patterns ≥3, the glow-seams scan) treat canvas pixels as field texels
+    // 1:1, and the 2% stretch resamples rows into phantom straight seams.
+    const k = this.testPattern >= 3 ? 1 : this.spanScale;
+    this.overlay?.setScale(invZoom * k);
+    this.mistOverlay?.setScale(invZoom * k);
+    this.depthFogOverlay?.setScale(invZoom * k);
     const wv = cam.worldView;
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;
@@ -2031,6 +2340,12 @@ export class NightLights {
     s.setUniform("uIsoB.value.w", this.maxLevel);
     s.setUniform("uHScale.value", this.hScale);
     s.setUniform("uCloud.value", cloud);
+    s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
+    s.setUniform("uIndoorTop.value", this.indoorTop);
+    s.setUniform("uIndoorMix.value", this.indoorMix);
+    // Only now is roomAt allowed to darken anything: buildShader really bound
+    // the sampler on THIS shader object. Until then it fails LIT (see roomAt).
+    s.setUniform("uRoomOn.value", this.roomBound ? 1 : 0);
     s.setUniform("uAurora.value", aurora);
     s.setUniform("uSun.value.x", sun[0]);
     s.setUniform("uSun.value.y", sun[1]);
@@ -2084,7 +2399,7 @@ export class NightLights {
 
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
     // drawn when the master strength is on (0 = disabled, costs nothing).
-    const showFog = this.fogStrength > 0.003;
+    const showFog = this.fogStrength * this.fogScale > 0.003;
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
     if (showFog && this.depthFogShader) {
@@ -2103,7 +2418,7 @@ export class NightLights {
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
       f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
       f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
-      f.setUniform("uFog.value", this.fogStrength);
+      f.setUniform("uFog.value", this.fogStrength * this.fogScale);
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);
       f.setUniform("uAmbient.value.z", ambient[2]);
@@ -2166,7 +2481,7 @@ export class NightLights {
    * has no cliff-face compression). Everything else mirrors DEPTHFOG_FRAG and
    * MUST be kept in sync with the GLSL consts atop it. */
   depthFogAt(col: number, row: number, z: number): { a: number; r: number; g: number; b: number } {
-    const uFog = this.fogStrength;
+    const uFog = this.fogStrength * this.fogScale;
     const NONE = { a: 0, r: 0, g: 0, b: 0 };
     if (uFog <= 0.003) return NONE;
     // MUST MATCH the GLSL consts atop DEPTHFOG_FRAG.

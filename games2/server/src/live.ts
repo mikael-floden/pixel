@@ -12,7 +12,9 @@
 //     (it only re-reads public data) and rate-limited;
 //   - POST /api/wiki/login    — admin login. The password is checked against a
 //     HARDCODED SHA-256 (the repo is public: a plaintext password in source
-//     would be world-readable). Sessions are random bearer tokens in memory;
+//     would be world-readable). The session is a SIGNED bearer token that
+//     carries its own expiry — no server-side session table, so a deploy
+//     cannot sign the Game Master out;
 //   - GET  /api/wiki/me       — is this session an admin?
 //   - POST /api/wiki/save     — admin-only, per-entry delta. The server merges
 //     it into the current doc, COMMITS to GitHub with ITS OWN token
@@ -23,7 +25,7 @@
 // the existing Colyseus WebSocket — that's how every connected client gets
 // new tuning within seconds of a save, with zero polling.
 
-import { createHash, randomBytes, timingSafeEqual } from "crypto";
+import { createHash, createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { readFileSync } from "fs";
 import { join } from "path";
 import type express from "express";
@@ -35,11 +37,17 @@ const RAW_BASE = process.env.LIVE_RAW_BASE || `https://raw.githubusercontent.com
 const GH_API = process.env.LIVE_GH_API || "https://api.github.com";
 const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"] as const;
+// "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs, and
+// a rejected entry means UNBIND that sound from that event — the recording
+// itself is untouched (maintainer 2026-08-06). The composer agent consumes it.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",
   "tuning/constants.json": "tuning/constants",
+  // The Game Master's "add this sound to that event" requests, written by the
+  // wiki, consumed by the composer (games-audio) agent. See live/README.md.
+  "tuning/sfx_requests.json": "tuning/sfx_requests",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -53,6 +61,7 @@ type Doc = Record<string, unknown> & {
 const emptyDoc = (key: string): Doc => {
   if (key === "tuning/monsters") return { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
+  if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -199,7 +208,37 @@ export async function refreshLive(): Promise<void> {
 const ADMIN_USER = "admin";
 const ADMIN_PASS_SHA256 = "e04e6d2d09449022fb91188631b91f30a7fd058b9c5a41f53e88805edb267f37";
 const SESSION_TTL_MS = 7 * 24 * 3600 * 1000;
-const sessions = new Map<string, number>(); // token -> expiry epoch ms
+
+// A SIGNED, STATELESS session: `<expiry-epoch-seconds>.<hmac>`.
+//
+// It used to be a random token in a `Map` — which dies with the process, and
+// this service redeploys many times a day (every art push deploys), so the
+// Game Master was silently signed out several times a day and blamed the
+// 7-day TTL that was never the problem (maintainer 2026-08-06: "If I have
+// logged in I should stay logged in for a week"). A signed token carries its
+// own expiry, so it survives restarts, rolling deploys AND a scale-out to
+// several instances (where a map on instance A 401s every request that lands
+// on instance B).
+let sessionKeyCache: Buffer | null = null;
+function sessionKey(): Buffer {
+  if (sessionKeyCache) return sessionKeyCache;
+  // A stable server-side secret, in preference order. WIKI_GITHUB_TOKEN is the
+  // honest default: an admin session is worthless without it (saves commit
+  // with it), it is never in the repo or shipped to a client, and it outlives
+  // restarts. Rotating it invalidates every session — the revocation lever a
+  // stateless scheme otherwise lacks. With neither set (dev, tests) the key is
+  // per-process random, i.e. exactly the old behaviour.
+  const base = process.env.WIKI_SESSION_SECRET || ghToken();
+  if (!base) console.warn("[live] no WIKI_SESSION_SECRET/WIKI_GITHUB_TOKEN — admin sessions will not survive a restart");
+  sessionKeyCache = base
+    ? createHash("sha256").update(`wiki-session|${base}`, "utf8").digest()
+    : randomBytes(32);
+  return sessionKeyCache;
+}
+function signSession(expiresAtMs: number): string {
+  const exp = String(Math.floor(expiresAtMs / 1000));
+  return `${exp}.${createHmac("sha256", sessionKey()).update(exp).digest("hex")}`;
+}
 
 function checkPassword(user: unknown, pass: unknown): boolean {
   if (user !== ADMIN_USER || typeof pass !== "string") return false;
@@ -209,12 +248,12 @@ function checkPassword(user: unknown, pass: unknown): boolean {
 }
 
 function isAdmin(req: express.Request): boolean {
-  const m = /^Bearer\s+([a-f0-9]{48})$/.exec(String(req.headers.authorization ?? ""));
+  const m = /^Bearer\s+(\d{10,12})\.([a-f0-9]{64})$/.exec(String(req.headers.authorization ?? ""));
   if (!m) return false;
-  const exp = sessions.get(m[1]);
-  if (!exp) return false;
-  if (exp < Date.now()) { sessions.delete(m[1]); return false; }
-  return true;
+  if (Number(m[1]) * 1000 <= Date.now()) return false;          // expired
+  const want = createHmac("sha256", sessionKey()).update(m[1]).digest();
+  const got = Buffer.from(m[2], "hex");
+  return got.length === want.length && timingSafeEqual(got, want);
 }
 
 // ------------------------------------------------------- GitHub commit path
@@ -272,7 +311,10 @@ async function ghCommitDelta(rel: string, key: string, delta: Record<string, unk
 // Apply a per-entry delta {id: value|null} to a COPY of the given doc.
 function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc {
   const next: Doc = JSON.parse(JSON.stringify(cur));
-  const bucket = key.startsWith("feedback/") ? "entries" : key === "tuning/monsters" ? "monsters" : "overrides";
+  const bucket = key.startsWith("feedback/") ? "entries"
+    : key === "tuning/monsters" ? "monsters"
+    : key === "tuning/sfx_requests" ? "requests"
+    : "overrides";
   const map = (next[bucket] ?? {}) as Record<string, unknown>;
   for (const [id, value] of Object.entries(delta)) {
     if (id === "__proto__" || id === "constructor" || id === "prototype") continue;
@@ -296,7 +338,7 @@ export function registerLiveRoutes(app: express.Application): void {
     }
     res.json({
       fetched_at: fetchedAt,
-      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants") },
+      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"), sfx_requests: docs.get("tuning/sfx_requests") },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
   });
@@ -314,9 +356,7 @@ export function registerLiveRoutes(app: express.Application): void {
       res.status(401).json({ error: "wrong username or password" });
       return;
     }
-    const token = randomBytes(24).toString("hex");
-    sessions.set(token, Date.now() + SESSION_TTL_MS);
-    res.json({ token, expires_in_s: SESSION_TTL_MS / 1000 });
+    res.json({ token: signSession(Date.now() + SESSION_TTL_MS), expires_in_s: SESSION_TTL_MS / 1000 });
   });
 
   app.get("/api/wiki/me", (req, res) => {
@@ -362,7 +402,7 @@ export function registerLiveRoutes(app: express.Application): void {
 /** Test hook: reset in-memory state. */
 export function _resetLiveForTests(): void {
   docs.clear();
-  sessions.clear();
+  sessionKeyCache = null;      // re-derived; a configured secret survives, a random one does not
   fetchedAt = "";
   lastRefresh = 0;
   ready = false;

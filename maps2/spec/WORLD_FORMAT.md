@@ -57,11 +57,15 @@ stacking `top` reproduces the coherent wall for free.
 - `top[y][x]` — index into `paths` for the surface tile (−1 = void).
 - `mirror[y][x]` — 1 if that tile is drawn **flipped horizontally** (the
   auto-tiler uses mirrors to complete transition sets — honour this flag).
-- `emissive[i]` — parallel to `paths`: `1` if that tile is **self-emissive**
-  (tiles2 `features.shiny`), else `0`. A cell glows when
-  `emissive[ top[y][x] ] == 1`. Convenience mirror of tiles2 metadata so the
-  night-lighting shader can find emissive cells without re-reading it; the
-  `worlds/glow_test` map exists to exercise exactly these.
+- ~~`emissive[i]`~~ — **REMOVED 2026-08-06.** It mirrored tiles2's emission data
+  into every world as a "convenience", and the convenience was for nobody: the
+  game reads `tiles2/emission.json` itself (`WorldScene.tiles2Src`, keyed by
+  tile path), and nothing in the repo ever read this field. All it did was cost
+  9.2 KB across the worlds and go stale every time tiles2 re-extracted glow —
+  twice, silently, because a duplicated fact has no missing-file symptom to give
+  it away. **For glow, read `tiles2/emission.json`, keyed by the tile path from
+  `paths`.** `worlds/glow_test` still exists to exercise emissive tiles; its
+  builder picks them from emission.json directly.
 - `collision[y][x]` — **non-authoritative** convenience hint (1 = water / void /
   a prop stands there). Provided for quick viewers/tools only. **The game engine
   owns walkability** and should derive it from `level` (elevation) + `mat`

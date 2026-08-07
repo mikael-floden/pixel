@@ -23,6 +23,7 @@ maps2/config/tiles2_analysis.json (keyed by mtime) so repeated builds are fast.
 from __future__ import annotations
 
 import glob
+import hashlib
 import json
 import os
 
@@ -423,10 +424,38 @@ class Tiles2:
         return pairs
 
     def _signature(self) -> str:
-        parts = ["v3-edges"]   # bump when the analysis schema changes
-        for gid, d in self.types.items():
-            for other, tt in d["transitions"].items():
+        """Cache key for the tile analysis — must change whenever the tile FILES
+        change in any way the cached paths depend on.
+
+        The cache stores absolute tile paths, so a pure RENAME invalidates it
+        just as surely as an added sheet. Counting tiles per pair does not see a
+        rename: when tiles2 flipped every tile from .png to lossless WebP
+        (2026-07-31) the counts were identical, the signature matched, and the
+        cache happily served paths to files that no longer existed — every world
+        rebuild died on the first transition tile. So the names are hashed in
+        too. (The paths are absolute, but only basenames are hashed: the repo
+        checkout dir is not a property of the tiles.)
+
+        Names are not enough either. The cached analysis describes PIXELS —
+        colour composition, gradients, edge profiles — so a repaint of an
+        existing tile invalidates it just as surely as a rename. tiles2 does
+        exactly that: 2026-08-06 "stop the harmonizer recolouring fire" changed
+        142 base/transition tiles IN PLACE, same names, and a name-keyed cache
+        would have gone on selecting transitions from the colours those tiles
+        used to have. So the CONTENT is hashed. It costs ~0.6s over the 2,240
+        analysis inputs, against a ~75s world build — cheap enough to be exact
+        rather than clever."""
+        parts = ["v5-content"]   # bump when the analysis schema changes
+        h = hashlib.sha1()
+        for gid, d in sorted(self.types.items()):
+            for other, tt in sorted(d["transitions"].items()):
                 parts.append(f"{gid}>{other}:{len(tt)}")
+                for p in sorted(tt):
+                    h.update(os.path.basename(p).encode())
+                    h.update(b"\0")
+                    with open(p, "rb") as fh:
+                        h.update(fh.read())
+        parts.append("content:" + h.hexdigest()[:16])
         return "|".join(sorted(parts))
 
     def _build_analysis(self) -> dict:

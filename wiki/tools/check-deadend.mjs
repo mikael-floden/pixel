@@ -107,6 +107,62 @@ else {
   ok(flagged.every((x) => /no story yet/.test(x.text)), "the flag says why");
 }
 
+// NO CHARACTER HAS AN EMPTY ANIMATION VIEWER. Three of the 191 NPCs are
+// synced with a base/ folder and no animations/ folder at all, so the player
+// drew an empty chessboard with a "—" frame counter and no explanation
+// (maintainer 2026-08-07: "Why is Morwenna not visible in the animation
+// viewer?"). Those fall back to their 8 standing rotations as a one-frame
+// "standing" clip. This asserts the outcome — every character has something
+// to show — so it catches BOTH a future NPC synced without art and the
+// fallback itself breaking.
+const empty = d.domains.characters.filter((c) => !Object.keys(c.animations ?? {}).length);
+ok(empty.length === 0, `every character has something to play${empty.length ? ` — ${empty.length} empty: ${empty.map((c) => c.name).join(", ")}` : ` (${d.domains.characters.length})`}`);
+const noDirs = d.domains.characters.filter((c) =>
+  Object.values(c.animations ?? {}).some((a) => !Object.keys(a.dirs ?? {}).length));
+ok(noDirs.length === 0, `and every state has at least one direction${noDirs.length ? ` — ${noDirs.map((c) => c.name).join(", ")}` : ""}`);
+// The fallback must paint REAL PIXELS, not just exist in the data.
+const fellBack = d.domains.characters.find((c) => c.animations?.standing);
+if (fellBack) {
+  await p.goto(`${W}#/characters/${fellBack.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2000);
+  const drew = await p.evaluate(() => {
+    const cv = document.querySelector(".player-stage canvas");
+    if (!cv) return { painted: 0 };
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let painted = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) painted++;
+    return { painted, frame: document.querySelector(".frame-no")?.textContent };
+  });
+  console.log(`standing fallback (${fellBack.name}):`, JSON.stringify(drew));
+  ok(drew.painted > 500, `${fellBack.name}'s standing pose actually draws (${drew.painted}px, frame ${drew.frame})`);
+}
+
+// ONE COUNT PER SECTION. The nav and the start-page tile must agree: World
+// counted its 8 terrain TYPES in the sidebar while its card counted all 4,372
+// tiles, so the same section reported two different sizes depending on where
+// you looked (maintainer 2026-08-06). A `navCount` override existed for
+// exactly that one section; it is gone, and this keeps it gone.
+await p.goto(`${W}#/`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+const counts = await p.evaluate(() => {
+  const nav = {};
+  for (const a of document.querySelectorAll("#nav a")) {
+    const c = a.querySelector(".count");
+    if (!c || !c.textContent.trim()) continue;
+    nav[a.textContent.replace(c.textContent, "").trim()] = c.textContent.trim();
+  }
+  const start = {};
+  for (const a of document.querySelectorAll("#content a")) {
+    const m = a.textContent.replace(/\s+/g, " ").trim().match(/^(.+?)(\d[\d,]*) \w+$/);
+    if (m) start[m[1].trim()] = m[2];
+  }
+  return { nav, start };
+});
+const mismatch = Object.keys(counts.start).filter((k) => counts.nav[k] !== undefined && counts.nav[k] !== counts.start[k]);
+console.log("counts:", JSON.stringify(counts.nav));
+ok(Object.keys(counts.start).length > 4, `the start page tiles carry counts (${Object.keys(counts.start).length})`);
+ok(mismatch.length === 0,
+  `every section reports the SAME number in the menu and on its card${mismatch.length ? ` — ${mismatch.map((k) => `${k}: nav ${counts.nav[k]} vs card ${counts.start[k]}`).join("; ")}` : ""}`);
+
 console.log("page errors:", errs.length ? errs : "none");
 await b.close();
 console.log(fails.length ? `\n${fails.length} FAILURES` : "\nALL DEAD-END CHECKS PASSED");

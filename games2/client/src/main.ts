@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
+import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
@@ -39,9 +40,15 @@ document.addEventListener(
   { passive: false },
 );
 document.addEventListener("gesturestart", (e) => e.preventDefault());
-// Portrait-only (for now): the manifest locks the installed app; in-browser
-// the lock API only works in fullscreen contexts, so it's best-effort (the
-// #ml-rotate CSS overlay in index.html covers plain browser landscape).
+// Portrait-only OUTSIDE the world (maintainer 2026-08-05: the WORLD plays
+// landscape; title/select/loading stay upright). In the installed app the
+// lock API works (fullscreen contexts) and this boot-time portrait lock
+// covers the pre-game screens; hud.ts mountPageFrame RE-LOCKS to "any" the
+// moment the world mounts — this line was the "nothing happens when I tilt"
+// bug once landscape shipped: it silently kept the old portrait-only rule
+// no matter what the manifest said. In a plain browser tab lock() rejects
+// (not fullscreen) and rotation is native; the #ml-rotate CSS overlay
+// covers the pre-game screens there.
 if (window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches) {
   (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.("portrait")
     .catch(() => {});
@@ -127,13 +134,21 @@ function showUpdateBanner(sha: string) {
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
   // Wording is maintainer-fixed: JUST "New version out <hash>". Wiki-style
-  // toast now: a surface pill on the shared tokens, just below the CSS clock,
-  // plain responsive px (no zoom compensation).
+  // toast now: a surface pill on the shared tokens, plain responsive px (no
+  // zoom compensation). QUIET, not orange (maintainer 2026-08-05): the
+  // default ink + a plain border — the accent pair read as an alert for what
+  // is only an FYI — and it sits a step lower, clear of the stat chips.
+  // …and it hangs off the chips' MEASURED heights (bars.ts publishes
+  // --bars-l-h / --bars-r-h from ResizeObservers) + the project's 10px
+  // margin, so it clears them on a device whose font metrics make the chips
+  // taller. It is CENTRED, so it can pass under either one — hence the max()
+  // of both, not just the right chip's. The 78px fallbacks are this phone's
+  // left-chip height, used on the select screen where there are no chips.
   el.style.cssText =
-    "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:calc(max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:9px 16px;border-radius:10px;" +
-    "background:var(--surface, #fff);color:var(--accent-ink, #b45309);" +
-    "border:1px solid var(--accent, #d97757);font:600 13.5px var(--sans, sans-serif);" +
+    "background:var(--surface, #fff);color:var(--ink, #1f1e1a);" +
+    "border:1px solid var(--border, #e6e2d7);font:600 13.5px var(--sans, sans-serif);" +
     "box-shadow:var(--shadow, 0 4px 16px rgba(0,0,0,.2));" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";
@@ -154,6 +169,13 @@ async function boot() {
     mountFoleyAudition();
     return;
   }
+  // Composer's SCORE audition (/#score): every generated music bed, playable
+  // with its measured loop point — the maintainer decides what plays where.
+  if (location.hash === "#score") {
+    const { mountScoreAudition } = await import("../../composer/scoreAudition");
+    mountScoreAudition();
+    return;
+  }
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // Monster catalog (the poring family) — served in parallel. Optional: a
@@ -161,6 +183,12 @@ async function boot() {
   // player over debug creatures).
   const monsterManifest = await loadMonsterManifest().catch((e) => {
     console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
+    return null;
+  });
+  // NPC catalog (characters2/npcs) — same contract: optional, and a failure
+  // just means the world's people do not render.
+  const npcManifest = await loadNpcManifest().catch((e) => {
+    console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
     return null;
   });
   // The art agents periodically reset/regenerate the roster, so it can be empty.
@@ -210,6 +238,16 @@ async function boot() {
   // The chosen isometric world (null if its world.json is missing; the world
   // scene then falls back to a plain ground).
   const world = await loadWorld(worldName);
+  // WHO stands where, fetched at BOOT alongside the world (maintainer
+  // 2026-08-06: "the loading restarts just before the game loads and once
+  // loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
+  // mistake: spawnNpcs used to fetch this in create() and then start its own
+  // loader batch, which re-fired the scene loader's progress events the
+  // loading overlay is driven by (the bar restarted) and only delivered the
+  // art after the world was already on screen (the pop-in). Fetched here, the
+  // placement is ready before the scene exists and the art rides the normal
+  // boot progress. Tiny file, and worlds without NPCs return [] instantly.
+  const npcPlacement = await loadNpcPlacement(worldName).catch(() => []);
 
   // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
   // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
@@ -233,7 +271,35 @@ async function boot() {
     scene: [WorldScene],
   });
   game.registry.set("renderScale", RS);
+  // A REAL touch device — hud.ts's touchDevice(), inlined (no import: keep
+  // main.ts free of the HUD module graph). Gates the rotation coherence
+  // check below so desktop is never affected.
+  const touch = () =>
+    (navigator.maxTouchPoints || 0) > 0 ||
+    window.matchMedia?.("(pointer: coarse)").matches === true;
   const fitCanvas = () => {
+    // ROTATION FLIP (hud.ts beginFlip): while an orientation transition is
+    // live, HOLD FIRE. A real rotation restages the viewport several times,
+    // and a full scale.resize per stage — framebuffer realloc + whole-world
+    // redraw, back to back — stalls the main thread long enough that the OS
+    // composites stale letterboxed frames (maintainer's mid-rotation
+    // screenshots, 2026-08-05). The flip veil covers the stale-sized canvas;
+    // when the viewport settles, hud.ts fires ONE "ml-flip-flush" and the
+    // canvas takes its final size in a single resize.
+    const root = document.documentElement;
+    if (root.classList.contains("ml-flip")) return;
+    // The FIRST stage sneaks past that class: the #game ResizeObserver
+    // delivers BEFORE the window resize event that starts the flip (traced
+    // live — the observer's scale.resize beat beginFlip by 3ms and cost a
+    // ~2s stall). Same coherence test as the hud's snapshot guard: in-game
+    // on a touch device, an aspect that disagrees with ml-land means a
+    // rotation is mid-flight — the flip's flush will call back.
+    if (
+      root.classList.contains("ml-ingame") &&
+      touch() &&
+      window.innerWidth > window.innerHeight !== root.classList.contains("ml-land")
+    )
+      return;
     const el = document.getElementById("game");
     const cv = game.canvas;
     if (!el || !cv) return;
@@ -245,14 +311,47 @@ async function boot() {
     if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
     cv.style.width = cssW + "px";
     cv.style.height = cssH + "px";
+    // TELL PHASER THE CANVAS MOVED/RESIZED (maintainer 2026-08-06: after
+    // switching orientation, tapping the map walked to a different spot).
+    // Phaser derives its pointer mapping — displayScale — from `canvasBounds`,
+    // which it fills from getBoundingClientRect() on ITS own resize pass. We
+    // set the canvas CSS size ourselves right here, AFTER that pass, so its
+    // cached bounds keep the pre-rotation SIZE: measured mid-flip in
+    // landscape, real canvas 526x393 but bounds still the portrait 393x526,
+    // giving displayScale 2.677/1.494 where the truth is 2.0/2.0. Every tap
+    // was then scaled by that error — ~98wu off in landscape, ~130wu after
+    // rotating back. updateBounds() re-reads the rect and recomputes the
+    // scale. refresh() is deliberately NOT used: in RESIZE mode its
+    // updateScale() re-derives gameSize/baseSize/canvas.width from the PARENT
+    // (ScaleManager.js, the RESIZE branch), which would throw away the
+    // resolution scaling this game applies on purpose — a 393x526 box backed
+    // by 786x1052. updateBounds() re-reads the rect but does NOT recompute
+    // displayScale (Phaser only does that inside refresh), so apply Phaser's
+    // own formula here, from the bounds it just corrected.
+    game.scale.updateBounds();
+    const cb = game.scale.canvasBounds;
+    if (cb.width > 0 && cb.height > 0) {
+      game.scale.displayScale.set(
+        game.scale.baseSize.width / cb.width,
+        game.scale.baseSize.height / cb.height,
+      );
+    }
   };
   game.events.once(Phaser.Core.Events.READY, fitCanvas);
   window.addEventListener("resize", fitCanvas);
+  window.addEventListener("ml-flip-flush", fitCanvas);
+  // Handedness swaps the menu column left<->right: the game view MOVES but
+  // keeps its size, so the ResizeObserver never fires and only the bounds
+  // POSITION goes stale. Same fix, different trigger.
+  window.addEventListener("ml-hand", fitCanvas);
   const gameEl = document.getElementById("game");
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 
+  (window as any).__mlGame = game; // debug handle (scale-manager QA)
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
+  game.registry.set("npcManifest", npcManifest);
+  game.registry.set("npcPlacement", npcPlacement);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

@@ -269,10 +269,21 @@ function mount() {
      golden-ratio split it computes. When a chat box is focused the phone
      keyboard covers this corner, so hud.ts lifts the pill (and the chat log)
      above the floated input via :root.ml-kb-up — hence the transition. */
-  .ml-clock{position:fixed;right:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
+  .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
-    pointer-events:none;box-sizing:content-box;transition:bottom .15s ease-out;
+    pointer-events:none;box-sizing:content-box;
+    transition:bottom .15s ease-out,right .3s ease;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
+  /* RIGHT-HANDED LANDSCAPE: the game view's bottom-right corner belongs to
+     the thumb stick, so the pill moves UP and parks directly under the XP
+     chip instead (maintainer 2026-08-05) — same right margin, so the two
+     right edges line up, and a 10px gap below the chip matching every other
+     margin. --bars-r-h is the chip's MEASURED height (bars.ts publishes it;
+     the fallback only covers the first frame). Left-handed keeps the corner:
+     there the stick is bottom-LEFT and the pill is nowhere near it. */
+  :root.ml-land:not(.ml-lh) .ml-clock{
+    top:calc(var(--bars-r-h, 78px) + 20px);bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

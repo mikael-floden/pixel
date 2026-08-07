@@ -42,7 +42,9 @@ export function thunderFeature(): AmbientFeature {
       peakSum += peak;
       t += 90 + rnd() * 180;
     }
-    // The rumble: composer delays it 1-2.5s after the light (distant storm).
+    // The crack lands WITH the light, not after it (maintainer 2026-08-06:
+    // "synced to the white flash … that's the point"). The composer used to
+    // delay it 1-2.5 s for distant-storm realism; that read as silence.
     gameAudio.thunder(Math.min(1, peakSum * 1.8));
   };
 
@@ -96,6 +98,11 @@ export function thunderFeature(): AmbientFeature {
       }
       // Night flashes read brighter against the dark — scale down by day.
       a *= 0.5 + 0.5 * ctx.env.night;
+      // OUTDOOR GAIN: no sheet lightning through a roof (runtime/outdoor.ts).
+      // Applied to the flash alpha rather than skipping the update, so the
+      // strike's envelope keeps decaying and does not resume mid-flash when the
+      // player steps back out.
+      a *= ctx.outdoor;
       const view = ctx.view;
       flash
         .setPosition(view.x, view.y)

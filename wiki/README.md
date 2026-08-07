@@ -42,12 +42,24 @@ feedback ids are repo paths — but nothing user-visible says "monsters" or
 | route | shown as | route | shown as |
 | --- | --- | --- | --- |
 | `#/monsters` | **Creatures** | `#/sounds` | **Sound Effects** |
-| `#/characters` | **Characters** | `#/music` | **Music** |
+| `#/characters` | **Races** | `#/music` | **Music** |
 | `#/tiles` | **World** | `#/items` | **Items** |
-| `#/objects` | **Objects** | `#/tuning` | **Parameters** (admin) |
+| `#/objects` | **Scenery** | `#/tuning` | **Parameters** (admin) |
+
+("Races", not "Characters" — too close to "Creatures"; "Scenery", not
+"Objects" — maintainer 2026-08-05. The Races page is grouped by race, each an
+inner topic with the lore agent's "people" entry as its description; NPCs page
+20 to a card with ‹ › so one race's cast can never bury the next race.)
 
 Add a section to that table and the nav, the start page, the headings, the
 back-links and the search results all follow.
+
+**One count per section.** World used to report its 8 terrain TYPES in the nav
+and all 4,372 tiles on its card — the same section measuring itself two ways
+depending on where you looked (maintainer 2026-08-06: "4372 is a bigger number
+and sounds better, use it in the menu as well"). The `navCount` override that
+allowed it is gone; tiles was its only user. `check-deadend.mjs` reads the nav
+and the start-page tiles and fails on any section where the two disagree.
 
 **The icons are the maintainer's own pixel art** (`site/icons/*.png`): 48×48,
 authored 1×, hard alpha, 21-57 colours. They are drawn at **whole multiples
@@ -128,6 +140,24 @@ SHA-256 digest of the password lives in server source, the repo is public).
 Signing in unlocks stars, approve/remove, notes, monster stats and constant
 overrides. All writes go through the game server, which holds the ONLY
 GitHub credential (`WIKI_GITHUB_TOKEN` env on the Cloud Run service).
+
+**A session lasts a WEEK and survives deploys** (maintainer 2026-08-06: "if I
+have logged in I should stay logged in for a week"). The TTL was always 7
+days; the bug was that sessions lived in a `Map` in the server process, and
+this service redeploys many times a day (every art push deploys), so the Game
+Master was signed out several times a day. The token is now **stateless and
+signed** — `<expiry-epoch-seconds>.<hmac-sha256>` — so it outlives restarts,
+rolling deploys and a scale-out to several instances (a session table on
+instance A 401s every request that lands on instance B). The HMAC key is
+derived from `WIKI_SESSION_SECRET` if set, else from `WIKI_GITHUB_TOKEN`,
+which an admin session is worthless without anyway; with neither (dev, tests)
+it is per-process random, i.e. the old behaviour. **Rotating that secret
+revokes every session** — the one revocation lever a stateless scheme needs,
+and the reason it is worth knowing where the key comes from. Signing out is
+still immediate (the browser drops the token). Gates: `live.test.ts` (survives
+a reset, a stretched expiry is refused, an expired-but-correctly-signed token
+is refused, rotation revokes) and a scratch e2e that logs in, KILLS the server
+process, starts a new one and reloads.
 
 ## Feedback files — the contract with the other agents
 
@@ -253,6 +283,26 @@ id. `build.mjs` emits `data.json` `world`:
   bbox to the PNG's opaque bbox — it refuses to write if the x/y scales
   disagree or if zones project off the drawn map, so a silently-misaligned
   overlay can't ship.
+- `npcs[<characters2 folder id>] = [{id, name, type, anchor, x, y, elev,
+  wares}]` — the cast maps2 stands in the world (`maps2/worlds/<w>/npcs.json`,
+  `pixel-maps2/npcs@1`), keyed by the same folder id this build uses for an
+  NPC, so the join needs no translation table. An NPC who is placed gets a
+  **"Where you'll find them"** panel (maintainer 2026-08-06) — the creatures'
+  own world minimap with their standing spot on it — plus an "in the world"
+  chip, a merchant's wares, and a dot on their tile in the Races grid so the
+  placed handful are findable among 191.
+  - A person is a POINT, not a zone, and the mark is a **CSS overlay in
+    percent**, not paint: the minimap is ~1800px wide and displays at ~330 on
+    a phone, so a canvas-drawn dot shrinks to a speck exactly where it matters
+    most. Percent holds its size on every screen and stays crisp. The
+    projection is the zone map's own affine (cell → diamond CENTRE, `+tile/2`,
+    `+dy`), so the two maps agree by construction — `check-npcmap.mjs`
+    recomputes it from the data and compares against the rendered mark.
+  - It is deliberately **approximate** — the maintainer's framing: an NPC who
+    can walk will not be on that exact tile when you arrive. Hence a soft halo
+    around the dot and "Roughly here…" under the map, never a pin.
+  - maps2' `anchor` is provenance, so the panel says it the way a player would
+    ("in the market", "at the cave mouth") via `ANCHOR_WHERE`.
 
 Audio "used" is **referenced by the game**, not merely present:
 
@@ -320,27 +370,46 @@ and are **admin-only** (maintainer 2026-07-30: "I don't even know what a
 default_boy is"). Players get `Human · Male` under the thumbnail and the
 hero's story beside it.
 
-### NPCs are second, and nameless on purpose
+### NPCs are second, and quiet about it
 
-`characters2/npcs/` (191 tag-driven mirrors, landed 2026-08-01) join the
-same `characters` domain array with `kind: "npc"`, but the page is about the
-**playable cast foremost** (maintainer 2026-08-01): heroes keep their big
-cards on top, NPCs sit below in their own clearly secondary block — half-size
-portrait-only tiles under an "NPCs · count" heading.
+`characters2/npcs/` (191 tag-driven mirrors, landed 2026-08-01) join the same
+`characters` domain array with `kind: "npc"`, but the page is about the
+**playable cast foremost** (maintainer 2026-08-01): heroes keep their big cards
+on top, NPCs sit below in their own clearly secondary block under an
+"NPCs · count" heading — half-size tiles (94px against a hero's 192px at 426px
+wide, four to a row).
 
-- **Every NPC is a "Villager."** Their PixelLab names are prompt junk
-  ("No boots, no gloves, (copy 5)") — characters2's own README says so — and
-  folder keys are hash prefixes. Both are the `default_boy` class of fact:
-  admin-only, never shown to players. The lore agent can give an NPC a real
-  identity later via `lore.json` (`loreDesc` wins wherever it exists).
-- **‹ › pages within the group.** A hero pages among the 2 heroes, an NPC
-  among the 191 NPCs — otherwise the Villagers bury the cast between Man and
-  Woman.
-- **Global search**: players never see NPC rows (191 identical "Villager"
-  hits would drown everything); the admin finds them by folder key or
-  PixelLab name, each hit labelled `Villager · <key>`.
-- The nav/start-page count stays **heroes only**; the NPC block carries its
-  own count. `counts.npcs` exists separately in data.json.
+- **They are authored, not guessed.** characters2 ships `display_name`,
+  `species`, `sex`, `role` and `lore` on each `character.json`, read from the
+  ART. Never touch `pixellab_prompt`: it is the same copy-pasted "young female
+  adventurer" text on all 191 and says female for every one of them. That
+  prompt and the duplicate PixelLab name it produced stay admin-only, as does
+  the folder key. `"Villager"` survives only as the fallback for an NPC synced
+  before the agent has named it.
+- **The tiles say who, quietly**: name (12px) over trade (10.5px muted), one
+  line each, **ellipsised not wrapped** — a tile that grows a second line
+  re-flows all 191 and the block stops reading as secondary. Verified 0 of 191
+  names or trades clip at 360/393/426px.
+- **The id is the folder key, unprefixed.** The lore fold matches
+  `loreEntities[dom][e.id]`, so a wiki-invented prefix would silently fail to
+  join the day the lore agent writes an NPC up.
+- **No technical names reach a reader** (maintainer 2026-08-01). NPCs are
+  absent from `animation_map.json`, so their state keys would otherwise be raw
+  PixelLab folders — `custom-calm-still-idle-breathing`, plus an upstream typo
+  variant `...stili...` on 39 of them. `npcState()` in build.mjs matches folder
+  WORDS against the game's own state vocabulary, so both land on `idle` and the
+  viewer prints "Idle"; a new slug lands right without anyone editing a table.
+  `stateLabel()` in wiki.js then presents any state readably (`spell_wand` ->
+  "Spell wand"). One NPC legitimately has two idle clips (different art, both
+  folder spellings) and shows "Idle" and "Idle 2".
+- **Search**: the whole cast is findable by name, sex or trade now that the
+  names are real — they were excluded while all 191 were "Villager", because
+  191 identical rows drown every query. Folder key and PixelLab name remain
+  admin-only search terms.
+- **`‹ ›` pages within the group.** A hero pages among the 2 heroes, an NPC
+  among the 191 — otherwise the cast is buried between Man and Woman.
+- The nav/start-page count stays **heroes only**; the block carries its own.
+  `counts.npcs` exists separately in data.json.
 - No Movement-sounds panel on NPC pages — that kit follows the player.
 - Feedback ids are the repo path (`characters2/npcs/<key>`), so review works
   exactly like everything else.
@@ -368,6 +437,459 @@ movement** at every width (was 70px at 426px). Objects too (was 38px). Below
 ~346px a 20px step remains, from the state-tab row inside the Animations panel
 wrapping for the 6 monsters whose `angry` falls back to idle (`angry (→idle)`
 is a wider label) — not the header.
+
+## Sound Effects are EVENTS, played by the game's own engine
+
+The Sound Effects page is organized by **in-game event** (maintainer
+2026-08-05) — "Footsteps · Grass", "Jump" — not by audio file. `buildSfx()`
+in build.mjs derives the table from the same sources the composer's engine
+compiles from: `sounds/bindings.json`, the `gameAudio.event("…")` call sites,
+and the composer's own takeover tables **parsed out of
+games2/composer/engine/api.ts** (EVENT_FOLEY, JUMP_VOICE, the FOOTSTEP_*
+routing/trim/layer maps) with a drift sentinel that warns loudly on any
+regex miss. A board request stands for a published `composer/events.json`
+to replace the parsing.
+
+- **Playback mirrors games2/composer/engine/oneshot.ts exactly** — take
+  round-robin that never repeats, pitch 2^(semis/12)×rate with the jitter
+  ranges pre-gentled (×0.35) at build, gain = mix + event trim + bus fader
+  ± gentled jitter, per-layer lowpass, the 30 ms debounce. BufferSource on
+  purpose: HTMLAudio pitch-preserves on rate change, which is exactly the
+  wrong sound for the half-speed-authored voice takes (raw voice = ×2).
+  Not mirrored, honestly: scale-snap, pan/distance, beat quantize — they
+  need the running game. check-sfx.mjs asserts the computed rate/dB/lowpass
+  per layer against the data.
+- **An event's ▶ plays every layer at once** (grass = the grass set AND
+  dirt underneath at −6 dB relative); each row's ▶ plays that sound alone.
+- **Players see only events that make sound.** Silent events, "not fired
+  yet" pills, stars, the add-a-sound form and the raw all-sounds library
+  are Game-Master-only.
+- **A BINDING is not a RECORDING** (maintainer 2026-08-06: "if I remove a
+  sound from an event that doesn't mean I want to delete the sound … it just
+  means I want to unbind it"). Two different verdicts, in two different
+  places:
+  - On an **event card**, one verdict row per attached sound —
+    "this sound, for this event" — writing to `live/feedback/bindings.json`
+    with `<eventId>#<sound>` ids. Its ✕ reads **"✕ unbind"** and detaches the
+    sound from that one event; the recording is untouched. Take rows carry
+    ▶ + name + length and nothing else: a take is a recording, and judging
+    one is not this page's job.
+  - In **All sounds**, the file's own stars/approve/✕ — and there ✕ really
+    does retire the recording everywhere, which both the tooltip and the
+    section's intro say out loud.
+- **Stars on a recording** go to its OWNER: catalog takes →
+  `feedback/sounds.json`, composer takes → `feedback/composer.json` (ids
+  `composer/foley/<set>/<take>`). Binding verdicts go to the composer via
+  `feedback/bindings.json`.
+- **Add-a-sound requests** ride the normal save path into
+  `live/tuning/sfx_requests.json` (`pixel-wiki-sfx-requests@1`, server key
+  `tuning/sfx_requests`): pick a sound, set pitch / volume dB / max random
+  pitch, note. The composer agent consumes and deletes entries it acted on.
+- **Assigning a sound is a LISTENING job** (maintainer 2026-08-06), so the
+  picker is a real dialog (`openSoundPicker`), not a `<select>`: search, one
+  row per sound carrying its length and whether the game already uses it, ▶
+  on every row, and Prev/Next (or ↑/↓) that step AND play as they go so you
+  can hunt down the list for the right one. Pitch / volume / random pitch are
+  sliders inside the dialog — volume's normal value is **0 dB = exactly as
+  recorded** — and the request carries the numbers you auditioned with. The
+  generic `dialog input` rule is scoped to `:not(.sfx-picker)`: it is the
+  sign-in dialog's full-width stacked field and it wrecked these rows.
+- **The dialog names its target** (maintainer 2026-08-06): "Assign a sound to
+  Drop", "Assign another sound to Footsteps · Dirt", "Assign a sound to
+  Nyssa · Idle". Three screens into 117 sounds, a bare "Assign a sound" no
+  longer tells you what you are listening FOR. The subtitle then only has to
+  say what kind of moment it is.
+- **The dialog's geometry is FIXED** (maintainer 2026-08-06: Next must be
+  where it was after you press Next). A modal is centred, so anything below
+  the list that changes height moves every control: the list has a fixed
+  `height` (not a max — a 3-result search used to shrink it and drag the
+  buttons up), the empty state renders INSIDE the list, the transport row is
+  `nowrap`, and the "Selected: …" line is gone — the accent-coloured row
+  already says which sound is selected.
+- **Opening the picker must not raise the keyboard** — only tapping the search
+  box may. `showModal()` focuses the first field by default, so the dialog
+  carries `autofocus`+`tabindex="-1"` and, because that attribute is not
+  honoured everywhere, takes the focus back by hand in the same task (no frame
+  for the keyboard to slide up in). A desktop — `(hover: hover) and (pointer:
+  fine)` — still focuses the search, where typing straight away is the point.
+  The dialog's own focus ring is suppressed: it is a container, not a control.
+- **One button, both places**: `assignSoundBtn()` renders "Assign a sound…" /
+  "Assign another sound…" on event cards and entity cards alike. Its chain is
+  an **inline SVG in `currentColor`**, not U+1F517 — that codepoint has emoji
+  presentation, so a phone draws it as a colour picture next to monochrome
+  text ("should not be a colored smiley").
+- The entity card is titled for what it MAKES — "New sound effect event" — and
+  its action `<select>` is styled as a wiki control (it was raw browser chrome
+  that ignored dark mode). Its width is capped in `em`, not `%`: a percentage
+  cap against a shrink-to-fit flex parent collapsed the box and "Idle"
+  rendered as "Idl".
+- **One row per RECORDING, not per folder** (maintainer 2026-08-06: "you
+  don't let me select the sound. You point to a group! We have way more
+  sounds than this"). A set is a folder of alternatives — `ui_tick` holds
+  three different clicks, `jump_voice` four grunts, and 33 catalog sounds
+  have several takes — so listing sets showed 128 rows for 183 real
+  recordings and made take 2 of anything unreachable. Every take is its own
+  row now, labelled `flavour · take N` when its set has more than one, each
+  auditioning its own file. The request carries **`take`** (the exact file)
+  beside the existing `sound` (the set id the composer already parses), so
+  what gets bound is what was heard. "in game" is computed per RECORDING
+  from the event table's own bound files — not "something in this folder is
+  used".
+- **…and one row per take was STILL not every generated sound.** The
+  maintainer asked the follow-up that mattered — *"Every single generated
+  sound? Or something else missing?"* — and the honest answer was no. The
+  composer generates a **pool** per brief, scores it, and copies only the
+  winner(s) out as takes; 23 of the 91 sets kept their pool on disk. That was
+  **130 more files**, of which **91 were audio no page in this wiki could
+  reach** (the other 39 are byte copies of the take chosen out of them). They
+  are listed now as `flavour · alternative N`, right under the take they lost
+  to, best-scoring first — 190 rows → **281**.
+  - **Dedupe is by CONTENT HASH, never by path** (`fileHash` in build.mjs):
+    promoting a candidate to a take is a plain file copy under a new name, so
+    the paths never match and the bytes always do. Compare paths and every
+    winner shows up twice.
+  - They ship because the composer's score answers *"does this fit the brief
+    it was generated for"*, which is a **different question** from *"is this
+    the sound I want for my event"* — a candidate rejected as a grass footstep
+    is still a fine rustle for an item pickup, and only the Game Master can
+    say so. That is also why there is no quality badge on them: re-imposing
+    the judgement that hid them would defeat the point.
+  - **Assigning one is a request to PROMOTE it.** The request carries the pool
+    path in `take`, so the composer must copy that file out of `pool/` into
+    the set and add it to `takes` in `foley.json` — wiring the `pool/` path
+    directly would leave a bound sound the pipeline treats as a discard.
+    Board note sent to games-audio 2026-08-06.
+  - Gate: **`wiki/tools/check-everysound.mjs`** — this is the durable answer
+    to the question. It does not check a number anyone typed: it walks
+    `games2/composer/foley/**` and `sounds/**`, hashes every audio file, and
+    fails unless each one is listed in `data.json` or byte-identical to one
+    that is. Verified to fail on the pre-fix baseline naming all 91.
+- **Grouped by action, and it lists EVERY composer set** — wired or not
+  (their ask, 2026-08-05: they ship ~10 `<action>_<flavour>` alternatives per
+  action and the winner gets wired afterwards). `composerGroups()` derives the
+  action rather than hardcoding it: a set's group is its longest underscore
+  prefix that a sibling shares, singletons collect under "Other". Under a
+  `HIT TAKEN` header the rows read `armor` / `bass` / `coat` — the flavour is
+  what you are choosing between, and repeating the action only truncated it;
+  the full name stays in the tooltip, the "Selected:" line and the request.
+- **Opening the picker silences EVERYTHING** (maintainer 2026-08-06). A modal
+  `<dialog>` blocks the controls for every audible thing on the page, and
+  three independent sources can be sounding: `sfxEngine` (the WebAudio
+  auditions), the shared `#shared-audio` element (music beds and entity
+  takes), and **the game itself behind the drawer**. The last one was the real
+  hole: the "🔇 Mute the game" button exists only on the Sound Effects and
+  Music pages, but the picker also opens from monster and character cards —
+  so a Game Master auditioning from a creature page had no way to reach it at
+  all. `openSoundPicker()` now calls `stopAllAudio()` (both wiki players) and
+  `setGameMuted(true)`.
+  - **It restores only what IT muted**, the same contract the drawer keeps
+    with the player's own switches (`wikipanel.ts`): if Mute was already
+    pressed, closing the picker leaves the game quiet. Restore runs off the
+    dialog's `close` event, so Cancel, Assign and **Escape** all behave alike.
+  - `setGameMuted()` is the single place that flips it, and it re-labels every
+    `.mute-game` button **by query, not through the button's own closure** —
+    the picker mutes from outside that scope, and a stale label is how someone
+    ends up unable to get their game sound back.
+  - `route()` uses `stopAllAudio()` too; it used to pause only the `<audio>`
+    element, so a long WebAudio audition survived navigating away.
+  - Gate: **`wiki/tools/check-audiostop.mjs`**. It fakes admin at the network
+    layer instead of logging in — the picker is Game-Master-only but all of
+    this is pure client logic, and a real login would only make the gate skip
+    wherever the password is absent, which is exactly where a regression would
+    slip through. Verified to fail (9 assertions) with the stop call removed.
+- **Sort: by action, or newest first** (maintainer 2026-08-06, "in a way I can
+  still click next next next without the button moving"). A two-button toggle
+  under the search box.
+  - The date is the composer's own per-SET `generated_at` from `foley.json`, so
+    a set's takes and its pool candidates share one date. **The sound catalog
+    carries no timestamp anywhere** — not in `viewer_data.json`, not in any
+    `metadata.json` — so those sort LAST under "Older — the original sound
+    library" rather than being given an invented date. **File mtimes are not a
+    substitute**: a fresh clone and the Docker build stamp every file alike.
+  - Newest-first reuses the existing sticky group headers, grouping by DAY
+    ("Today", "Yesterday", "3 days ago", then the date). That answers "what did
+    the composer make this morning" in one tap and adds NO per-row markup, so
+    it cannot disturb the row layout.
+  - **The transport bar cannot move**, which is the rule the dialog is built
+    around: the list's height is fixed in CSS and the toggle is its own
+    fixed-height row, so sorting, searching to zero results and stepping all
+    leave it exactly where it was. `check-audiostop.mjs` measures the Play
+    button's y through a sort toggle, 8× Next, an empty search and a toggle
+    back, and asserts a single distinct value.
+- **Prev / Play / Next are thumb-sized** (maintainer 2026-08-06). They are the
+  work of the dialog — you hammer Next/Play down 281 sounds hunting for the
+  right one — so they are 46px tall and share the row `flex: 1` instead of
+  wearing the compact ghost-button padding. Equal flex is safe here precisely
+  because all three labels are fixed strings: the widths are decided by the
+  dialog and cannot shift under your finger as you step, which is the rule
+  `.picker-bar` exists to keep.
+- **THE EVENT TABLE MIRRORS THE ENGINE'S OWN RESOLUTION ORDER** — get this
+  wrong and the page lies about the game (maintainer 2026-08-06: "the wiki is
+  showing old sound mappings not the one playing in the game"). `api.ts` is
+  silent-by-default and resolves an emitted event as:
+  1. **`EVENT_ASSIGNMENTS`** — what the Game Master assigned in the wiki;
+  2. the voice branch + **`EVENT_FOLEY`**;
+  3. **`sounds/bindings.json`** — ONLY for the two ids in `BINDINGS_APPROVED`;
+  4. otherwise **silence**.
+  This build read #2 and then fell through to bindings.json for *everything*,
+  which was two lies at once: every sound he had assigned was invisible
+  (`ui.press` showed the retired `ui_tick` while the game plays
+  `ui_click_bead`; `ui.release` read "no sound yet" while the game plays
+  `ui_click_latch`), and ~18 unapproved library RECOMMENDATIONS rendered as
+  bound sounds the engine never plays — `item.coin_pickup` showed two takes
+  and is in fact silent. Each event now carries **`via`** (`assigned` /
+  `foley` / `bindings` / absent = engine-driven) so the route is inspectable.
+  - An assignment may name ONE recording (`composer/punch#take02`, or a
+    separate `take`), and `pickTake()` resolves it the way the engine does —
+    a take that is not there is **silence, never a neighbouring recording**,
+    or a deleted take would quietly become a different sound.
+  - An unapproved suggestion for an event the game DOES fire is still listed,
+    as **"no sound yet"** with a note naming what the library offers and why
+    nothing plays.
+- **A NAME IN THE LIBRARY IS NOT A MOMENT IN THE GAME.** `sounds/bindings.json`
+  carries 16 rows nothing in the game emits — older spellings
+  (`combat.enemy_defeat`, when the game fires `combat.monster_die`) and tools,
+  containers and doors no code has yet. They rendered as ordinary empty cards,
+  indistinguishable from a live event waiting for a sound, so **16 of the 23
+  assignable-looking cards were ones where auditioning, picking and assigning
+  buys you silence and no explanation** (maintainer 2026-08-06, on being shown
+  the enemy_defeat/monster_die pair: "Please remove … This is madness").
+  An event now earns a card by being **fired** or by having a sound **bound**.
+  - **Anything bound is always listed, even when nothing fires it** — that is
+    the red "not fired yet" chip. Hiding it would strand a sound the Game
+    Master assigned with no way to see or unbind it. Verified both ways: the
+    16 vanish, and assigning to one brings its card straight back.
+  - The build **prints the hidden list every run**, so it doubles as a
+    staleness report for the sounds agent (told 2026-08-06), and the day one
+    of them starts being emitted it reappears on the page by itself.
+  - `sfx.hiddenDeadEvents` carries the list; `check-mapping.mjs` asserts no
+    card is both unfired and unbound, and that nothing hidden is assigned.
+  - The same pass found a third stale mapping: `weather.thunder` is played
+    through `foleyEntry(…, "rotate")`, which binds EVERY url, but the wiki
+    pinned it to `primary` and said "1 take" while the game rotated all six.
+  - **Read `games2/composer/assignments.json`, not the engine source.**
+    games-audio publish that manifest (`pixel-composer-assignments@1`) from
+    their own build, and their gate fails if it drifts from `api.ts` — so it
+    "cannot go stale on you the way an api.ts regex can" (their words). They
+    were proved right within the hour: a regex on
+    `const assigned = EVENT_ASSIGNMENTS[name]` broke the moment they added
+    per-character voices, and the drift sentinel caught it on the next build.
+    The source parse survives only as a fallback, so an unbuilt manifest
+    degrades to stale-but-present instead of to a page claiming silence.
+  - **Per-character assignments**: the engine resolves `player.die@<uid>`
+    ahead of the unscoped `player.die`, using this wiki's own spelling. **Die
+    now has a per-hero row beside Jump and Fall** — there was one shared card,
+    so the boy could not be given his own cry (maintainer, on the die-voice
+    request: "This is the female die sound effect. Can't assign a separate
+    voice to the male (you need to fix that)"). Each row shows what that hero
+    ACTUALLY gets, falling back to the shared cry exactly as the engine does
+    and saying which it is — a row reading "no sound yet" while a shared cry
+    played would be the same class of lie. The unscoped card is not listed
+    separately; these rows are the whole truth about who dies with which voice.
+  - Gate: **`wiki/tools/check-mapping.mjs`**. It checks `data.json` against
+    the composer's manifest AND cross-checks that manifest against `api.ts`,
+    so neither side can drift silently, and it fails on any bound event whose
+    route isn't one the engine would actually take. Verified to name all three
+    reported symptoms when pointed at the old data.
+## Paging ‹ › must not move the panels
+
+An NPC's role and its world pills share **one unwrappable row** (`.npc-trade`).
+The "in the world" / "merchant in the world" / "sells …" pills used to be their
+own `.spawn-line` row, and only the 19 placed NPCs of 191 had it — so stepping
+through the cast with ‹ › shifted the Animations viewer up and down under the
+maintainer's thumb (2026-08-07: "I don't want the animation cart to jump up and
+down when I press next NPC").
+
+Three things make the row exactly one line tall for *every* character — role
+only, pills only, both, or neither:
+
+- it renders **unconditionally**, with `min-height`, so an NPC with no role and
+  no placement still occupies the same line;
+- `flex-wrap: nowrap` on the row **and `white-space: nowrap` on every child**.
+  The row rule alone is not enough: a `.pill` is an inline-block, so when space
+  runs short it wraps its OWN text to a second line and the row grows anyway.
+  That is exactly what the gate caught — 40px vs 22px at 426px wide;
+- the role and the wares list may **shrink and ellipsize** (`min-width: 0` is
+  what actually permits that); the `in the world` pill never shrinks, because
+  it is the fact worth keeping whole. Full wares stay in the title.
+
+Gate: `check-segscroll.mjs` starts on a MERCHANT (the longest possible row),
+pages 14 NPCs, and asserts one distinct Animations-panel top, one distinct row
+height, and zero horizontal page overflow — after first asserting the walk
+crosses both placed and unplaced NPCs, or it would prove nothing. Verified 360
+→ 1100px: row 22px and no overflow at every width.
+
+## Creatures overview: sortable, and "will it attack me" at a glance
+
+- **Sort by name / level / aggressive first** (maintainer 2026-08-06). Its own
+  fixed-height `.sortbar` row above the grid, and the choice persists in
+  `localStorage["wiki-monster-sort"]`. **by name** is the default — the
+  underlying order is the folder id, which reads as random against display
+  names (Emberwing, Nightmule, Ashfiend…). **by level** is hardest first;
+  **aggressive first** puts the ones that hunt you before the rest and orders
+  each half hardest-first, which is the question that sort answers.
+- **A red `aggressive` / green `calm` pill replaced the habitat line** on the
+  card. The habitat count is still on the creature's own page; whether it comes
+  for you unprompted matters more in a grid.
+  - **It is LIVE data, not a build-time snapshot.** A monster proximity-aggros
+    only when its aggro radius is above zero and the tuning default is 0 —
+    passive by default, 9 of 24 hunt. The pill reads through `monsterStats`,
+    the same live doc the stats editor writes, so re-tuning a radius in the
+    wiki re-colours the pill with no rebuild.
+  - `not spawned` survives beside it: a creature in no world at all is a
+    different fact from a calm one, and it was carried by the line that went.
+  - Gate: **`wiki/tools/check-creatures.mjs`** derives its expectation from
+    `live/tuning/monsters.json` rather than a list typed into the gate, checks
+    each pill against its own creature's radius, asserts the two pills are
+    genuinely red- and green-dominant by COMPUTED COLOUR (two words in the same
+    colour would pass a text-only check), and drives all three sorts plus the
+    reload that proves the choice sticks.
+
+- **ONE PLAY BUTTON PER SEPARATELY-AUDIBLE THING** (maintainer 2026-08-06, on
+  the player view of a creature page: "why is the group in a group? Why 3 play
+  buttons and not 2? A non admin will probably not even understand why we have
+  2 and not 1"). A single-sound, single-take event rendered THREE ▶ — event,
+  layer and take — every one playing the identical file. A button now earns its
+  place only by doing something its parent does not:
+  - the **event's** ▶ is always there — it is what the game does at this moment;
+  - a **layer's** ▶ only when the event has more than one sound (layered or in
+    rotation), because otherwise the event's ▶ already is it;
+  - a **take's** ▶ only when its layer holds more than one recording.
+
+  So Sprigling's Attack is one button; grass footsteps are three (event + the
+  two layers); a hero's Jump is five (event + four takes); thunder is five
+  (event + four in rotation). A lone recording's name and length moved onto the
+  layer's own line, and which exact recording is bound (`take01` vs `cand07`)
+  is shown to the Game Master only.
+  - `data-event` on each card is the stable hook for gates: the visible id pill
+    is admin-only, so a check that identified cards by their first pill matched
+    nothing in the player view and passed vacuously.
+  - The pipeline line ("assigned by the Game Master in the wiki") is
+    `adminNote` now — it was being shown to players on every creature page.
+  - Gate: `check-sfx.mjs` computes the expected button count from the DATA's
+    own layer/take shape and compares, so the rule holds for every card rather
+    than for the ones someone thought to check.
+- **A creature's page shows what that creature sounds like** (maintainer
+  2026-08-06: "I can't see already mapped sound effects on monsters. I can
+  only bind new effects. How do I unbind individual sounds like I can do on
+  the Player page?"). Two separate bugs were behind that:
+  - **Per-entity events were not scoped.** The entity assign card mints
+    `<domain>.<entity id>.<action>`, and the composer wires those verbatim —
+    `monsters.forest_poring_2.walk` is Sprigling's footstep. build.mjs sent
+    them back through the generic path, so they rendered as unscoped cards
+    filed under "World" on the Sound Effects page: you could bind a sound to a
+    creature and never find it again. A three-part id whose middle segment is
+    a real entity of that domain is now scoped to it, exactly like
+    `player.jump@<uid>`. An id naming an entity that no longer exists stays
+    generic rather than scoping itself onto a page that isn't there.
+  - **`sharedWith`**: `combat.monster_die` and both cross events fire off a
+    monster's death but are not routed per creature, so every monster page
+    now shows them too — as full cards with the same per-recording unbind,
+    marked **"every creature"** so it is never a surprise that ✕ there takes
+    the sound off all of them. Chosen from the CALL SITES, not the names:
+    `combat.hit_taken` is the player being hurt and `combat.kick`/`punch` are
+    the player's own swings, so none of those appear.
+- **The emitted-scan understands DYNAMIC names.** A per-entity event cannot be
+  a literal: the game fires ``gameAudio.event(`monsters.${mv.kind}.${action}`)``
+  once per gait cycle, per swing and per growl. A literal-only scan called
+  every one of them "not fired yet" — telling the Game Master the sound he
+  had just bound to Sprigling could never be heard while the game played it on
+  every step. The static prefix before the first `${` is now recorded as an
+  emitted FAMILY (`isEmitted`). Gate: `check-sfx.mjs` fails on any
+  `<domain>.<entity>.<action>` event that is not scoped.
+- **Unbind is PER RECORDING, not just per sound** (maintainer 2026-08-06: "I
+  wanted to unbind `coin_pickup__take02.wav` from Coin Pickup, but the unbind
+  is not on the sound itself … I don't want to delete the sound, just unbind
+  it"). An event that plays several recordings has several bindings, so the ✕
+  has to sit on the one you want gone: every take row in a multi-take layer
+  carries its own `✕ unbind`, and the layer row's button becomes
+  `✕ unbind all`. `bindingId(ev, layer, take)` keys those verdicts
+  `<eventId>#<take file>` in the `bindings` feedback domain — still UNBIND,
+  never delete; the file lives on in the library either way.
+  - Only when there IS a choice. With a single take the layer's own ✕ already
+    means exactly this, and two ✕ for one action reads as two powers.
+  - The button is right-aligned by `margin-left:auto`, not a `.spacer`: at
+    phone width the row wraps, and a spacer leaves the button stranded
+    left-aligned on line 2 where it reads as belonging to the NEXT take.
+- **One sound at a time.** `sfxEngine.stop()` runs BEFORE the fetch and bumps
+  a generation counter, so stepping to the next sound kills the previous one
+  instantly and a slow take whose decode is still in flight never starts
+  playing after you have moved on.
+- **Auditions try every format the take ships** (`audioCandidates`): ogg →
+  m4a → wav, first one that decodes wins, and the picked url is what the
+  play log records. Not a nicety — the library asked for `.m4a` first and
+  **Chromium ships no AAC decoder**, so every catalog sound in the raw list
+  failed to load while the composer's `.wav` sets played. Same order the
+  game's own engine probes (`composer/engine/catalog.ts`).
+- **Every take shows its length**, from the composer's `durations_s` or, for
+  catalog takes, `wavDuration()` in build.mjs — a RIFF chunk walk (data bytes
+  ÷ byteRate), zero dependencies because it runs in the Docker build too.
+- **Three status chips carry the whole state of an event** for the Game
+  Master: green **in game** (assigned AND fired by game code — what players
+  hear), coral **no sound yet** (nothing assigned), red **not fired yet** (a
+  sound is assigned but no game code triggers it, so nobody can hear it).
+  They are mutually exclusive by construction; the gate asserts no card ever
+  shows a contradictory pair. The engine's `bus` is plumbing and is no longer
+  named in the UI — the layer pill reads `volume −26 dB` and explains itself
+  in plain words on hover.
+- **Events have a TYPE** (maintainer 2026-08-05): `scope` is either null
+  (generic — listed under Sound Effects) or `{domain, id}` (entity-owned —
+  listed on that entity's page). Jump and Fall are scoped per hero: the game
+  routes the grunt by who you play, one voice each, never both at once.
+  Entity pages render scoped events with `entitySoundsCard()` — the same
+  cards, engine, stars and request form as the Sound Effects page — and the
+  Game Master gets an "Assign a sound" card on every creature/hero/prop:
+  pick one of the page's game ACTIONS (its animation states) and a sound;
+  the request id is `<domain>.<id>.<action>/<stamp>`.
+- **Players hear only what the game plays.** An event must have a sound AND
+  be fired by game code (`emitted` — call sites scanned per LINE, because a
+  whole-file comment strip once ate real code after an unmatched `/*`, and
+  api.ts's doc header lists `audio.event("ui.confirm")` as an example).
+  Engine-driven sounds with no `.event()` call — the ambience beds, the
+  water-entry splash — are marked emitted by hand. **One sound is one
+  sound** (maintainer 2026-08-05/06): the engine BINDS exactly what it
+  plays (`foleyEntry`/`catalogStepEntry` slice steps, clicks and thunder to
+  the approved primary take; only a jump VOICE carries several takes and
+  really rotates), and `setLayer`/`catLayer` mirror that with
+  `primary: true` — the layer's `takes` list IS the binding, pill "1 take".
+  A set's other recordings are unbound: they appear only in the admin's All
+  sounds library, plus a one-line admin note on the event
+  (`spareTakes`). The old `round_robin:false` pin flag and the wiki's
+  display-time slice workaround are both gone.
+- The composer's foley takes are served at `/assets/composer/foley/…`
+  (Dockerfile copies them; dev falls back to `games2/composer/foley`). The
+  copy is the WHOLE folder, so `<set>/pool/` rides along — that is what makes
+  the 91 alternatives audible in the deployed wiki, and it is why the foley
+  layer is ~21 MB rather than ~13. `.dockerignore` has no composer rule;
+  adding one there would silently 404 every alternative.
+
+## Music comes from TWO places
+
+The Music page listed only `music/` — the music agent's domain — so the five
+situation beds the composer generated on 2026-08-05 were invisible
+(maintainer 2026-08-06: "he did 5 new songs and you are listing nothing but
+the old 2"). `buildComposerMusic()` now also reads
+`games2/composer/music/tracks.json` (`composer-music@1`) and appends those
+tracks with `source: "composer"`, their measured length/tempo/key/loop points
+and their section names.
+
+- **Existing is not routed.** A bed's `routed` flag says whether the GAME can
+  currently reach it: `title` and `night` play today, the five context beds
+  are generated but dormant (games2/CLAUDE.md — the maintainer picks what
+  plays where before it is wired), so they chip "not routed yet" rather than
+  implying the game uses them. `BED_ROLE` in build.mjs holds the one-line
+  "when would this play", and a bed with no entry still LISTS — it just warns
+  through the same drift sentinel the sfx table uses.
+- **Their feedback belongs to the composer**, not the music agent:
+  stars/verdicts on a bed go to `feedback/composer.json`, next to its foley.
+- Served at `/assets/composer/music/…` — the same two mounts as foley (image
+  copy + repo fallback), and the Dockerfile copies the folder. That is a
+  deliberate ~18 MB second copy: the client bundles its own for the in-world
+  score, but the wiki cannot reach those hashed bundle URLs, and a page that
+  lists five tracks it cannot play is worse than the bytes.
+- `playTake` prefers **ogg → m4a → mp3 → wav** (it asked for m4a first, which
+  headless Chromium cannot decode at all) — the same order as the WebAudio
+  auditions, so the page and the sound engine agree on formats.
 
 ## Tuning files
 
@@ -409,6 +931,24 @@ lie — so `hasStory(ref)` drops those refs (maintainer 2026-07-31). The rules:
 
 `check-deadend.mjs` walks every page that offers *Read next*, follows every link
 and asserts the destination has prose. Run it after any lore-shaped change.
+
+## Lore v2: inline links and the reveal meter
+
+The lore agent's v2 (2026-08-05) made two things the wiki renders:
+
+- **Rich paragraphs.** A paragraph is a string OR an array of `{t, ref?}`
+  segments — inline links where a name in running prose points at the entity
+  it names. `paraText()` is the one flattener (pagination budgets, search,
+  the summary-dedupe all use it) and `paraNode()` the one renderer; segment
+  text stays a TEXT NODE, so the no-markup rule holds. Inline links follow
+  the SAME landing rules as "Read next": a chapter ref starts the reader at
+  the top, an entity ref lands on that page's story card, and Back returns
+  to the prose you left. Never render a paragraph with `h("p", {}, p)`
+  directly — a rich one prints "[object Object]".
+- **The reveal meter.** lore.json ships `red_line_progress` counts
+  ({revealed, hinted, hidden} beats); the Game-Master-only red-line page
+  draws them as one segmented bar. Counts only — the beat-by-beat map stays
+  in lore/canon/revelations.json, which never reaches a player.
 
 ## Back returns you to your place
 

@@ -30,6 +30,17 @@ COPY monsters/ /assets/monsters/
 COPY items/ /assets/items/
 COPY lore/ /assets/lore/
 COPY wiki/ /assets/wiki/
+# The composer's foley takes and music beds — the wiki's sound-effect and
+# music pages play them. Only these two folders; the engine sources are not
+# assets. The beds are ~18 MB and the client bundles its own copies for the
+# in-world score, so this is a deliberate second copy: without it the wiki
+# lists five generated tracks it cannot play (maintainer 2026-08-06).
+# foley/ is copied WHOLE, `<set>/pool/` included (~8 MB of the ~21). Those are
+# the 91 generated recordings the composer scored but did not pick, and the
+# wiki now lets the Game Master audition and cast them — excluding them here
+# (or in .dockerignore) 404s every one in the deployed wiki.
+COPY games2/composer/foley/ /assets/composer/foley/
+COPY games2/composer/music/ /assets/composer/music/
 # live/ = runtime tuning/feedback state. The baked copy is only the BOOT
 # FALLBACK — the server fetches the current live/** from GitHub main at boot
 # and on every live-notify ping (pushes to live/** do NOT redeploy).

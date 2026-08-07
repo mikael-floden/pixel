@@ -1,12 +1,12 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-07-30T22:12:49.274Z",
+  "updated_at": "2026-08-05T05:16:05.758Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
     "damage": 3,
     "speed_wu": 35,
-    "aggro_radius_wu": 96,
+    "aggro_radius_wu": 0,
     "attack_cooldown_ms": 1200,
     "xp": 5,
     "scale": 1,
@@ -15,12 +15,12 @@
   "monsters": {
     "butterfly_dragon": {
       "level": 12,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 135,
+      "damage": 21,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 229,
       "scale": 1,
       "loot": [
         {
@@ -35,12 +35,12 @@
     },
     "dark_donkey": {
       "level": 11,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 125,
+      "damage": 20,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 204,
       "scale": 1,
       "loot": [
         {
@@ -79,12 +79,12 @@
     },
     "diablo": {
       "level": 13,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 145,
+      "damage": 23,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 255,
       "scale": 1,
       "loot": [
         {
@@ -111,12 +111,12 @@
     },
     "diablo_2": {
       "level": 18,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 195,
+      "damage": 31,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 396,
       "scale": 1,
       "loot": [
         {
@@ -139,12 +139,12 @@
     },
     "forest_poring": {
       "level": 3,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 45,
+      "damage": 7,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 35,
       "scale": 1,
       "loot": [
         {
@@ -167,12 +167,12 @@
     },
     "forest_poring_2": {
       "level": 3,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 45,
+      "damage": 7,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 35,
       "scale": 1,
       "loot": [
         {
@@ -191,12 +191,12 @@
     },
     "hedgehog": {
       "level": 4,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 55,
+      "damage": 8,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 52,
       "scale": 1,
       "loot": [
         {
@@ -215,12 +215,12 @@
     },
     "ice_crystal_golem": {
       "level": 19,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 205,
+      "damage": 32,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 426,
       "scale": 1,
       "loot": [
         {
@@ -247,12 +247,12 @@
     },
     "ice_poring": {
       "level": 15,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 165,
+      "damage": 26,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 310,
       "scale": 1,
       "loot": [
         {
@@ -271,12 +271,12 @@
     },
     "lava_poring": {
       "level": 9,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 105,
+      "damage": 16,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 155,
       "scale": 1,
       "loot": [
         {
@@ -295,12 +295,12 @@
     },
     "lava_salamander": {
       "level": 7,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 85,
+      "damage": 13,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 64,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 111,
       "scale": 1,
       "loot": [
         {
@@ -323,12 +323,12 @@
     },
     "lava_salamander_2": {
       "level": 6,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 75,
+      "damage": 12,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 64,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 90,
       "scale": 1,
       "loot": [
         {
@@ -363,12 +363,12 @@
     },
     "malformed_creature": {
       "level": 14,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 155,
+      "damage": 24,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 64,
+      "attack_cooldown_ms": 1500,
+      "xp": 282,
       "scale": 1,
       "loot": [
         {
@@ -407,12 +407,12 @@
     },
     "mammoth": {
       "level": 20,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 215,
+      "damage": 34,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 457,
       "scale": 1,
       "loot": [
         {
@@ -439,12 +439,12 @@
     },
     "masked_shadow_creature": {
       "level": 8,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 95,
+      "damage": 15,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 133,
       "scale": 1,
       "loot": [
         {
@@ -463,12 +463,12 @@
     },
     "mystical_frog": {
       "level": 1,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 25,
+      "damage": 4,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 8,
       "scale": 1,
       "loot": [
         {
@@ -487,12 +487,12 @@
     },
     "night_beast": {
       "level": 16,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 175,
+      "damage": 28,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 338,
       "scale": 1,
       "loot": [
         {
@@ -519,12 +519,12 @@
     },
     "saber_toothed_tiger": {
       "level": 8,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 95,
+      "damage": 15,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 133,
       "scale": 1,
       "loot": [
         {
@@ -555,12 +555,12 @@
     },
     "snow_demon": {
       "level": 17,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 185,
+      "damage": 29,
       "speed_wu": 35,
       "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "attack_cooldown_ms": 1500,
+      "xp": 367,
       "scale": 1,
       "loot": [
         {
@@ -579,12 +579,12 @@
     },
     "stone_golem": {
       "level": 18,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 195,
+      "damage": 31,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 396,
       "scale": 1,
       "loot": [
         {
@@ -619,12 +619,12 @@
     },
     "stone_turtle": {
       "level": 13,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 145,
+      "damage": 23,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 255,
       "scale": 1,
       "loot": [
         {
@@ -647,12 +647,12 @@
     },
     "tree_stump": {
       "level": 10,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 115,
+      "damage": 18,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
-      "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 179,
       "scale": 1,
       "loot": [
         {
@@ -687,12 +687,12 @@
     },
     "water_poring": {
       "level": 2,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 35,
+      "damage": 5,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 20,
       "scale": 1,
       "loot": [
         {
@@ -711,12 +711,12 @@
     },
     "white_rabbit": {
       "level": 5,
-      "max_hp": 20,
-      "damage": 3,
+      "max_hp": 65,
+      "damage": 10,
       "speed_wu": 35,
-      "aggro_radius_wu": 96,
+      "aggro_radius_wu": 0,
       "attack_cooldown_ms": 1200,
-      "xp": 5,
+      "xp": 70,
       "scale": 1,
       "loot": [
         {

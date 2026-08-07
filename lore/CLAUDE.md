@@ -35,6 +35,18 @@ written true.
 - **Art wins.** If the sprite disagrees with your prose, the prose is wrong.
   Look at the sprite before writing about a creature.
 - **Key everything on folder ids.** Display names are re-authored in batches.
+- **Something must happen.** Every text names a person, a want, a loss or a
+  betrayal (maintainer, 2026-08-01: drama, relationships, tragic fate — "no
+  word-shitting to fill out"). Atmosphere is seasoning, never the meal.
+- **Short unless it earns it.** Entity lore ~100-230 words typical, 425 hard
+  (build-enforced). Interesting → keep going; not → cut.
+- **Link the names.** `[[domain/id|Name]]` in running prose wherever the page
+  exists. The web is the product.
+- **Dare the dark.** The difficult questions are the material — a lost child,
+  silent grief, releasing your own person, the leap. Plainly, never
+  gratuitously.
+- **Check `revelations.json` before writing.** Hidden beats stay hidden;
+  advancing one is a deliberate act. Never print Valter, Liv or Stig.
 - **Sad before evil.** Creatures are things that lost themselves, not villains.
   The Hollowed are the single exception and their rarity is the point.
 - **Concrete over cosmic.** A rota, a fire, a name somebody can't produce. The
@@ -54,8 +66,9 @@ written true.
   161, objects 84, tiles 51 as of 2026-07-31). `build.py` measures this live and
   refuses to write when it is exceeded. This is the promise the wiki
   integration rests on — do not weaken it.
-- **Do not answer the open questions** in RED_LINE.md §12 until the game can
-  dramatise the answer. An answered mystery is a spent one.
+- **The beats ledger replaced the open-questions list.** `revelations.json` is
+  the single source for what may be told; RED_LINE.md section 4 explains the
+  pacing (never two identity beats in a season).
 - **Icons are the maintainer's art — never re-encode, resize or resample one.**
   Copy the file in as bytes. Assign one to a chapter only when it genuinely
   represents that chapter better than the default `rune`; a weak match is worse
@@ -88,8 +101,9 @@ another agent to stop changing something, you have written it too tightly.
 
 ## Roadmap
 
-Done: the red line, nine chapters, one people, four entity records, the build
-and canon check.
+Done: red line v2 (the story: Signe/Emil, the hole, Bettany/Britt, the living
+cast), revelation tracking, in-text links, the v2 rewrite of chapters and
+entities, first eight NPC dossiers, scenery.
 
 Next, in this order. **Item 1 outranks finishing the roster**, and the ordering
 is deliberate: this setting currently has a cosmology, a physics, a history, an

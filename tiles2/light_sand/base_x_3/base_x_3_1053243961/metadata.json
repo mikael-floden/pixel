@@ -413,15 +413,15 @@
             "dir": "up"
           },
           {
-            "x": 30.0,
-            "y": 46.5,
+            "x": 28.0,
+            "y": 69.0,
             "r": 2.0,
             "color": [
-              0.515,
-              0.218,
-              0.616
+              0.382,
+              0.457,
+              0.165
             ],
-            "s": 0.611,
+            "s": 0.657,
             "dir": "up"
           }
         ]
@@ -499,7 +499,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "light_sand",

@@ -29,6 +29,11 @@ export interface AmbientEnv {
    * NOT snow/wind), ramped with the games agent's drop count. Rain-splash
    * gates on this. Read from the game's weatherInfo().precip. */
   rain: number;
+  /** Is the player INSIDE a building/cave (the game's `__ml.indoor().indoor`
+   * geometry verdict)? Every effect here is outdoor, so the director stops
+   * rolling episodes while this holds and ctx.outdoor drops to 0. Absent probe
+   * reads as outdoors. */
+  indoor: boolean;
 }
 
 /** Per-frame context handed to every feature. `view` is the camera's live
@@ -38,6 +43,13 @@ export interface AmbientCtx {
   env: AmbientEnv;
   view: Phaser.Geom.Rectangle;
   zoom: number;
+  /** 0..1 OUTDOOR gain — 1 outside, 0 once the player is in a house/cave.
+   * EVERY feature must multiply its drawn opacity by this, and should skip its
+   * simulation entirely at 0 (see runtime/outdoor.ts). All ambience here is
+   * outdoor weather/wildlife: without this it keeps falling through the roof
+   * the game just cut away. It snaps today and is a gain purely so the planned
+   * indoor cross-fade needs one constant, not a pass over every effect. */
+  outdoor: number;
 }
 
 /** One ambient system (a folder under ambient/). Purely visual — must never
@@ -127,5 +139,6 @@ export function defaultEnv(): AmbientEnv {
     aurora: 0,
     sand: 0,
     rain: 0,
+    indoor: false,
   };
 }

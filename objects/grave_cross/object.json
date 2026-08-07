@@ -1,0 +1,71 @@
+{
+ "id": "grave_cross",
+ "name": "Wooden grave cross",
+ "category": "decor",
+ "description": "a wooden grave cross that appears from the ground where something died",
+ "view": "low top-down",
+ "size": 34,
+ "placement": {
+  "world_height_m": 0.9,
+  "world_px_height": 34,
+  "character_height_px": 64,
+  "character_height_m": 1.7,
+  "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+ },
+ "procedural": false,
+ "source": "pixellab.ai create-8-direction-object (persistent, syncable; the maintainer's object)",
+ "pixellab_object_id": "56b75726-69bd-4b23-a54f-3626b5df3700",
+ "style_version": 2,
+ "sprite": "grave_cross/sprite.webp",
+ "directions": [
+  "east",
+  "north",
+  "north-east",
+  "north-west",
+  "south",
+  "south-east",
+  "south-west",
+  "west"
+ ],
+ "rotations": {
+  "east": "grave_cross/rotations/east.webp",
+  "north": "grave_cross/rotations/north.webp",
+  "north-east": "grave_cross/rotations/north-east.webp",
+  "north-west": "grave_cross/rotations/north-west.webp",
+  "south": "grave_cross/rotations/south.webp",
+  "south-east": "grave_cross/rotations/south-east.webp",
+  "south-west": "grave_cross/rotations/south-west.webp",
+  "west": "grave_cross/rotations/west.webp"
+ },
+ "animations": {
+  "appear": {
+   "group_id": "3f2d8609-47b8-4a95-880e-a1314f077e39",
+   "description": "Appears from the ground",
+   "frame_count": 16,
+   "directions": {
+    "south": {
+     "frames": 16,
+     "strip": "grave_cross/animations/appear__south.webp",
+     "frame_paths": [
+      "grave_cross/animations/appear/south/00.webp",
+      "grave_cross/animations/appear/south/01.webp",
+      "grave_cross/animations/appear/south/02.webp",
+      "grave_cross/animations/appear/south/03.webp",
+      "grave_cross/animations/appear/south/04.webp",
+      "grave_cross/animations/appear/south/05.webp",
+      "grave_cross/animations/appear/south/06.webp",
+      "grave_cross/animations/appear/south/07.webp",
+      "grave_cross/animations/appear/south/08.webp",
+      "grave_cross/animations/appear/south/09.webp",
+      "grave_cross/animations/appear/south/10.webp",
+      "grave_cross/animations/appear/south/11.webp",
+      "grave_cross/animations/appear/south/12.webp",
+      "grave_cross/animations/appear/south/13.webp",
+      "grave_cross/animations/appear/south/14.webp",
+      "grave_cross/animations/appear/south/15.webp"
+     ]
+    }
+   }
+  }
+ }
+}

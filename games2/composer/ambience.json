@@ -1,0 +1,14 @@
+{
+  "format": "pixel-composer-ambience@1",
+  "_comment": "The looping ambience beds the composer's engine actually mixes, read out of setTargets in composer/engine/api.ts. Levels are continuous and driven by sun/weather/terrain, so there is no event to assign — but a bed CAN be rated or retired, and this is the only honest list of what is playable. A bed not named here does not play, whatever any other file suggests.",
+  "beds": [
+    "birds_day",
+    "crickets_night",
+    "wind",
+    "rain",
+    "forest",
+    "river",
+    "town_murmur",
+    "fire_crackle"
+  ]
+}

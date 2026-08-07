@@ -56,7 +56,33 @@
       "index": 3,
       "file": "tile_03.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 30.6,
+            "y": 61.0,
+            "r": 2.0,
+            "color": [
+              0.628,
+              0.442,
+              0.229
+            ],
+            "s": 0.71,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 4,
@@ -67,12 +93,6 @@
     {
       "index": 5,
       "file": "tile_05.webp",
-      "width": 64,
-      "height": 128
-    },
-    {
-      "index": 6,
-      "file": "tile_06.webp",
       "width": 64,
       "height": 128,
       "emission": {
@@ -85,27 +105,39 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 27.7,
-            "y": 59.7,
+            "x": 28.3,
+            "y": 58.7,
             "r": 2.0,
             "color": [
-              0.043,
-              0.537,
-              0.28
+              0.544,
+              0.336,
+              0.191
             ],
-            "s": 0.577,
+            "s": 0.643,
             "dir": "up"
           },
           {
-            "x": 16.2,
+            "x": 24.0,
+            "y": 71.6,
+            "r": 2.0,
+            "color": [
+              0.553,
+              0.352,
+              0.21
+            ],
+            "s": 0.655,
+            "dir": "up"
+          },
+          {
+            "x": 36.5,
             "y": 69.8,
             "r": 2.0,
             "color": [
-              0.043,
-              0.479,
-              0.258
+              0.582,
+              0.371,
+              0.212
             ],
-            "s": 0.554,
+            "s": 0.669,
             "dir": "up"
           }
         ]
@@ -113,6 +145,12 @@
       "features": [
         "shiny"
       ]
+    },
+    {
+      "index": 6,
+      "file": "tile_06.webp",
+      "width": 64,
+      "height": 128
     },
     {
       "index": 7,
@@ -148,14 +186,26 @@
           },
           {
             "x": 41.0,
+            "y": 63.5,
+            "r": 2.0,
+            "color": [
+              0.521,
+              0.287,
+              0.165
+            ],
+            "s": 0.603,
+            "dir": "up"
+          },
+          {
+            "x": 31.6,
             "y": 64.0,
             "r": 2.0,
             "color": [
-              0.249,
-              0.294,
-              0.155
+              0.614,
+              0.451,
+              0.226
             ],
-            "s": 0.521,
+            "s": 0.711,
             "dir": "up"
           }
         ]
@@ -186,7 +236,45 @@
       "index": 12,
       "file": "tile_12.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 26.3,
+            "y": 74.8,
+            "r": 2.0,
+            "color": [
+              0.701,
+              0.459,
+              0.267
+            ],
+            "s": 0.734,
+            "dir": "up"
+          },
+          {
+            "x": 24.6,
+            "y": 52.6,
+            "r": 2.0,
+            "color": [
+              0.497,
+              0.308,
+              0.189
+            ],
+            "s": 0.616,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 13,
@@ -204,10 +292,36 @@
       "index": 15,
       "file": "tile_15.webp",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 34.2,
+            "y": 65.5,
+            "r": 2.3,
+            "color": [
+              0.585,
+              0.367,
+              0.185
+            ],
+            "s": 0.665,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     }
   ],
-  "emissive_tiles": 2,
+  "emissive_tiles": 5,
   "generated_at": "2026-07-06T23:31:32+00:00",
   "processing": {
     "neutralize_outline": true,
@@ -219,7 +333,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonize_refs": [
       "clear_water",

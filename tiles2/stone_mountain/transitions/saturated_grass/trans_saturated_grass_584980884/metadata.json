@@ -895,8 +895,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.744,
-        "saturated_grass": 0.256
+        "stone_mountain": 0.756,
+        "saturated_grass": 0.244
       },
       "edges": {
         "NE": {
@@ -1290,7 +1290,8 @@
       "min_value": 14,
       "dark_material_value": 50,
       "dark_min_value": 38,
-      "dark_include": 46
+      "dark_include": 46,
+      "light_source_margin": 80
     },
     "harmonized_from": true,
     "harmonized_to": true,

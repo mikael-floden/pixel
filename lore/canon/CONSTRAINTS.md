@@ -65,9 +65,11 @@ and let the monster file reference the chapter.
 
 Shipped and canon — the lore must agree with these:
 
-- **Arrival broadcasts a shooting star** to every client
-  (`games2/server/src/rooms/WorldRoom.ts:502`). Wild unnamed stars fall during
-  night. Verified in code.
+- **The shooting star on player join is shipped but DISOWNED** (maintainer,
+  2026-08-01: an agent added it long ago without permission; it will be
+  removed). It is NOT canon and no lore may reference stars or falling-star
+  arrival. Canon arrival is **the Waking**: you wake on the meadow near the
+  stone house and the fire.
 - **A campfire burns at the spawn point** (`games2/client/src/scenes/WorldScene.ts:107`,
   `648`). It is the only object from the `objects/` domain the game draws — but
   **not** the only hand-made thing in the world. The default world ships ~68
@@ -80,8 +82,8 @@ Shipped and canon — the lore must agree with these:
 - **Two in-world sentences ship today.** *"Northern lights dance over
   Nangijala."* (`WorldScene.ts:1756`) and, on every arrival, *"<name> has
   arrived in Nangijala — a star crosses the sky."* (`WorldScene.ts:2156`).
-  The second is player-facing text for Law I and the lore must stay compatible
-  with it.
+  The arrival chat line is part of the disowned star mechanic and will go with
+  it — do not build on either sentence's star imagery.
 - **The world is shared and multiplayer**; server owns time and weather, so
   everyone sees the same sky.
 - **Time has exactly four phases** — Night, Morning, Day, Evening.
@@ -95,6 +97,17 @@ Shipped and canon — the lore must agree with these:
   ("Woman"). No classes, no factions. Their animation set — sword, bow, wand,
   channel, punch, kick, hurt, die — is the strongest existing statement of what
   a hero can do.
+- **~195 named NPCs now exist in `characters2/metadata.json`** (hex-hash ids,
+  display names, roles: knights, commoners, smiths, scribes, elders,
+  wandmongers, priests…). The red line's living cast is drawn from them — see
+  `GLOSSARY.md` "The named cast" for the ids. NPCs are not yet placed in the
+  game world; write them as people of Nangijala, not as quest-givers.
+- **`objects/` now holds three pieces and will be renamed "Scenery"** in the
+  wiki: `campfire`, `grave_cross`, `blood_spatter`. The old 17 objects are
+  gone. The domain key stays `objects` (ids are URLs); only the shown name
+  changes.
+- **Game art is lossless WebP now** — sprites are `sprite.webp` (a stale
+  `.png` path may still exist during migration; check both when reading art).
 
 ## 3. What is NOT in the game today
 
@@ -148,9 +161,10 @@ world, not the player's verbs.
 
 ## 6. Text-rendering constraints (the wiki)
 
-- **All wiki text renders as plain text nodes.** No markdown, no HTML, no
-  wiki-link syntax — any markup ships as literal characters. Cross-references
-  must be **data** (`{domain, id}` pairs), never inline syntax.
+- **In-text links are DATA, authored as `[[domain/id|Shown]]`.** The build
+  parses the mention syntax into segment arrays ({t} / {t, ref:{domain,id}});
+  the wiki renders segments as text nodes + links. Raw `[[ ]]` never ships,
+  and any other markup still renders as literal characters.
 - **Two different texts per entity, and they must not be confused.**
   - `description` — the short line under the entity's name at the top of its
     page. Always visible, so it is a **layout budget**, not a style preference.
@@ -188,3 +202,15 @@ That control is a responsibility, not a licence: a replacement must be at least
 as good as what it replaces, must match the art, and must fit the layout budget
 above. We still never *write* another domain's files — the substitution happens
 at the wiki's read, so any agent can always see and keep its own copy.
+
+## 8. The revelation protocol (v2)
+
+`lore/revelations.json` is the GM's map of the red line: every beat of the
+root story with status `hidden | hinted | revealed` and pointers to the texts
+that do the telling. The build enforces honesty — a hinted/revealed beat must
+cite published text, a hidden beat must cite nothing, and `lore.json` ships
+**counts only** (no titles, no truths). The wiki's Game Master view fetches
+the file directly, like `RED_LINE.md`.
+
+Writing rule: check the beats before writing anything. Advancing a beat is a
+deliberate act — never a side effect of a nice sentence.
