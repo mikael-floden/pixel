@@ -1567,22 +1567,30 @@ function viewCharacter(id) {
         heroKind(c) ? h("div", { class: "thumb-chip" }, heroKind(c)) : null),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
-        // The trade, quietly, under the name. Every NPC has one, so the line
-        // is there on all 191 and paging cannot shift the viewer below it.
-        c.role ? h("div", { class: "npc-trade muted" }, c.role) : null,
-        // In the world, and what they are there for. A MERCHANT's wares come
-        // straight from maps2' placement (validated against items/ TYPE tags),
-        // so this says what you can actually buy from them.
-        (() => {
+        // The trade, quietly, under the name — WITH the world pills on that
+        // same line. As its own row, "in the world" existed only for the
+        // handful of NPCs maps2 actually places, so paging ‹ › through 191
+        // characters shifted every panel below it up and down (maintainer
+        // 2026-08-07: "I don't want the animation cart to jump up and down
+        // when I press next NPC"). This row is now unconditional and cannot
+        // wrap, so it is exactly one line tall for every character whether
+        // they have a role, pills, both or neither.
+        //
+        // A MERCHANT's wares come straight from maps2' placement (validated
+        // against items/ TYPE tags), so that pill says what you can actually
+        // buy from them. It is the one that can run long, so it is the one
+        // allowed to shrink and ellipsize — the full list stays in its title.
+        h("div", { class: "npc-trade muted" }, ...(() => {
+          const out = c.role ? [h("span", { class: "npc-role" }, c.role)] : [];
           const sp = npcPlacements(c.id);
-          if (!sp?.length) return null;
+          if (!sp?.length) return out;
           const merchant = sp.find((x) => x.type === "MERCHANT");
           const wares = [...new Set(sp.flatMap((x) => x.wares ?? []))].map((w) => w.toLowerCase());
-          return h("div", { class: "spawn-line" },
-            h("span", { class: "pill ok", title: "maps2 stands this character in the game's world" },
-              merchant ? "merchant in the world" : "in the world"),
-            wares.length ? h("span", { class: "pill", title: "The item types they deal in" }, `sells ${wares.join(", ")}`) : null);
-        })(),
+          out.push(h("span", { class: "pill ok", title: "maps2 stands this character in the game's world" },
+            merchant ? "merchant in the world" : "in the world"));
+          if (wares.length) out.push(h("span", { class: "pill npc-wares", title: `The item types they deal in: ${wares.join(", ")}` }, `sells ${wares.join(", ")}`));
+          return out;
+        })()),
         // Folder id, frame size and state count are PIPELINE facts — admin
         // only (maintainer 2026-07-30). The NPC's PixelLab name is the same
         // class of fact: prompt junk a player must never meet.

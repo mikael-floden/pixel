@@ -685,7 +685,26 @@ button.drop-row {
 .npc-name { font-size: 12px; font-weight: 600; }
 .npc-role { font-size: 10.5px; }
 /* The trade under an NPC's name on its own page — a subtitle, not a heading. */
-.npc-trade { font-size: 13px; margin: -2px 0 2px; }
+/* The role + world pills, on ONE line that is always the same height. The
+   pills used to be their own row and only the placed NPCs had it, so paging
+   through the 191 moved every panel below (maintainer 2026-08-07). nowrap +
+   min-height is what makes the promise unconditional: role only, pills only,
+   both, or neither all measure the same. */
+.npc-trade {
+  font-size: 13px; margin: -2px 0 2px;
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: nowrap; min-height: 22px;
+}
+/* nowrap on the ROW is not enough: a pill is an inline-block, so when the row
+   runs out of room the pill wraps its OWN text to a second line and the row
+   grows anyway. Every child has to refuse to wrap. */
+.npc-trade > * { white-space: nowrap; }
+/* "in the world" is the fact worth keeping whole, so it never shrinks. The
+   role and the wares list both ellipsize instead — min-width:0 is what
+   actually lets a flex item do that. */
+.npc-trade .pill.ok { flex: none; }
+.npc-trade .npc-role,
+.npc-trade .npc-wares { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 /* The few NPCs maps2 actually stands in the world, marked ON the portrait so
    the tile keeps its fixed two text lines (a third would re-flow all 191). */
 .npc-grid .npc-card { position: relative; }

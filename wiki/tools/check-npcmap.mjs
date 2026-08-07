@@ -39,7 +39,10 @@ const page = await p.evaluate(() => {
     has: !!panel, spots: panel?.querySelectorAll(".npc-spot").length ?? 0,
     where: panel?.querySelector(".pill")?.textContent,
     note: panel?.querySelector("p.muted")?.textContent ?? "",
-    chips: [...document.querySelectorAll(".spawn-line .pill")].map((x) => x.textContent),
+    // The world pills moved ONTO the role line (.npc-trade) 2026-08-07 —
+    // as their own .spawn-line row they only existed for the 19 placed NPCs,
+    // so paging ‹ › shifted every panel below them.
+    chips: [...document.querySelectorAll(".npc-trade .pill")].map((x) => x.textContent),
     loaded: !!img?.naturalWidth,
     // the marker's centre as a FRACTION of the displayed map — comparable to
     // the projection recomputed from the data, at any screen size
@@ -95,11 +98,18 @@ await p.goto(`${W}#/characters/${unplaced.id}`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
 const un = await p.evaluate(() => ({
   has: [...document.querySelectorAll(".panel-title")].some((x) => /Where you'll find them/.test(x.textContent)),
-  chips: document.querySelectorAll(".spawn-line .pill").length,
+  chips: document.querySelectorAll(".npc-trade .pill").length,
   h1: document.querySelector("h1")?.textContent,
 }));
 console.log("unplaced:", JSON.stringify(un));
 ok(!un.has && un.chips === 0, `${un.h1} is not in the world, so no map and no chip`);
+// …but the ROW that would have carried the chip is still there and still the
+// same height, which is the whole point of moving them onto it.
+const unRow = await p.evaluate(() => {
+  const t = document.querySelector(".npc-trade");
+  return t ? Math.round(t.getBoundingClientRect().height) : null;
+});
+ok(unRow !== null && unRow > 0, `and the role line is still there at its normal height (${unRow}px), so nothing below it moves`);
 
 // ---------- the Races list marks the placed ones so they are findable
 await p.goto(W + "#/characters", { waitUntil: "load" });

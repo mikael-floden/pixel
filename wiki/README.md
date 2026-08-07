@@ -691,6 +691,34 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+## Paging ‹ › must not move the panels
+
+An NPC's role and its world pills share **one unwrappable row** (`.npc-trade`).
+The "in the world" / "merchant in the world" / "sells …" pills used to be their
+own `.spawn-line` row, and only the 19 placed NPCs of 191 had it — so stepping
+through the cast with ‹ › shifted the Animations viewer up and down under the
+maintainer's thumb (2026-08-07: "I don't want the animation cart to jump up and
+down when I press next NPC").
+
+Three things make the row exactly one line tall for *every* character — role
+only, pills only, both, or neither:
+
+- it renders **unconditionally**, with `min-height`, so an NPC with no role and
+  no placement still occupies the same line;
+- `flex-wrap: nowrap` on the row **and `white-space: nowrap` on every child**.
+  The row rule alone is not enough: a `.pill` is an inline-block, so when space
+  runs short it wraps its OWN text to a second line and the row grows anyway.
+  That is exactly what the gate caught — 40px vs 22px at 426px wide;
+- the role and the wares list may **shrink and ellipsize** (`min-width: 0` is
+  what actually permits that); the `in the world` pill never shrinks, because
+  it is the fact worth keeping whole. Full wares stay in the title.
+
+Gate: `check-segscroll.mjs` starts on a MERCHANT (the longest possible row),
+pages 14 NPCs, and asserts one distinct Animations-panel top, one distinct row
+height, and zero horizontal page overflow — after first asserting the walk
+crosses both placed and unplaced NPCs, or it would prove nothing. Verified 360
+→ 1100px: row 22px and no overflow at every width.
+
 ## Creatures overview: sortable, and "will it attack me" at a glance
 
 - **Sort by name / level / aggressive first** (maintainer 2026-08-06). Its own
