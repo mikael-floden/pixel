@@ -984,3 +984,111 @@ test("a room's OWN corners are in neither wall set — they only show their top"
   assert.equal(s.wallLeft.size, 5);
   assert.equal(s.wallRight.size, 5);
 });
+
+// ---------------------------------------------------------------------------
+// SHELL — the corners and T-junctions that close a building's outline.
+//
+// The wall sets answer "whose inward face is visible", which is what CULLING
+// needs. Drawing needs the other question, and the difference is a hole: a
+// room's own corner has no inward face, so it was in no set, so nobody drew it
+// — and on screen it sits at the apex BETWEEN the two far wall runs. Maintainer
+// 2026-08-07, looking at maps2' new multi-room houses: "you introduced a lot of
+// rendering bugs I have never seen before" — floating disconnected wall slabs.
+// He could only see them once the indoor light worked; the holes were there
+// from the first indoor frame.
+// ---------------------------------------------------------------------------
+
+test("shell: a square room's three FAR corners are drawn, the near one is not", () => {
+  const g = houseGrid();
+  const s = findIndoorSpace(g, 2, 2, 0)!;
+  // (4,4) is the NEAR (down-screen) corner: the room is behind it in painter
+  // order, so its 6-level column would wall the interior back off. The other
+  // three are level with or behind the room and close the outline.
+  assert.deepEqual(cellsOf(g, s.shell), ["(0,0)", "(0,4)", "(4,0)"]);
+  // The renderer ORs shell into the same two bits the wall sets use, so an
+  // overlap would double-draw and (worse) re-add a near wall.
+  for (const j of s.shell) {
+    assert.ok(!s.roof.has(j), "shell is never floor");
+    assert.ok(!s.entrances.has(j), "shell never walls up a door");
+    assert.ok(!s.wallLeft.has(j) && !s.wallRight.has(j), "shell is disjoint from both wall sets");
+  }
+});
+
+test("shell: an interior partition's T-junction is drawn (the multi-room case)", () => {
+  // Two rooms sharing a wall, joined along the south so one fill covers both —
+  // the shape every multi-room building has, and the one that put a black wedge
+  // through the middle of the maintainer's roof line. `X` is the junction where
+  // the partition meets the north wall: it touches the floor DIAGONALLY only,
+  // so it is not fringe, so no wall set can ever hold it.
+  //
+  //     # # # X # # #
+  //     # . . # . . #
+  //     # . . # . . #
+  //     # . . . . . #
+  //     # # # D # # #
+  const W = 7;
+  const H = 5;
+  const solid = (c: number, r: number) =>
+    r === 0 || r === H - 1 || c === 0 || c === W - 1 || (c === 3 && r <= 2);
+  const rows = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => {
+      const wall = solid(c, r) && !(r === H - 1 && c === 3); // (3,4) is the door
+      return { t: wall ? "stone_mountain" : "saturated_grass", l: wall ? 6 : 0 };
+    }),
+  );
+  const cells = [];
+  for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) cells.push({ col: c, row: r });
+  const g = buildTerrainGrid(W, H, rows, [], [{ level: 6, thickness: 0, cells }]);
+  const s = findIndoorSpace(g, 1, 1, 0)!;
+  assert.equal(s.roof.size, 14, "both rooms are one space (they join along row 3), plus the doorway");
+  const T = at(g, 3, 0);
+  assert.equal(s.fringe.has(T), false, "the junction touches the floor at a point only");
+  assert.equal(s.wallLeft.has(T) || s.wallRight.has(T), false, "…so no inward face, no wall set");
+  assert.ok(s.shell.has(T), "…and it is exactly what shell is for");
+  // The north run is now unbroken: every cell of row 0 that is inside the
+  // building's span is drawn by something.
+  const drawn = (j: number) => s.roof.has(j) || s.wallLeft.has(j) || s.wallRight.has(j) || s.shell.has(j);
+  for (let c = 0; c < W; c++) assert.ok(drawn(at(g, c, 0)), `north wall cell (${c},0) is drawn`);
+});
+
+test("shell: nothing it adds can stand in front of the room (every shipped world)", () => {
+  // THE SAFETY PROPERTY, swept over real geometry rather than asserted on a
+  // fixture. A tall cell drawn at col+row covers cells with a SMALLER col+row
+  // (they are painted earlier and sit up-screen), so a shell cell is safe
+  // exactly when no cell of the room is behind it. If this ever fails, the
+  // symptom is the one indoor mode exists to remove: a wall back in front of
+  // the interior.
+  let spaces = 0;
+  let shells = 0;
+  for (const { name, world } of deckedWorlds()) {
+    const grid = gridOf(world);
+    for (const d of world.decks ?? []) {
+      if (d.kind === "bridge") continue; // not a room; nothing to look into
+      for (const c of d.cells) {
+        const i = c.row * grid.width + c.col;
+        const s = findIndoorSpace(grid, c.col, c.row, grid.level[i]);
+        if (!s?.indoor) continue;
+        spaces++;
+        shells += s.shell.size;
+        for (const j of s.shell) {
+          const jc = j % grid.width;
+          const jr = (j - jc) / grid.width;
+          for (let dc = -1; dc <= 1; dc++) {
+            for (let dr = -1; dr <= 1; dr++) {
+              const nc = jc + dc;
+              const nr = jr + dr;
+              if (nc < 0 || nr < 0 || nc >= grid.width || nr >= grid.height) continue;
+              if (!s.roof.has(nr * grid.width + nc)) continue;
+              assert.ok(
+                nc + nr >= jc + jr,
+                `${name}: shell (${jc},${jr}) stands in front of room cell (${nc},${nr})`,
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.ok(spaces > 100, `the sweep must not be vacuous — ${spaces} indoor spaces`);
+  assert.ok(shells > 0, `…and must actually have found shell cells — ${shells}`);
+});

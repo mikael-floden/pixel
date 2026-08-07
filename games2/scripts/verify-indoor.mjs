@@ -286,18 +286,51 @@ try {
     return out;
   };
   //   OUTSIDE — ground well clear of the house on all four screen sides.
+  //
+  // "Clear of the house" is COMPUTED, not assumed by a fixed offset. A house
+  // cell is a COLUMN: its art runs from `roofDeck.level` levels up (16px each)
+  // down to its own base plus a 64px tile, so it paints far UP-SCREEN of the
+  // cell it belongs to. A fixed -2/+3 offset put one probe squarely behind the
+  // west corner's 6-level wall, and once `shell` started drawing that corner
+  // (it is the building, and leaving it out is the hole this gate exists
+  // beside) the probe read the WALL and called it undead outside ground.
+  //
+  // Screen algebra, from MAP_GEOMETRY: a cell's art spans x [(c-r)*32, +64] and
+  // y [(c+r)*15 - lvl*16, +64]; the 17x17 patch spans x [(c-r)*32+24, +16] and
+  // y [(c+r)*15+15, +16]. They overlap iff the two cells are within 1 of each
+  // other in (c-r) AND the house cell's (c+r) is between 3 below and
+  // (31 + cut*16)/15 above the probe's. So step the probe outward along its own
+  // direction until nothing in the house can reach it.
+  const cut = roofDeck.level;
+  const behindHouse = (c, r) =>
+    deckCells.some(([hc, hr]) =>
+      Math.abs(hc - hr - (c - r)) <= 1 &&
+      hc + hr - (c + r) <= (31 + cut * 16) / 15 &&
+      c + r - (hc + hr) <= 49 / 15);
   const outsidePoints = async () => {
+    const minC = Math.min(...deckCells.map(([c]) => c));
+    const maxC = Math.max(...deckCells.map(([c]) => c));
+    const minR = Math.min(...deckCells.map(([, r]) => r));
+    const maxR = Math.max(...deckCells.map(([, r]) => r));
+    // [start cell, step] — the step walks the probe further from the house.
     const cs = [
-      [Math.min(...deckCells.map(([c]) => c)) - 2, roomR],
-      [Math.max(...deckCells.map(([c]) => c)) + 2, roomR],
-      [roomC, Math.min(...deckCells.map(([, r]) => r)) - 3],
-      [roomC, Math.max(...deckCells.map(([, r]) => r)) + 3],
-      [Math.max(...deckCells.map(([c]) => c)) + 2, roomR + 3],
+      [[minC - 2, roomR], [-1, 0]],
+      [[maxC + 2, roomR], [1, 0]],
+      [[roomC, minR - 3], [0, -1]],
+      [[roomC, maxR + 3], [0, 1]],
+      [[maxC + 2, roomR + 3], [1, 0]],
     ];
     const out = [];
     // A WIDE patch (17x17) on purpose: the ambient layer's fireflies are ~5x5
     // glowing sprites and a small window lets one of them swing the median.
-    for (const [c, r] of cs) {
+    for (const [[c0, r0], [dc, dr]] of cs) {
+      let c = c0;
+      let r = r0;
+      // 12 steps is far more than any wall can reach (8 in (c+r), 1 in (c-r));
+      // running out means the house is not where deckCells says it is.
+      let n = 0;
+      while (behindHouse(c, r) && n++ < 12) { c += dc; r += dr; }
+      if (behindHouse(c, r)) fail(`no outdoor sample clear of the house from ${c0},${r0}`);
       const s = await cellScreen(c, r);
       const pt = { c, r, rad: 8, x: s.x + 32, y: s.y + 23 };
       if (inView(pt)) out.push(pt);

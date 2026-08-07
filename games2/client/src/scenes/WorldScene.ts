@@ -1567,6 +1567,7 @@ export class WorldScene extends Phaser.Scene {
           mask: this.indoorMask?.size ?? 0,
           wallLeft: s?.wallLeft.size ?? 0,
           wallRight: s?.wallRight.size ?? 0,
+          shell: s?.shell.size ?? 0,
           fringe: s?.fringe.size ?? 0,
           cell: [this.indoorAtCol, this.indoorAtRow],
           elev: this.indoorAtElev,
@@ -7154,6 +7155,12 @@ export class WorldScene extends Phaser.Scene {
     // both halves.
     for (const ci of s.wallLeft) m.set(ci, (m.get(ci) ?? 0) | IN_WALL_L);
     for (const ci of s.wallRight) m.set(ci, (m.get(ci) ?? 0) | IN_WALL_R);
+    // The SHELL — corners and T-junctions, the cells with no face looking into
+    // the room. They draw as a solid block (BOTH halves), which is what the
+    // L|R combination already means to both draw paths, so the module's honest
+    // vocabulary and the renderer's two bits meet here and nowhere else.
+    // Without them every corner of every building is a hole; see `shell`.
+    for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL_L | IN_WALL_R);
     this.indoorMask = m;
     return true;
   }

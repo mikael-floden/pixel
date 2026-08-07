@@ -198,6 +198,13 @@ const SURFACE_EPS = 1e-6;
 const DC = [1, -1, 0, 0];
 const DR = [0, 0, 1, -1];
 
+// 8-connected neighbours, for the SHELL pass only. The fill and the fringe stay
+// strictly 4-connected (a diagonal is not a step you can take, and a cell that
+// touches the room at one point is not part of its outline); the enclosure a
+// camera SEES, however, is 8-connected — see `shell`.
+const DC8 = [1, -1, 0, 0, 1, 1, -1, -1];
+const DR8 = [0, 0, 1, -1, 1, -1, 1, -1];
+
 /**
  * Could a mover standing at `elev` occupy the BASE surface of cell `i`?
  *
@@ -310,6 +317,45 @@ export interface IndoorSpace {
   wallLeft: Set<number>;
   /** The room's up-LEFT (north-west) far wall — see `wallLeft`. */
   wallRight: Set<number>;
+  /** THE REST OF THE ENCLOSURE THE CAMERA SEES: solid cells that belong to this
+   * room's shell but have no face looking into it, and that stand BEHIND the
+   * room in painter order so drawing them cannot hide it.
+   *
+   * Why this exists. `wallLeft`/`wallRight` answer "whose inward face is
+   * visible", which is the right question for CULLING and the wrong one for
+   * DRAWING. A room's own corner has no inward face (see `wallLeft`) — but on
+   * screen it sits at the apex BETWEEN the two far wall runs, and a cell nobody
+   * draws is a hole punched through the house:
+   *
+   *     # L L L # #        `#` corner / junction, in NO set  ->  black wedge
+   *     R o o o f B        `L`/`R` far walls, drawn          ->  solid
+   *     R o o o R o        `o` interior floor
+   *
+   * The same happens wherever an interior partition MEETS an outer wall (the
+   * two `#` in the middle of that top run). Both are the T-junctions and corners
+   * of any multi-room building, so this is not a shape one map happens to have.
+   *
+   * The rule is painter order, not geometry-by-cases. A tall cell drawn at
+   * `col+row` covers cells with a SMALLER `col+row` (they are drawn earlier and
+   * sit up-screen). So a shell cell is safe to draw exactly when NO cell of the
+   * room is behind it:
+   *
+   *     8-adjacent to the roof set, solid (not a way out), in none of
+   *     entrances/wallLeft/wallRight, and every 8-adjacent roof cell has
+   *     col+row >= this cell's own col+row.
+   *
+   * That one test keeps the far corners and junctions (the room is level with
+   * them or below) and still cuts every NEAR corner (the room is behind it —
+   * drawing its 6-level column would wall the interior off again), with no
+   * appeal to which side of which room anything is on.
+   *
+   * 8-connected here and nowhere else: the fill and the fringe stay 4-connected
+   * because a diagonal is not a step and a point-touch is not an outline — but
+   * a point-touch IS a visible seam, and seams are what this set closes.
+   *
+   * Renderer contract: a shell cell draws BOTH skirt halves, the same bands as a
+   * wall. It is a solid block of building, not a face. */
+  shell: Set<number>;
   /** Fringe cells the player could step/jump onto — the doors and windows. */
   entrances: Set<number>;
   /** Level of the slab over the player's own cell: tiles at/above this level in
@@ -566,6 +612,34 @@ export function findIndoorSpace(
 
   const wallRatio = fringe.size === 0 ? 1 : (fringe.size - entrances.size) / fringe.size;
 
+  // SHELL pass — the corners and T-junctions that close the building's outline.
+  // Runs BEFORE the depth BFS below, which overwrites the roof marks with 3;
+  // `mark[n] === 1` is the roof test and is only valid until then.
+  const shell = new Set<number>();
+  for (const i of roof) {
+    const c = i % w;
+    const r = (i - c) / w;
+    for (let k = 0; k < 8; k++) {
+      const jc = c + DC8[k];
+      const jr = r + DR8[k];
+      if (jc < 0 || jr < 0 || jc >= w || jr >= h) continue;
+      const j = jr * w + jc;
+      if (mark[j] === 1 || shell.has(j)) continue; // inside, or already settled
+      if (entrances.has(j) || wallLeft.has(j) || wallRight.has(j)) continue;
+      if (wayOut(grid, j, elev, climb)) continue; // an opening is not building
+      // Behind the room in painter order, on every side that touches it?
+      const sum = jc + jr;
+      let clear = true;
+      for (let d = 0; d < 8 && clear; d++) {
+        const nc = jc + DC8[d];
+        const nr = jr + DR8[d];
+        if (nc < 0 || nr < 0 || nc >= w || nr >= h) continue;
+        if (mark[nr * w + nc] === 1 && nc + nr < sum) clear = false;
+      }
+      if (clear) shell.add(j);
+    }
+  }
+
   // DEPTH of the player's own cell: BFS inward from the entrance ring, through
   // the roof set only. Reuses `mark` (roof cells are 1, fringe 2) as the
   // visited flag by overwriting the roof marks with 3 — the fill and the fringe
@@ -618,5 +692,5 @@ export function findIndoorSpace(
     roof.size >= MIN_ROOM_CELLS &&
     (wallRatio > INDOOR_WALL_RATIO || depth >= INDOOR_DEPTH);
 
-  return { roof, fringe, wallLeft, wallRight, entrances, roofLevel, wallRatio, depth, capped, indoor };
+  return { roof, fringe, wallLeft, wallRight, shell, entrances, roofLevel, wallRatio, depth, capped, indoor };
 }
