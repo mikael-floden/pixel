@@ -511,6 +511,11 @@ interface Avatar {
   baseTint: number;
   // Combat mirrors (server action/actionSeq/hitSeq/dead drive one-shot clips).
   actionKey?: string;
+  // The pickup sound waits for the frame the hand closes on the item (see the
+  // pickup branch). `pickupSfxAt` is when the gesture started — armed state and
+  // the safety-valve clock in one field; null means nothing pending.
+  pickupSfxFrame?: number | null;
+  pickupSfxAt?: number | null;
   actionUntil?: number;
   lastActionSeq?: number;
   lastHitSeq?: number;
@@ -3619,6 +3624,31 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
+  /** Fire each armed pickup sound on the frame that avatar's hand closes on
+   * the item — the same measured frame stepGroundDecor retires the drop on, so
+   * the sound and the item disappearing are the same instant.
+   *
+   * The safety valve matters as much as the trigger: a pickup clip can be cut
+   * short by a hit, a respawn or a hidden tab, and a sound armed forever would
+   * fire on some unrelated pickup much later. If the gesture is over and the
+   * frame never arrived, play it then — late by a few frames beats silent, and
+   * beats a stray sound minutes afterwards. */
+  private stepPickupSfx() {
+    const now = this.time.now;
+    for (const [id, av] of this.avatars) {
+      if (av.pickupSfxAt == null) continue;
+      const playing = /:pickup:/.test(av.sprite.anims.getName() ?? "");
+      const reached = playing && frameIndexOf(av.sprite.texture.key) >= (av.pickupSfxFrame ?? 0);
+      // 850 ms is the gesture length set where the action arrives; give it a
+      // little margin before giving up on the frame.
+      if (!reached && now - av.pickupSfxAt < 1000) continue;
+      av.pickupSfxAt = null;
+      av.pickupSfxFrame = null;
+      const sp = this.avatarSpatial(id);
+      gameAudio.event("item.pickup", { pan: sp.pan, dist: sp.dist });
+    }
+  }
+
   private stepGroundDecor() {
     const now = this.time.now;
     // A drop being GRABBED lingers past the server's removal until my pickup
@@ -4684,8 +4714,29 @@ export class WorldScene extends Phaser.Scene {
         } else if (player.action === "pickup") {
           av.actionKey = "pickup";
           av.actionUntil = nowMs + 850;
-          const spP = this.avatarSpatial(id);
-          gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
+          // DEFERRED to the frame the hand closes (maintainer 2026-08-06: "I
+          // want the pick up item sound to play when the hand reaches the
+          // ground and the item is actually picked up. Now I get the feeling
+          // the sound is triggered to early"). It WAS early: this branch runs
+          // the instant the pickup ACTION arrives, which is the start of an
+          // 850 ms gesture, and the hand does not reach the ground until the
+          // measured grab frame about halfway through. The art already knows
+          // that exact moment — it is the frame the ITEM vanishes on
+          // (character manifest `grab[dir].f`, used by stepGroundDecor) — so
+          // the sound now waits for the same frame instead of guessing a
+          // delay, which keeps it locked to the animation at any frame rate.
+          // Every avatar gets this, not just mine: a remote player's gesture
+          // is just as long, so their pickup was just as early.
+          av.pickupSfxFrame = this.grabFrameFor(av)?.f ?? null;
+          av.pickupSfxAt = null;
+          if (av.pickupSfxFrame == null) {
+            // No measured grab frame for this character/facing — play it now
+            // rather than not at all. Silence would be a worse bug than early.
+            const spP = this.avatarSpatial(id);
+            gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
+          } else {
+            av.pickupSfxAt = nowMs; // armed; stepPickupSfx fires it
+          }
         } else if (player.action === "die") {
           av.actionKey = "die";
           av.actionUntil = nowMs + 10_000; // held below while dead anyway
@@ -5237,6 +5288,10 @@ export class WorldScene extends Phaser.Scene {
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.updateTargetOverlays();
+    // The pickup sound, held until the hand actually reaches the ground —
+    // before stepGroundDecor, so the sound and the item vanishing land on the
+    // same frame rather than one frame apart.
+    this.stepPickupSfx();
     // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
     this.stepGroundDecor();
 
