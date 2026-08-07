@@ -87,7 +87,12 @@ export function pollenFeature(): AmbientFeature {
       // cloud cover kills the beams the motes are supposed to hang in.
       const target = forced ? 1 : suppressed ? 0 : ctx.env.sun * (1 - 0.85 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
-      const visible = gain > 0.02;
+      // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
+      // stop the moment the player steps inside (runtime/outdoor.ts). Applied
+      // AFTER the feature's own easing so it is not slowed by GAIN_TAU — the
+      // crossing snaps today, and when it becomes a fade this carries it.
+      const g = gain * ctx.outdoor;
+      const visible = g > 0.02;
 
       const want = targetCount(view);
       while (motes.length < want) {
@@ -124,7 +129,7 @@ export function pollenFeature(): AmbientFeature {
         m.sprite
           .setPosition(m.x + flutter, m.y)
           .setScale(m.size)
-          .setAlpha(gain * 0.5 * glint)
+          .setAlpha(g * 0.5 * glint)
           .setVisible(true);
       }
     },

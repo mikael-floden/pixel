@@ -198,6 +198,37 @@ mist pass, lit copies) and too risky for the ambient layer, which must never
 break the game. `rainbow/` removed the same day (maintainer's call). Both
 live in git history.
 
+## Indoors: every effect here stops (runtime/outdoor.ts)
+
+Everything this agent draws is an OUTDOOR effect — birds, bats, pollen,
+fireflies, leaves, sandstorm, thunder, water glints. The game now lets the
+player walk into a house or cave (it cuts the roof away and blacks the outside
+out), so all of it has to stop or the flock wheels through the ceiling.
+
+- The mount reads the game's `__ml.indoor().indoor` geometry verdict EVERY
+  FRAME (not on the 10 Hz env sample — a sampled read leaves weather falling
+  through the roof for ~6 frames) and publishes `ctx.outdoor`, 0..1.
+- **Every feature must multiply its drawn opacity by `ctx.outdoor`**, and should
+  skip its simulation at 0. The field features get this for free: their eased
+  `gain` is multiplied into a local `g` that already drives both alpha and their
+  `visible` early-out. Birds and bats park explicitly (alpha zeroed once, then
+  the whole boid/grade/fog pass skipped) — a house visit can last minutes.
+- It **SNAPS** 1 → 0 today, because the game's own in/out crossing is a cut.
+  It is a GAIN rather than an `if (indoor) return` so that when that crossing
+  becomes a fade, the ambience fades with it: set `OUTDOOR_FADE_MS`, or better,
+  feed the game's own 0..1 crossing (`__ml.indoor().mix` is already eased) into
+  `OutdoorGain.step`. Nothing in the eight features has to change — the partial
+  values are already threaded through every draw path.
+- A missing/throwing probe reads as OUTDOORS, so ambience is never silently
+  suppressed by a dependency that isn't there.
+
+Gates: `server/test/outdoor.test.ts` (the snap, the probe fencing, and the fade
+path — the fade duration is injectable so "flip one constant" is tested rather
+than promised) and `scripts/verify-indoor-ambient.mjs`, which walks the real
+game into a real house and asserts the DRAWN alpha, since a feature that forgot
+to multiply still typechecks and still passes every unit test.
+Probe: `__mlAmbient.outdoor()` → `{ indoor, gain, fadeMs }`.
+
 ## Flap-frame cull (birds + bat)
 
 The 8 birds and the bat share one sheet layout: 16 flap frames × 8 facings at

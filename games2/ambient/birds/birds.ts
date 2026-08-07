@@ -224,6 +224,7 @@ export function birdsFeature(): AmbientFeature {
   let landCx = 0;
   let landCy = 0;
   let lastNow = 0; // last scene clock seen (for debug())
+  let parked = false; // indoors: alpha zeroed and the sim skipped (see update)
   // Migratory flock: any number of groups co-exist (unlike the one-at-a-time
   // ground flock), each crossing the sky in its own formation.
   const migrGroups: MigrGroup[] = [];
@@ -252,10 +253,13 @@ export function birdsFeature(): AmbientFeature {
   };
 
   // Show the right frame: the flap clip while airborne, the still base perched.
-  const drawFrame = (b: Bird, perched: boolean, tint: number) => {
+  // `out` is ctx.outdoor: birds are an OUTDOOR effect and must vanish the moment
+  // the player is inside (runtime/outdoor.ts). Alpha is set here EVERY frame —
+  // it used to be a spawn-time constant, which no gain could reach.
+  const drawFrame = (b: Bird, perched: boolean, tint: number, out: number) => {
     const key = perched ? stillKey(b.type) : flyKey(b.type);
     if (b.sprite.texture.key !== key) b.sprite.setTexture(key);
-    b.sprite.setFrame(perched ? b.dir : flyCell(b)).setTint(tint);
+    b.sprite.setFrame(perched ? b.dir : flyCell(b)).setTint(tint).setAlpha(BIRD_ALPHA * out);
   };
 
   const launchFlock = (ctx: AmbientCtx) => {
@@ -442,7 +446,7 @@ export function birdsFeature(): AmbientFeature {
     migrGroups.push(group);
   };
 
-  const updateMigration = (ctx: AmbientCtx, dts: number, dtMs: number) => {
+  const updateMigration = (ctx: AmbientCtx, dts: number, dtMs: number, out: number) => {
     if (!migrGroups.length) return;
     const view = ctx.view;
     const cull = Math.hypot(view.width, view.height) / 2 + 150; // exit distance past centre
@@ -475,7 +479,7 @@ export function birdsFeature(): AmbientFeature {
         const grade = gradeCritter(b, b.gx, b.gy, b.alt, dtMs);
         stepFlapDir(b, dtMs, DIR_STICK);
         if (b.sprite.texture.key !== flyKey(b.type)) b.sprite.setTexture(flyKey(b.type));
-        b.sprite.setFrame(flyCell(b)).setTint(grade.tint);
+        b.sprite.setFrame(flyCell(b)).setTint(grade.tint).setAlpha(BIRD_ALPHA * out);
         b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + 1 + di * 0.001);
         di++;
         // Migratory-only: scale the depth-fog WASH down (MIGR_FOG_K) so a high
@@ -483,8 +487,8 @@ export function birdsFeature(): AmbientFeature {
         // The base sprite's setTint(grade.tint) above is UNTOUCHED, so light/shadow
         // shading is identical — only the wash opacity drops. The settling flock
         // and bats keep full fog (their own calls).
-        applyFog(ctx.scene, b, { ...grade, fog: grade.fog * MIGR_FOG_K }, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade);
+        applyFog(ctx.scene, b, { ...grade, fog: grade.fog * MIGR_FOG_K }, BIRD_ALPHA * out);
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade, out);
         // Cull once the bird has CROSSED and exited on the far side (its
         // projection on the heading passes the view). A bird still flying IN has
         // a negative projection, so this never deletes an entering bird.
@@ -524,6 +528,30 @@ export function birdsFeature(): AmbientFeature {
         ready = sheetsReady(ctx.scene, SHEETS);
         if (!ready) return;
       }
+      // OUTDOOR GAIN — birds are outdoor wildlife; they stop the instant the
+      // player is inside (runtime/outdoor.ts). Snaps 1->0 today; written as a
+      // multiplier so the planned indoor cross-fade needs no change here.
+      const out = ctx.outdoor;
+      // Fully indoors: park the flock. Zero the drawn alpha ONCE (the sim is
+      // about to stop, so nothing else would) and skip all boid/grade/fog work
+      // — the charter's "cheap while inactive" rule, and a house visit can last
+      // minutes. Positions are frozen, not reset: step back out and the same
+      // flock is where it was. Anything above 0 takes the normal path, so a
+      // future cross-fade still draws every partial frame.
+      if (out <= 0) {
+        if (!parked) {
+          parked = true;
+          const park = (b: Bird) => {
+            b.sprite.setAlpha(0);
+            b.fog?.setVisible(false);
+            b.shadow?.setVisible(false);
+          };
+          for (const b of birds) park(b);
+          for (const g of migrGroups) for (const b of g.members) park(b);
+        }
+        return;
+      }
+      parked = false;
       const dts = Math.min(dt, 100) / 1000;
       const dtMs = Math.min(dt, 100); // for the eased per-bird grade (see gradeCritter)
       const now = ctx.scene.time.now;
@@ -540,7 +568,7 @@ export function birdsFeature(): AmbientFeature {
           nextMigrIn = (MIGR_EVERY_MS[0] + rnd() * (MIGR_EVERY_MS[1] - MIGR_EVERY_MS[0])) / birdDensity();
         }
       }
-      updateMigration(ctx, dts, dtMs);
+      updateMigration(ctx, dts, dtMs, out);
 
       // One GROUND flock at a time: only count down to the next once the sky is
       // clear (a departed flock destroys its birds), so birds never pile up.
@@ -694,10 +722,10 @@ export function birdsFeature(): AmbientFeature {
             b.dir = Math.floor(rnd() * 8); // a little hop/turn — re-face any direction
           }
           b.alt += (0 - b.alt) * Math.min(1, dts * 8);
-          drawFrame(b, true, tint);
+          drawFrame(b, true, tint, out);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
-          applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade);
+          applyFog(ctx.scene, b, grade, BIRD_ALPHA * out);
+          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade, out);
           continue;
         }
 
@@ -731,10 +759,10 @@ export function birdsFeature(): AmbientFeature {
             b.vx = 0;
             b.vy = 0;
             b.dir = Math.floor(rnd() * 8);
-            drawFrame(b, true, tint);
+            drawFrame(b, true, tint, out);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
-            applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade);
+            applyFog(ctx.scene, b, grade, BIRD_ALPHA * out);
+            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade, out);
             continue;
           }
         } else {
@@ -849,11 +877,11 @@ export function birdsFeature(): AmbientFeature {
         // Face (hysteretic 8-way from the boid's velocity) + flap + draw
         // (a gentle bob only while airborne).
         stepFlapDir(b, dt, DIR_STICK);
-        drawFrame(b, false, tint);
+        drawFrame(b, false, tint, out);
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
-        applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade); // ground drop-shadow (no bob → the gap reads as height)
+        applyFog(ctx.scene, b, grade, BIRD_ALPHA * out);
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade, out); // ground drop-shadow (no bob → the gap reads as height)
 
         // Off the view (plus slack)?
         const off =
@@ -917,6 +945,7 @@ export function birdsFeature(): AmbientFeature {
           // QA must assert on THIS — the (dir, frame) fields can be transiently
           // inconsistent in ticks where the bird is not drawn, which looks like
           // a culled-frame bug but renders nothing.
+          a: +b.sprite.alpha.toFixed(3), // DRAWN alpha — 0 while indoors (outdoor gain)
           cell: Number(b.sprite.frame.name),
           fly: b.sprite.texture.key === flyKey(b.type),
           state: b.state,

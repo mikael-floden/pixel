@@ -88,6 +88,7 @@ export function batsFeature(): AmbientFeature {
   let leaveAt = 0;
   let leaving = false;
   let lastNow = 0;
+  let parked = false; // indoors: alpha zeroed and the sim skipped (see update)
   let seed = 13;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
 
@@ -168,6 +169,20 @@ export function batsFeature(): AmbientFeature {
         ready = sheetsReady(ctx.scene, SHEETS);
         if (!ready) return;
       }
+      // OUTDOOR GAIN — see birds/runtime outdoor.ts. Bats stop indoors too.
+      const out = ctx.outdoor;
+      // Fully indoors: park the colony — see the same block in birds.ts.
+      if (out <= 0) {
+        if (!parked) {
+          parked = true;
+          for (const b of bats) {
+            b.sprite.setAlpha(0);
+            b.fog?.setVisible(false);
+          }
+        }
+        return;
+      }
+      parked = false;
       const dts = Math.min(dt, 100) / 1000;
       const dtMs = Math.min(dt, 100); // for the eased per-bat grade (see gradeCritter)
       const now = ctx.scene.time.now;
@@ -303,10 +318,10 @@ export function batsFeature(): AmbientFeature {
         // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
         stepFlapDir(b, dt, DIR_STICK);
         const grade = gradeCritter(b, b.gx, b.gy, b.alt, dtMs); // eased light + fog
-        b.sprite.setFrame(flyCell(b)).setTint(grade.tint);
+        b.sprite.setFrame(flyCell(b)).setTint(grade.tint).setAlpha(BAT_ALPHA * out);
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
-        applyFog(ctx.scene, b, grade, BAT_ALPHA);
+        applyFog(ctx.scene, b, grade, BAT_ALPHA * out);
 
         // Off the view (plus slack)?
         const off =
@@ -351,6 +366,7 @@ export function batsFeature(): AmbientFeature {
         all: bats.map((b) => ({
           dir: b.dir,
           frame: b.frame,
+          a: +b.sprite.alpha.toFixed(3), // DRAWN alpha — 0 while indoors (outdoor gain)
           cell: Number(b.sprite.frame.name), // the cell actually drawn (see birds' note)
           fly: true, // bats never perch — always the fly sheet
           alt: Math.round(b.alt),

@@ -6,6 +6,7 @@ import { Toggles } from "./toggles";
 import { Demo } from "./demo";
 import { DemoButton } from "./hudbutton";
 import { birdDensity, setBirdDensity } from "./density";
+import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
 
 const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
@@ -29,7 +30,9 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       env: defaultEnv(),
       view: new Phaser.Geom.Rectangle(0, 0, 1, 1),
       zoom: 1,
+      outdoor: 1,
     };
+    const outdoor = new OutdoorGain();
     const director = new Director(features);
     const toggles = new Toggles(features, director);
     const demo = new Demo(features, toggles);
@@ -66,6 +69,11 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       }
       ctx.view = cam.worldView;
       ctx.zoom = cam.zoom;
+      // EVERY FRAME, not on the 10 Hz env sample: this must stop the moment the
+      // player is inside, and a sampled read would keep weather falling through
+      // the roof for up to 100 ms (~6 frames) after they stepped in.
+      ctx.env.indoor = readIndoor();
+      ctx.outdoor = outdoor.step(dt, ctx.env.indoor);
       if (!inited) {
         inited = true;
         for (const f of features) safe(() => f.init(ctx));
@@ -82,6 +90,10 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       list: () => features.map((f) => f.name),
       debug: (name: string) => features.find((f) => f.name === name)?.debug() ?? null,
       env: () => ({ ...ctx.env }),
+      // INDOOR/OUTDOOR: the game's geometry verdict, the gain every effect
+      // multiplies by, and the crossing time (0 = the current snap). QA asserts
+      // gain 0 indoors; a future fade shows up here as fadeMs > 0.
+      outdoor: () => ({ indoor: ctx.env.indoor, gain: ctx.outdoor, fadeMs: OUTDOOR_FADE_MS }),
       director: () => director.debug(),
       // Headless QA: force a re-roll (optionally with a pinned random) or
       // compute the current weight table without rolling.

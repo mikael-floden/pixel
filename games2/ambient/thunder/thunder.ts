@@ -98,6 +98,11 @@ export function thunderFeature(): AmbientFeature {
       }
       // Night flashes read brighter against the dark — scale down by day.
       a *= 0.5 + 0.5 * ctx.env.night;
+      // OUTDOOR GAIN: no sheet lightning through a roof (runtime/outdoor.ts).
+      // Applied to the flash alpha rather than skipping the update, so the
+      // strike's envelope keeps decaying and does not resume mid-flash when the
+      // player steps back out.
+      a *= ctx.outdoor;
       const view = ctx.view;
       flash
         .setPosition(view.x, view.y)

@@ -263,6 +263,7 @@ export function applyShadow(
   gy: number,
   alt: number,
   grade: CritterGrade,
+  alpha = 1,
 ): void {
   ensureCritterShadow(scene);
   const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
@@ -278,8 +279,8 @@ export function applyShadow(
   s.setPosition(grade.shadowFrozen ? grade.frozenX : gx, grade.shadowFrozen ? grade.frozenY : gy - grade.lift)
     .setDepth(grade.shadowFrozen ? grade.frozenD : grade.shadowDepth) // occluder-STABLE (discrete per cell) so it can't blink behind a front tile
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
-    .setAlpha((0.58 - f * 0.24) * grade.shadowA) // base look × the elevation cross-fade
-    .setVisible(grade.shadowA > 0.02);
+    .setAlpha((0.58 - f * 0.24) * grade.shadowA * alpha) // base look × the elevation cross-fade × caller gain
+    .setVisible(grade.shadowA * alpha > 0.02);
   // QA probe state (birds debug .all): frozen-decal phase + fade fraction.
   s.setData("fz", grade.shadowFrozen).setData("fa", grade.shadowA);
 }
