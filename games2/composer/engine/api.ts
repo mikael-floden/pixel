@@ -254,19 +254,21 @@ const EVENT_ASSIGNMENTS: Record<string, EventAssignment[]> = {
   // there, so mon_forest_poring_walk is dropped and idle stays silent.
   "monsters.forest_poring_2.walk": [{ sound: "composer/monster_die_bubble", take: "monster_die_bubble__take01" }],
   "monsters.forest_poring_2.attack": [{ sound: "composer/mon_lava_poring_attack", take: "mon_lava_poring_attack__take01" }],
-  // -6 dB on all four (maintainer 2026-08-06: "lower the volume on all sounds
-  // attached to Thunder"). Equal cuts, so the four still sit level with each
-  // other and only the strike gets quieter — half the amplitude, still a
-  // crack. The trim lives HERE rather than in THUNDER_GAIN_DB because this is
+  // -12 dB on all four (maintainer 2026-08-06: "lower the volume on all sounds
+  // attached to Thunder", then "Lower them even more" after -6). Equal cuts,
+  // so the four still sit level with each other and only the strike gets
+  // quieter. THUNDER_GAIN_DB adds +14, so the net at full strength is +2 dB —
+  // twelve down from where it was blasting. -14 here would be the point where
+  // the game matches the wiki's audition exactly, one step further on. The trim lives HERE rather than in THUNDER_GAIN_DB because this is
   // the layer the wiki can see: assignments.json carries volume_db, so the
   // audition and the game agree, and he can move it himself next time. The
   // engine still adds THUNDER_GAIN_DB * strength on top, which is what keeps a
   // near strike loud and a distant one soft.
   "weather.thunder": [
-    { sound: "composer/thunder", take: "thunder__cand07", volume_db: -6 },
-    { sound: "composer/thunder", take: "thunder__cand08", volume_db: -6 },
-    { sound: "composer/thunder", take: "thunder__cand09", volume_db: -6 },
-    { sound: "composer/thunder", take: "thunder__cand17", volume_db: -6 },
+    { sound: "composer/thunder", take: "thunder__cand07", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand08", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand09", volume_db: -12 },
+    { sound: "composer/thunder", take: "thunder__cand17", volume_db: -12 },
   ],
 };
 
