@@ -179,7 +179,7 @@ export const INDOOR_DEPTH = 4;
  * Mirrors JUMP_CLIMB in index.ts (a 2-level ledge is crossable with a jump; 3+
  * is a cliff). Kept as a local constant so this module stays leaf-level and
  * import-cycle-free — if the climb rule ever changes, change it in both. */
-const ENTRANCE_CLIMB = 2;
+export const ENTRANCE_CLIMB = 2;
 
 /** Floating-point slack, same convention as baseUnderDeckOpen in index.ts:
  * elevations arrive as interpolated floats, so "strictly below the slab" needs
@@ -317,44 +317,44 @@ export interface IndoorSpace {
   wallLeft: Set<number>;
   /** The room's up-LEFT (north-west) far wall — see `wallLeft`. */
   wallRight: Set<number>;
-  /** THE REST OF THE ENCLOSURE THE CAMERA SEES: solid cells that belong to this
-   * room's shell but have no face looking into it, and that stand BEHIND the
-   * room in painter order so drawing them cannot hide it.
+  /** THE BUILDING ITSELF: every solid cell of this space's enclosure —
+   * 8-connected to the roof set, not floor, not an opening. Near walls, far
+   * walls, corners and T-junctions alike, with no distinction between them.
    *
-   * Why this exists. `wallLeft`/`wallRight` answer "whose inward face is
-   * visible", which is the right question for CULLING and the wrong one for
-   * DRAWING. A room's own corner has no inward face (see `wallLeft`) — but on
-   * screen it sits at the apex BETWEEN the two far wall runs, and a cell nobody
-   * draws is a hole punched through the house:
+   * THIS IS THE SET THE RENDERER DRAWS, and it is deliberately dumber than
+   * `wallLeft`/`wallRight`. Those two answer "whose inward face is visible",
+   * which is the question you ask when you intend to HIDE things: cull the near
+   * walls, cull the roof, keep a sliver of the far ones. That was tried and
+   * rejected (maintainer 2026-08-07: "You added a transparent wall feature
+   * where my idea was to instead cut all walls at roof-1, roof-2, etc"), and
+   * its failure mode is structural rather than a tuning miss — a set defined by
+   * "has a visible inward face" cannot contain a room's own CORNER, because a
+   * corner has no inward face at all. On screen the corner sits at the apex
+   * BETWEEN the two far wall runs, so a cell nobody draws is a hole punched
+   * through the house:
    *
-   *     # L L L # #        `#` corner / junction, in NO set  ->  black wedge
-   *     R o o o f B        `L`/`R` far walls, drawn          ->  solid
+   *     # L L L # #        `#` corner / junction: in NO wall set -> black wedge
+   *     R o o o f B        `L`/`R` far wall (drawn), `f` near wall (culled)
    *     R o o o R o        `o` interior floor
    *
-   * The same happens wherever an interior partition MEETS an outer wall (the
-   * two `#` in the middle of that top run). Both are the T-junctions and corners
-   * of any multi-room building, so this is not a shape one map happens to have.
+   * Every multi-room building has those junctions where a partition meets an
+   * outer wall (the two `#` mid-run above), so this was not one map's odd
+   * shape. The cut-away has no such gap by construction: it draws the whole
+   * enclosure and simply TRUNCATES it, so "which cells?" collapses to "all of
+   * them" and there is nothing left to classify wrongly.
    *
-   * The rule is painter order, not geometry-by-cases. A tall cell drawn at
-   * `col+row` covers cells with a SMALLER `col+row` (they are drawn earlier and
-   * sit up-screen). So a shell cell is safe to draw exactly when NO cell of the
-   * room is behind it:
+   * 8-connected here and NOWHERE else. The fill and the fringe stay
+   * 4-connected on purpose — a diagonal is not a step you can take, and a cell
+   * touching the room at one point is not part of its outline for the
+   * enclosure/wallRatio arithmetic. But a point-touch IS a visible seam, and
+   * closing seams is this set's whole job.
    *
-   *     8-adjacent to the roof set, solid (not a way out), in none of
-   *     entrances/wallLeft/wallRight, and every 8-adjacent roof cell has
-   *     col+row >= this cell's own col+row.
+   * Openings are excluded (`wayOut`): a doorway must keep reading as a way
+   * through, and walling one up is exactly the hole-in-reverse.
    *
-   * That one test keeps the far corners and junctions (the room is level with
-   * them or below) and still cuts every NEAR corner (the room is behind it —
-   * drawing its 6-level column would wall the interior off again), with no
-   * appeal to which side of which room anything is on.
-   *
-   * 8-connected here and nowhere else: the fill and the fringe stay 4-connected
-   * because a diagonal is not a step and a point-touch is not an outline — but
-   * a point-touch IS a visible seam, and seams are what this set closes.
-   *
-   * Renderer contract: a shell cell draws BOTH skirt halves, the same bands as a
-   * wall. It is a solid block of building, not a face. */
+   * Renderer contract: draw each of these as an ORDINARY column truncated at
+   * the cut level — same rule as an interior floor cell, no faces, no halves,
+   * no special cases. */
   shell: Set<number>;
   /** Fringe cells the player could step/jump onto — the doors and windows. */
   entrances: Set<number>;
@@ -612,9 +612,16 @@ export function findIndoorSpace(
 
   const wallRatio = fringe.size === 0 ? 1 : (fringe.size - entrances.size) / fringe.size;
 
-  // SHELL pass — the corners and T-junctions that close the building's outline.
-  // Runs BEFORE the depth BFS below, which overwrites the roof marks with 3;
-  // `mark[n] === 1` is the roof test and is only valid until then.
+  // SHELL pass — the whole enclosure, 8-connected. Runs BEFORE the depth BFS
+  // below, which overwrites the roof marks with 3; `mark[j] === 1` is the roof
+  // test and is only valid until then.
+  //
+  // There is no safety filter here and there must not be one. Under the old
+  // cull design a wall got drawn at FULL height, so a near one would have stood
+  // in front of the interior and had to be excluded by painter order. The
+  // cut-away truncates every column instead, so a near wall is a low parapet
+  // you look over — nothing it could hide is hidden by drawing it, and
+  // "which cells belong to this building" is the only question left.
   const shell = new Set<number>();
   for (const i of roof) {
     const c = i % w;
@@ -625,18 +632,8 @@ export function findIndoorSpace(
       if (jc < 0 || jr < 0 || jc >= w || jr >= h) continue;
       const j = jr * w + jc;
       if (mark[j] === 1 || shell.has(j)) continue; // inside, or already settled
-      if (entrances.has(j) || wallLeft.has(j) || wallRight.has(j)) continue;
-      if (wayOut(grid, j, elev, climb)) continue; // an opening is not building
-      // Behind the room in painter order, on every side that touches it?
-      const sum = jc + jr;
-      let clear = true;
-      for (let d = 0; d < 8 && clear; d++) {
-        const nc = jc + DC8[d];
-        const nr = jr + DR8[d];
-        if (nc < 0 || nr < 0 || nc >= w || nr >= h) continue;
-        if (mark[nr * w + nc] === 1 && nc + nr < sum) clear = false;
-      }
-      if (clear) shell.add(j);
+      if (entrances.has(j) || wayOut(grid, j, elev, climb)) continue; // a door stays a door
+      shell.add(j);
     }
   }
 

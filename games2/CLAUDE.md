@@ -181,14 +181,8 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   `fromElev`/`goalLevel`). Gate: `server/test/navigation.sim.test.ts` "leave the
   bridge onto same-level ground" scans every the_island2 span cell and drives the
   real follower off it (fails on the base-only baseline, 4/40 stuck). SEEING
-  YOURSELF UNDER A DECK (inside the house, inside the cave) is NOT answered
-  today: the occlusion fade that used to be the TODO here is deleted (see the
-  see-through-walls note below) and INDOOR MODE is half-built. What exists is
-  `shared/src/indoor.ts` — a pure, tested roof/wall/entrance detector
-  (`roofAbove`, `findIndoorSpace`) with NO renderer consumer; nothing in
-  WorldScene imports it. What is PLANNED is the renderer half: skipping tiles
-  at/above the roof level, a per-cell lit mask feeding ambient, and a darker
-  non-blue indoor ambient.
+  YOURSELF UNDER A DECK (inside the house, inside the cave) is answered by
+  INDOOR MODE — see the entry under Night lighting.
 - **SEE-THROUGH WALLS IS DELETED — do NOT reintroduce a per-frame occluder
   alpha sweep** (2026-08-06). The prototype (~196 lines, the `[7]` key, a
   Settings switch "see-through walls" and the `__ml.occFade`/`occFocus`/
@@ -204,13 +198,12 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   getData + setDepth + setAlpha over the live occluder set (3.9k images after
   the view-cull, 13k before), and every setDepth re-queues Phaser's
   display-list sort — 1.33ms/frame measured for a feature that was off. Its
-  intended replacement is INDOOR MODE, which will decide per CELL what is
-  indoors instead of re-tinting thousands of images per frame. Only its
-  DETECTION half exists so far (`shared/src/indoor.ts`: pure, tested, no
-  renderer consumer); the renderer half — skipping tiles at/above the roof
-  level, a per-cell lit mask feeding ambient, a darker non-blue indoor ambient
-  — is still to be written, so nothing replaces the fade today. The dead `"ot"`/`"od"` occluder tags went with it — `tagOccluder`
-  now stamps the cell only. History in git.
+  replacement shipped 2026-08-07 as INDOOR MODE + the WHITE OCCLUSION OUTLINE:
+  the first decides per CELL what is indoors instead of re-tinting thousands of
+  images per frame, and the second costs ONE image per COVERED body instead of
+  an alpha sweep over the whole occluder set. The dead `"ot"`/`"od"` occluder
+  tags went with the prototype — `tagOccluder` now stamps the cell only.
+  History in git.
 - **OCCLUDER VIEW-CULL + DECK EXPOSURE** (perf #2/#3, 2026-07-31 — the walking
   hitch). `rebuildOccluders` destroys and recreates the whole occluder set
   whenever the camera centre drifts `OCC_STEP` (96px), and it built **14.4
@@ -2009,18 +2002,62 @@ side collision just like monsters").
   measured anim rates, in-place reconnect (last — it swaps the session),
   then one reload for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
   -reconnect/-animrates/-navigation/-longwalk/-indoor) remain for deep dives.
+- **INDOOR MODE IS A CUT-AWAY, NOT AN X-RAY** (maintainer 2026-08-07). Walk
+  under a roof and the building is drawn WHOLE but TRUNCATED: every one of its
+  columns — floor, near wall, far wall, corner — stops at
+  `indoorTop = ceiling − <the Settings dial>` and nothing above that is drawn.
+  The roof goes because it is above the cut; the near walls become a low
+  parapet you look over. **Nothing is hidden, nothing is transparent, nothing
+  is half a tile.** The dial is `client/src/indoorcut.ts` ("Indoor wall cut" in
+  Settings, roof−1 … roof−8, default roof−3 — a body is ~4 levels tall, so a
+  3-level parapet sits under the shoulder line); brightness is the separate
+  `indoorlight.ts` dial. Probes `__ml.indoorCut(v?)` / `__ml.indoor()`.
+  - **DO NOT GO BACK TO CULLING.** The first cut drew no roof, no near walls
+    and a 32px "skirt" half of each far wall, and it shipped HOLES — wall slabs
+    floating disconnected in the void, black wedges through a solid roof line
+    (maintainer: "you introduced a lot of rendering bugs I have never seen
+    before"). The failure is structural, not a tuning miss: culling has to ask
+    "whose inward face does the camera see", and a room's own CORNER has no
+    inward face, so no wall set can hold it and nobody draws it — likewise
+    every T-junction where an interior partition meets an outer wall. Truncating
+    has nothing to classify, so it cannot have that bug.
+  - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
+    openings excluded. That is the ONLY set the renderer reads;
+    `wallLeft`/`wallRight` survive as detector output with no consumer. The fill
+    and the fringe stay 4-CONNECTED (a diagonal is not a step); `shell` is
+    8-connected because a point-touch is a visible seam.
+  - **The SURFACE resolve is clamped to the cut, the OCCLUSION march is not**
+    (`nightlight.ts` `uIndoorTop`). What the camera sees is truncated; what the
+    light travels through is not — the building is still solid to the sun, and
+    a cut-away that let daylight through its own missing roof would light the
+    room from above as you turned the dial. Skipping the surface clamp re-creates
+    the roof-in-the-heightmap bug one level up: the floor behind a wall drawn at
+    level 3 would resolve at 6 and every torch lighting it would be attenuated
+    across 48px of gap that is not there.
+  - **THE WHITE OCCLUSION OUTLINE** (`syncCoverOutline`) is the other half of
+    the design, and it is not indoor-only: any body a parapet, cliff or tower
+    covers gets a white silhouette ring (`HIDDEN_RING_COLOR`) over the hidden
+    part, at depth 900_001.43. It is the exact COMPLEMENT of the lit copy —
+    `syncLitCopy` crops to [0, coverY), this draws [coverY, bottom) — so the two
+    tile the figure with no seam. Measured on the shipped house at 215,121:
+    roof−1 hides 44% of the body, roof−3 24%, roof−4 5%, roof−6 (no walls) 0%.
 - **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
   browser gate for "walk into a house and the roof comes off". It frames
   the_island2's house with ONE pinned camera from outside and from within and
   compares the two frames on REAL PIXELS at points derived from maps2'
   `world.json` (deck footprint + terrain levels, so a re-authored house moves
   the samples with it): the roof slab loses >40% of its luminance at every one
-  of its cells (measured −91% overall, ~46% of those pixels pure void); the
-  ground outside the room is void at median 0 while the interior floor still
-  averages 6-9; all 8 far walls keep the 32px face that looks IN, and on 7 of
-  them the outward half and the roof-level tile top are void (the 8th is
-  skipped — computed, not hand-listed: an inner-corner neighbour's own inward
-  face legitimately covers it). Then the LIGHT: at Day indoors the ambient is
+  of its cells; the ground outside the room is void at median 0 while the
+  interior floor still carries art. Then the three that pin THIS design —
+  **the mask is exactly floor + building** (the gate derives the 8-connected
+  footprint from world.json itself, so a corner the client forgets is a failure
+  and not a silent pass); **the building is SOLID**, every enclosure cell
+  carrying art at its cut top (this is the assertion the hole bug would have
+  caught); and **the dial IS the cut**, sweeping roof−1..4 and requiring the
+  wall crown to fall by exactly one level (16px) each time. Then the OUTLINE,
+  asserted as a monotone response rather than a magic number: a taller parapet
+  must hide more of the figure and a cut that removes every wall must hide
+  none. Then the LIGHT: at Day indoors the ambient is
   `[0.086,0.09,0.104]` — Rec.709 luma within 0.3% of the Night phase but
   B/R 1.21 against night's 1.87 — and the local torch is lit with the global
   day fade at 0 (a warm +0.74/+0.50/+0.28 at the feet, ~14k screen pixels

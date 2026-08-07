@@ -21,6 +21,7 @@ import {
   MIN_ROOM_CELLS,
   INDOOR_WALL_RATIO,
   INDOOR_DEPTH,
+  ENTRANCE_CLIMB,
   type TerrainGrid,
   type ParsedWorld,
 } from "@nangijala/shared";
@@ -998,20 +999,79 @@ test("a room's OWN corners are in neither wall set — they only show their top"
 // from the first indoor frame.
 // ---------------------------------------------------------------------------
 
-test("shell: a square room's three FAR corners are drawn, the near one is not", () => {
+
+test("shell: THE OUTLINE IS CLOSED — no cell of the building is left undrawn", () => {
+  // THE PROPERTY THE MAINTAINER'S BUG WAS THE ABSENCE OF, stated once and swept
+  // over every shipped room rather than asserted on a fixture: walk the 8
+  // neighbours of every floor cell, and each must be floor, building, a way
+  // out, or off the map. A cell that is none of those is a hole — a solid tile
+  // the renderer draws nothing for, which reads as a black wedge punched
+  // through the house.
+  //
+  // The old cull design fails this on the FIRST shipped house: its corners and
+  // its partition T-junctions have no camera-facing inward side, so no wall set
+  // could hold them and nobody drew them.
+  let spaces = 0;
+  let checked = 0;
+  const holes: string[] = [];
+  for (const { name, world } of deckedWorlds()) {
+    const grid = gridOf(world);
+    for (const d of world.decks ?? []) {
+      if (d.kind === "bridge") continue; // not a room; nothing to look into
+      for (const c of d.cells) {
+        const i = c.row * grid.width + c.col;
+        const s = findIndoorSpace(grid, c.col, c.row, grid.level[i]);
+        if (!s?.indoor) continue;
+        spaces++;
+        for (const j of s.roof) {
+          const jc = j % grid.width;
+          const jr = (j - jc) / grid.width;
+          for (let dc = -1; dc <= 1; dc++) {
+            for (let dr = -1; dr <= 1; dr++) {
+              if (!dc && !dr) continue;
+              const nc = jc + dc;
+              const nr = jr + dr;
+              if (nc < 0 || nr < 0 || nc >= grid.width || nr >= grid.height) continue;
+              const n = nr * grid.width + nc;
+              checked++;
+              if (s.roof.has(n) || s.shell.has(n)) continue; // drawn by the mask
+              // Not drawn — which is only correct if there is nothing solid
+              // there to draw. An OPENING is the legitimate case: the doorway
+              // itself, and the open ground lying diagonally off a room's
+              // corner (which `entrances` never lists, because the fringe it is
+              // built from is 4-connected). The renderer paints those black
+              // like the rest of the outside, and that is right — you are
+              // looking out of the room, not at a missing wall.
+              const wc = (v: number) => v * CELL_WU + CELL_WU / 2;
+              if (canEnterElev(grid, grid.level[j], wc(jc), wc(jr), wc(nc), wc(nr),
+                               { maxClimb: ENTRANCE_CLIMB, canSwim: true }).ok) continue;
+              if (holes.length < 8) holes.push(`${name} (${nc},${nr}) beside floor (${jc},${jr})`);
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.deepEqual(holes, [], "every neighbour of every floor cell is floor, building or a door");
+  assert.ok(spaces > 100, `the sweep must not be vacuous — ${spaces} indoor spaces`);
+  assert.ok(checked > 10000, `…and must have walked real outlines — ${checked} neighbours`);
+});
+
+test("shell: all four corners of a square room, and never a doorway", () => {
   const g = houseGrid();
   const s = findIndoorSpace(g, 2, 2, 0)!;
-  // (4,4) is the NEAR (down-screen) corner: the room is behind it in painter
-  // order, so its 6-level column would wall the interior back off. The other
-  // three are level with or behind the room and close the outline.
-  assert.deepEqual(cellsOf(g, s.shell), ["(0,0)", "(0,4)", "(4,0)"]);
-  // The renderer ORs shell into the same two bits the wall sets use, so an
-  // overlap would double-draw and (worse) re-add a near wall.
-  for (const j of s.shell) {
-    assert.ok(!s.roof.has(j), "shell is never floor");
-    assert.ok(!s.entrances.has(j), "shell never walls up a door");
-    assert.ok(!s.wallLeft.has(j) && !s.wallRight.has(j), "shell is disjoint from both wall sets");
-  }
+  // Under the cut-away there is no near/far distinction to get wrong: every
+  // corner is building and every corner is drawn. (Under the cull design only
+  // three of these could ever be drawn, and (4,4) was a permanent hole.)
+  for (const [c, r] of [[0, 0], [4, 0], [0, 4], [4, 4]] as const)
+    assert.ok(s.shell.has(at(g, c, r)), `corner (${c},${r}) is part of the building`);
+  // The whole wall ring, near walls included — the cut shortens them, so there
+  // is no longer any reason to leave one out.
+  for (const j of s.fringe)
+    if (!s.entrances.has(j)) assert.ok(s.shell.has(j), "every non-opening fringe cell is building");
+  // …and the door stays a door. Walling one up is the hole in reverse.
+  for (const j of s.entrances) assert.ok(!s.shell.has(j), "an opening is never built over");
+  assert.equal([...s.shell].filter((j) => s.roof.has(j)).length, 0, "shell is never floor");
 });
 
 test("shell: an interior partition's T-junction is drawn (the multi-room case)", () => {
@@ -1019,7 +1079,8 @@ test("shell: an interior partition's T-junction is drawn (the multi-room case)",
   // the shape every multi-room building has, and the one that put a black wedge
   // through the middle of the maintainer's roof line. `X` is the junction where
   // the partition meets the north wall: it touches the floor DIAGONALLY only,
-  // so it is not fringe, so no wall set can ever hold it.
+  // so it is not fringe, and no set built from 4-connected adjacency can hold
+  // it.
   //
   //     # # # X # # #
   //     # . . # . . #
@@ -1045,50 +1106,9 @@ test("shell: an interior partition's T-junction is drawn (the multi-room case)",
   assert.equal(s.fringe.has(T), false, "the junction touches the floor at a point only");
   assert.equal(s.wallLeft.has(T) || s.wallRight.has(T), false, "…so no inward face, no wall set");
   assert.ok(s.shell.has(T), "…and it is exactly what shell is for");
-  // The north run is now unbroken: every cell of row 0 that is inside the
-  // building's span is drawn by something.
-  const drawn = (j: number) => s.roof.has(j) || s.wallLeft.has(j) || s.wallRight.has(j) || s.shell.has(j);
-  for (let c = 0; c < W; c++) assert.ok(drawn(at(g, c, 0)), `north wall cell (${c},0) is drawn`);
-});
-
-test("shell: nothing it adds can stand in front of the room (every shipped world)", () => {
-  // THE SAFETY PROPERTY, swept over real geometry rather than asserted on a
-  // fixture. A tall cell drawn at col+row covers cells with a SMALLER col+row
-  // (they are painted earlier and sit up-screen), so a shell cell is safe
-  // exactly when no cell of the room is behind it. If this ever fails, the
-  // symptom is the one indoor mode exists to remove: a wall back in front of
-  // the interior.
-  let spaces = 0;
-  let shells = 0;
-  for (const { name, world } of deckedWorlds()) {
-    const grid = gridOf(world);
-    for (const d of world.decks ?? []) {
-      if (d.kind === "bridge") continue; // not a room; nothing to look into
-      for (const c of d.cells) {
-        const i = c.row * grid.width + c.col;
-        const s = findIndoorSpace(grid, c.col, c.row, grid.level[i]);
-        if (!s?.indoor) continue;
-        spaces++;
-        shells += s.shell.size;
-        for (const j of s.shell) {
-          const jc = j % grid.width;
-          const jr = (j - jc) / grid.width;
-          for (let dc = -1; dc <= 1; dc++) {
-            for (let dr = -1; dr <= 1; dr++) {
-              const nc = jc + dc;
-              const nr = jr + dr;
-              if (nc < 0 || nr < 0 || nc >= grid.width || nr >= grid.height) continue;
-              if (!s.roof.has(nr * grid.width + nc)) continue;
-              assert.ok(
-                nc + nr >= jc + jr,
-                `${name}: shell (${jc},${jr}) stands in front of room cell (${nc},${nr})`,
-              );
-            }
-          }
-        }
-      }
-    }
+  // The north run is unbroken: every cell of row 0 is drawn by something.
+  for (let c = 0; c < W; c++) {
+    const j = at(g, c, 0);
+    assert.ok(s.roof.has(j) || s.shell.has(j) || s.entrances.has(j), `north wall (${c},0) is drawn`);
   }
-  assert.ok(spaces > 100, `the sweep must not be vacuous — ${spaces} indoor spaces`);
-  assert.ok(shells > 0, `…and must actually have found shell cells — ${shells}`);
 });

@@ -167,6 +167,7 @@ uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
+uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -249,12 +250,26 @@ float groundAtSoft(vec2 cr) {
 // SAME CLASS AS THE FLOATING-SLAB FIX in the LOS march (groundAtSoft above):
 // a roof removed from the RENDER still living in a height map. That one was
 // the OCCLUSION map; this is the SURFACE map, and fixing one without the other
-// left the light crippled by the half that was missed. Indoors every deck on
-// screen is culled by definition, so the base terrain IS the drawn surface
-// everywhere — walls included, since they are terrain and keep their height.
+// left the light crippled by the half that was missed.
+//
+// THE CUT-AWAY MAKES IT TWO CLAMPS, NOT ONE. Indoors the renderer draws every
+// column of the building TRUNCATED at uIndoorTop levels (WorldScene's
+// indoorTop = ceiling - the Settings dial), so the drawn surface is neither the
+// deck-inflated height NOR the wall's full terrain level: it is
+// min(base terrain, the cut). Leaving the cut out re-creates the very bug
+// above one level up — a wall the picture ends at level 3 would still resolve
+// at 6, putting the floor behind it 3 levels (48px) from where it is drawn and
+// crippling every torch that lights it. This is the SURFACE resolve only.
+//
+// THE OCCLUSION MARCH (heightAtSoft / groundAtSoft / uHeightL) IS DELIBERATELY
+// NOT CLAMPED. The roof and the full wall are still physically there — the sun
+// really is blocked by a building whose top half we are choosing not to paint,
+// and a cut-away that let daylight in through its own missing roof would light
+// the room from above as you turned the dial. So: what the camera SEES is
+// truncated, what the light TRAVELS THROUGH is not. The asymmetry is the point.
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  if (uIndoor > 0.5) return baseTerrAt(cr);
+  if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
@@ -1258,6 +1273,13 @@ export class NightLights {
    * See heightAt() in the fragment for the measured reason. Mirrored into the
    * CPU twin (tAt) so sprite tints agree with the ground under them. */
   indoor = false;
+  /** The cut-away's top level while `indoor` — WorldScene.indoorTop. The
+   * building is DRAWN truncated here, so the surface resolve must be too, or
+   * the floor behind a shortened wall resolves at the wall's full height and
+   * every torch lighting it is attenuated across a gap that is not there. Only
+   * the SURFACE resolve clamps; the occlusion march does not (the building is
+   * still solid to the sun). See heightAt(). */
+  indoorTop = 0;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
@@ -1368,6 +1390,10 @@ export class NightLights {
       // because an UNDECLARED uniform silently never syncs on real phone GPUs
       // (the uSun lesson, already paid for twice in this file).
       uIndoor: { type: "1f", value: 0 },
+      // DECLARED, like every other uniform here — the uSun lesson: a uniform
+      // missing from this config gets no GL setter and silently never reaches
+      // real phone GPUs, where headless SwiftShader would never show it.
+      uIndoorTop: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1935,8 +1961,14 @@ export class NightLights {
     {
       const W2 = this.world.width;
       const H2 = this.world.height;
-      const tAt = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W2 || ri >= H2 ? 99 : this.bArr[ri * W2 + ci];
+      // Clamped to the cut-away indoors, for the same reason heightAt is: the
+      // seam is between a body and the wall AS DRAWN, and a wall truncated to
+      // level 3 must not cast a level-6 wall's shading onto the floor beside it.
+      const tAt = (ci: number, ri: number) => {
+        if (ci < 0 || ri < 0 || ci >= W2 || ri >= H2) return 99;
+        const b = this.bArr[ri * W2 + ci];
+        return this.indoor ? Math.min(b, this.indoorTop) : b;
+      };
       const ci = Math.floor(col);
       const ri = Math.floor(row);
       const vColLo = 2 * ci - (col - row);
@@ -2135,6 +2167,7 @@ export class NightLights {
     s.setUniform("uHScale.value", this.hScale);
     s.setUniform("uCloud.value", cloud);
     s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
+    s.setUniform("uIndoorTop.value", this.indoorTop);
     s.setUniform("uAurora.value", aurora);
     s.setUniform("uSun.value.x", sun[0]);
     s.setUniform("uSun.value.y", sun[1]);

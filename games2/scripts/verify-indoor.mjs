@@ -56,6 +56,9 @@ const world = JSON.parse(
   readFileSync(join(here, "..", "..", "maps2", "worlds", "the_island2", "world.json"), "utf8"),
 );
 const fail = (m) => { throw new Error(m); };
+// A cut at least as deep as the room's ceiling leaves NO wall standing — the
+// control case for anything claiming to respond to real cover.
+const INDOOR_CUT_TOP = 6;
 const ok = (m) => console.log(`ok - ${m}`);
 const X = (c) => c.col ?? c.x;
 const Y = (c) => c.row ?? c.y;
@@ -94,6 +97,28 @@ for (const k of fringe) {
   if (inSet.has(key(c, r + 1))) wallLeft.push([c, r]);
 }
 if (!wallRight.length || !wallLeft.length) fail("no far walls derived from the house footprint");
+// THE BUILDING — every solid cell of the enclosure, 8-connected, openings out.
+// This is what the cut-away DRAWS (shared/src/indoor.ts `shell`), and deriving
+// it here rather than trusting the client is the whole point of the gate: the
+// two far-wall sets above cannot contain a corner or a T-junction, which is
+// exactly the class of cell the old cull design left as a hole.
+const building = [];
+{
+  const seen = new Set();
+  for (const [c, r] of interior)
+    for (let dc = -1; dc <= 1; dc++)
+      for (let dr = -1; dr <= 1; dr++) {
+        if (!dc && !dr) continue;
+        const nc = c + dc;
+        const nr = r + dr;
+        const k = key(nc, nr);
+        if (seen.has(k) || inSet.has(k) || isEntrance(nc, nr)) continue;
+        seen.add(k);
+        building.push([nc, nr]);
+      }
+}
+if (building.length <= wallRight.length + wallLeft.length)
+  fail(`the derived building (${building.length}) has no corners beyond the far walls — the derivation is wrong`);
 const doorway = [...fringe].map((k) => k.split(",").map(Number)).filter(([c, r]) => isEntrance(c, r));
 const roomC = Math.round(interior.reduce((a, [c]) => a + c, 0) / interior.length);
 const roomR = Math.round(interior.reduce((a, [, r]) => a + r, 0) / interior.length);
@@ -338,8 +363,11 @@ try {
     if (out.length < 4) fail(`only ${out.length} outdoor sample cells are on screen — the house no longer fits the frame`);
     return out;
   };
-  //   WALL inward faces — the 32px half the maintainer wants kept. Sampled one
-  //   level down the face stack (y+39), on the half that looks into the room.
+  //   WALL faces, one level down the face stack (y+39). These are an OUTDOOR
+  //   control only: they prove the reference picture really shows a solid house
+  //   before anything is compared against it. What the indoor frame must show
+  //   is asserted in 2c, over the whole building rather than these two sets —
+  //   wallLeft/wallRight cannot contain a corner, and corners were the bug.
   const wallFacePoints = async () => {
     const out = [];
     for (const [c, r] of wallRight) { const s = await cellScreen(c, r); out.push({ c, r, side: "R", x: s.x + 48, y: s.y + 39 }); }
@@ -367,12 +395,21 @@ try {
   if (!inn.indoor) fail(`standing at ${roomC},${roomR} is not indoors: ${JSON.stringify(inn)}`);
   if (inn.roofLevel !== roofDeck.level) fail(`roofLevel ${inn.roofLevel} != the deck's ${roofDeck.level}`);
   if (inn.roof !== interior.length) fail(`${inn.roof} cells under the roof, world.json says ${interior.length}`);
+  // The two far-wall sets are DETECTOR output that the renderer no longer reads
+  // (the cut-away draws the whole enclosure); still checked, because they are
+  // the one part of the module whose screen-space mapping is easy to invert.
   if (inn.wallLeft !== wallLeft.length || inn.wallRight !== wallRight.length)
     fail(`wall sets ${inn.wallLeft}/${inn.wallRight} != the world's ${wallLeft.length}/${wallRight.length}`);
   if (inn.capped) fail("the roof fill was capped — indoor must fail OUTDOORS in that case");
-  if (!(inn.mask >= interior.length + wallLeft.length))
-    fail(`the per-cell mask (${inn.mask}) is smaller than roof+walls — nothing would be drawn for some cells`);
-  ok(`indoors: roof ${inn.roof} cells at level ${inn.roofLevel}, wallRatio ${inn.wallRatio}, depth ${inn.depth}, ceiling cut ${inn.ceiling}`);
+  // THE MASK IS THE BUILDING: floor + enclosure, exactly, with nothing left out.
+  // A cell missing here is a cell the renderer draws NOTHING for — a black
+  // wedge through a solid house, which is what the cull design shipped.
+  if (inn.shell !== building.length)
+    fail(`the client's shell is ${inn.shell} cells, the world's building is ${building.length}`);
+  if (inn.mask !== interior.length + building.length)
+    fail(`the mask is ${inn.mask}, should be floor ${interior.length} + building ${building.length}`);
+  ok(`indoors: roof ${inn.roof} cells at level ${inn.roofLevel}, wallRatio ${inn.wallRatio}, depth ${inn.depth}, ` +
+    `ceiling ${inn.ceiling}, cut to level ${inn.top}; the mask is exactly floor ${interior.length} + building ${building.length}`);
 
   // Sample points are picked HERE, with the avatar standing where it will be in
   // the indoor screenshot; the camera has not moved, so they read both frames.
@@ -451,81 +488,104 @@ try {
     `(mean ${Math.min(...floorIn.map((s) => s.mean)).toFixed(1)}-${Math.max(...floorIn.map((s) => s.mean)).toFixed(1)}, ` +
     `peak ${Math.max(...floorIn.map((s) => s.max)).toFixed(1)}, against 0.00 outside; the room is lit only by the torch, by design)`);
 
-  // -- 2c. THE INWARD WALL FACES ARE STILL DRAWN ----------------------------
-  // The bar is "drawn", not "bright". It was 8 when the surface resolve still
-  // reported the ROOF's height for every cell under it — which put the floor
-  // and the wall tops at the SAME z, so the torch lit both equally and the
-  // walls measured 12-16. With the resolve corrected (uIndoor, nightlight.ts)
-  // a waist-height torch lights the FLOOR strongly and the upper wall weakly,
-  // exactly as it should: the floor's screen luminance went up 8x while these
-  // faces settled to 6-8. Dropping the bar to 4 keeps what this test is FOR —
-  // the inward half must still be painted, and the outward half + tile top
-  // must still be void, which the very next assertion checks against the same
-  // frame. Anything actually culled reads 0 and still fails.
-  const wallIn = measure(inShot, wallP);
-  const gone = wallIn.filter((s) => s.black > 0.05 || s.med < 4);
-  if (gone.length)
-    fail(`inward wall faces are missing at ${gone.map((s) => `${s.c},${s.r}${s.side} (mean ${s.mean.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")}`);
-  ok(`all ${wallIn.length} FAR walls still show the face that looks into the room ` +
-    `(median luminance ${Math.min(...wallIn.map((s) => s.med)).toFixed(1)}-${Math.max(...wallIn.map((s) => s.med)).toFixed(1)}, no void pixels)`);
-
-  // -- 2d. ...AND ONLY THAT FACE — "not the entire tile" -------------------
-  // The counter-sample sits on the OUTWARD half, on the tile TOP's own row
-  // (y+23 = the diamond's W/E corners). Outdoors that pixel is solid roof/wall
-  // art; indoors both the top diamond (it is at ceiling level) and the outward
-  // face half must be gone, so it has to be pure void.
+  // -- 2c. NO HOLES — every cell of the building draws something -----------
+  // THE ASSERTION THE ORIGINAL BUG WAS THE ABSENCE OF. The cull design could
+  // only draw cells with a camera-facing inward face, so a room's own corner
+  // and every partition T-junction were drawn by nothing at all and read as
+  // black wedges through a solid house (maintainer 2026-08-07: "floating
+  // disconnected wall slabs"). The cut-away draws the whole enclosure, so
+  // every one of these cells must carry art at its own drawn top.
   //
-  // EXCEPT where another wall's legitimately-drawn inward half lands on it:
-  // wall cells one iso step apart share an x band (32px) and their 144px face
-  // stacks overlap, so an inner-corner neighbour can occupy a cell's whole
-  // outward half. That is not a defect, so it is EXCLUDED — and computed, not
-  // hand-listed: every other wall's drawn rectangle is derived from its own
-  // cellScreen + the ceiling cut and tested for containment.
-  const wallBoxes = [];
-  for (const [set, side] of [[wallRight, "R"], [wallLeft, "L"]])
-    for (const [c, r] of set) {
-      const s = await cellScreen(c, r);
-      const hi = Math.min(s.level, inn.ceiling); // face levels drawn: 0 .. hi-1
-      wallBoxes.push({
-        c, r, side, s,
-        // the drawn half: 32px wide, and the union of the stacked face tiles
-        x0: s.x + (side === "R" ? 32 : 0), x1: s.x + (side === "R" ? 64 : 32),
-        y0: s.y + (s.level - hi + 1) * 16, y1: s.y + s.level * 16 + 64,
-      });
+  // Sampled at the tile's diamond CENTRE (+32,+23) on the level the column was
+  // truncated to, which is where that cell's cap tile is painted.
+  const bldP = [];
+  for (const [c, r] of building) {
+    const sc = await cellScreen(c, r);
+    const drawn = Math.min(sc.level, inn.top); // the cap band
+    const pt = { c, r, x: sc.x + 32, y: sc.y + 23 + (sc.level - drawn) * 16 };
+    if (inView(pt)) bldP.push(pt);
+  }
+  if (bldP.length < building.length - 2)
+    fail(`only ${bldP.length} of ${building.length} building cells are on screen — the house no longer fits the frame`);
+  const bldIn = measure(inShot, bldP);
+  const holes = bldIn.filter((s) => s.med < 4);
+  if (holes.length)
+    fail(`HOLES in the building at ${holes.map((s) => `${s.c},${s.r} (median ${s.med.toFixed(1)}, ${(s.black * 100).toFixed(0)}% void)`).join("; ")} — ` +
+      `a cell of the enclosure that nobody draws is a black wedge through the house`);
+  ok(`the building is SOLID: all ${bldIn.length} enclosure cells — corners and T-junctions included — ` +
+    `carry art at their cut top (median luminance ${Math.min(...bldIn.map((s) => s.med)).toFixed(1)}-${Math.max(...bldIn.map((s) => s.med)).toFixed(1)})`);
+
+  // -- 2d. THE DIAL IS THE CUT ---------------------------------------------
+  // The maintainer's actual requirement: "cut all walls at 'roof - 1',
+  // 'roof - 2', etc. Even making this configurable in settings so I can test
+  // what looks best." So the picture must MOVE, by exactly one level per step.
+  //
+  // Measured on a fixed screen column through a far-wall run: the topmost
+  // non-void row there is the wall's crown, and one more level of cut lowers it
+  // by exactly LEVEL_PX (16). Tolerance ±3 for the art's own diagonal top edge
+  // landing on a different row of the same tile.
+  const dialCol = await (async () => {
+    const [c, r] = wallLeft[Math.floor(wallLeft.length / 2)];
+    const sc = await cellScreen(c, r);
+    return Math.round(sc.x + 32);
+  })();
+  const crownAt = (shot, x) => {
+    for (let y = gv.y; y < gv.y + gv.h; y++) {
+      const p = patch(shot, x, y, 1);
+      if (p && p.med >= 4) return y;
     }
-  const hits = (b, x, y) => x >= b.x0 - 3 && x <= b.x1 + 3 && y >= b.y0 - 3 && y <= b.y1 + 3;
-  // TWO counter-samples per wall, because the 15px iso stagger means no single
-  // one can answer both halves of the claim:
-  //   +23  the tile TOP's own row. Sitting above the next cell's stack, it is
-  //        free on most walls, and it is where a re-drawn ceiling-level TOP
-  //        would appear.
-  //   +100 deep in the face stack, where a re-drawn OUTWARD FACE half would be
-  //        solid. Free only at the END of a run — mid-run, the cell one iso
-  //        step down-screen legitimately draws its own inward half right there.
-  const probeWalls = (dy, label) => {
-    let n = 0;
-    const skipped = [];
-    const whole = [];
-    for (const b of wallBoxes) {
-      const x = b.s.x + (b.side === "R" ? 10 : 54);
-      const y = b.s.y + dy;
-      if (wallBoxes.some((o) => o !== b && hits(o, x, y))) { skipped.push(`${b.c},${b.r}`); continue; }
-      const p = patch(inShot, x, y, 6);
-      if (!p) fail(`outward-half sample for ${b.c},${b.r} fell off screen`);
-      if (p.med >= 1) whole.push(`${b.c},${b.r}${b.side} ${label} (median ${p.med.toFixed(1)}, ${(p.black * 100).toFixed(0)}% void)`);
-      n++;
-    }
-    if (whole.length)
-      fail(`wall tiles are drawn WHOLE at ${whole.join("; ")} — the maintainer asked for "only the part that faces the inside. Not the entire tile"`);
-    return { n, skipped };
+    return NaN;
   };
-  const topCut = probeWalls(23, "tile top");
-  const faceCut = probeWalls(100, "outward face");
-  if (topCut.n * 2 < wallBoxes.length || faceCut.n < 1)
-    fail(`the 32px-cut test went vacuous: ${topCut.n}/${wallBoxes.length} tops and ${faceCut.n} outward faces were answerable`);
-  ok(`and ONLY that face: the roof-level tile TOP is void on ${topCut.n} of ${wallBoxes.length} walls, and the OUTWARD ` +
-    `face half is void on the ${faceCut.n} run-end wall(s) where it is answerable at all ` +
-    `(skipped ${[...new Set([...topCut.skipped, ...faceCut.skipped])].join(" ")} — an inner-corner neighbour's own inward face covers them)`);
+  const before = await page.evaluate(() => window.__ml.indoorCut());
+  const crowns = [];
+  for (const n of [1, 2, 3, 4]) {
+    await page.evaluate((v) => window.__ml.indoorCut(v), n);
+    await page.waitForTimeout(900);
+    const shot = await shoot(`cut-${n}`);
+    crowns.push({ n, y: crownAt(shot, dialCol), top: (await page.evaluate(() => window.__ml.indoorCut())).top });
+  }
+  await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
+  await page.waitForTimeout(900);
+  const bad = [];
+  for (let i = 1; i < crowns.length; i++) {
+    const d = crowns[i].y - crowns[i - 1].y;
+    if (!Number.isFinite(d) || Math.abs(d - 16) > 3)
+      bad.push(`roof-${crowns[i - 1].n} -> roof-${crowns[i].n}: crown moved ${Number.isFinite(d) ? d : "nothing"}px, want 16`);
+    if (crowns[i].top !== crowns[i - 1].top - 1)
+      bad.push(`roof-${crowns[i].n} resolved to top ${crowns[i].top}, one less than roof-${crowns[i - 1].n}'s ${crowns[i - 1].top} expected`);
+  }
+  if (bad.length) fail(`the Indoor wall cut dial does not move the picture: ${bad.join("; ")}`);
+  ok(`the dial IS the cut: roof-1..4 lower the wall crown by exactly one level each ` +
+    `(screen y ${crowns.map((c) => c.y).join(" -> ")}, resolved top ${crowns.map((c) => c.top).join(" -> ")}), restored to roof-${before.cut}`);
+
+  // -- 2e. THE WHITE OUTLINE ON WHAT IS STILL HIDDEN -----------------------
+  // The other half of the maintainer's design: "a white pixel outline on parts
+  // being behind something". A cut-away without it just loses the body's legs
+  // behind the parapet — so the outline must appear exactly when, and to the
+  // extent that, a wall really covers them.
+  //
+  // Asserted as a MONOTONE RESPONSE to the dial rather than one magic number:
+  // a taller parapet must hide MORE of the figure, and a cut that removes the
+  // walls entirely must hide NONE. Nothing stuck on, stuck off, or keyed to
+  // anything but real geometry can satisfy both ends.
+  const hid = [];
+  for (const n of [1, 3, INDOOR_CUT_TOP]) {
+    await page.evaluate((v) => window.__ml.indoorCut(v), n);
+    await page.waitForTimeout(900);
+    hid.push({ n, ...(await page.evaluate(() => window.__ml.myCover())) });
+  }
+  await page.evaluate((v) => window.__ml.indoorCut(v), before.cut);
+  await page.waitForTimeout(900);
+  const [tall, mid, none] = hid;
+  if (!(tall.hiddenFrac > mid.hiddenFrac))
+    fail(`the outline does not follow the cut: roof-1 hides ${tall.hiddenFrac} of the body, roof-3 hides ${mid.hiddenFrac} — taller walls must hide more`);
+  if (none.hiddenFrac !== 0 || none.hidden)
+    fail(`with every wall cut away (roof-${INDOOR_CUT_TOP}) the body is still ${none.hiddenFrac} hidden — the outline is not keyed to real cover`);
+  if (!tall.hiddenCropped)
+    fail("the outline is drawn UNCROPPED over a partly-visible body — it must trace only the hidden part");
+  ok(`the white outline follows the cut: roof-1 hides ${(tall.hiddenFrac * 100).toFixed(0)}% of the figure, ` +
+    `roof-3 ${(mid.hiddenFrac * 100).toFixed(0)}%, roof-${INDOOR_CUT_TOP} none at all ` +
+    `(and the ring is cropped to the hidden part, never the whole body)`);
 
   // =========================================================================
   // 3. THE INDOOR AMBIENT — dark as night, but less blue. Channel ratios,

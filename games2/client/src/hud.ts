@@ -20,6 +20,7 @@ import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, setIndoorLight } from "./indoorlight";
+import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "./indoorcut";
 import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
@@ -821,6 +822,23 @@ export class HudBar {
       pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
     );
 
+    // INDOOR WALL CUT: how far down from each room's own ceiling the cut-away
+    // takes the building (maintainer 2026-08-07: "cut all walls at 'roof - 1',
+    // 'roof - 2', etc. Even making this configurable in settings so I can test
+    // what looks best"). STEPPED, because the underlying quantity is a whole
+    // number of 16px levels — a continuous slider would show the same picture
+    // across a third of its travel and then jump. indoorcut.ts owns the value
+    // and its persistence; the scene rebuilds its mask on "ml-indoor-cut".
+    const cutSpan = INDOOR_CUT_MAX - INDOOR_CUT_MIN;
+    const p2cut = (p: number) => INDOOR_CUT_MIN + Math.round(p * cutSpan);
+    const cut2p = (v: number) => (v - INDOOR_CUT_MIN) / cutSpan;
+    wrap.appendChild(
+      pctSlider("Indoor wall cut", () => cut2p(indoorCut()), (p) => setIndoorCut(p2cut(p)), {
+        snap: (p) => cut2p(p2cut(p)),
+        format: (p) => `roof \u2212${p2cut(p)}`,
+      }),
+    );
+
     // Ambient-effect checklist: one checkbox row per effect (+ an AUTO row).
     // Rows are built lazily once window.__mlAmbient is up (tickAmbient); the
     // whole section stays hidden until then, so an absent/failed ambient layer
@@ -1286,8 +1304,19 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
  * Split out rather than generalising birdSlider: that one's log scale, its 1x
  * detent and its "×N" formatting are its whole point, and folding two axes into
  * one function would make both harder to read than the ~30 duplicated lines. */
-function pctSlider(labelText: string, get: () => number, set: (v: number) => void): HTMLElement {
+function pctSlider(
+  labelText: string,
+  get: () => number,
+  set: (v: number) => void,
+  // A STEPPED slider is the same widget with two hooks: `snap` pulls a raw
+  // 0..1 drag onto the nearest legal position, and `format` writes the readout
+  // in the setting's own units. Defaults give the plain percent slider back,
+  // so the Indoor light one is untouched.
+  opts: { snap?: (p: number) => number; format?: (p: number) => string } = {},
+): HTMLElement {
   const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  const snap = opts.snap ?? ((p: number) => p);
+  const format = opts.format ?? ((p: number) => `${Math.round(p * 100)}%`);
   const wrap = mk("div", "ml-amb-slider");
   const head = mk("div", "ml-amb-slider-head");
   const label = mk("span", "ml-amb-slider-label");
@@ -1300,14 +1329,14 @@ function pctSlider(labelText: string, get: () => number, set: (v: number) => voi
   track.append(fill, knob);
   wrap.append(head, track);
 
-  let curP = clamp01(get());
+  let curP = snap(clamp01(get()));
   const render = (p: number) => {
     curP = p;
     fill.style.width = `${(p * 100).toFixed(2)}%`;
     const trackW = track.clientWidth;
     const kw = knob.offsetWidth || 22;
     knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
-    valEl.textContent = `${Math.round(p * 100)}%`;
+    valEl.textContent = format(p);
   };
   new ResizeObserver(() => render(curP)).observe(track);
 
@@ -1315,7 +1344,8 @@ function pctSlider(labelText: string, get: () => number, set: (v: number) => voi
     const rect = track.getBoundingClientRect();
     return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : curP;
   };
-  const applyP = (p: number) => {
+  const applyP = (raw: number) => {
+    const p = snap(raw);
     render(p);
     set(p);
   };
