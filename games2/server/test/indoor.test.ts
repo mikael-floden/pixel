@@ -782,7 +782,7 @@ test("every shipped world: no bridge cell is indoors, every roof/cave space is",
     "occlusion_test/bridge": 30,
     "the_island/bridge": 36,
     "the_island2/bridge": 96,
-    "the_island2/roof": 277,
+    "the_island2/roof": 13,
     "the_island2/cave": 472,
   })) {
     assert.equal(counts[key], want, `${key}: cells swept`);

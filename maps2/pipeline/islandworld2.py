@@ -215,37 +215,6 @@ HOUSE_ROAD_GAP = 4                  # cells of meadow the dirt ROAD network must
                                     # _dirt_roads runs after the house, and reserving
                                     # the footprint alone doesn't stop it: the router
                                     # has its own keep-out mask, so the house joins it.
-# -- TEST HOUSES (maintainer 2026-08-06) --------------------------------------
-# "We need more houses on The Island 2. Different houses and rooms should have
-# different tiles and wall tile-types. Close to the spawn we need several houses.
-# Some have 2 some 3 and some 4 rooms. Corridors, different tile types. Also
-# place the bonfire in 50% of all rooms and 50% of all corridors. This is all
-# testing, don't think about the aesthetics."
-#
-# So these are TEST FIXTURES, not architecture: a rectangle per house, a row of
-# rooms along the top, a corridor along the bottom, one door per room into the
-# corridor and one door out to the street. Every house draws its walls from a
-# different material and every room its floor from a different one, which is the
-# point — this exists to exercise the renderer against many wall/floor tile
-# combinations under a roof deck, not to look like a village.
-TH_PLAN = (2, 3, 4, 2, 3, 4)        # rooms per house, in placement order
-TH_ROOM_W, TH_ROOM_H = 3, 2         # a room: 3x2 interior
-TH_CORR_H = 2                       # the corridor is TWO rows deep on purpose —
-                                    # a bonfire in a 1-wide corridor would seal
-                                    # the house and strand every room behind it
-TH_SEARCH_R = 68                    # how far from the spawn to look for plots — wide
-                                    # enough that the 17x7 four-room houses find flat
-                                    # ground, so the 50%% bonfire split lands exactly
-TH_GAP = 3                          # clear cells between neighbouring houses
-TH_WALL_MATS = ("stone_mountain", "black_mountain", "regular_snow",
-                "crystal_ice", "light_sand", "lightdark_dirt")
-TH_ROOF_MATS = ("black_mountain", "stone_mountain", "crystal_ice",
-                "regular_snow", "lightdark_dirt", "light_sand")
-TH_FLOOR_MATS = ("lightdark_dirt", "light_sand", "stone_mountain",
-                 "black_mountain", "regular_snow", "crystal_ice",
-                 "saturated_grass")
-TH_BONFIRE = "tiles2/saturated_grass/base_x_3/base_x_3_1054990476/tile_12.webp"
-
 HOUSE_WATER_GAP = 6                 # keep this many cells of land between the walls
                                     # and any water — no house on the shoreline
 
@@ -365,13 +334,11 @@ class Island2(Island):
         self._house_near_spawn()          # a little house by the spawn (walls + roof deck)
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
         self._fix_material_slivers()      # NEW RULE: no tile borders two different foreign grounds
-        self._test_houses()               # multi-room TEST houses (maintainer 2026-08-06)
         self._resolve_deck_mats()         # bridges wear their banks' FINAL ground (maintainer)
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
         self._reconnect_after_props()
-        self._place_test_fires()          # bonfires: 50% of rooms, 50% of corridors
         self._carve_cave()                # LAST: hollow the east massif into the Diablo
                                           # cave (transactional; the surface above it is
                                           # preserved verbatim in kind:"cave" roof decks)
@@ -2870,121 +2837,6 @@ class Island2(Island):
             return
         raise AssertionError("no buildable house site near the spawn")
 
-    # ---- TEST HOUSES (maintainer 2026-08-06) ---------------------------------
-
-    def _th_layout(self, cx, cy, rooms):
-        """One house's cells, split into what they ARE.
-
-        Footprint is (4*rooms+1) x 7: an outer wall ring, a row of `rooms` rooms
-        along the top separated by internal walls, a wall row under them with one
-        door per room, then a TH_CORR_H-deep corridor, then the street door in
-        the bottom wall. Returns walls, per-room cell lists, corridor cells."""
-        W, H = 4 * rooms + 1, 1 + TH_ROOM_H + 1 + TH_CORR_H + 1
-        foot = [(x, y) for y in range(cy, cy + H) for x in range(cx, cx + W)]
-        ry0, ry1 = cy + 1, cy + TH_ROOM_H                     # room rows
-        mid = cy + TH_ROOM_H + 1                              # room/corridor wall
-        co0, co1 = mid + 1, mid + TH_CORR_H                   # corridor rows
-        rms, doors = [], set()
-        for i in range(rooms):
-            x0 = cx + 1 + i * (TH_ROOM_W + 1)
-            rms.append([(x, y) for y in range(ry0, ry1 + 1)
-                        for x in range(x0, x0 + TH_ROOM_W)])
-            doors.add((x0 + TH_ROOM_W // 2, mid))             # into the corridor
-        corr = [(x, y) for y in range(co0, co1 + 1)
-                for x in range(cx + 1, cx + W - 1)]
-        street = (cx + W // 2, cy + H - 1)                    # out to the world
-        doors.add(street)
-        inner = {c for r in rms for c in r} | set(corr)
-        walls = [c for c in foot if c not in inner and c not in doors]
-        return {"foot": foot, "walls": walls, "rooms": rms, "corr": corr,
-                "door": street, "w": W, "h": H}
-
-    def _test_houses(self):
-        """Plant TH_PLAN houses on flat unreserved ground near the spawn.
-
-        Runs AFTER _fix_material_slivers (so the sliver pass cannot repaint the
-        room floors it does not know about) and BEFORE _paint (so the auto-tiler
-        still draws proper transitions for every wall and floor material)."""
-        n = self.n
-        sx, sy = self.spawn
-        deckcells = {(x, y) for dk in self.decks for (x, y) in dk["cells"]}
-        taken = (self.reserved | self._troll | self._ascent | self.roads
-                 | set(self.props) | deckcells | self._gorge_cells | self._linework)
-        placed = []
-        self._test_houses_out = []
-        for hi, rooms in enumerate(TH_PLAN):
-            W, H = 4 * rooms + 1, 1 + TH_ROOM_H + 1 + TH_CORR_H + 1
-            best = None
-            for cy in range(max(1, sy - TH_SEARCH_R), min(n - H - 1, sy + TH_SEARCH_R)):
-                for cx in range(max(1, sx - TH_SEARCH_R), min(n - W - 1, sx + TH_SEARCH_R)):
-                    l0 = int(self.level[cy, cx])
-                    ok = True
-                    for y in range(cy - 1, cy + H + 1):
-                        for x in range(cx - 1, cx + W + 1):
-                            if not (0 <= x < n and 0 <= y < n):
-                                ok = False; break
-                            if (self.mat[y, x] in ("", "clear_water")
-                                    or int(self.level[y, x]) != l0 or (x, y) in taken):
-                                ok = False; break
-                        if not ok:
-                            break
-                    if not ok:
-                        continue
-                    if any(abs(cx - px) < pw + TH_GAP and abs(cy - py) < ph + TH_GAP
-                           for px, py, pw, ph in placed):
-                        continue
-                    d2 = (cx + W // 2 - sx) ** 2 + (cy + H // 2 - sy) ** 2
-                    if best is None or d2 < best[0]:
-                        best = (d2, cx, cy)
-            if best is None:
-                continue
-            _d2, cx, cy = best
-            lay = self._th_layout(cx, cy, rooms)
-            top = int(self.level[cy, cx]) + HOUSE_WALL
-            wmat = TH_WALL_MATS[hi % len(TH_WALL_MATS)]
-            for (x, y) in lay["walls"]:
-                self.mat[y, x] = wmat
-                self.level[y, x] = top
-            # every ROOM gets its own floor material; the corridor gets its own
-            for ri, cells in enumerate(lay["rooms"]):
-                fm = TH_FLOOR_MATS[(hi + ri + 1) % len(TH_FLOOR_MATS)]
-                for (x, y) in cells:
-                    self.mat[y, x] = fm
-            cm = TH_FLOOR_MATS[(hi + rooms + 2) % len(TH_FLOOR_MATS)]
-            for (x, y) in lay["corr"]:
-                self.mat[y, x] = cm
-            self.decks.append({"kind": "roof",
-                               "mat": TH_ROOF_MATS[hi % len(TH_ROOF_MATS)],
-                               "level": top, "thickness": 0,
-                               "cells": list(lay["foot"])})
-            self.reserved |= set(lay["foot"])
-            placed.append((cx, cy, lay["w"], lay["h"]))
-            lay["wall_mat"] = wmat
-            self._test_houses_out.append(lay)
-        # THE BONFIRES — 50% of rooms and 50% of corridors, taken as every other
-        # one in placement order so the split is exact and reproducible rather
-        # than random. Each one goes in the corner FURTHEST from that space's
-        # door, so it can never be the cell that seals a room or a corridor.
-        self._test_fires = []
-        rn = cn = 0
-        for lay in self._test_houses_out:
-            for cells in lay["rooms"]:
-                if rn % 2 == 0:
-                    self._test_fires.append(min(cells))
-                rn += 1
-            if cn % 2 == 0:
-                far = [c for c in lay["corr"] if c[0] != lay["door"][0]]
-                if far:
-                    self._test_fires.append(min(far))
-            cn += 1
-
-    def _place_test_fires(self):
-        """Drop the bonfire props in. Runs after _reconnect_after_props so the
-        prop-pruning pass cannot quietly delete them again."""
-        tile = os.path.join(os.path.dirname(MAPS2), TH_BONFIRE)
-        for c in getattr(self, "_test_fires", []):
-            self.props[c] = tile
-
     # ---- THE CAVE (maintainer 2026-07-29) ------------------------------------
     # Carve-out under the east massif: floor = base terrain, mountain = verbatim
     # roof decks, one pinned doorway. See the CAVE_* constants for the doctrine.
@@ -3236,7 +3088,7 @@ class Island2(Island):
             self.top[y, x] = self.lib.region_base(CAVE_FLOOR_TOP, x, y)
             self.mirror[y, x] = False
         self.reserved |= foot
-        self._reconnect_after_props()     # a prop pinching the doorway would seal the cave
+        self._reconnect_after_props()   # a prop pinching the doorway would seal the cave
 
 
 def build(out=None, seed=21, M=24):
@@ -3284,15 +3136,8 @@ def build(out=None, seed=21, M=24):
     d.level, d.mat, d.top, d.mirror = pv["level"], pv["mat"], pv["top"], pv["mirror"]
     d.props, d.decks = pv["props"], pv["decks"]
     terr = Counter(m for m in d.mat.ravel() if m)
-    # TEST HOUSES are buildings, and the camera-facing law is about LAND: a wall
-    # that happens to be cut from the same material as the ground it stands on is
-    # a wall, not an invisible cliff. Same reasoning as the pit-trap and
-    # dead-zone exemptions the spawn house already carries.
-    thouses = getattr(d, "_test_houses_out", []) or []
-    thcells = {c for lay in thouses for c in lay["foot"]}
     viol = occlusion_violations(d.mat, d.level)   # raw same-material lips (legible ones ALLOWED)
-    bad = [v for v in d._bad_lips()               # illegible ones — these must be zero
-           if not ({tuple(v[0]), tuple(v[1])} & thcells)]
+    bad = d._bad_lips()                           # illegible ones — these must be zero
     assert not bad, f"camera-facing rule broken (illegible lips): {bad[:5]}"
 
     upper_land = int((d.upper & (d.mat != "clear_water")).sum())
@@ -3325,15 +3170,7 @@ def build(out=None, seed=21, M=24):
 
     comps = d._walk_components()
     mainset = set(comps[0])
-    hwalls = set(d._house["walls"]) if d._house else set()   # COPY: |= below would
-                                                             # otherwise mutate the
-                                                             # house's own wall set
-    # TEST HOUSES are buildings too: their walls are structure, and their room
-    # floors deliberately carry many materials side by side under a roof, which
-    # the terrain laws (written for open ground) would read as slivers. Same
-    # exemption the spawn house already has, extended to the fixtures.
-    for lay in thouses:
-        hwalls |= set(lay["walls"])
+    hwalls = d._house["walls"] if d._house else set()
     traps = sum(len(c) for c in comps[1:]
                 if not set(c) <= hwalls          # a house's WALL TOPS are structure,
                                                  # not terrain: nothing can get onto
@@ -3364,23 +3201,14 @@ def build(out=None, seed=21, M=24):
                             and abs(int(d.level[by, c]) - dlv) <= 1
                             and (c, by) in mainset), f"bridge end not walkable at ({c},{by})"
 
-    slivers = [c for c in d._material_slivers() if tuple(c[:2]) not in thcells]
+    slivers = d._material_slivers()
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
-    # The beach-padding and dirt/sand laws police OPEN GROUND — they exist so a
-    # shoreline never reads as a dirt road running into the sea. A test house
-    # with a dirt floor in one room and a sand floor in the next, under a roof
-    # and behind walls, is not a shoreline. Mask the fixtures out of both.
-    th_mask = np.zeros_like(d.mat, bool)
-    for (x, y) in thcells:
-        th_mask[y, x] = True
-    dirt_m = (d.mat == "lightdark_dirt") & ~th_mask
-    sand_m = (d.mat == "light_sand") & ~th_mask
-    sand_halo = _dilate8(sand_m, 2)
-    near_sand_dirt = int((dirt_m & sand_halo).sum())
+    sand_halo = _dilate8(d.mat == "light_sand", 2)
+    near_sand_dirt = int(((d.mat == "lightdark_dirt") & sand_halo).sum())
     assert near_sand_dirt == 0, \
         f"beach padding broken: {near_sand_dirt} dirt cell(s) within Chebyshev 2 of sand"
-    both = _dilate8(dirt_m, 1) & _dilate8(sand_m, 1)
-    both &= (d.mat != "") & (d.mat != "clear_water") & ~th_mask
+    both = _dilate8(d.mat == "lightdark_dirt", 1) & _dilate8(d.mat == "light_sand", 1)
+    both &= (d.mat != "") & (d.mat != "clear_water")
     assert int(both.sum()) == 0, \
         f"{int(both.sum())} tile(s) see BOTH dirt and sand in their 8-neighbourhood"
 
@@ -3463,19 +3291,10 @@ def build(out=None, seed=21, M=24):
     h = d._house
     assert h, "no house was built near the spawn"
     roofs = [dk for dk in d.decks if dk["kind"] == "roof"]
-    # every building carries EXACTLY one roof over exactly its own footprint —
-    # the spawn house plus one per test house, and no two may overlap
-    assert len(roofs) == 1 + len(thouses), \
-        f"expected {1 + len(thouses)} roof deck(s), found {len(roofs)}"
-    mine = [r for r in roofs if set(r["cells"]) == h["foot"]]
-    assert len(mine) == 1, "the spawn house roof does not cover exactly its footprint"
-    assert int(mine[0]["level"]) == h["level"] and int(mine[0]["thickness"]) == 0, \
+    assert len(roofs) == 1 and set(roofs[0]["cells"]) == h["foot"], \
+        "the house roof does not cover exactly its footprint"
+    assert int(roofs[0]["level"]) == h["level"] and int(roofs[0]["thickness"]) == 0, \
         "the house roof is not a 1-level slab at wall height"
-    seen_roof = set()
-    for r in roofs:
-        cs = set(r["cells"])
-        assert not (cs & seen_roof), "two roofs overlap"
-        seen_roof |= cs
     assert h["level"] - h["floor"] >= 6, \
         f"house door clearance {h['level'] - h['floor']} < 6 levels"
     # the walls really stand, and the room is open ONLY through the one door

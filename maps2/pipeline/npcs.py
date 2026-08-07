@@ -91,7 +91,7 @@ SCHEMA = "pixel-maps2/npcs@1"
 # monster showcase — people would only get in the way (same doctrine as
 # spawns.NO_SPAWN_WORLDS). They ship an explicit empty list, not a missing file.
 NO_NPC_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test",
-                 "monster_demo"}
+                 "monster_demo", "house_demo"}
 
 WALK_CLIMB = 1          # games2/shared/src/index.ts — passive step up
 # Personal space, measured on SCREEN rather than on the grid — see apart().

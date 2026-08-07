@@ -71,6 +71,10 @@ def main():
         import propdemo
         propdemo.build(os.path.join(MAPS2, "worlds", "prop_demo"))
         return
+    if args.name == "house_demo":
+        import housedemo
+        housedemo.build(os.path.join(MAPS2, "worlds", "house_demo"))
+        return
     if args.name == "monster_demo":
         import monsterdemo
         monsterdemo.build(os.path.join(MAPS2, "worlds", "monster_demo"))

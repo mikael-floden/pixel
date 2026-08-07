@@ -70,7 +70,8 @@ BUILDER_OWNS = {"monster_demo"}     # writes its own explicit spawns.json
 # and the deck occlusion test. They ship an empty `zones: []` so the intent is
 # explicit, not a missing file. (monster_demo is the deliberate exception — it
 # IS the monster showcase and owns its own file.)
-NO_SPAWN_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test"}
+NO_SPAWN_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test",
+                   "house_demo"}
 
 # Worlds that MUST always contain EVERY roster monster (maintainer 2026-07-29:
 # "The Island 2 should always contain all monsters — this is the map closest to
