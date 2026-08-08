@@ -39,6 +39,8 @@ rectangles clustered near the player spawn are explicitly fake debug areas
   not contain, and it is guaranteed by the geometry rather than left to the game.
 - Zones **may overlap** each other: different monsters share ground, and two
   zones can even cover the SAME cells at different elevations (see `elev`).
+  Overlap is bounded by the crowding law below — sharing ground is fine, piling
+  up on it is not.
 
 ## The water law
 
@@ -99,10 +101,79 @@ per-area density gave 24 butterfly dragons and 1 hedgehog):
    remainder — with 24 types and B=160, sixteen get 7 and eight get 6. The few
    +1s go to the types with the most habitat, the only nod left to raw area;
 3. each type's own total is then spread across **its** zones in proportion to
-   zone area (min 1 per zone, capped by the zone's spawnable cells).
+   zone area (min 1 per zone, capped by the zone's spawnable cells **and by its
+   room** — see the crowding law).
 
 So density still decides *where* a type is thickest — `butterfly_dragon` puts 5
 of its 7 on the big meadow and 2 on the smaller one — never *how many* exist.
+
+## The crowding law
+
+> "LOL! Why have you placed this many monsters at the same place 😂 Looks
+> funny!" — maintainer, 2026-08-07
+
+He was pointing at the copse east of the plains. Four forest species —
+`hedgehog`, `tree_stump` and both forest porings — had all picked the **same
+46-cell component**, six of each, with the two plains zones lying over the top:
+**24 monsters under one tree**, one every two tiles.
+
+No rule was broken, and that was the problem. A zone said *where* a monster may
+live and never *how much room it needs*, and each species picks the nearest
+component it is allowed to live in **independently of the others** — so when
+several share a habitat they all converge on the same patch. Habitat and the
+difficulty gradient both pointed the same way; nothing pointed apart.
+
+Room is now a first-class quantity. For a surface `(x, y, level)`,
+
+```
+density = SUM over zones covering it of  num / |zone spawn cells|
+```
+
+is the expected number of monsters standing on it — the server draws roam
+targets **uniformly** from exactly those cells (`pickMonsterTarget`,
+`WorldRoom.ts`), so this is what the player sees, not a proxy for it. It may
+never exceed **`MAX_DENSITY = 0.05`** — one monster per 20 cells, at most ~4 in
+a 9×9 patch of ground.
+
+The **level is part of the key**: the cave floor at elev 0-1 lies directly under
+the black-mountain rock at 32-36, with the benches and the snow cap stacked over
+both. Those are different *floors of the same building* — a player on the summit
+never meets what lives in the cave under their boots — so the law does not add
+them together.
+
+Three mechanisms in the generator, then one gate:
+
+1. **Room picks the component.** Each component carries `cells × MAX_DENSITY`
+   monsters. A species prefers one with room for its whole population; among
+   those it still takes the **nearest**, so the difficulty gradient is
+   untouched — species spread *sideways* across the habitat, never inwards.
+   When nothing has room the **emptiest** wins (falling back to "nearest" here
+   is what put all four black-mountain species on one ledge — "nearest" is the
+   same answer for all of them). Spare components go to the species with the
+   **least room so far**, not to the first name in the roster.
+2. **Room caps the population.** A zone never holds more than `cells ×
+   MAX_DENSITY`; the spill goes to that species' other zones, so a full copse
+   sends hedgehogs to the next copse instead of stacking them six deep.
+3. **The overlap is settled.** Where the sum still goes over, the thickest
+   contributor gives a monster back until it doesn't; then every species left
+   under its allocation gets monsters back wherever its own ground still has
+   headroom (`enforce_density` + `topup_population`). Both are monotone, so
+   they terminate.
+
+`assert_density()` then fails the build if any surface is still over — including
+for a hand-written `spawns.json`, which none of the three mechanisms touch. It
+binds on everything above the irreducible **one monster per zone**: a lone
+turtle on a 14-cell footbridge sits at 0.071/cell and no arithmetic makes that a
+pile-up. Ground where *several* species are squeezed to one monster each and it
+is still over is **reported**, the same way the gradient reports a habitat with
+nowhere far enough.
+
+`monster_demo` is the one exemption (`CROWDING_EXEMPT`): it is a display case,
+one 5×5 pad per monster with two of each, and 0.08/cell is the point of the map.
+
+On `the_island2`: peak **0.527 → 0.049** monsters/cell, the copse **24.4 → 2.0**
+monsters in a 9×9, at the cost of 19 of 160 monsters and with every one of the
+24 species still present.
 
 ## Generation (rules, never spot edits)
 
@@ -116,7 +187,7 @@ home for brand-new ids until the table is extended). Habitat keys:
 | habitat | ground | residents (today) |
 |---------|--------|-------------------|
 | grass   | open saturated_grass | butterfly_dragon, saber_toothed_tiger |
-| forest  | grass within 3 of a tall grove prop | hedgehog, tree_stump, forest_poring(+_2) |
+| forest  | grass within 6 of a tall grove prop | hedgehog, tree_stump, forest_poring(+_2) |
 | dirt    | lightdark_dirt (roads, forest floor) | dark_donkey |
 | snow    | regular_snow | white_rabbit, snow_demon, mammoth |
 | ice     | crystal_ice | ice_crystal_golem, ice_poring |
@@ -126,13 +197,19 @@ home for brand-new ids until the table is extended). Habitat keys:
 | shore   | **land** within 4 cells of water — the bank | mystical_frog, water_poring |
 | cave    | THE CAVE floor, `elev [0,1]` | masked_shadow_creature, night_beast, diablo, diablo_2 |
 
-Per habitat: 4-connected components ≥ ~30 cells (forest 12), biggest kept;
-every member gets a zone, extra components cycle back over members, and members
-sharing one component get OVERLAPPING zones with the population split so the
-density stays constant (the four cave dwellers share the dungeon floor this
-way). Diagonal contacts are healed so every traced boundary is provably simple.
-Validation asserts each zone has at least `num` valid standable cells at its
-claimed elevation before the file is written.
+`TREE_R = 6` is the woods a grove casts, not the shade of one trunk: at 3 every
+one of the island's 8 tall props was its own 7×7 island of "forest" and the four
+forest species had nowhere to spread to but each other's laps.
+
+Per habitat: 4-connected components ≥ ~30 cells (forest 20 — a zone needs
+`1/MAX_DENSITY` cells to hold one monster legally), biggest kept, up to two per
+member so the crowding law has somewhere to spread to. Every member gets a zone
+and spare components go to whichever member has the least room; members that
+still end up sharing one component get OVERLAPPING zones with the population
+split so the density stays constant (the four cave dwellers share the dungeon
+floor this way). Diagonal contacts are healed so every traced boundary is
+provably simple. Validation asserts each zone has at least `num` valid standable
+cells at its claimed elevation before the file is written.
 
 Zones are re-derived automatically whenever a world is written: `save_world()`
 calls `spawns.refresh()` for the world it just saved, so `build.py <world>` and

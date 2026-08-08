@@ -171,6 +171,7 @@ uniform float uIndoorTop; // the cut-away's top level while indoors (see heightA
 uniform sampler2D uRoom;  // per-cell: 1 where the cell is in MY room (see roomAt)
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
+uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
@@ -295,7 +296,11 @@ float heightAt(vec2 cr) {
 // map here — a smoothed room boundary would bleed a half-cell of ambient
 // through the walls.
 float roomAt(vec2 cr) {
-  if (uIndoor < 0.5) return 1.0;
+  // GATED ON THE EASE, NOT THE VERDICT. uIndoor is boolean geometry and flips
+  // the instant you cross the threshold; the mask has to outlive it, or
+  // stepping OUT hands the whole world the interior's own light for the length
+  // of the fade. The scene keeps the room published until this reaches 0.
+  if (uIndoorMix < 0.001) return 1.0;
   // FAIL LIT, never dark. An unbound sampler2D reads texture unit 0 — here the
   // HEIGHTMAP — whose red channel is terrain height, so a missing bind would
   // not merely be wrong, it would black out the parts of the ROOM that happen
@@ -640,8 +645,20 @@ void main() {
   // 0.35s roll the indoor ambient itself rides, so crossing a doorway FADES the
   // outside to black under an interior that is still dimming, instead of
   // blacking half the screen a frame before the room has caught up.
-  float inRoom = mix(1.0, roomAt(cell), uIndoorMix);
-  vec3 light = uAmbient * sunF * cloudF * inRoom;
+  float r = roomAt(cell);
+  float inRoom = mix(1.0, r, uIndoorMix);
+  // TWO GRADES, ONE CROSSING. A cell in MY ROOM rides uAmbient, which is
+  // already the eased blend from the outdoor grade to the interior dial. A cell
+  // OUTSIDE fades between BLACK and its own OUTDOOR grade and never touches the
+  // interior one — that is the whole fix for the maintainer's report (2026-08-07,
+  // walking out of a house at night): "it snaps to a brightness brighter than
+  // night and has to fade back down". With one shared uAmbient it had to. The
+  // interior dial at 40% is over four times night's luma, so the moment the
+  // mask let go the outside took THAT value and then eased down to night —
+  // an overshoot, not a fade. Outdoors the two are equal and r is 1, so this
+  // costs a mix and changes nothing.
+  vec3 amb = mix(uAmbientOut * (1.0 - uIndoorMix), uAmbient, r);
+  vec3 light = amb * sunF * cloudF;
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
   // slow drifting curtains of arctic green/violet ADDED to the ambient (the
   // ground and everyone standing on it glows with the sky), auto-fading as
@@ -1340,6 +1357,10 @@ export class NightLights {
    * to the light only, never to geometry (`indoor`/`indoorTop` stay boolean —
    * the roof and the truncated columns flip on the same frame regardless). */
   indoorMix = 0;
+  /** The OUTDOOR grade — what the world outside my room is fading between (0
+   * and this), never the interior dial. Written every frame while indoors; see
+   * `uAmbientOut` in FRAG for why the two grades cannot be one uniform. */
+  ambientOut: [number, number, number] = [0, 0, 0];
   /** The cells of the room the local player is in (cell indices). Drives BOTH
    * the shader's mask texture and the CPU twin, so a sprite tint and the
    * ground under it can never disagree about which side of a wall they are on.
@@ -1433,6 +1454,8 @@ export class NightLights {
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
       uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
+      // The OUTDOOR half of the same grade — see the `amb` mix in FRAG.
+      uAmbientOut: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
       // Directional sun (cast dir, slope, strength). DECLARED here on
       // purpose: a uniform that is setUniform()'d but missing from this
       // config gets no GL setter — some pipelines still sync it (headless
@@ -2079,14 +2102,24 @@ export class NightLights {
     // MY room gets no ambient and no sky glow — only the point lights below.
     // The shader and this must agree or a body standing just outside the
     // doorway is tinted for a different world than the ground it stands on.
-    // Eased on indoorMix exactly like the fragment's mix(1.0, roomAt, uIndoorMix).
+    // Eased on indoorMix exactly like the fragment's mix(1.0, roomAt, uIndoorMix),
+    // and gated on the EASE rather than `indoor` for the same reason: the mask
+    // has to outlive the boolean or stepping out gives the whole world the
+    // interior's light for the length of the fade.
     const hit =
-      this.indoor && this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0;
+      this.indoorMix > 0
+        ? this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0
+        : 1;
     const inRoom = 1 + (hit - 1) * this.indoorMix;
+    // TWIN of the fragment's two-grade `amb` mix: in-room rides curAmbient (the
+    // blended one), outside fades between black and the OUTDOOR grade only.
+    const ao = this.indoorMix > 0 ? this.ambientOut : this.curAmbient;
+    const k = 1 - this.indoorMix;
+    const amb = (i: number) => this.curAmbient[i] * hit + ao[i] * k * (1 - hit);
     const out: [number, number, number] = [
-      (this.curAmbient[0] * sunF + aur[0]) * inRoom,
-      (this.curAmbient[1] * sunF + aur[1]) * inRoom,
-      (this.curAmbient[2] * sunF + aur[2]) * inRoom,
+      amb(0) * sunF + aur[0] * inRoom,
+      amb(1) * sunF + aur[1] * inRoom,
+      amb(2) * sunF + aur[2] * inRoom,
     ];
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
@@ -2354,6 +2387,12 @@ export class NightLights {
     s.setUniform("uAmbient.value.x", ambient[0]);
     s.setUniform("uAmbient.value.y", ambient[1]);
     s.setUniform("uAmbient.value.z", ambient[2]);
+    // Falls back to `ambient` itself, so a caller that never sets ambientOut
+    // (or a world with no indoor spaces) behaves exactly as before.
+    const ao = this.indoorMix > 0 ? this.ambientOut : ambient;
+    s.setUniform("uAmbientOut.value.x", ao[0]);
+    s.setUniform("uAmbientOut.value.y", ao[1]);
+    s.setUniform("uAmbientOut.value.z", ao[2]);
     const n = Math.min(lights.length, MAX_SHADER_LIGHTS);
     for (let i = 0; i < n; i++) {
       const l = lights[i];
