@@ -119,7 +119,9 @@ import {
   artLift,
   DEFAULT_WORLD,
   Deck,
+  loadPlaces,
 } from "../maps";
+import type { PlaceLookup } from "../maps";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -912,6 +914,11 @@ export class WorldScene extends Phaser.Scene {
   // really differs is the torch day-gate, and that is answered by an O(1)
   // `indoorContains` lookup into MY space's roof set (no second flood fill).
   private indoorSpace: IndoorSpace | null = null;
+  // NAMED PLACES (maps2 places.json): which labelled room the player is in,
+  // and the last value handed to the composer. Null until the file loads, and
+  // null forever for a world that names nothing — both mean "outdoors".
+  private places: PlaceLookup | null = null;
+  private placeNow: string | null = null;
   private indoorInside = false; // the APPLIED verdict the renderer obeys
   private indoorPending = false; // verdict waiting on the dwell timer
   private indoorKey = -1; // canonical space id = min(roof); -1 = none
@@ -1140,6 +1147,15 @@ export class WorldScene extends Phaser.Scene {
     this.world = (this.registry.get("world") as World | null) ?? null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps2 = !!this.world && isMaps2World(this.world);
+    // The maps agent's named interiors, fetched alongside the world. Async and
+    // deliberately un-awaited: a world with no places.json is normal, and the
+    // music must not wait on a file that may never arrive. Until it lands,
+    // `places` is null and every cell reads as outdoors — which is what the
+    // game did before this existed.
+    void loadPlaces(this.worldName).then((p) => {
+      this.places = p;
+      this.indoorDirty = true; // re-answer "where am I" on the next frame
+    });
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
@@ -7594,6 +7610,14 @@ export class WorldScene extends Phaser.Scene {
     const col = Math.floor(av.fx / CELL_WU);
     const row = Math.floor(av.fy / CELL_WU);
     const elev = av.surfLevel;
+    // WHICH NAMED PLACE? Same cell the roof test already needs, so this costs
+    // one Map lookup and only talks to the composer when the answer CHANGES —
+    // a bed swap on every frame you stand in the cave would restart the music.
+    const place = this.places?.at(col, row) ?? null;
+    if (place !== this.placeNow) {
+      this.placeNow = place;
+      gameAudio.setPlace(place);
+    }
     if (!this.indoorDirty && col === this.indoorAtCol && row === this.indoorAtRow && elev === this.indoorAtElev) {
       // Nothing that can change the answer has changed. Still service the dwell
       // timer — a verdict deferred on the doorstep must land even if you then

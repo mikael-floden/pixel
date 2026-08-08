@@ -33,10 +33,10 @@ import { dbToGain } from "./catalog";
 import { MusicalContext } from "./oneshot";
 import tracksFile from "../music/tracks.json";
 
-export type BedName = "adventure" | "town" | "cave" | "home" | "battle" | "night";
+export type BedName = "adventure" | "town" | "cave" | "home" | "battle" | "night" | "cave4";
 
 /** Priority order — the FIRST match wins in api.ts's context resolve. */
-export const BED_NAMES: BedName[] = ["battle", "cave", "home", "town", "night", "adventure"];
+export const BED_NAMES: BedName[] = ["battle", "cave", "cave4", "home", "town", "night", "adventure"];
 
 /**
  * The shared level for every world bed, in dB.

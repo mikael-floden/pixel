@@ -357,6 +357,17 @@ const JUMP_VOICE_GAIN_DB = -12;
 // crack at roughly full scale on the master — the limiter (-8 dB threshold,
 // 12:1) turns the overshoot into punch instead of clipping.
 const THUNDER_GAIN_DB = 14;
+
+// A NAMED PLACE PLAYS ITS OWN SCORE (maintainer 2026-08-08, after picking
+// cave4: "Can you play the music cave4 inside that cave regardless if it's day
+// or night?"). Keyed by the maps agent's place id from
+// maps2/worlds/<world>/places.json — `the_cave` on the_island2 — so adding a
+// room's music is a line here plus a track, with no geometry in the audio code.
+// Deliberately keyed on the ID and not the `kind`: two caves can want different
+// music, and "every cave sounds the same" should be a choice, not a default.
+const PLACE_BEDS: Record<string, BedName> = {
+  the_cave: "cave4",
+};
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -415,6 +426,8 @@ export class GameAudio {
   // exactly as before.
   private beds: ContextMusic | null = null;
   private bedWanted = false;
+  // The bed a named place demands, or null outdoors — see setPlace().
+  private placeBed: BedName | null = null;
   private bedNow: BedName | null = null;
   private bedSince = 0;
   private bedOverride: BedName | null = null;
@@ -577,13 +590,18 @@ export class GameAudio {
     if (!this.beds || !this.bedWanted) return false;
     const want =
       this.bedOverride ??
+      this.placeBed ??
       resolveBed(desiredBed({ ...field, sun }, this.bedNow), (n) => hasBed(n));
     const now = this.graph ? this.graph.now : 0;
     const held = now - this.bedSince;
     // An explicit audition must not wait out the minimum hold — the maintainer
     // types __ml.audioBed("cave") and expects to hear cave, not silence for six
     // seconds followed by a switch they have stopped listening for.
-    const urgent = want === "battle" || this.bedNow === null || this.bedOverride !== null;
+    const urgent =
+      want === "battle" || this.bedNow === null || this.bedOverride !== null ||
+      // Crossing a doorway is a hard cut in the world; making the player stand
+      // in the cave for six seconds of valley music would read as a bug.
+      want === this.placeBed || this.placeBed !== null;
     if (want !== this.bedNow && (urgent || held >= BED_MIN_HOLD_S)) {
       this.bedNow = want;
       this.bedSince = now;
@@ -595,6 +613,23 @@ export class GameAudio {
     // one would leave a hole of silence until it decoded. The catalog keeps
     // playing and cross-fades out the moment the bed is really up.
     return this.beds.activeBed() !== null;
+  }
+
+  /** WHICH NAMED PLACE IS THE PLAYER STANDING IN? (maps2 places.json — the
+   * maps agent labels the interiors so the game can react to a ROOM rather than
+   * re-deriving it from geometry.) null outdoors. The client calls this only
+   * when the answer changes.
+   *
+   * A place bed OWNS THE MUSIC BUS while it is set: the day score and the night
+   * bed both step aside, because "inside the cave" is not a time of day
+   * (maintainer 2026-08-08: "play the music cave4 inside that cave regardless
+   * if it's day or night"). Battle is deliberately NOT special-cased here — no
+   * battle layer is wired yet, and the moment one is, this is where that
+   * decision belongs. */
+  setPlace(id: string | null): void {
+    const next = id && PLACE_BEDS[id] ? PLACE_BEDS[id] : null;
+    if (next === this.placeBed) return;
+    this.placeBed = next;
   }
 
   /** Start the character-select TITLE THEME (composer-generated, looping on the
@@ -1313,8 +1348,10 @@ export class GameAudio {
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
     const tau = this.musicToggleFast ? 0.06 : 0.4;
 
-    if (this.bedOverride) {
-      // Auditioning: the bed owns the bus, everything else steps aside.
+    // A named PLACE takes the bus on exactly the same terms an audition does:
+    // its bed plays, the day score and the night bed both fade out. An explicit
+    // audition still wins, so __ml.audioBed() works from inside the cave too.
+    if (this.bedOverride || this.placeBed) {
       this.updateBeds(field, sun, this.pureOn ? 1 : this.musicOn ? modeMul : 0);
       this.music.setLevel(0, tau);
       this.applyNightLevel(0, tau);

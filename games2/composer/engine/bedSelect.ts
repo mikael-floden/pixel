@@ -7,10 +7,10 @@
  * debugging loop. Everything below is a pure function of the world sample.
  */
 
-export type BedName = "adventure" | "town" | "cave" | "home" | "battle" | "night";
+export type BedName = "adventure" | "town" | "cave" | "home" | "battle" | "night" | "cave4";
 
 /** Priority order, most urgent first. */
-export const BED_NAMES: BedName[] = ["battle", "cave", "home", "town", "night", "adventure"];
+export const BED_NAMES: BedName[] = ["battle", "cave", "cave4", "home", "town", "night", "adventure"];
 
 /** What the scene measures around the listener (see WorldScene.sampleAudioField). */
 export interface BedInputs {
@@ -50,6 +50,11 @@ export const BED_FALLBACK: Record<BedName, BedName[]> = {
   town: ["adventure"],
   night: ["adventure"],
   adventure: [],
+  // cave4 is a PLACE bed, chosen by standing somewhere named rather than by the
+  // field sample, so desiredBed never asks for it. It still needs a row here
+  // because resolveBed indexes this map by name: falling back to `cave` keeps
+  // the intent (underground) if cave4 is ever missing from a build.
+  cave4: ["cave", "night", "adventure"],
 };
 
 /** Hysteretic test: already-on stays on down to the LOW mark. */
