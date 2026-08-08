@@ -297,6 +297,14 @@ float groundAt(vec2 cr) {
 float caveDepthAt(vec2 cr) {
   if (uRoomOn < 0.5) return 0.0;
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  // THE SMOOTHING MUST NOT LEAK OUT OF THE ROOM. A bilinear tap next to the
+  // opening pulls interior depth onto the OUTER rock face, which darkened the
+  // whole mountain column (maintainer 2026-08-08: "you made the whole column
+  // dark! I want the inside dark, not the outside"). Gate on this pixel's OWN
+  // cell first: outside a room there is no darkening at all, and the four-tap
+  // blend only ever softens the gradient WITHIN the interior.
+  vec2 own = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  if (texture2D(uRoom, own).g <= 0.0) return 0.0;
   vec2 g = cr - 0.5;              // sample grid sits at texel centres
   vec2 f = fract(g);
   vec2 b = floor(g);
