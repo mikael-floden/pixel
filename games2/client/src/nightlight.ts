@@ -323,6 +323,47 @@ float caveDepthAt(vec2 cr) {
   return mix(mix(d00, d10, f.x), mix(d01, d11, f.x), f.y) * 255.0;
 }
 
+// WHICH CELL IS ACTUALLY DRAWN HERE, with the roof slabs taken out.
+//
+// This is the whole reason a correct mask darkened nothing. The surface march
+// in main() stops at the first column whose top the ray meets, and heightAt is
+// max(terrain, deck) - so a roofed cave cell is opaque for its FULL height and
+// every pixel of an opening resolves to the first interior column, which is at
+// BFS depth 0, which means "the mouth itself" and multiplies by exactly 1.0.
+// Measured on the shipped build: 0 of 86,640 mouth pixels darkened, worst
+// multiply 1.00000. The floor and the inward wall faces behind that column
+// were never sampled at all, however the mask was built - which is why widening
+// the mask kept moving the darkening onto the OUTSIDE rock (the near jambs are
+// the only cells the surface march does resolve, and a house's outer wall is
+// the same kind of cell, which is what turned every house black).
+//
+// The GROUND field has no decks in it, so the identical walk over groundAt
+// lands on the cell whose art is painted at this pixel: measured, 92% of
+// inward-wall pixels and 70% of floor pixels, carrying depths 1..8 instead of
+// a flat 1.
+//
+// It is a SECOND, SEPARATE march on purpose. cell/z from the surface walk still
+// drive every existing lighting rule - Lambert, shadows, AO, emission - so this
+// cannot move a pixel that is not already under a ceiling. It runs only for
+// pixels that pass the ceiling gate, which is a thin band of the screen.
+vec2 groundCellAt(float u, float v0, float kk) {
+  float vHi = v0 + uIsoB.w * kk;
+  vec2 hit = vec2(-1.0);
+  bool got = false;
+  for (int s = 0; s < 128; s++) {
+    if (got || vHi <= v0 - 1.5) break;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 c2 = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    float H = groundAt(c2);
+    if (H < 90.0 && v0 + H * kk >= vLo - 0.0001) { hit = c2; got = true; }
+    vHi = vLo;
+  }
+  return hit;
+}
+
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
@@ -880,7 +921,12 @@ void main() {
   // the whole face (black mountain) or nothing (no effect) because the shader
   // had no idea where the ceiling stopped. Now it is in the mask.
   if (uCaveK > 0.0 && z < caveUnderAt(cell) - 0.5) {
-    float dep = caveDepthAt(cell);
+    // The GATE stays on the surface march - that is the piece that works, and z
+    // (not the cell) is what tells the opening apart from the lintel above it.
+    // The DEPTH comes from the deck-free march, because that is the cell whose
+    // art this pixel is showing. See groundCellAt.
+    vec2 dcell = groundCellAt(u, v0, kk);
+    float dep = dcell.x < 0.0 ? caveDepthAt(cell) : caveDepthAt(dcell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
       // THE MOUTH ITSELF IS UNTOUCHED, and it goes dark FAST behind it. dep is
@@ -1629,7 +1675,13 @@ export class NightLights {
       // 3.6, measured from the OPENING (which stays untouched): one tile in
       // reads 3%, two 0.07%, i.e. black. Nothing at the mouth, gone immediately
       // behind it.
-      uCaveK: { type: "1f", value: 3.6 },
+      // Depth falloff. Now that the depth reaches the cells that are really
+      // drawn (see groundCellAt), 3.6 was a cliff rather than a fade: it put
+      // the first cell behind the mouth at 2.7% and the second at 0.07%. 1.2
+      // reads as the brief - the mouth untouched, 30% one cell in, 9% two,
+      // 2.7% three, 0.8% four: dark fast, near-black by the third or fourth
+      // tile, still a gradient rather than a wall of paint.
+      uCaveK: { type: "1f", value: 1.2 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
