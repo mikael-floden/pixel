@@ -169,7 +169,7 @@ uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
 uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
-                          // G: depth from the nearest opening (caveDepthAt).
+                          // G: depth from the nearest opening PLUS ONE (0 = not a room).
 uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
@@ -850,12 +850,9 @@ void main() {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
-      // +1: THE MOUTH ITSELF IS ALREADY DARK. Depth 0 is the first cell inside
-      // the opening, and leaving it at full light made the entrance a bright
-      // hole in the rock (maintainer 2026-08-08: "I'm talking about this being
-      // like a dark almost black entrance"). Biasing the depth by one cell
-      // starts the curve inside the doorway instead of at it.
-      light *= mix(exp(-(dep + 1.0) * uCaveK), 1.0, mine);
+      // dep is ALREADY depth+1 (see setRoom), which doubles as the bias that
+      // makes the mouth itself dark rather than a bright hole in the rock.
+      light *= mix(exp(-dep * uCaveK), 1.0, mine);
     }
   }
 
@@ -1822,7 +1819,11 @@ export class NightLights {
     // world, so it is written once: the geometry of a cave does not move.
     if (needDepth) {
       for (const [i, dep] of depth!)
-        if (i >= 0 && i < w * h) d[i * 4 + 1] = Math.min(255, Math.max(0, dep));
+        // +1 SO ZERO MEANS 'NOT A ROOM'. Depth 0 is the cell at the opening,
+        // and storing it as a literal 0 made it indistinguishable from open
+        // ground — the containment gate then read every entrance cell as
+        // outside and the effect vanished exactly where it matters.
+        if (i >= 0 && i < w * h) d[i * 4 + 1] = Math.min(255, Math.max(0, dep) + 1);
       this.depthWritten = true;
     }
     ctx.putImageData(this.roomImg, 0, 0);
