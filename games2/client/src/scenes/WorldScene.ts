@@ -8068,41 +8068,42 @@ export class WorldScene extends Phaser.Scene {
         }
         // Anything the fill never reached is walled off from every opening.
         for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
-        // THE WALL RING, BUT ONLY WHERE IT IS ROCK RATHER THAN A HOUSE WALL.
-        // What you actually see darken through a cave mouth is this ring, not
-        // the floor — drop it entirely and the effect vanishes. But a HOUSE's
-        // ring IS its outer wall, one cell thick and fully visible, so
-        // including it blindly painted every house's sides black.
+        // THE INWARD-FACING WALLS — the ones you are actually looking AT when
+        // you look into a mouth. The floor alone is a thin sliver through an
+        // opening; what fills the frame is rock, and until now every attempt to
+        // include rock took the WHOLE ring around the room. Half that ring is
+        // the NEAR (down-screen) side, whose two drawn faces point away from
+        // the room and out at the camera: that is the mountain's outside skirt,
+        // and darkening it is "you fade what's not inside the cave opening
+        // dark" (maintainer 2026-08-08) — the same complaint in a new coat.
         //
-        // The two are told apart by how far the rock rises ABOVE the room's
-        // ceiling: a cave sits under a mountain that towers over it (terrain
-        // 24 against an 8-level ceiling), while a house's wall stops at its own
-        // roof (6 against 6). Two levels of headroom is the bar.
-        // A BAND OF ROCK, NOT JUST THE ONE-CELL RING. The ring itself is buried:
-        // painter order draws the outer columns over it, so only a single
-        // column of it ever faces the camera (maintainer 2026-08-08: "only a
-        // single column next to the opening got dark. Not the inside!"). What
-        // you actually look at through a mouth is the rock BEHIND that ring, so
-        // the band reaches several cells out — and the ceiling gate in the
-        // shader keeps it to the part BELOW the roof, which is the bit framed
-        // by the opening. Above it stays lit mountain.
-        const band = new Set<number>(space.fringe);
-        for (let ring = 0; ring < 3; ring++) {
-          for (const fi of [...band])
-            for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
-              if (n >= 0 && n < w.width * w.height && !space.roof.has(n)) band.add(n);
-        }
-        for (const fi of band) {
+        // The projection settles which is which and the detector already sorts
+        // them: a cell's drawn faces are its +col and +row sides (both go DOWN
+        // the screen), so a fringe cell shows the room an inward face exactly
+        // when the room lies on one of those two sides — space.wallLeft /
+        // wallRight, the far walls, and no others. See IndoorSpace.wallLeft.
+        //
+        // No band, no rings: a wall face is 8 levels tall (128px) while a cell
+        // step is 15px, so the second row of rock behind it is buried whole.
+        //
+        // AND ONLY WHERE IT IS ROCK, NOT A HOUSE WALL. A house's far wall is
+        // one cell thick and its inward face is what the cut-away shows you
+        // from inside — taking it blindly turned every house's sides black.
+        // The two part on how far the column rises above the room's ceiling:
+        // measured on the_island2, the cave's 146 far walls stand at terrain
+        // 24-40 under an 8-level ceiling, while both houses' far walls stop at
+        // 6 under a 6-level roof. Two levels of headroom is the bar, and it
+        // keeps 146 cave cells and 0 house cells.
+        for (const fi of [...space.wallLeft, ...space.wallRight]) {
           if (out.has(fi)) continue;
-          // Ceiling and depth come from the nearest cell already carrying them,
-          // so a band cell three out inherits the room's ceiling rather than
-          // being skipped for having no roof neighbour of its own.
+          // The ceiling and the depth both come from the room cell this wall
+          // faces: the wall is as deep in as the floor in front of it, and it
+          // is framed by the same opening.
           let ub = -1;
           let best = Infinity;
           for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
-            const u2 = this.caveUnder.get(n);
-            if (u2 !== undefined) ub = Math.max(ub, u2);
-            else if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
+            if (!space.roof.has(n)) continue;
+            if (g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
             const d = out.get(n);
             if (d !== undefined && d < best) best = d;
           }
