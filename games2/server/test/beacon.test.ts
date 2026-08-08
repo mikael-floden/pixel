@@ -40,16 +40,33 @@ test("the route reports the LEVEL it really ended on, not the one that was asked
   assert.equal(roof!.endLevel, 0, "the trip claims to have reached a roof it never got onto");
 });
 
-test("a tap on a roof with no way up walks to the floor beneath it", () => {
-  // The maintainer's click, both readings offered, drawn surface first.
-  const trip = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [6, 0]);
+test("the two readings of one click are the SAME PIXEL, and the reachable one wins", () => {
+  // THE PROJECTION: screen y = (col+row)*ISO_DY - level*LEVEL_PX. So the ground
+  // drawn at a level-6 slab's pixel is 6*16/15 = 6.4 cells up-screen — a
+  // DIFFERENT CELL that lands on the SAME PIXEL. That is what makes "walk on
+  // top of it or under it" one click with two meanings, and it is why choosing
+  // between them never moves the beacon (maintainer 2026-08-08: "now you move
+  // the marker to a spot I didn't click on").
+  const roof = { c: 178.5, r: 117.5, lvl: 6 };
+  const shift = (roof.lvl * 16) / 15;              // cells of (col+row) per 6 levels
+  const under = { c: roof.c - shift / 2, r: roof.r - shift / 2, lvl: 0 };
+  const screenY = (p: { c: number; r: number; lvl: number }) => (p.c + p.r) * 15 - p.lvl * 16;
+  assert.ok(Math.abs(screenY(roof) - screenY(under)) < 0.01,
+    "the fixture's two readings do not sit on the same pixel — nothing here is ambiguous");
+
+  const trip = startBestTrip(grid, wu(184.5), wu(122.5), false, 0, 0, [
+    { x: wu(roof.c), y: wu(roof.r), goalLevel: roof.lvl },     // what is DRAWN there
+    { x: wu(under.c), y: wu(under.r), goalLevel: under.lvl },  // what is under it
+  ]);
   assert.ok(trip, "no route at all");
-  assert.equal(trip!.goalLevel, 0,
-    "the tap still targets the unreachable roof — the walk stops a storey under the marker");
-  assert.equal(trip!.endLevel, 0, "the chosen route does not finish on the surface it chose");
-  // ...and it really does end under the tapped spot, not somewhere else.
-  assert.ok(Math.hypot(trip!.target.x - wu(178.5), trip!.target.y - wu(117.5)) < CELL_WU,
-    "the walk ends somewhere other than the tapped column");
+  // Rule 1: the roof has no ramp from the road, so it was never what was meant.
+  assert.equal(trip!.goalLevel, under.lvl,
+    "the walk still targets the unreachable roof, so it stops a storey under the marker");
+  assert.equal(trip!.endLevel, under.lvl, "the chosen reading is one the walker cannot reach either");
+  // ...and it ends on the GROUND READING's column, not the roof cell's.
+  assert.ok(Math.hypot(trip!.target.x - wu(under.c), trip!.target.y - wu(under.r)) < CELL_WU * 1.5,
+    `the walk ended at ${(trip!.target.x / 32).toFixed(1)},${(trip!.target.y / 32).toFixed(1)}, ` +
+      `not at the ground under the finger (${under.c.toFixed(1)},${under.r.toFixed(1)})`);
 });
 
 test("a roof you CAN reach still wins when it is the shorter walk", () => {
@@ -69,7 +86,8 @@ test("a roof you CAN reach still wins when it is the shorter walk", () => {
     `the fixture does not discriminate: roof ${upLen.toFixed(0)}wu vs floor ${downLen.toFixed(0)}wu`);
 
   // Offer the GROUND first, so only distance can pick the roof.
-  const trip = startBestTrip(grid, wu(from[0]), wu(from[1]), wu(177.5), wu(117.5), false, 0, 6, [0, 6]);
+  const trip = startBestTrip(grid, wu(from[0]), wu(from[1]), false, 0, 6,
+    [{ x: wu(177.5), y: wu(117.5), goalLevel: 0 }, { x: wu(177.5), y: wu(117.5), goalLevel: 6 }]);
   assert.equal(trip!.goalLevel, 6,
     `the shorter walk (roof, ${upLen.toFixed(0)}wu) lost to the longer one (floor, ${downLen.toFixed(0)}wu)`);
 });
@@ -77,10 +95,11 @@ test("a roof you CAN reach still wins when it is the shorter walk", () => {
 test("the drawn surface keeps ties, and a single candidate is unchanged", () => {
   // Only a STRICT improvement displaces the incumbent, so offering the same
   // level twice cannot flip the answer.
-  const a = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [0, 0]);
+  const a = startBestTrip(grid, wu(184.5), wu(122.5), false, 0, 0,
+    [{ x: wu(178.5), y: wu(117.5), goalLevel: 0 }, { x: wu(178.5), y: wu(117.5), goalLevel: 0 }]);
   assert.equal(a!.goalLevel, 0, "a tie changed the answer");
   // And with nothing to compare against, this is exactly startTrip.
-  const solo = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [6]);
+  const solo = startBestTrip(grid, wu(184.5), wu(122.5), false, 0, 0, [{ x: wu(178.5), y: wu(117.5), goalLevel: 6 }]);
   const plain = startTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, 6);
   assert.equal(solo!.goalLevel, plain!.goalLevel, "a single candidate no longer behaves like startTrip");
   assert.equal(solo!.path.length, plain!.path.length, "a single candidate re-planned differently");

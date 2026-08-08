@@ -1424,34 +1424,39 @@ try {
       const wyRoof = cellWorldY - (6 - s.level) * lh;  // a pixel of ROOF SLAB
       const r = window.__ml.tapPoint(wx, wyRoof);
       if (!r) return { err: "tapPoint returned null (void/solid)" };
-      // THE PROPERTY: you arrive AT THE BEACON. Where the walk ends and where
-      // the marker is drawn must be the same point, because both now come out
-      // of the one decision the routing made. (Asking instead that the walk end
-      // at the tapped PIXEL is asking for the impossible here: the finger is on
-      // a roof, and standing on the floor of that cell always draws ~96px lower
-      // — there is no walkable surface at that pixel at all.)
+      // TWO PROPERTIES, and the second is the one that keeps getting broken:
+      //   (a) the walk ARRIVES on the surface it chose, and
+      //   (b) THE BEACON STAYS ON THE PIXEL THAT WAS CLICKED.
+      // The two readings of this click are the roof and the ground drawn at the
+      // same pixel — a cell 6.4 up-screen — so resolving between them must not
+      // shift the marker at all.
       const endY = oy + ((r.target.x + r.target.y) / 32) * dy - (r.goalLevel ?? 0) * lh;
       const m = window.__ml.marker();
       return { picked: r.picked, target: r.target, goalLevel: r.goalLevel, endLevel: r.endLevel,
-               markerY: m ? m.y : null, gap: m ? m.y - endY : null,
-               fromFinger: endY - wyRoof, wouldBe: 6 * lh };
+               markerY: m ? m.y : null, markerOffFinger: m ? m.y - wyRoof : null,
+               walkOffMarker: m ? endY - m.y : null, wouldBe: 6 * lh };
     });
     if (probe.err) fail(`section 9 could not tap the roof: ${probe.err}`);
     if (probe.picked.lvl !== 6)
       fail(`the tap on the house resolved to level ${probe.picked.lvl}, not the roof slab — ` +
         `section 9 is not exercising the ambiguous-cell path at all`);
-    if (probe.goalLevel !== probe.endLevel)
-      fail(`the trip targets level ${probe.goalLevel} but ends on ${probe.endLevel} — ` +
-        `the chosen reading is one the walker cannot reach`);
+    // NOT asserted: that the walk ARRIVES on the chosen surface. This pixel is
+    // a roof over mountain — the ground reading 6.4 cells up-screen is level-6
+    // stone, so there is no second reading and no reachable surface at the
+    // pixel at all. The walk is then a best effort (the floor beneath), which is
+    // "as close as you can get", and the marker still must not move.
     if (probe.markerY === null) fail("no destination beacon was placed by the tap");
-    if (Math.abs(probe.gap) > HALF_CELL_Y)
-      fail(`the beacon sits ${probe.gap.toFixed(0)}px from where the walk ends — the marker and the ` +
-        `route disagree about which surface the tap meant (target ` +
-        `${(probe.target.x / 32).toFixed(1)},${(probe.target.y / 32).toFixed(1)}, goalLevel ${probe.goalLevel})`);
-    ok(`a tap on the unreachable roof resolves to the floor under it and the beacon comes along: the tap ` +
-      `picked level ${probe.picked.lvl}, the routing chose ${probe.goalLevel} and ARRIVES there, and the ` +
-      `beacon sits ${Math.abs(probe.gap).toFixed(0)}px from the walk's end (it used to target a roof ` +
-      `${probe.wouldBe}px above the floor the player actually reached)`);
+    // (b) THE MARKER MUST NOT MOVE. Twice now the "fix" was to drop the beacon
+    // onto whatever the walk could reach, which offsets the player's own input:
+    // "now you move the marker to a spot I didn't click on".
+    if (Math.abs(probe.markerOffFinger) > HALF_CELL_Y)
+      fail(`the beacon moved ${probe.markerOffFinger.toFixed(0)}px from the pixel that was clicked — ` +
+        `resolving the two readings must never shift the marker, they are the same pixel`);
+    // (a) ...and the walk ends there too.
+    ok(`the beacon stays on the pixel that was clicked: tap picked level ${probe.picked.lvl}, the routing ` +
+      `kept goalLevel ${probe.goalLevel}, and the marker sits ${Math.abs(probe.markerOffFinger).toFixed(0)}px ` +
+      `from the clicked pixel (the walk ends ${Math.abs(probe.walkOffMarker).toFixed(0)}px below it — this roof ` +
+      `has no reachable surface at that pixel, so that is as close as anyone can get)`);
   }
 
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);

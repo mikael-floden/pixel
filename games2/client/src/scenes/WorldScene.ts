@@ -1360,7 +1360,9 @@ export class WorldScene extends Phaser.Scene {
       this.holdGround = this.pickGround(p.worldX, p.worldY);
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
       // the beacon); subsequent drag replans go through holdRepath's budget.
-      if (this.holdGround) this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl);
+      if (this.holdGround)
+        this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl, true,
+          { wx: p.worldX, wy: p.worldY });
       this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
@@ -1806,7 +1808,7 @@ export class WorldScene extends Phaser.Scene {
       tapPoint: (wx: number, wy: number, run = false) => {
         const g = this.pickGround(wx, wy);
         if (!g) return null;
-        this.setMoveTarget(g.x, g.y, !!run, false, g.lvl);
+        this.setMoveTarget(g.x, g.y, !!run, false, g.lvl, true, { wx, wy });
         const t = this.trip;
         return {
           picked: { x: g.x, y: g.y, lvl: g.lvl },
@@ -6235,7 +6237,15 @@ export class WorldScene extends Phaser.Scene {
     return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, lift, shadowDepth, z };
   }
 
-  private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
+  private pickGround(
+    wx: number,
+    wy: number,
+    // Ignore DECK slabs at or above this level, so the scan falls through to
+    // the OTHER surface drawn under the same pixel — the ground a roof hides.
+    // That surface is a different CELL (the projection subtracts level*lh from
+    // screen y), which is exactly why it looks like the same spot to the player.
+    ignoreDeckAtOrAbove?: number,
+  ): { x: number; y: number; lvl: number } | null {
     const clampW = (x: number, y: number, lvl: number) => ({
       x: Math.max(1, Math.min(this.worldW - 1, x)),
       y: Math.max(1, Math.min(this.worldH - 1, y)),
@@ -6267,7 +6277,8 @@ export class WorldScene extends Phaser.Scene {
       // indoors, where the slab over your head is exactly what is NOT drawn.
       if (cut < 0) {
         const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
-        if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+        if (deckL === l && !(ignoreDeckAtOrAbove !== undefined && deckL >= ignoreDeckAtOrAbove))
+          return clampW(col * CELL_WU, row * CELL_WU, l);
       }
       // THE CUT TRUNCATES THE DRAWING, NOT THE WORLD. A parapet you can see
       // over is still a full-height wall you cannot stand on, so a tap that
@@ -6283,7 +6294,15 @@ export class WorldScene extends Phaser.Scene {
       if (cut >= 0 && cell.l > cut) continue;
       if (cell.l !== l) continue;
       const s = surfaceFor(cell.t);
-      if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
+      if (!s.standable && !s.swimmable) {
+        // Re-resolve mode asks "what GROUND is under this pixel, given I am
+        // ignoring the slab it hit" — so a solid on the way down is something
+        // to look UNDER, not a reason to give up. The ray from a roof pixel
+        // crosses the wall carrying that roof, and aborting there is why an
+        // earlier cut of this never found the second reading at all.
+        if (ignoreDeckAtOrAbove !== undefined) continue;
+        return null; // tapped a solid prop/structure
+      }
       return clampW(col * CELL_WU, row * CELL_WU, l);
     }
     return null; // void (outside the drawn world)
@@ -6342,7 +6361,17 @@ export class WorldScene extends Phaser.Scene {
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
-  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number, showMarker = true) {
+  private setMoveTarget(
+    x: number,
+    y: number,
+    run: boolean,
+    hold = false,
+    goalLevel?: number,
+    showMarker = true,
+    // The camera-world point the tap came from. Needed to find the SECOND
+    // surface drawn under that same pixel — a different cell, same pixel.
+    pick?: { wx: number; wy: number },
+  ) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
@@ -6354,29 +6383,27 @@ export class WorldScene extends Phaser.Scene {
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    // ONE TAP, TWO MEANINGS. A cell with a slab over it shows the deck and the
-    // ground beneath it at the SAME pixel, so offer both surfaces and let the
-    // ROUTING decide: startBestTrip drops a candidate whose route cannot finish
-    // on it (the house roof, six levels up with no ramp) and otherwise takes the
-    // shorter walk (a bridge you can get both under and over). The tapped
-    // surface goes first so it keeps ties.
-    const cell = this.terrain && this.world
-      ? Math.floor(y / CELL_WU) * this.world.width + Math.floor(x / CELL_WU)
-      : -1;
-    const other = cell >= 0 && this.terrain
-      ? (goalLevel !== undefined && Math.abs(this.terrain.deck[cell] - goalLevel) < 0.5
-          ? this.terrain.level[cell] // tapped the deck → the ground under it
-          : this.terrain.deck[cell]) // tapped the ground → the deck over it
-      : -1;
+    // ONE TAP, TWO MEANINGS — BOTH UNDER THE FINGER. A roof pixel also shows
+    // the ground drawn at that same pixel, which is a different CELL (6.4 of
+    // them up-screen for a level-6 slab). Offer both and let the ROUTING decide:
+    // startBestTrip drops a candidate whose route cannot finish on it (the house
+    // roof, six levels up with no ramp) and otherwise takes the shorter walk (a
+    // bridge you can get both under and over). The tapped surface goes first so
+    // it keeps ties.
+    //
+    // THE BEACON DOES NOT MOVE between the two: they are the same pixel. That
+    // is the whole reason to resolve it this way rather than by dropping the
+    // marker onto whatever the walk managed to reach.
+    const under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
     const trip = startBestTrip(
-      this.terrain, me.fx, me.fy, x, y, run, this.time.now, fromElev,
-      other >= 0 && (goalLevel === undefined || Math.abs(other - goalLevel) > 0.5)
-        ? [goalLevel, other]
-        : [goalLevel],
+      this.terrain, me.fx, me.fy, run, this.time.now, fromElev,
+      under ? [{ x, y, goalLevel }, { x: under.x, y: under.y, goalLevel: under.lvl }] : [{ x, y, goalLevel }],
     );
     if (!trip) return;
-    // The WINNER's level is what the beacon must sit on — the choice and the
-    // marker offset now come out of the same decision.
+    // The winner decides where the beacon goes — same pixel either way, but the
+    // cell and the level must be the ones the walk is actually heading for.
+    x = trip.target.x;
+    y = trip.target.y;
     goalLevel = trip.goalLevel;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run

@@ -1860,12 +1860,18 @@ export function tripLength(fromX: number, fromY: number, path: Array<{ x: number
 
 /** ONE TAP, TWO MEANINGS — resolved by ROUTING BOTH.
  *
- * A cell with a slab over it offers two surfaces at the same screen pixel: the
- * deck (roof, bridge) and the ground beneath it. Clicking there is genuinely
- * ambiguous, and picking by what is DRAWN on top gets it wrong whenever the top
- * is out of reach — tap the house from the road and the roof wins, but that roof
- * is six levels up with no ramp, so the walk falls back to the floor and stops a
- * storey below the marker.
+ * ONE PIXEL SHOWS TWO SURFACES: the deck (roof, bridge) drawn at that pixel,
+ * and the ground drawn at that same pixel — which is a DIFFERENT CELL, 6.4 of
+ * them up-screen for a level-6 slab, because the iso projection subtracts
+ * `level * lh` from the screen y. Clicking there is genuinely ambiguous, and
+ * picking by what is DRAWN on top gets it wrong whenever the top is out of
+ * reach: tap the house from the road and the roof wins, but that roof is six
+ * levels up with no ramp.
+ *
+ * BOTH READINGS LIE UNDER THE FINGER, so resolving between them never moves the
+ * beacon — which is the point. Moving the marker to meet the walk offsets the
+ * player's own input and was rejected twice (maintainer 2026-08-08: "now you
+ * move the marker to a spot I didn't click on").
  *
  * Two rules, in order (maintainer 2026-08-08):
  *   1. ARRIVING BEATS GIVING UP SHORT. "The house I'm clicking on doesn't even
@@ -1887,17 +1893,20 @@ export function startBestTrip(
   grid: TerrainGrid | null,
   fromX: number,
   fromY: number,
-  toX: number,
-  toY: number,
   run: boolean,
   nowMs: number,
   fromElev: number | undefined,
-  candidates: Array<number | undefined>,
+  // THE CANDIDATES ARE WHOLE DESTINATIONS, NOT JUST LEVELS. The two readings of
+  // one click are different CELLS — the iso projection puts a level-6 slab and
+  // the level-0 ground under the same pixel from cells 6.4 apart — so a
+  // candidate carries its own x/y as well as its level. That is also why the
+  // beacon never moves between them: both are drawn at the pixel you clicked.
+  candidates: Array<{ x: number; y: number; goalLevel?: number }>,
 ): AutopilotTrip | null {
   let best: AutopilotTrip | null = null;
   let bestArrived = false;
   let bestLen = Infinity;
-  for (const goalLevel of candidates) {
+  for (const { x: toX, y: toY, goalLevel } of candidates) {
     const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
     if (!trip) continue;
     const arrived =

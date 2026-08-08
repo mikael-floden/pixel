@@ -1064,8 +1064,12 @@ visible head/shoulders are ABOVE the surface).
   and still progressing; six replays both directions of the walk plus a tap on
   her own spot through the real brain, and fails at 232° without the standoff.
 - **ONE TAP, TWO MEANINGS — RESOLVED BY ROUTING BOTH** (`startBestTrip`).
-  A cell with a slab over it shows the deck AND the ground beneath it at the
-  same screen pixel, so a tap there is genuinely ambiguous. Choosing by what is
+  **THE TWO READINGS ARE THE SAME PIXEL, IN DIFFERENT CELLS.** Screen y is
+  `(col+row)*ISO_DY - level*LEVEL_PX`, so the ground drawn at a level-6 slab's
+  pixel is 6*16/15 = **6.4 cells up-screen** — a different cell entirely. Read
+  "under it" as the floor of the SAME cell and you have moved the marker 96px
+  down the screen, which is the maintainer's input being overridden, not a fix.
+  A tap there is genuinely ambiguous. Choosing by what is
   DRAWN on top is wrong whenever the top is out of reach: tapping the house from
   the road resolves to the roof, six levels up with no ramp, so the walk fell
   back to the floor and stopped a storey under the beacon. Both surfaces of the
@@ -1078,9 +1082,18 @@ visible head/shoulders are ABOVE the surface).
   candidate is byte-for-byte `startTrip`. The winner's `goalLevel` is what the
   beacon is drawn at, so the choice and the marker offset come out of ONE
   decision and cannot disagree.
-  DO NOT "fix" the symptom by moving the beacon to meet the walk — that offsets
-  the player's own input, and the maintainer rejected it (2026-08-08: "I click
-  where I click because I want the player to walk to that location").
+  **DO NOT "fix" the symptom by moving the beacon to meet the walk.** That
+  offsets the player's own input, and it was rejected twice (2026-08-08: "I
+  click where I click because I want the player to walk to that location", then
+  "now you move the marker to a spot I didn't click on"). Resolving between two
+  readings of the SAME pixel cannot move it; resolving between two levels of one
+  CELL always does. That is the whole difference between the two designs.
+  KNOWN LIMIT, not a bug to re-fix blindly: a roof pixel over a mountain (the
+  the_island2 house is built into one) has NO ground reading — the cell 6.4
+  up-screen is level-6 stone — and the roof needs a 6-level climb. There is then
+  no reachable surface at that pixel at all, the walk is a best effort to the
+  floor beneath, and it still ends ~96px below the marker. Moving the marker is
+  not the answer; a route onto the roof would be.
   Gates: `server/test/beacon.test.ts` (the unreachable roof, and a roof that
   WINS on distance from the mountain shoulder — the case rule 1 alone cannot
   decide) and section 9 of `verify-indoor.mjs`. Note what section 9 asserts:
