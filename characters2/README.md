@@ -56,8 +56,25 @@ it.
   unique names, 38 roles (knight, alchemist, herbalist, blacksmith, ranger,
   barbarian, priestess, champion…). These merge onto each `character.json` AND
   into `index.json`, so the wiki can render the whole cast from one file.
+- **GAME STATES, not PixelLab names** (`animation_map.json` -> `npcs`): a
+  PixelLab animation name is GENERATION TEXT — reworded freely to coax the right
+  motion out of the model, typos included (152 NPCs say `still`, **40 say
+  `stilI`**, and one ships both). The game must never depend on it. States are
+  declared once, matched by keyword on the slug, and `sync.py` PUBLISHES the
+  resolved map as `states` on each `character.json` and in `index.json`:
+
+  ```jsonc
+  "states": { "idle": "custom-calm-stili-idle-breathing" }
+  ```
+
+  Consumers read `states.idle` and never guess. When several animations match,
+  the richest wins (most frames, then directions, then slug order) — determinism
+  instead of filesystem order. `overrides.<npc>.<state>` pins an exact folder.
+  Adding a state (walk, talk, work) is one entry here — no code change.
 - `verify_sync.py` checks the set BOTH ways (nothing tagged is missing, nothing
-  untagged survives) plus full per-NPC integrity.
+  untagged survives), full per-NPC integrity, AND that every REQUIRED state
+  resolves to a folder with real frames for every NPC — so an NPC that arrives
+  without an idle can never ship silently standing frozen.
 
 ```bash
 python characters2/pipeline/sync.py npcs        # just the NPC set
