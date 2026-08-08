@@ -227,7 +227,7 @@ unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
 TYPE so the roster stays BALANCED (world budget = land/205, split evenly across
 the types living there, then each type's total spread across its own zones by
-area, capped by ROOM) — the_island2 ships 106 monsters, 4-5 of every kind.
+area, capped by ROOM) — the_island2 ships 99 monsters, 2-5 of every kind.
 `WORLD_CELLS_PER_MONSTER` is the one dial for how busy the world feels (137 →
 205 on 2026-08-07, "reduce the total number of monsters on the map by 25%");
 worlds already on the per-type floor of 3, like demo_isle, don't shrink further.
@@ -252,6 +252,16 @@ caps the population, and `enforce_density`/`topup_population` settle what is
 left of the overlap; `assert_density()` fails the build on anything still over,
 above the irreducible one-monster-per-zone floor. Peak on the_island2:
 **0.527 → 0.049**/cell, the copse 24.4 → 2.0 monsters in a 9×9.
+**ENCLOSED GROUND CARRIES LESS** (maintainer 2026-08-08: "reduce the number of
+monsters in the cave by 50%"). The cap is per ZONE, not global: a dungeon is
+corridors and rooms where you meet a thing at arm's length with nowhere to back
+off to, so the same count that reads as sparse on a meadow reads as a swarm
+underground. Enclosed ground gets `CAVE_DENSITY_F` (0.4) of the open number —
+0.02/cell, one per 50 cells of floor — taking the cave from **18 monsters to 9**
+and costing the rest of the island nothing. Enclosure is a property of the
+SURFACE, never the column: the black-mountain ledge at elev 32-36 sits on top of
+the cave and shares every (x,y), but you stand there under open sky, so
+`enclosed()` asks whether your feet are below the slab's underside.
 **DIFFICULTY SCALES WITH DISTANCE FROM THE ARRIVAL POINT** (maintainer
 2026-08-06: "Why do you spawn Duskfang next to newcomers? … Try to make them
 enjoy the game instead"). Habitat alone knows nothing about danger — a level-8

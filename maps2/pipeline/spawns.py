@@ -258,6 +258,24 @@ ROOM_MIN = int(round(1 / MAX_DENSITY))   # cells a zone needs to hold ONE monste
                                          # legally — the floor for any component
                                          # worth making a zone out of
 
+# -- ENCLOSED GROUND CARRIES LESS (maintainer 2026-08-08) ---------------------
+# "You need to reduce the number of monsters in the cave by 50%."
+#
+# The crowding law was not what was holding the cave: four species share its one
+# 472-cell floor at a combined 0.038/cell, comfortably under the 0.05 cap, so
+# the population came straight from the per-type budget — 18 monsters, 17% of
+# the whole island's, underground.
+#
+# The reason a cave needs its own number is not arithmetic, it is that a cell of
+# cave is not worth a cell of meadow. A dungeon is corridors and rooms: you meet
+# a thing at arm's length, around a corner, with the walls doing its cornering
+# for it and nowhere to back off to. Open ground shows you what is coming and
+# lets you leave. So the same count that reads as sparse on a meadow reads as a
+# swarm underground, and the cap that governs it should say so.
+CAVE_DENSITY_F = 0.4    # the cave's share of the open-ground cap -> 0.02/cell,
+                        # one monster per 50 cells of floor. On the_island2 that
+                        # is 9 in the cave where 18 stood: the maintainer's half.
+
 WORLD_CELLS_PER_MONSTER = 205       # world budget = land cells / this.
                                     # 137 -> 205 (maintainer 2026-08-07: "reduce
                                     # the total number of monsters on the map by
@@ -748,6 +766,7 @@ def make_zone(w, kind, comp, zid, elev=None, forbid=frozenset()):
             "elev": [int(band[0]), int(band[1])], "num": 1}
     zone["_valid"] = validate_zone(w, zone, inside)   # spawnable cells (the cap)
     zone["_cells"] = len(cells & set(comp))           # habitat size (the weight)
+    zone["_cap"] = zone_cap(w, spawn_cells(w, zone, inside))   # enclosed vs open
     return zone
 
 
@@ -761,11 +780,40 @@ def world_budget(w, n):
                min(n * MON_TOTAL_MAX, round(land / WORLD_CELLS_PER_MONSTER)))
 
 
+def enclosed(w, x, y, lv):
+    """Is a monster standing HERE under a roof?
+
+    The test is the SURFACE, never the column. The black-mountain ledge at elev
+    32-36 sits directly on top of the cave and shares every one of its (x,y) —
+    but you stand there under open sky, and asking only "is this cell in the
+    cave footprint" thinned the lava salamanders' ledge along with the dungeon
+    beneath it. You are inside when your feet are below the slab's underside
+    (`level - thickness`)."""
+    d = w.deck.get((x, y))
+    if d is None or w.deck_kind.get((x, y)) != "cave":
+        return False
+    return lv < d - w.deck_thick.get((x, y), 1)
+
+
+def zone_cap(w, cells):
+    """The crowding cap that governs THIS ground — a per-zone number, not a
+    global one, because a cell of cave is not worth a cell of meadow.
+
+    Decided by the GROUND and never by the monster: a zone is enclosed when most
+    of its surfaces are, so a grass dweller a fallback put underground is thinned
+    like everything else down there, and a cave dweller that ended up on the
+    surface is not."""
+    if not cells:
+        return MAX_DENSITY
+    under = sum(1 for (x, y, lv) in cells if enclosed(w, x, y, lv))
+    return MAX_DENSITY * (CAVE_DENSITY_F if under * 2 > len(cells) else 1.0)
+
+
 def room_of(z):
     """How many monsters a zone has ROOM for (the crowding law): its standable
-    cells at MAX_DENSITY, and never fewer than one — a single monster on its own
+    cells at its own cap, and never fewer than one — a single monster on its own
     is not a crowd whatever the arithmetic says."""
-    return max(1, min(z["_valid"], int(z["_valid"] * MAX_DENSITY)))
+    return max(1, min(z["_valid"], int(z["_valid"] * z.get("_cap", MAX_DENSITY))))
 
 
 def balance_population(w, zones):
@@ -815,6 +863,24 @@ def balance_population(w, zones):
 
 
 # -- the crowding law ---------------------------------------------------------
+
+def cell_caps(w, zones, cells):
+    """cell -> the cap that governs it: the TIGHTEST of the zones covering it.
+
+    Well-defined because the key carries the level: the cave floor at 0-1 is
+    only ever covered by cave zones, and the mountain stacked over it by
+    open-ground ones. Where an open zone did overlap enclosed ground, the
+    enclosed number is the honest one — the walls are still there."""
+    caps = {}
+    for z in zones:
+        cap = z.get("_cap")
+        if cap is None:
+            cap = zone_cap(w, cells[z["id"]])
+        for c in cells[z["id"]]:
+            if cap < caps.get(c, 1e9):
+                caps[c] = cap
+    return caps
+
 
 def density_field(w, zones, cells=None):
     """cell -> expected monsters standing on it, summed over every zone.
@@ -871,20 +937,22 @@ def enforce_density(w, zones):
     second is terrain too small for the species that want it, reported the same
     way the difficulty gradient reports a habitat with nowhere far enough."""
     dens, cells = density_field(w, zones)
+    caps = cell_caps(w, zones, cells)
     given, stuck = 0, []
-    live = dict(dens)
+    live = {c: v - caps[c] for c, v in dens.items()}      # ranked by OVERSHOOT
     while live:
-        c, hi = max(live.items(), key=lambda kv: (kv[1], kv[0]))
-        if hi <= MAX_DENSITY + 1e-9:
+        c, over = max(live.items(), key=lambda kv: (kv[1], kv[0]))
+        hi = dens[c]
+        if over <= 1e-9:
             break
         cand = [z for z in zones if z["num"] > 1 and c in cells[z["id"]]]
         if not cand:                    # already one monster per zone here
-            over = sorted(z["id"] for z in zones if c in cells[z["id"]])
+            ids = sorted(z["id"] for z in zones if c in cells[z["id"]])
             # A LONE zone at its minimum is just a small zone — the bridge guard
             # is one turtle on 14 cells and always will be. Only ground several
             # species are squeezed onto is worth reporting.
-            if len(over) > 1 and not any(o == over for _c, _h, o in stuck):
-                stuck.append((c, hi, over))
+            if len(ids) > 1 and not any(o == ids for _c, _h, o in stuck):
+                stuck.append((c, hi, ids))
             del live[c]
             continue
         z = max(cand, key=lambda z: (z["num"] / len(cells[z["id"]]), z["id"]))
@@ -910,6 +978,7 @@ def topup_population(w, zones):
     of its own zones has the most headroom left under the cap. Only ever adds
     where the result is still legal, so the law holds throughout."""
     dens, cells = density_field(w, zones)
+    caps = cell_caps(w, zones, cells)
     by_mon = {}
     for z in zones:
         by_mon.setdefault(z["monster"], []).append(z)
@@ -923,7 +992,7 @@ def topup_population(w, zones):
                 if not cs or z["num"] >= min(z["_valid"], room_of(z)):
                     continue
                 share = 1.0 / len(cs)
-                head = min(MAX_DENSITY - dens[c] - share for c in cs)
+                head = min(caps[c] - dens[c] - share for c in cs)
                 if head >= -1e-9 and (best is None or head > best[0]):
                     best = (head, z, share, cs)
             if best is None:
@@ -946,15 +1015,19 @@ def assert_density(w, zones):
     if not dens:
         return 0.0
     base = floor_density(zones, cells)
+    caps = cell_caps(w, zones, cells)
+
+    def bar(c):                          # what this cell is actually allowed
+        return max(caps[c], base[c])
+
     c, hi = max(dens.items(),
-                key=lambda kv: (kv[1] - min(kv[1], max(MAX_DENSITY, base[kv[0]])),
-                                kv[1], kv[0]))
+                key=lambda kv: (kv[1] - min(kv[1], bar(kv[0])), kv[1], kv[0]))
     over = sorted(z["id"] for z in zones if c in cells[z["id"]])
-    assert hi <= max(MAX_DENSITY, base[c]) + 1e-9, (
+    assert hi <= bar(c) + 1e-9, (
         f"{w.name}: {hi:.3f} expected monsters on cell {c} — over the crowding "
-        f"law's {MAX_DENSITY} (one per {ROOM_MIN} cells). {len(over)} zone(s) "
-        f"stack there: {', '.join(over)}. Spread them across more of the "
-        f"habitat; don't pile them up.")
+        f"law's {caps[c]:.3f} for this ground (one per {round(1 / caps[c])} "
+        f"cells). {len(over)} zone(s) stack there: {', '.join(over)}. Spread "
+        f"them across more of the habitat; don't pile them up.")
     return max(dens.values())
 
 
@@ -1130,7 +1203,9 @@ def zones_for(w):
         # (balance_population splits the world budget evenly by type), so a
         # species can tell whether a component has room for it BEFORE moving in.
         used = [0.0] * len(kept)
-        room = [len(c) * MAX_DENSITY for c in kept]
+        # enclosed ground carries less, so a cave component has less room
+        cap = MAX_DENSITY * (CAVE_DENSITY_F if hab == "cave" else 1.0)
+        room = [len(c) * cap for c in kept]
         demand = max(1, world_budget(w, len(ids)) // max(1, len(ids)))
         got = {m: 0.0 for m in mem}      # room each species has actually secured
         for i in range(count):
@@ -1274,6 +1349,7 @@ def refresh(name):
         z.pop("_valid", None)
         z.pop("_cells", None)
         z.pop("_target", None)
+        z.pop("_cap", None)
     doc = {"schema": SCHEMA, "world": name, "zones": zones}
     with open(os.path.join(WORLDS, name, "spawns.json"), "w") as f:
         json.dump(doc, f, separators=(",", ":"))
