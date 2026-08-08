@@ -854,7 +854,12 @@ void main() {
   // of rock above the opening, resolves AT the slab or higher (maintainer
   // 2026-08-08: "the roof and everything over the opening is outside and should
   // not be affected"). The resolve cannot fake being under a ceiling.
-  if (uCaveK > 0.0 && z < Ha - 0.5) {
+  // ...AND NOT A FACE. A face pixel is BELOW its column's top by definition, so
+  // the under-the-slab test alone admitted every vertical rock face on the
+  // mountain — the third way the same mistake wore a new hat. The shadow is for
+  // the interior GROUND you can see through the opening: a TOP pixel, under a
+  // slab. Faces belong to the rock, and the rock is outside.
+  if (uCaveK > 0.0 && !isFace && z < Ha - 0.5) {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
