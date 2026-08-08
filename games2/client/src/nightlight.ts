@@ -846,7 +846,15 @@ void main() {
   //
   // MY OWN room is exempt, and it un-dims on exactly the indoor blend — so
   // walking in fades the depths up instead of snapping them on.
-  if (uCaveK > 0.0) {
+  // UNDER THE SLAB, OR IT IS OUTSIDE. This is the containment test two earlier
+  // attempts got wrong by asking what CELL a pixel resolves to — the mountain's
+  // exterior face resolves onto interior cells, so the rock darkened with the
+  // room. Ask the pixel's own HEIGHT instead: an interior floor seen through
+  // the opening sits BELOW the roof slab, while the roof itself, and every bit
+  // of rock above the opening, resolves AT the slab or higher (maintainer
+  // 2026-08-08: "the roof and everything over the opening is outside and should
+  // not be affected"). The resolve cannot fake being under a ceiling.
+  if (uCaveK > 0.0 && z < Ha - 0.5) {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
@@ -1579,7 +1587,7 @@ export class NightLights {
       // outside as well! The inside I said!"). The next attempt needs a test the
       // resolve cannot spoof — the pixel being below the roof slab AND inside the
       // room's own footprint — not a cell lookup.
-      uCaveK: { type: "1f", value: 0.0 },
+      uCaveK: { type: "1f", value: 1.4 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
