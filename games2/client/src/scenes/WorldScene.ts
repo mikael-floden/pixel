@@ -955,6 +955,9 @@ export class WorldScene extends Phaser.Scene {
    * Built once per world (buildCaveDepth) and published to the light in the
    * room mask's green channel. */
   private caveDepth: Map<number, number> | null = null;
+  /** cell -> the room ceiling's UNDERSIDE level. Everything below it is the
+   * opening you see through; everything above is the slab's face, i.e. rock. */
+  private caveUnder = new Map<number, number>();
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -7697,7 +7700,7 @@ export class WorldScene extends Phaser.Scene {
     // exists for. Once per world; setRoom early-returns on every later call.
     if (!this.caveDepth && g && this.world) {
       this.caveDepth = this.buildCaveDepth();
-      this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth);
+      this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
     const av = this.avatars.get(this.room?.sessionId ?? "");
     if (!g || !av || av.surfLevel === undefined) {
@@ -7913,7 +7916,7 @@ export class WorldScene extends Phaser.Scene {
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
     // reach it (the torch through the doorway) while the sky cannot.
-    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()));
+    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
     return true;
   }
 
@@ -7932,7 +7935,7 @@ export class WorldScene extends Phaser.Scene {
     // HERE and not the moment the verdict flipped.
     if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
       this.roomMask = null;
-      this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()));
+      this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
     }
   }
 
@@ -8014,6 +8017,7 @@ export class WorldScene extends Phaser.Scene {
    * so a bridge does not acquire a shadow just for having a slab. */
   private buildCaveDepth(): Map<number, number> {
     const out = new Map<number, number>();
+    this.caveUnder = new Map<number, number>();
     const g = this.terrain;
     const w = this.world;
     if (!g || !w) return out;
@@ -8026,6 +8030,16 @@ export class WorldScene extends Phaser.Scene {
         if (!space) { seen[i] = 1; continue; }
         for (const ci of space.roof) seen[ci] = 1;
         if (!this.indoorVerdict(space, INDOOR_DEPTH)) continue;
+        // THE CEILING'S UNDERSIDE, which is where the OPENING stops. The slab's
+        // own face runs from here up to its top, and that face is the mountain
+        // — darkening it is what blackened the whole mountain three times. Below
+        // it is the void you look through (maintainer 2026-08-08: "you should
+        // just have stopped making it dark over the opening").
+        let under = 0;
+        for (const d of this.world!.decks ?? [])
+          if (d.level === g.deck[i]) under = Math.max(under, d.level - (d.thickness ?? 0));
+        for (const ci of space.roof) this.caveUnder.set(ci, under);
+        for (const fi of space.fringe) this.caveUnder.set(fi, under);
         // BFS from the openings. A sealed room (no entrance at all) gets the
         // maximum everywhere — nothing can see into it, which is correct.
         const q: number[] = [];

@@ -170,6 +170,7 @@ uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
 uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
                           // G: depth from the nearest opening PLUS ONE (0 = not a room).
+                          // B: the ceiling's UNDERSIDE level — the top of the opening.
 uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
@@ -294,6 +295,12 @@ float groundAt(vec2 cr) {
 // the walls), so the smoothing is done by hand here: four taps, bilinear
 // weights. Nearest sampling gave four flat bands marching into the cave, which
 // reads as steps of paint; the walker wants a gradient that thickens.
+float caveUnderAt(vec2 cr) {
+  if (uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  return texture2D(uRoom, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).b * 255.0;
+}
+
 float caveDepthAt(vec2 cr) {
   if (uRoomOn < 0.5) return 0.0;
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
@@ -868,7 +875,11 @@ void main() {
   // through: it is an interior cell, it is under the slab top, and (since a
   // slab side is open air below, not a wall) it is not a face either.
   // The floor is the one thing that resolves AT the ground column's top.
-  if (uCaveK > 0.0 && z <= Hg + 0.5) {
+  // ONLY BELOW THE CEILING'S UNDERSIDE. That is the opening; above it is the
+  // slab's own face, which is the mountain. Every earlier attempt either took
+  // the whole face (black mountain) or nothing (no effect) because the shader
+  // had no idea where the ceiling stopped. Now it is in the mask.
+  if (uCaveK > 0.0 && z < caveUnderAt(cell) - 0.5) {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
@@ -1609,7 +1620,7 @@ export class NightLights {
       // information. Shade the interior tiles where they are DRAWN (the ground
       // RT knows which tile it is painting and can read the depth map directly)
       // rather than trying to recover it per pixel here.
-      uCaveK: { type: "1f", value: 0.0 },
+      uCaveK: { type: "1f", value: 2.2 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
@@ -1830,7 +1841,7 @@ export class NightLights {
    * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
    * an A below 255 would scale the R the shader reads.
    */
-  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>) {
+  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>, under?: Map<number, number>) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
