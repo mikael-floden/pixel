@@ -56,7 +56,7 @@ async function hover(room: any, m: any, ms: number, hunting: () => boolean): Pro
 }
 
 test("disable aggro: a predator stops noticing you, and lets go of a hunt already running", async () => {
-  const port = 2993;
+  const port = 2990; // unique per test FILE — see test/ports.test.ts (2993 is timeofday's)
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
