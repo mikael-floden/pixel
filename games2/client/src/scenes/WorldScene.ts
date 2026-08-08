@@ -1900,6 +1900,12 @@ export class WorldScene extends Phaser.Scene {
         return { c0, r0, rows };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      caveDbg: () => ({
+        depth: this.caveDepth ? this.caveDepth.size : -1,
+        under: this.caveUnder.size,
+        deckBotAt: this.terrain ? this.terrain.deckBot[66 * this.terrain.width + 143] : null,
+        deckAt: this.terrain ? this.terrain.deck[66 * this.terrain.width + 143] : null,
+      }),
       // What a tap at these WORLD (iso screen-space) coords would select —
       // the exact hit test pointerdown runs (round 12 hitbox QA).
       tapAt: (wx: number, wy: number) => this.tapTarget(wx, wy),
@@ -8035,11 +8041,21 @@ export class WorldScene extends Phaser.Scene {
         // — darkening it is what blackened the whole mountain three times. Below
         // it is the void you look through (maintainer 2026-08-08: "you should
         // just have stopped making it dark over the opening").
-        let under = 0;
-        for (const d of this.world!.decks ?? [])
-          if (d.level === g.deck[i]) under = Math.max(under, d.level - (d.thickness ?? 0));
-        for (const ci of space.roof) this.caveUnder.set(ci, under);
-        for (const fi of space.fringe) this.caveUnder.set(fi, under);
+        // grid.deckBot IS the underside — already computed per cell when the
+        // terrain was built. Rederiving it from the deck table produced nothing
+        // (measured: 0 cells carried a value, so the shader compared against
+        // zero and never fired), which is the whole reason the last attempt
+        // darkened nothing at all.
+        for (const ci of space.roof) {
+          const ub = g.deckBot[ci];
+          if (ub >= 0) this.caveUnder.set(ci, ub);
+        }
+        for (const fi of space.fringe) {
+          let ub = -1;
+          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
+            if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
+          if (ub >= 0) this.caveUnder.set(fi, ub);
+        }
         // BFS from the openings. A sealed room (no entrance at all) gets the
         // maximum everywhere — nothing can see into it, which is correct.
         const q: number[] = [];

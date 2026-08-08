@@ -1486,6 +1486,7 @@ export class NightLights {
   private roomBound = false;
   /** The mask's GREEN channel (cave depth) is world-static — written once. */
   private depthWritten = false;
+  private underWritten = false;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
@@ -1847,7 +1848,12 @@ export class NightLights {
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
     if (!t || !src) return;
     const next = new Set<number>(cells ?? []);
-    const needDepth = depth !== undefined && !this.depthWritten;
+    // Two latches, not one: the first publish of a world carried DEPTH but no
+    // ceiling map, and a single flag meant the ceiling could never be written
+    // afterwards — measured as 940 cells in the scene and 0 in the texture,
+    // which is exactly why the shader gate compared against zero and nothing
+    // ever darkened.
+    const needDepth = (depth !== undefined && !this.depthWritten) || (under !== undefined && !this.underWritten);
     // Nothing to do if the room did not actually change (the scene guards this
     // too, but the mask is also rebuilt for the CUT, which does not move it) —
     // unless the DEPTH channel has never been written, which happens on the
@@ -1874,6 +1880,14 @@ export class NightLights {
         // outside and the effect vanished exactly where it matters.
         if (i >= 0 && i < w * h) d[i * 4 + 1] = Math.min(255, Math.max(0, dep) + 1);
       this.depthWritten = true;
+      // BLUE = the ceiling's UNDERSIDE level: the top of the opening. Above it
+      // is the slab's own face, which is the mountain, and darkening that is
+      // what blackened the whole thing three times over.
+      if (under) {
+        for (const [i, u] of under)
+          if (i >= 0 && i < w * h) d[i * 4 + 2] = Math.max(1, Math.min(255, Math.round(u)));
+        this.underWritten = true;
+      }
     }
     ctx.putImageData(this.roomImg, 0, 0);
     this.roomCells = next;
@@ -1904,9 +1918,12 @@ export class NightLights {
     // channel was never filled" look identical on screen.
     let deep = 0;
     let maxDep = 0;
+    let und = 0;
+    let maxUnd = 0;
     for (let i = 0; i < d.length; i += 4) {
       if (d[i] > 127) on++;
       if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
+      if (d[i + 2] > 0) { und++; maxUnd = Math.max(maxUnd, d[i + 2]); }
     }
     return {
       exists: true,
@@ -1915,6 +1932,8 @@ export class NightLights {
       lit: on,
       depthCells: deep,
       depthMax: maxDep,
+      underCells: und,
+      underMax: maxUnd,
       cells: this.roomCells.size,
       indoor: this.indoor,
       bound: this.roomBound,
