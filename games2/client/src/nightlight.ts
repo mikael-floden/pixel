@@ -859,7 +859,16 @@ void main() {
   // mountain — the third way the same mistake wore a new hat. The shadow is for
   // the interior GROUND you can see through the opening: a TOP pixel, under a
   // slab. Faces belong to the rock, and the rock is outside.
-  if (uCaveK > 0.0 && !isFace && z < Ha - 0.5) {
+  // THE SHADOW LIVES ON THE CAVE FLOOR. Not "below the slab", not "not a face"
+  // — ON THE GROUND. the_island2's cave is not a thin ceiling over a room: its
+  // interior cells are terrain 0 with a deck at 24, so THE MOUNTAIN IS THE
+  // SLAB, its underside at 8 and its top at 24. Every bit of rock you see above
+  // the opening is that slab's own SIDE, resolving to the very same interior
+  // cells at z between 8 and 24 — which is why three gates in a row let it
+  // through: it is an interior cell, it is under the slab top, and (since a
+  // slab side is open air below, not a wall) it is not a face either.
+  // The floor is the one thing that resolves AT the ground column's top.
+  if (uCaveK > 0.0 && z <= Hg + 0.5) {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
@@ -1592,7 +1601,7 @@ export class NightLights {
       // outside as well! The inside I said!"). The next attempt needs a test the
       // resolve cannot spoof — the pixel being below the roof slab AND inside the
       // room's own footprint — not a cell lookup.
-      uCaveK: { type: "1f", value: 0.0 }, // OFF — containment still wrong, see below
+      uCaveK: { type: "1f", value: 1.4 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
