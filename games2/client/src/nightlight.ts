@@ -1601,7 +1601,15 @@ export class NightLights {
       // outside as well! The inside I said!"). The next attempt needs a test the
       // resolve cannot spoof — the pixel being below the roof slab AND inside the
       // room's own footprint — not a cell lookup.
-      uCaveK: { type: "1f", value: 1.4 },
+      // OFF, and it cannot be switched on from here. Outdoors heightAt returns
+      // max(terrain, deck) — 24 everywhere in the cave — so EVERY pixel of the
+      // interior resolves to the slab top and no z means "floor". Gates that
+      // admitted the floor admitted the mountain with it; the gate that
+      // excluded the mountain excluded the floor. The shader does not have the
+      // information. Shade the interior tiles where they are DRAWN (the ground
+      // RT knows which tile it is painting and can read the depth map directly)
+      // rather than trying to recover it per pixel here.
+      uCaveK: { type: "1f", value: 0.0 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
