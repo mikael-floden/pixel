@@ -4,7 +4,8 @@
     "[2026-07-31T20:58:25+00:00] WebP: pipeline is format-agnostic and verified WebP-capable end-to-end on an isolated scratch tree (609 frames converted, all 13 states resolved, previews rebuilt, zero PNGs). Art stays PNG until games2 can decode it. Flip = config.json frame_format + to_webp.py --apply.",
     "[2026-07-31T21:18:57+00:00] WebP migration COMPLETE (f03525de): 1419 files, 4.43->1.44 MiB (-67.6%), 1419/1419 pixel-identical, game manifest measurements byte-identical to the PNG build, games2 npm test 117/117. frame_format=webp; to_webp.py --revert is the rollback.",
     "[2026-08-05T05:39:00+00:00] NPC mirror shipped + verified: 191/191 exact (both ways), 964 anim frames, WebP. sync.py npcs / default full pass covers heroes+NPCs.",
-    "[2026-08-05T06:01:12+00:00] All 191 NPCs authored: display_name/species/sex/role/lore from visual inspection of every sprite (107F/84M, 191 unique names, 38 roles). In npcs/index.json + each character.json."
+    "[2026-08-05T06:01:12+00:00] All 191 NPCs authored: display_name/species/sex/role/lore from visual inspection of every sprite (107F/84M, 191 unique names, 38 roles). In npcs/index.json + each character.json.",
+    "[2026-08-08T00:30:43+00:00] NPCs now publish a resolved game-state map (states.idle) on character.json + index.json; animation_map.json gained an npcs block; verify fails on any unresolved required state. 191/191 resolve."
   ],
   "requests": [
     {
@@ -66,6 +67,11 @@
       "to": "wiki",
       "text": "CORRECTION to my last post (two field names were eaten by shell quoting): the fields you must NOT display or infer sex from are pixellab_name (in npcs/index.json) and pixellab_prompt (in each character.json). Both are the same copy-pasted \"young female adventurer\" text on all 191 NPCs and say female for everyone. Use display_name / sex / role / lore instead \u2014 those are authored from the art and are correct.",
       "at": "2026-08-05T06:01:34+00:00"
+    },
+    {
+      "to": "games",
+      "text": "NPC ANIMATIONS ARE NOW ADDRESSED BY GAME STATE \u2014 please switch build-npcs-manifest.mjs off its folder guess (9b5dd13cc). Your current code takes the FIRST animation folder that has frames and comments it as \"one idle per NPC (custom-calm-still-idle-breathing)\". That is already wrong in the data: of 191 NPCs, 152 have the idle under custom-calm-still-idle-breathing and 40 under custom-calm-stilI-idle-breathing (capital i in stilI \u2014 the maintainer rewords generation prompts freely, so PixelLab animation names are prompts and NOT identifiers), and one NPC (22ac7ea8, Fendrel) ships BOTH folders, so which one you get is readdir order. WHAT TO READ INSTEAD: every npcs/<folder>/character.json and every entry in npcs/index.json now carries a resolved states map, e.g. \"states\": {\"idle\": \"custom-calm-stili-idle-breathing\"}. Use states.idle as the folder name; never match on the animation text, and never take the first folder. The mapping is declared in characters2/animation_map.json under npcs (keyword match + per-NPC overrides), resolved deterministically when several match (most frames, then most directions, then slug order), and characters2/pipeline/verify_sync.py now FAILS if any required state does not resolve to a folder with real frames for any NPC \u2014 so an idle-less NPC can no longer reach you silently. This is the same contract you already read for the heroes via animation_map.json. It is additive: nothing moved on disk, so your current build keeps working until you switch \u2014 but it will pick the wrong folder for Fendrel today and for any NPC that gains a second animation. When walk/talk/work arrive they will simply appear as more keys in the same states map, no code change needed on either side.",
+      "at": "2026-08-08T00:30:43+00:00"
     }
   ],
   "updated_at": "2026-08-05T06:01:12.174355+00:00",

@@ -970,6 +970,25 @@ visible head/shoulders are ABOVE the surface).
   The "aggro radius" settings switch (debug, off by default, ml-aggro-radius
   in localStorage) draws each monster's synced radius as a projectFlat-
   sampled ring (red; gold provoke ring on the marked target).
+- **"DISABLE AGGRO"** (Settings, off by default, `ml-no-aggro`) — a testing
+  switch the maintainer asked for so a cave can be walked through and looked
+  at (2026-08-07). Enforced on the SERVER, per SESSION, because that is where
+  the proximity scan runs: the client owns the preference and re-sends it on
+  every join (a rejoin is a new session id). Deliberately NOT a schema field —
+  nothing anyone else can see changes, so it would spend a synced field per
+  player on a debug flag; it is a `Set<sessionId>` on the room, cleared in
+  `onLeave` (ids are not reused, so a leak would silently pacify whoever
+  inherited the id). It suppresses UNPROVOKED aggro only: a monster you have
+  marked with the sword still comes and one you hit still fights back — the
+  switch removes the ambush, not the fight. Flipping it ON also RELEASES every
+  unprovoked chase already running, through `disengageMonster` (the same exit
+  every other ended chase takes, so the flee-slow lifts and strays walk home);
+  without that you would have to outrun whatever noticed you before the switch
+  could help, which is the whole situation it exists for. Gate:
+  `server/test/noaggro.test.ts`, a live room, four steps, each on a FRESH
+  predator — a monster whose hunt just ended is `returning` and its scan is
+  suppressed by design, so reusing one times the next step out for an
+  unrelated reason.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells
@@ -2005,20 +2024,38 @@ side collision just like monsters").
 - **INDOOR MODE IS A CUT-AWAY, NOT AN X-RAY** (maintainer 2026-08-07). Walk
   under a roof and the building is drawn WHOLE but TRUNCATED: every one of its
   columns — floor, near wall, far wall, corner — stops at
-  `indoorTop = ceiling − <the Settings dial>` and nothing above that is drawn.
-  The roof goes because it is above the cut; the near walls become a low
-  parapet you look over. **Nothing is hidden, nothing is transparent, nothing
-  is half a tile.** The dial is `client/src/indoorcut.ts` ("Indoor wall cut" in
-  Settings, roof−1 … roof−5, default **roof−4**); brightness is the separate
-  `indoorlight.ts` dial, default **40%**. BOTH DEFAULTS ARE THE MAINTAINER'S
-  OWN PICKS (2026-08-07, from a device screenshot and a contact sheet of the
-  same room at every level) — I proposed roof−3 from the art (a body is ~4
-  levels tall) and 0.104 from the pre-slider grade; he went one cut deeper and
-  four times brighter. Do not "restore" either. The MAX is 5 and not 8 because
-  the cut is relative and a shipped house is 6 levels: roof−5 leaves one level
-  of wall and roof−6 leaves none, so anything past it is dead travel
-  ("the slider can now be dragged way too long also"). Probes
-  `__ml.indoorCut(v?)` / `__ml.indoor()`.
+  `indoorTop = min(roomFloor + <the Settings dial>, ceiling)` and nothing above
+  that is drawn. The roof goes because it is above the cut; the near walls
+  become a low parapet you look over. **Nothing is hidden, nothing is
+  transparent, nothing is half a tile.** The dial is
+  `client/src/indoorwall.ts` ("Indoor wall height" in Settings, 1…6 levels,
+  default **2**); brightness is the separate `indoorlight.ts` dial, default
+  **40%**. Both defaults are the maintainer's own picks — do not "restore"
+  either. Probes `__ml.indoorWall(v?)` / `__ml.indoor()`.
+  - **MEASURED UP FROM THE FLOOR, NOT DOWN FROM THE ROOF.** The first cut of
+    this dial was `ceiling − N` and it was wrong for a reason that only shows
+    up once you leave the house: the number is a WALL HEIGHT, and roof−N only
+    equals one when every room has the same ceiling. the_island2's house has
+    its ceiling at 6, so the roof−4 the maintainer liked left a 2-level wall;
+    its caves have theirs at 8 over the same level-0 floor, so roof−4 left
+    FOUR — twice as tall, in the one place you most want to see into ("I can
+    see that the walls are higher than what I wanted. This is because we take
+    'roof - x' and not 'floor + x'"). From the floor, 2 is 2 in a cottage and
+    in a cathedral. The ceiling survives as a CLAMP (a wall taller than its own
+    room would just seal the box) and as the "am I above the room?" line for
+    bodies and flyers — `indoorCeil`, still `deckBot` and never `roofLevel`.
+  - **THE FLOOR IS THE ROOM'S MINIMUM, not the cell under your feet.** A cave
+    floor is not flat; anchoring to your own feet makes every wall in the room
+    jump 16px each time you step onto a ledge. The minimum also keeps the whole
+    floor plan below the cut, so a raised shelf reads as a shelf you look over.
+  - The MAX is 6 because that is the tallest shipped ROOM, so past it every
+    room clamps and the slider has nothing left to say. Note this is the
+    OPPOSITE end from the old roof−N dial, whose max was set by the
+    SHALLOWEST room — measure from the floor and what bounds you is the
+    deepest one. The storage key changed with the meaning
+    (`ml-indoor-cut` → `ml-indoor-wall`): the same number means something
+    different now, and reading the old one back would hand anyone who tuned
+    the old dial twice the wall they had chosen.
   - **DO NOT GO BACK TO CULLING.** The first cut drew no roof, no near walls
     and a 32px "skirt" half of each far wall, and it shipped HOLES — wall slabs
     floating disconnected in the void, black wedges through a solid roof line
@@ -2075,8 +2112,31 @@ side collision just like monsters").
       lit head, because her head pixels resolved to my floor).
     - The eased half of the state is `uIndoorMix`, the same 0.35s roll the
       indoor grade rides — the outside FADES to black instead of popping a
-      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the mask)
-      stays boolean and snaps. The CPU twin mirrors the ease exactly.
+      frame ahead of the room. Geometry (`uIndoor`, `uIndoorTop`, the drawn
+      truncation) stays boolean and snaps. The CPU twin mirrors the ease.
+    - **TWO AMBIENT GRADES, ONE CROSSING** (`uAmbient` / `uAmbientOut`). A cell
+      IN my room rides the blend from the outdoor grade to the interior dial; a
+      cell OUTSIDE fades between BLACK and its own OUTDOOR grade and never
+      touches the interior one. With a single shared ambient, walking out of a
+      house at night OVERSHOT — the interior dial at 40% is 3.9× night's luma,
+      so the moment the mask let go the outside took that value and eased back
+      DOWN to night (maintainer 2026-08-07: "it snaps to a brightness brighter
+      than night and has to fade back down"). Measured after: a clean monotone
+      rise, 1% → 99% of night, peak 98.6%, zero non-increasing steps.
+    - **THE LIGHT MASK OUTLIVES THE VERDICT BY ONE ROLL** (`roomMask`, dropped
+      in `easeIndoorMix`, and `roomAt`/the CPU twin gate on `uIndoorMix` rather
+      than `uIndoor`). Geometry snaps back the frame you step out; the light is
+      still rolling. A room that stopped existing mid-roll hands the WHOLE
+      world the interior's grade for that quarter second. Everything that asks
+      "is this outside MY room?" reads `roomMask`, never `indoorMask`: the
+      shader mask, the point-light filter, and the above-overlay chrome.
+    - **The ambient layer fades with it.** `ambient/runtime/outdoor.ts` shipped
+      its gain as a controller with `OUTDOOR_FADE_MS = 0` and documented the
+      handoff; it is now **1050**, which is not a taste number — that class's
+      roll is `k = 1 - exp(-(dt/fadeMs)*3)`, so `3 * INDOOR_TAU * 1000` makes it
+      identical to the game's, frame for frame, off the same boolean flip.
+      Its test asserts that relationship, so moving INDOOR_TAU without moving
+      the fade fails in `npm test` rather than on screen.
   - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
     openings excluded. That is the ONLY set the renderer reads;
     `wallLeft`/`wallRight` survive as detector output with no consumer. The fill
@@ -2110,8 +2170,8 @@ side collision just like monsters").
     covers gets a white silhouette ring (`HIDDEN_RING_COLOR`) over the hidden
     part, at depth 900_001.43. It is the exact COMPLEMENT of the lit copy —
     `syncLitCopy` crops to [0, coverY), this draws [coverY, bottom) — so the two
-    tile the figure with no seam. Measured on the shipped house: roof−1 hides
-    61% of the figure, roof−3 41%, roof−5 (one level of wall) far less, and
+    tile the figure with no seam. Measured on the shipped house: a 5-level wall
+    hides 61% of the figure, 3 levels 41%, 1 level 4%, and
     outdoors in the open none at all — the gate asserts that CHAIN rather than
     any single number, because a monotone response to the dial is something an
     outline stuck on or stuck off cannot fake.
@@ -2133,14 +2193,15 @@ side collision just like monsters").
   (+39/+46 of the cap tile's box), never at the diamond centre, which is
   transparent for a truncated column: that probe used to sample the centre and
   passed only because the indoor ground RT filled NAVY behind it, which is why
-  the fill is black now; and **the dial IS the cut**, sweeping roof−1..4 and
-  requiring the picture inside the house to change strictly MORE at every step
-  while nothing outside it changes at all. (It used to hunt a "wall crown" — the
+  the fill is black now; and **the dial IS the wall height**, sweeping 1..4
+  levels, requiring the drawn top to rise by exactly one level each time and
+  the picture inside the house to change strictly MORE at every step while
+  nothing outside it changes at all. (It used to hunt a "wall crown" — the
   topmost non-void row of one screen column. That is not sound once every column
   in the world is drawn: the topmost lit pixel of a column belongs to whichever
   cell the painter last put there, usually a NEIGHBOUR whose 64px art box
   overlaps. Eight different wall cells all reported the same crown offset at
-  roof−1, −3 and −5 while the frames plainly differed.) Then the OUTLINE,
+  1, 3 and 5 while the frames plainly differed.) Then the OUTLINE,
   asserted as a monotone response rather than a magic number: a taller parapet
   must hide more of the figure and a cut that removes every wall must hide
   none. Then the LIGHT. Note WHAT is pinned there: the default is a maintainer

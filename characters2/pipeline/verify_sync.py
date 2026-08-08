@@ -26,7 +26,8 @@ import sys
 from PIL import Image
 
 from pixellab_client import DIRECTIONS_8, PixelLabClient
-from sync import HUMANS, NPCS, load_config, frame_ext, list_npcs, npc_folder, _assign_slugs, _slug
+from sync import (HUMANS, NPCS, load_config, frame_ext, list_npcs, npc_folder,
+                  npc_state_map, _assign_slugs, _slug)
 
 
 EXT = frame_ext()   # ".png" today, ".webp" after the migration (config.json)
@@ -210,6 +211,28 @@ def verify_npcs(client):
         os.path.join(NPCS, "index.json")) else {}
     if set((idx.get("npcs") or {}).keys()) != expected:
         problems.append("npcs: index.json folder set != tagged set")
+
+    # GAME STATES: the game addresses `idle`, never a PixelLab animation name.
+    # Every REQUIRED state must resolve to a folder that really has frames, for
+    # every NPC — otherwise that NPC silently stands frozen in the world.
+    decl, _ = npc_state_map()
+    required = [st for st, spec in decl.items() if spec.get("required")]
+    for folder in sorted(expected & on_disk):
+        man = json.load(open(os.path.join(NPCS, folder, "character.json")))
+        st = man.get("states") or {}
+        for state in required:
+            fold = st.get(state)
+            if not fold:
+                problems.append(f"npcs/{folder}: state '{state}' UNRESOLVED "
+                                f"(has {sorted((man.get('animations') or {}).keys())})")
+                continue
+            south = os.path.join(NPCS, folder, "animations", fold, "south")
+            if not (os.path.isdir(os.path.join(NPCS, folder, "animations", fold))
+                    and os.path.isdir(south)
+                    and any(os.path.splitext(f)[1] == EXT for f in os.listdir(south))):
+                problems.append(f"npcs/{folder}: state '{state}' -> '{fold}' has no frames")
+        if (idx.get("npcs") or {}).get(folder, {}).get("states") != st:
+            problems.append(f"npcs/{folder}: index.json states != character.json states")
     return problems, len(npcs), frames
 
 

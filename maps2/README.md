@@ -227,12 +227,28 @@ unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
 TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
 the types living there, then each type's total spread across its own zones by
-area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by
+area, capped by ROOM) — the_island2 ships 141 monsters, 3-7 of every kind.
+Zones are DERIVED by
 habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
 world is written (`save_world` calls `spawns.refresh`), so a terrain edit can
 never leave stale zones behind; it validates every zone (simple polygon, ≥num
 standable cells at the claimed elevation) before writing.
-Four placement laws.
+Five placement laws.
+**NOTHING PILES UP** (maintainer 2026-08-07: "LOL! Why have you placed this many
+monsters at the same place 😂 Looks funny!"). Four forest species had all picked
+the SAME 46-cell copse, six of each, with the two plains zones over the top: 24
+monsters under one tree. Nothing was broken — each species picks the nearest
+component it is *allowed*, independently of the others, so several sharing a
+habitat all converge on one patch. Now ROOM is a quantity: `density(x,y,level) =
+Σ num/|zone spawn cells|` — the expected monsters standing on a surface, which
+is exactly how the server draws roam targets — may never exceed `MAX_DENSITY =
+0.05`, one per 20 cells. The LEVEL is in the key because the cave floor lies
+under the mountain rock and they are different floors of one building. Room
+picks the component (nearest one that has room; emptiest when none does), room
+caps the population, and `enforce_density`/`topup_population` settle what is
+left of the overlap; `assert_density()` fails the build on anything still over,
+above the irreducible one-monster-per-zone floor. Peak on the_island2:
+**0.527 → 0.049**/cell, the copse 24.4 → 2.0 monsters in a 9×9.
 **DIFFICULTY SCALES WITH DISTANCE FROM THE ARRIVAL POINT** (maintainer
 2026-08-06: "Why do you spawn Duskfang next to newcomers? … Try to make them
 enjoy the game instead"). Habitat alone knows nothing about danger — a level-8
@@ -264,7 +280,9 @@ map — build-asserted, with habitat fallback so it can't silently drop one), an
 the four **feature-test maps** (`prop_demo`, `trans_demo`, `glow_test`,
 `occlusion_test`) carry NO monsters (explicit empty `zones: []`).
 `monster_demo` is the showcase world: a 5×5 habitat-tile pad per monster on a
-stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
+stone courtyard (`pipeline/monsterdemo.py`), each pad one zone — and the one
+world the crowding law does not bind, since two monsters on a 25-cell display
+pad is the point of the map. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
 

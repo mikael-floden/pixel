@@ -67,7 +67,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
-import { indoorCut, setIndoorCut, INDOOR_CUT_MIN, INDOOR_CUT_MAX } from "../indoorcut";
+import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
@@ -511,6 +511,11 @@ interface Avatar {
   baseTint: number;
   // Combat mirrors (server action/actionSeq/hitSeq/dead drive one-shot clips).
   actionKey?: string;
+  // The pickup sound waits for the frame the hand closes on the item (see the
+  // pickup branch). `pickupSfxAt` is when the gesture started — armed state and
+  // the safety-valve clock in one field; null means nothing pending.
+  pickupSfxFrame?: number | null;
+  pickupSfxAt?: number | null;
   actionUntil?: number;
   lastActionSeq?: number;
   lastHitSeq?: number;
@@ -588,7 +593,7 @@ const TILE_DIAMOND_TOP = 5;
 //
 // So the two halves of the design are: this truncation, and the white
 // silhouette outline that keeps a body readable when a parapet still covers
-// its legs. The cut DEPTH is the maintainer's dial — see indoorcut.ts.
+// its legs. The WALL HEIGHT is the maintainer's dial — see indoorwall.ts.
 //
 // THE OUTSIDE IS A VOID, NOT A BLACK TILE. "Draw the outside black" is
 // implemented as "draw nothing and make the ground RT's backdrop black",
@@ -910,6 +915,16 @@ export class WorldScene extends Phaser.Scene {
    * IN_WALL. A cell that is ABSENT is outside and draws nothing.
    * Rebuilt only when the space (or its cut level) changes. */
   private indoorMask: Map<number, number> | null = null;
+  /** The room's LIGHT mask. Same contents as `indoorMask` while you are inside,
+   * but it OUTLIVES the verdict by one 0.35s roll: geometry snaps back the
+   * frame you step out (the roof returns, every column is untruncated again)
+   * while the light is still rolling, and a room that stopped existing mid-roll
+   * would hand the whole world the interior's own grade for that quarter
+   * second — which is exactly the flash the maintainer reported walking out of
+   * a house at night. Everything keyed on "is this outside MY room?" reads THIS,
+   * not indoorMask: the shader mask, the point-light filter, and the chrome
+   * that draws above the darkness overlay. Dropped in easeIndoorMix. */
+  private roomMask: Map<number, number> | null = null;
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -918,14 +933,20 @@ export class WorldScene extends Phaser.Scene {
    * roofLevel), but every one of the cave's 12 decks is level 24-40 with
    * thickness 16-32 and they ALL have deckBot 8 — a uniform 8-level (128px)
    * void. Cutting the cave's walls at roofLevel 24 would leave 16 levels of
-   * rock standing above a ceiling that is no longer drawn. */
-  private indoorCut = 0;
-  /** THE CUT — the highest level any column of the building still draws, i.e.
-   * `indoorCut - indoorCutDrop()`, clamped at 0. Everything above it is simply
-   * not drawn: that is what takes the roof off AND what shortens the walls, in
-   * one rule. Kept beside `indoorCut` rather than replacing it because the two
-   * mean different things and both have consumers — the CEILING still decides
-   * which lights are in the room, while THIS decides what is painted. */
+   * rock standing above a ceiling that is no longer drawn.
+   *
+   * Since the dial became a wall height measured UP from the floor, this is no
+   * longer what the cut is derived FROM — it is the CLAMP (a wall taller than
+   * its own room would seal the box again) and the "am I above the room?" line
+   * for bodies and flyers. */
+  private indoorCeil = 0;
+  /** THE CUT — the highest level any column of the WORLD still draws while
+   * indoors: `min(roomFloor + indoorWall(), indoorCeil)`. Everything above it
+   * is simply not drawn, which is what takes the roof off AND what shortens the
+   * walls, in one rule. Kept beside `indoorCeil` rather than replacing it
+   * because the two mean different things and both have consumers — the CEILING
+   * decides what counts as being IN the room, while THIS decides what is
+   * painted. */
   private indoorTop = 0;
   private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
   private indoorAtRow = NaN;
@@ -998,6 +1019,9 @@ export class WorldScene extends Phaser.Scene {
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
+   * proximity scan is server-side). Re-sent on every join. */
+  private noAggroOn = localStorage.getItem("ml-no-aggro") === "1";
   private nextChaseRepathAt = 0; // walk-to-engaged-monster retarget throttle
   private nextEngageSendAt = 0; // engage re-assert throttle (server drops target on move)
   private joinQuietUntil = 0; // drops synced in at (re)join are not events
@@ -1117,6 +1141,7 @@ export class WorldScene extends Phaser.Scene {
       // exists. Start outdoors and force the first recompute.
       this.indoorSpace = null;
       this.indoorMask = null;
+      this.roomMask = null; // no fade to finish — this world is gone
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -1486,6 +1511,10 @@ export class WorldScene extends Phaser.Scene {
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
         { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
+        // Disable aggro (maintainer 2026-08-07: "I will use this feature to
+        // test walk around in the cave without dying"). Server-side and per
+        // player — see the "noaggro" handler in WorldRoom.
+        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
@@ -1533,7 +1562,7 @@ export class WorldScene extends Phaser.Scene {
     // invalidate the mask and repaint. Clearing the signature is what forces
     // the rebuild — refreshIndoorMask is otherwise a no-op while you stand in
     // one room, which is the whole point of it.
-    window.addEventListener("ml-indoor-cut", () => {
+    window.addEventListener("ml-indoor-wall", () => {
       if (!this.indoorInside) return; // outdoors there is nothing cut to redraw
       this.indoorMaskSig = "";
       if (this.refreshIndoorMask()) this.repaintWorld();
@@ -1592,18 +1621,18 @@ export class WorldScene extends Phaser.Scene {
         if (typeof v === "number") setIndoorLight(v);
         return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
       },
-      // The Settings "Indoor wall cut" dial (indoorcut.ts). No arg reads it; a
+      // The Settings "Indoor wall height" dial (indoorwall.ts). No arg reads it; a
       // number sets it, so a gate can walk every level without a pointer drag.
       // Returns the dial AND what it resolves to for the room you are in — the
-      // dial is levels-below-the-ceiling and `top` is the level it lands on,
-      // which is the number the picture is actually made of.
-      indoorCut: (v?: number) => {
-        if (typeof v === "number") setIndoorCut(v);
+      // dial is levels ABOVE THE FLOOR and `top` is the absolute level it lands
+      // on, which is the number the picture is actually made of.
+      indoorWall: (v?: number) => {
+        if (typeof v === "number") setIndoorWall(v);
         return {
-          cut: indoorCut(),
-          min: INDOOR_CUT_MIN,
-          max: INDOOR_CUT_MAX,
-          ceiling: this.indoorCut,
+          wall: indoorWall(),
+          min: INDOOR_WALL_MIN,
+          max: INDOOR_WALL_MAX,
+          ceiling: this.indoorCeil,
           top: this.indoorTop,
         };
       },
@@ -1632,7 +1661,7 @@ export class WorldScene extends Phaser.Scene {
           // Renderer-side state (what the mask is doing about that verdict).
           pending: this.indoorPending,
           mix: +this.indoorMix.toFixed(3),
-          ceiling: this.indoorCut, // deckBot — the CUT, not roofLevel
+          ceiling: this.indoorCeil, // deckBot — the room UNDERSIDE, not roofLevel
           key: this.indoorKey,
           mask: this.indoorMask?.size ?? 0,
           wallLeft: s?.wallLeft.size ?? 0,
@@ -2340,6 +2369,10 @@ export class WorldScene extends Phaser.Scene {
           hpMax: (this.room?.state as any)?.monsters?.get(id)?.hpMax ?? null,
           level: (this.room?.state as any)?.monsters?.get(id)?.level ?? null,
           aggro: (this.room?.state as any)?.monsters?.get(id)?.aggro ?? null,
+          // Who this monster is hunting ("" = nobody). The one field that
+          // answers "did it notice me?" without inferring it from behaviour —
+          // what the "disable aggro" gate reads.
+          tsid: (this.room?.state as any)?.monsters?.get(id)?.tsid ?? "",
           mstate: mv.mstate ?? "roam",
           hpBar: !!mv.hpBg?.visible,
           hpBarText:
@@ -2514,6 +2547,9 @@ export class WorldScene extends Phaser.Scene {
           lit: !!n.lit?.visible,
         })),
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
+      // Settings "disable aggro" — read with no argument, set with one.
+      noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
+      mySid: () => this.room?.sessionId ?? "",
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -2755,6 +2791,10 @@ export class WorldScene extends Phaser.Scene {
         this.camChase.init = false; // chase-cam snaps onto the new avatar
         // Re-assert my torch to the fresh player entry (rejoins reset it).
         if (!this.torchOn) room.send("torch", { on: false });
+        // Same for "disable aggro": the server keys it by SESSION id, and a
+        // rejoin is a new session — without this the setting looks on in
+        // Settings while everything in the cave hunts you again.
+        if (this.noAggroOn) room.send("noaggro", { on: true });
         hideLoading(); // my avatar is in and the camera is on it — world's up
         this.loadDeferredAnims(); // action states stream in behind the live world
       }
@@ -3431,6 +3471,26 @@ export class WorldScene extends Phaser.Scene {
     return this.aggroRadiusOn;
   }
 
+  /** DISABLE AGGRO — stop monsters noticing me on their own, so a cave can be
+   * walked through and looked at (maintainer 2026-08-07).
+   *
+   * The switch lives on the SERVER (per session, see WorldRoom's "noaggro"),
+   * because that is where the proximity scan runs; the client only owns the
+   * preference and re-sends it on every join. It suppresses UNPROVOKED aggro
+   * only: raise your sword at something and it still comes, hit something and
+   * it still fights back. Turning it ON also releases whatever is already
+   * chasing you unprovoked — otherwise you would have to outrun the thing that
+   * noticed you first, which is exactly the situation it exists for. */
+  private toggleNoAggro(on = !this.noAggroOn) {
+    this.noAggroOn = on;
+    try {
+      localStorage.setItem("ml-no-aggro", on ? "1" : "0");
+    } catch {}
+    this.room?.send("noaggro", { on });
+    this.chat.addLog("—", `Aggro: ${on ? "DISABLED — nothing will jump you" : "back on"}`);
+    return this.noAggroOn;
+  }
+
   /** The PICKUP BUTTON / F key: grab the nearest ground item — immediately
    * when in reach, else walk to it first (same flow as tapping it). */
   /** WHERE TO STAND so the pickup gesture lands ON the item (maintainer
@@ -3608,6 +3668,31 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Cross lifecycle + the ground items' end-of-life flash, each frame. */
+  /** Fire each armed pickup sound on the frame that avatar's hand closes on
+   * the item — the same measured frame stepGroundDecor retires the drop on, so
+   * the sound and the item disappearing are the same instant.
+   *
+   * The safety valve matters as much as the trigger: a pickup clip can be cut
+   * short by a hit, a respawn or a hidden tab, and a sound armed forever would
+   * fire on some unrelated pickup much later. If the gesture is over and the
+   * frame never arrived, play it then — late by a few frames beats silent, and
+   * beats a stray sound minutes afterwards. */
+  private stepPickupSfx() {
+    const now = this.time.now;
+    for (const [id, av] of this.avatars) {
+      if (av.pickupSfxAt == null) continue;
+      const playing = /:pickup:/.test(av.sprite.anims.getName() ?? "");
+      const reached = playing && frameIndexOf(av.sprite.texture.key) >= (av.pickupSfxFrame ?? 0);
+      // 850 ms is the gesture length set where the action arrives; give it a
+      // little margin before giving up on the frame.
+      if (!reached && now - av.pickupSfxAt < 1000) continue;
+      av.pickupSfxAt = null;
+      av.pickupSfxFrame = null;
+      const sp = this.avatarSpatial(id);
+      gameAudio.event("item.pickup", { pan: sp.pan, dist: sp.dist });
+    }
+  }
+
   private stepGroundDecor() {
     const now = this.time.now;
     // A drop being GRABBED lingers past the server's removal until my pickup
@@ -4673,8 +4758,29 @@ export class WorldScene extends Phaser.Scene {
         } else if (player.action === "pickup") {
           av.actionKey = "pickup";
           av.actionUntil = nowMs + 850;
-          const spP = this.avatarSpatial(id);
-          gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
+          // DEFERRED to the frame the hand closes (maintainer 2026-08-06: "I
+          // want the pick up item sound to play when the hand reaches the
+          // ground and the item is actually picked up. Now I get the feeling
+          // the sound is triggered to early"). It WAS early: this branch runs
+          // the instant the pickup ACTION arrives, which is the start of an
+          // 850 ms gesture, and the hand does not reach the ground until the
+          // measured grab frame about halfway through. The art already knows
+          // that exact moment — it is the frame the ITEM vanishes on
+          // (character manifest `grab[dir].f`, used by stepGroundDecor) — so
+          // the sound now waits for the same frame instead of guessing a
+          // delay, which keeps it locked to the animation at any frame rate.
+          // Every avatar gets this, not just mine: a remote player's gesture
+          // is just as long, so their pickup was just as early.
+          av.pickupSfxFrame = this.grabFrameFor(av)?.f ?? null;
+          av.pickupSfxAt = null;
+          if (av.pickupSfxFrame == null) {
+            // No measured grab frame for this character/facing — play it now
+            // rather than not at all. Silence would be a worse bug than early.
+            const spP = this.avatarSpatial(id);
+            gameAudio.event("item.pickup", { pan: spP.pan, dist: spP.dist });
+          } else {
+            av.pickupSfxAt = nowMs; // armed; stepPickupSfx fires it
+          }
         } else if (player.action === "die") {
           av.actionKey = "die";
           av.actionUntil = nowMs + 10_000; // held below while dead anyway
@@ -5226,6 +5332,10 @@ export class WorldScene extends Phaser.Scene {
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.updateTargetOverlays();
+    // The pickup sound, held until the hand actually reaches the ground —
+    // before stepGroundDecor, so the sound and the item vanishing land on the
+    // same frame rather than one frame apart.
+    this.stepPickupSfx();
     // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
     this.stepGroundDecor();
 
@@ -5327,7 +5437,7 @@ export class WorldScene extends Phaser.Scene {
       // drawn tile and a missing one are pixel-identical, and a light is the
       // only thing that tells them apart. Filtering it would make the gate
       // unable to see the very property this change exists to create.
-      if (this.indoorInside && this.indoorMask)
+      if (this.roomMask)
         for (let i = sl.length - 1; i >= 0; i--) {
           const L = sl[i];
           if (L === this.probeLight) continue;
@@ -5392,12 +5502,19 @@ export class WorldScene extends Phaser.Scene {
       // a live tuning dial, so a drag has to show while you stand in the room.
       // Cheap: three multiplies, no allocation beyond the triple itself.
       const indoorTarget = indoorAmbient();
-      const ambEff = this.curAmbient.map((v, i) => {
+      // Kept SEPARATELY, because the two are for different halves of the world
+      // while the crossing eases: `ambOut` is what a cell OUTSIDE my room is
+      // heading for, `ambEff` is what a cell INSIDE it gets. Blending the
+      // outside toward the indoor grade is what made stepping out of a house at
+      // night FLASH — the maintainer, 2026-08-07: "it snaps to a brightness
+      // brighter than night and has to fade back down". See uAmbientOut.
+      const ambOut = this.curAmbient.map((v) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
-        const outdoor = clouded * (1 - this.curPrecipDim);
-        return outdoor + (indoorTarget[i] - outdoor) * iF;
+        return clouded * (1 - this.curPrecipDim);
       }) as [number, number, number];
+      const ambEff = ambOut.map((outdoor, i) => outdoor + (indoorTarget[i] - outdoor) * iF) as
+        [number, number, number];
       // …and the SKY terms have to go with it, or the roof we just deleted
       // stops being the only thing keeping the room dark:
       //   uSun.w is `sunShare` — `sunF = (1-sunShare) + sunShare*sunVis` — so
@@ -5439,6 +5556,10 @@ export class WorldScene extends Phaser.Scene {
         // fades to black on indoorMix while the interior's own ambient rolls
         // down on it, so the two halves of a doorway crossing move together.
         this.night.indoorMix = this.indoorMix;
+        // What the OUTSIDE is fading between: black and this, never the
+        // interior grade. Set every frame — the outdoor phase keeps moving
+        // while you stand indoors.
+        this.night.ambientOut = ambOut;
       }
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
@@ -5979,11 +6100,11 @@ export class WorldScene extends Phaser.Scene {
     // ground point is honestly inside the room — a bird cruising 70-120px up
     // over the house has its cell on the interior floor — but it is outside the
     // room and above the cut, so it must not take the room's ambient. Blacking
-    // it here is exactly the `z < indoorCut` half of indoorOutside.
+    // it here is exactly the `z < indoorCeil` half of indoorOutside.
     if (
       this.indoorInside &&
       this.indoorMask &&
-      z >= this.indoorCut &&
+      z >= this.indoorCeil &&
       (this.indoorMask.get(Math.floor(row) * this.world.width + Math.floor(col)) ?? 0) !== 0
     )
       return {
@@ -7417,11 +7538,11 @@ export class WorldScene extends Phaser.Scene {
    * copy of its art are dropped. (The maintainer 2026-08-07: "yes — point
    * light from outside has to be turned off".) */
   private inMyRoom(col: number, row: number): boolean {
-    if (!this.indoorInside || !this.indoorMask || !this.world) return true;
+    if (!this.roomMask || !this.world) return true;
     const c = Math.floor(col);
     const r = Math.floor(row);
     if (c < 0 || r < 0 || c >= this.world.width || r >= this.world.height) return false;
-    return (this.indoorMask.get(r * this.world.width + c) ?? 0) !== 0;
+    return (this.roomMask.get(r * this.world.width + c) ?? 0) !== 0;
   }
 
   /** Rebuild the per-cell mask when the SPACE or its CUT changed; a no-op
@@ -7434,22 +7555,42 @@ export class WorldScene extends Phaser.Scene {
       const had = !!this.indoorMask;
       this.indoorMask = null;
       this.indoorMaskSig = "";
-      if (had) this.night?.setRoom(null); // outdoors: the whole world is lit again
+      // NOTE the LIGHT mask (`roomMask` / night.setRoom) is deliberately NOT
+      // cleared here. Geometry snaps — the roof and every truncated column come
+      // back this frame — but the light has a 0.35s roll to finish, and a room
+      // that stopped existing mid-roll hands the whole world the interior's own
+      // grade. easeIndoorMix drops it when the roll lands on 0.
       return had;
     }
     // The room's ceiling: the slab UNDERSIDE over my own cell. deckBot is what
     // the player's head actually meets; roofLevel is the slab's top (see the
-    // indoorCut field note for the measured 24-vs-8 case).
+    // indoorCeil field note for the measured 24-vs-8 case).
     const i = this.indoorAtRow * g.width + this.indoorAtCol;
-    const cut = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
-    // The CUT-AWAY: take the dial's levels off this room's own ceiling. Both
-    // numbers go in the signature — turning the Settings slider must rebuild
-    // the mask exactly the way walking into a taller room does.
-    const top = Math.max(0, cut - indoorCut());
-    const sig = `${this.indoorKey}:${cut}:${top}`;
+    const ceil = g.deckBot[i] >= 0 ? g.deckBot[i] : s.roofLevel;
+    // THE ROOM'S FLOOR — the LOWEST level under its roof, not the level of the
+    // cell I happen to be standing on. A cave floor is not flat, and anchoring
+    // the cut to my own feet would make every wall in the room jump 16px each
+    // time I stepped onto a ledge. The minimum also keeps the whole floor plan
+    // below the cut, so a raised shelf inside the room reads as a shelf you
+    // look over rather than as a wall.
+    let floor = Infinity;
+    for (const ci of s.roof) if (g.level[ci] < floor) floor = g.level[ci];
+    if (!Number.isFinite(floor)) floor = 0;
+    // THE CUT-AWAY: walls stand `indoorWall()` levels ABOVE THAT FLOOR, clamped
+    // by the ceiling — a wall taller than its own room would just seal the box
+    // again. Measuring UP is the whole point (maintainer 2026-08-07): the dial
+    // is a WALL HEIGHT, and "roof − N" only equals one when every room has the
+    // same ceiling. the_island2's house has its ceiling at 6 and its caves at 8
+    // over the same level-0 floor, so the roof−4 that gave him the 2-level wall
+    // he liked gave FOUR in the cave — "the walls are higher than what I
+    // wanted". From the floor, 2 is 2 everywhere.
+    // All three numbers go in the signature: turning the Settings slider must
+    // rebuild the mask exactly the way walking into a different room does.
+    const top = Math.max(0, Math.min(ceil, floor + indoorWall()));
+    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}`;
     if (sig === this.indoorMaskSig && this.indoorMask) return false;
     this.indoorMaskSig = sig;
-    this.indoorCut = cut;
+    this.indoorCeil = ceil;
     this.indoorTop = top;
     const m = new Map<number, number>();
     for (const ci of s.roof) m.set(ci, IN_ROOF);
@@ -7460,6 +7601,7 @@ export class WorldScene extends Phaser.Scene {
     // has nothing to classify.
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
+    this.roomMask = m;
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
@@ -7476,6 +7618,15 @@ export class WorldScene extends Phaser.Scene {
     const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
     this.indoorMix += (to - this.indoorMix) * k;
     if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
+    // The room's LIGHT rules outlive the geometry by exactly one roll. Until
+    // this lands on 0 the outside is still fading up from black, the lights
+    // outside it are still fading in, and the chrome above the overlay is still
+    // held back — all of it keyed on `roomMask`, which is why it is dropped
+    // HERE and not the moment the verdict flipped.
+    if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
+      this.roomMask = null;
+      this.night?.setRoom(null);
+    }
   }
 
   /** Teleport / respawn: apply the next verdict instantly. A snap across the
@@ -7506,11 +7657,11 @@ export class WorldScene extends Phaser.Scene {
    * it is my floor. */
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
     const w = this.world;
-    if (!this.indoorInside || !this.indoorMask || !w) return false;
+    if (!this.roomMask || !w) return false;
     const col = Math.floor(fx / CELL_WU);
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
-    return !((this.indoorMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCut);
+    return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCeil);
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
