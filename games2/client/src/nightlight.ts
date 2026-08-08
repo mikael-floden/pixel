@@ -1571,7 +1571,15 @@ export class NightLights {
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
-      uCaveK: { type: "1f", value: 1.4 }, // mouth 25%, 1 tile 6%, 2 tiles 1.5%
+      // OFF (0) until the containment is right. The depth map and the multiply are
+      // correct and tested; what is NOT solved is telling an INSIDE pixel from an
+      // OUTSIDE one. Gating on the pixel's own cell fails because the mountain's
+      // exterior face RESOLVES ONTO INTERIOR CELLS — so the rock darkened with the
+      // room (maintainer 2026-08-08: "you have darkened the entire mountain and the
+      // outside as well! The inside I said!"). The next attempt needs a test the
+      // resolve cannot spoof — the pixel being below the roof slab AND inside the
+      // room's own footprint — not a cell lookup.
+      uCaveK: { type: "1f", value: 0.0 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
