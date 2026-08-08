@@ -2212,24 +2212,45 @@ export function monsterDodge(
   // masonry. Only override when exactly one side is open: if both are open the
   // wider berth is still the better dodge, and if neither is, pushing on lets
   // unstick/steer-assist/the stall re-plan resolve it as before.
-  if (openHeading) {
-    const at = (s: number) => {
-      const [rx, ry] = DODGE_RING[(idx + s + 8) % 8];
-      return openHeading(rx, ry);
-    };
-    const okA = at(side);
-    const okB = at(-side);
-    if (!okA && okB) side = -side;
-  }
   // The 45°-vs-90° choice is held too, and it LATCHES ONE WAY: once the pass
   // has needed the full detour it keeps it until the obstacle is behind us.
   // Letting it fall back mid-pass is a second, smaller weave on top of the
   // side flip — the walker straightens up, re-enters the personal space, and
   // escalates again.
-  const wide = (held && state!.wide) || clearance(side) < hitP;
-  const rot = wide ? 2 * side : side;
+  const wantWide = (held && state!.wide) || clearance(side) < hitP;
+  // CANDIDATES IN PREFERENCE ORDER, and the OPENNESS TEST APPLIES TO THE ONE
+  // WE ACTUALLY EMIT.
+  //
+  // This is where committing to a manoeuvre nearly became worse than weaving.
+  // The first cut tested only the two 45° rotations and then emitted 2*side
+  // when the slip was too tight — a heading nothing had checked. Held by the
+  // new hysteresis, the walker would sit on a blocked 90° heading and stop
+  // dead: measured at 60Hz on the real world, a FULL SECOND of zero
+  // displacement against the house wall, in both directions of the
+  // maintainer's walk ("the player starts to run straight into the wall for a
+  // short time before heading to the target location"). Weaving at least kept
+  // it moving; commitment without a walkability check just parks it.
+  //
+  // So preference is ordered — the committed side and magnitude first, so a
+  // free walker's path is bit-for-bit what the hysteresis intends — but a
+  // candidate has to be OPEN to be chosen. Commitment never outranks "can I
+  // physically move". If none is open we emit the preferred one anyway and let
+  // unstick / steer assist / the stall re-plan resolve it, exactly as before.
+  const order = wantWide
+    ? [2 * side, side, 2 * -side, -side]
+    : [side, 2 * side, -side, 2 * -side];
+  let rot = order[0];
+  if (openHeading) {
+    for (const cand of order) {
+      const [rx, ry] = DODGE_RING[(idx + cand + 8) % 8];
+      if (openHeading(rx, ry)) { rot = cand; break; }
+    }
+  }
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
-  return { ax: nax, ay: nay, state: { side, blocker: hit.id, wide } };
+  return {
+    ax: nax, ay: nay,
+    state: { side: Math.sign(rot) || side, blocker: hit.id, wide: Math.abs(rot) === 2 },
+  };
 }
 
 export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRuntime[] {

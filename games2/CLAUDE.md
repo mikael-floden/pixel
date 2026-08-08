@@ -1007,11 +1007,31 @@ visible head/shoulders are ABOVE the surface).
     sides every frame with a +4wu bias toward the committed one, far less than
     `clearance` swings by as the walker moves, so the winner kept flipping. The
     45°-vs-90° escalation latches the same way and one way only.
+  - **The openness test applies to the heading actually EMITTED.** The first
+    cut of the hold probed only the two 45° rotations and then emitted the 90°
+    one whenever the slip was too tight — a heading nothing had checked.
+    Per-frame re-deciding used to shake the walker loose from that; commitment
+    parked them on it instead (maintainer 2026-08-08: "after the player has
+    dodged the NPC ... the player starts to run straight into the wall for a
+    short time"). Candidates are now an ordered preference list —
+    `[2*side, side, 2*-side, -side]` when wide, 45° first when not — and the
+    first OPEN one wins, so a dodge gives up MAGNITUDE before it gives up SIDE
+    (crossing over mid-pass is the weave). With no `openHeading`, or with
+    nothing open, the preferred rotation is emitted exactly as before.
+    **Commitment never outranks "can I physically move".**
   Measured walking past an NPC on the real client: **7 cross-track reversals
   before, 1 after** — and 1 is the floor, since going around something IS one
-  reversal. Gate: the fourth case in `server/test/wallhug.test.ts`, which also
-  pins that the same off-axis geometry does NOT start a fresh dodge, so the
-  hold can never be mistaken for a wider trigger.
+  reversal. The stall the emitted-heading bug caused was measured by replaying
+  the maintainer's exact walk at 60Hz in Node against the real world file:
+  **60 ticks (1.00s) of zero displacement into the house wall out-bound and 61
+  in-bound, 0 ticks both ways after** (and the trips finish quicker too, 4.58s
+  → 3.87s and 5.17s → 4.52s). A deterministic replay is the instrument to reach
+  for here — headless-GL browser probes starve under load and reported 178 of
+  220 samples as false "grinds". Gates: the fourth and fifth cases in
+  `server/test/wallhug.test.ts`. The fourth also pins that the same off-axis
+  geometry does NOT start a fresh dodge, so the hold can never be mistaken for
+  a wider trigger; the fifth walls off exactly the preferred heading and
+  asserts the emitted one is open AND on the same side.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells

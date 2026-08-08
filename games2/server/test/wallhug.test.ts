@@ -178,3 +178,43 @@ test("a dodge holds its side until the body is passed, instead of re-deciding ev
   const stillWide = monsterDodge(0, 0, east[0], east[1], [at(40)], wide);
   assert.ok(stillWide?.state.wide, "the full detour was abandoned mid-pass");
 });
+
+// THE OPENNESS TEST MUST APPLY TO THE HEADING ACTUALLY EMITTED (maintainer
+// 2026-08-08: "after the player has dodged the NPC ... the player starts to run
+// straight into the wall for a short time before heading to the target
+// location").
+//
+// The first cut of the hold above probed only the two 45° rotations, then
+// emitted the 90° one whenever the slip was too tight — a heading nothing had
+// ever checked. On its own that was survivable, because the old per-frame
+// re-decision shook the walker loose; combined with the new commitment it
+// parked them: replayed at 60Hz against the real world, a FULL SECOND of zero
+// displacement into the house wall, in both directions of the maintainer's
+// walk. Commitment must never outrank "can I physically move".
+test("a dodge only emits a heading it has checked, and gives up magnitude before side", () => {
+  const east: [number, number] = [1, 0];
+  const w = screenToWorldVector(east[0], east[1]);
+  const wl = Math.hypot(w.x, w.y);
+  const at = (d: number) => ({ id: "npc:1", x: (w.x / wl) * d, y: (w.y / wl) * d, r: 9 });
+  const bodies = [at(30)]; // close enough that the pass wants the full detour
+
+  const first = monsterDodge(0, 0, east[0], east[1], bodies);
+  assert.ok(first, "no dodge fired at all");
+  const committed = { ...first!.state, wide: true };
+
+  // What it PREFERS when the world is all open — the 90° slip on the held side.
+  const pref = monsterDodge(0, 0, east[0], east[1], bodies, committed, undefined, () => true);
+  assert.ok(pref?.state.wide, "the fixture no longer exercises the wide detour");
+
+  // Now make exactly that one heading a wall, as the house does.
+  const open = (ax: number, ay: number) => !(ax === pref!.ax && ay === pref!.ay);
+  const out = monsterDodge(0, 0, east[0], east[1], bodies, committed, undefined, open);
+  assert.ok(out, "the dodge vanished when its preferred heading was walled");
+  assert.ok(open(out!.ax, out!.ay),
+    "the dodge emitted the very heading it was told is a wall — that is the stall");
+
+  // It should have given up the MAGNITUDE, not the side: swapping sides mid-pass
+  // is the weave the hold above exists to prevent.
+  assert.equal(out!.state.side, committed.side, "the dodge crossed to the other side instead");
+  assert.equal(out!.state.wide, false, "the emitted rotation and the recorded one disagree");
+});
