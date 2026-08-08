@@ -189,8 +189,8 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
 
 
 def _refresh_sidecars(name, path):
-    """Re-derive the world's monster spawn zones and NPC placements from the
-    world.json just written.
+    """Re-derive the world's monster spawn zones, NPC placements and named
+    indoor places from the world.json just written.
 
     Both are DERIVED data — habitat rules and landmark rules over the terrain —
     so the moment the terrain changes they are stale, and stale is not merely
@@ -206,13 +206,16 @@ def _refresh_sidecars(name, path):
     habitat wiped out by a terrain edit, a monster with nowhere dry to stand, a
     shop with no reachable ground — the build must FAIL rather than quietly keep
     the old file."""
-    import spawns                       # local: both read world.json, not worldio
+    import spawns                       # local: all three read world.json, not worldio
     import npcs
+    import places
     shipped = os.path.join(spawns.WORLDS, name, "world.json")
     if os.path.abspath(path) != os.path.abspath(shipped):
         return                          # scratch/experiment render, not a shipped world
     spawns.refresh(name)
     npcs.refresh(name)
+    places.refresh(name)                # named insides: a moved house keeps its
+                                        # name, a NEW one fails the build unnamed
 
 
 class World:

@@ -289,6 +289,42 @@ pad is the point of the map. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
 
+## Named indoor places — `worlds/<name>/places.json` (`pixel-maps2/places@1`)
+
+maintainer 2026-08-08: *"Can you give the 'in-door' on each map a name so we can
+trigger a sound when someone walks into that exact house/dungeon/cave etc… Does
+a name like that already exist?"* **It did not** — world@2 decks carry a `kind`
+and no identity; the game decides indoors GEOMETRICALLY per query
+(`findIndoorSpace` flood-fills the roofed cells around you and returns a space
+with no id); and the score's `cave`/`home` beds hang off continuous sensors, so
+every cave on every map is the same cave and there is no moment of *entering*.
+The missing piece was identity, and it belongs to whoever makes the rooms.
+
+Each place ships `{id, name, kind (house|cave), anchor, cells}` — **cell → place
+is one lookup**, so a consumer needs no geometry. `id` is the event key and does
+not change; `name` is display text lore may rewrite. Full spec: `spec/PLACES.md`.
+
+Places are DERIVED, names are LOOKED UP: `roof`/`cave` decks group into
+8-connected footprints (the cave's twelve stacked slabs are one place; `bridge`
+is excluded — a span is a roof over open air and the game calls it outdoors),
+each group gets a ROLE computed from world.json alone (`house-1` = the house
+nearest the arrival point, `cave-1` = the cave), and `places.NAMES[world][role]`
+supplies the name. Keying on the role and never on a coordinate is what makes a
+name survive the terrain moving. Re-derived by `save_world` beside spawns/npcs.
+
+**Canon wins where canon has a name.** `lore/canon/CONSTRAINTS.md` §5 keeps the
+list of named map features ("use the names, never the positions") and
+`GLOSSARY.md`'s *the Waking* happens "within sight of **the stone house** and
+the fire" — so the_island2's cottage ships as **The Stone House** and its
+dungeon as **The Cave**, both adopted verbatim. Only the maintainer's second
+house needed a new one and it got a plain descriptive **The Meadow House**.
+
+`python maps2/pipeline/places.py --check` asserts both halves: every roofed cell
+belongs to a named place (a world that grows a house cannot ship it anonymous —
+a player can walk in there and the game has nothing to fire) and every named
+cell is still under an indoor deck (a building that moved cannot leave the event
+firing over open grass).
+
 ## NPCs — `worlds/<name>/npcs.json` (`pixel-maps2/npcs@1`)
 
 maps2 owns WHERE people stand, exactly as it owns where monsters spawn;
