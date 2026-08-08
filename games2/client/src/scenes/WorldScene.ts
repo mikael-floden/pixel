@@ -6303,10 +6303,7 @@ export class WorldScene extends Phaser.Scene {
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
       // deck level (projectFlat returns the lower BASE level).
-      // The level the route really ENDS on, never the tapped one: tapping a
-      // roof you cannot climb routes you to the floor beneath it, and lifting
-      // the beacon to the roof leaves it hanging a storey over your head.
-      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.endLevel ?? this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
     }
     this.dropHold();
   }
@@ -6361,7 +6358,7 @@ export class WorldScene extends Phaser.Scene {
     const p = this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = p.y - Math.max(p.lvl, trip.endLevel ?? goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
     // Hold replans never touch the beacon: while the finger is down the
     // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
     // rebuilding the container + tween per replan also made the pulse
@@ -7829,10 +7826,20 @@ export class WorldScene extends Phaser.Scene {
       else this.roomCellMemo.set(idx, 0);
     }
     if (!room) return false;
-    // It IS a room — mine or someone else's? `inMyRoom` reads the fade mask,
-    // which only exists while I am inside one (and lingers through the fade,
-    // deliberately: bodies in my room keep their outlines until it finishes).
-    return !(this.roomMask && this.inMyRoom(col, row));
+    // It IS a room — mine or someone else's? THE TEST IS "IS THE CUT STILL
+    // APPLIED", i.e. is the roof off, and NOT the fade mask.
+    //
+    // `roomMask` outlives the verdict on purpose: it drives the ambient fade,
+    // which keeps easing for OUTDOOR_FADE_MS after you step out. Reading it
+    // here meant that for a whole second after the roof snapped back, every
+    // monster still in the cave kept its outline — drawn straight through the
+    // mountain (maintainer 2026-08-08: "there is a delay until the white border
+    // is removed... the very instant the roof is back the white border is
+    // placed around all monsters in the cave"). `indoorInside && indoorMask` is
+    // the same pair `pickGround` and `aboveCut` use, and it flips in the SAME
+    // frame redrawGround puts the roof back, so the outline and the rock can
+    // never disagree about which of them the camera is looking at.
+    return !(this.indoorInside && this.indoorMask && this.inMyRoom(col, row));
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch

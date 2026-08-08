@@ -1302,6 +1302,30 @@ try {
       const m = window.__ml.me();
       return { c: m.x / 32, r: m.y / 32 };
     });
+    // A PER-FRAME RECORDER, armed BEFORE we leave. The bug this catches lives
+    // in the window between the roof coming back (the indoor VERDICT flipping)
+    // and the ambient fade finishing ~1s later: read the fade mask instead of
+    // the cut and every monster in the cave keeps its outline through solid
+    // rock for that whole second (maintainer 2026-08-08: "there is a delay
+    // until the white border is removed... we should have no delay here").
+    // Sampling after `settle` would miss it entirely — settle WAITS for the
+    // fade to end — so this latches the first frame that is already outdoors
+    // while the fade is still running.
+    await page.evaluate(() => {
+      window.__leaveProbe = null;
+      const tick = () => {
+        const st = window.__ml.indoor();
+        if (!window.__leaveProbe && !st.indoor && st.mix > 0)
+          window.__leaveProbe = {
+            mix: st.mix,
+            mons: window.__ml.monsterInfo().map((m) => ({
+              kind: m.kind, sealed: !!m.inHiddenRoom, cover: m.coverFrac, ring: m.hiddenFrac,
+            })),
+          };
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
     // Walk out of the cave down-screen until the verdict flips to outdoors.
     let stood = false;
     for (let step = 2; step <= 14 && !stood; step += 2) {
@@ -1342,6 +1366,27 @@ try {
     if (openAir.length && !stillDrawn.length)
       fail(`${openAir.length} monsters out in the open are covered by terrain and NONE is outlined — ` +
         `the room gate is hiding outlines it should not (that is the feature switched off, not fixed)`);
+    // THE SAME FRAME THE ROOF IS BACK. The recorder above latched the first
+    // frame that was outdoors with the fade still mid-flight; nothing sealed in
+    // the cave may be outlined even there.
+    const mid = await page.evaluate(() => window.__leaveProbe);
+    if (!mid)
+      fail("never caught a frame that was outdoors with the ambient fade still running — the leave probe cannot judge the delay");
+    const midSealed = mid.mons.filter((m) => m.sealed && m.cover > 0.5);
+    // NON-VACUITY, and it bit: the first version of this check reported
+    // "none of the 0 sealed monsters is outlined" and PASSED against code that
+    // still had the delay. The cave's population wanders, so the latched frame
+    // may simply contain nobody buried — that is a no-measurement, not a pass.
+    if (!midSealed.length)
+      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed, buried monster ` +
+        `out of ${mid.mons.length} nearby — nothing was measured, retry`);
+    const midLeak = midSealed.filter((m) => m.ring > 0);
+    if (midLeak.length)
+      fail(`${midLeak.length} monsters keep their outline through the rock on the first frame after the roof came back ` +
+        `(fade still at mix ${mid.mix.toFixed(3)}): ${midLeak.slice(0, 5).map((m) => `${m.kind} ${Math.round(m.ring * 100)}%`).join("; ")} — ` +
+        `the gate is reading the FADE mask instead of the cut, so the border outlives the roof by a whole fade`);
+    ok(`the border dies with the roof: on the first frame outdoors (fade still at mix ${mid.mix.toFixed(3)}) ` +
+      `none of the ${midSealed.length} sealed monsters is outlined`);
     ok(`no wall-hack into the cave: all ${buried.length} monsters sealed under its roof (up to ` +
       `${Math.round(Math.max(...buried.map((m) => m.cover)) * 100)}% buried) draw NO outline from outside` +
       (stillDrawn.length ? `, while ${stillDrawn.length} covered by open-air terrain still do` : ""));

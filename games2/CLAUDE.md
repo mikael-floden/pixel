@@ -1089,15 +1089,28 @@ visible head/shoulders are ABOVE the surface).
   uses, not merely "has a slab overhead", so a body behind a cliff, a tower or
   a BRIDGE keeps its outline — that IS the feature — and someone in the cave
   MOUTH is not sealed (no slab over an entrance), so they outline normally.
+  **The gate is the CUT, never the fade mask.** `roomMask` outlives the indoor
+  verdict on purpose (it drives the ambient ease for OUTDOOR_FADE_MS after you
+  step out); reading it here kept every monster in the cave outlined through
+  solid rock for a whole second after the roof snapped back. `indoorInside &&
+  indoorMask` — the same pair `pickGround` and `aboveCut` use — flips in the
+  same frame redrawGround puts the roof back.
   One flood fill answers for a whole space: `roomCellMemo` is filled from
   `space.roof` in a single pass (the cave's 472 cells at once) and is a Map
   lookup per body per frame thereafter; it clears on world change, the only
   thing that can invalidate it. Fails OPEN — an outline shown that could have
   been hidden is cosmetic, one hidden that should show is the feature broken.
-  Gate: section 8 of `verify-indoor.mjs`, which is kept non-vacuous by
+  Gates: section 8 of `verify-indoor.mjs`. It arms a per-FRAME recorder before
+  leaving the cave and latches the first frame that is already outdoors with the
+  fade still running (measured at mix 0.73-0.75) — sampling after `settle` would
+  miss the bug entirely, because settle WAITS for the fade to end. It is kept
+  non-vacuous by
   `coverFrac` (what the GEOMETRY covers, independent of whether the ring is
   drawn): it requires ≥2 monsters both sealed and >50% buried before asserting
-  none is outlined, and separately requires that bodies covered by OPEN-AIR
+  none is outlined — and the mid-fade check requires ≥1, which it learned the
+  hard way, having once reported "none of the 0 sealed monsters is outlined" and
+  PASSED against code that still had the delay (the cave's population wanders,
+  so an empty frame is a no-measurement, not a pass) — and separately requires that bodies covered by OPEN-AIR
   terrain still are — otherwise "switch the feature off" would pass.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
