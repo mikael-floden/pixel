@@ -752,13 +752,22 @@ def main() -> int:
     if not key:
         print("ELEVENLABS_API_KEY not set — refusing to run (no placeholder audio).")
         return 1
-    seconds = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].strip() else None
+    # ARGS ARE POSITION-INDEPENDENT: the numeric one is `seconds`, every other
+    # one is a track name. This used to be `int(sys.argv[2])`, which assumed the
+    # caller passed at most one name — and composer-theme.yml interpolates its
+    # `track` input UNQUOTED, so asking it for "cave3 cave4" arrived as two argv
+    # entries and the run died on `int("cave4")` before generating anything.
+    # The workflow is quoted now, but a runner that splits arguments should not
+    # be able to kill a generation run: parse by SHAPE, not by position.
+    extra = [a.strip() for a in sys.argv[2:] if a.strip()]
+    seconds = next((int(a) for a in extra if a.isdigit()), None)
+    more = [a for a in extra if not a.isdigit()]
     if which == "all":
         names = list(TRACKS)
     elif which == "new":
         names = list(NEW_BEDS)
     else:
-        names = [n for n in which.replace(",", " ").split() if n]
+        names = [n for n in which.replace(",", " ").split() if n] + more
 
     session = requests.Session()
     session.headers.update({"xi-api-key": key})
