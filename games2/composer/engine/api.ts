@@ -17,7 +17,7 @@ import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces, composerFoleyTake } from "./foley";
 import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
 import { ContextMusic, hasBed } from "./contextMusic";
-import { BED_MIN_HOLD_S, BED_NAMES, BedName, desiredBed, resolveBed } from "./bedSelect";
+import { BED_MIN_HOLD_S, BED_NAMES, BED_OFF, BED_ON, BedName, desiredBed, resolveBed } from "./bedSelect";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -365,6 +365,24 @@ const THUNDER_GAIN_DB = 14;
 // room's music is a line here plus a track, with no geometry in the audio code.
 // Deliberately keyed on the ID and not the `kind`: two caves can want different
 // music, and "every cave sounds the same" should be a choice, not a default.
+// BATTLE MUSIC (maintainer 2026-08-08). The simple version, deliberately: one
+// `battle` bed, triggered when a fight starts and faded away over four seconds
+// once it ends — NOT the per-bed battle layers he sketched, which come later.
+//
+// THE FOUR SECONDS ARE THE WHOLE FEATURE, and they are a TAIL, not a fade-out
+// timer: "if you hack-n-slash a lot of monsters the whole mob could be seen as
+// one big battle. So we want to not stop the battle music to early." Every
+// moment of threat pushes the tail back out to four seconds, so a mob is one
+// continuous fight rather than a stutter of starts and stops.
+//
+// NO RESTART, BY CONSTRUCTION rather than by a flag: the bed is SELECTED once
+// when the fight starts and is not re-selected until the tail actually expires.
+// Re-engaging inside the tail only moves the deadline and takes the level back
+// to 1, so the track carries on exactly where it was. (Bed.stop/start would
+// resume from a saved position anyway, but not re-selecting means the question
+// never arises.)
+const BATTLE_TAIL_S = 4;
+
 const PLACE_BEDS: Record<string, BedName> = {
   the_cave: "cave4",
 };
@@ -428,6 +446,8 @@ export class GameAudio {
   private bedWanted = false;
   // The bed a named place demands, or null outdoors — see setPlace().
   private placeBed: BedName | null = null;
+  // When the battle tail expires. 0 = not fighting and not fading.
+  private battleUntil = 0;
   private bedNow: BedName | null = null;
   private bedSince = 0;
   private bedOverride: BedName | null = null;
@@ -1358,6 +1378,33 @@ export class GameAudio {
       this.musicToggleFast = false;
       return;
     }
+    // BATTLE. Threat uses the same hysteresis as the bed selector (BED_ON to
+    // start, BED_OFF to stop) so a monster hovering at the edge of the trigger
+    // cannot strobe the music on and off.
+    const now = this.graph ? this.graph.now : 0;
+    const fighting = (field.threat ?? 0) > (this.battleUntil ? BED_OFF.battle : BED_ON.battle);
+    if (fighting) this.battleUntil = now + BATTLE_TAIL_S;
+    if (this.battleUntil && now < this.battleUntil && hasBed("battle")) {
+      // Full level while the fight is live; the last BATTLE_TAIL_S seconds ARE
+      // the fade, so this reaches 0 exactly as the tail runs out.
+      const tail = Math.max(0, Math.min(1, (this.battleUntil - now) / BATTLE_TAIL_S));
+      const base = this.pureOn ? 1 : this.musicOn ? modeMul : 0;
+      if (this.bedNow !== "battle") {
+        // Selected ONCE per fight. Re-engaging inside the tail never reaches
+        // here, which is what keeps the track from restarting.
+        this.bedNow = "battle";
+        this.bedSince = now;
+        this.beds?.setContext("battle");
+      }
+      this.beds?.setLevel(base * tail);
+      // The world score cross-fades back UP as the battle fades down, so the
+      // handover is one gesture rather than a hole of silence.
+      this.music.setLevel(this.musicOn ? this.dayLevelFor(sun, modeMul) * (1 - tail) : 0, tau);
+      this.applyNightLevel(Math.min(1, Math.max(0, 1 - sun)) * (1 - tail), tau);
+      this.musicToggleFast = false;
+      return;
+    }
+    this.battleUntil = 0;
     // Not auditioning — make sure no bed is left holding the bus.
     if (this.bedNow !== null) {
       this.bedNow = null;
@@ -1372,13 +1419,20 @@ export class GameAudio {
     // gentle dip so nights aren't silent. Pure mode freezes at the authored
     // score. The toggle snaps; mood changes keep the slow ease.
     const nightAmt = Math.min(1, Math.max(0, 1 - sun));
-    const haveNight = !!this.nightGain || !!nightMusicUrl();
-    const dayFloor = haveNight ? 0.12 : 0.45;
-    const dayLevel = this.pureOn ? 1 : (dayFloor + (1 - dayFloor) * sun) * modeMul;
-    this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
+    this.music.setLevel(this.musicOn ? this.dayLevelFor(sun, modeMul) : 0, tau);
     if (this.nightWanted) this.ensureNightMusic(); // covers the async unlock/load
     this.applyNightLevel(nightAmt, tau);
     this.musicToggleFast = false;
+  }
+
+  /** The day score's level for this sun, extracted so the battle cross-fade
+   * hands back to EXACTLY the level the world would otherwise be playing —
+   * a second copy of this formula would drift the moment either changed. */
+  private dayLevelFor(sun: number, modeMul: number): number {
+    if (this.pureOn) return 1;
+    const haveNight = !!this.nightGain || !!nightMusicUrl();
+    const dayFloor = haveNight ? 0.12 : 0.45;
+    return (dayFloor + (1 - dayFloor) * sun) * modeMul;
   }
 
   private duck(): void {
