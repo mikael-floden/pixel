@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-05T08:02:23+00:00",
+  "generated_at": "2026-08-08T12:02:05+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -1055,6 +1055,196 @@
             "seamless transition to beginning",
             "sustained string chords",
             "fade out non-essential elements"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "cave2": {
+      "id": "cave2",
+      "files": [
+        {
+          "file": "cave2.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1402281
+        },
+        {
+          "file": "cave2.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1768124
+        }
+      ],
+      "duration_s": 108.63,
+      "bpm": 61.52,
+      "asked_bpm": 74,
+      "musical": {
+        "root": "A",
+        "mode": "major",
+        "confidence": 0.8,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          1,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 61.52,
+        "beat_anchor_s": 0.673,
+        "confidence": 0.528,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 26.345,
+        "loop_end_s": 91.213,
+        "crossfade_ms": 900,
+        "score": 0.9829,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 1.4,
+        "lufs_in": -11.92,
+        "gain_db": -6.08,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.08
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -11.92,
+        "true_peak_dbtp": -1.0,
+        "lead_in_s": 1.4,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 14.11,
+        "centroid_hz": 3506.3,
+        "stereo_corr": 0.21,
+        "silence_frac": 0.035
+      },
+      "faults": [
+        "slow start (1.40s)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 72.75,
+          "faults": [
+            "slow start (1.40s)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -11.92,
+          "true_peak_dbtp": -1.0,
+          "lead_in_s": 1.4,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 14.11,
+          "centroid_hz": 3506.3,
+          "stereo_corr": 0.21,
+          "silence_frac": 0.035,
+          "loop_score": 0.9696
+        },
+        {
+          "score": 0.0,
+          "faults": [
+            "TRUNCATED (0.13s of 110s)"
+          ],
+          "duration_s": 0.13,
+          "lufs": -70.0,
+          "true_peak_dbtp": 6.08,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.0,
+          "crest_db": 2.6,
+          "centroid_hz": 10715.4,
+          "stereo_corr": 0.641,
+          "silence_frac": 0.0,
+          "loop_score": 0.0
+        },
+        {
+          "score": 63.85,
+          "faults": [
+            "slow start (1.25s)",
+            "gaps (6.1% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.33,
+          "true_peak_dbtp": -1.01,
+          "lead_in_s": 1.25,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 12.97,
+          "centroid_hz": 2099.2,
+          "stereo_corr": 0.114,
+          "silence_frac": 0.061,
+          "loop_score": 0.9806
+        }
+      ],
+      "sections": [
+        {
+          "name": "Deep Drone",
+          "duration_ms": 15000,
+          "styles": [
+            "immediate start",
+            "deep sustained low string drone",
+            "very soft dynamics",
+            "enormous reverb",
+            "solemn mood",
+            "low cello"
+          ]
+        },
+        {
+          "name": "Drips and Pulse",
+          "duration_ms": 25000,
+          "styles": [
+            "soft marimba notes",
+            "prepared-piano notes",
+            "long natural reverb",
+            "sounds like drips into water",
+            "quiet steady pulse emerges",
+            "gentle forward motion"
+          ]
+        },
+        {
+          "name": "Cavern Breath",
+          "duration_ms": 30000,
+          "styles": [
+            "distant breathy bass flute melody",
+            "slow low cello swells",
+            "continued marimba and piano pulse",
+            "deep warm low end",
+            "sense of awe"
+          ]
+        },
+        {
+          "name": "Crystal Shimmer",
+          "duration_ms": 25000,
+          "styles": [
+            "far-off soft bowed metal shimmer",
+            "gentle unfatiguing highs",
+            "ethereal atmosphere",
+            "sustained string drone continues",
+            "space between notes",
+            "quiet wonder"
+          ]
+        },
+        {
+          "name": "Loop and Fade",
+          "duration_ms": 15000,
+          "styles": [
+            "seamless loop point",
+            "marimba and piano pulse returning to forefront",
+            "deep string drone holds",
+            "gentle fade into reverb",
+            "sense of unending space",
+            "peaceful conclusion"
           ]
         }
       ],
