@@ -1592,7 +1592,7 @@ export class NightLights {
       // outside as well! The inside I said!"). The next attempt needs a test the
       // resolve cannot spoof — the pixel being below the roof slab AND inside the
       // room's own footprint — not a cell lookup.
-      uCaveK: { type: "1f", value: 1.4 },
+      uCaveK: { type: "1f", value: 0.0 }, // OFF — containment still wrong, see below
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
