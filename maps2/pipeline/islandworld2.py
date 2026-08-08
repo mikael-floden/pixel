@@ -148,9 +148,44 @@ LAGOON_RW = 2
 # Deliberate BRIDGE SITES (maintainer 2026-07-22, red/blue overview marks), as design-fraction
 # fy targets like PATH/LAGOON_SITES. Gorge/waterway crossings: the very top of the massif gap,
 # a HIGH bench-24 span mid-massif, the foot crossing where the channel exits into the maze, and
-# one mid-channel. Maze-river crossings: the maintainer kept 5 of the original 8.
+# one mid-channel.
+#
+# ONE RIVER (maintainer 2026-08-07, red mark down the western plains: "The Island 2 has two
+# rivers. One small to the left and one big to the right. The small one should be removed").
+# The second waterway was `_maze_river` — a winding raised-valley channel running the length of
+# the maze with five crossings of its own (RIVER_BRIDGE_FRACS). It is gone, and so are its
+# bridges: a crossing exists because there is something to cross. What remains is the massif
+# gorge, which is the island's river.
 GORGE_BRIDGE_FRACS = (0.10, 0.235, 0.4175, 0.515)
-RIVER_BRIDGE_FRACS = (0.47, 0.53, 0.595, 0.7275, 0.7925)
+
+# -- THE HEADLAND RULE (maintainer 2026-08-07) --------------------------------
+# "To walk over the big river you first have to get up on a hill. That hill is to small. I
+# have drawn a new area for that hill in green. It looks a bit dumb when a hill is that
+# small. It need some area to make sense. You have tried to fix this before as well and did
+# some small improvement, but didn't make it as big as I wanted."
+#
+# He is right, and the earlier attempt is the reason it is only half-fixed: _widen_hills
+# widens a raised blob whose bbox min-dim is <= 2 and stops at 4, so the east landing of the
+# lower gorge crossing came out as a 3-cell-wide grass LEDGE running fifteen rows along the
+# bank — too wide for _widen_hills to look at again, and far too narrow to read as a hill you
+# climb. You walk over a Δ4 wall onto a shelf you could fall off either side of.
+#
+# So a bridge landing is now a LANDFORM in its own right, not whatever ground happened to
+# survive next to the water. For each end of every LOWLAND crossing, the ground at deck level
+# reachable from the landing and within HEADLAND_R of it must be a headland:
+#
+#   * at least HEADLAND_MIN cells of it, and
+#   * at least HEADLAND_DIM cells across on BOTH axes — the clause that actually bites, since
+#     a long thin ledge passes any pure area test.
+#
+# _bridge_headlands() grows it (raising the lower ground around the landing to deck level,
+# nearest cell first, so it fills out as a rounded rise rather than a tentacle) and the build
+# ASSERTS it. Mountain crossings are exempt: their banks are terraced massif, and raising
+# those would break the antitone/terrace invariants that make the massif legible.
+HEADLAND_R = 12          # how far from a landing a headland may reach (Chebyshev cells)
+HEADLAND_MIN = 160       # ...and how much ground at deck level it must hold
+HEADLAND_DIM = 9         # ...across BOTH axes: no more ledges
+HEADLAND_MAX_LEVEL = 14  # above this a bank is mountain, and the mountain keeps its shape
 
 # THE CAVE (maintainer 2026-07-29): a Diablo-style room-and-corridor dungeon under
 # (almost) the ENTIRE east massif, entered ONLY through the pinned doorway below.
@@ -314,7 +349,6 @@ class Island2(Island):
         self._majority()                  # despeckle the maze level field
         self._dechunk_maze()              # dissolve thin/tiny raised relief -> broad hills only
         flatten_shores(self.mat, self.level)
-        self._maze_river()                # raised-valley river (AFTER shores so banks stay tier 4)
         camera_monotone_masked(self.level, self.mat, self.upper)   # mountain antitone ONLY
         self._mtn_gorge()                 # DEEP gorge down the massif (banks keep full height)
         self._bridge_over_gorge(self._gorge_cells)   # maintainer's waterway crossings (early:
@@ -325,7 +359,8 @@ class Island2(Island):
         self._ford_stranded()
         self._widen_hills()               # thin maze ridges are absurd 1-cell walls -> widen
                                           # (maintainer: "the hill I stand on looks ridiculous")
-        self._place_bridges()             # maze-river crossings at the maintainer's 5 sites
+        self._bridge_headlands()          # THE HEADLAND RULE: a bridge landing is a hill you
+                                          # walk up onto, not a ledge you balance on
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()            # cleans any small trap the widen left
@@ -503,40 +538,6 @@ class Island2(Island):
                 self.room[y, x] = r
                 if self.mat[y, x] != "clear_water":
                     self.level[y, x] = mode
-
-    def _maze_river(self):
-        """A winding river across the maze that runs in a RAISED VALLEY: its shoulders are lifted
-        to tier 4 while the water is cut to level 0, so the river sits in a Δ4 trench and the stone
-        bridges laid across it (_place_bridges, deck at the shared bank level) stand a full bench
-        ABOVE the water and meet tier-4 GROUND on both banks (IMG4: raised bridges that connect to
-        grounds, not flat slabs flush on the water). Wall-material rims + _connect_all keep it
-        occlusion-legal and reachable. Carved AFTER flatten_shores so the banks are not beached."""
-        n, s = self.n, self.seed
-        PATH = [self._to_grid(fx, fy) for fx, fy in
-                ((0.44, 0.42), (0.47, 0.55), (0.45, 0.68), (0.48, 0.80), (0.46, 0.95))]
-        center = []
-        for (ax, ay), (bx, by) in zip(PATH, PATH[1:]):
-            steps = int(math.hypot(bx - ax, by - ay)) + 1
-            for i in range(steps + 1):
-                t = i / steps
-                wob = (_fbm(np.float32(ax + (bx - ax) * t), np.float32(ay),
-                            s + 77, n * 0.06, 3) - 0.5) * 6
-                center.append((int(ax + (bx - ax) * t + wob), int(ay + (by - ay) * t)))
-        RV = 3                                            # valley half-width (raised shoulders)
-        for (cx, cy) in center:                           # 1) lift the shoulders to >= tier 4
-            for dx in range(-RV, RV + 1):
-                for dy in range(-RV, RV + 1):
-                    x, y = cx + dx, cy + dy
-                    if (0 <= x < n and 0 <= y < n and self.maze[y, x] and self.land[y, x]
-                            and self.mat[y, x] != "clear_water" and int(self.level[y, x]) < 4):
-                        self.level[y, x] = 4
-        for (cx, cy) in center:                           # 2) cut the water channel to level 0
-            for dx in range(-1, 2):
-                for dy in range(-1, 2):
-                    x, y = cx + dx, cy + dy
-                    if 0 <= x < n and 0 <= y < n and self.maze[y, x] and self.land[y, x]:
-                        self.mat[y, x] = "clear_water"
-                        self.level[y, x] = 0
 
     def _majority(self, passes=2):
         n = self.n
@@ -726,6 +727,125 @@ class Island2(Island):
             if not changed:
                 break
         return grew_any
+
+    def bridge_landings(self):
+        """Every LOWLAND bridge end, as (deck, [bank cells just off the deck]).
+
+        A deck is a rectangle; the ends are the two bank lines flanking it along its long
+        axis — exactly the cells the build's bank assert already checks for walkability.
+        Mountain crossings (deck at/above HEADLAND_MAX_LEVEL, or a bank on the massif) are
+        skipped: their banks are terraced rock and reshaping them would break the massif."""
+        n = self.n
+        out = []
+        for dk in self.decks:
+            if dk.get("kind") != "bridge" or int(dk["level"]) >= HEADLAND_MAX_LEVEL:
+                continue
+            xs = [c[0] for c in dk["cells"]]
+            ys = [c[1] for c in dk["cells"]]
+            x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+            if x1 - x0 >= y1 - y0:                      # horizontal span: banks E/W
+                ends = [[(x0 - 1, r) for r in sorted(set(ys))],
+                        [(x1 + 1, r) for r in sorted(set(ys))]]
+            else:                                        # vertical span: banks N/S
+                ends = [[(c, y0 - 1) for c in sorted(set(xs))],
+                        [(c, y1 + 1) for c in sorted(set(xs))]]
+            for bank in ends:
+                bank = [(x, y) for (x, y) in bank if 0 <= x < n and 0 <= y < n
+                        and not self.upper[y, x]]
+                if bank:
+                    out.append((dk, bank))
+        return out
+
+    def headland_of(self, dk, bank):
+        """The ground at deck level a player actually arrives on: the cells at the deck's own
+        level, 4-connected to the landing, within HEADLAND_R of it. Returns the cell set."""
+        n = self.n
+        dlv = int(dk["level"])
+        near = set()
+        for (bx, by) in bank:
+            for j in range(-HEADLAND_R, HEADLAND_R + 1):
+                for i in range(-HEADLAND_R, HEADLAND_R + 1):
+                    x, y = bx + i, by + j
+                    if 0 <= x < n and 0 <= y < n:
+                        near.add((x, y))
+        seed = [c for c in bank if int(self.level[c[1], c[0]]) == dlv
+                and self.mat[c[1], c[0]] not in ("", "clear_water")]
+        comp, st = set(), list(seed)
+        while st:
+            p = st.pop()
+            if p in comp:
+                continue
+            comp.add(p)
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                q = (p[0] + i, p[1] + j)
+                if (q in near and q not in comp and 0 <= q[0] < n and 0 <= q[1] < n
+                        and int(self.level[q[1], q[0]]) == dlv
+                        and self.mat[q[1], q[0]] not in ("", "clear_water")):
+                    st.append(q)
+        return comp
+
+    @staticmethod
+    def headland_ok(comp):
+        """A headland is big enough when it has the AREA and, the clause that matters, the
+        WIDTH on both axes — a 3x15 ledge has plenty of cells and is still a ledge."""
+        if len(comp) < HEADLAND_MIN:
+            return False
+        xs = [x for x, _ in comp]
+        ys = [y for _, y in comp]
+        return min(max(xs) - min(xs) + 1, max(ys) - min(ys) + 1) >= HEADLAND_DIM
+
+    def _bridge_headlands(self):
+        """THE HEADLAND RULE: grow every lowland bridge landing into a real hill.
+
+        Raises the ground around the landing to deck level, NEAREST CELL FIRST, so the
+        headland fills out as a rounded rise around where you step off the bridge instead of
+        creeping along the bank as another ledge. Only ever raises land that is BELOW the
+        deck — never water (that would fill the river), never the massif, never a reserved
+        cell (decks, the Trollstigen). Runs right after _widen_hills, so the guarantee loop
+        that follows (camera_monotone / _fill_traps / _lip_cover) repairs any lip or pocket
+        the new ground creates, and _beach_access re-cuts shore ramps against it."""
+        n = self.n
+        deck_cells = {c for dk in self.decks for c in dk["cells"]}
+        ocean = self._ocean_cells()
+        grew = 0
+        for dk, bank in self.bridge_landings():
+            dlv = int(dk["level"])
+            comp = self.headland_of(dk, bank)
+            if not comp or self.headland_ok(comp):
+                continue
+            mat0 = Counter(self.mat[y, x] for (x, y) in comp).most_common(1)[0][0]
+
+            def fillable(x, y):
+                if not (0 <= x < n and 0 <= y < n):
+                    return False
+                if (x, y) in self.reserved or (x, y) in deck_cells or (x, y) in self._troll:
+                    return False
+                if self.upper[y, x] or (x, y) in ocean:
+                    return False
+                m = self.mat[y, x]
+                if m in ("", "clear_water"):
+                    return False                    # the river stays a river
+                return int(self.level[y, x]) < dlv
+
+            def dist(c):                            # Chebyshev to the nearest landing cell
+                return min(max(abs(c[0] - bx), abs(c[1] - by)) for (bx, by) in bank)
+
+            while not self.headland_ok(comp):
+                front = {(x + i, y + j) for (x, y) in comp
+                         for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                         if (x + i, y + j) not in comp}
+                step = sorted((c for c in front if dist(c) <= HEADLAND_R and fillable(*c)),
+                              key=lambda c: (dist(c), c))
+                if not step:
+                    break                           # the terrain has nothing left to give;
+                                                    # the build assert reports it
+                for (x, y) in step:
+                    self.level[y, x] = dlv
+                    self.mat[y, x] = mat0
+                    self.upper[y, x] = False
+                    grew += 1
+                comp |= set(step)
+        return grew
 
     def _ocean_cells(self):
         n = self.n
@@ -1664,9 +1784,10 @@ class Island2(Island):
         shadow). This one is a WIDE (7-cell) channel that runs continuously toward the camera and
         EXITS through the massif toe into the lowland — so downstream every water cell's toward-
         camera neighbour is also water (or open low ground), the near wall vanishes, and the level-0
-        water surface is plainly visible. Carved AFTER camera_monotone; _connect_all/_place_bridges
-        reconnect the flanks and _bridge_over_gorge lays a deliberate HIGH (>=16) stone bridge up in
-        the tall part. Water at level 0 is occlusion-legal (different material)."""
+        water surface is plainly visible. Carved AFTER camera_monotone; _connect_all reconnects the
+        flanks and _bridge_over_gorge lays a deliberate HIGH (>=16) stone bridge up in the tall
+        part. Water at level 0 is occlusion-legal (different material). Since 2026-08-07 this is
+        THE island's river — the maze river that used to run beside it is gone."""
         # Run the channel along the grid (1,1) diagonal = STRAIGHT DOWN THE SCREEN toward the
         # camera. Then a water cell's toward-camera neighbours (+x,+y) are inside the channel
         # (not a tall bank), so nothing occludes the surface; the tall walls sit to screen-left/
@@ -1856,81 +1977,6 @@ class Island2(Island):
                 laid += 1
                 break
         return laid
-
-    def _place_bridges(self, count=None):
-        """Override: maze-river crossings at the maintainer's RIVER_BRIDGE_FRACS sites (nearest
-        clean row per site), scoped to the RIVER water only — the massif waterway has its own
-        deliberate crossings (_bridge_over_gorge) and must not attract extra decks here."""
-        n = self.n
-        riverw = (self.mat == "clear_water") & self.land
-        for (x, y) in self._gorge_cells:
-            riverw[y, x] = False
-        main = set(self._walk_components()[0])
-
-        def channel(cy):
-            xs = sorted(x for x in range(n) if riverw[cy, x])
-            if not xs:
-                return None
-            runs, cur = [], [xs[0]]
-            for x in xs[1:]:
-                if x == cur[-1] + 1:
-                    cur.append(x)
-                else:
-                    runs.append(cur); cur = [x]
-            runs.append(cur)
-            run = min(runs, key=lambda r: r[-1] - r[0])
-            return run[0], run[-1]
-
-        def row_ok(r, x0, x1, dlv):
-            if not all(0 <= x < n and riverw[r, x] for x in range(x0, x1 + 1)):
-                return False
-            for bx in (x0 - 1, x1 + 1):
-                if not (0 <= bx < n and self.mat[r, bx] not in ("", "clear_water")):
-                    return False
-                if abs(int(self.level[r, bx]) - dlv) > 1:
-                    return False
-                if (bx, r) not in main:
-                    return False
-            return True
-
-        cands = []
-        for cy in range(int(n * 0.30), int(n * 0.92)):
-            ch = channel(cy)
-            if not ch:
-                continue
-            x0, x1 = ch
-            if x0 - 1 < 0 or x1 + 1 >= n or x1 - x0 > 6:
-                continue
-            la, lb = self.mat[cy, x0 - 1], self.mat[cy, x1 + 1]
-            if la in ("", "clear_water") or lb in ("", "clear_water"):
-                continue
-            va, vb = int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1])
-            if abs(va - vb) > 1:
-                continue
-            dlv = min(va, vb)
-            rows3 = [r for r in (cy - 1, cy, cy + 1) if row_ok(r, x0, x1, dlv)]
-            rows = rows3 if len(rows3) >= 2 else ([cy] if row_ok(cy, x0, x1, dlv) else [])
-            if rows:
-                cands.append(((x1 - x0), -len(rows), -dlv, cy, x0, x1, dlv, rows))
-        laid_cys = []
-        for frac in RIVER_BRIDGE_FRACS:
-            gy = self.M + frac * self.nd
-            near = sorted((c for c in cands if abs(c[3] - gy) <= 8),
-                          key=lambda c: (abs(c[3] - gy), c[0], c[1]))
-            for _w, _nr, _nl, cy, x0, x1, dlv, rows in near:
-                if any(abs(cy - lc) < 8 for lc in laid_cys):
-                    continue
-                cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
-                if any((x, r) in self.reserved for (x, r) in cells):
-                    continue
-                dm = self._deck_mat(self.mat[cy, x0 - 1], self.mat[cy, x1 + 1])
-                self.decks.append({"kind": "bridge", "mat": dm, "level": dlv,
-                                   "thickness": 0, "cells": cells})
-                for r in rows:
-                    self.links.append(((x0 - 1, r), (x1 + 1, r)))
-                self.reserved.update(cells)
-                laid_cys.append(cy)
-                break
 
     def _merge_span(self, main, cands):
         """Override: like Island's connectivity water-span bridge, but a side lane (w=±1) is
@@ -3291,6 +3337,18 @@ def build(out=None, seed=21, M=24):
                     assert (d.mat[by, c] not in ("", "clear_water")
                             and abs(int(d.level[by, c]) - dlv) <= 1
                             and (c, by) in mainset), f"bridge end not walkable at ({c},{by})"
+
+    # THE HEADLAND RULE (maintainer 2026-08-07: "that hill is to small… it need some area to
+    # make sense"): every LOWLAND bridge landing is a real hill, not a ledge along the bank.
+    for dk, bank in d.bridge_landings():
+        comp = d.headland_of(dk, bank)
+        xs = [x for x, _ in comp] or [0]
+        ys = [y for _, y in comp] or [0]
+        w, h = max(xs) - min(xs) + 1, max(ys) - min(ys) + 1
+        assert d.headland_ok(comp), (
+            f"bridge landing at {bank[0]} (deck level {dk['level']}) has a headland of only "
+            f"{len(comp)} cell(s), {w}x{h} — the rule wants >= {HEADLAND_MIN} cells and "
+            f">= {HEADLAND_DIM} across BOTH axes. You climb a wall onto a shelf.")
 
     slivers = [c for c in d._material_slivers() if tuple(c[:2]) not in rhcells]
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"

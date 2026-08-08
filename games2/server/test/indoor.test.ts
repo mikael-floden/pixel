@@ -606,45 +606,62 @@ test("tiny spans that clear the wall bar are still NOT rooms", () => {
   }
 });
 
-test("the_island2's own pier, stretched or narrowed, is still a bridge", () => {
-  // Both of these are the REAL 3x3 pier (deck at cols 118-120, rows 182-184,
-  // level 4 over a level-0 water channel) with one small edit — and both read
-  // indoor === true against a 0.5 bar.
+test("the_island2's own river crossing, narrowed and stretched, is still a bridge", () => {
+  // The REAL lower gorge crossing (deck at cols 147-153, rows 127-128, level 4
+  // over the level-0 river) with small edits that drive its wall ratio up past
+  // the old 0.5 bar — and every one of them is still a bridge.
+  //
+  // This used to be anchored on the 3x3 pier at cols 118-120, rows 182-184.
+  // That pier spanned the MAZE RIVER, which the maintainer had removed on
+  // 2026-08-07 ("The Island 2 has two rivers… the small one should be removed")
+  // — the river and its five crossings are gone, so the fixture moved to the
+  // crossing that survived. The claims it makes are unchanged.
   const world = loadWorld("the_island2");
   if (!world) return test.skip("maps2/worlds/the_island2 missing");
   const decks = world.decks!;
-  const pier = decks.findIndex((d) => d.cells.some((c) => c.col === 119 && c.row === 183));
-  assert.ok(pier >= 0, "found the pier deck");
-  assert.equal(decks[pier].kind, "bridge");
+  const span = decks.findIndex((d) => d.cells.some((c) => c.col === 150 && c.row === 127));
+  assert.ok(span >= 0, "found the river crossing");
+  assert.equal(decks[span].kind, "bridge");
 
   const withDecks = (ds: DeckIn[], rows = world.rows) =>
     buildTerrainGrid(world.width, world.height, rows, world.props, ds);
   const asIs = decks as unknown as DeckIn[];
+  const deckRows = (rows: number[]) =>
+    asIs.map((d, i) =>
+      i !== span
+        ? d
+        : { ...d, cells: rows.flatMap((row) => [147, 148, 149, 150, 151, 152, 153].map((col) => ({ col, row }))) });
 
-  // Baseline: the shipped pier is exactly on the old bar.
-  const real = findIndoorSpace(withDecks(asIs), 119, 183, 0)!;
-  assert.equal(real.roof.size, 9);
-  assert.equal(real.wallRatio, 0.5);
+  // Baseline: the shipped span, 7 wide over a 7-wide river — mostly open water.
+  const real = findIndoorSpace(withDecks(asIs), 150, 127, 0)!;
+  assert.equal(real.roof.size, 14);
+  assert.equal(real.wallRatio, 5 / 18, "0.2778 — open on both ends");
   assert.equal(real.indoor, false);
 
-  // One row longer over the same channel: 14 fringe, still 6 water cells.
-  const longer = asIs.map((d, i) =>
-    i !== pier ? d : { ...d, cells: [...d.cells, ...[118, 119, 120].map((col) => ({ col, row: 185 }))] });
-  const s1 = findIndoorSpace(withDecks(longer), 119, 183, 0)!;
-  assert.equal(s1.roof.size, 12);
-  assert.equal(s1.wallRatio, 8 / 14, "0.5714 — over the old 0.5 bar");
-  assert.ok(s1.roof.size >= MIN_ROOM_CELLS, "big enough to be a room: only the wall bar can refuse it");
+  // The river narrowed to 3 columns (147/148 and 152/153 become bank) so the
+  // deck's flanks are wall instead of water. The deck cells over the new banks
+  // are dropped by buildTerrainGrid (a deck at its own base level is not an
+  // overpass), so the span is 3 wide.
+  const narrowed = world.rows.map((row, y) =>
+    row.map((cell, x) =>
+      [147, 148, 152, 153].includes(x) && y >= 118 && y <= 138 ? { ...cell, t: "saturated_grass", l: 4 } : cell));
+  const s1 = findIndoorSpace(withDecks(asIs, narrowed), 150, 127, 0)!;
+  assert.equal(s1.roof.size, 6);
+  assert.equal(s1.wallRatio, 0.4);
   assert.equal(s1.indoor, false, "still a bridge");
 
-  // The channel narrowed by one column (col 118 becomes bank): 10 fringe, 4
-  // water cells. The deck cell over the new bank is dropped by buildTerrainGrid
-  // (a deck at its own base level is not an overpass), so the span is 2x3.
-  const narrowed = world.rows.map((row, y) =>
-    row.map((cell, x) => (x === 118 && y >= 179 && y <= 189 ? { ...cell, t: "saturated_grass", l: 4 } : cell)));
-  const s2 = findIndoorSpace(withDecks(asIs, narrowed), 119, 183, 0)!;
-  assert.equal(s2.roof.size, 6);
-  assert.equal(s2.wallRatio, 0.6, "over the old 0.5 bar");
+  // ...and two rows longer through that narrow channel: 14 fringe, 8 of it wall.
+  const s2 = findIndoorSpace(withDecks(deckRows([126, 127, 128, 129]), narrowed), 150, 127, 0)!;
+  assert.equal(s2.roof.size, 12);
+  assert.equal(s2.wallRatio, 8 / 14, "0.5714 — over the old 0.5 bar");
+  assert.ok(s2.roof.size >= MIN_ROOM_CELLS, "big enough to be a room: only the wall bar can refuse it");
   assert.equal(s2.indoor, false, "still a bridge");
+
+  // Four rows longer: 12 of 18 fringe is wall, and it is STILL a bridge.
+  const s3 = findIndoorSpace(withDecks(deckRows([125, 126, 127, 128, 129, 130]), narrowed), 150, 127, 0)!;
+  assert.equal(s3.roof.size, 18);
+  assert.equal(s3.wallRatio, 2 / 3, "0.6667 — well over the old 0.5 bar");
+  assert.equal(s3.indoor, false, "still a bridge");
 });
 
 // ---------------------------------------------------------------------------
@@ -670,10 +687,10 @@ test("an elevation that is not a surface at this cell returns null, not a room",
     assert.equal(findIndoorSpace(grid, 100, 44, elev), null,
       `elev ${elev} under the level-36 span is not a surface`);
   }
-  // Nor is anything under the 3x3 pier except the water itself.
-  assert.ok(findIndoorSpace(grid, 119, 183, 0), "elev 0 IS the pier's water surface");
+  // Nor is anything under the level-4 river crossing except the water itself.
+  assert.ok(findIndoorSpace(grid, 150, 127, 0), "elev 0 IS the river's surface under the span");
   for (const elev of [1, 2, 3]) {
-    assert.equal(findIndoorSpace(grid, 119, 183, elev), null, `elev ${elev} under the pier is not a surface`);
+    assert.equal(findIndoorSpace(grid, 150, 127, elev), null, `elev ${elev} under the span is not a surface`);
   }
 
   // NOTHING roofed on any bridge in the world is reachable at a non-surface
@@ -782,7 +799,7 @@ test("every shipped world: no bridge cell is indoors, every roof/cave space is",
     "occlusion_test/roof": 49,
     "occlusion_test/bridge": 30,
     "the_island/bridge": 36,
-    "the_island2/bridge": 96,
+    "the_island2/bridge": 63,   // 4 crossings: the maze river's 5 went with it
     "the_island2/roof": 129,   // the spawn cottage + the maintainer's second house
     "the_island2/cave": 472,
   })) {
@@ -791,7 +808,9 @@ test("every shipped world: no bridge cell is indoors, every roof/cave space is",
   // And the measured gap INDOOR_WALL_RATIO sits in the middle of.
   const bridgeMax = Math.max(...[...seen].filter(([k]) => k.endsWith("/bridge")).map(([, v]) => v.best));
   const roomMin = Math.min(...[...seen].filter(([k]) => !k.endsWith("/bridge")).map(([, v]) => v.worst));
-  assert.equal(bridgeMax, 0.5, "the worst shipped bridge");
+  // The worst shipped bridge. Was 0.5 (the_island2's 3x3 maze-river pier) until
+  // that river was removed on 2026-08-07; the widest-fringed span left is 5/11.
+  assert.ok(Math.abs(bridgeMax - 5 / 11) < 1e-9, "the worst shipped bridge");
   assert.ok(Math.abs(roomMin - 13 / 14) < 1e-9, "the best-open shipped room");
   assert.ok(bridgeMax < INDOOR_WALL_RATIO && INDOOR_WALL_RATIO < roomMin, "the bar is inside the gap");
   assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.19 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");

@@ -392,7 +392,7 @@ and no world needs regenerating.
     undulates up *and* down (mostly up); rock with snowy/ice/obsidian peaks. Floor 16 sits a
     gated Δ4 above the maze cap 12.
   - **Maze** tiers are `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12 (dramatic cliffs,
-    no timid Δ2). Winding cliff/water corridors, a river + bridges.
+    no timid Δ2). Winding cliff/water corridors, the gorge river + its bridges.
   - **The TROLLSTIGEN** (`_foot_switchback`, rebuilt 2026-07-22 to the maintainer's own
     design after every axis-aligned attempt failed): the descent down the sheer toe is a
     wall-hugging stack of MIRRORED slope legs. His spec, verbatim rules: legs run ALONG the
@@ -436,7 +436,7 @@ and no world needs regenerating.
     stone. Their step faces point at the camera, so they read in any material. Bridge DECKS
     follow the same law (maintainer 2026-07-22: "create it in the same ground type, not
     always switch"): a deck wears its BANKS' ground — snow spans on the snow benches, stone
-    on the stone bench, grass over the maze river, dirt only where the road itself runs onto
+    on the stone bench, grass where the banks are grass, dirt only where the road runs onto
     the span. Laying-time mats are provisional (the gorge crossings are laid before
     `_materials` paints the caps); `_resolve_deck_mats` re-reads every deck's final banks
     (majority ground among adjacent walkable land within 1 level) just before `_paint`.
@@ -468,10 +468,25 @@ and no world needs regenerating.
     **flush** lakes at maze tiers `{4,12}` and mountain benches `{20,24}`, a flush alpine tarn, and a
     **sunken walk-in lagoon on the mountain snow** (`LAGOON_SITES`, water 2 levels down inside a Δ1
     walkable rim you descend into) — all transactional so they never seal a region.
-  - **Raised-valley MAZE RIVER** (`_maze_river`, carved AFTER `flatten_shores`): the river runs in a
-    tier-4 valley (shoulders lifted to 4, water cut to 0) so `_place_bridges` spans it with decks that
-    stand a bench ABOVE the water and meet tier-4/12 GROUND on both banks — raised bridges you cross,
-    not flat slabs flush on the water.
+  - **ONE RIVER** (maintainer 2026-08-07: *"The Island 2 has two rivers. One small to the left and
+    one big to the right. The small one should be removed"*). The second was `_maze_river`, a
+    raised-valley channel winding the length of the maze with five crossings of its own. Both it
+    and its bridges are **deleted** — a crossing exists because there is something to cross. The
+    massif gorge is now the island's river.
+  - **THE HEADLAND RULE** (`_bridge_headlands`, maintainer 2026-08-07: *"To walk over the big river
+    you first have to get up on a hill. That hill is to small… it need some area to make sense"*).
+    A bridge landing is a LANDFORM, not whatever ground survived beside the water. `_widen_hills`
+    had left the lower crossing's east landing as a 3-cell-wide grass ledge running fifteen rows
+    along the bank — too wide for `_widen_hills` to look at again (it only touches bbox min-dim
+    ≤ 2, and stops at 4) and far too narrow to read as a hill. Each end of every **lowland**
+    crossing now needs ≥ `HEADLAND_MIN` (160) cells of ground at deck level within
+    `HEADLAND_R` (12) of the landing, **≥ `HEADLAND_DIM` (9) across BOTH axes** — the clause that
+    bites, since a long thin ledge passes any pure area test. The generator grows it nearest-cell
+    first (a rounded rise around where you step off, never a tentacle along the bank), raising only
+    land BELOW the deck — never water, never the massif, never a reserved cell — and `build()`
+    asserts it. Mountain crossings are exempt: their banks are terraced rock and reshaping them
+    would break the antitone/terrace invariants. That ledge went 48 cells / 3 wide → **175 cells /
+    11×19**, with the walk from the spawn to the crossing unchanged at 86 cells.
   - **Spiky massif**: benches `{16,20,24,28,32,36,40}`, ~10 sharp varied-height peaks with deep
     saddles + camera-fanning grooves → a jagged skyline (max level 40), not a smooth pyramid.
   - **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset via `_coastline`,
