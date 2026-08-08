@@ -897,6 +897,10 @@ export class WorldScene extends Phaser.Scene {
   private holdRepathAt = 0;
   private keysActive = false;
   private tapMarker?: Phaser.GameObjects.Container;
+  /** Camera-world point the beacon is PINNED to — the pixel the finger touched.
+   * Null for beacons with no gesture behind them (probes, keyboard), which keep
+   * the old projected-from-the-target placement. */
+  private tapMarkerAt: { x: number; y: number } | null = null;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
@@ -1395,8 +1399,10 @@ export class WorldScene extends Phaser.Scene {
       // the actual findPath replan runs on holdRepath's adaptive budget, so
       // the drag never *feels* throttled even when a replan is deferred.
       if (this.tapMarker) {
-        const pr = this.projectFlat(g.x, g.y);
-        this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, g.lvl) * MAP_GEOMETRY.lh);
+        // Under the FINGER, literally — same pin as a fresh tap, so a drag can
+        // never leave the beacon on a projection of the route's end instead.
+        this.tapMarkerAt = { x: p.worldX, y: p.worldY };
+        this.tapMarker.setPosition(p.worldX, p.worldY);
       }
       this.holdRepath(performance.now());
     });
@@ -6355,7 +6361,10 @@ export class WorldScene extends Phaser.Scene {
   private commitReleaseHold() {
     this.holdRepathAt = 0;
     this.holdRepath(performance.now());
-    if (this.trip && this.tapMarker) {
+    if (this.tapMarkerAt && this.tapMarker) {
+      // Pinned: the gesture already decided where this beacon lives.
+      this.tapMarker.setPosition(this.tapMarkerAt.x, this.tapMarkerAt.y);
+    } else if (this.trip && this.tapMarker) {
       const e = this.trip.target;
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
@@ -6450,12 +6459,28 @@ export class WorldScene extends Phaser.Scene {
       this.tapMarker = undefined;
       return;
     }
+    // THE BEACON IS THE PIXEL YOU TOUCHED — it is never derived from where the
+    // route ends. Deriving it from `trip.target` is what made it drift: a click
+    // on a WALL TOP has only one surface (plain terrain at level 6, no deck
+    // under it), the route cannot reach it, and findPath's best-effort rim is a
+    // NEIGHBOURING cell — so the beacon slid to that rim and lifted by the
+    // wall's six levels, landing at the walker's head (maintainer 2026-08-08:
+    // "if I click on top of the wall the marker moves a bit up and the player
+    // walks so that her head is on the marker... if I click on the roof the
+    // player correctly goes to the marker with her feet"). A ROOF hid this,
+    // because it has two surfaces and the reachable one lands exactly under the
+    // finger anyway.
     const end = trip.target;
     this.ensureTapAssets();
-    const p = this.projectFlat(end.x, end.y);
+    const p = pick
+      ? { x: pick.wx, y: pick.wy, lvl: 0 }
+      : this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    // Remembered so the per-frame follow below cannot drag it off that pixel
+    // either — the route may be re-planned many times during one gesture.
+    this.tapMarkerAt = pick ? { x: pick.wx, y: pick.wy } : null;
     // Hold replans never touch the beacon: while the finger is down the
     // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
     // rebuilding the container + tween per replan also made the pulse
@@ -6490,6 +6515,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.tapMarker) {
       const m = this.tapMarker;
       this.tapMarker = undefined;
+      this.tapMarkerAt = null;
       this.tweens.killTweensOf(m);
       this.tweens.add({ targets: m, alpha: 0, duration: 180, onComplete: () => m.destroy() });
     }

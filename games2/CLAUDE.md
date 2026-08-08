@@ -1094,6 +1094,17 @@ visible head/shoulders are ABOVE the surface).
   no reachable surface at that pixel at all, the walk is a best effort to the
   floor beneath, and it still ends ~96px below the marker. Moving the marker is
   not the answer; a route onto the roof would be.
+  **THE BEACON IS THE PIXEL YOU TOUCHED — never a projection of the route.**
+  Deriving it from `trip.target` is what made it drift: a WALL TOP is plain
+  terrain at level 6 with no deck under it, so the tap has only ONE reading, the
+  route cannot reach it, and findPath's best-effort rim is a NEIGHBOURING cell
+  — the beacon slid to that rim and lifted by six levels, landing at the
+  walker's head (2026-08-08: "if I click on top of the wall the marker moves a
+  bit up and the player walks so that her head is on the marker... if I click on
+  the roof the player correctly goes to the marker with her feet"). A roof hid
+  this, because it has two surfaces and the reachable one is under the finger
+  anyway. `tapMarkerAt` pins the beacon to the camera-world point of the touch,
+  and the per-frame follow and the drag both respect the pin.
   **THE PICK POINT MUST SURVIVE THE HOLD.** `holdRepath` re-plans 50ms after
   every tap and again on release, so a pick point passed only at pointerdown is
   overwritten within a frame by a trip that never computed the second reading —
