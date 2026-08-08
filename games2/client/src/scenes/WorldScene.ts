@@ -429,8 +429,11 @@ const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
 // (body nearest the viewer), rising to the sides. Dip = BOW_FRAC × the shoulder
 // span, in px. Both the clip mask and the foam crest follow it.
 const BOW_FRAC = 0.14;
-/** Depth falloff for the cave shadow: mouth 25%, 1 tile in 6%, 2 tiles 1.5%. */
-const CAVE_FALLOFF = 1.4;
+/** Depth falloff for the cave shadow: mouth 5%, 1 tile in 0.2%, then black.
+ * Steep because the ONLY surface a cave mouth actually shows is its floor —
+ * the walls of the room are buried behind the mountain's outer columns and
+ * never reach the screen, so the floor has to carry the whole effect. */
+const CAVE_FALLOFF = 3.0;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
@@ -8038,6 +8041,22 @@ export class WorldScene extends Phaser.Scene {
         }
         // Anything the fill never reached is walled off from every opening.
         for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
+        // THE WALLS YOU SEE THROUGH THE OPENING BELONG TO THE CAVE. Without
+        // them only the floor darkens and the entrance still reads bright
+        // (maintainer 2026-08-08: "the walls we can see inside must be part of
+        // the darkening"). A room's fringe is ONE cell thick and sits inside
+        // the mountain, so tinting it never reaches the mountain's outer face —
+        // which is a different cell entirely, and the reason four attempts in
+        // the light shader could not tell those two apart.
+        for (const fi of space.fringe) {
+          if (out.has(fi)) continue;
+          let best = Infinity;
+          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
+            const d = space.roof.has(n) ? out.get(n) : undefined;
+            if (d !== undefined && d < best) best = d;
+          }
+          if (best < Infinity) out.set(fi, best);
+        }
       }
     return out;
   }
@@ -8257,14 +8276,17 @@ export class WorldScene extends Phaser.Scene {
             }
             continue; // never the deck slab — that IS the roof
           }
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
+          // The face stack too: an interior wall is what you actually SEE
+          // through the opening, and a floor alone still reads bright.
+          const ct = this.caveTint(row * world.width + col, !!mask);
+          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh, 1, ct);
           // THE CAVE SWALLOWS THE LIGHT — and it has to happen HERE, not in the
           // light shader. Outdoors the shader resolves every pixel of a cave to
           // max(terrain, deck), which in the_island2 is the MOUNTAIN's own 24:
           // floor and rock become the same number, so no per-pixel test can
           // separate them (four tried). At THIS line there is no ambiguity —
           // this is the cell's floor tile, being drawn as a floor.
-          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, this.caveTint(row * world.width + col, !!mask));
+          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, ct);
           // world@2 deck slab (roof / bridge span) at this cell, drawn right
           // after its base in (x+y) order: `thickness` face tiles below the top
           // with OPEN AIR beneath (so you see under it), then the top diamond.
@@ -8275,8 +8297,9 @@ export class WorldScene extends Phaser.Scene {
               const dTop = dk.cell.flip ? this.flippedKey(dTop0) : dTop0;
               const dFace = this.deckFaceKey(dk.deck, dTop0);
               const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh);
-              rt.batchDraw(dTop, bx, by - dk.deck.level * lh);
+              const dct = this.caveTint(row * world.width + col, !!mask);
+              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh, 1, dct);
+              rt.batchDraw(dTop, bx, by - dk.deck.level * lh, 1, dct);
             }
           }
           continue;
