@@ -5961,7 +5961,27 @@ export class WorldScene extends Phaser.Scene {
           if (Math.abs(npc.fx - me.fx) < 140 && Math.abs(npc.fy - me.fy) < 140)
             near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
         });
-        const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
+        // Which way round a body is WALKABLE, not just roomier — simulated
+        // with the real movement tick, the same instrument steerAssist uses,
+        // so the dodge can never disagree with the collision probes. Without
+        // it the dodge is pure geometry and will happily send you into a wall
+        // that happens to be on the roomier side of the person in your way.
+        const openHeading = this.terrain
+          ? (hax: number, hay: number) => {
+              const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+              const dt = 0.08; // ≈5.6wu at walk speed — one substep plus margin
+              const r = stepMovement(
+                me.fx, me.fy, hax, hay, false, dt,
+                makeBlockedElev(this.terrain!, walk, () => me.surfLevel ?? 0),
+                1, true, this.worldW, this.worldH,
+                makeSideBlocked(this.terrain!, walk),
+              );
+              return Math.hypot(r.x - me.fx, r.y - me.fy) > WALK_SPEED * dt * 0.35;
+            }
+          : undefined;
+        const dodge = near.length
+          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading)
+          : null;
         if (dodge) {
           ax = dodge.ax;
           ay = dodge.ay;

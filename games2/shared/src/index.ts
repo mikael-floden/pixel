@@ -1514,14 +1514,39 @@ export function findPath(
     const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
     return !s.standable && s.swimmable;
   };
-  // Nudge a waypoint away from adjacent solid cells (≤8wu, stays in-cell) so
-  // the followed line keeps real clearance around prop corners.
+  // A WALL for the purpose of keeping the followed line clear: a solid cell,
+  // OR one this cell cannot be walked into because of the CLIMB. The second
+  // half is the load-bearing one and it used to be missing.
+  //
+  // A house wall is TERRAIN at level 6 — perfectly `standable`, so `cellSolid`
+  // is false for it and the route treated it as ordinary open ground to hug.
+  // But the body cannot enter it, and its collision probes reach PLAYER_RADIUS
+  // ahead, so a route running along its foot keeps the wall inside probe range
+  // for the whole segment. On the iso grid that is fatal: the follower steers
+  // in 8 SCREEN directions, and screen-EAST is world (col+1, row-1) — the
+  // nearest 8-way heading to "walk east along this wall" aims diagonally INTO
+  // it. The body slides along the face, drifts north until its leading probe
+  // touches the wall cell, stops making progress, and the per-waypoint stall
+  // timer gives the whole trip up — the player stands pinned against the house
+  // (maintainer 2026-08-07: "the character gets stuck running into an NPC and
+  // not around the NPC"; the NPC was a bystander standing on that exact spot.
+  // Measured: the body settles at y=120.383, against the geometric limit of
+  // 120.375 — one probe-length off the wall — and the trip is then dropped).
+  const wallCell = (from: number, c: number, r: number) => {
+    if (solidCell(c, r)) return true;
+    if (c < 0 || r < 0 || c >= W || r >= H) return false;
+    if (grid.deck[r * W + c] >= 0) return false; // a walkable slab is not a wall
+    return grid.level[r * W + c] - from > WALK_CLIMB;
+  };
+  // Nudge a waypoint away from adjacent walls (≤8wu, stays in-cell) so the
+  // followed line keeps real clearance around prop corners AND wall feet.
   const nudged = (c: number, r: number) => {
     let px = 0;
     let py = 0;
+    const from = c >= 0 && r >= 0 && c < W && r < H ? grid.level[r * W + c] : 0;
     for (let dr = -1; dr <= 1; dr++)
       for (let dc = -1; dc <= 1; dc++)
-        if ((dc !== 0 || dr !== 0) && solidCell(c + dc, r + dr)) {
+        if ((dc !== 0 || dr !== 0) && wallCell(from, c + dc, r + dr)) {
           const l = Math.hypot(dc, dr);
           px -= dc / l;
           py -= dr / l;
@@ -2097,6 +2122,11 @@ export function monsterDodge(
   monsters: Array<{ id: string; x: number; y: number; r?: number }>,
   state?: MonsterDodgeState,
   selfR: number = PLAYER_BODY_RADIUS, // the dodger's own body radius
+  // IS THIS SCREEN HEADING ACTUALLY WALKABLE from here? Optional so the pure
+  // geometric behaviour is unchanged for callers without a grid (tests, the
+  // server's own uses), but the CLIENT passes it, and without it this function
+  // will happily deflect a walker into a wall — see the side choice below.
+  openHeading?: (ax: number, ay: number) => boolean,
 ): { ax: number; ay: number; state: MonsterDodgeState } | null {
   const sax = Math.sign(ax);
   const say = Math.sign(ay);
@@ -2141,8 +2171,27 @@ export function monsterDodge(
     return Math.hypot(hit!.x - (x + (v.x / vl) * PROBE), hit!.y - (y + (v.y / vl) * PROBE));
   };
   const stick = state && state.blocker === hit.id ? state.side : 0;
-  const side =
-    clearance(1) + (stick === 1 ? 4 : 0) >= clearance(-1) + (stick === -1 ? 4 : 0) ? 1 : -1;
+  const geo = (s: number) => clearance(s) + (stick === s ? 4 : 0);
+  let side = geo(1) >= geo(-1) ? 1 : -1;
+  // WALKABILITY OUTRANKS GEOMETRY. The clearance test above only asks which
+  // way gets further from the BODY — it has no idea what is underfoot, so a
+  // villager standing at the foot of a house wall could send the walker into
+  // the wall, where they grind to a halt and the autopilot's stall timer
+  // eventually drops the whole trip. That is the maintainer's report verbatim
+  // (2026-08-07): "the character gets stuck running into an NPC and not around
+  // the NPC" — it WAS trying to go around, on the side that happened to be
+  // masonry. Only override when exactly one side is open: if both are open the
+  // wider berth is still the better dodge, and if neither is, pushing on lets
+  // unstick/steer-assist/the stall re-plan resolve it as before.
+  if (openHeading) {
+    const at = (s: number) => {
+      const [rx, ry] = DODGE_RING[(idx + s + 8) % 8];
+      return openHeading(rx, ry);
+    };
+    const okA = at(side);
+    const okB = at(-side);
+    if (!okA && okB) side = -side;
+  }
   const rot = clearance(side) < hitP ? 2 * side : side;
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
   return { ax: nax, ay: nay, state: { side, blocker: hit.id } };
