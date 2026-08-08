@@ -237,6 +237,16 @@ float groundAtSoft(vec2 cr) {
   return texture2D(uHeightG, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
 }
 
+// The GROUND column's top, NEAREST-sampled — the twin of heightAt, and the
+// answer to "is there anything solid here at all". A deck is a floating slab
+// with open air beneath it, so this is what decides whether a pixel below a
+// column's top is a WALL FACE or simply the view through a gap.
+float groundAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).r * 255.0 / uHScale;
+}
+
 // The SURFACE height a screen pixel resolves to.
 //
 // INDOORS THIS MUST IGNORE DECKS. uHeight's R is max(terrain, deck), so every
@@ -480,16 +490,28 @@ void main() {
   if (uTest > 3.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
-    float isFace = (Ha < 90.0 && Ha - z > 0.05) ? 1.0 : 0.0;
+    float isFace = (Ha < 90.0 && Ha - z > 0.05 && groundAt(cell) - z > 0.05) ? 1.0 : 0.0;
     gl_FragColor = vec4(isFace, 1.0 - isFace, 0.0, 1.0);
     return;
   }
+
+  // A CAVE MOUTH IS NOT A WALL. Ha is max(terrain, deck), so every pixel
+  // under a roof slab used to classify as a wall FACE — and a face takes the
+  // face's Lambert gate and shadow march, which painted the open entrance of
+  // the cave with light and shadow as if a pane of glass were stretched across
+  // it (maintainer 2026-08-08: "the torch is casting shadows on the open cave
+  // entry... it looks like some sort of mirror or force-field. You can't cast
+  // shadows on it since it's empty air"). The light MARCH already knows this —
+  // see the two-solid-spans note above and groundAtSoft's own pin — the face
+  // classification simply never got the same rule. A face needs SOLID GROUND
+  // above the pixel, not a slab floating over open air.
+  float Hg = groundAt(cell);
 
   // Face geometry, light-independent — hoisted out of the light loop.
   // The face's attenuation anchor is its EXACT point on the wall plane
   // (0.99 keeps floor() in the owning cell): the old per-cell centroid made
   // brightness jump at every face/ground boundary (knife edges at wall bases).
-  bool isFace = (Ha < 90.0 && Ha - z > 0.05);
+  bool isFace = (Ha < 90.0 && Ha - z > 0.05 && Hg - z > 0.05);
   vec2 baseF = floor(cell);
   float uf = u - (baseF.x - baseF.y);   // pixel left/right of front corner
   float pickR = smoothstep(-0.2, 0.2, uf);

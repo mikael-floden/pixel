@@ -1172,6 +1172,19 @@ visible head/shoulders are ABOVE the surface).
   PASSED against code that still had the delay (the cave's population wanders,
   so an empty frame is a no-measurement, not a pass) — and separately requires that bodies covered by OPEN-AIR
   terrain still are — otherwise "switch the feature off" would pass.
+- **A CAVE MOUTH IS NOT A WALL FACE.** `Ha` (uHeight.R) is max(terrain, deck),
+  so every pixel under a roof slab classified as a wall FACE — and a face takes
+  the face Lambert gate and the face shadow march, which painted the open cave
+  entrance with light and shadow as if glass were stretched across it
+  (maintainer 2026-08-08: "it looks like some sort of mirror or force-field.
+  You can't cast shadows on it since it's empty air"). The light MARCH already
+  knew better (see the two-solid-spans rule and groundAtSoft's pin: a deck is a
+  floating slab with open air beneath); only the CLASSIFICATION had been left
+  behind. A face now also requires solid GROUND above the pixel —
+  `groundAt(cell) - z > 0.05`, the NEAREST twin of heightAt reading uHeightG.R.
+  The uTest-4 calibration branch carries the same condition, or the gates would
+  measure a rule that does not ship. Real walls are untouched (their ground top
+  IS their surface); what changes is only what is under a slab.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells
