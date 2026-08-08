@@ -173,6 +173,47 @@ TRACKS: dict[str, dict] = {
             "warm low end, gentle unfatiguing highs, seamless loop. Instrumental."
         ),
     },
+    # SAME CAVE, A BIT LESS SLOW (maintainer 2026-08-06: "I liked it, but it
+    # was just a bit to slow. But the feeling and everything was perfect. Try
+    # generate a new one with a very similar prompt.").
+    #
+    # So this is `cave` with the smallest edit that can move the tempo, and it
+    # is a SEPARATE track rather than an overwrite — the one he liked stays on
+    # disk so he can A/B them in the wiki and keep whichever wins.
+    #
+    # Three changes, nothing else touched:
+    #   1. 58 -> 74 BPM. `cave` asked 58 and MEASURED 55.57, so the model
+    #      undershoots here; 74 should land near 70, which is "a bit" faster
+    #      rather than a different piece.
+    #   2. "Very sparse and patient" -> sparse WITH GENTLE FORWARD MOTION.
+    #      Leaving "patient" in would have the prompt fighting the BPM — the
+    #      words that make a take slow are not only the number.
+    #   3. "Silence and space are as important as the notes" keeps its first
+    #      half but gains a steady quiet pulse, for the same reason.
+    # Everything about the FEELING — cathedral of wet stone, awe and quiet
+    # wonder, consonant and safe rather than frightening — is verbatim, because
+    # that is the part he said was perfect.
+    "cave2": {
+        "out": "cave2",
+        "seconds": 110,
+        "bpm": 74,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone. Sparse and unhurried but with a gentle forward "
+            "motion, a quiet steady pulse underneath that keeps it walking: soft "
+            "marimba and prepared-piano notes falling into a long natural reverb "
+            "like drips into water, a distant breathy bass flute, slow low cello "
+            "swells, occasional far-off soft bowed metal shimmer. Enormous, ancient "
+            "and solemn, full of AWE AND QUIET WONDER at how big and old it is — "
+            "mysterious but calm and consonant, safe rather than frightening, never "
+            "harsh or dissonant, no stingers, no sudden loud hits. Space matters as "
+            "much as the notes, over a pulse you can feel. Around 74 BPM, "
+            "minor-tinged modal, very soft dynamics, deep warm low end, gentle "
+            "unfatiguing highs, seamless loop. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
