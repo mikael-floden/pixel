@@ -111,3 +111,10 @@ test("every waypoint carries the level of the surface it stands on", () => {
   const missing = trip!.path.filter((p) => (p as { lvl?: number }).lvl === undefined);
   assert.equal(missing.length, 0, `${missing.length} of ${trip!.path.length} waypoints carry no level`);
 });
+
+// NOTE — no test here for the "neither candidate arrives" tie-break (nearest
+// miss beats shortest path, since a route that gives up after three steps has
+// the shortest path of all). The rule is in startBestTrip and is plainly more
+// defensible than what it replaced, but every fixture tried on the shipped
+// world had both candidates missing by the same 40wu, so nothing here PROVES
+// it. Do not read its absence as coverage.

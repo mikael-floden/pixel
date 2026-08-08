@@ -1882,6 +1882,8 @@ export function tripLength(fromX: number, fromY: number, path: Array<{ x: number
  *      under, the user probably meant that. If it's closer to walk on top, the
  *      user meant that." Both are reachable on a bridge you can get under and
  *      over, and then only distance can say which was intended.
+ *   3. AMONG THOSE THAT DON'T, THE ONE THAT GETS CLOSEST TO ITS OWN TARGET
+ *      WINS — never the shortest, which rewards giving up early.
  *
  * Candidates are tried in the caller's preference order and only a STRICT
  * improvement displaces the incumbent, so the drawn surface keeps ties.
@@ -1906,6 +1908,7 @@ export function startBestTrip(
   let best: AutopilotTrip | null = null;
   let bestArrived = false;
   let bestLen = Infinity;
+  let bestMiss = Infinity;
   for (const { x: toX, y: toY, goalLevel } of candidates) {
     const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
     if (!trip) continue;
@@ -1914,10 +1917,25 @@ export function startBestTrip(
         ? true
         : Math.abs(trip.endLevel - goalLevel) < 0.5;
     const len = tripLength(fromX, fromY, trip.path);
-    if (best === null || (arrived && !bestArrived) || (arrived === bestArrived && len < bestLen - 1e-6)) {
+    // HOW FAR SHORT IT GAVE UP. Among routes that DON'T arrive, "shorter walk"
+    // is not just meaningless, it is backwards: a candidate that gives up after
+    // three steps has the shortest path of all and wins every time. Measured on
+    // the maintainer's click behind the house — the ground out there needs the
+    // long way round, the wall top at that same pixel needs a climb, so neither
+    // arrives; the wall's route bailed out a few steps in, INSIDE the house,
+    // and beat the long walk to the spot actually clicked ("I want to go behind
+    // the house... the player runs inside the house"). What "as close as you can
+    // get" means for a route that fails is how close to ITS OWN target it got.
+    const miss = Math.hypot(trip.target.x - toX, trip.target.y - toY);
+    const better =
+      best === null ||
+      (arrived && !bestArrived) ||
+      (arrived === bestArrived && (arrived ? len < bestLen - 1e-6 : miss < bestMiss - 1e-6));
+    if (better) {
       best = trip;
       bestArrived = arrived;
       bestLen = len;
+      bestMiss = miss;
     }
   }
   return best;

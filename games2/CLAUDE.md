@@ -1094,6 +1094,13 @@ visible head/shoulders are ABOVE the surface).
   no reachable surface at that pixel at all, the walk is a best effort to the
   floor beneath, and it still ends ~96px below the marker. Moving the marker is
   not the answer; a route onto the roof would be.
+  **THE PICK POINT MUST SURVIVE THE HOLD.** `holdRepath` re-plans 50ms after
+  every tap and again on release, so a pick point passed only at pointerdown is
+  overwritten within a frame by a trip that never computed the second reading —
+  the feature ran once and was thrown away, on every real click. It lives on
+  `holdGround.at` now. A probe that calls setMoveTarget directly CANNOT see this
+  (that is how it shipped twice), so section 9 of the gate ends with a real
+  `page.mouse.click` and asserts it resolves the same as the probe.
   Gates: `server/test/beacon.test.ts` (the unreachable roof, and a roof that
   WINS on distance from the mountain shoulder — the case rule 1 alone cannot
   decide) and section 9 of `verify-indoor.mjs`. Note what section 9 asserts:

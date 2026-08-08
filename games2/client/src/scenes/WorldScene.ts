@@ -887,7 +887,11 @@ export class WorldScene extends Phaser.Scene {
    * in the same dispatch, so the lock is lifted a beat later than it is
    * released. */
   private uiLockLiftAt = 0;
-  private holdGround: { x: number; y: number; lvl: number } | null = null;
+  /** The ground point the finger is over, WITH the camera-world point it was
+   * picked at. The `at` is load-bearing: holdRepath re-plans 50ms after every
+   * tap and again on release, so without it the tap's two-reading resolution is
+   * computed once at pointerdown and then thrown away a frame later. */
+  private holdGround: { x: number; y: number; lvl: number; at: { wx: number; wy: number } } | null = null;
   private holdRepathAt = 0;
   private keysActive = false;
   private tapMarker?: Phaser.GameObjects.Container;
@@ -1357,19 +1361,20 @@ export class WorldScene extends Phaser.Scene {
       this.engagedId = null;
       this.pendingPickupId = null;
       this.holdPointerId = p.id;
-      this.holdGround = this.pickGround(p.worldX, p.worldY);
+      const down = this.pickGround(p.worldX, p.worldY);
+      this.holdGround = down ? { ...down, at: { wx: p.worldX, wy: p.worldY } } : null;
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
       // the beacon); subsequent drag replans go through holdRepath's budget.
       if (this.holdGround)
         this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl, true,
-          { wx: p.worldX, wy: p.worldY });
+          this.holdGround.at);
       this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
       if (p.id !== this.holdPointerId || !p.isDown) return;
       const g = this.pickGround(p.worldX, p.worldY);
       if (!g) return;
-      this.holdGround = g;
+      this.holdGround = { ...g, at: { wx: p.worldX, wy: p.worldY } };
       // The beacon tracks the FINGER in realtime (free — pure projection);
       // the actual findPath replan runs on holdRepath's adaptive budget, so
       // the drag never *feels* throttled even when a replan is deferred.
@@ -2113,7 +2118,8 @@ export class WorldScene extends Phaser.Scene {
       // point at flat world (x,y)) — the frame-loop self-heal must clear it.
       wedgeHold: (x: number, y: number) => {
         this.holdPointerId = 1;
-        this.holdGround = { x, y, lvl: this.terrain ? levelAtWorld(this.terrain, x, y) : 0 };
+        this.holdGround = { x, y, lvl: this.terrain ? levelAtWorld(this.terrain, x, y) : 0,
+          at: { wx: x, wy: y } };
         this.holdRepathAt = 0;
       },
       swimDebug: () => {
@@ -6356,7 +6362,7 @@ export class WorldScene extends Phaser.Scene {
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
     const t0 = performance.now();
-    this.setMoveTarget(g.x, g.y, true, true, g.lvl);
+    this.setMoveTarget(g.x, g.y, true, true, g.lvl, true, g.at);
     const cost = performance.now() - t0;
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
@@ -6394,16 +6400,26 @@ export class WorldScene extends Phaser.Scene {
     // THE BEACON DOES NOT MOVE between the two: they are the same pixel. That
     // is the whole reason to resolve it this way rather than by dropping the
     // marker onto whatever the walk managed to reach.
+    const cands: Array<{ x: number; y: number; goalLevel?: number }> = [{ x, y, goalLevel }];
+    // (1) the other surface drawn at the SAME PIXEL — a different cell, since
+    //     screen y subtracts level*lh. Usually the room under a roof.
     const under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
-    const trip = startBestTrip(
-      this.terrain, me.fx, me.fy, run, this.time.now, fromElev,
-      under ? [{ x, y, goalLevel }, { x: under.x, y: under.y, goalLevel: under.lvl }] : [{ x, y, goalLevel }],
-    );
+    if (under) cands.push({ x: under.x, y: under.y, goalLevel: under.lvl });
+    // THE SAME CELL'S FLOOR IS NOT A CANDIDATE, and adding it was a mistake
+    // worth naming: it draws `level * lh` BELOW the marker, so choosing it is
+    // precisely the bug — "you don't walk to the marker, you walk the player
+    // under it". The marker's pixel is the contract; a destination that is not
+    // at that pixel is not what was clicked, however close it looks in plan.
+    const trip = startBestTrip(this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands);
     if (!trip) return;
-    // The winner decides where the beacon goes — same pixel either way, but the
-    // cell and the level must be the ones the walk is actually heading for.
-    x = trip.target.x;
-    y = trip.target.y;
+    // THE BEACON DOES NOT MOVE — and now it cannot, because every candidate is
+    // the SAME PIXEL. It is drawn from the winner's cell AND the winner's level,
+    // which is the only pair that lands back on the clicked pixel: the ground
+    // reading is 3.2 cells up-screen in both axes AND 6 levels lower, and those
+    // two shifts cancel exactly. Lifting the ground cell by the ROOF's level
+    // instead puts the marker 96px above the click (measured); using the tapped
+    // cell with the ground's level puts it 96px below. Both are wrong, and both
+    // were shipped once.
     goalLevel = trip.goalLevel;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run

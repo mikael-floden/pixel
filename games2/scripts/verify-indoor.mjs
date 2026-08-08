@@ -1416,14 +1416,15 @@ try {
 
     const probe = await page.evaluate(() => {
       const dy = 15, lh = 16; // ISO_DY / LEVEL_PX (shared)
-      const s = window.__ml.cellScreen(178, 117);
+      const s = window.__ml.cellScreen(179, 117);
       if (!s) return { err: "cellScreen null" };
       const cellWorldY = s.y / s.zoom + s.camY;        // that cell's drawn top
-      const oy = cellWorldY - (178 + 117) * dy + s.level * lh;
+      const oy = cellWorldY - (179 + 117) * dy + s.level * lh;
       const wx = s.x / s.zoom + s.camX;
       const wyRoof = cellWorldY - (6 - s.level) * lh;  // a pixel of ROOF SLAB
       const r = window.__ml.tapPoint(wx, wyRoof);
       if (!r) return { err: "tapPoint returned null (void/solid)" };
+      window.__tapScreen = { sx: s.x, sy: s.y - (6 - s.level) * lh * s.zoom };
       // TWO PROPERTIES, and the second is the one that keeps getting broken:
       //   (a) the walk ARRIVES on the surface it chose, and
       //   (b) THE BEACON STAYS ON THE PIXEL THAT WAS CLICKED.
@@ -1440,11 +1441,11 @@ try {
     if (probe.picked.lvl !== 6)
       fail(`the tap on the house resolved to level ${probe.picked.lvl}, not the roof slab — ` +
         `section 9 is not exercising the ambiguous-cell path at all`);
-    // NOT asserted: that the walk ARRIVES on the chosen surface. This pixel is
-    // a roof over mountain — the ground reading 6.4 cells up-screen is level-6
-    // stone, so there is no second reading and no reachable surface at the
-    // pixel at all. The walk is then a best effort (the floor beneath), which is
-    // "as close as you can get", and the marker still must not move.
+    // AIMED AT 179,117 ON PURPOSE. The ground drawn at a roof pixel is the cell
+    // 3.2 up-screen in BOTH axes, and for 178,117 that is 173,113 — a dividing
+    // WALL (col 173, rows 111-113), which has no floor reading at all. 179,117
+    // reads back to 175,113, real interior floor, so this fixture exercises the
+    // case that matters instead of the one degenerate pixel.
     if (probe.markerY === null) fail("no destination beacon was placed by the tap");
     // (b) THE MARKER MUST NOT MOVE. Twice now the "fix" was to drop the beacon
     // onto whatever the walk could reach, which offsets the player's own input:
@@ -1453,10 +1454,42 @@ try {
       fail(`the beacon moved ${probe.markerOffFinger.toFixed(0)}px from the pixel that was clicked — ` +
         `resolving the two readings must never shift the marker, they are the same pixel`);
     // (a) ...and the walk ends there too.
-    ok(`the beacon stays on the pixel that was clicked: tap picked level ${probe.picked.lvl}, the routing ` +
-      `kept goalLevel ${probe.goalLevel}, and the marker sits ${Math.abs(probe.markerOffFinger).toFixed(0)}px ` +
-      `from the clicked pixel (the walk ends ${Math.abs(probe.walkOffMarker).toFixed(0)}px below it — this roof ` +
-      `has no reachable surface at that pixel, so that is as close as anyone can get)`);
+    // (a) THE WALK ENDS AT THE MARKER. Not under it: "you don't walk to the
+    // marker — you walk the player under it" is the whole complaint, and under
+    // is exactly 6*lh = 96px of screen y away.
+    if (Math.abs(probe.walkOffMarker) > HALF_CELL_Y)
+      fail(`the walk ends ${probe.walkOffMarker.toFixed(0)}px below the beacon (the roof-vs-floor ` +
+        `projection is ${probe.wouldBe}px) — target ${(probe.target.x / 32).toFixed(1)},` +
+        `${(probe.target.y / 32).toFixed(1)} at level ${probe.goalLevel}`);
+    // AND NOW THE REAL GESTURE. Everything above went through `tapPoint`, which
+    // calls setMoveTarget directly — but a real tap is pointerdown followed by
+    // holdRepath re-planning 50ms later and again on release, and THAT path
+    // dropped the pick point, so the two-reading resolution was computed once
+    // and thrown away a frame later. The feature never ran on a real click and
+    // no probe-driven gate could see it (maintainer 2026-08-08: "I click behind
+    // the wall and the player runs inside the house").
+    const tap = await page.evaluate(() => window.__tapScreen);
+    await page.mouse.click(tap.sx, tap.sy);
+    await page.waitForTimeout(900); // past the 50ms replan AND the release commit
+    const real = await page.evaluate(() => {
+      const t = window.__ml.target();
+      const m = window.__ml.marker();
+      return t && m ? { tx: t.x / 32, ty: t.y / 32, my: m.y } : null;
+    });
+    if (!real) fail("a real click started no trip at all");
+    const drift = Math.hypot(real.tx - probe.target.x / 32, real.ty - probe.target.y / 32);
+    if (drift > 1.5)
+      fail(`a REAL click lands ${drift.toFixed(1)} cells from where the same tap resolves through the ` +
+        `probe (${real.tx.toFixed(1)},${real.ty.toFixed(1)} vs ${(probe.target.x / 32).toFixed(1)},` +
+        `${(probe.target.y / 32).toFixed(1)}) — the hold re-plan is dropping the pick point, so the ` +
+        `two readings are never compared on a real tap`);
+    ok(`a REAL click resolves the same as the probe (${real.tx.toFixed(1)},${real.ty.toFixed(1)}) — the ` +
+      `pick point survives the hold re-plan and the release commit`);
+    ok(`the walk ends AT the marker, and the marker never moved: the tap picked level ${probe.picked.lvl}, ` +
+      `the routing chose the floor drawn at that same pixel (level ${probe.goalLevel}, cell ` +
+      `${(probe.target.x / 32).toFixed(1)},${(probe.target.y / 32).toFixed(1)}), the beacon sits ` +
+      `${Math.abs(probe.markerOffFinger).toFixed(0)}px from the clicked pixel and the walk ends ` +
+      `${Math.abs(probe.walkOffMarker).toFixed(0)}px from it (it used to stop ${probe.wouldBe}px under)`);
   }
 
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);
