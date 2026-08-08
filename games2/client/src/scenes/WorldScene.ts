@@ -24,6 +24,7 @@ import {
   DEFAULT_MONSTER_RADIUS,
   startTrip,
   stepAutopilot,
+  bodyStandoff,
   AutopilotTrip,
   findIndoorSpace,
   roofAbove,
@@ -5966,20 +5967,7 @@ export class WorldScene extends Phaser.Scene {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
         // the distance a poring does, so the near-filter box must admit the
         // biggest bodies' lookahead (~140wu), not the old fixed 48.
-        const near: Array<{ id: string; x: number; y: number; r: number }> = [];
-        this.monsters.forEach((mv, id) => {
-          if (Math.abs(mv.fx - me.fx) < 140 && Math.abs(mv.fy - me.fy) < 140)
-            near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
-        });
-        // NPCs get the SAME faked collision (maintainer 2026-08-06). They are
-        // client-side decor with no server body, so — exactly like monsters —
-        // the INPUT slips around them rather than the grid blocking: you walk
-        // around the shopkeeper instead of through her, and the server
-        // integrates the identical deflected vector, so nothing rubber-bands.
-        this.npcs.forEach((npc, id) => {
-          if (Math.abs(npc.fx - me.fx) < 140 && Math.abs(npc.fy - me.fy) < 140)
-            near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
-        });
+        const near = this.nearBodies(me.fx, me.fy);
         // Which way round a body is WALKABLE, not just roomier — simulated
         // with the real movement tick, the same instrument steerAssist uses,
         // so the dodge can never disagree with the collision probes. Without
@@ -6367,6 +6355,28 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Every BODY near a point that the walker's input has to slip around —
+   * monsters (server-driven, per-art radii) and NPCs (client-side decor with
+   * no server body, same faked collision since 2026-08-06).
+   *
+   * ONE list, read by both the dodge AND the autopilot's standoff. They have to
+   * agree about who is standing where: when they disagreed, the autopilot
+   * steered at a waypoint the dodge would never allow, and the walker circled
+   * the NPC. The near-filter box admits the biggest bodies' lookahead (~140wu),
+   * not the old fixed 48 — a mammoth deflects from ~4× a poring's distance. */
+  private nearBodies(fx: number, fy: number): Array<{ id: string; x: number; y: number; r: number }> {
+    const near: Array<{ id: string; x: number; y: number; r: number }> = [];
+    this.monsters.forEach((mv, id) => {
+      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140)
+        near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
+    });
+    this.npcs.forEach((npc, id) => {
+      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140)
+        near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
+    });
+    return near;
+  }
+
   /** One autopilot step — delegates every decision to the shared
    * stepAutopilot (the headless-tested brain); here we only feed it the
    * predicted position, mirror its trace into __ml.navLog, and clear the
@@ -6376,7 +6386,16 @@ export class WorldScene extends Phaser.Scene {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me || !this.trip) return idle;
     const myElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
-    const d = stepAutopilot(this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH, myElev);
+    // A waypoint someone is STANDING ON is unreachable — the dodge will never
+    // let the walker have that spot — so it counts as arrived at from as near
+    // as her personal space allows. Without this the two halves fight and the
+    // walker orbits her (maintainer 2026-08-08: "the player runs a full circle
+    // around the NPC").
+    const bodies = this.nearBodies(me.fx, me.fy);
+    const d = stepAutopilot(
+      this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH, myElev,
+      bodies.length ? (wx, wy) => bodyStandoff(wx, wy, bodies) : undefined,
+    );
     if (d.done) {
       this.clearMoveTarget();
       return idle;

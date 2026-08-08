@@ -18,7 +18,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseWorld, buildTerrainGrid, findPath, monsterDodge, screenToWorldVector, CELL_WU, PLAYER_RADIUS, WALK_CLIMB } from "@nangijala/shared";
+import {
+  parseWorld, buildTerrainGrid, findPath, monsterDodge, screenToWorldVector, bodyStandoff,
+  startTrip, stepAutopilot, stepMovement, makeBlockedElev, makeSideBlocked,
+  CELL_WU, PLAYER_RADIUS, WALK_CLIMB, WALK_SPEED,
+} from "@nangijala/shared";
 
 // Anchored to THIS FILE, not process.cwd(): the suite runs this from the
 // `server` workspace (`npm run test -w server`) while a direct run sits in
@@ -173,48 +177,141 @@ test("a dodge holds its side until the body is passed, instead of re-deciding ev
   assert.equal(monsterDodge(0, 0, east[0], east[1], [behind], held!.state), null,
     "the dodge never releases — the walker would steer around a body it has already passed");
 
-  // The 45-vs-90 escalation latches too: falling back mid-pass is a second weave.
+  // ...but the 45-vs-90 ESCALATION must NOT latch, and that distinction is the
+  // whole difference between a detour and a circle. A 90° rotation on the
+  // 8-way ring is exactly perpendicular: zero progress toward the waypoint, so
+  // the body stays exactly as far ahead as it was and the release above can
+  // never come true. Latching it made the walker orbit (maintainer 2026-08-08:
+  // "the player runs a full circle around the NPC"). Held SIDE, free MAGNITUDE.
   const wide = { ...first!.state, wide: true };
-  const stillWide = monsterDodge(0, 0, east[0], east[1], [at(40)], wide);
-  assert.ok(stillWide?.state.wide, "the full detour was abandoned mid-pass");
+  const relaxed = monsterDodge(0, 0, east[0], east[1], [at(40)], wide);
+  assert.ok(relaxed, "the dodge dropped its blocker");
+  assert.equal(relaxed!.state.side, side, "the side stopped being held");
+  assert.equal(relaxed!.state.wide, false,
+    "the 90° detour latched — that is the orbit, not a dodge");
 });
 
-// THE OPENNESS TEST MUST APPLY TO THE HEADING ACTUALLY EMITTED (maintainer
-// 2026-08-08: "after the player has dodged the NPC ... the player starts to run
-// straight into the wall for a short time before heading to the target
-// location").
+
+// A DODGE NEVER TRADES PROGRESS FOR CLEARANCE, and only emits a heading it has
+// actually checked.
 //
-// The first cut of the hold above probed only the two 45° rotations, then
-// emitted the 90° one whenever the slip was too tight — a heading nothing had
-// ever checked. On its own that was survivable, because the old per-frame
-// re-decision shook the walker loose; combined with the new commitment it
-// parked them: replayed at 60Hz against the real world, a FULL SECOND of zero
-// displacement into the house wall, in both directions of the maintainer's
-// walk. Commitment must never outrank "can I physically move".
-test("a dodge only emits a heading it has checked, and gives up magnitude before side", () => {
+// Two failures met here. The openness probe used to test only the two 45°
+// rotations while emitting the 90° one when the slip was tight — a heading
+// nothing had checked — and held by the hysteresis that parked the walker
+// against the house wall for a full second. And the 90° rotation itself has
+// zero progress toward the waypoint, so it is only ever right when the walker
+// is ALREADY inside the personal space and simply has to step out.
+test("a dodge only emits a heading it checked, and keeps making progress", () => {
   const east: [number, number] = [1, 0];
   const w = screenToWorldVector(east[0], east[1]);
   const wl = Math.hypot(w.x, w.y);
   const at = (d: number) => ({ id: "npc:1", x: (w.x / wl) * d, y: (w.y / wl) * d, r: 9 });
-  const bodies = [at(30)]; // close enough that the pass wants the full detour
+  // Personal space is 9 + 9 + 6 = 24wu, so 40wu is a normal approach and 18wu
+  // is already inside it.
+  const far = [at(40)];
 
-  const first = monsterDodge(0, 0, east[0], east[1], bodies);
-  assert.ok(first, "no dodge fired at all");
-  const committed = { ...first!.state, wide: true };
+  const pref = monsterDodge(0, 0, east[0], east[1], far, undefined, undefined, () => true);
+  assert.ok(pref, "no dodge fired at all");
+  // Progress is measured against the RAW heading: a 90° ring rotation off east
+  // is (0,±1), whose dot with (1,0) is exactly 0 — the orbit.
+  const progress = (r: { ax: number; ay: number }) =>
+    (r.ax * east[0] + r.ay * east[1]) / (Math.hypot(r.ax, r.ay) || 1);
+  assert.ok(progress(pref!) > 0.5, "the normal-approach dodge already gives up progress");
 
-  // What it PREFERS when the world is all open — the 90° slip on the held side.
-  const pref = monsterDodge(0, 0, east[0], east[1], bodies, committed, undefined, () => true);
-  assert.ok(pref?.state.wide, "the fixture no longer exercises the wide detour");
-
-  // Now make exactly that one heading a wall, as the house does.
+  // Wall off exactly what it prefers: it must pick something else, that
+  // something must be open, and it must STILL make progress (i.e. it gives up
+  // the side, not the forward motion — a static wall cannot chatter, an orbit
+  // never ends).
   const open = (ax: number, ay: number) => !(ax === pref!.ax && ay === pref!.ay);
-  const out = monsterDodge(0, 0, east[0], east[1], bodies, committed, undefined, open);
+  const out = monsterDodge(0, 0, east[0], east[1], far, undefined, undefined, open);
   assert.ok(out, "the dodge vanished when its preferred heading was walled");
   assert.ok(open(out!.ax, out!.ay),
     "the dodge emitted the very heading it was told is a wall — that is the stall");
+  assert.ok(progress(out!) > 0.5, "the fallback traded forward progress — that is the circle");
 
-  // It should have given up the MAGNITUDE, not the side: swapping sides mid-pass
-  // is the weave the hold above exists to prevent.
-  assert.equal(out!.state.side, committed.side, "the dodge crossed to the other side instead");
-  assert.equal(out!.state.wide, false, "the emitted rotation and the recorded one disagree");
+  // Inside the personal space the 90° step-out IS allowed: that is the one
+  // case a person really does sidestep, and it cannot persist because the step
+  // itself opens the distance.
+  const inside = monsterDodge(0, 0, east[0], east[1], [at(18)], undefined, undefined, () => true);
+  assert.ok(inside, "no dodge fired from inside the personal space");
+  assert.ok(inside!.state.wide, "a walker already inside the body cannot step out sideways");
+});
+
+// THE WALKER MUST NOT ORBIT SOMEBODY STANDING ON ITS WAYPOINT (maintainer
+// 2026-08-08: "instead of running around the NPC the player runs a full circle
+// around the NPC. This looks so funny and insanely wrong!").
+//
+// Routes are planned on the terrain grid, which knows nothing about bodies, so
+// a waypoint lands on the NPC regularly. The dodge then keeps the walker out of
+// that spot while the autopilot keeps steering at it, and the resultant of "go
+// there" and "not through her" is a CIRCLE at personal-space radius. Neither
+// half was wrong, which is why tuning either one only moved the symptom —
+// measured on the maintainer's own walk, 231° of sweep around her.
+//
+// Replayed at 60Hz through the real brain, because that fight only exists when
+// stepAutopilot, monsterDodge and stepMovement all run against real geometry.
+test("a body standing on the route is passed, not orbited", () => {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const worldW = grid.width * CELL_WU;
+  const worldH = grid.height * CELL_WU;
+  const npc = { id: "npc:aurelia", x: 178.5 * CELL_WU, y: 120.5 * CELL_WU, r: 9 };
+
+  assert.equal(bodyStandoff(npc.x, npc.y, [npc]), 24,
+    "personal space moved — this test's geometry no longer matches the dodge's");
+  assert.equal(bodyStandoff(npc.x + 100, npc.y, [npc]), 0, "a free point reported occupied");
+
+  const trip = (from: [number, number], to: [number, number]) => {
+    let x = from[0] * CELL_WU, y = from[1] * CELL_WU;
+    const t0 = startTrip(grid, x, y, to[0] * CELL_WU, to[1] * CELL_WU, false, 0);
+    assert.ok(t0, "no route at all");
+    const blocked = makeBlockedElev(grid, walk, () => 0);
+    const sideB = makeSideBlocked(grid, walk);
+    let state: ReturnType<typeof monsterDodge> extends null ? never : any;
+    let swept = 0, bearing = Math.atan2(y - npc.y, x - npc.x), arrived = false, t = 0;
+    const dt = 1 / 60;
+    for (let i = 0; i < 60 * 20; i++) {
+      const d = stepAutopilot(grid, t0!, x, y, t * 1000, worldW, worldH, 0,
+        (wx, wy) => bodyStandoff(wx, wy, [npc]));
+      if (d.done) { arrived = true; break; }
+      let { ax, ay } = d;
+      const open = (hax: number, hay: number) => {
+        const r = stepMovement(x, y, hax, hay, false, 0.08, blocked, 1, true, worldW, worldH, sideB);
+        return Math.hypot(r.x - x, r.y - y) > WALK_SPEED * 0.08 * 0.35;
+      };
+      const dodge = monsterDodge(x, y, ax, ay, [npc], state, undefined, open);
+      if (dodge) { ax = dodge.ax; ay = dodge.ay; state = dodge.state; } else state = undefined;
+      const r = stepMovement(x, y, ax, ay, false, dt, blocked, 1, true, worldW, worldH, sideB);
+      x = r.x; y = r.y; t += dt;
+      // Sweep is accumulated only while the DODGE is engaged, so the route's
+      // own curve around the house (which sweeps plenty on its own) can't be
+      // mistaken for an orbit.
+      if (dodge) {
+        const b = Math.atan2(y - npc.y, x - npc.x);
+        let db = b - bearing;
+        while (db > Math.PI) db -= 2 * Math.PI;
+        while (db < -Math.PI) db += 2 * Math.PI;
+        swept += db;
+      }
+      bearing = Math.atan2(y - npc.y, x - npc.x);
+    }
+    return { arrived, deg: Math.abs((swept * 180) / Math.PI), t };
+  };
+
+  // Passing her: walking round somebody sweeps at most half a turn — beyond
+  // 180° you are going round the back, which is the circle.
+  for (const [label, from, to] of [
+    ["out of the house", [176.2, 117.6], [183.3, 118.3]],
+    ["back into it", [183.3, 118.3], [176.2, 117.6]],
+  ] as Array<[string, [number, number], [number, number]]>) {
+    const r = trip(from, to);
+    assert.ok(r.arrived, `${label}: never arrived`);
+    assert.ok(r.deg < 180, `${label}: swept ${r.deg.toFixed(0)}° around her — that is an orbit`);
+  }
+
+  // ...and tapping the ground she is STANDING on ends the trip beside her,
+  // rather than circling until the 1.5s stall timer bails it out.
+  const onto = trip([176.2, 117.6], [178.5, 120.5]);
+  assert.ok(onto.arrived, "a trip onto an occupied spot never ended");
+  assert.ok(onto.t < 3.5, `took ${onto.t.toFixed(2)}s to give up on an occupied spot`);
+  assert.ok(onto.deg < 90, `swept ${onto.deg.toFixed(0)}° around the spot before settling`);
 });

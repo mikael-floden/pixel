@@ -1007,6 +1007,19 @@ visible head/shoulders are ABOVE the surface).
     sides every frame with a +4wu bias toward the committed one, far less than
     `clearance` swings by as the walker moves, so the winner kept flipping. The
     45°-vs-90° escalation latches the same way and one way only.
+  - **A WAYPOINT SOMEBODY IS STANDING ON IS UNREACHABLE — count it as
+    arrived at.** This is the ROOT CAUSE the two rules above were only
+    symptoms of, and the reason tuning either one kept moving the problem
+    rather than fixing it. Routes are planned on the terrain grid, which knows
+    nothing about bodies, so a waypoint lands on an NPC routinely. The dodge
+    then keeps the walker out of that spot forever while the autopilot keeps
+    steering at it, and the resultant of "go there" and "not through her" is a
+    CIRCLE at personal-space radius (maintainer 2026-08-08: "instead of running
+    around the NPC the player runs a full circle around the NPC"). `stepAutopilot`
+    takes an optional `standoff(wx,wy)` — `bodyStandoff` in shared — and adds it
+    to both the waypoint-advance radius and the final arrival radius. The client
+    feeds it `nearBodies()`, **the same list the dodge gets**: if those two ever
+    disagree about who is standing where, they fight and the walker orbits again.
   - **The openness test applies to the heading actually EMITTED.** The first
     cut of the hold probed only the two 45° rotations and then emitted the 90°
     one whenever the slip was too tight — a heading nothing had checked.
@@ -1015,10 +1028,19 @@ visible head/shoulders are ABOVE the surface).
     dodged the NPC ... the player starts to run straight into the wall for a
     short time"). Candidates are now an ordered preference list —
     `[2*side, side, 2*-side, -side]` when wide, 45° first when not — and the
-    first OPEN one wins, so a dodge gives up MAGNITUDE before it gives up SIDE
-    (crossing over mid-pass is the weave). With no `openHeading`, or with
-    nothing open, the preferred rotation is emitted exactly as before.
-    **Commitment never outranks "can I physically move".**
+    first OPEN one wins. With no `openHeading`, or with nothing open, the
+    preferred rotation is emitted exactly as before. **Commitment never
+    outranks "can I physically move".**
+  - **A 90° rotation is a circle, not a detour.** On the 8-way ring a 2-step
+    rotation is exactly perpendicular: ZERO progress toward the waypoint, so
+    the body stays precisely as far ahead as it was and the release above can
+    never come true. It is reserved for the one case a person really uses it —
+    the walker is ALREADY INSIDE the personal space and has to step out — and
+    it cannot persist there, because the step itself opens the distance. So
+    what a dodge gives up, in order, is: magnitude (only when that tight),
+    then SIDE, and never progress. The escalation therefore must NOT latch,
+    even though the side does; latching it is what let the orbit run to
+    completion.
   Measured walking past an NPC on the real client: **7 cross-track reversals
   before, 1 after** — and 1 is the floor, since going around something IS one
   reversal. The stall the emitted-heading bug caused was measured by replaying
@@ -1027,11 +1049,20 @@ visible head/shoulders are ABOVE the surface).
   in-bound, 0 ticks both ways after** (and the trips finish quicker too, 4.58s
   → 3.87s and 5.17s → 4.52s). A deterministic replay is the instrument to reach
   for here — headless-GL browser probes starve under load and reported 178 of
-  220 samples as false "grinds". Gates: the fourth and fifth cases in
-  `server/test/wallhug.test.ts`. The fourth also pins that the same off-axis
-  geometry does NOT start a fresh dodge, so the hold can never be mistaken for
-  a wider trigger; the fifth walls off exactly the preferred heading and
-  asserts the emitted one is open AND on the same side.
+  220 samples as false "grinds". The orbit was measured the same way, as SWEEP
+  ABOUT THE BODY accumulated only while the dodge is engaged: **231° before,
+  116° after**. A close pass is inevitably ~180° (her bearing goes from ahead to
+  behind), so the bar is "under half a turn" — past 180° means you went round
+  the back. Tapping the spot she stands on: **199° and 4.40s of circling
+  before, 21° and 2.60s after**. Beware the naive version of that metric: sweep
+  about the NPC over the WHOLE trip reads 254° with no NPC in the world at all,
+  because the route itself curves around the house.
+  Gates: cases four to six in `server/test/wallhug.test.ts`. Four pins that the
+  same off-axis geometry does NOT start a fresh dodge (so the hold can never be
+  mistaken for a wider trigger) and that the escalation does not latch; five
+  walls off exactly the preferred heading and asserts the emitted one is open
+  and still progressing; six replays both directions of the walk plus a tap on
+  her own spot through the real brain, and fails at 232° without the standoff.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells

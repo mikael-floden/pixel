@@ -1901,6 +1901,11 @@ export function stepAutopilot(
   worldW: number = WORLD_WIDTH,
   worldH: number = WORLD_HEIGHT,
   fromElev?: number, // world@2: live elevation for a deck-aware stall replan
+  // How close a walker may actually get to a point, given the BODIES standing
+  // around (see bodyStandoff). Optional so grid-only callers are unchanged;
+  // the client passes its near-body list, which is the same one the dodge uses
+  // — the two must agree or they fight and the walker orbits.
+  standoff?: (wx: number, wy: number) => number,
 ): AutopilotDrive {
   const t = trip.target;
   // A waypoint counts as reached when the position lands within the radius OR
@@ -1932,7 +1937,11 @@ export function stepAutopilot(
   // heading has up to ~22° of error, tight radii would make it orbit).
   while (trip.path.length > 1) {
     const w0 = trip.path[0];
-    if (Math.hypot(w0.x - x, w0.y - y) > advanceR && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
+    // A waypoint someone is STANDING ON is reached from as near as their
+    // personal space allows — otherwise the walker is asked to occupy a spot
+    // the dodge will never let them have, and circles it instead.
+    const reachR = advanceR + (standoff ? standoff(w0.x, w0.y) : 0);
+    if (Math.hypot(w0.x - x, w0.y - y) > reachR && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
     trip.path.shift();
     trip.progress = { d: Infinity, t: nowMs };
     trip.steer = null; // new waypoint → re-pick the detour heading fresh
@@ -1941,7 +1950,11 @@ export function stepAutopilot(
   const dxw = wp.x - x;
   const dyw = wp.y - y;
   const dist = Math.hypot(dxw, dyw);
-  if (trip.path.length <= 1 && (dist < arriveR || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))) {
+  // The DESTINATION gets the same treatment: tap the ground an NPC is standing
+  // on and "arrived" has to mean "as close as she lets me", or the trip never
+  // ends and the walker orbits her until the stall timer bails it out.
+  const arriveSlack = arriveR + (standoff ? standoff(wp.x, wp.y) : 0);
+  if (trip.path.length <= 1 && (dist < arriveSlack || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))) {
     return AUTOPILOT_IDLE; // arrived at the final target
   }
   // Stall detection is per-WAYPOINT (euclid distance to the final target can
@@ -2118,6 +2131,34 @@ export interface MonsterDodgeState {
   wide?: boolean;
 }
 
+/** HOW CLOSE CAN A WALKER ACTUALLY GET TO THIS POINT, given who is standing
+ * there? 0 when the point is free; otherwise how far outside it the nearest
+ * legal spot is.
+ *
+ * A route is planned on the terrain grid, which knows nothing about bodies —
+ * so a waypoint (or a tapped destination) routinely lands exactly where an NPC
+ * is standing. `monsterDodge` then keeps the walker out of that spot forever
+ * while the autopilot keeps steering at it, and the resultant of "go there" and
+ * "not through her" is a CIRCLE at personal-space radius: the maintainer's
+ * "instead of running around the NPC the player runs a full circle around the
+ * NPC". Neither half is wrong on its own, which is why tuning either one only
+ * moved the problem around. The fix is to admit the point is unreachable and
+ * count it as arrived at from as near as the bodies allow. */
+export function bodyStandoff(
+  wx: number,
+  wy: number,
+  bodies: Array<{ x: number; y: number; r?: number }>,
+  selfR: number = PLAYER_BODY_RADIUS,
+): number {
+  let out = 0;
+  for (const b of bodies) {
+    const p = (b.r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN;
+    const d = Math.hypot(wx - b.x, wy - b.y);
+    if (d < p) out = Math.max(out, p - d);
+  }
+  return out;
+}
+
 export function monsterDodge(
   x: number,
   y: number,
@@ -2212,33 +2253,46 @@ export function monsterDodge(
   // masonry. Only override when exactly one side is open: if both are open the
   // wider berth is still the better dodge, and if neither is, pushing on lets
   // unstick/steer-assist/the stall re-plan resolve it as before.
-  // The 45°-vs-90° choice is held too, and it LATCHES ONE WAY: once the pass
-  // has needed the full detour it keeps it until the obstacle is behind us.
-  // Letting it fall back mid-pass is a second, smaller weave on top of the
-  // side flip — the walker straightens up, re-enters the personal space, and
-  // escalates again.
-  const wantWide = (held && state!.wide) || clearance(side) < hitP;
+  // A 90° SIDESTEP IS A CIRCLE, NOT A DETOUR — so it is reserved for the one
+  // case a person actually uses it.
+  //
+  // On the 8-way ring a 2-step rotation is exactly perpendicular to the
+  // heading: its progress toward the waypoint is ZERO. Walk it around a body
+  // that stands between you and where you are going and the body stays
+  // precisely as "in front" as it was, at precisely the same distance — the
+  // release test can never come true, and the walker orbits. That is not a
+  // tuning miss, it is what perpendicular motion IS, and latching the
+  // escalation (which is what stopped it snapping back and forth) made the
+  // orbit run to completion. Measured on the maintainer's own walk: **254° of
+  // sweep around the NPC**, three quarters of a full turn (2026-08-08: "now
+  // instead of running around the NPC the player runs a full circle around
+  // the NPC").
+  //
+  // So: 90° only when the walker is ALREADY INSIDE the personal space, where
+  // the honest move is to step out sideways and there is no progress to
+  // protect. It cannot persist, because a sideways step opens the distance —
+  // one or two frames later the 45° slip is back on. Otherwise 45° is the cap:
+  // it clears the body AND still carries the walker to the waypoint, so every
+  // pass terminates. This replaces the `wide` latch entirely; the flag is
+  // still reported for tracing, but nothing reads it back.
+  const tight = Math.hypot(hit.x - x, hit.y - y) < hitP;
   // CANDIDATES IN PREFERENCE ORDER, and the OPENNESS TEST APPLIES TO THE ONE
   // WE ACTUALLY EMIT.
   //
-  // This is where committing to a manoeuvre nearly became worse than weaving.
-  // The first cut tested only the two 45° rotations and then emitted 2*side
-  // when the slip was too tight — a heading nothing had checked. Held by the
-  // new hysteresis, the walker would sit on a blocked 90° heading and stop
-  // dead: measured at 60Hz on the real world, a FULL SECOND of zero
-  // displacement against the house wall, in both directions of the
-  // maintainer's walk ("the player starts to run straight into the wall for a
-  // short time before heading to the target location"). Weaving at least kept
-  // it moving; commitment without a walkability check just parks it.
-  //
-  // So preference is ordered — the committed side and magnitude first, so a
-  // free walker's path is bit-for-bit what the hysteresis intends — but a
-  // candidate has to be OPEN to be chosen. Commitment never outranks "can I
-  // physically move". If none is open we emit the preferred one anyway and let
-  // unstick / steer assist / the stall re-plan resolve it, exactly as before.
-  const order = wantWide
-    ? [2 * side, side, 2 * -side, -side]
-    : [side, 2 * side, -side, 2 * -side];
+  // The first cut of this probed only the two 45° rotations and then emitted
+  // 2*side anyway when the slip was tight — a heading nothing had checked.
+  // Held by the hysteresis above, the walker sat on a blocked 90° heading and
+  // stopped dead: a FULL SECOND of zero displacement against the house wall
+  // ("the player starts to run straight into the wall for a short time"). A
+  // candidate now has to be OPEN to be chosen, and what gets given up, in
+  // order, is: magnitude first (when tight), then SIDE, and never progress.
+  // Swapping sides costs one commitment; a wall on the committed side is
+  // static, so it cannot chatter. If nothing is open we emit the preferred
+  // rotation anyway and let unstick / steer assist / the stall re-plan resolve
+  // it, exactly as before.
+  const order = tight
+    ? [2 * side, side, -side, 2 * -side]
+    : [side, -side];
   let rot = order[0];
   if (openHeading) {
     for (const cand of order) {
