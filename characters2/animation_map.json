@@ -24,5 +24,18 @@
       "jump": "custom-fast-running-steeplechase-jump",
       "spell_wand": "custom-spell-with-magic-wand"
     }
+  },
+  "npcs": {
+    "_comment": "GAME STATE -> animation folder for NPCs (npcs/<folder>/animations/<slug>). PixelLab animation names are GENERATION PROMPTS — the maintainer rewords them freely to coax the right motion out of the model, so they vary and contain typos (152 NPCs say 'still', 40 say 'stilI' with a capital i). The game must NEVER depend on that text. sync.py resolves each state here and PUBLISHES the result as `states` on npcs/<folder>/character.json and in npcs/index.json; consumers read states.idle and never guess. verify_sync.py fails if a required state does not resolve for every NPC.",
+    "_maintenance": "A state matches an animation when its slug contains ANY keyword (lowercased). If several match, the richest wins (most frames, then most directions, then slug order) — deterministic. Pin an exact folder with overrides.<npc folder>.<state> when keywords can't decide. Adding a state (walk, talk, work...) is one entry here — no code change.",
+    "states": {
+      "idle": {
+        "keywords": [
+          "idle"
+        ],
+        "required": true
+      }
+    },
+    "overrides": {}
   }
 }

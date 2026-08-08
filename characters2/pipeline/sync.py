@@ -147,7 +147,7 @@ def _dir_key(order, d):
 
 # --- mirroring one character ------------------------------------------------
 
-def sync_character(client, name, cid, force=False, dest=None):
+def sync_character(client, name, cid, force=False, dest=None, states_for=None):
     """Mirror one PixelLab character (base rotations + all animations) into
     humans/<name>/. Returns a short summary dict.
 
@@ -285,9 +285,14 @@ def sync_character(client, name, cid, force=False, dest=None):
         if os.path.isdir(p) and fn not in seen_slugs:
             shutil.rmtree(p)
 
+    # Game states resolved to THIS character's folders, so consumers address
+    # `idle` and never a PixelLab animation name (which is generation text).
+    states = states_for(name, saved_anims) if states_for else None
+
     _write_json(os.path.join(root, "character.json"), {
         "id": name,
         "pixellab_character_id": cid,
+        **({"states": states} if states is not None else {}),
         # PixelLab's own name — prompt junk ("Improve transparency"), kept for
         # traceability. The human-facing one is `display_name` from metadata.json.
         "name": detail.get("name"),
@@ -394,6 +399,40 @@ def commit_push(message, push=True):
 
 # --- NPCs (tag-driven mirror) -------------------------------------------------
 
+def npc_state_map():
+    """The NPC game-state -> animation contract (animation_map.json `npcs`)."""
+    m = _read_json(os.path.join(ROOT, "animation_map.json"), {}) or {}
+    n = m.get("npcs") or {}
+    return (n.get("states") or {}), (n.get("overrides") or {})
+
+
+def resolve_npc_states(folder, saved_anims):
+    """Map each declared game state to one of THIS NPC's animation folders.
+
+    The PixelLab animation name is generation text and must never leak into the
+    game's addressing, so a state matches by KEYWORD on the slug (and an
+    explicit override always wins). When several animations match, the richest
+    wins — most frames, then most directions, then slug order — which is
+    deterministic and picks the real clip over a thin duplicate."""
+    states, overrides = npc_state_map()
+    mine = overrides.get(folder) or {}
+    out = {}
+    for state, spec in states.items():
+        pinned = mine.get(state)
+        if pinned and pinned in saved_anims:
+            out[state] = pinned
+            continue
+        kws = [k.lower() for k in (spec.get("keywords") or [])]
+        cands = [s for s in saved_anims if any(k in s.lower() for k in kws)]
+        if not cands:
+            continue
+        def rank(s):
+            dirs = (saved_anims[s].get("directions") or {})
+            return (-sum(d.get("frame_count", 0) for d in dirs.values()), -len(dirs), s)
+        out[state] = sorted(cands, key=rank)[0]
+    return out
+
+
 def npc_folder(cid, taken):
     """Folder name for an NPC: the first 8 hex chars of its PixelLab id.
 
@@ -432,7 +471,8 @@ def sync_npcs(client, force=False):
     index = {}
     for i, c in enumerate(sorted(npcs, key=lambda c: c["id"]), 1):
         cid = c["id"]; folder = folders[cid]
-        s = sync_character(client, folder, cid, force=force, dest=NPCS)
+        s = sync_character(client, folder, cid, force=force, dest=NPCS,
+                           states_for=resolve_npc_states)
         totals["rot_new"] += s["rot_new"]; totals["anim_new"] += s["anim_new"]
         totals["frames"] += s["frames"]
         if not (s["rot_new"] or s["anim_new"]):
@@ -446,6 +486,9 @@ def sync_npcs(client, force=False):
             "pixellab_name": c.get("name"),
             "animations": sorted((man.get("animations") or {}).keys()),
         }
+        # `states` is the game's addressing contract — idle -> folder.
+        if man.get("states") is not None:
+            rec["states"] = man["states"]
         for k in ("display_name", "species", "sex", "role", "lore"):
             if man.get(k) is not None:
                 rec[k] = man[k]
