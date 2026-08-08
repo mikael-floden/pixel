@@ -2096,6 +2096,22 @@ side collision just like monsters").
       sampler2D reads texture unit 0 — the heightmap — so the failure mode
       without it is a BLACK ROOM on a real phone while headless SwiftShader
       looks fine.
+    - **NOTHING STANDS ON GROUND THE CUT REMOVED** (`aboveCut`). The "draw it
+      and let the light decide" rule is right at MY level, where the ground
+      under a body really is painted. It stops being right ABOVE the cut,
+      because up there nothing is painted at all — the truncation is
+      world-wide — so a body up there hangs in the void (maintainer 2026-08-08:
+      "monsters on top of the mountain are drawn when you are inside the
+      cave"). Monsters, NPCs, remote players and ground drops are all hidden
+      when their surface level exceeds `indoorTop`. Note the threshold is the
+      CUT, not the ceiling, and the test is HEIGHT, not room membership: the
+      mountain around a cave is both outside the room and above the cut
+      (hidden), while the grass outside a house door is outside the room but at
+      my own level (drawn, and lit by a torch through the doorway). Gate:
+      verify-indoor section 7, which needs a populated mountain overhead and so
+      only works in a cave — and which turns "disable aggro" ON, because a gate
+      standing still in a level-24-36 cave gets killed and respawned outdoors
+      mid-measurement.
     - **Anything drawn ABOVE the darkness overlay must gate itself** — no
       amount of zero ambient touches depth 900_001+. `indoorOutside(fx,fy,z)`
       is that predicate, and it is NOT a visibility test: bodies are always

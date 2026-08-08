@@ -1141,6 +1141,14 @@ try {
   // deepest chamber is the one with a way in. Height still has to be PROVEN,
   // not assumed — the assertion below refuses to pass unless the rock beside
   // the room really is far above the cut.
+  // DISABLE AGGRO for this section. the_island2's caves are populated with
+  // level 24-36 monsters, and a gate that has to stand still in one taking
+  // screenshots gets killed and respawned OUTDOORS mid-measurement — which
+  // reads as a failure of whatever was being measured. This is the switch the
+  // maintainer asked for on 2026-08-07 ("I will use this feature to test walk
+  // around in the cave without dying") doing exactly its job.
+  await page.evaluate(() => window.__ml.noAggro(true));
+  await page.waitForTimeout(400);
   const rockBy = (floor) => Math.max(...floor.map(([c, r]) =>
     Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
   const caves = (world.decks ?? [])
@@ -1167,7 +1175,19 @@ try {
         .sort((a, b) => Math.hypot(a[0] - cc, a[1] - cr) - Math.hypot(b[0] - cc, b[1] - cr))[0];
       tried.push(`${c0},${r0}`);
       await goTo(c0 + 0.5, r0 + 0.5).catch(() => {});
-      if (await settle(true, true, 25000)) { caveDeck = cand; sc0 = c0; sr0 = r0; break; }
+      if (!(await settle(true, true, 25000))) continue;
+      // "Settled indoors" is NOT enough to accept a candidate. The room is the
+      // 4-connected space around the PLAYER, and a big cave deck can span
+      // several chambers separated by rock — land in a small one and this
+      // deck's floor is mostly outside my room, leaving nothing to judge.
+      // Require the deck to actually contribute cells to the room I am in.
+      const mine = [];
+      for (const [c, r] of cand.floor) {
+        if (luma(await lightAt(c + 0.5, r + 0.5, 0)) > 0) mine.push([c, r]);
+        if (mine.length >= 6) break; // enough to know this chamber is the deck's
+      }
+      if (mine.length >= 6) { caveDeck = cand; sc0 = c0; sr0 = r0; break; }
+      tried[tried.length - 1] += `(only ${mine.length} of its cells are in the room I landed in)`;
     }
     if (!caveDeck)
       fail(`no cave could be stood in — tried ${tried.join(" ")}: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
@@ -1184,10 +1204,21 @@ try {
     // number the shader uses. So: every cell the light says is mine, and that
     // is on screen, must also be VISIBLE in the picture. A cell that is lit but
     // reads black is one the rock drew over — precisely this section's failure.
+    // ONE round-trip for the whole membership query, not one per cell. A cave
+    // deck has up to 472 floor cells, and 472 sequential page.evaluate calls
+    // take long enough that the SHARED live room can move the player out of the
+    // cave underneath the measurement — which is exactly how this section once
+    // reported a false failure against a `top` that no longer applied.
+    const mineCells = await page.evaluate((cells) => {
+      const out = [];
+      for (const [c, r] of cells) {
+        const l = window.__ml.lightAtCell(c + 0.5, r + 0.5, 0);
+        if (0.2126 * l[0] + 0.7152 * l[1] + 0.0722 * l[2] > 0) out.push([c, r]);
+      }
+      return out;
+    }, caveDeck.floor);
     const seen = [];
-    for (const [c, r] of caveDeck.floor) {
-      const l = await lightAt(c + 0.5, r + 0.5, 0);
-      if (luma(l) <= 0) continue; // not in my room
+    for (const [c, r] of mineCells) {
       const s = await cellScreen(c, r);
       const p = patch(caveShot, s.x + 32, s.y + 23, 4);
       if (!p) continue; // off screen
@@ -1211,6 +1242,43 @@ try {
     const rock = Math.max(...caveDeck.floor.map(([c, r]) => Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
     if (!(rock > cav.top + 4))
       fail(`the rock beside this cave tops out at level ${rock}, only ${rock - cav.top} above the cut — this proves nothing`);
+
+    // NOTHING STANDS ON GROUND THE CUT REMOVED (maintainer 2026-08-08:
+    // "monsters on top of the mountain are drawn when you are inside the
+    // cave"). The zero-ambient design draws the outside and lets the light
+    // decide — right at MY level, where the ground under a body really is
+    // painted. Above the cut nothing is painted at all, so a body up there
+    // hangs in the void. A cave is the only shipped place with a populated
+    // mountain overhead, which is why this lives here and not with the house.
+    // The monster list and the CUT are read in the SAME evaluate, and the
+    // indoor verdict with them: this is a shared live room, and a player who
+    // died or wandered out between the two reads would be judged against a
+    // `top` that no longer applies (measured — that is a false failure, not a
+    // leak). If we are no longer inside, say so instead of asserting nonsense.
+    const snap = await page.evaluate(() => ({
+      st: window.__ml.indoor(),
+      mons: window.__ml.monsterInfo().map((m) => ({
+        kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
+        lvl: m.surfLevel, culled: !!m.culled,
+      })),
+    }));
+    if (!snap.st.indoor)
+      fail(`the player left the cave before the overhead-monster check (indoor=${snap.st.indoor}) — retry`);
+    const mons = snap.mons;
+    const overhead = mons.filter((m) => m.lvl > snap.st.top);
+    if (overhead.length < 3)
+      fail(`only ${overhead.length} monsters stand above the cut (level ${snap.st.top}) near this cave — the assertion would be vacuous`);
+    const floating = overhead.filter((m) => !m.culled);
+    if (floating.length)
+      fail(`${floating.length} monsters are DRAWN above the cut while indoors: ` +
+        `${floating.slice(0, 6).map((m) => `${m.kind}@${m.c},${m.r} level ${m.lvl}`).join("; ")} — ` +
+        `the terrain they stand on is not drawn, so they hang in the void`);
+    // ...and the rule is about HEIGHT, not about being outside the room: a body
+    // at my own level must still be drawn, or this would just be the old
+    // "hide everything outside" design coming back in through the side door.
+    const atLevel = mons.filter((m) => m.lvl <= snap.st.top && !m.culled);
+    ok(`nothing stands on ground the cut removed: all ${overhead.length} monsters above level ${snap.st.top} ` +
+      `(up to ${Math.max(...overhead.map((m) => m.lvl))}) are not drawn, while ${atLevel.length} at or below it still are`);
     ok(`the cut is WORLD-WIDE: standing in a cave (ceiling ${cav.ceiling}, cut to level ${cav.top}, ${cav.roof} cells under it), ` +
       `all ${seen.length} on-screen floor cells are visible (median ${Math.min(...seen.map((s) => s.med)).toFixed(0)}-${Math.max(...seen.map((s) => s.med)).toFixed(0)}) ` +
       `with level-${rock} rock immediately down-screen`);

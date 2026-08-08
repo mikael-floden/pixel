@@ -3755,7 +3755,15 @@ export class WorldScene extends Phaser.Scene {
       // A drop lying outside my room is DRAWN and goes black with the ground
       // under it — no special case. The art only shows once its texture has
       // landed: a drop still on "__MISSING" must stay hidden.
-      const out = rec.img.texture.key === "__MISSING";
+      // ...and a drop resting on terrain the cut removed is hidden with it —
+      // same rule as the bodies (see aboveCut). `wx/wy` is the FLAT world
+      // position; the level it lies on is the terrain there.
+      const dropLvl = this.terrain
+        ? this.terrain.level[
+            Math.floor(rec.wy / CELL_WU) * this.terrain.width + Math.floor(rec.wx / CELL_WU)
+          ] ?? 0
+        : 0;
+      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl);
       rec.img.setVisible(!out);
       rec.shadow.setVisible(!out);
       const left = DROP_TTL_MS - (now - rec.bornAt);
@@ -4243,9 +4251,12 @@ export class WorldScene extends Phaser.Scene {
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
-        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
-      // NB no indoor test: a villager on the street outside my room is drawn
-      // and lit like the street is — black, until my torch finds them.
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
+        !this.aboveCut(npc.surfLevel ?? 0);
+      // The indoor test is ONLY about height (see aboveCut). A villager on the
+      // street outside my room is drawn and lit like the street is — black,
+      // until my torch finds them. One standing on a rooftop is not drawn at
+      // all, because the rooftop is not drawn either.
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
@@ -5050,8 +5061,13 @@ export class WorldScene extends Phaser.Scene {
       // are meant to barely see, so the label and the chat bubble follow the
       // room while the body follows the light. I am never outside my own room.
       const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
-      av.label.setVisible(!away);
-      av.shadow.setVisible(!av.swimming);
+      // ABOVE THE CUT the body goes too, not just its name tag: it would be
+      // standing on terrain that is not drawn. I am never above my own cut —
+      // the room is resolved from where I stand.
+      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0);
+      av.sprite.setVisible(!overhead);
+      av.label.setVisible(!away && !overhead);
+      av.shadow.setVisible(!av.swimming && !overhead);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -5076,7 +5092,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away); // goes with the body
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away && !overhead); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -5161,10 +5177,13 @@ export class WorldScene extends Phaser.Scene {
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB;
-        // NB no indoor test: a monster outside my room is drawn and lit like
-        // the ground under it. Its ABOVE-OVERLAY chrome is another matter —
-        // see indoorOutside and updateMonsterHpBar.
+          ay - sp.displayHeight <= vB &&
+          !this.aboveCut(m.elev ?? g.lvl);
+        // The indoor test is ONLY about height. A monster outside my room but
+        // at my level is drawn and lit like the ground under it — that is the
+        // whole zero-ambient design. One ABOVE the cut is different: the
+        // terrain it stands on is not drawn, so it would hang in the void.
+        // Its ABOVE-OVERLAY chrome is a third case — see indoorOutside.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -7675,6 +7694,30 @@ export class WorldScene extends Phaser.Scene {
    *
    * `z` in LEVELS: a body up on the roof is outside even though the cell under
    * it is my floor. */
+  /** Indoors, is this body standing ABOVE THE CUT — on terrain that is not
+   * drawn at all?
+   *
+   * The zero-ambient design says draw the outside and let the light decide,
+   * and that is right for everything at ground level: the ground under it IS
+   * drawn, so a villager out there is a black silhouette your torch can find.
+   * It stops being right above the cut, because up there NOTHING is drawn —
+   * the cut removes every column's art above `indoorTop`, world-wide. A body
+   * standing on that vanished terrain has no ground under it and hangs in the
+   * void, which is exactly the artefact the old design was full of (maintainer
+   * 2026-08-08: "monsters on top of the mountain are drawn when you are inside
+   * the cave... you should not draw monsters outside that are on top of the
+   * roof/ceiling when you are indoors").
+   *
+   * So the rule is not "outside my room" — it is "on ground I am not drawing".
+   * The two differ exactly where it matters: the mountain around a cave is
+   * outside the room AND above the cut (hidden), while the grass outside a
+   * house door is outside the room but at my own level (drawn, and lit by a
+   * torch through the doorway). The threshold is the CUT, not the ceiling: the
+   * cut is what decides what is painted. */
+  private aboveCut(z: number): boolean {
+    return this.indoorInside && !!this.indoorMask && z > this.indoorTop;
+  }
+
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
     const w = this.world;
     if (!this.roomMask || !w) return false;
