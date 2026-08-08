@@ -8078,18 +8078,36 @@ export class WorldScene extends Phaser.Scene {
         // ceiling: a cave sits under a mountain that towers over it (terrain
         // 24 against an 8-level ceiling), while a house's wall stops at its own
         // roof (6 against 6). Two levels of headroom is the bar.
-        for (const fi of space.fringe) {
+        // A BAND OF ROCK, NOT JUST THE ONE-CELL RING. The ring itself is buried:
+        // painter order draws the outer columns over it, so only a single
+        // column of it ever faces the camera (maintainer 2026-08-08: "only a
+        // single column next to the opening got dark. Not the inside!"). What
+        // you actually look at through a mouth is the rock BEHIND that ring, so
+        // the band reaches several cells out — and the ceiling gate in the
+        // shader keeps it to the part BELOW the roof, which is the bit framed
+        // by the opening. Above it stays lit mountain.
+        const band = new Set<number>(space.fringe);
+        for (let ring = 0; ring < 3; ring++) {
+          for (const fi of [...band])
+            for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
+              if (n >= 0 && n < w.width * w.height && !space.roof.has(n)) band.add(n);
+        }
+        for (const fi of band) {
           if (out.has(fi)) continue;
+          // Ceiling and depth come from the nearest cell already carrying them,
+          // so a band cell three out inherits the room's ceiling rather than
+          // being skipped for having no roof neighbour of its own.
           let ub = -1;
-          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
-            if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
-          if (ub < 0 || g.level[fi] <= ub + 2) continue; // a house wall, not rock
           let best = Infinity;
           for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
-            const d = space.roof.has(n) ? out.get(n) : undefined;
+            const u2 = this.caveUnder.get(n);
+            if (u2 !== undefined) ub = Math.max(ub, u2);
+            else if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
+            const d = out.get(n);
             if (d !== undefined && d < best) best = d;
           }
-          if (best < Infinity) { out.set(fi, best); this.caveUnder.set(fi, ub); }
+          if (ub < 0 || g.level[fi] <= ub + 2) continue; // a house wall, not rock
+          if (best < Infinity) { out.set(fi, best + 1); this.caveUnder.set(fi, ub); }
         }
       }
     return out;
