@@ -214,6 +214,74 @@ TRACKS: dict[str, dict] = {
             "unfatiguing highs, seamless loop. Instrumental."
         ),
     },
+    # TWO MORE CAVE VARIATIONS (maintainer 2026-08-06: "Try to generate two
+    # more variations. Still not happy.") — and deliberately NOT two rolls of
+    # the same dice, because that is what cave2 already was.
+    #
+    # THE MEASURED PROBLEM: this brief undershoots the tempo it asks for, and
+    # got worse the harder it was pushed. cave asked 58 and measured 55.57
+    # (-4%); cave2 asked 74 and measured 61.52 (-17%). So asking for a bigger
+    # number is ONE lever and clearly a weak one on its own.
+    #
+    # THE OTHER LEVER: "too slow" from a listener is usually EVENT DENSITY, not
+    # BPM. A sparse take drowned in long reverb reads as slow at any tempo,
+    # because almost nothing happens per bar. cave and cave2 both say "sparse"
+    # and "space matters as much as the notes" — that wording is probably doing
+    # more of the damage than the 58.
+    #
+    # So cave3 attacks the tempo and cave4 attacks the density, and whichever
+    # he prefers tells us which lever actually mattered. Both keep the FEELING
+    # verbatim — cathedral of wet stone, awe and quiet wonder, consonant and
+    # safe rather than frightening — because that part was never the problem.
+    #
+    # cave3: TEMPO. Ask 92 to land near 75 given the -17% undershoot, and make
+    # the pulse explicit and continuous rather than a hint.
+    "cave3": {
+        "out": "cave3",
+        "seconds": 110,
+        "bpm": 92,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone with a clear steady pulse already moving under it. "
+            "Flowing and continuous, never static: soft marimba and prepared-piano "
+            "notes falling steadily into a long natural reverb like drips into "
+            "water, a distant breathy bass flute carrying a walking melody, slow low "
+            "cello swells, occasional far-off soft bowed metal shimmer. Enormous, "
+            "ancient and solemn, full of AWE AND QUIET WONDER at how big and old it "
+            "is — mysterious but calm and consonant, safe rather than frightening, "
+            "never harsh or dissonant, no stingers, no sudden loud hits. Keep it "
+            "MOVING at a comfortable walking tempo, around 92 BPM, minor-tinged "
+            "modal, very soft dynamics, deep warm low end, gentle unfatiguing highs, "
+            "seamless loop. Instrumental."
+        ),
+    },
+    # cave4: DENSITY. Tempo stays near the original he liked — the difference is
+    # that something is always sounding: a continuous soft ostinato instead of
+    # isolated notes in space. If this is the one he keeps, the lesson is that
+    # "slow" meant empty, and the BPM was never the problem.
+    "cave4": {
+        "out": "cave4",
+        "seconds": 110,
+        "bpm": 68,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone under a soft repeating marimba ostinato that runs "
+            "gently and continuously through the whole piece, like steady drips into "
+            "a pool — there is always something quietly moving. Over it: prepared "
+            "piano answering the pattern, a distant breathy bass flute melody, slow "
+            "low cello swells, occasional far-off soft bowed metal shimmer, all in a "
+            "long natural reverb. Enormous, ancient and solemn, full of AWE AND "
+            "QUIET WONDER at how big and old it is — mysterious but calm and "
+            "consonant, safe rather than frightening, never harsh or dissonant, no "
+            "stingers, no sudden loud hits. Around 68 BPM, minor-tinged modal, very "
+            "soft dynamics, deep warm low end, gentle unfatiguing highs, seamless "
+            "loop. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
