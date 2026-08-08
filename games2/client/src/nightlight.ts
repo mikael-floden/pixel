@@ -174,6 +174,7 @@ uniform float uIndoorMix; // the EASED indoor blend — the outside fades to bla
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
+uniform sampler2D uHeightG; // GROUND column tops, LINEAR (see groundAtSoft)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
@@ -230,7 +231,10 @@ float baseTerrAt(vec2 cr) {
 // never dark because of the ambient; its own ceiling was eating the light.
 float groundAtSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).a * 255.0 / uHScale;
+  // Its own map, R channel. It used to be the linear map's ALPHA, which
+  // premultiplied every other channel of that texture — see the pin in
+  // buildHeightmap for what that cost.
+  return texture2D(uHeightG, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
 }
 
 // The SURFACE height a screen pixel resolves to.
@@ -1448,6 +1452,7 @@ export class NightLights {
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
+      uHeightG: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -1496,6 +1501,7 @@ export class NightLights {
       uRoom: { type: "sampler2D", value: null },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
+      uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
       uGlow: { type: "sampler2D", value: null },
     });
@@ -1612,6 +1618,8 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+    if (this.scene.textures.exists("world-heightmap-ground"))
+      s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     s.setRenderToTexture(key);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
@@ -1635,6 +1643,8 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+    if (this.scene.textures.exists("world-heightmap-ground"))
+      s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
     // Glow field RT: canvas-sized. The shader samples it normalized over uCam's
@@ -1780,6 +1790,12 @@ export class NightLights {
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
+    // The GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED) — what
+    // lets the point-light march tell a floating slab from a solid pillar. Its
+    // OWN texture rather than a spare channel of the linear map, because the
+    // only channel left there was alpha, and alpha is not a data channel on a
+    // premultiplied upload (see the pin below).
+    const imgG = ctx.createImageData(w, h);
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
@@ -1880,12 +1896,25 @@ export class NightLights {
         const ei = glows ? emitIdx.get(cell.t) : undefined;
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
-        // A = the GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED)
-        // — see groundAtSoft. R stays max(ground, deck) so every existing reader
-        // is byte-identical; this channel is what lets the point-light march
-        // tell a floating slab from a solid pillar. On a deck-free world it
-        // equals R exactly, so those worlds march identically to before.
-        imgL.data[i + 3] = Math.min(255, groundH * hScale);
+        // A IS PINNED AT 255 — DATA MUST NEVER GO IN THIS CHANNEL.
+        //
+        // Canvas uploads are PREMULTIPLIED (UNPACK_PREMULTIPLY_ALPHA_WEBGL), so
+        // whatever goes in alpha SCALES R, G and B on the way to the GPU. This
+        // channel briefly held the ground column's top, and it silently wrecked
+        // the directional sun for the whole game: alpha = groundH * hScale, so
+        // every occlusion height the sun march reads came back multiplied by
+        // groundH*hScale/255. On the_island2 hScale is ~6.4, which means FLAT
+        // GROUND (groundH 0) scaled R to ZERO, a level-6 house wall to 0.15x,
+        // and a level-40 mountain to 255/255 = 1.0x — untouched. That is
+        // exactly what the maintainer reported (2026-08-08): the house and the
+        // hilltop stopped casting entirely, the bridge lit from nowhere, and
+        // "the mountain still casts on the ground but doesn't shade its own
+        // hillside" — the hillside is baseTerrAt, which reads B, scaled too.
+        // The sibling map pins its alpha for this same reason; this one did not.
+        // groundH now lives in its own texture (see world-heightmap-ground).
+        imgL.data[i + 3] = 255;
+        imgG.data[i] = Math.min(255, groundH * hScale);
+        imgG.data[i + 3] = 255;
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -1895,6 +1924,12 @@ export class NightLights {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
+    const texG = this.scene.textures.createCanvas("world-heightmap-ground", w, h);
+    if (texG) {
+      texG.getContext().putImageData(imgG, 0, 0);
+      texG.refresh();
+      texG.setFilter(Phaser.Textures.FilterMode.LINEAR);
     }
     // Palette texture: 2 texels per entry — texel 0 = colour, texel 1 =
     // (strength, self, anim mode 0/100/200). NEAREST so indices read exact.
