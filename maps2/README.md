@@ -289,7 +289,7 @@ pad is the point of the map. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
 
-## Named indoor places — `worlds/<name>/places.json` (`pixel-maps2/places@1`)
+## Named places — `worlds/<name>/places.json` (`pixel-maps2/places@2`)
 
 maintainer 2026-08-08: *"Can you give the 'in-door' on each map a name so we can
 trigger a sound when someone walks into that exact house/dungeon/cave etc… Does
@@ -300,9 +300,29 @@ with no id); and the score's `cave`/`home` beds hang off continuous sensors, so
 every cave on every map is the same cave and there is no moment of *entering*.
 The missing piece was identity, and it belongs to whoever makes the rooms.
 
-Each place ships `{id, name, kind (house|cave), anchor, cells}` — **cell → place
-is one lookup**, so a consumer needs no geometry. `id` is the event key and does
-not change; `name` is display text lore may rewrite. Full spec: `spec/PLACES.md`.
+**@2 adds OUTDOOR zones** (maintainer, same day: *"we might want different named
+zones for outdoor as well… We need a zone for `mountain_top`"*). @1 derived
+places from decks, so an inside was the only thing that could have a name; @2
+makes a place a named REGION, indoors or out.
+
+Each place ships `{id, name, kind (house|cave|summit), indoor, elev, anchor,
+cells}` — **cell → place is one lookup**. `id` is the event key and does not
+change; `name` is display text lore may rewrite. Full spec: `spec/PLACES.md`.
+
+**`elev` is not decoration — THE STACK.** `the_cave` and `mountain_top` share
+**375 cells**: the cave floor at elev 0-1 lies directly under the rock at 32-40
+with the snow cap over both. A consumer resolves (cell, the surface you stand
+on) — what `Player.elev` already carries. Two places may share cells, never
+cells AND an overlapping band, and the build asserts it.
+
+**`mountain_top` is measured, not chosen.** The summit is the ground at or above
+the world's own SNOW LINE, found by walking DOWN from the highest bench while
+each level's land is still mostly snow/ice. On the_island2 that lands on bench
+28 — 98% snow at 28, 0% and pure grey stone at 27 — the boundary the tiles
+themselves draw: 5,604 cells, elev 28-40, both flanks of the gorge, stopping
+dead at the grey benches. No per-world tuning (the_island 24, demo_isle 7,
+demo_lost 8) and every flat showcase map gets none, because its snow and ice are
+tile samples at level 0 and a snow line at 0 is not a mountain.
 
 Places are DERIVED, names are LOOKED UP: `roof`/`cave` decks group into
 8-connected footprints (the cave's twelve stacked slabs are one place; `bridge`
@@ -319,11 +339,12 @@ the fire" — so the_island2's cottage ships as **The Stone House** and its
 dungeon as **The Cave**, both adopted verbatim. Only the maintainer's second
 house needed a new one and it got a plain descriptive **The Meadow House**.
 
-`python maps2/pipeline/places.py --check` asserts both halves: every roofed cell
-belongs to a named place (a world that grows a house cannot ship it anonymous —
-a player can walk in there and the game has nothing to fire) and every named
-cell is still under an indoor deck (a building that moved cannot leave the event
-firing over open grass).
+`python maps2/pipeline/places.py --check`: every roofed cell belongs to a named
+place (a world that grows a house cannot ship it anonymous — a player can walk
+in there and the game has nothing to fire); every named cell still exists as it
+was named (indoor still under a deck, outdoor still land); and no cell is in two
+places at an overlapping elevation. Outdoor COVERAGE is deliberately not
+required — unnamed ground is just outdoors.
 
 ## NPCs — `worlds/<name>/npcs.json` (`pixel-maps2/npcs@1`)
 
