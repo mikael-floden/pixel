@@ -487,6 +487,23 @@ and no world needs regenerating.
     asserts it. Mountain crossings are exempt: their banks are terraced rock and reshaping them
     would break the antitone/terrace invariants. That ledge went 48 cells / 3 wide → **175 cells /
     11×19**, with the walk from the spawn to the crossing unchanged at 86 cells.
+  - **…AND YOU HAVE TO BE ABLE TO WALK UP IT** (maintainer 2026-08-07: *"The new hill should have
+    more and wider ways/paths to go get up on it"*). Growing the landing without touching its rim
+    turned a ledge into a MESA — 175 cells of hilltop reachable only by a 3-cell scramble at the
+    southern tip, hard against the water. A **way up** is a run of rim cells whose levels are
+    within one of the top; runs narrower than `HEADLAND_WAY_W` (4) are scrambles and count for
+    nothing, and a landing needs `HEADLAND_ACCESS` (12) rim cells of real ways. That single test
+    is what lets a hill merging into the plain over 47 cells pass untouched while one notch fails.
+    What is missing is cut as `HEADLAND_RAMPS` (3) separate staircases, `HEADLAND_RAMP_W` (5)
+    wide, spread FARTHEST-APART-FIRST around the rim — and only ever **toward the camera**
+    (`+x`/`+y`), the constraint `_widen_hills` works under, so every new slope shows its own
+    faces. **Each lane starts at its OWN edge**: a hill boundary is ragged, and a ramp laid on one
+    straight lateral line leaves the lanes whose edge sits further in hanging a cell short with a
+    level-0 gap between — a staircase that starts nowhere (it shipped that way once and the
+    access assert caught it at 11 of 12). Result on that hill: **1 way of 3 → 4 ways of 5/5/5/3**,
+    and the walk from the spawn onto the hilltop **82–91 → 52–56** cells, because you no longer
+    round the whole hill to find the stair. The other three landings measured 47, 16 and 43 and
+    were not touched.
   - **Spiky massif**: benches `{16,20,24,28,32,36,40}`, ~10 sharp varied-height peaks with deep
     saddles + camera-fanning grooves → a jagged skyline (max level 40), not a smooth pyramid.
   - **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset via `_coastline`,

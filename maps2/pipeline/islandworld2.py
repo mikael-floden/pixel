@@ -187,6 +187,25 @@ HEADLAND_MIN = 160       # ...and how much ground at deck level it must hold
 HEADLAND_DIM = 9         # ...across BOTH axes: no more ledges
 HEADLAND_MAX_LEVEL = 14  # above this a bank is mountain, and the mountain keeps its shape
 
+# ...AND YOU HAVE TO BE ABLE TO WALK UP IT (maintainer 2026-08-07: "The new hill
+# should have more and wider ways/paths to go get up on it"). Making the landing
+# big without touching its rim turned a ledge into a MESA: 175 cells of hilltop
+# reachable only by a 3-cell scramble at the southern tip, hard against the
+# water. The size rule and this one are one rule in two halves — a hill is
+# ground you stand on AND a way onto it.
+#
+# A WAY UP is a run of rim cells you can step between (levels within 1). Runs
+# narrower than HEADLAND_WAY_W are scrambles and count for nothing, which is
+# what makes "one 3-cell notch" fail while a hill that merges into the plain
+# over 47 cells passes untouched. The generator cuts what is missing as
+# HEADLAND_RAMPS separate staircases, spread as far apart around the rim as the
+# terrain allows and each HEADLAND_RAMP_W wide — more of them and wider, rather
+# than one big gap in the hillside.
+HEADLAND_WAY_W = 4       # narrower than this is a scramble, not a path
+HEADLAND_ACCESS = 12     # rim cells you can walk up, counting only real ways
+HEADLAND_RAMPS = 3       # ...cut as this many separate staircases when missing
+HEADLAND_RAMP_W = 5      # ...each this wide
+
 # THE CAVE (maintainer 2026-07-29): a Diablo-style room-and-corridor dungeon under
 # (almost) the ENTIRE east massif, entered ONLY through the pinned doorway below.
 # The carve-out protocol INVERTS the deck idea: the cave floor becomes the BASE
@@ -794,6 +813,48 @@ class Island2(Island):
         ys = [y for _, y in comp]
         return min(max(xs) - min(xs) + 1, max(ys) - min(ys) + 1) >= HEADLAND_DIM
 
+    def headland_ways(self, comp, dlv):
+        """The WAYS UP onto a headland, biggest first, each as its own cell set.
+
+        A rim cell counts when it is land outside the headland whose level is within one of
+        the top — i.e. a cell you can actually step between. Touching cells are ONE way
+        (8-connected: a staircase's mouth is rarely a straight line), so this measures how
+        many separate paths there are and how wide each is, not how ragged the edge looks."""
+        n = self.n
+        rim = set()
+        for (x, y) in comp:
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                q = (x + i, y + j)
+                if q in comp or not (0 <= q[0] < n and 0 <= q[1] < n):
+                    continue
+                if self.mat[q[1], q[0]] in ("", "clear_water"):
+                    continue
+                if abs(int(self.level[q[1], q[0]]) - dlv) <= 1:
+                    rim.add(q)
+        ways, left = [], set(rim)
+        while left:
+            seed = min(left)
+            st, run = [seed], set()
+            left.discard(seed)
+            while st:
+                p = st.pop()
+                run.add(p)
+                for i in (-1, 0, 1):
+                    for j in (-1, 0, 1):
+                        q = (p[0] + i, p[1] + j)
+                        if q in left:
+                            left.discard(q)
+                            st.append(q)
+            ways.append(run)
+        ways.sort(key=lambda r: (-len(r), min(r)))
+        return ways
+
+    @staticmethod
+    def headland_access(ways):
+        """Rim you can walk up, counting only runs wide enough to be a path. One open flank
+        merging into the plain is a fine way onto a hill; three narrow notches are not."""
+        return sum(len(r) for r in ways if len(r) >= HEADLAND_WAY_W)
+
     def _bridge_headlands(self):
         """THE HEADLAND RULE: grow every lowland bridge landing into a real hill.
 
@@ -845,7 +906,102 @@ class Island2(Island):
                     self.upper[y, x] = False
                     grew += 1
                 comp |= set(step)
+
+        # ...then give every landing its ways up (the second half of the rule).
+        for dk, bank in self.bridge_landings():
+            dlv = int(dk["level"])
+            comp = self.headland_of(dk, bank)
+            if not comp:
+                continue
+            mat0 = Counter(self.mat[y, x] for (x, y) in comp).most_common(1)[0][0]
+            grew += self._cut_headland_ways(comp, dlv, mat0, deck_cells, ocean)
         return grew
+
+    def _cut_headland_ways(self, comp, dlv, mat0, deck_cells, ocean):
+        """Cut staircases into a headland's rim until you can walk up it.
+
+        A ramp is HEADLAND_RAMP_W wide and descends one level per cell outward, so the
+        hillside gets a real slope instead of a Δ4 face with a notch in it. Sites are chosen
+        FARTHEST-APART FIRST, so the ways land on different flanks rather than three abreast
+        in the same gap — 'more and wider ways', not one wider gap.
+
+        Ramps only ever run TOWARD THE CAMERA (+x/+y), the same constraint _widen_hills works
+        under: a slope descending that way shows its own faces, while one descending up-screen
+        hides them behind the hill and reads as a rendering fault (the project's elevation
+        rule). Every cell of a ramp is validated before ANY of it is cut, so a half-ramp
+        ending in a wall can never be left behind."""
+        n = self.n
+
+        def free(x, y, want):
+            if not (0 <= x < n and 0 <= y < n):
+                return False
+            if (x, y) in comp or (x, y) in self.reserved or (x, y) in deck_cells:
+                return False
+            if (x, y) in self._troll or self.upper[y, x] or (x, y) in ocean:
+                return False
+            m = self.mat[y, x]
+            if m in ("", "clear_water"):
+                return False
+            return int(self.level[y, x]) <= want      # never cut DOWN into higher ground
+
+        def ramp_at(sx, sy, dx, dy):
+            """Every cell of the staircase from (sx,sy) outward, or None if it doesn't fit.
+
+            EACH LANE STARTS AT ITS OWN EDGE. A hill's boundary is ragged, so a ramp laid on
+            one straight lateral line leaves the lanes whose edge sits further in hanging a
+            cell short of the hilltop with a level-0 gap between — a staircase that starts
+            nowhere. Walking each lane out to the last hill cell before descending makes the
+            ramp follow the contour, which is also what a path up a hillside does."""
+            half = HEADLAND_RAMP_W // 2
+            px, py = (0, 1) if dx else (1, 0)         # lateral axis
+            out = []
+            for t in range(-half, HEADLAND_RAMP_W - half):
+                lx, ly = sx + px * t, sy + py * t
+                if (lx, ly) not in comp:
+                    return None                       # this lane misses the hill entirely
+                for _ in range(2 * HEADLAND_R):       # out to this lane's own edge
+                    if (lx + dx, ly + dy) not in comp:
+                        break
+                    lx, ly = lx + dx, ly + dy
+                for k in range(1, dlv + 1):
+                    want = dlv - k
+                    x, y = lx + dx * k, ly + dy * k
+                    if not free(x, y, want):
+                        return None
+                    out.append((x, y, want))
+            return out
+
+        def spread(cell, taken):
+            """How far this site sits from the nearest way up that already exists."""
+            return min((max(abs(cell[0] - t[0]), abs(cell[1] - t[1])) for t in taken),
+                       default=1 << 20)
+
+        cut = 0
+        for _ in range(HEADLAND_RAMPS * 4):           # runaway guard; the access test decides
+            ways = self.headland_ways(comp, dlv)
+            if self.headland_access(ways) >= HEADLAND_ACCESS:
+                break
+            # every existing way up — the landing's own notch included — repels the next one
+            taken = [min(r) for r in ways]
+            sites = []
+            for (x, y) in sorted(comp):
+                for dx, dy in ((1, 0), (0, 1)):       # camera-facing only
+                    if (x + dx, y + dy) in comp:
+                        continue
+                    r = ramp_at(x, y, dx, dy)
+                    if r:
+                        sites.append(((x, y), r))
+            if not sites:
+                break                                 # no room for another way up; the
+                                                      # build assert reports it
+            _s, (_c, ramp) = max(((spread(s[0], taken), s) for s in sites),
+                                 key=lambda p: (p[0], p[1][0]))
+            for (x, y, want) in ramp:
+                self.level[y, x] = want
+                self.mat[y, x] = mat0
+                self.upper[y, x] = False
+                cut += 1
+        return cut
 
     def _ocean_cells(self):
         n = self.n
@@ -3349,6 +3505,14 @@ def build(out=None, seed=21, M=24):
             f"bridge landing at {bank[0]} (deck level {dk['level']}) has a headland of only "
             f"{len(comp)} cell(s), {w}x{h} — the rule wants >= {HEADLAND_MIN} cells and "
             f">= {HEADLAND_DIM} across BOTH axes. You climb a wall onto a shelf.")
+        # ...and you have to be able to WALK UP IT.
+        ways = d.headland_ways(comp, int(dk["level"]))
+        acc = d.headland_access(ways)
+        assert acc >= HEADLAND_ACCESS, (
+            f"bridge landing at {bank[0]}: only {acc} rim cell(s) you can walk up "
+            f"(runs {[len(r) for r in ways][:6]}, counting only runs >= "
+            f"{HEADLAND_WAY_W} wide) — the rule wants {HEADLAND_ACCESS}. That is a mesa "
+            f"with a notch in it, not a hill.")
 
     slivers = [c for c in d._material_slivers() if tuple(c[:2]) not in rhcells]
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
