@@ -883,9 +883,14 @@ void main() {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
-      // dep is ALREADY depth+1 (see setRoom), which doubles as the bias that
-      // makes the mouth itself dark rather than a bright hole in the rock.
-      light *= mix(exp(-dep * uCaveK), 1.0, mine);
+      // THE MOUTH ITSELF IS UNTOUCHED, and it goes dark FAST behind it. dep is
+      // stored as depth+1 so that 0 can mean "not a room" (see setRoom), and
+      // feeding that straight into the curve darkened the opening cell by half
+      // before you had gone anywhere — which reads as a flat wash rather than a
+      // cave swallowing the light (maintainer 2026-08-08: "I expected the
+      // effect to fade from no effect at all near the opening to very very dark
+      // a tile in"). Take the bias back off: the mouth multiplies by 1.
+      light *= mix(exp(-max(dep - 1.0, 0.0) * uCaveK), 1.0, mine);
     }
   }
 
@@ -1621,9 +1626,9 @@ export class NightLights {
       // information. Shade the interior tiles where they are DRAWN (the ground
       // RT knows which tile it is painting and can read the depth map directly)
       // rather than trying to recover it per pixel here.
-      // 0.7: one tile in reads 50%, two 25%, three 12%, four 6% — you can
-      // see a few tiles into a cave and no further.
-      uCaveK: { type: "1f", value: 0.7 },
+      // 1.6, measured from the OPENING (which is now untouched): one tile in
+      // reads 20%, two 4%, three 0.8%. Nothing at the mouth, gone by two.
+      uCaveK: { type: "1f", value: 1.6 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
