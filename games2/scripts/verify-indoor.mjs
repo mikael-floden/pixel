@@ -1392,6 +1392,68 @@ try {
       (stillDrawn.length ? `, while ${stillDrawn.length} covered by open-air terrain still do` : ""));
   }
 
+  // 9. A TAP WALKS YOU AS CLOSE TO THE MARKER AS YOU CAN GET (maintainer
+  //    2026-08-08: "the user always walks as close as he/she can get to the
+  //    marker... the house I'm clicking on doesn't even have a valid route to
+  //    get on top of it, so it must have meant the underside").
+  //
+  //    From OUTSIDE, the house's roof slab is drawn, so a tap on the house
+  //    resolves to the roof — level 6. A level-6 cell's FLOOR draws 6*lh = 96px
+  //    BELOW the finger, so targeting a roof with no ramp left the player a
+  //    storey under the beacon. Both surfaces are now routed and the one that
+  //    can actually be reached wins, beacon included.
+  //
+  //    THE METRIC IS SCREEN Y, NOT THE CELL. With the finger over a cell's own
+  //    roof, the broken and the fixed walk end at the same (col+row) — the whole
+  //    error is the LEVEL arrived on, so comparing cells passes either way.
+  //    Measured: a first cut of this section did exactly that and reported
+  //    "0.0 cells off the finger" against code that still had the bug.
+  {
+    const HALF_CELL_Y = 24; // px — the bar for "landed where you tapped"
+    await stand(184.5, 122.5, false, true);
+    await page.evaluate(() => window.__ml.lookAt(180, 118));
+    await page.waitForTimeout(700);
+
+    const probe = await page.evaluate(() => {
+      const dy = 15, lh = 16; // ISO_DY / LEVEL_PX (shared)
+      const s = window.__ml.cellScreen(178, 117);
+      if (!s) return { err: "cellScreen null" };
+      const cellWorldY = s.y / s.zoom + s.camY;        // that cell's drawn top
+      const oy = cellWorldY - (178 + 117) * dy + s.level * lh;
+      const wx = s.x / s.zoom + s.camX;
+      const wyRoof = cellWorldY - (6 - s.level) * lh;  // a pixel of ROOF SLAB
+      const r = window.__ml.tapPoint(wx, wyRoof);
+      if (!r) return { err: "tapPoint returned null (void/solid)" };
+      // THE PROPERTY: you arrive AT THE BEACON. Where the walk ends and where
+      // the marker is drawn must be the same point, because both now come out
+      // of the one decision the routing made. (Asking instead that the walk end
+      // at the tapped PIXEL is asking for the impossible here: the finger is on
+      // a roof, and standing on the floor of that cell always draws ~96px lower
+      // — there is no walkable surface at that pixel at all.)
+      const endY = oy + ((r.target.x + r.target.y) / 32) * dy - (r.goalLevel ?? 0) * lh;
+      const m = window.__ml.marker();
+      return { picked: r.picked, target: r.target, goalLevel: r.goalLevel, endLevel: r.endLevel,
+               markerY: m ? m.y : null, gap: m ? m.y - endY : null,
+               fromFinger: endY - wyRoof, wouldBe: 6 * lh };
+    });
+    if (probe.err) fail(`section 9 could not tap the roof: ${probe.err}`);
+    if (probe.picked.lvl !== 6)
+      fail(`the tap on the house resolved to level ${probe.picked.lvl}, not the roof slab — ` +
+        `section 9 is not exercising the ambiguous-cell path at all`);
+    if (probe.goalLevel !== probe.endLevel)
+      fail(`the trip targets level ${probe.goalLevel} but ends on ${probe.endLevel} — ` +
+        `the chosen reading is one the walker cannot reach`);
+    if (probe.markerY === null) fail("no destination beacon was placed by the tap");
+    if (Math.abs(probe.gap) > HALF_CELL_Y)
+      fail(`the beacon sits ${probe.gap.toFixed(0)}px from where the walk ends — the marker and the ` +
+        `route disagree about which surface the tap meant (target ` +
+        `${(probe.target.x / 32).toFixed(1)},${(probe.target.y / 32).toFixed(1)}, goalLevel ${probe.goalLevel})`);
+    ok(`a tap on the unreachable roof resolves to the floor under it and the beacon comes along: the tap ` +
+      `picked level ${probe.picked.lvl}, the routing chose ${probe.goalLevel} and ARRIVES there, and the ` +
+      `beacon sits ${Math.abs(probe.gap).toFixed(0)}px from the walk's end (it used to target a roof ` +
+      `${probe.wouldBe}px above the floor the player actually reached)`);
+  }
+
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);
   console.log("\nverify-indoor: ALL OK");
 } finally {

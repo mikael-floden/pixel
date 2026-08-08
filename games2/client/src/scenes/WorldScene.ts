@@ -25,6 +25,7 @@ import {
   startTrip,
   stepAutopilot,
   bodyStandoff,
+  startBestTrip,
   AutopilotTrip,
   findIndoorSpace,
   roofAbove,
@@ -1798,6 +1799,21 @@ export class WorldScene extends Phaser.Scene {
         const row = Math.floor(y / CELL_WU);
         const deckL = this.terrain && this.world ? this.terrain.deck[row * this.world.width + col] : -1;
         return this.setMoveTarget(x, y, !!run, false, deckL >= 0 ? deckL : undefined);
+      },
+      // THE REAL TAP PATH, at a camera-world POINT — pick + setMoveTarget,
+      // exactly what pointerdown does. `tapTo` above takes an already-resolved
+      // world position and so cannot exercise the two-candidate routing.
+      tapPoint: (wx: number, wy: number, run = false) => {
+        const g = this.pickGround(wx, wy);
+        if (!g) return null;
+        this.setMoveTarget(g.x, g.y, !!run, false, g.lvl);
+        const t = this.trip;
+        return {
+          picked: { x: g.x, y: g.y, lvl: g.lvl },
+          target: t ? { x: t.target.x, y: t.target.y } : null,
+          goalLevel: t?.goalLevel ?? null,
+          endLevel: t?.endLevel ?? null,
+        };
       },
       target: () => this.trip?.target ?? null,
       path: () => this.trip?.path ?? [],
@@ -6338,8 +6354,30 @@ export class WorldScene extends Phaser.Scene {
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, fromElev, goalLevel);
+    // ONE TAP, TWO MEANINGS. A cell with a slab over it shows the deck and the
+    // ground beneath it at the SAME pixel, so offer both surfaces and let the
+    // ROUTING decide: startBestTrip drops a candidate whose route cannot finish
+    // on it (the house roof, six levels up with no ramp) and otherwise takes the
+    // shorter walk (a bridge you can get both under and over). The tapped
+    // surface goes first so it keeps ties.
+    const cell = this.terrain && this.world
+      ? Math.floor(y / CELL_WU) * this.world.width + Math.floor(x / CELL_WU)
+      : -1;
+    const other = cell >= 0 && this.terrain
+      ? (goalLevel !== undefined && Math.abs(this.terrain.deck[cell] - goalLevel) < 0.5
+          ? this.terrain.level[cell] // tapped the deck → the ground under it
+          : this.terrain.deck[cell]) // tapped the ground → the deck over it
+      : -1;
+    const trip = startBestTrip(
+      this.terrain, me.fx, me.fy, x, y, run, this.time.now, fromElev,
+      other >= 0 && (goalLevel === undefined || Math.abs(other - goalLevel) > 0.5)
+        ? [goalLevel, other]
+        : [goalLevel],
+    );
     if (!trip) return;
+    // The WINNER's level is what the beacon must sit on — the choice and the
+    // marker offset now come out of the same decision.
+    goalLevel = trip.goalLevel;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run
     // every retarget and oscillate run/walk forever.

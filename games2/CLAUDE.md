@@ -1063,21 +1063,38 @@ visible head/shoulders are ABOVE the surface).
   walls off exactly the preferred heading and asserts the emitted one is open
   and still progressing; six replays both directions of the walk plus a tap on
   her own spot through the real brain, and fails at 232° without the standoff.
-- **THE BEACON SITS WHERE YOU WILL ARRIVE, NOT WHERE YOU TAPPED.** A tap
-  resolves against WHAT IS DRAWN, so from outside the house (roof on) a tap
-  lands on the roof slab — level 6 — and that is the trip's `goalLevel`. There
-  are no stairs, so findPath falls back to its best-effort rim: the floor of
-  that very same cell. The walk was always right; the beacon was lifted
-  `goalLevel * lh` and hung 96px — about a character — over the player's head
-  (maintainer 2026-08-08: "the player walks to a spot that is under the
-  target-nav-symbol"). The CELL cannot answer this, because it has both a base
-  and a deck; only the search's LAYER can. So findPath's waypoints now carry
-  `lvl` (additive — but note `deepEqual` on a waypoint sees it), the trip
-  carries `endLevel` beside the unchanged `goalLevel`, and the beacon uses
-  `endLevel`. `goalLevel` stays the WISH on purpose: a stall replan must keep
-  re-aiming for the deck. Gate: `server/test/beacon.test.ts`, which also pins
-  the opposite bug — a REACHABLE deck (the 143,108 bridge) must still lift the
-  beacon onto it, or a target on a bridge would drop into the water below.
+- **ONE TAP, TWO MEANINGS — RESOLVED BY ROUTING BOTH** (`startBestTrip`).
+  A cell with a slab over it shows the deck AND the ground beneath it at the
+  same screen pixel, so a tap there is genuinely ambiguous. Choosing by what is
+  DRAWN on top is wrong whenever the top is out of reach: tapping the house from
+  the road resolves to the roof, six levels up with no ramp, so the walk fell
+  back to the floor and stopped a storey under the beacon. Both surfaces of the
+  tapped cell are now routed and scored — (1) **arriving beats giving up short**
+  (`endLevel` vs `goalLevel`; "the house doesn't even have a valid route to get
+  on top of it, so it must have meant the underside"), then (2) **the shorter
+  WALK wins** (`tripLength` through the waypoints, not a beeline — the detour to
+  a doorway is exactly what a beeline hides). Only a STRICT improvement
+  displaces the incumbent, so the drawn surface keeps ties and a single
+  candidate is byte-for-byte `startTrip`. The winner's `goalLevel` is what the
+  beacon is drawn at, so the choice and the marker offset come out of ONE
+  decision and cannot disagree.
+  DO NOT "fix" the symptom by moving the beacon to meet the walk — that offsets
+  the player's own input, and the maintainer rejected it (2026-08-08: "I click
+  where I click because I want the player to walk to that location").
+  Gates: `server/test/beacon.test.ts` (the unreachable roof, and a roof that
+  WINS on distance from the mountain shoulder — the case rule 1 alone cannot
+  decide) and section 9 of `verify-indoor.mjs`. Note what section 9 asserts:
+  **you arrive AT THE BEACON**, not at the tapped pixel — there is often no
+  walkable surface at a roof pixel at all, and an earlier cut that compared
+  (col+row) instead of screen Y reported "0.0 cells off the finger" against code
+  that still had the bug.
+- **`endLevel` IS WHAT MAKES THE ABOVE DECIDABLE.** findPath's waypoints carry
+  `lvl` (the LAYER the search actually stood on — additive, but note a
+  `deepEqual` on a waypoint sees it) and the trip carries `endLevel` beside
+  `goalLevel`. Without it, "the route reached the roof" and "the route gave up
+  and took the floor of that same cell" are indistinguishable: the cell has both
+  surfaces, so only the search's own layer can tell them apart. `goalLevel`
+  stays the WISH on purpose — a stall replan must keep re-aiming for the deck.
 - **THE OCCLUSION OUTLINE IS NOT A WALL-HACK.** It draws at 900_001.43, ABOVE
   the darkness overlay, so zero ambient cannot hide it — the only thing that
   can is refusing to draw it. Two symmetric gates in `syncCoverOutline`:

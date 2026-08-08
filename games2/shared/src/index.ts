@@ -1842,6 +1842,78 @@ export interface AutopilotTrip {
 /** Plan a trip from (fromX,fromY) to the tapped (toX,toY). Null → nowhere to
  * go (tap into a sealed area) — callers ignore the tap. Without a grid the
  * trip is a beeline (open worlds). */
+/** How far the walker actually travels along a planned route: their own
+ * position through every waypoint. Straight-line distance to the goal is the
+ * wrong measure — the whole question is which way round the geometry is
+ * shorter, and the detour to a doorway is exactly what a beeline hides. */
+export function tripLength(fromX: number, fromY: number, path: Array<{ x: number; y: number }>): number {
+  let d = 0;
+  let px = fromX;
+  let py = fromY;
+  for (const p of path) {
+    d += Math.hypot(p.x - px, p.y - py);
+    px = p.x;
+    py = p.y;
+  }
+  return d;
+}
+
+/** ONE TAP, TWO MEANINGS — resolved by ROUTING BOTH.
+ *
+ * A cell with a slab over it offers two surfaces at the same screen pixel: the
+ * deck (roof, bridge) and the ground beneath it. Clicking there is genuinely
+ * ambiguous, and picking by what is DRAWN on top gets it wrong whenever the top
+ * is out of reach — tap the house from the road and the roof wins, but that roof
+ * is six levels up with no ramp, so the walk falls back to the floor and stops a
+ * storey below the marker.
+ *
+ * Two rules, in order (maintainer 2026-08-08):
+ *   1. ARRIVING BEATS GIVING UP SHORT. "The house I'm clicking on doesn't even
+ *      have a valid route to get on top of it, so in this case it must have
+ *      meant the underside." A candidate whose route does not finish ON its own
+ *      surface was never what the tap meant.
+ *   2. AMONG THOSE THAT ARRIVE, THE SHORTER WALK WINS. "If it's closer to walk
+ *      under, the user probably meant that. If it's closer to walk on top, the
+ *      user meant that." Both are reachable on a bridge you can get under and
+ *      over, and then only distance can say which was intended.
+ *
+ * Candidates are tried in the caller's preference order and only a STRICT
+ * improvement displaces the incumbent, so the drawn surface keeps ties.
+ *
+ * The winner's `goalLevel` is the elevation the caller draws the beacon at, so
+ * the choice and the marker offset come out of one decision and cannot disagree
+ * the way they did when the surface was fixed before the routing ran. */
+export function startBestTrip(
+  grid: TerrainGrid | null,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  run: boolean,
+  nowMs: number,
+  fromElev: number | undefined,
+  candidates: Array<number | undefined>,
+): AutopilotTrip | null {
+  let best: AutopilotTrip | null = null;
+  let bestArrived = false;
+  let bestLen = Infinity;
+  for (const goalLevel of candidates) {
+    const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
+    if (!trip) continue;
+    const arrived =
+      goalLevel === undefined || trip.endLevel === undefined
+        ? true
+        : Math.abs(trip.endLevel - goalLevel) < 0.5;
+    const len = tripLength(fromX, fromY, trip.path);
+    if (best === null || (arrived && !bestArrived) || (arrived === bestArrived && len < bestLen - 1e-6)) {
+      best = trip;
+      bestArrived = arrived;
+      bestLen = len;
+    }
+  }
+  return best;
+}
+
 export function startTrip(
   grid: TerrainGrid | null,
   fromX: number,

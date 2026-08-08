@@ -1,25 +1,22 @@
-// THE DESTINATION BEACON MARKS WHERE YOU WILL ACTUALLY ARRIVE (maintainer
-// 2026-08-08: "I stand outside the house and click to walk to a location
-// inside the house. The player walks into the house, but not to the
-// target-nav-symbol. The player walks to a spot that is under the
-// target-nav-symbol").
+// ONE TAP, TWO MEANINGS — RESOLVED BY ROUTING BOTH (maintainer 2026-08-08:
+// "the user always walks as close as he/she can get to the marker... we resolve
+// it by path distance so we always try both and see which one is shorter").
 //
-// A tap resolves against WHAT IS DRAWN. From outside, the house's roof slab is
-// drawn, so a tap on the house resolves to the roof — level 6 — and that is the
-// `goalLevel` the trip carries. But there are no stairs, so the route falls
-// back to its best-effort rim: the floor of that very same cell. The walk was
-// therefore always correct; the BEACON was lifted to `goalLevel * lh` and hung
-// 96px — about a character — over the player's head.
-//
-// The cell cannot answer this on its own (it has both a base and a deck), so
-// findPath now reports the LAYER its route actually ended on, and the trip
-// carries it as `endLevel` beside the unchanged `goalLevel` wish.
+// A cell with a slab over it shows the deck and the ground beneath it at the
+// SAME screen pixel. Picking by what is DRAWN on top gets it wrong whenever the
+// top is out of reach: tapping the house from the road resolves to the roof,
+// six levels up with no ramp, so the walk fell back to the floor and stopped a
+// storey below the marker. Two rules, in order:
+//   1. Arriving beats giving up short — "the house I'm clicking on doesn't even
+//      have a valid route to get on top of it, so it must have meant the
+//      underside".
+//   2. Among candidates that arrive, the shorter WALK wins.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseWorld, buildTerrainGrid, startTrip, CELL_WU } from "@nangijala/shared";
+import { parseWorld, buildTerrainGrid, startTrip, startBestTrip, tripLength, CELL_WU } from "@nangijala/shared";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const world = parseWorld(
@@ -27,48 +24,70 @@ const world = parseWorld(
 )!;
 const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
 const at = (c: number, r: number) => r * grid.width + c;
+const wu = (n: number) => n * CELL_WU;
 
-test("a tap on a roof you cannot climb beacons on the floor you actually reach", () => {
+test("the route reports the LEVEL it really ended on, not the one that was asked for", () => {
   const i = at(178, 117);
   assert.equal(grid.level[i], 0, "the world moved — 178,117 is no longer the house floor");
   assert.equal(grid.deck[i], 6, "178,117 no longer carries the house's roof slab");
 
-  // The maintainer's own trip: standing outside, tapping the house.
-  const trip = startTrip(
-    grid, 181.3 * CELL_WU, 120.4 * CELL_WU, 178.5 * CELL_WU, 117.5 * CELL_WU,
-    false, 0, 0, /* goalLevel: the roof, because that is what is drawn */ 6,
-  );
-  assert.ok(trip, "no route into the house at all");
-  // The WALK was never wrong — it ends at the tapped spot, on the floor.
-  assert.ok(Math.hypot(trip!.target.x - 178.5 * CELL_WU, trip!.target.y - 117.5 * CELL_WU) < CELL_WU,
-    "the route no longer ends under the tapped point");
-  assert.equal(trip!.goalLevel, 6, "the tapped level must be carried as-is — a stall replan re-aims for it");
-  assert.equal(trip!.endLevel, 0,
-    "the trip claims to end on the roof it cannot reach — the beacon floats 96px over the player");
+  // Asking for the roof from the road: the search falls back to its best-effort
+  // rim, which is the floor of that same cell. Without endLevel the caller
+  // cannot tell that apart from success, and that is the whole bug.
+  const roof = startTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, 6);
+  assert.ok(roof, "no route toward the house at all");
+  assert.equal(roof!.goalLevel, 6, "the tapped level must be carried as-is — a stall replan re-aims for it");
+  assert.equal(roof!.endLevel, 0, "the trip claims to have reached a roof it never got onto");
 });
 
-test("a tap on a deck you CAN reach still beacons on the deck", () => {
-  // The bridge at 143,108 (deck level 4) — reachable from either bank. This is
-  // the case the lift exists for, and hiding it would be the opposite bug: "a
-  // target on top of a cliff stays visible".
-  assert.equal(grid.deck[at(143, 108)], 4, "the world moved — 143,108 is no longer the bridge deck");
-  for (const [c, r] of [[138, 108], [143, 112]] as Array<[number, number]>) {
-    const trip = startTrip(
-      grid, c * CELL_WU, r * CELL_WU, 143.5 * CELL_WU, 108.5 * CELL_WU,
-      false, 0, grid.level[at(c, r)], 4,
-    );
-    assert.ok(trip, `no route onto the bridge from ${c},${r}`);
-    assert.equal(trip!.endLevel, 4,
-      `the route from ${c},${r} climbs onto the bridge but the beacon would drop to the water below it`);
-  }
+test("a tap on a roof with no way up walks to the floor beneath it", () => {
+  // The maintainer's click, both readings offered, drawn surface first.
+  const trip = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [6, 0]);
+  assert.ok(trip, "no route at all");
+  assert.equal(trip!.goalLevel, 0,
+    "the tap still targets the unreachable roof — the walk stops a storey under the marker");
+  assert.equal(trip!.endLevel, 0, "the chosen route does not finish on the surface it chose");
+  // ...and it really does end under the tapped spot, not somewhere else.
+  assert.ok(Math.hypot(trip!.target.x - wu(178.5), trip!.target.y - wu(117.5)) < CELL_WU,
+    "the walk ends somewhere other than the tapped column");
+});
+
+test("a roof you CAN reach still wins when it is the shorter walk", () => {
+  // From the mountain shoulder at level 6 the roof is a few steps away, while
+  // the floor beneath it means walking back down and round to the door. This is
+  // the case rule 1 alone cannot decide — both candidates arrive.
+  const from: [number, number] = [173.5, 113.5];
+  assert.equal(grid.level[at(173, 113)], 6, "the mountain shoulder moved");
+
+  const up = startTrip(grid, wu(from[0]), wu(from[1]), wu(177.5), wu(117.5), false, 0, 6, 6);
+  const down = startTrip(grid, wu(from[0]), wu(from[1]), wu(177.5), wu(117.5), false, 0, 6, 0);
+  assert.ok(up && down, "one of the two readings has no route at all");
+  assert.equal(up!.endLevel, 6, "the roof is not actually reachable from the shoulder — fixture is wrong");
+  const upLen = tripLength(wu(from[0]), wu(from[1]), up!.path);
+  const downLen = tripLength(wu(from[0]), wu(from[1]), down!.path);
+  assert.ok(upLen < downLen,
+    `the fixture does not discriminate: roof ${upLen.toFixed(0)}wu vs floor ${downLen.toFixed(0)}wu`);
+
+  // Offer the GROUND first, so only distance can pick the roof.
+  const trip = startBestTrip(grid, wu(from[0]), wu(from[1]), wu(177.5), wu(117.5), false, 0, 6, [0, 6]);
+  assert.equal(trip!.goalLevel, 6,
+    `the shorter walk (roof, ${upLen.toFixed(0)}wu) lost to the longer one (floor, ${downLen.toFixed(0)}wu)`);
+});
+
+test("the drawn surface keeps ties, and a single candidate is unchanged", () => {
+  // Only a STRICT improvement displaces the incumbent, so offering the same
+  // level twice cannot flip the answer.
+  const a = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [0, 0]);
+  assert.equal(a!.goalLevel, 0, "a tie changed the answer");
+  // And with nothing to compare against, this is exactly startTrip.
+  const solo = startBestTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, [6]);
+  const plain = startTrip(grid, wu(184.5), wu(122.5), wu(178.5), wu(117.5), false, 0, 0, 6);
+  assert.equal(solo!.goalLevel, plain!.goalLevel, "a single candidate no longer behaves like startTrip");
+  assert.equal(solo!.path.length, plain!.path.length, "a single candidate re-planned differently");
 });
 
 test("every waypoint carries the level of the surface it stands on", () => {
-  // Not just the last one: the field is what makes the end honest, so it must
-  // be filled from the search's own layer rather than guessed afterwards.
-  const trip = startTrip(
-    grid, 138 * CELL_WU, 108 * CELL_WU, 143.5 * CELL_WU, 108.5 * CELL_WU, false, 0, 4, 4,
-  );
+  const trip = startTrip(grid, wu(138), wu(108), wu(143.5), wu(108.5), false, 0, 4, 4);
   assert.ok(trip && trip.path.length > 2, "no multi-waypoint route to check");
   const missing = trip!.path.filter((p) => (p as { lvl?: number }).lvl === undefined);
   assert.equal(missing.length, 0, `${missing.length} of ${trip!.path.length} waypoints carry no level`);
