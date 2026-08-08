@@ -7685,6 +7685,15 @@ export class WorldScene extends Phaser.Scene {
   private updateIndoor() {
     const now = this.time.now;
     const g = this.terrain;
+    // PUBLISH THE DEPTH MAP EVEN IF YOU NEVER GO INSIDE. It used to ride along
+    // with the room mask, which is only ever published on entering or leaving a
+    // room — so a player who merely WALKS PAST a cave got an empty green
+    // channel and no darkening at all, which is precisely the case the feature
+    // exists for. Once per world; setRoom early-returns on every later call.
+    if (!this.caveDepth && g && this.world) {
+      this.caveDepth = this.buildCaveDepth();
+      this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth);
+    }
     const av = this.avatars.get(this.room?.sessionId ?? "");
     if (!g || !av || av.surfLevel === undefined) {
       // No grid / no body yet: outdoors, and forget the cache so the next real

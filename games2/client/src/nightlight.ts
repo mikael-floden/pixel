@@ -289,11 +289,23 @@ float groundAt(vec2 cr) {
 // truncated, what the light TRAVELS THROUGH is not. The asymmetry is the point.
 // HOW DEEP INTO A ROOM THIS CELL SITS, in cells from the nearest opening.
 // Green of the room mask; 0 outdoors and at every entrance.
+// PER PIXEL, NOT PER TILE. The mask is NEAREST on purpose (its RED channel is
+// room membership and a LINEAR fetch would bleed ambient half a cell through
+// the walls), so the smoothing is done by hand here: four taps, bilinear
+// weights. Nearest sampling gave four flat bands marching into the cave, which
+// reads as steps of paint; the walker wants a gradient that thickens.
 float caveDepthAt(vec2 cr) {
   if (uRoomOn < 0.5) return 0.0;
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uRoom, uv).g * 255.0;
+  vec2 g = cr - 0.5;              // sample grid sits at texel centres
+  vec2 f = fract(g);
+  vec2 b = floor(g);
+  vec2 sz = vec2(uIsoB.y, uIsoB.z);
+  float d00 = texture2D(uRoom, (b + vec2(0.5, 0.5)) / sz).g;
+  float d10 = texture2D(uRoom, (b + vec2(1.5, 0.5)) / sz).g;
+  float d01 = texture2D(uRoom, (b + vec2(0.5, 1.5)) / sz).g;
+  float d11 = texture2D(uRoom, (b + vec2(1.5, 1.5)) / sz).g;
+  return mix(mix(d00, d10, f.x), mix(d01, d11, f.x), f.y) * 255.0;
 }
 
 float heightAt(vec2 cr) {
@@ -830,7 +842,12 @@ void main() {
     float dep = caveDepthAt(cell);
     if (dep > 0.0) {
       float mine = roomAt(cell) * uIndoorMix;
-      light *= mix(exp(-dep * uCaveK), 1.0, mine);
+      // +1: THE MOUTH ITSELF IS ALREADY DARK. Depth 0 is the first cell inside
+      // the opening, and leaving it at full light made the entrance a bright
+      // hole in the rock (maintainer 2026-08-08: "I'm talking about this being
+      // like a dark almost black entrance"). Biasing the depth by one cell
+      // starts the curve inside the doorway instead of at it.
+      light *= mix(exp(-(dep + 1.0) * uCaveK), 1.0, mine);
     }
   }
 
@@ -1549,7 +1566,7 @@ export class NightLights {
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
-      uCaveK: { type: "1f", value: 0.55 },
+      uCaveK: { type: "1f", value: 1.4 }, // mouth 25%, 1 tile 6%, 2 tiles 1.5%
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
