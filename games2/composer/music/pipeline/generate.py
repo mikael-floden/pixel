@@ -282,6 +282,78 @@ TRACKS: dict[str, dict] = {
             "loop. Instrumental."
         ),
     },
+    # ---- BATTLE LAYERS (maintainer 2026-08-06) --------------------------------
+    # "a battle-track for each music-track - designed to be played on top of the
+    # music (with the music volume lowered by maybe 75-85%) … if the player
+    # attacks another monster right away we just fade right back into the action
+    # (so now the battle-track doesn't have to be restarted)."
+    #
+    # THE ONE DECISION THAT MAKES THIS WORK: these are LAYERS, not tracks. A
+    # battle track is a finished piece and two finished pieces played together
+    # is mud, whatever the tempo. A layer is deliberately INCOMPLETE — it brings
+    # rhythm and drive and NO harmony of its own, so there is nothing to argue
+    # with the bed's chords underneath it. Concretely, every brief below bans
+    # chord progressions and melodies and asks for percussion plus a pulse on
+    # the TONIC AND FIFTH only, which are consonant against nearly every chord a
+    # piece in that key will play.
+    #
+    # THREE THINGS ARE MATCHED, all measured rather than guessed (master.py's
+    # detect_key + estimate_tempo already produce them for every bed):
+    #   1. KEY, exactly. Day is D major, night is A minor — from the measured
+    #      `musical.root/mode` of the real files.
+    #   2. TEMPO, as a SIMPLE MULTIPLE. Doubling reads as "the same music, but
+    #      urgent" and stays phase-locked to the bed's beat grid: day 76 -> 152,
+    #      night's true pulse 123 (the estimator reports 61.52, half of the raw
+    #      123.05) -> 123 itself, which is already fight tempo.
+    #   3. THE MIDRANGE IS LEFT OPEN. The bed's melody lives around 300 Hz-3 kHz;
+    #      a layer that fills it buries the tune it is supposed to be part of.
+    #      So the layers live LOW (drums, pulse) and HIGH (shakers, metal), and
+    #      say so in the brief.
+    #
+    # The rest — ducking the bed 75-85%, holding the layer looping at zero gain
+    # so re-engaging is a gain change and not a restart, fading back out over a
+    # few seconds — is engine work, not generation, and is NOT being wired: he
+    # asked to hear these in the wiki before committing to anything.
+    "battle_day": {
+        "out": "battle_day",
+        "seconds": 90,
+        "bpm": 152,
+        "prompt": (
+            "A driving PERCUSSION-AND-PULSE LAYER meant to be played ON TOP of an "
+            "existing calm daytime folk theme, not a piece on its own. In D MAJOR, "
+            "152 BPM, straight and steady. It BEGINS IMMEDIATELY at full energy. "
+            "Frame drums, low toms, tight hand percussion, shakers, tambourine and "
+            "claps carrying an urgent galloping rhythm, over a pulsing low D drone "
+            "and short rhythmic stabs that use ONLY the notes D and A. Sudden "
+            "danger in a sunlit valley — brave and heroic rather than dark, "
+            "adventurous, propulsive, exciting. NO melody, NO chord progression, no "
+            "sustained chords, nothing tuneful — the tune is already playing "
+            "underneath this. Keep the MIDDLE OF THE SPECTRUM OPEN and uncluttered: "
+            "energy belongs in the deep low end and the bright percussive top. "
+            "Consistent intensity all the way through, no build, no drop, no "
+            "ending, seamless loop. Instrumental."
+        ),
+    },
+    "battle_night": {
+        "out": "battle_night",
+        "seconds": 90,
+        "bpm": 123,
+        "prompt": (
+            "A driving PERCUSSION-AND-PULSE LAYER meant to be played ON TOP of an "
+            "existing slow mystical night theme, not a piece on its own. In A "
+            "MINOR, 123 BPM, straight and steady. It BEGINS IMMEDIATELY at full "
+            "energy. Taut skin drums, low toms, a deep heartbeat kick, metallic "
+            "rattles and shakers driving an urgent rhythm, over a pulsing bowed "
+            "double-bass ostinato and short rhythmic stabs that use ONLY the notes "
+            "A and E. Danger under moonlight — tense, dark and thrilling but noble "
+            "rather than horrifying, never harsh or screeching. NO melody, NO chord "
+            "progression, no sustained chords, nothing tuneful — the tune is "
+            "already playing underneath this. Keep the MIDDLE OF THE SPECTRUM OPEN "
+            "and uncluttered: energy belongs in the deep low end and the bright "
+            "percussive top. Consistent intensity all the way through, no build, no "
+            "drop, no ending, seamless loop. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
