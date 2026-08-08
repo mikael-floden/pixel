@@ -946,6 +946,10 @@ export class WorldScene extends Phaser.Scene {
    * bridge, an arch). Filled a whole space at a time by inHiddenRoom; cleared
    * when the world changes, which is the only thing that can invalidate it. */
   private roomCellMemo = new Map<number, number>();
+  /** cell -> depth from the nearest entrance, for every ROOM in the world.
+   * Built once per world (buildCaveDepth) and published to the light in the
+   * room mask's green channel. */
+  private caveDepth: Map<number, number> | null = null;
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -1173,6 +1177,7 @@ export class WorldScene extends Phaser.Scene {
       this.indoorMask = null;
       this.roomMask = null; // no fade to finish — this world is gone
       this.roomCellMemo.clear();
+      this.caveDepth = null;
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -7894,7 +7899,7 @@ export class WorldScene extends Phaser.Scene {
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
     // reach it (the torch through the doorway) while the sky cannot.
-    this.night?.setRoom(m.keys());
+    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()));
     return true;
   }
 
@@ -7913,7 +7918,7 @@ export class WorldScene extends Phaser.Scene {
     // HERE and not the moment the verdict flipped.
     if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
       this.roomMask = null;
-      this.night?.setRoom(null);
+      this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()));
     }
   }
 
@@ -7974,6 +7979,56 @@ export class WorldScene extends Phaser.Scene {
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
     return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCeil);
+  }
+
+  /** DEPTH FROM DAYLIGHT for every cell of every ROOM in the world: 0 at an
+   * entrance, +1 per cell further in. This is what "you cannot see deep into
+   * the cave" rides on (maintainer 2026-08-08: "darker and darker the further
+   * into tiles being indoor you can see... a thickening shadow that gets very
+   * dark, very fast").
+   *
+   * DEPTH, NOT DISTANCE FROM THE CAMERA. A long twisting cave goes black around
+   * its first corner while a shallow alcove stays readable, and neither needs
+   * tuning — the geometry says how deep it is. `findIndoorSpace` already hands
+   * back the room's `entrances`, so this is a 4-connected BFS from them across
+   * the room's own cells.
+   *
+   * Built ONCE per world: every roofed cell is visited at most twice (once to
+   * discover its space, once in that space's fill), and the whole of
+   * the_island2 is ~600 roofed cells. Bridges and arches are skipped — the
+   * indoor verdict decides what is a room, exactly as it does everywhere else,
+   * so a bridge does not acquire a shadow just for having a slab. */
+  private buildCaveDepth(): Map<number, number> {
+    const out = new Map<number, number>();
+    const g = this.terrain;
+    const w = this.world;
+    if (!g || !w) return out;
+    const seen = new Uint8Array(w.width * w.height);
+    for (let r = 0; r < w.height; r++)
+      for (let c = 0; c < w.width; c++) {
+        const i = r * w.width + c;
+        if (seen[i] || g.deck[i] < 0) continue;
+        const space = findIndoorSpace(g, c, r, g.level[i]);
+        if (!space) { seen[i] = 1; continue; }
+        for (const ci of space.roof) seen[ci] = 1;
+        if (!this.indoorVerdict(space, INDOOR_DEPTH)) continue;
+        // BFS from the openings. A sealed room (no entrance at all) gets the
+        // maximum everywhere — nothing can see into it, which is correct.
+        const q: number[] = [];
+        for (const e of space.entrances)
+          for (const n of [e - 1, e + 1, e - w.width, e + w.width])
+            if (space.roof.has(n) && !out.has(n)) { out.set(n, 0); q.push(n); }
+        if (!q.length) { for (const ci of space.roof) out.set(ci, 255); continue; }
+        for (let head = 0; head < q.length; head++) {
+          const cur = q[head];
+          const d = out.get(cur)!;
+          for (const n of [cur - 1, cur + 1, cur - w.width, cur + w.width])
+            if (space.roof.has(n) && !out.has(n)) { out.set(n, d + 1); q.push(n); }
+        }
+        // Anything the fill never reached is walled off from every opening.
+        for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
+      }
+    return out;
   }
 
   /** Is this point sealed inside a ROOM that is not the one I am standing in?

@@ -168,7 +168,9 @@ uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
-uniform sampler2D uRoom;  // per-cell: 1 where the cell is in MY room (see roomAt)
+uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
+                          // G: depth from the nearest opening (caveDepthAt).
+uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
@@ -285,6 +287,15 @@ float groundAt(vec2 cr) {
 // and a cut-away that let daylight in through its own missing roof would light
 // the room from above as you turned the dial. So: what the camera SEES is
 // truncated, what the light TRAVELS THROUGH is not. The asymmetry is the point.
+// HOW DEEP INTO A ROOM THIS CELL SITS, in cells from the nearest opening.
+// Green of the room mask; 0 outdoors and at every entrance.
+float caveDepthAt(vec2 cr) {
+  if (uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uRoom, uv).g * 255.0;
+}
+
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
@@ -802,6 +813,26 @@ void main() {
   }
 
   light *= ao;
+
+  // THE CAVE SWALLOWS THE LIGHT. Everything a room shows you from OUTSIDE dims
+  // with its depth from the opening — one exponential, so it is dark fast and
+  // never quite reaches black at the mouth itself (a monster standing in the
+  // entrance stays visible, which is the whole point of an entrance).
+  //
+  // It multiplies the FINAL light, AFTER the point lights, deliberately: no
+  // light source punches in (maintainer 2026-08-08: "I think it looks best if
+  // no light source can punch in"). Shine a torch at a cave mouth and you get
+  // the first cell or so, never the depths.
+  //
+  // MY OWN room is exempt, and it un-dims on exactly the indoor blend — so
+  // walking in fades the depths up instead of snapping them on.
+  if (uCaveK > 0.0) {
+    float dep = caveDepthAt(cell);
+    if (dep > 0.0) {
+      float mine = roomAt(cell) * uIndoorMix;
+      light *= mix(exp(-dep * uCaveK), 1.0, mine);
+    }
+  }
 
   // Self-emission floor (tiles/emission.json): a glowing tile's OWN pixels
   // never drop below colour*self — lava stays molten, crystals stay lit.
@@ -1398,6 +1429,8 @@ export class NightLights {
   /** Did buildShader actually bind uRoom on the CURRENT shader? Re-derived on
    * every rebuild (a resize builds a new shader object). Drives uRoomOn. */
   private roomBound = false;
+  /** The mask's GREEN channel (cave depth) is world-static — written once. */
+  private depthWritten = false;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
@@ -1516,6 +1549,7 @@ export class NightLights {
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
+      uCaveK: { type: "1f", value: 0.55 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
@@ -1736,15 +1770,19 @@ export class NightLights {
    * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
    * an A below 255 would scale the R the shader reads.
    */
-  setRoom(cells: Iterable<number> | null) {
+  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
     if (!t || !src) return;
     const next = new Set<number>(cells ?? []);
+    const needDepth = depth !== undefined && !this.depthWritten;
     // Nothing to do if the room did not actually change (the scene guards this
-    // too, but the mask is also rebuilt for the CUT, which does not move it).
-    if (next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
+    // too, but the mask is also rebuilt for the CUT, which does not move it) —
+    // unless the DEPTH channel has never been written, which happens on the
+    // first publish of a world and whenever that publish is `null` (outdoors,
+    // which is exactly when you are looking into someone else's cave).
+    if (!needDepth && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
     const ctx = t.getContext();
     const w = this.world.width;
     const h = this.world.height;
@@ -1755,6 +1793,13 @@ export class NightLights {
     const d = this.roomImg.data;
     for (const i of this.roomCells) d[i * 4] = 0;
     for (const i of next) if (i >= 0 && i < w * h) d[i * 4] = 255;
+    // GREEN = DEPTH FROM DAYLIGHT, in cells, 0 at an opening. Static for a
+    // world, so it is written once: the geometry of a cave does not move.
+    if (needDepth) {
+      for (const [i, dep] of depth!)
+        if (i >= 0 && i < w * h) d[i * 4 + 1] = Math.min(255, Math.max(0, dep));
+      this.depthWritten = true;
+    }
     ctx.putImageData(this.roomImg, 0, 0);
     this.roomCells = next;
     t.refresh();
@@ -1779,12 +1824,22 @@ export class NightLights {
     const ctx = (t as Phaser.Textures.CanvasTexture).getContext();
     const d = ctx.getImageData(0, 0, src.width, src.height).data;
     let on = 0;
-    for (let i = 0; i < d.length; i += 4) if (d[i] > 127) on++;
+    // ...and the DEPTH channel, which is the one that can silently be empty:
+    // it is written once per world, so "the effect does nothing" and "the
+    // channel was never filled" look identical on screen.
+    let deep = 0;
+    let maxDep = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i] > 127) on++;
+      if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
+    }
     return {
       exists: true,
       w: src.width,
       h: src.height,
       lit: on,
+      depthCells: deep,
+      depthMax: maxDep,
       cells: this.roomCells.size,
       indoor: this.indoor,
       bound: this.roomBound,

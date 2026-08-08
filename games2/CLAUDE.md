@@ -1172,6 +1172,25 @@ visible head/shoulders are ABOVE the surface).
   PASSED against code that still had the delay (the cave's population wanders,
   so an empty frame is a no-measurement, not a pass) — and separately requires that bodies covered by OPEN-AIR
   terrain still are — otherwise "switch the feature off" would pass.
+- **THE CAVE SWALLOWS THE LIGHT** (maintainer 2026-08-08: "darker and darker
+  the further into tiles being indoor you can see... a thickening shadow that
+  gets very dark, very fast"). Every room dims with **depth from its nearest
+  entrance** — DEPTH, not distance from the camera: a long twisting cave goes
+  black around its first corner while a shallow alcove stays readable, and
+  neither needs tuning because the geometry says how deep it is. `buildCaveDepth`
+  BFSes from `space.entrances` across each room's own cells, once per world
+  (~600 roofed cells on the_island2), skipping anything the indoor verdict does
+  not call a room so a bridge never acquires a shadow. It rides in the room
+  mask's free GREEN channel — same texture, same fetch — and the shader applies
+  ONE exponential, `exp(-depth * uCaveK)`.
+  It multiplies the FINAL light, after the point lights, on purpose: **no light
+  source punches in** ("I think it looks best if no light source can punch in").
+  A torch at the mouth buys you the first cell, never the depths. Your OWN room
+  is exempt and un-dims on `uIndoorMix`, so walking in fades the depths up
+  instead of snapping. 255 is the sentinel for "no opening reaches this cell".
+  `roomDebug()` reports `depthCells`/`depthMax`, because a channel written once
+  per world fails silently — "the effect does nothing" and "the channel is
+  empty" look identical on screen.
 - **A CAVE MOUTH IS NOT A WALL FACE.** `Ha` (uHeight.R) is max(terrain, deck),
   so every pixel under a roof slab classified as a wall FACE — and a face takes
   the face Lambert gate and the face shadow march, which painted the open cave
