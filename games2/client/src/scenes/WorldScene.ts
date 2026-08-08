@@ -429,6 +429,8 @@ const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
 // (body nearest the viewer), rising to the sides. Dip = BOW_FRAC × the shoulder
 // span, in px. Both the clip mask and the foam crest follow it.
 const BOW_FRAC = 0.14;
+/** Depth falloff for the cave shadow: mouth 25%, 1 tile in 6%, 2 tiles 1.5%. */
+const CAVE_FALLOFF = 1.4;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
@@ -8138,6 +8140,20 @@ export class WorldScene extends Phaser.Scene {
     this.lastGround = { x: NaN, y: NaN };
   }
 
+  /** Multiplicative grey for an interior floor tile, by its depth from the
+   * opening — white (no tint) everywhere else. `depth` is stored +1, so 1 is
+   * the cell at the mouth and 0 means "not a room" (see buildCaveDepth).
+   * Skipped while INDOORS: the room you are standing in is lit by its own
+   * ambient, and darkening it would undo the cut-away. */
+  private caveTint(idx: number, indoors: boolean): number {
+    if (indoors || !this.caveDepth) return 0xffffff;
+    const dep = this.caveDepth.get(idx) ?? 0;
+    if (dep <= 0) return 0xffffff;
+    const f = Math.max(0, Math.min(1, Math.exp(-dep * CAVE_FALLOFF)));
+    const c = Math.round(f * 255);
+    return (c << 16) | (c << 8) | c;
+  }
+
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
@@ -8242,7 +8258,13 @@ export class WorldScene extends Phaser.Scene {
             continue; // never the deck slab — that IS the roof
           }
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-          rt.batchDraw(topKey, bx, by - cell.l * lh);
+          // THE CAVE SWALLOWS THE LIGHT — and it has to happen HERE, not in the
+          // light shader. Outdoors the shader resolves every pixel of a cave to
+          // max(terrain, deck), which in the_island2 is the MOUNTAIN's own 24:
+          // floor and rock become the same number, so no per-pixel test can
+          // separate them (four tried). At THIS line there is no ambiguity —
+          // this is the cell's floor tile, being drawn as a floor.
+          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, this.caveTint(row * world.width + col, !!mask));
           // world@2 deck slab (roof / bridge span) at this cell, drawn right
           // after its base in (x+y) order: `thickness` face tiles below the top
           // with OPEN AIR beneath (so you see under it), then the top diamond.
