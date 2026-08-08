@@ -434,6 +434,8 @@ const BOW_FRAC = 0.14;
  * the walls of the room are buried behind the mountain's outer columns and
  * never reach the screen, so the floor has to carry the whole effect. */
 const CAVE_FALLOFF = 3.0;
+/** The draw-time floor tint is OFF: the shader covers the same pixels. */
+const CAVE_TINT_TILES = false;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
@@ -8198,6 +8200,11 @@ export class WorldScene extends Phaser.Scene {
     if (indoors || !this.caveDepth) return 0xffffff;
     const dep = this.caveDepth.get(idx) ?? 0;
     if (dep <= 0) return 0xffffff;
+    // DISABLED: the shader now darkens everything below the ceiling, floor
+    // included, so tinting the floor here as well multiplied the two together
+    // and the opening went pitch black. Kept as one switch rather than deleted
+    // — if the shader path ever has to go, this is the fallback that worked.
+    if (!CAVE_TINT_TILES) return 0xffffff;
     const f = Math.max(0, Math.min(1, Math.exp(-dep * CAVE_FALLOFF)));
     const c = Math.round(f * 255);
     return (c << 16) | (c << 8) | c;
