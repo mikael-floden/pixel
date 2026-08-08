@@ -354,6 +354,79 @@ TRACKS: dict[str, dict] = {
             "drop, no ending, seamless loop. Instrumental."
         ),
     },
+    # ---- THE SUMMIT (maintainer 2026-08-08: "3 music tracks that would sound
+    # good to play on top of the mountain … for now I just want the songs in the
+    # wiki"). Zones come later from the maps agent; nothing is routed.
+    #
+    # Three different ANSWERS to "what does a summit feel like", not three rolls
+    # of one idea — that is the mistake cave2 was. Standing on top of a mountain
+    # can be awe at the view, loneliness in thin air, or the reward for the
+    # climb, and which one this game wants is his call, not mine. So: one bed per
+    # reading, each committed to its own emotion rather than hedging between
+    # them.
+    #
+    # THE CAVE LESSON IS APPLIED THROUGHOUT. `cave` and `cave2` undershot their
+    # tempo badly (-4%, -17%) because the prompt said "very sparse and patient"
+    # and "silence and space are as important as the notes" — wording that drags
+    # whatever number follows it. cave3 and cave4 hit their asked tempo exactly
+    # once that came out. So every brief below names the MOTION it wants, and
+    # `summit_wind` in particular — the one that could easily become another
+    # slow drone — is told it has a steady quiet pulse.
+    "summit_vista": {
+        "out": "summit_vista",
+        "seconds": 110,
+        "bpm": 76,
+        "prompt": (
+            "A wide, breathtaking orchestral theme for standing on a mountain "
+            "summit and seeing an entire world laid out below — valleys, rivers, "
+            "distant sea, clouds beneath your feet. It OPENS IMMEDIATELY on warm "
+            "sustained strings already wide and moving. A long, patient, soaring "
+            "melody on solo horn answered by high strings, with harp and light "
+            "glimmering bells far underneath and a deep warm bass holding the "
+            "ground. Enormous DISTANCE and clean thin air — spacious, luminous, "
+            "full of AWE at how much of the world is visible from here. Majestic "
+            "and moving without ever becoming a fanfare or a battle. It keeps a "
+            "gentle, unhurried FORWARD DRIFT the whole way, like slow cloud "
+            "shadow crossing the land. Around 76 BPM, major key with a wistful "
+            "edge, rich but airy orchestration, seamless loop. Instrumental."
+        ),
+    },
+    "summit_wind": {
+        "out": "summit_wind",
+        "seconds": 110,
+        "bpm": 66,
+        "prompt": (
+            "A lonely, exposed theme for the bare top of a high mountain — cold "
+            "thin air, wind over stone, nobody for miles. It BEGINS IMMEDIATELY "
+            "on a soft low drone with a steady quiet pulse already moving under "
+            "it, so it breathes rather than hangs still. A single reedy low flute "
+            "or duduk carries a simple, aching, memorable melody; airy high "
+            "strings and a distant wordless female voice answer it; a slow "
+            "shimmer of struck metal far away, and a low heartbeat underneath. "
+            "SOLITUDE AND HEIGHT — beautiful and a little melancholy, humbling, "
+            "calm and safe rather than frightening, never harsh. Sparse but "
+            "always moving. Around 66 BPM, minor-tinged modal, very soft "
+            "dynamics, deep warm low end, seamless loop. Instrumental."
+        ),
+    },
+    "summit_triumph": {
+        "out": "summit_triumph",
+        "seconds": 105,
+        "bpm": 100,
+        "prompt": (
+            "A warm, noble folk-orchestral theme for having CLIMBED the mountain "
+            "and standing on top of it — the reward at the end of a long ascent. "
+            "It STARTS STRAIGHT INTO the tune with a walking pulse already going. "
+            "A proud, hummable melody on French horn and tin whistle, answered by "
+            "fiddle and warm strings, over strummed lute, plucked bass and light "
+            "frame-drum and tambourine keeping a steady confident stride. The "
+            "feeling is EARNED JOY and open sky — heroic and generous but human "
+            "and pastoral, a hard climb behind you rather than a battle won. "
+            "Rises to one glad open peak, then settles back and keeps walking so "
+            "it loops without ever sounding like an ending. Around 100 BPM, major "
+            "key, bright and unfatiguing, seamless loop. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
