@@ -926,6 +926,10 @@ export class WorldScene extends Phaser.Scene {
    * not indoorMask: the shader mask, the point-light filter, and the chrome
    * that draws above the darkness overlay. Dropped in easeIndoorMix. */
   private roomMask: Map<number, number> | null = null;
+  /** cell -> 1 when it is sealed inside a ROOM, 0 when it is not (open sky, a
+   * bridge, an arch). Filled a whole space at a time by inHiddenRoom; cleared
+   * when the world changes, which is the only thing that can invalidate it. */
+  private roomCellMemo = new Map<number, number>();
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -1143,6 +1147,7 @@ export class WorldScene extends Phaser.Scene {
       this.indoorSpace = null;
       this.indoorMask = null;
       this.roomMask = null; // no fade to finish — this world is gone
+      this.roomCellMemo.clear();
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -2348,6 +2353,30 @@ export class WorldScene extends Phaser.Scene {
           lit: mv.lit
             ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16), alpha: +mv.lit.alpha.toFixed(3) }
             : null,
+          // The WHITE OCCLUSION OUTLINE. `hidden` alone is not assertable — the
+          // image survives cropped to nothing — so report the SHARE of the art
+          // box it claims, exactly as myCover does, plus whether this body is
+          // sealed in a room the camera's owner is not in (the wall-hack gate).
+          hidden: mv.hidden ? mv.hidden.visible : null,
+          hiddenFrac: (() => {
+            if (!mv.hidden?.visible || mv.coverY === undefined) return 0;
+            const ab = this.artBounds(mv.sprite);
+            const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
+            const cut = Math.min(Math.max((mv.coverY - top) / mv.sprite.scaleY, ab.y0), ab.y1);
+            return +((ab.y1 - cut) / (ab.y1 - ab.y0)).toFixed(3);
+          })(),
+          // What the GEOMETRY says is covered, regardless of whether the
+          // outline is actually drawn. The two together are what makes the
+          // wall-hack gate non-vacuous: a body with coverFrac 1 and hiddenFrac
+          // 0 is one the old code WOULD have outlined through the rock.
+          coverFrac: (() => {
+            if (mv.coverY === undefined || !mv.sprite.visible) return 0;
+            const ab = this.artBounds(mv.sprite);
+            const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
+            const cut = Math.min(Math.max((mv.coverY - top) / mv.sprite.scaleY, ab.y0), ab.y1);
+            return +((ab.y1 - cut) / (ab.y1 - ab.y0)).toFixed(3);
+          })(),
+          inHiddenRoom: this.inHiddenRoom(mv.fx, mv.fy, mv.surfLevel ?? 0),
           // Animation state — a headless probe CAN catch "moving but frozen"
           // (screenshots can't distinguish a stuck walk from freeze-frame idle).
           anim: mv.sprite.anims.getName() || null,
@@ -3278,6 +3307,20 @@ export class WorldScene extends Phaser.Scene {
     // around a figure you are meant to barely see out there inverts the whole
     // feature. The outline exists to show you who is behind YOUR walls.
     if (this.indoorOutside(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
+    // ...AND THE MIRROR OF IT: standing OUTSIDE, nobody sealed in a room gets
+    // one either (maintainer 2026-08-08: "when standing next to the mountain
+    // wall with the cave inside it I can see the monsters white outline. They
+    // are indoors and I am outdoors, so this should not be possible" — the
+    // outline was a wall-hack into the cave). The guard above only ever fired
+    // while I was indoors; out here `roomMask` is null, so nothing stopped a
+    // body under a mountain from being outlined through solid rock.
+    //
+    // The line is drawn at "sealed under a ROOM's roof that is not mine". A
+    // body merely behind a cliff, a tower or a BRIDGE still gets its outline —
+    // that is the feature, and roomAt() answers false for those. Someone in
+    // the cave MOUTH is not sealed either: an entrance cell has no slab over
+    // it, so they outline normally, which is what the maintainer asked for.
+    if (this.inHiddenRoom(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
     // Frame-space y of the covering terrain's top line, exactly as syncLitCopy
     // computes it — the two MUST agree or the body shows a gap or a seam.
     const frameTop = sp.y - sp.displayHeight * sp.originY;
@@ -7744,6 +7787,49 @@ export class WorldScene extends Phaser.Scene {
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
     return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCeil);
+  }
+
+  /** Is this point sealed inside a ROOM that is not the one I am standing in?
+   *
+   * The occlusion outline draws above the darkness overlay, so without this a
+   * monster deep inside the mountain shows a crisp white silhouette through
+   * solid rock — a wall-hack, and the exact inverse of what the feature is for.
+   *
+   * "Room" is the SAME verdict the indoor state machine uses (roof size, wall
+   * ratio, depth), not merely "has a slab overhead": a bridge or an arch is not
+   * a room, and a body under one must keep its outline. The verdict is a
+   * property of the whole space, so ONE flood fill answers for every cell of
+   * it — the cave's 472 cells are memoised in a single pass, and thereafter
+   * this is a Map lookup per body per frame. Outdoor cells cost even less:
+   * `roofAbove` returns null before any fill starts.
+   *
+   * Fails OPEN (outline shown) when the geometry can't be resolved — a body on
+   * a surface whose level disagrees with the terrain, say. Showing an outline
+   * that could have been hidden is a cosmetic miss; hiding one that should show
+   * is the feature not working. */
+  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+    const g = this.terrain;
+    const w = this.world;
+    if (!g || !w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= w.width || row >= w.height) return false;
+    const idx = row * w.width + col;
+    let room = this.roomCellMemo.get(idx);
+    if (room === undefined) {
+      const space = findIndoorSpace(g, col, row, z);
+      this.indoorComputes++; // the QA counter counts EVERY fill, including these
+      room = space && this.indoorVerdict(space, INDOOR_DEPTH) ? 1 : 0;
+      // Memoise the WHOLE space, not just the queried cell: one fill then
+      // answers for every body in the cave for the rest of the session.
+      if (space) for (const c of space.roof) this.roomCellMemo.set(c, room);
+      else this.roomCellMemo.set(idx, 0);
+    }
+    if (!room) return false;
+    // It IS a room — mine or someone else's? `inMyRoom` reads the fade mask,
+    // which only exists while I am inside one (and lingers through the fade,
+    // deliberately: bodies in my room keep their outlines until it finishes).
+    return !(this.roomMask && this.inMyRoom(col, row));
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch

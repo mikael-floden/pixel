@@ -1284,6 +1284,69 @@ try {
       `with level-${rock} rock immediately down-screen`);
   }
 
+  // 8. NO WALL-HACK INTO A ROOM YOU ARE NOT IN (maintainer 2026-08-08: "when
+  //    standing next to the mountain wall with the cave inside it I can see the
+  //    monsters white outline. They are indoors and I am outdoors, so this
+  //    should not be possible... I'm only talking about the white 'wall-hack'
+  //    feature now").
+  //
+  //    The occlusion outline draws at 900_001.43, ABOVE the darkness overlay,
+  //    so zero ambient cannot hide it: the only thing that can is refusing to
+  //    draw it. Section 7 proved the outline's real job (a body behind YOUR
+  //    walls stays readable) — this proves its inverse, from outside.
+  //
+  //    Stand where the maintainer stood: OUT of the cave, right against the
+  //    mountain, with the populated interior behind the rock.
+  {
+    const outside = await page.evaluate(() => {
+      const m = window.__ml.me();
+      return { c: m.x / 32, r: m.y / 32 };
+    });
+    // Walk out of the cave down-screen until the verdict flips to outdoors.
+    let stood = false;
+    for (let step = 2; step <= 14 && !stood; step += 2) {
+      await goTo(outside.c + step, outside.r + step).catch(() => {});
+      stood = await settle(false, true, 20000);
+    }
+    if (!stood)
+      fail(`could not get back OUTSIDE the cave for the wall-hack check: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
+    await page.waitForTimeout(700);
+
+    const snap = await page.evaluate(() => ({
+      st: window.__ml.indoor(),
+      mons: window.__ml.monsterInfo().map((m) => ({
+        kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
+        sealed: !!m.inHiddenRoom, cover: m.coverFrac, ring: m.hiddenFrac, culled: !!m.culled,
+      })),
+    }));
+    if (snap.st.indoor)
+      fail("the player is still indoors — the wall-hack check needs to run from OUTSIDE");
+    const sealed = snap.mons.filter((m) => m.sealed);
+    // NON-VACUITY, and it is the whole point of coverFrac: a sealed body that
+    // the rock does not actually cover would not have been outlined by the old
+    // code either, so it proves nothing. Require bodies that really are buried.
+    const buried = sealed.filter((m) => m.cover > 0.5);
+    if (buried.length < 2)
+      fail(`only ${buried.length} monsters are both sealed in a room and covered by rock from here ` +
+        `(${sealed.length} sealed in total, ${snap.mons.length} nearby) — this assertion would be vacuous`);
+    const leaking = buried.filter((m) => m.ring > 0);
+    if (leaking.length)
+      fail(`${leaking.length} monsters INSIDE a room show their occlusion outline from outside: ` +
+        `${leaking.slice(0, 6).map((m) => `${m.kind}@${m.c},${m.r} (${Math.round(m.ring * 100)}% of the body outlined through the rock)`).join("; ")} — ` +
+        `the outline draws above the darkness overlay, so this is a wall-hack`);
+    // ...and the outline is not simply dead everywhere: bodies out here in the
+    // open that a cliff or a tower covers must STILL be outlined, or this would
+    // be "switch the feature off" wearing a disguise.
+    const openAir = snap.mons.filter((m) => !m.sealed && !m.culled && m.cover > 0.5);
+    const stillDrawn = openAir.filter((m) => m.ring > 0);
+    if (openAir.length && !stillDrawn.length)
+      fail(`${openAir.length} monsters out in the open are covered by terrain and NONE is outlined — ` +
+        `the room gate is hiding outlines it should not (that is the feature switched off, not fixed)`);
+    ok(`no wall-hack into the cave: all ${buried.length} monsters sealed under its roof (up to ` +
+      `${Math.round(Math.max(...buried.map((m) => m.cover)) * 100)}% buried) draw NO outline from outside` +
+      (stillDrawn.length ? `, while ${stillDrawn.length} covered by open-air terrain still do` : ""));
+  }
+
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);
   console.log("\nverify-indoor: ALL OK");
 } finally {

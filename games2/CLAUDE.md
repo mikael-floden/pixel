@@ -1063,6 +1063,27 @@ visible head/shoulders are ABOVE the surface).
   walls off exactly the preferred heading and asserts the emitted one is open
   and still progressing; six replays both directions of the walk plus a tap on
   her own spot through the real brain, and fails at 232° without the standoff.
+- **THE OCCLUSION OUTLINE IS NOT A WALL-HACK.** It draws at 900_001.43, ABOVE
+  the darkness overlay, so zero ambient cannot hide it — the only thing that
+  can is refusing to draw it. Two symmetric gates in `syncCoverOutline`:
+  indoors, nobody OUTSIDE my room gets one (`indoorOutside`); outdoors, nobody
+  sealed INSIDE a room does either (`inHiddenRoom`) — without the second, a
+  monster deep in the mountain showed a crisp white silhouette through solid
+  rock (maintainer 2026-08-08: "they are indoors and I am outdoors, so this
+  should not be possible"). "Room" is the same verdict the indoor state machine
+  uses, not merely "has a slab overhead", so a body behind a cliff, a tower or
+  a BRIDGE keeps its outline — that IS the feature — and someone in the cave
+  MOUTH is not sealed (no slab over an entrance), so they outline normally.
+  One flood fill answers for a whole space: `roomCellMemo` is filled from
+  `space.roof` in a single pass (the cave's 472 cells at once) and is a Map
+  lookup per body per frame thereafter; it clears on world change, the only
+  thing that can invalidate it. Fails OPEN — an outline shown that could have
+  been hidden is cosmetic, one hidden that should show is the feature broken.
+  Gate: section 8 of `verify-indoor.mjs`, which is kept non-vacuous by
+  `coverFrac` (what the GEOMETRY covers, independent of whether the ring is
+  drawn): it requires ≥2 monsters both sealed and >50% buried before asserting
+  none is outlined, and separately requires that bodies covered by OPEN-AIR
+  terrain still are — otherwise "switch the feature off" would pass.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells
