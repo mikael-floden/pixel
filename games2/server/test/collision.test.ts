@@ -470,8 +470,10 @@ test("findPath routes around a solid prop wall instead of into it", () => {
   for (const p of path) {
     assert.equal(isBlockedAtWorld(grid, p.x, p.y), false, "waypoint on a prop cell");
   }
-  // …and end exactly at the tapped point.
-  assert.deepEqual(path[path.length - 1], { x: c(6), y: c(1) });
+  // …and end exactly at the tapped point, on the surface the route reaches
+  // there (waypoints carry `lvl` so the destination beacon can sit on the
+  // surface the walk really ends on — see beacon.test.ts; this world is flat).
+  assert.deepEqual(path[path.length - 1], { x: c(6), y: c(1), lvl: 0 });
 });
 
 test("findPath jumps a 2-level ledge when there is no way around", () => {

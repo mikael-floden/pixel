@@ -1063,6 +1063,21 @@ visible head/shoulders are ABOVE the surface).
   walls off exactly the preferred heading and asserts the emitted one is open
   and still progressing; six replays both directions of the walk plus a tap on
   her own spot through the real brain, and fails at 232° without the standoff.
+- **THE BEACON SITS WHERE YOU WILL ARRIVE, NOT WHERE YOU TAPPED.** A tap
+  resolves against WHAT IS DRAWN, so from outside the house (roof on) a tap
+  lands on the roof slab — level 6 — and that is the trip's `goalLevel`. There
+  are no stairs, so findPath falls back to its best-effort rim: the floor of
+  that very same cell. The walk was always right; the beacon was lifted
+  `goalLevel * lh` and hung 96px — about a character — over the player's head
+  (maintainer 2026-08-08: "the player walks to a spot that is under the
+  target-nav-symbol"). The CELL cannot answer this, because it has both a base
+  and a deck; only the search's LAYER can. So findPath's waypoints now carry
+  `lvl` (additive — but note `deepEqual` on a waypoint sees it), the trip
+  carries `endLevel` beside the unchanged `goalLevel`, and the beacon uses
+  `endLevel`. `goalLevel` stays the WISH on purpose: a stall replan must keep
+  re-aiming for the deck. Gate: `server/test/beacon.test.ts`, which also pins
+  the opposite bug — a REACHABLE deck (the 143,108 bridge) must still lift the
+  beacon onto it, or a target on a bridge would drop into the water below.
 - **THE OCCLUSION OUTLINE IS NOT A WALL-HACK.** It draws at 900_001.43, ABOVE
   the darkness overlay, so zero ambient cannot hide it — the only thing that
   can is refusing to draw it. Two symmetric gates in `syncCoverOutline`:

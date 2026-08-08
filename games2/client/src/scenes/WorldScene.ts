@@ -6303,7 +6303,10 @@ export class WorldScene extends Phaser.Scene {
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
       // deck level (projectFlat returns the lower BASE level).
-      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
+      // The level the route really ENDS on, never the tapped one: tapping a
+      // roof you cannot climb routes you to the floor beneath it, and lifting
+      // the beacon to the roof leaves it hanging a storey over your head.
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.endLevel ?? this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
     }
     this.dropHold();
   }
@@ -6358,7 +6361,7 @@ export class WorldScene extends Phaser.Scene {
     const p = this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = p.y - Math.max(p.lvl, trip.endLevel ?? goalLevel ?? 0) * MAP_GEOMETRY.lh;
     // Hold replans never touch the beacon: while the finger is down the
     // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
     // rebuilding the container + tween per replan also made the pulse

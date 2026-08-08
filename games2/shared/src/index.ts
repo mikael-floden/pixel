@@ -1447,7 +1447,13 @@ export function findPath(
   toX: number,
   toY: number,
   opts?: { canSwim?: boolean; maxNodes?: number; fromElev?: number; goalLevel?: number },
-): { x: number; y: number }[] | null {
+  // Waypoints carry the LEVEL of the surface the route stands on there. The
+  // last one's is the only honest answer to "where does this trip actually
+  // END": a goal you cannot reach (a roof with no stairs) resolves to the
+  // best-effort rim, which is typically the SAME CELL one layer down — so the
+  // cell alone cannot tell you, and `goalLevel` is the tap's WISH, not the
+  // outcome. Additive: every existing caller reads {x,y} and is unaffected.
+): { x: number; y: number; lvl?: number }[] | null {
   const W = grid.width;
   const H = grid.height;
   // The mover is CLAMPED to the SPAWN_MARGIN band at the world border
@@ -1472,7 +1478,7 @@ export function findPath(
       opts?.fromElev === undefined ||
       grid.deck[gi] < 0 ||
       Math.abs(opts.fromElev - opts.goalLevel) < 0.5;
-    if (sameLayer) return [clearanceAdjust(grid, toX, toY)];
+    if (sameLayer) return [{ ...clearanceAdjust(grid, toX, toY), lvl: opts?.fromElev ?? grid.level[gi] }];
   }
   const canSwim = opts?.canSwim ?? true;
   const maxNodes = opts?.maxNodes ?? 4000;
@@ -1631,7 +1637,7 @@ export function findPath(
       r1 = bestCell.r;
       toX = cx(c1);
       toY = cy(r1);
-      if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+      if (c0 === c1 && r0 === r1) return [{ ...clearanceAdjust(grid, toX, toY), lvl: opts?.fromElev ?? grid.level[r1 * W + c1] }];
     } else {
       return null;
     }
@@ -1731,16 +1737,23 @@ export function findPath(
   // prop line has no interior nudged points, and the 8-way-quantized follower
   // drifted into the prop margin mid-leg. Per-cell waypoints keep the route
   // tracked tightly everywhere.
-  const pts: { x: number; y: number }[] = [];
+  const pts: { x: number; y: number; lvl?: number }[] = [];
   for (const n of cells) {
     const c = n % W;
     const r = (n - c) / W;
     pts.push(nudged(c, r));
   }
+  // Each waypoint's surface level, from the LAYER the search actually used —
+  // `cells` is cell-only, so walk the sid chain again for the layers.
+  const sids: number[] = [];
+  for (let n: number | undefined = dest; n !== undefined && n !== startSid; n = cameFrom.get(n)) sids.push(n);
+  sids.reverse();
+  for (let i = 0; i < pts.length && i < sids.length; i++)
+    pts[i].lvl = elevOf(sidCell(sids[i]), sidLayer(sids[i]));
   // The last waypoint is the exact tapped point pushed out of any solid's
   // collision margin — a spot the body can genuinely stand on. Best-effort
   // paths end at their rim cell's centre instead.
-  if (found) pts[pts.length - 1] = clearanceAdjust(grid, toX, toY);
+  if (found) pts[pts.length - 1] = { ...clearanceAdjust(grid, toX, toY), lvl: elevOf(sidCell(dest), sidLayer(dest)) };
   return pts;
 }
 
@@ -1801,6 +1814,15 @@ export interface AutopilotTrip {
   target: { x: number; y: number; run: boolean };
   path: { x: number; y: number }[];
   goalLevel?: number; // world@2: the surface LEVEL to arrive on (deck vs base); carried so a stall replan keeps routing onto the deck
+  /** The level the route REALLY ends on, which is not `goalLevel` whenever the
+   * tapped surface can't be reached — tap a roof with no stairs and the search
+   * falls back to the best-effort rim, usually the floor of the very same cell.
+   * `goalLevel` stays the wish (a stall replan must keep aiming for the deck);
+   * this is the outcome, and it is what the destination beacon must sit on, or
+   * the marker floats a storey above the spot the player actually walks to
+   * (maintainer 2026-08-08: "the player walks to a spot that is under the
+   * target-nav-symbol"). */
+  endLevel?: number;
   repathed: boolean; // one re-route per trip when progress stalls
   progress: { d: number; t: number }; // best waypoint distance so far + when
   lastPos: { x: number; y: number } | null; // last step's position (segment sweep)
@@ -1856,6 +1878,7 @@ export function startTrip(
     target: { x: end.x, y: end.y, run },
     path,
     goalLevel,
+    endLevel: end.lvl ?? goalLevel,
     repathed: false,
     progress: { d: Infinity, t: nowMs },
     lastPos: null,
