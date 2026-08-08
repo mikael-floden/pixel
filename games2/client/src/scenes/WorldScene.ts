@@ -8068,13 +8068,29 @@ export class WorldScene extends Phaser.Scene {
         }
         // Anything the fill never reached is walled off from every opening.
         for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
-        // NO FRINGE. The wall ring was added so a cave's inner walls would
-        // darken — harmless there, because a mountain is thick and its fringe
-        // is buried behind the outer columns. A HOUSE's fringe IS its outer
-        // wall, one cell thick, so including it painted every house's sides
-        // black (maintainer 2026-08-08: "the side on all houses are now all
-        // black!"). Only the room's own cells darken; a cave's inner walls are
-        // hidden behind the mountain anyway, so nothing is lost.
+        // THE WALL RING, BUT ONLY WHERE IT IS ROCK RATHER THAN A HOUSE WALL.
+        // What you actually see darken through a cave mouth is this ring, not
+        // the floor — drop it entirely and the effect vanishes. But a HOUSE's
+        // ring IS its outer wall, one cell thick and fully visible, so
+        // including it blindly painted every house's sides black.
+        //
+        // The two are told apart by how far the rock rises ABOVE the room's
+        // ceiling: a cave sits under a mountain that towers over it (terrain
+        // 24 against an 8-level ceiling), while a house's wall stops at its own
+        // roof (6 against 6). Two levels of headroom is the bar.
+        for (const fi of space.fringe) {
+          if (out.has(fi)) continue;
+          let ub = -1;
+          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
+            if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
+          if (ub < 0 || g.level[fi] <= ub + 2) continue; // a house wall, not rock
+          let best = Infinity;
+          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
+            const d = space.roof.has(n) ? out.get(n) : undefined;
+            if (d !== undefined && d < best) best = d;
+          }
+          if (best < Infinity) { out.set(fi, best); this.caveUnder.set(fi, ub); }
+        }
       }
     return out;
   }
