@@ -131,3 +131,50 @@ test("the dodge goes around a body on the side that is WALKABLE, not merely room
   const noneOpen = monsterDodge(0, 0, east[0], east[1], bodies, undefined, undefined, () => false);
   assert.equal(`${noneOpen!.ax},${noneOpen!.ay}`, refused, "a fully-blocked world changed the dodge");
 });
+
+// THE DODGE IS A MANOEUVRE, NOT A PER-FRAME OPINION (maintainer 2026-08-08:
+// "the player changes direction and runs back-and-forth-back-and-forth until
+// the player finally walks around the NPC").
+//
+// The weave came from engaging and releasing on the SAME test: step aside, the
+// body stops being "in front" by a hair, the dodge drops, the raw heading
+// points back at it, the dodge re-engages — and the side was re-scored from
+// scratch each time, with only a 4wu bias toward the committed one, far less
+// than `clearance` swings by as the walker moves. Measured on the real client
+// walking past an NPC: 7 cross-track reversals before, 1 after (one is the
+// minimum — out and back IS one reversal).
+test("a dodge holds its side until the body is passed, instead of re-deciding every frame", () => {
+  const east: [number, number] = [1, 0];
+  const w = screenToWorldVector(east[0], east[1]);
+  const wl = Math.hypot(w.x, w.y);
+  const at = (d: number) => ({ id: "npc:1", x: (w.x / wl) * d, y: (w.y / wl) * d, r: 9 });
+
+  const first = monsterDodge(0, 0, east[0], east[1], [at(40)]);
+  assert.ok(first, "no dodge fired at all");
+  const side = first!.state.side;
+
+  // THE HOLD. Re-run with the state fed back and the body pushed off-axis —
+  // the very sidestep the dodge just produced. The old code let go here (the
+  // dot test fails at 0.35) and the walker turned back into it.
+  const off = 26; // wu perpendicular — about one sidestep
+  const perpX = -w.y / wl, perpY = w.x / wl;
+  const asideBody = { id: "npc:1", x: (w.x / wl) * 34 + perpX * off, y: (w.y / wl) * 34 + perpY * off, r: 9 };
+  const held = monsterDodge(0, 0, east[0], east[1], [asideBody], first!.state);
+  assert.ok(held, "the dodge let go as soon as the walker had stepped aside — that is the weave");
+  assert.equal(held!.state.side, side, "the dodge switched sides mid-pass");
+
+  // ...and WITHOUT the committed state, that same geometry is correctly free:
+  // this proves the hold is hysteresis, not a permanently wider trigger.
+  assert.equal(monsterDodge(0, 0, east[0], east[1], [asideBody]), null,
+    "a body that far off-axis should not START a dodge — the trigger got wider, not stickier");
+
+  // PASSED: once it is genuinely behind, the commitment ends.
+  const behind = { id: "npc:1", x: -(w.x / wl) * 30, y: -(w.y / wl) * 30, r: 9 };
+  assert.equal(monsterDodge(0, 0, east[0], east[1], [behind], held!.state), null,
+    "the dodge never releases — the walker would steer around a body it has already passed");
+
+  // The 45-vs-90 escalation latches too: falling back mid-pass is a second weave.
+  const wide = { ...first!.state, wide: true };
+  const stillWide = monsterDodge(0, 0, east[0], east[1], [at(40)], wide);
+  assert.ok(stillWide?.state.wide, "the full detour was abandoned mid-pass");
+});

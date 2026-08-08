@@ -989,6 +989,29 @@ visible head/shoulders are ABOVE the surface).
   predator — a monster whose hunt just ended is `returning` and its scan is
   suppressed by design, so reusing one times the next step out for an
   unrelated reason.
+- **THE BODY-DODGE IS A MANOEUVRE, NOT A PER-FRAME OPINION** (`monsterDodge`).
+  NPCs and monsters have faked client-side collision: the INPUT slips around
+  their personal space. Two rules keep it smooth, and both were learned from
+  the same report (maintainer 2026-08-08: "the player changes direction and
+  runs back-and-forth-back-and-forth until the player finally walks around the
+  NPC").
+  - **Engage and release on DIFFERENT thresholds.** It used to be one test for
+    both: step aside, the body stops reading as "in front" by a hair, the dodge
+    drops, the raw heading points back at it, the dodge re-engages. Engage at
+    `dot >= 0.35` inside the personal corridor; HOLD the committed blocker
+    until `dot < 0.0` (truly beside/behind) with a 1.35x wider corridor.
+    Widening only the HOLD is what makes it hysteresis rather than a bigger
+    trigger — nothing new starts a dodge, an existing one just finishes.
+  - **The side is chosen ONCE and held.** Geometry decides the first frame;
+    after that only walkability may overrule it. The old code re-scored both
+    sides every frame with a +4wu bias toward the committed one, far less than
+    `clearance` swings by as the walker moves, so the winner kept flipping. The
+    45°-vs-90° escalation latches the same way and one way only.
+  Measured walking past an NPC on the real client: **7 cross-track reversals
+  before, 1 after** — and 1 is the floor, since going around something IS one
+  reversal. Gate: the fourth case in `server/test/wallhug.test.ts`, which also
+  pins that the same off-axis geometry does NOT start a fresh dodge, so the
+  hold can never be mistaken for a wider trigger.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells

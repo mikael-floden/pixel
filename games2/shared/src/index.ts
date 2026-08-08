@@ -2112,6 +2112,10 @@ const DODGE_RING: Array<[number, number]> = [
 export interface MonsterDodgeState {
   side: number; // committed rotation sign (+1 / -1)
   blocker: string; // monster id the commitment applies to
+  /** Was the 90° detour taken (rather than the 45° slip)? Held for the whole
+   * manoeuvre: re-deciding it per frame makes the walker visibly snap between
+   * two headings while passing one body. */
+  wide?: boolean;
 }
 
 export function monsterDodge(
@@ -2146,14 +2150,33 @@ export function monsterDodge(
   // in front (dot), and the straight line would pass inside its personal space.
   let hit: { id: string; x: number; y: number; r?: number } | null = null;
   let hitD = Infinity;
+  // ENGAGE AND RELEASE ON DIFFERENT THRESHOLDS. This used to be one test for
+  // both, and that is what made the walker weave: it sidesteps, the body stops
+  // being "in front" by a hair, the dodge drops, the raw heading points back at
+  // the body, the dodge re-engages... the maintainer, 2026-08-08: "the player
+  // changes direction and runs back-and-forth-back-and-forth until the player
+  // finally walks around the NPC". A dodge is a MANOEUVRE, not a per-frame
+  // opinion — once begun it holds until the body is genuinely passed.
+  //   • engage: clearly ahead (dot >= 0.35) and the line passes inside the
+  //     personal space;
+  //   • hold (this is the blocker we already committed to): all the way until
+  //     it is truly beside/behind (dot < 0.0), with a 1.35x wider corridor so
+  //     the very sidestep we just made does not read as "misses".
+  // Widening only the HOLD is what makes this hysteresis rather than a bigger
+  // trigger: nothing new starts a dodge, an existing one just finishes.
+  const committed = state ? state.blocker : "";
   for (const m of monsters) {
     const p = personal(m);
+    const held = m.id === committed;
     const tx = m.x - x;
     const ty = m.y - y;
     const d = Math.hypot(tx, ty);
     if (d < 1e-6 || d > Math.max(MONSTER_DODGE_LOOKAHEAD, p + 20)) continue;
-    if ((tx * ux + ty * uy) / d < 0.35) continue; // beside/behind — free
-    if (Math.abs(tx * uy - ty * ux) > p) continue; // misses
+    if ((tx * ux + ty * uy) / d < (held ? 0.0 : 0.35)) continue; // beside/behind — free
+    if (Math.abs(tx * uy - ty * ux) > (held ? p * 1.35 : p)) continue; // misses
+    // The held blocker wins ties AND near-ties: switching mid-pass to a body
+    // that is marginally closer restarts the side choice and weaves again.
+    if (held) { hitD = -1; hit = m; break; }
     if (d < hitD) {
       hitD = d;
       hit = m;
@@ -2170,9 +2193,15 @@ export function monsterDodge(
     const vl = Math.hypot(v.x, v.y) || 1;
     return Math.hypot(hit!.x - (x + (v.x / vl) * PROBE), hit!.y - (y + (v.y / vl) * PROBE));
   };
-  const stick = state && state.blocker === hit.id ? state.side : 0;
-  const geo = (s: number) => clearance(s) + (stick === s ? 4 : 0);
-  let side = geo(1) >= geo(-1) ? 1 : -1;
+  // THE SIDE IS CHOSEN ONCE, then held for the whole pass. The old code
+  // re-scored both sides every frame with only a +4wu bias toward the
+  // committed one — far too weak, because `clearance` swings by much more than
+  // that as the body moves, so the winner flipped repeatedly and the walker
+  // wove across the obstacle's face. Geometry decides the FIRST frame; after
+  // that only walkability may overrule it (below), and only if the committed
+  // side has actually become unwalkable.
+  const held = state && state.blocker === hit.id;
+  let side = held ? state!.side : clearance(1) >= clearance(-1) ? 1 : -1;
   // WALKABILITY OUTRANKS GEOMETRY. The clearance test above only asks which
   // way gets further from the BODY — it has no idea what is underfoot, so a
   // villager standing at the foot of a house wall could send the walker into
@@ -2192,9 +2221,15 @@ export function monsterDodge(
     const okB = at(-side);
     if (!okA && okB) side = -side;
   }
-  const rot = clearance(side) < hitP ? 2 * side : side;
+  // The 45°-vs-90° choice is held too, and it LATCHES ONE WAY: once the pass
+  // has needed the full detour it keeps it until the obstacle is behind us.
+  // Letting it fall back mid-pass is a second, smaller weave on top of the
+  // side flip — the walker straightens up, re-enters the personal space, and
+  // escalates again.
+  const wide = (held && state!.wide) || clearance(side) < hitP;
+  const rot = wide ? 2 * side : side;
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
-  return { ax: nax, ay: nay, state: { side, blocker: hit.id } };
+  return { ax: nax, ay: nay, state: { side, blocker: hit.id, wide } };
 }
 
 export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRuntime[] {
