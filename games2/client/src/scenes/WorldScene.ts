@@ -8052,12 +8052,7 @@ export class WorldScene extends Phaser.Scene {
           const ub = g.deckBot[ci];
           if (ub >= 0) this.caveUnder.set(ci, ub);
         }
-        for (const fi of space.fringe) {
-          let ub = -1;
-          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width])
-            if (space.roof.has(n) && g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
-          if (ub >= 0) this.caveUnder.set(fi, ub);
-        }
+
         // BFS from the openings. A sealed room (no entrance at all) gets the
         // maximum everywhere — nothing can see into it, which is correct.
         const q: number[] = [];
@@ -8073,22 +8068,13 @@ export class WorldScene extends Phaser.Scene {
         }
         // Anything the fill never reached is walled off from every opening.
         for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
-        // THE WALLS YOU SEE THROUGH THE OPENING BELONG TO THE CAVE. Without
-        // them only the floor darkens and the entrance still reads bright
-        // (maintainer 2026-08-08: "the walls we can see inside must be part of
-        // the darkening"). A room's fringe is ONE cell thick and sits inside
-        // the mountain, so tinting it never reaches the mountain's outer face —
-        // which is a different cell entirely, and the reason four attempts in
-        // the light shader could not tell those two apart.
-        for (const fi of space.fringe) {
-          if (out.has(fi)) continue;
-          let best = Infinity;
-          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
-            const d = space.roof.has(n) ? out.get(n) : undefined;
-            if (d !== undefined && d < best) best = d;
-          }
-          if (best < Infinity) out.set(fi, best);
-        }
+        // NO FRINGE. The wall ring was added so a cave's inner walls would
+        // darken — harmless there, because a mountain is thick and its fringe
+        // is buried behind the outer columns. A HOUSE's fringe IS its outer
+        // wall, one cell thick, so including it painted every house's sides
+        // black (maintainer 2026-08-08: "the side on all houses are now all
+        // black!"). Only the room's own cells darken; a cave's inner walls are
+        // hidden behind the mountain anyway, so nothing is lost.
       }
     return out;
   }

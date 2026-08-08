@@ -1626,9 +1626,10 @@ export class NightLights {
       // information. Shade the interior tiles where they are DRAWN (the ground
       // RT knows which tile it is painting and can read the depth map directly)
       // rather than trying to recover it per pixel here.
-      // 2.4, measured from the OPENING (which stays untouched): one tile in
-      // reads 9%, two 0.8%, three under 0.1%. Nothing at the mouth, black by two.
-      uCaveK: { type: "1f", value: 2.4 },
+      // 3.6, measured from the OPENING (which stays untouched): one tile in
+      // reads 3%, two 0.07%, i.e. black. Nothing at the mouth, gone immediately
+      // behind it.
+      uCaveK: { type: "1f", value: 3.6 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
