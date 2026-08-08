@@ -225,9 +225,12 @@ self-intersections build-asserted away), may overlap, and carry the INTENDED
 elevation range so caves, bridge decks and the ground beneath them are
 unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
-TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
+TYPE so the roster stays BALANCED (world budget = land/205, split evenly across
 the types living there, then each type's total spread across its own zones by
-area, capped by ROOM) — the_island2 ships 141 monsters, 3-7 of every kind.
+area, capped by ROOM) — the_island2 ships 106 monsters, 4-5 of every kind.
+`WORLD_CELLS_PER_MONSTER` is the one dial for how busy the world feels (137 →
+205 on 2026-08-07, "reduce the total number of monsters on the map by 25%");
+worlds already on the per-type floor of 3, like demo_isle, don't shrink further.
 Zones are DERIVED by
 habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
 world is written (`save_world` calls `spawns.refresh`), so a terrain edit can

@@ -170,9 +170,9 @@ BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 # in a copse), so the budget is now allocated per MONSTER, not per zone:
 #   1. the world's budget B = land cells / WORLD_CELLS_PER_MONSTER, clamped so
 #      no type is rarer than MON_TOTAL_MIN or commoner than MON_TOTAL_MAX
-#      (the_island2: 21978 land cells -> B = 160, the maintainer's target);
+#      (the_island2: 21978 land cells -> B = 107);
 #   2. B is split EVENLY across the types that live here (largest-remainder —
-#      so with 24 types and B=160, sixteen get 7 and eight get 6); the +1s go
+#      so with 24 types and B=107, eleven get 5 and thirteen get 4); the +1s go
 #      to the types with the most habitat, the only nod left to raw area;
 #   3. each type's own total is then spread across ITS zones in proportion to
 #      zone area (min 1 per zone) — so density still decides WHERE a type is
@@ -258,7 +258,15 @@ ROOM_MIN = int(round(1 / MAX_DENSITY))   # cells a zone needs to hold ONE monste
                                          # legally — the floor for any component
                                          # worth making a zone out of
 
-WORLD_CELLS_PER_MONSTER = 137       # world budget = land cells / this
+WORLD_CELLS_PER_MONSTER = 205       # world budget = land cells / this.
+                                    # 137 -> 205 (maintainer 2026-08-07: "reduce
+                                    # the total number of monsters on the map by
+                                    # 25%. I think we have too many now") — one
+                                    # constant, applied to every world, so the
+                                    # cut is proportional to land everywhere
+                                    # instead of being trimmed off whichever map
+                                    # someone happened to be looking at.
+                                    # the_island2: 141 -> 106 monsters.
 MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
 MON_TOTAL_MAX = 9                   # per-type ceiling
 MIN_ZONE = {"forest": ROOM_MIN}     # smallest component worth a zone (cells)

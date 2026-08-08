@@ -95,17 +95,25 @@ Population is budgeted **per monster TYPE, not per zone** (maintainer
 2026-07-29: the roster should be "balanced… not the same, just similar" — pure
 per-area density gave 24 butterfly dragons and 1 hedgehog):
 
-1. the world's budget `B = land cells / 137`, clamped so no type is rarer than
-   3 or commoner than 9 (`the_island2`: 21978 land cells → **B = 160**);
+1. the world's budget `B = land cells / 205`, clamped so no type is rarer than
+   3 or commoner than 9 (`the_island2`: 21978 land cells → **B = 107**);
 2. `B` is split **evenly** across the types that live on the world by largest
-   remainder — with 24 types and B=160, sixteen get 7 and eight get 6. The few
+   remainder — with 24 types and B=107, eleven get 5 and thirteen get 4. The few
    +1s go to the types with the most habitat, the only nod left to raw area;
 3. each type's own total is then spread across **its** zones in proportion to
    zone area (min 1 per zone, capped by the zone's spawnable cells **and by its
    room** — see the crowding law).
 
-So density still decides *where* a type is thickest — `butterfly_dragon` puts 5
-of its 7 on the big meadow and 2 on the smaller one — never *how many* exist.
+So density still decides *where* a type is thickest — `butterfly_dragon` puts 3
+of its 5 on the big meadow and 2 on the smaller one — never *how many* exist.
+
+`WORLD_CELLS_PER_MONSTER` is the one dial for how busy the world feels: it went
+137 → **205** on 2026-08-07 ("reduce the total number of monsters on the map by
+25%. I think we have too many now"), which is one constant applied to every
+world, so the cut lands proportionally to land area everywhere rather than being
+trimmed off whichever map someone was looking at. `the_island2`: 141 → **106**.
+Small worlds do not shrink — `demo_isle` and `demo_lost` were already sitting on
+the `MON_TOTAL_MIN = 3` floor, which is exactly what that floor is for.
 
 ## The crowding law
 
