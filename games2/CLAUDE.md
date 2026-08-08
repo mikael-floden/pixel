@@ -1094,6 +1094,18 @@ visible head/shoulders are ABOVE the surface).
   no reachable surface at that pixel at all, the walk is a best effort to the
   floor beneath, and it still ends ~96px below the marker. Moving the marker is
   not the answer; a route onto the roof would be.
+  **A CLIFF IS AMBIGUOUS TOO, NOT JUST A ROOF.** The re-resolve originally
+  skipped DECKS only, so a cliff top — plain raised terrain — re-scanned to
+  itself, left a single candidate, and the walker always climbed even when two
+  steps would have put her behind it. `ignoreAtOrAbove` skips every surface at
+  or above the tapped level, terrain included, so any raised pixel offers both
+  readings and the routing picks.
+  **WHEN THE SECOND READING IS A WALL, TAKE THE NEAREST WALKABLE PIXEL** —
+  never "the floor of the cell you clicked", which draws level*lh (96px for a
+  house) BELOW the marker and is exactly the walker standing with her head at
+  it. `nearestGroundTo` searches a small ring in SCREEN space, because the
+  marker is a pixel: two cells equally far in world terms can be a storey apart
+  on screen.
   **THE BEACON IS THE PIXEL YOU TOUCHED — never a projection of the route.**
   Deriving it from `trip.target` is what made it drift: a WALL TOP is plain
   terrain at level 6 with no deck under it, so the tap has only ONE reading, the

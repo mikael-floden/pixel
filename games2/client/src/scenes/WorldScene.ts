@@ -6268,11 +6268,17 @@ export class WorldScene extends Phaser.Scene {
   private pickGround(
     wx: number,
     wy: number,
-    // Ignore DECK slabs at or above this level, so the scan falls through to
-    // the OTHER surface drawn under the same pixel — the ground a roof hides.
-    // That surface is a different CELL (the projection subtracts level*lh from
-    // screen y), which is exactly why it looks like the same spot to the player.
-    ignoreDeckAtOrAbove?: number,
+    // Ignore EVERY surface at or above this level — decks AND raised terrain —
+    // so the scan falls through to the other surface drawn under the same
+    // pixel. That surface is a different CELL (the projection subtracts
+    // level*lh from screen y), which is why it looks like the same spot.
+    //
+    // Decks alone was a real gap: a CLIFF is plain terrain, so the re-scan
+    // matched the same cliff top again, left one candidate, and the walker
+    // always climbed — even when two steps would have put her behind it
+    // (maintainer 2026-08-08: "did you only try two paths if I clicked on a
+    // roof and forgot that a cliff can also mean two things?").
+    ignoreAtOrAbove?: number,
   ): { x: number; y: number; lvl: number } | null {
     const clampW = (x: number, y: number, lvl: number) => ({
       x: Math.max(1, Math.min(this.worldW - 1, x)),
@@ -6305,7 +6311,7 @@ export class WorldScene extends Phaser.Scene {
       // indoors, where the slab over your head is exactly what is NOT drawn.
       if (cut < 0) {
         const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
-        if (deckL === l && !(ignoreDeckAtOrAbove !== undefined && deckL >= ignoreDeckAtOrAbove))
+        if (deckL === l && !(ignoreAtOrAbove !== undefined && deckL >= ignoreAtOrAbove))
           return clampW(col * CELL_WU, row * CELL_WU, l);
       }
       // THE CUT TRUNCATES THE DRAWING, NOT THE WORLD. A parapet you can see
@@ -6321,6 +6327,8 @@ export class WorldScene extends Phaser.Scene {
       // out on the grass is exactly as unstandable as a parapet.
       if (cut >= 0 && cell.l > cut) continue;
       if (cell.l !== l) continue;
+      // Re-resolve mode: this surface is the one we are looking UNDER.
+      if (ignoreAtOrAbove !== undefined && l >= ignoreAtOrAbove) continue;
       const s = surfaceFor(cell.t);
       if (!s.standable && !s.swimmable) {
         // Re-resolve mode asks "what GROUND is under this pixel, given I am
@@ -6328,12 +6336,51 @@ export class WorldScene extends Phaser.Scene {
         // to look UNDER, not a reason to give up. The ray from a roof pixel
         // crosses the wall carrying that roof, and aborting there is why an
         // earlier cut of this never found the second reading at all.
-        if (ignoreDeckAtOrAbove !== undefined) continue;
+        if (ignoreAtOrAbove !== undefined) continue;
         return null; // tapped a solid prop/structure
       }
       return clampW(col * CELL_WU, row * CELL_WU, l);
     }
     return null; // void (outside the drawn world)
+  }
+
+  /** The nearest spot a body can STAND whose drawn position is closest to a
+   * camera-world pixel. Used when the pixel's own ground reading is a wall or
+   * empty — the walker must still end up as near the marker as the world
+   * allows, and "the cell under the one you clicked" is 96px away, not near.
+   *
+   * Screen distance, not world distance: the marker is a pixel, and two cells
+   * equally far in world terms can be a storey apart on screen. Bounded to a
+   * small ring around the pixel's own ground cell — this runs once per tap. */
+  private nearestGroundTo(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
+    const g = this.terrain;
+    if (!g || !this.world) return null;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (wx - this.iso.ox - tile / 2) / dx;
+    const v = (wy - this.iso.oy - dy) / dy; // the LEVEL-0 reading of this pixel
+    const c0 = Math.floor((u + v) / 2);
+    const r0 = Math.floor((v - u) / 2);
+    let best: { x: number; y: number; lvl: number } | null = null;
+    let bestD = Infinity;
+    for (let dr = -4; dr <= 4; dr++)
+      for (let dc = -4; dc <= 4; dc++) {
+        const c = c0 + dc;
+        const r = r0 + dr;
+        const cell = this.world.rows[r]?.[c];
+        if (!cell) continue;
+        const surf = surfaceFor(cell.t);
+        if (!surf.standable) continue;
+        if (g.blocked[r * g.width + c]) continue;
+        // Where this cell's surface DRAWS, against the pixel we are aiming at.
+        const sy = this.iso.oy + (c + r) * dy + dy - cell.l * lh;
+        const sx = this.iso.ox + (c - r) * dx + tile / 2;
+        const d = Math.hypot(sx - wx, sy - wy);
+        if (d < bestD) {
+          bestD = d;
+          best = { x: (c + 0.5) * CELL_WU, y: (r + 0.5) * CELL_WU, lvl: cell.l };
+        }
+      }
+    return best;
   }
 
   /** Start a tap-to-move trip (run = double-tap). Plans a route with the
@@ -6414,9 +6461,9 @@ export class WorldScene extends Phaser.Scene {
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    // ONE TAP, TWO MEANINGS — BOTH UNDER THE FINGER. A roof pixel also shows
-    // the ground drawn at that same pixel, which is a different CELL (6.4 of
-    // them up-screen for a level-6 slab). Offer both and let the ROUTING decide:
+    // ONE TAP, TWO MEANINGS — BOTH UNDER THE FINGER. A raised pixel — a roof
+    // slab OR a cliff top — also shows the ground drawn at that same pixel,
+    // which is a different CELL (6.4 of them up-screen for level 6). Offer both and let the ROUTING decide:
     // startBestTrip drops a candidate whose route cannot finish on it (the house
     // roof, six levels up with no ramp) and otherwise takes the shorter walk (a
     // bridge you can get both under and over). The tapped surface goes first so
@@ -6430,6 +6477,15 @@ export class WorldScene extends Phaser.Scene {
     //     screen y subtracts level*lh. Usually the room under a roof.
     const under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
     if (under) cands.push({ x: under.x, y: under.y, goalLevel: under.lvl });
+    // ...and when that reading is a WALL or empty sky, the answer is NOT "the
+    // floor of the cell you clicked": that draws `level * lh` = 96px below the
+    // marker, which is the walker standing with her head at it. Take the
+    // nearest walkable spot to the MARKER instead, measured in screen space —
+    // "as close as she can get" is a statement about the pixel, not the cell.
+    else if (pick) {
+      const near = this.nearestGroundTo(pick.wx, pick.wy);
+      if (near) cands.push({ x: near.x, y: near.y, goalLevel: near.lvl });
+    }
     // THE SAME CELL'S FLOOR IS NOT A CANDIDATE, and adding it was a mistake
     // worth naming: it draws `level * lh` BELOW the marker, so choosing it is
     // precisely the bug — "you don't walk to the marker, you walk the player
