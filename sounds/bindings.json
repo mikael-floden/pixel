@@ -1,10 +1,10 @@
 {
-  "note": "SOUND-SIDE RECOMMENDATION consumed by the COMPOSER actor (games2/composer), which owns the authoritative binding + mix. Semantic event names to be reconciled with the game agents event interface. Sounds resolve via sounds/viewer_data.json. This expresses sound intent (which sound, bus, round-robin/jitter, reverb-zone + ducking hints); the composer decides the final mix and may override.  EVERY EVENT HERE IS TRIGGERED BY THE GAME (maintainer 2026-08-06: \"The definition of an event is something that is triggered.\"). 22 recommendations for moments the game never reached — tools, containers, consumables, quests, coin/gem pickups, the legacy menu clicks — were removed rather than left listed as assignable. It is fine for a triggered event to have no sound; it is not fine to offer a moment that never happens.",
+  "note": "SOUND-SIDE RECOMMENDATION consumed by the COMPOSER actor (games2/composer), which owns the authoritative binding + mix. Semantic event names to be reconciled with the game agents event interface. Sounds resolve via sounds/viewer_data.json. This expresses sound intent (which sound, bus, round-robin/jitter, reverb-zone + ducking hints); the composer decides the final mix and may override.  EVERY EVENT HERE IS TRIGGERED BY THE GAME (maintainer 2026-08-06: \"The definition of an event is something that is triggered.\"). 22 recommendations for moments the game never reached — tools, containers, consumables, quests, coin/gem pickups, the legacy menu clicks — were removed rather than left listed as assignable. It is fine for a triggered event to have no sound; it is not fine to offer a moment that never happens.  MUSIC IS LEVEL WITH SFX (maintainer 2026-08-08: \"turn up the volume on all the music in the game? The music is to low VS the sound effects\"). The music bus was -20 against sfx -14 — a 6 dB deficit, half the amplitude — so it is now -14 too. This value OVERRIDES the engine's own default (context.ts DEFAULT_BUS_DB), so both were changed together; editing only one does nothing.",
   "buses": {
     "dialogue": -12,
     "ui": -12,
     "sfx": -14,
-    "music": -20,
+    "music": -14,
     "ambience": -28
   },
   "category_gain_db": {
