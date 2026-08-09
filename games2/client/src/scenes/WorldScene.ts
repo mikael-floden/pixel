@@ -2823,6 +2823,7 @@ export class WorldScene extends Phaser.Scene {
           // deadlines resolved against the clock, so a gate never has to guess
           // which source is currently winning.
           home: n.home,
+          noTurn: !!n.def.noTurn,
           looking: n.lookUntil > this.time.now ? n.lookDir : null,
           glancing: n.glanceUntil > this.time.now ? n.glanceDir : null,
           glanceMsLeft: Math.max(0, Math.round(n.glanceUntil - this.time.now)),
@@ -5038,6 +5039,9 @@ export class WorldScene extends Phaser.Scene {
     // someone walks past. Never the BOOT batch: NPC frames there is precisely
     // what restarted the loading bar (maintainer 2026-08-06).
     for (const d of DIRECTIONS) {
+      // A no-turn NPC will never adopt another rotation, so fetching the other
+      // seven (and their idle frames) is pure waste on someone's phone data.
+      if (def.noTurn && d !== npc.dir) continue;
       const url = def.base[d];
       const k = `npc:${def.id}:${d}`;
       if (url && !this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url });
@@ -5094,6 +5098,14 @@ export class WorldScene extends Phaser.Scene {
    * exactly what the old south-only pin existed to prevent. A look is over in
    * about a second, and a person actually does still while they watch you. */
   private stepNpcFacing(npc: NpcAvatar, now: number) {
+    // SOME ART ONLY READS RIGHT FROM ONE FACING. characters2 flags those
+    // (`no_turn` on the NPC's metadata record, published through the manifest
+    // as noTurn) and they must NEVER change direction — not for a glance, not
+    // to look at the player. Thorne is the first: his armorer's breastplate
+    // stands on the GROUND BESIDE HIM in south and south-west and is absent in
+    // south-east, so any turn pops a large prop in and out of the scene. He
+    // keeps whatever facing addNpc gave him, permanently.
+    if (npc.def.noTurn) return;
     const me = this.avatars.get(this.room?.sessionId ?? "");
     if (me) {
       const dx = me.fx - npc.fx;

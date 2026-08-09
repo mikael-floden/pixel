@@ -139,7 +139,10 @@ try {
       const d = Math.abs(RING.indexOf(a) - RING.indexOf(b));
       return Math.min(d, RING.length - d);
     };
-    const one = npcs.find((n) => !n.culled) ?? npcs[0];
+    // A TURNABLE one — the gate used to grab the first on-screen NPC, which is
+    // Thorne, who is now no_turn. Picking blind would have read "he did not
+    // turn" as a broken look-at.
+    const one = npcs.find((n) => !n.culled && !n.noTurn) ?? npcs.find((n) => !n.noTurn) ?? npcs[0];
     const read = () =>
       page.evaluate((id) => {
         const n = window.__ml.npcInfo().find((x) => x.id === id);
@@ -207,6 +210,38 @@ try {
     if (back.dir !== back.home && !back.looking)
       fail(`${one.id}: after backing off it sits on ${back.dir}, not its home ${back.home} (glance is allowed, but none was active)`);
     ok(`facing returns to maps2' ${back.home} once the player leaves`);
+
+    // (iv) AND THE ONES THAT MUST NOT TURN, DO NOT. characters2 flags art that
+    // only reads right from one facing (`no_turn`); Thorne's armorer's
+    // breastplate stands on the ground beside him in south/south-west and is
+    // gone in south-east, so a turn pops a large prop in and out. Brushing
+    // past him must move nothing.
+    const still = npcs.find((n) => n.noTurn);
+    if (!still) console.log("(no no_turn NPC placed in this world — skipping)");
+    else {
+      const readS = () =>
+        page.evaluate((id) => {
+          const n = window.__ml.npcInfo().find((x) => x.id === id);
+          return n && { dir: n.dir, home: n.home, looking: n.looking, tex: n.tex };
+        }, still.id);
+      const sc = still.x / 32;
+      const sr = still.y / 32;
+      await page.evaluate(([c, r]) => window.__ml.teleport(c - 3, r - 3), [sc, sr]);
+      await page.waitForTimeout(1000);
+      const s0 = await readS();
+      // Walk a full circle around him at touching distance: every approach
+      // angle asks for a different facing, so a look-at that ignores the flag
+      // cannot survive all eight.
+      const seenS = new Set([s0.dir]);
+      for (const [dx, dy] of [[-0.35, -0.35], [0.35, -0.35], [0.35, 0.35], [-0.35, 0.35], [0, -0.4], [0, 0.4], [-0.4, 0], [0.4, 0]]) {
+        await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [sc + dx, sr + dy]);
+        await page.waitForTimeout(400);
+        seenS.add((await readS()).dir);
+      }
+      if (seenS.size !== 1)
+        fail(`${still.id} is no_turn but faced ${[...seenS].join("/")} while the player circled it`);
+      ok(`no_turn NPC ${still.id} held ${s0.dir} through eight approach angles`);
+    }
   }
 
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
