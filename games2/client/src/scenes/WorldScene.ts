@@ -182,6 +182,10 @@ const COVER_ATLAS_W = 1024;
 const COVER_ATLAS_H = 512;
 const COVER_GUTTER = 4; // > the 2px the ring dilation bleeds past a slot
 const COVER_BUCKET = 128; // occluder broad-phase bucket, world px
+// Ticks a body keeps its cover slot after it stops being covered (see
+// sweepCoverSlots). Generous: re-acquiring costs nothing while the atlas has
+// room, and a body stepping in and out of cover at a wall edge must not thrash.
+const COVER_SLOT_GRACE = 240;
 // The two dilation passes that build the outline out of the COVERED part —
 // exactly ringTextureFor's structuring element (two successive 4-neighbour
 // dilations = the L1 ball of radius 2), applied to the covered sub-silhouette
@@ -869,6 +873,9 @@ interface CoverSlot {
   h: number;
   name: string;
   cls: string;
+  /** The body currently holding this slot, so the idle sweep can hand it back
+   * (see sweepCoverSlots). Cleared by releaseCoverSlot. */
+  owner?: BodyVisual;
 }
 
 export class WorldScene extends Phaser.Scene {
@@ -3532,9 +3539,53 @@ export class WorldScene extends Phaser.Scene {
     const pool = this.coverFree.get(cls);
     let slot = pool && pool.length ? pool.pop() : undefined;
     if (!slot) slot = this.coverAllocSlot(cw, ch, cls) ?? undefined;
+    // ANY FREE SLOT BIG ENOUGH WILL DO. The shelf cursor never rewinds, so once
+    // the atlas is packed the only way to serve a body is to reuse a slot — and
+    // keying the free pools strictly by class meant a returned 160x192 could
+    // never serve a 96x96. Measured before this: allocation froze at 13 slots
+    // after three teleports (25 in another run), and from then on every further
+    // covered body silently fell back to the flat coverY line — the reported
+    // defect, returning mid-session with no recovery, on the player's own body.
+    // A larger slot leaves transparent margin nobody reads, exactly as a body
+    // smaller than its own class box already does.
+    if (!slot) slot = this.coverTakeLargerFree(cw, ch);
     if (!slot) return null;
     b.coverSlot = slot;
+    slot.owner = b;
+    b.coverAt = this.coverTick;
     return slot;
+  }
+
+  /** The smallest free slot that fits — see coverSlotFor. Smallest so a run of
+   * small bodies cannot eat the few boxes only a mammoth can use. */
+  private coverTakeLargerFree(cw: number, ch: number): CoverSlot | undefined {
+    let best: CoverSlot | undefined;
+    let bestPool: CoverSlot[] | undefined;
+    for (const pool of this.coverFree.values())
+      for (const s of pool)
+        if (s.w >= cw && s.h >= ch && (!best || s.w * s.h < best.w * best.h)) {
+          best = s;
+          bestPool = pool;
+        }
+    if (best && bestPool) bestPool.splice(bestPool.indexOf(best), 1);
+    return best;
+  }
+
+  /** Reclaim slots from bodies that have stopped being covered.
+   *
+   * A slot used to be held until the body was destroyed or changed frame size,
+   * so walking out from behind a rock kept it forever and the atlas only ever
+   * filled. What bounds the atlas is the number of bodies covered AT ONCE, which
+   * is small; what was filling it was every body ever covered. The grace period
+   * is generous because re-acquiring is free while the atlas has room, and a
+   * body stepping in and out of cover at a wall edge must not thrash. */
+  private sweepCoverSlots() {
+    if (!this.coverSlots.length) return;
+    for (const s of this.coverSlots) {
+      const b = s.owner;
+      if (!b || b.coverSlot !== s) continue;
+      if (this.coverTick - (b.coverAt ?? 0) > COVER_SLOT_GRACE) this.releaseCoverSlot(b);
+    }
   }
 
   /** Shelf packer over the shared atlas rect. One Frame per slot per surface,
@@ -3561,6 +3612,7 @@ export class WorldScene extends Phaser.Scene {
   private releaseCoverSlot(b: BodyVisual) {
     const slot = b.coverSlot;
     if (!slot) return;
+    slot.owner = undefined;
     b.coverSlot = undefined;
     b.coverAt = undefined;
     let pool = this.coverFree.get(slot.cls);
@@ -3687,7 +3739,25 @@ export class WorldScene extends Phaser.Scene {
     const wy0 = sp.y - sp.originY * fh - RING_PAD;
     const W = fw + RING_PAD * 2;
     const H = fh + RING_PAD * 2;
-    const cands = this.coverCandidates(sp, wx0, wy0, wx0 + W, wy0 + H);
+    // ASK ABOUT THE ART BOX, NOT THE FRAME BOX. A character's frame is 112x112
+    // and its drawn figure is 29x86 inside it, so querying the whole padded
+    // frame admits every tile that overlaps three cells of empty margin — 80
+    // candidates per body in mountain terrain (measured), against a median of
+    // ~6 that can actually touch the figure. An occluder clear of the art box
+    // cannot cover an opaque body texel, so skipping it changes no pixel: E is
+    // the body MINUS the occluders, and outside the silhouette there is no
+    // body to subtract from. The draw loop below still clips to the slot.
+    const ab = this.artBounds(sp);
+    // The slot bakes the flip in (coverDrawBody draws flipped), but these are
+    // WORLD coordinates and the sprite on screen is mirrored about its own
+    // frame box, so the art box mirrors with it.
+    const ax0 = sp.flipX ? fw - ab.x1 : ab.x0;
+    const ax1 = sp.flipX ? fw - ab.x0 : ab.x1;
+    const qx0 = wx0 + RING_PAD + ax0 * sp.scaleX;
+    const qx1 = wx0 + RING_PAD + ax1 * sp.scaleX;
+    const qy0 = wy0 + RING_PAD + ab.y0 * sp.scaleY;
+    const qy1 = wy0 + RING_PAD + ab.y1 * sp.scaleY;
+    const cands = this.coverCandidates(sp, qx0, qy0, qx1, qy1);
     this.coverStat.cands += cands.length;
     for (const im of cands) {
       const f = im.frame;
@@ -3795,6 +3865,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.coverBlitter().clearTint();
     this.coverQueue = [];
+    this.sweepCoverSlots();
   }
 
   /** The engagement overlays, per frame after the monster loop: (1) the red
@@ -3859,10 +3930,17 @@ export class WorldScene extends Phaser.Scene {
     const frameTop = sp.y - sp.displayHeight * sp.originY;
     const cropH = (b.coverY - frameTop) / sp.scaleY;
     const ab = this.artBounds(sp);
-    if (cropH >= ab.y1) return hide(); // the cover line is below the art: nothing is hidden
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
     const slot = this.coverSlotOf(b);
+    // THE FLAT LINE MAY NOT VETO THE EXACT PATH. `coverY` is the top of the
+    // covering column's 64px IMAGE BOX, so a low occluder in front of the feet
+    // can put it below the art while genuinely covering texels — measured at
+    // (165,126): 95 covered texels of 1840 and no outline drawn at all, because
+    // this early-out fired before the slot was consulted. With a slot the O
+    // surface answers for itself: when nothing is covered it is empty and the
+    // image draws nothing, which costs one transparent quad and cannot lie.
+    if (!slot && cropH >= ab.y1) return hide();
     const key = slot ? this.coverO!.key : this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
     if (!key) return hide();
     let img = b.hidden;
