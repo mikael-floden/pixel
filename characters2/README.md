@@ -71,6 +71,11 @@ it.
   the richest wins (most frames, then directions, then slug order) — determinism
   instead of filesystem order. `overrides.<npc>.<state>` pins an exact folder.
   Adding a state (walk, talk, work) is one entry here — no code change.
+- **`no_turn`** (bool, on the NPC's `metadata.json` record) marks an NPC whose
+  ART only reads right from ONE facing — the game must never turn it. **Thorne**
+  is the first and currently only one: his armorer's golden breastplate stands
+  on the ground beside him in south and south-west and is absent in south-east,
+  so a turn makes the prop pop in and out. Absent means false.
 - `verify_sync.py` checks the set BOTH ways (nothing tagged is missing, nothing
   untagged survives), full per-NPC integrity, AND that every REQUIRED state
   resolves to a folder with real frames for every NPC — so an NPC that arrives

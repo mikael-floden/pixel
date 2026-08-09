@@ -238,6 +238,24 @@ const GAIT_HOP_EASE = 10; // hop-offset smoothing (per second) — no pops on fr
 const NPC_HOLD_MIN_MS = 100;
 const NPC_HOLD_MAX_MS = 5000;
 const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collision)
+// NPC HEAD-TURNING (maintainer 2026-08-09: "when we have this much content it
+// feels dumb to not utilize more of it"). maps2' facing stays HOME; two things
+// pull an NPC off it, and both hand it back.
+// ALMOST TOUCHING, deliberately: the look is a reaction to someone brushing
+// past you, not a 5-cell stare. A player body is ~9wu and a cell is 32, so
+// this fires roughly when the two bodies overlap.
+const NPC_LOOK_WU = 26;
+const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
+// ONE COMPASS NOTCH AT A TIME, so a turn SWEEPS instead of snapping — even a
+// direction the head only passes through is held for this long.
+const NPC_TURN_STEP_MS = 200;
+// A random glance holds 10-30s, then home holds ~4x that. Home therefore wins
+// about 90/(90+20) = 82% of the time, which is the ~80% asked for; the two
+// ranges are what to move if that share should change.
+const NPC_GLANCE_MIN_MS = 10_000;
+const NPC_GLANCE_MAX_MS = 30_000;
+const NPC_HOME_MIN_MS = 55_000;
+const NPC_HOME_MAX_MS = 125_000;
 const GRAB_ALIGN_WU = 10;
 /** Frame index out of a character frame's texture key (f:<uid>:<state>:<dir>:<n>). */
 const frameIndexOf = (key?: string): number => {
@@ -832,6 +850,15 @@ interface NpcAvatar {
   name: string;
   type: string;
   dir: string;
+  /** maps2' own facing — what this NPC returns to (see stepNpcFacing). */
+  home: string;
+  def: NpcDef; // for the art of a direction it turns to later
+  turnAt: number; // next sweep notch is due
+  glanceDir: string | null;
+  glanceUntil: number;
+  nextGlanceAt: number;
+  lookDir: string | null; // at the player, while they are almost touching
+  lookUntil: number;
   animKey: string | null; // the idle clip for THIS facing, when the art has one
   pendingAnim?: { key: string; frames: string[] }; // queued art, registered when it lands
   holdUntil: number; // frame-0 pause deadline — the "calm idle" (see NPC_HOLD_*)
@@ -2791,6 +2818,14 @@ export class WorldScene extends Phaser.Scene {
           shadowX: +n.shadow.x.toFixed(1),
           shadowY: +n.shadow.y.toFixed(1),
           culled: !!n.culled,
+          // HEAD-TURNING state (stepNpcFacing): where maps2 put them, and the
+          // two things that pull them off it. `looking`/`glancing` are the
+          // deadlines resolved against the clock, so a gate never has to guess
+          // which source is currently winning.
+          home: n.home,
+          looking: n.lookUntil > this.time.now ? n.lookDir : null,
+          glancing: n.glanceUntil > this.time.now ? n.glanceDir : null,
+          glanceMsLeft: Math.max(0, Math.round(n.glanceUntil - this.time.now)),
           hasAnim: !!n.animKey,
           playing: n.sprite.anims.isPlaying,
           holdMs: n.holdUntil ? Math.max(0, Math.round(n.holdUntil - this.time.now)) : 0,
@@ -4895,22 +4930,47 @@ export class WorldScene extends Phaser.Scene {
     const seen = new Set<string>();
     for (const p of placed) {
       const def = byId.get(p.character);
-      if (!def || seen.has(def.id)) continue;
-      seen.add(def.id);
-      const url = def.base[DEFAULT_DIRECTION];
-      const key = `npc:${def.id}:${DEFAULT_DIRECTION}`;
+      if (!def) continue;
+      // KEYED BY CHARACTER **AND** DIRECTION. Now that maps2' facing is
+      // honoured, two placements of the same character can need two different
+      // rotations — deduping by character alone preloaded one of them and left
+      // the other on the placeholder until its lazy load landed.
+      const dir = this.npcFacing(p, def);
+      if (seen.has(`${def.id}:${dir}`)) continue;
+      seen.add(`${def.id}:${dir}`);
+      const url = def.base[dir];
+      const key = `npc:${def.id}:${dir}`;
       if (url && !this.textures.exists(key)) this.load.image(key, withV(url));
     }
   }
 
+  /** WHICH WAY THIS NPC STANDS — the one rule, so the boot preload and the
+   * spawn cannot disagree (they did: the preload fetched south while the body
+   * rendered south-west, and it showed as the placeholder texture).
+   *
+   * maps2' `facing` is honoured whenever this character has an IDLE for it, and
+   * falls back to south otherwise. The test is the ART, not a list of today's
+   * three directions: a frozen NPC beside a breathing one is what the old
+   * south-only pin existed to prevent, and the day characters2 generates
+   * north-east this starts honouring it with no edit here. */
+  private npcFacing(p: NpcPlacement, def: NpcDef): string {
+    const want = p.facing && DIRECTIONS.includes(p.facing as never) ? p.facing : null;
+    return want && (def.idle?.[want] ?? 0) > 0 && def.base[want] ? want : DEFAULT_DIRECTION;
+  }
+
   private addNpc(p: NpcPlacement, def: NpcDef) {
-    // ALWAYS SOUTH for now (maintainer 2026-08-06): the generated idle exists
-    // for south alone, so an NPC placed facing any other way would stand
-    // frozen on a static rotation while its neighbours breathe. maps2' own
-    // `facing` is deliberately ignored until characters2 generates the other
-    // seven rotations — then this becomes `p.facing` again and nothing else
-    // changes. They never walk either; there is no walk art and no server body.
-    const dir = DEFAULT_DIRECTION;
+    // MAPS2 DECIDES THE FACING, as far as the art can carry it (2026-08-09).
+    // The rule has never been about placement — it is that a frozen NPC beside
+    // a breathing one reads as broken, so a facing is only honoured when this
+    // character actually has an IDLE for it. characters2 has now generated
+    // SOUTH-EAST and SOUTH-WEST for all 191, so those three are honoured and
+    // the other five still fall back to south rather than standing still.
+    // Asking the manifest (`def.idle[dir]`) rather than listing the three
+    // directions here means the day north-east lands, this needs no edit: the
+    // fallback simply stops firing for it. Missing/unknown facings and the few
+    // characters with no idle at all resolve to south exactly as before.
+    // They still never walk — there is no walk art and no server body.
+    const dir = this.npcFacing(p, def);
     // maps2 gives a TILE cell; bodies stand at the cell CENTRE like everything
     // else that is placed by cell (the campfire, spawn scatter).
     const fx = (p.x + 0.5) * CELL_WU;
@@ -4945,6 +5005,16 @@ export class WorldScene extends Phaser.Scene {
       name: p.name || def.name,
       type: p.type,
       dir,
+      home: dir,
+      def,
+      turnAt: 0,
+      glanceDir: null,
+      glanceUntil: 0,
+      // Stagger the first glance across the whole home window, or a street
+      // queued in one loop would all look away together on the same beat.
+      nextGlanceAt: this.time.now + NPC_HOME_MIN_MS * Math.random() + NPC_HOME_MIN_MS * 0.5,
+      lookDir: null,
+      lookUntil: 0,
       animKey: null,
       holdUntil: 0,
       surfLevel: p.elev ?? g.lvl,
@@ -4961,6 +5031,27 @@ export class WorldScene extends Phaser.Scene {
     const baseKey = `npc:${def.id}:${npc.dir}`;
     const frames = def.idle?.[npc.dir] ?? 0;
     const animKey = `npcanim:${def.id}:${npc.dir}`;
+    // EVERY ROTATION THIS BODY CAN TURN TO, on the DEFERRED batch. Head-turning
+    // can reach all eight (a look at the player) and idles on the three that
+    // have them, and art that has not arrived means a turn silently completes
+    // late — so they are queued once, here, rather than fetched at the moment
+    // someone walks past. Never the BOOT batch: NPC frames there is precisely
+    // what restarted the loading bar (maintainer 2026-08-06).
+    for (const d of DIRECTIONS) {
+      const url = def.base[d];
+      const k = `npc:${def.id}:${d}`;
+      if (url && !this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url });
+      const fn = def.idle?.[d] ?? 0;
+      if (!fn || !def.idleAnim || d === npc.dir) continue;
+      for (let i = 0; i < fn; i++) {
+        const fk = `npcf:${def.id}:${d}:${i}`;
+        if (this.textures.exists(fk)) continue;
+        this.npcIdleQueue.push({
+          key: fk,
+          url: `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${d}/${i}.webp`,
+        });
+      }
+    }
     // The standing pose arrived with the BOOT batch (preloadNpcArt), so the
     // NPC is drawn the instant the world is. Loading it lazily here is what
     // restarted the loading bar and popped them in half a second late
@@ -4985,6 +5076,117 @@ export class WorldScene extends Phaser.Scene {
       // silently: measured 0 of 19 clips registering. Same shape as the
       // monsters' single-call-site trap.
       npc.pendingAnim = { key: animKey, frames: keys };
+    }
+  }
+
+  /** WHERE THIS NPC WANTS TO BE LOOKING, this frame. Three sources, in order:
+   *
+   * 1. THE PLAYER, but only while almost touching (NPC_LOOK_WU). The brief is a
+   *    reaction to someone brushing past, not a stare across the square, so the
+   *    radius is body-sized and a short linger keeps the head from snapping
+   *    back the instant you clear it.
+   * 2. A RANDOM GLANCE, held 10-30s, then home for ~4x that (~82% home).
+   * 3. HOME — what maps2 placed them on.
+   *
+   * A LOOK may use any of the eight rotations; a GLANCE only ones this
+   * character has an idle for. That is not a detail: a glance holds for up to
+   * 30 seconds, and a body frozen that long beside a breathing neighbour is
+   * exactly what the old south-only pin existed to prevent. A look is over in
+   * about a second, and a person actually does still while they watch you. */
+  private stepNpcFacing(npc: NpcAvatar, now: number) {
+    const me = this.avatars.get(this.room?.sessionId ?? "");
+    if (me) {
+      const dx = me.fx - npc.fx;
+      const dy = me.fy - npc.fy;
+      if (dx * dx + dy * dy <= NPC_LOOK_WU * NPC_LOOK_WU) {
+        const d = faceDirWorld(npc.fx, npc.fy, me.fx, me.fy);
+        // Standing exactly on top of an NPC has no direction — keep the last
+        // one rather than flapping through whatever rounding produces.
+        if (d) npc.lookDir = d;
+        npc.lookUntil = now + NPC_LOOK_LINGER_MS;
+      }
+    }
+    const looking = npc.lookDir && now < npc.lookUntil;
+    // A glance never interrupts a look, and never starts during one.
+    if (!looking && now >= npc.nextGlanceAt && now >= npc.glanceUntil) {
+      const canIdle = DIRECTIONS.filter((d) => (npc.def.idle?.[d] ?? 0) > 0 && d !== npc.home);
+      if (canIdle.length) {
+        npc.glanceDir = canIdle[Math.floor(Math.random() * canIdle.length)];
+        npc.glanceUntil = now + NPC_GLANCE_MIN_MS + Math.random() * (NPC_GLANCE_MAX_MS - NPC_GLANCE_MIN_MS);
+        npc.nextGlanceAt = npc.glanceUntil + NPC_HOME_MIN_MS + Math.random() * (NPC_HOME_MAX_MS - NPC_HOME_MIN_MS);
+      } else {
+        npc.nextGlanceAt = now + NPC_HOME_MIN_MS; // no art to glance with — ask again later
+      }
+    }
+    const n = DIRECTIONS.length;
+    // The facing this NPC would hold with nobody around: home, or the glance
+    // it is currently on. A look is measured AGAINST this, never against the
+    // last frame's facing, or the clamp below would ratchet round the compass
+    // one notch at a time and become the head-spin it exists to prevent.
+    const base = now < npc.glanceUntil ? npc.glanceDir ?? npc.home : npc.home;
+    const bi = DIRECTIONS.indexOf(base as never);
+
+    if (looking && bi >= 0) {
+      // A GLANCE OVER THE SHOULDER, NOT A TRACKING TURRET (maintainer
+      // 2026-08-09: "at most ±1 direction and that has to be INSTANT... they
+      // will not follow you when running by"). Clamp the direction of the
+      // player to ONE notch either side of base, and take it THIS FRAME — a
+      // 200ms sweep on something that lasts a second reads as the NPC lagging
+      // behind you, which is the opposite of noticing you. Running past
+      // therefore plays as base+1 -> base -> base-1: a head tilting to follow,
+      // then letting you go.
+      const li = DIRECTIONS.indexOf(npc.lookDir as never);
+      if (li >= 0) {
+        let d = (((li - bi) % n) + n) % n;
+        if (d > n / 2) d -= n;
+        const want = DIRECTIONS[(bi + Math.max(-1, Math.min(1, d)) + n) % n];
+        if (want !== npc.dir) this.setNpcDir(npc, want);
+        npc.turnAt = now; // the sweep owes nothing after an instant look
+      }
+      return;
+    }
+
+    if (base === npc.dir || now < npc.turnAt) return;
+    // THE SWEEP, and it is ONLY for turns the NPC makes on its own — settling
+    // back from a look, or going to and from a glance. DIRECTIONS is a compass
+    // ring, so the gap in indices IS the notch count, and the head takes them
+    // one at a time the short way round: a neck does not teleport.
+    const from = DIRECTIONS.indexOf(npc.dir as never);
+    if (from < 0 || bi < 0) return;
+    const step = ((((bi - from) % n) + n) % n) <= n / 2 ? 1 : -1;
+    this.setNpcDir(npc, DIRECTIONS[(from + step + n) % n]);
+    npc.turnAt = now + NPC_TURN_STEP_MS;
+  }
+
+  /** Face this way NOW: the rotation, its foot anchor, and the idle clip for
+   * it. Falls back to holding the current art when the new direction has not
+   * arrived yet (it rides the deferred batch), so a turn never blinks a
+   * placeholder — it simply completes when the art lands. */
+  private setNpcDir(npc: NpcAvatar, dir: string) {
+    npc.dir = dir;
+    const def = npc.def;
+    const baseKey = `npc:${def.id}:${dir}`;
+    // THE ORIGIN MOVES WITH THE ROTATION IT BELONGS TO, NEVER AHEAD OF IT.
+    // Every facing has its own measured foot anchor, so applying the new one
+    // while the old rotation is still on screen shifts the drawn body off the
+    // ground point — the feet slide out from under the nadir shadow for as
+    // long as the art takes to arrive. Both move together or neither does; the
+    // turn then completes late at worst, which is invisible.
+    if (this.textures.exists(baseKey)) {
+      npc.sprite.setTexture(baseKey);
+      const a = def.anchors?.[dir];
+      if (a) npc.sprite.setOrigin(a.x, a.y);
+    }
+    const frames = def.idle?.[dir] ?? 0;
+    const animKey = `npcanim:${def.id}:${dir}`;
+    npc.animKey = null;
+    npc.pendingAnim = undefined;
+    npc.holdUntil = 0;
+    if (frames > 0 && def.idleAnim) {
+      const keys: string[] = [];
+      for (let i = 0; i < frames; i++) keys.push(`npcf:${def.id}:${dir}:${i}`);
+      if (this.anims.exists(animKey)) npc.animKey = animKey;
+      else npc.pendingAnim = { key: animKey, frames: keys };
     }
   }
 
@@ -5028,6 +5230,7 @@ export class WorldScene extends Phaser.Scene {
       }
       sp.x = npc.lx;
       sp.y = npc.ly;
+      this.stepNpcFacing(npc, now);
       if (!npc.animKey && npc.pendingAnim) {
         const pa = npc.pendingAnim;
         if (pa.frames.every((k) => this.textures.exists(k))) {

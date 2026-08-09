@@ -8,9 +8,11 @@
 // and the client fetches that per world — this manifest only answers "what does
 // character <id> look like, and how many frames does its idle have".
 //
-// NOTE ON COVERAGE: the generated idle currently exists for SOUTH ONLY, and a
-// few characters ship none at all. Both are normal here and the client degrades
-// to the static rotation, which is why `idle` is per-DIRECTION and may be empty.
+// NOTE ON COVERAGE: the idle ships for SOUTH, SOUTH-EAST and SOUTH-WEST (all
+// 191, 2026-08-09) and for no other facing yet; a few characters ship none at
+// all. Both are normal here and the client degrades to the static rotation,
+// which is why `idle` is per-DIRECTION and may be empty. The client picks a
+// facing it has an idle for — see WorldScene.addNpc.
 import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -89,24 +91,38 @@ function scan() {
     const animsDir = join(dir, "animations");
     const idle = {};
     let idleAnim = null;
-    if (existsSync(animsDir)) {
-      for (const anim of readdirSync(animsDir)) {
-        const ad = join(animsDir, anim);
-        let any = false;
-        for (const d of DIRECTIONS) {
-          const dd = join(ad, d);
-          if (!existsSync(dd)) continue;
-          let n = 0;
-          while (resolveImg(join(dd, `${n}.webp`))) n++;
-          if (n > 0) {
-            idle[d] = n;
-            any = true;
-          }
+    // ASK character.json WHICH FOLDER IS THE IDLE — never the folder name.
+    // PixelLab animation names are GENERATION PROMPTS the maintainer rewords
+    // freely, and they carry typos: 152 of these NPCs say "still" and 39 say
+    // "stilI" with a capital i. characters2' sync.py resolves each game state
+    // and PUBLISHES the answer as `states` on character.json (and in
+    // npcs/index.json), precisely so no consumer has to match text. Scanning
+    // for "the first folder with frames" happened to work only while every NPC
+    // had exactly one animation; it silently picks a coin-toss the day a second
+    // one lands.
+    const named = meta.states?.idle ?? index[id]?.states?.idle ?? null;
+    const candidates = named
+      ? [named]
+      : existsSync(animsDir)
+        ? readdirSync(animsDir)
+        : [];
+    for (const anim of candidates) {
+      const ad = join(animsDir, anim);
+      if (!existsSync(ad)) continue;
+      let any = false;
+      for (const d of DIRECTIONS) {
+        const dd = join(ad, d);
+        if (!existsSync(dd)) continue;
+        let n = 0;
+        while (resolveImg(join(dd, `${n}.webp`))) n++;
+        if (n > 0) {
+          idle[d] = n;
+          any = true;
         }
-        if (any) {
-          idleAnim = anim;
-          break; // one idle per NPC (custom-calm-still-idle-breathing)
-        }
+      }
+      if (any) {
+        idleAnim = anim;
+        break;
       }
     }
     out.push({
@@ -118,7 +134,7 @@ function scan() {
       base,
       anchors, // dir -> {x, y, top} foot anchor (fractions of the frame)
       idleAnim,
-      idle, // dir -> frame count (SOUTH only today; empty for a few)
+      idle, // dir -> frame count (S/SE/SW today; empty for a few)
     });
   }
   return out;

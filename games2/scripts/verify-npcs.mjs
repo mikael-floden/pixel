@@ -99,11 +99,115 @@ try {
     ok(`${anchored.length} NPC(s): origin == art-measured foot anchor, shadow on it (<=1px)`);
   }
 
-  // (2c) they all face SOUTH — the only rotation with an idle clip for now.
-  const facings = [...new Set(npcs.map((n) => n.dir))];
-  if (facings.length !== 1 || facings[0] !== "south")
-    fail(`NPCs face ${facings.join("/")} — only south has idle art, so all must face south`);
-  ok("every NPC faces south (the only rotation with an idle clip)");
+  // (2c) MAPS2' FACING IS HONOURED WHEREVER THE ART CAN BREATHE, and south
+  // everywhere else. The rule is not "these three directions" — it is "a
+  // direction this character has an IDLE for", because a frozen NPC standing
+  // beside a breathing one is what the south-only pin existed to prevent. So
+  // the gate asks the ART MANIFEST the same question the client does, rather
+  // than hard-coding today's coverage: the day north-east is generated, this
+  // passes unchanged and a client that ignored it fails.
+  const defs = await page.evaluate(async () => {
+    const r = await fetch("/npcs.json");
+    const j = await r.json();
+    return Object.fromEntries(j.npcs.map((n) => [n.id, n.idle ?? {}]));
+  });
+  let honoured = 0;
+  for (const p of placed) {
+    const n = npcs.find((x) => x.id === p.id);
+    if (!n) continue;
+    const idle = defs[p.character] ?? {};
+    const canIdle = (idle[p.facing] ?? 0) > 0;
+    const want = canIdle ? p.facing : "south";
+    if (n.dir !== want)
+      fail(`${p.id} faces ${n.dir}; maps2 placed it ${p.facing} and it ${canIdle ? "HAS" : "has no"} idle art for that, so it should face ${want}`);
+    if (canIdle && p.facing !== "south") honoured++;
+  }
+  // NON-VACUOUS: the_island2 places 9 NPCs south-west, so "everything is south"
+  // must not be able to pass this. Without it, a client that still forced south
+  // would sail through on a world that happened to place everyone south.
+  if (!honoured)
+    fail(`no NPC took a non-south facing — the pin looks dead (placements: ${[...new Set(placed.map((p) => p.facing))].join("/")})`);
+  ok(`${honoured} NPC(s) face maps2' own non-south direction, the rest fall back to south`);
+
+  // (2d) HEAD-TURNING: brush past an NPC and it looks at you, SWEEPING one
+  // compass notch at a time, then goes back to maps2' facing. Sampled fast
+  // (70ms) because the notches are 200ms apart — a slow poll would see the
+  // first and last rotation and call a snap a sweep.
+  {
+    const RING = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
+    const notches = (a, b) => {
+      const d = Math.abs(RING.indexOf(a) - RING.indexOf(b));
+      return Math.min(d, RING.length - d);
+    };
+    const one = npcs.find((n) => !n.culled) ?? npcs[0];
+    const read = () =>
+      page.evaluate((id) => {
+        const n = window.__ml.npcInfo().find((x) => x.id === id);
+        const me = window.__ml.me();
+        return n && { dir: n.dir, home: n.home, looking: n.looking, mx: me.x, my: me.y, nx: n.x, ny: n.y };
+      }, one.id);
+    const c = one.x / 32;
+    const r = one.y / 32;
+    // Approach from the UP-SCREEN side: the direction OF the player is then
+    // several notches from a southern home, so a clamp that is not working
+    // shows up as the NPC spinning to face it.
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 3, r - 3), [c, r]);
+    await page.waitForTimeout(1200);
+    const start = await read();
+    if (start.dir !== start.home) fail(`${one.id}: standing 3 cells off and already facing ${start.dir}, not home ${start.home}`);
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 0.35, r - 0.35), [c, r]);
+    // Sample FAST: the look must be instant, so anything slower than a frame
+    // or two cannot tell "instant" from "swept in 200ms steps".
+    const chain = [];
+    for (let i = 0; i < 40; i++) {
+      const s = await read();
+      if (s && (!chain.length || chain[chain.length - 1] !== s.dir)) chain.push(s.dir);
+      await page.waitForTimeout(50);
+    }
+    const at = await read();
+    const dist = Math.hypot(at.mx - at.nx, at.my - at.ny);
+    if (!at.looking) fail(`${one.id}: player is ${dist.toFixed(1)}wu away and the NPC is not looking at them`);
+    // (i) AT MOST ONE NOTCH off home — a glance over the shoulder, never a
+    // tracking turret (maintainer 2026-08-09: "they will not follow you when
+    // running by"). The direction OF the player is deliberately further away
+    // than that here, so an unclamped look fails this.
+    const off = notches(at.dir, at.home);
+    if (off > 1) fail(`${one.id}: looking ${at.dir}, which is ${off} notches off home ${at.home} — the look must clamp to 1`);
+    // (ii) INSTANT: home -> the clamped look, with nothing in between. A
+    // 200ms-per-notch sweep on a one-second event reads as lagging behind the
+    // player, which is the opposite of noticing them.
+    const extra = chain.filter((d) => d !== at.home && d !== at.dir);
+    if (extra.length) fail(`${one.id}: the look SWEPT through ${extra.join("/")} — it must be instant (${chain.join(" -> ")})`);
+    if (chain.length > 2) fail(`${one.id}: ${chain.length} rotations during the look (${chain.join(" -> ")}) — expected home then the look`);
+    ok(`look-at fires at ${dist.toFixed(1)}wu, clamped ${off} notch off home, instantly (${chain.join(" -> ")})`);
+    // (iii) AND THE FEET STAY UNDER THE BODY THROUGH THE TURN. Every rotation
+    // has its OWN measured foot anchor, so a turn that moves the origin while
+    // the previous rotation is still drawn slides the body off its nadir
+    // shadow (maintainer 2026-08-09: "make sure the shadow nadir is under
+    // their feet so the turn looks good"). Re-checked HERE, mid-look, because
+    // 2b only ever saw NPCs at rest on their placed facing.
+    const turned = await page.evaluate(async (id) => {
+      const man = await (await fetch("/npcs.json")).json();
+      const byId = new Map(man.npcs.map((d) => [d.id, d]));
+      const n = window.__ml.npcInfo().find((x) => x.id === id);
+      const a = byId.get(n.charId)?.anchors?.[n.dir] ?? null;
+      return { dir: n.dir, measured: a, originX: n.originX, originY: n.originY,
+               dx: +(n.shadowX - n.sx).toFixed(2), dy: +(n.shadowY - n.sy).toFixed(2), tex: n.tex };
+    }, one.id);
+    if (!turned.measured) fail(`${one.id}: no measured anchor for the turned-to ${turned.dir}`);
+    if (Math.abs(turned.originY - turned.measured.y) > 0.001 || Math.abs(turned.originX - turned.measured.x) > 0.001)
+      fail(`${one.id}: after turning to ${turned.dir} the origin is ${turned.originX},${turned.originY}, not that rotation's anchor ${turned.measured.x},${turned.measured.y}`);
+    if (Math.abs(turned.dx) > 1 || Math.abs(turned.dy) > 1)
+      fail(`${one.id}: turned to ${turned.dir} and the shadow is ${turned.dx},${turned.dy}px off the feet`);
+    ok(`mid-turn (${turned.dir}): origin is that rotation's own anchor and the shadow is still under the feet`);
+    // ...and it hands the facing back to maps2 when you leave.
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 6, r - 6), [c, r]);
+    await page.waitForTimeout(4000);
+    const back = await read();
+    if (back.dir !== back.home && !back.looking)
+      fail(`${one.id}: after backing off it sits on ${back.dir}, not its home ${back.home} (glance is allowed, but none was active)`);
+    ok(`facing returns to maps2' ${back.home} once the player leaves`);
+  }
 
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
   // it must spend most of its time PARKED, and the pauses must vary — a fixed
