@@ -257,7 +257,7 @@ const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 const DEATH_DARK = 0.32; // brightness left at the end (0 would be a black screen)
 const DEATH_BODY_LIFT = 0.75; // how much of the veil the corpse gets back
-const DEATH_PROMPT_MS = 450; // the prompt fades in once the push has landed
+const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
 const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
 // ONE COMPASS NOTCH AT A TIME, so a turn SWEEPS instead of snapping — even a
@@ -1185,12 +1185,11 @@ export class WorldScene extends Phaser.Scene {
   private death: {
     at: number;
     armed: boolean;
-    text?: Phaser.GameObjects.Text;
     veil?: Phaser.GameObjects.Rectangle;
     /** A copy of the body drawn ABOVE the veil, so the corpse darkens LESS
      * than the world around it. */
     ghost?: Phaser.GameObjects.Image;
-    themeKey?: string; // light/dark the card was last built for
+    el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
     mode: string;
   } | null = null;
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
@@ -2286,7 +2285,7 @@ export class WorldScene extends Phaser.Scene {
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
           ghost: +(d.ghost?.alpha ?? 0).toFixed(3),
           veil: +(d.veil?.alpha ?? 0).toFixed(3),
-          prompt: +(d.text?.alpha ?? 0).toFixed(3),
+          prompt: d.el ? +(d.el.style.opacity || 0) : 0,
         };
       },
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -9423,35 +9422,42 @@ export class WorldScene extends Phaser.Scene {
       // A CARD IN THE HUD'S OWN CLOTHES, over the body — the character is
       // lying down, so where the head used to be is empty picture and the one
       // place a card does not cover anything (maintainer 2026-08-09).
-      // A CARD IN THE HUD'S OWN CLOTHES — including its THEME. The colours are
-      // read from the live CSS custom properties rather than written here, so
-      // it follows light/dark exactly as every other surface does, including
-      // the "follow the OS" case (theme.ts DELETES data-theme for that, so the
-      // attribute alone is not the answer — the computed value is).
-      const themeKey = `${document.documentElement.dataset.theme ?? "auto"}:${
-        window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "d" : "l"
-      }`;
-      if (!d.text || d.themeKey !== themeKey) {
-        const css = getComputedStyle(document.documentElement);
-        const pick = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
-        const style = {
-          fontFamily: pick("--serif", '"Iowan Old Style",Palatino,Georgia,ui-serif,serif'),
-          fontSize: "11px",
-          color: pick("--ink", "#262624"),
-          backgroundColor: pick("--surface", "#faf9f5"),
-          padding: { x: 7, y: 4 },
-          fontStyle: "600",
-        };
-        if (!d.text) {
-          d.text = this.add.text(0, 0, "Press to continue...", style).setOrigin(0.5, 1).setDepth(1_500_002).setResolution(4).setAlpha(0);
-        } else {
-          d.text.setStyle(style);
-        }
-        d.themeKey = themeKey;
+      // A REAL UI CARD, IN THE DOM, IN SCREEN SPACE. It was a Phaser text in
+      // WORLD space, which the 3x death zoom then magnified into a banner
+      // across the top of the screen (maintainer 2026-08-09: "way too high up
+      // and doesn't follow the UI/UX style at all"). Everything else in this
+      // game's chrome is DOM on the wiki theme, so this is too: the colours,
+      // the serif and the radii are the theme's own custom properties, which
+      // also means it follows light/dark for free and needs no JS to do it.
+      // Sits at 45% of the GAME VIEW's height — the camera centres the body
+      // just below middle, so this lands over it without covering it.
+      if (!d.el) {
+        const el = document.createElement("div");
+        el.className = "ml-death-card";
+        el.textContent = "Press to continue...";
+        el.style.cssText = [
+          "position:fixed",
+          "left:50%",
+          "top:calc((100dvh - var(--hud-h, 0px)) * 0.45)",
+          "transform:translate(-50%,-50%)",
+          "z-index:6",
+          "pointer-events:none",
+          "font-family:var(--serif)",
+          "font-size:15px",
+          "font-weight:600",
+          "color:var(--ink)",
+          "background:var(--surface)",
+          "border:1px solid var(--border)",
+          "border-radius:12px",
+          "padding:8px 16px",
+          "box-shadow:0 2px 10px rgba(0,0,0,.35)",
+          "opacity:0",
+          "transition:opacity .45s ease",
+        ].join(";");
+        document.body.appendChild(el);
+        d.el = el;
+        requestAnimationFrame(() => el && (el.style.opacity = "1"));
       }
-      // ABOVE the body: art-box top, minus a little air.
-      d.text.setPosition(av.sprite.x, av.sprite.y - av.sprite.displayHeight * 0.9);
-      d.text.setAlpha(Math.min(1, (now - (d.at + DEATH_ZOOM_MS)) / DEATH_PROMPT_MS));
     }
   }
 
@@ -9460,7 +9466,7 @@ export class WorldScene extends Phaser.Scene {
     const d = this.death;
     if (!d) return;
     this.death = null;
-    d.text?.destroy();
+    d.el?.remove();
     d.veil?.destroy();
     d.ghost?.destroy();
     gameAudio.setMode("overworld");
