@@ -747,9 +747,14 @@ try {
     await page.evaluate((v) => window.__ml.indoorWall(v), n);
     await page.waitForTimeout(900);
     const c = await page.evaluate(() => window.__ml.myCover());
+    // The REAL covered fraction, in texels, off the cover surfaces themselves
+    // (a GPU readback — dev only, never in the frame loop). On the pixel-exact
+    // path this is what the outline actually traces; `hiddenFrac` is only the
+    // band of the art box the flat cover LINE claims.
+    const cover = await page.evaluate(() => window.__ml.coverStats());
     const got = await page.evaluate(() => window.__ml.indoorWall().wall);
     if (got !== n) fail(`the dial refused ${n} levels (clamped to ${got}) — INDOOR_WALL_MAX and this gate disagree`);
-    hid.push({ n, ...c });
+    hid.push({ n, ...c, cover });
   }
   await page.evaluate((v) => window.__ml.indoorWall(v), before.wall);
   await page.waitForTimeout(900);
@@ -759,7 +764,25 @@ try {
     fail(`the outline does not follow the wall height: ${INDOOR_WALL_MAX - 1}/3/1 levels hide ${chain.join(" / ")} of the body — a taller wall must hide strictly more`);
   if (!(low.hiddenFrac < 0.4 * tall.hiddenFrac))
     fail(`a ONE-level wall still hides ${low.hiddenFrac} against a ${INDOOR_WALL_MAX - 1}-level wall's ${tall.hiddenFrac} — the outline is not tracking real cover`);
-  if (!tall.hiddenCropped)
+  // …AND THE OUTLINE TRACES ONLY THE HIDDEN PART. Which measurement proves
+  // that depends on the representation the outline is ON. `hiddenCropped` was
+  // literally `!!hidden.isCropped`, and the pixel-exact path has no crop to
+  // report — the ring IS the covered sub-silhouette's border, so what has to
+  // be true instead is that the covered set is a PROPER, non-empty subset of
+  // the silhouette. That is the strictly stronger claim: a horizontal crop can
+  // be "cropped" and still cover half the body that nothing is in front of.
+  if (tall.hiddenMode === "surface") {
+    const cs = tall.cover;
+    if (!cs || !(cs.coveredFrac > 0 && cs.coveredFrac < 1))
+      fail(`behind the tallest wall the outline traces ${cs ? `${cs.covered}/${cs.silhouette} = ${cs.coveredFrac}` : "an unreadable share"} ` +
+        `of the silhouette — a partly-visible body must be partly outlined, never all or nothing`);
+    const chainPx = hid.map((h) => (h.cover ? h.cover.coveredFrac : null));
+    if (chainPx.every((v) => v !== null) && !(chainPx[0] > chainPx[1] && chainPx[1] > chainPx[2]))
+      fail(`the COVERED TEXELS do not follow the wall height: ${INDOOR_WALL_MAX - 1}/3/1 levels cover ${chainPx.join(" / ")} ` +
+        `of the silhouette — the per-pixel cover set must grow with the wall`);
+    ok(`the outline is the covered sub-silhouette, per texel: ${INDOOR_WALL_MAX - 1}/3/1 levels cover ` +
+      `${chainPx.map((v) => (v === null ? "?" : `${Math.round(v * 100)}%`)).join(" / ")} of the body's own pixels`);
+  } else if (!tall.hiddenCropped)
     fail("the outline is drawn UNCROPPED over a partly-visible body — it must trace only the hidden part");
   // …and the ZERO, which is what proves the outline is not simply always on.
   // It comes from OUTDOORS in the open rather than from a short wall: the dial

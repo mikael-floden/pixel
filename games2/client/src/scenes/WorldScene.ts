@@ -172,6 +172,34 @@ const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
 const HIDDEN_RING_COLOR = 0xf0f0f0; // inner, a hair off white
 const HIDDEN_RING_BRIGHT = 0xffffff; // outer — the white the maintainer asked for
 const RING_PAD = 2; // outline canvas pad = border width in art pixels
+// THE COVER SURFACES (see registerCoverSlot / flushCoverSurfaces). Three
+// atlases sharing ONE slot layout, so a body's visible part, its covered part
+// and its outline are the same rectangle in all three and can never drift.
+// 1024x512 RGBA = 2 MB each. A slot is the body's frame padded by RING_PAD and
+// rounded up to a 32px class so freed slots are reusable; anything that does
+// not fit falls back to the flat coverY crop, together with its lit copy.
+const COVER_ATLAS_W = 1024;
+const COVER_ATLAS_H = 512;
+const COVER_GUTTER = 4; // > the 2px the ring dilation bleeds past a slot
+const COVER_BUCKET = 128; // occluder broad-phase bucket, world px
+// The two dilation passes that build the outline out of the COVERED part —
+// exactly ringTextureFor's structuring element (two successive 4-neighbour
+// dilations = the L1 ball of radius 2), applied to the covered sub-silhouette
+// instead of the whole one. Distance 2 gets the outer colour, then distance 1
+// overpaints with the inner, then the body itself is erased: a ring texel
+// draws iff ANY silhouette texel within L1 2 of it is covered.
+/** Bucket key for the occluder broad phase. Offset so the negative screen y a
+ * tall column reaches still packs into one non-negative integer. */
+const coverBucketKey = (bx: number, by: number) => (bx + 1024) * 65536 + (by + 1024);
+const COVER_RING_PASSES: { color: number; offsets: [number, number][] }[] = [2, 1].map((r) => ({
+  color: r === 2 ? HIDDEN_RING_BRIGHT : HIDDEN_RING_COLOR,
+  offsets: (() => {
+    const o: [number, number][] = [];
+    for (let dy = -r; dy <= r; dy++)
+      for (let dx = -r; dx <= r; dx++) if (Math.abs(dx) + Math.abs(dy) <= r) o.push([dx, dy]);
+    return o;
+  })(),
+}));
 // Tap hitboxes (maintainer round 12: taps kept missing small targets). World
 // px ≈ screen px at zoom 1; phones run integer zoom ≥1, so these are AT
 // LEAST fingertip-scale on every device.
@@ -500,6 +528,10 @@ interface Avatar {
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
+  // The pixel-exact cover surfaces (see BodyVisual) — structurally shared with
+  // monsters and NPCs through the same body pipeline.
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   hopUntil: number;
   hopDur?: number; // duration (ms) of the CURRENT hop arc (JUMP_MS jump vs STEP_HOP_MS step)
   hopH?: number; // peak height (px) of the current hop arc
@@ -694,6 +726,9 @@ interface MonsterAvatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
+  // The pixel-exact cover surfaces (see BodyVisual / registerCoverSlot).
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
   shadowH: number; // (footprint blended toward body width; see addMonster)
@@ -812,8 +847,28 @@ interface BodyVisual {
   lit?: Phaser.GameObjects.Sprite;
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
+  // The body's slot in the three cover atlases, held while it lives, and the
+  // frame counter it was last registered on. `coverAt === scene.coverTick` is
+  // what both consumers test — a body that did not register this frame falls
+  // back to the flat coverY crop, and the OUTLINE and the LIT COPY must always
+  // make that decision together.
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   surfLevel?: number;
   swimming?: boolean;
+}
+
+/** One body-sized rectangle, at the SAME coordinates in all three cover
+ * atlases, registered as a named frame on each. `w`/`h` are the 32px-rounded
+ * class box; the body's padded frame sits at its top-left corner. */
+interface CoverSlot {
+  i: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  name: string;
+  cls: string;
 }
 
 export class WorldScene extends Phaser.Scene {
@@ -1031,6 +1086,36 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  // ── THE COVER SURFACES ────────────────────────────────────────────────────
+  // "Covered" is not modelled, it is RASTERISED: the very occluder Images that
+  // hide a body are drawn into that body's own frame grid, so a diagonal wall
+  // top is diagonal, a doorway is a hole and a tree trunk covers three columns
+  // — because that is what the terrain drew. Three surfaces, one slot layout:
+  //   E = the body frame MINUS every covering occluder  → the LIT COPY
+  //   C = the body frame MINUS E                        → the covered part
+  //   O = dilate2(C) two-tone MINUS the body frame      → the WHITE OUTLINE
+  // E and C are complements BY CONSTRUCTION (C is one erase of E), which is
+  // what makes the lit copy and the outline structurally unable to disagree —
+  // it used to rest on two call sites reading one scalar the same way.
+  private coverExact = false;
+  private coverE?: Phaser.Textures.DynamicTexture;
+  private coverC?: Phaser.Textures.DynamicTexture;
+  private coverO?: Phaser.Textures.DynamicTexture;
+  private coverSlots: CoverSlot[] = [];
+  private coverFree = new Map<string, CoverSlot[]>();
+  private coverShelf = { x: 0, y: 0, h: 0 };
+  private coverQueue: BodyVisual[] = [];
+  private coverScratch?: Phaser.GameObjects.Image;
+  private coverTick = 1;
+  private coverSig = "";
+  // Bumped by rebuildOccluders/rebuildProps — the ONLY things that move,
+  // create or cull an occluder image, so it is the whole "did the terrain
+  // change" term of a slot's rebuild signature.
+  private coverGen = 0;
+  private coverBuckets = new Map<number, Phaser.GameObjects.Image[]>();
+  private coverSeen = new Set<Phaser.GameObjects.Image>();
+  private coverCands: Phaser.GameObjects.Image[] = [];
+  private coverStat = { slots: 0, quads: 0, brackets: 0, skips: 0, flushes: 0, cands: 0 };
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
@@ -1289,6 +1374,7 @@ export class WorldScene extends Phaser.Scene {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.ensureMonsterShadowTexture();
+    this.initCoverSurfaces();
     this.buildAnimations();
     this.buildMonsterAnimations();
     if (this.world) this.setupStreamingGround();
@@ -2034,6 +2120,13 @@ export class WorldScene extends Phaser.Scene {
           // swallowed. It is the number to assert on, because "the ring exists"
           // is true even when it is cropped to nothing.
           hidden: av.hidden ? av.hidden.visible : null,
+          // WHICH REPRESENTATION the outline is on. "surface" = the pixel-exact
+          // cover atlas (a per-texel set, so there is no crop to report and
+          // `hiddenCropped` is meaningless); "crop" = the old flat coverY band,
+          // still the fail-open fallback. Ask coverStats() for the real
+          // covered/silhouette fraction — it costs a GPU readback, so it is a
+          // DEV probe and never runs in the frame loop.
+          hiddenMode: av.coverAt === this.coverTick && av.coverSlot ? "surface" : "crop",
           hiddenCropped: av.hidden ? !!av.hidden.isCropped : null,
           hiddenFrac: (() => {
             if (!av.hidden?.visible || av.coverY === undefined) return 0;
@@ -2044,6 +2137,52 @@ export class WorldScene extends Phaser.Scene {
           })(),
         };
       },
+      // THE REAL COVERED FRACTION, in texels — what the pixel-exact outline
+      // actually traces, as opposed to `hiddenFrac`'s band of the art box.
+      // Reads the body's own slot back out of the C (covered) and E (visible)
+      // surfaces, which tile its silhouette exactly, so
+      // `covered / (covered + visible)` needs no CPU alpha map and cannot
+      // disagree with what is drawn. ASYNC and dev-only: it is a GPU readback.
+      coverStats: (which?: string) => {
+        const b: BodyVisual | undefined = !which || which === "me"
+          ? this.avatars.get(this.room?.sessionId ?? "")
+          : this.monsters.get(which);
+        const slot = b ? this.coverSlotOf(b) : undefined;
+        if (!b || !slot || !this.coverC || !this.coverE) return Promise.resolve(null);
+        // NB whole-atlas snapshot, then index the slot: snapshotArea() is GL
+        // bottom-origin while snapshot() is not, and a silently y-flipped read
+        // would report a plausible-looking wrong number.
+        const count = (dt: Phaser.Textures.DynamicTexture) =>
+          new Promise<number>((res) => {
+            dt.snapshot((img: any) => {
+              const cnv = document.createElement("canvas");
+              cnv.width = dt.width;
+              cnv.height = dt.height;
+              const g = cnv.getContext("2d", { willReadFrequently: true })!;
+              g.drawImage(img, 0, 0);
+              const d = g.getImageData(slot.x, slot.y, slot.w, slot.h).data;
+              let n = 0;
+              for (let i = 3; i < d.length; i += 4) if (d[i] >= 128) n++;
+              res(n);
+            });
+          });
+        return Promise.all([count(this.coverC), count(this.coverE)]).then(([cov, vis]) => ({
+          covered: cov,
+          visible: vis,
+          silhouette: cov + vis,
+          coveredFrac: cov + vis ? +(cov / (cov + vis)).toFixed(4) : 0,
+          outlined: !!b.hidden?.visible,
+        }));
+      },
+      // Per-frame cost of the cover surfaces: draw brackets (CONSTANT in body
+      // count — that is what the shared atlas buys), quads, how many bodies are
+      // on a surface, and how often a frame needs no rebuild at all.
+      coverCost: () => ({
+        exact: this.coverExact,
+        ...this.coverStat,
+        allocated: this.coverSlots.length,
+        buckets: this.coverBuckets.size,
+      }),
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
@@ -2425,6 +2564,10 @@ export class WorldScene extends Phaser.Scene {
           // box it claims, exactly as myCover does, plus whether this body is
           // sealed in a room the camera's owner is not in (the wall-hack gate).
           hidden: mv.hidden ? mv.hidden.visible : null,
+          // "surface" = the pixel-exact cover atlas, "crop" = the flat coverY
+          // band (the fail-open fallback). __ml.coverStats(id) reads the real
+          // covered/silhouette texel counts back off the surfaces.
+          hiddenMode: mv.coverAt === this.coverTick && mv.coverSlot ? "surface" : "crop",
           hiddenFrac: (() => {
             if (!mv.hidden?.visible || mv.coverY === undefined) return 0;
             const ab = this.artBounds(mv.sprite);
@@ -2954,6 +3097,8 @@ export class WorldScene extends Phaser.Scene {
     if (!av) return;
     av.sprite.destroy();
     av.lit?.destroy();
+    // BEFORE av.waterMask is destroyed below — the outline holds that mask now.
+    this.releaseCoverSlot(av);
     av.hidden?.destroy();
     av.shadow.destroy();
     av.label.destroy();
@@ -3331,6 +3476,327 @@ export class WorldScene extends Phaser.Scene {
     return key;
   }
 
+  /** Allocate the three cover atlases, once, at boot. Everything downstream
+   * branches on `coverExact`, and the false side is the flat coverY crop this
+   * feature shipped with — so a Canvas renderer, or a driver that refuses the
+   * textures, degrades to the old behaviour instead of to no outline at all
+   * (showing a line that could have been hidden is cosmetic; hiding one that
+   * should show is the feature not working). */
+  private initCoverSurfaces() {
+    if (this.game.renderer.type !== Phaser.WEBGL) return;
+    try {
+      const mk = (key: string) => {
+        if (this.textures.exists(key)) this.textures.remove(key);
+        const dt = this.textures.addDynamicTexture(key, COVER_ATLAS_W, COVER_ATLAS_H);
+        // NEAREST explicitly — addDynamicTexture does not inherit pixelArt's
+        // default, and LINEAR smears the 2px outline into a halo (same trap
+        // ringTextureFor documents).
+        dt?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        // Belt and braces on top of the integer placement in
+        // coverDrawOccluders: a DynamicTexture's BaseCamera ships
+        // renderRoundPixels true and nothing ever updates it, so a quad it
+        // draws is snapped to the atlas grid. Every position we hand it is
+        // already a whole texel, so this changes nothing today — it just stops
+        // a future fractional draw from being silently re-registered.
+        if (dt) (dt.camera as unknown as { renderRoundPixels: boolean }).renderRoundPixels = false;
+        return dt ?? undefined;
+      };
+      this.coverE = mk("cover-E");
+      this.coverC = mk("cover-C");
+      this.coverO = mk("cover-O");
+      this.coverExact = !!(this.coverE && this.coverC && this.coverO);
+    } catch {
+      this.coverExact = false;
+    }
+  }
+
+  /** The reused off-display-list Image every atlas blit goes through (the
+   * pattern nightlight already ships for its glow stamps: one object,
+   * reconfigured and batchDraw'n per stamp inside a single beginDraw). */
+  private coverBlitter(): Phaser.GameObjects.Image {
+    if (!this.coverScratch)
+      this.coverScratch = this.make.image({ x: 0, y: 0, key: "__MISSING", add: false }).setOrigin(0, 0);
+    return this.coverScratch;
+  }
+
+  /** Give this body a slot, keeping the one it already has when the frame size
+   * class is unchanged. Null = no slot (atlas full, or a frame larger than the
+   * atlas) → BOTH consumers fall back, together. */
+  private coverSlotFor(b: BodyVisual, w: number, h: number): CoverSlot | null {
+    const cw = Math.ceil(w / 32) * 32;
+    const ch = Math.ceil(h / 32) * 32;
+    const cls = `${cw}x${ch}`;
+    const cur = b.coverSlot;
+    if (cur && cur.cls === cls) return cur;
+    if (cur) this.releaseCoverSlot(b);
+    const pool = this.coverFree.get(cls);
+    let slot = pool && pool.length ? pool.pop() : undefined;
+    if (!slot) slot = this.coverAllocSlot(cw, ch, cls) ?? undefined;
+    if (!slot) return null;
+    b.coverSlot = slot;
+    return slot;
+  }
+
+  /** Shelf packer over the shared atlas rect. One Frame per slot per surface,
+   * registered once and reused for its whole life — the frame rect is the
+   * CLASS box, so a smaller body simply leaves transparent margin nobody
+   * reads, and no frame is ever re-added. */
+  private coverAllocSlot(w: number, h: number, cls: string): CoverSlot | null {
+    if (!this.coverE || !this.coverC || !this.coverO) return null;
+    const s = this.coverShelf;
+    if (s.x + w > COVER_ATLAS_W) {
+      s.y += s.h + COVER_GUTTER;
+      s.x = 0;
+      s.h = 0;
+    }
+    if (s.y + h > COVER_ATLAS_H || w > COVER_ATLAS_W) return null;
+    const slot: CoverSlot = { i: this.coverSlots.length, x: s.x, y: s.y, w, h, name: `cs${this.coverSlots.length}`, cls };
+    s.x += w + COVER_GUTTER;
+    if (h > s.h) s.h = h;
+    for (const t of [this.coverE, this.coverC, this.coverO]) t.add(slot.name, 0, slot.x, slot.y, slot.w, slot.h);
+    this.coverSlots.push(slot);
+    return slot;
+  }
+
+  private releaseCoverSlot(b: BodyVisual) {
+    const slot = b.coverSlot;
+    if (!slot) return;
+    b.coverSlot = undefined;
+    b.coverAt = undefined;
+    let pool = this.coverFree.get(slot.cls);
+    if (!pool) this.coverFree.set(slot.cls, (pool = []));
+    pool.push(slot);
+  }
+
+  /** Appended to the TAIL of resolveBodyDepth — the ONE place that runs for
+   * avatars, monsters AND NPCs before both consumers. Registering inside
+   * syncCoverOutline instead would skip every body the two room guards
+   * suppress, leaving their LIT COPIES on the flat crop while everyone else is
+   * per-pixel: the outline and the lit copy would be cut on different rules.
+   * `sprite.visible` first keeps the camera-culled bodies at zero cost. */
+  private registerCoverSlot(b: BodyVisual) {
+    b.coverAt = undefined;
+    const sp = b.sprite;
+    if (!this.coverExact || b.coverY === undefined || !sp.visible) return;
+    // The atlas maps world px to frame px by integer translation, which is
+    // only the identity at scale 1 (bodies and occluders both ship that).
+    if (sp.scaleX !== 1 || sp.scaleY !== 1) return;
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
+    if (!fw || !fh) return;
+    if (!this.coverSlotFor(b, fw + RING_PAD * 2, fh + RING_PAD * 2)) return;
+    b.coverAt = this.coverTick;
+    this.coverQueue.push(b);
+  }
+
+  /** The slot a consumer may read THIS frame, or undefined → flat-crop path. */
+  private coverSlotOf(b: BodyVisual): CoverSlot | undefined {
+    return b.coverAt === this.coverTick ? b.coverSlot : undefined;
+  }
+
+  /** Bucket index over the drawn occluder + prop images, rebuilt with them
+   * (i.e. once per OCC_STEP of camera drift, never per frame). Without it a
+   * covered body scans 100-3,885 images every frame on the phone's CPU. */
+  private rebuildCoverIndex() {
+    this.coverBuckets.clear();
+    this.coverGen++;
+    if (!this.coverExact) return;
+    const add = (im: Phaser.GameObjects.Image) => {
+      if (!im.visible) return;
+      const f = im.frame;
+      const x0 = im.x - im.originX * f.cutWidth * im.scaleX;
+      const y0 = im.y - im.originY * f.cutHeight * im.scaleY;
+      const x1 = x0 + f.cutWidth * im.scaleX;
+      const y1 = y0 + f.cutHeight * im.scaleY;
+      for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
+        for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
+          const k = coverBucketKey(bx, by);
+          let a = this.coverBuckets.get(k);
+          if (!a) this.coverBuckets.set(k, (a = []));
+          a.push(im);
+        }
+    };
+    for (const im of this.occluders) add(im);
+    for (const im of this.propImgs) add(im);
+  }
+
+  /** Everything drawn IN FRONT of this body that overlaps its padded frame box.
+   * `depth > sprite.depth` is Phaser's own painter rule, which is exactly what
+   * "covered" means on screen. The returned array is reused — consume it before
+   * asking again. */
+  private coverCandidates(sp: Phaser.GameObjects.Sprite, x0: number, y0: number, x1: number, y1: number) {
+    const out = this.coverCands;
+    out.length = 0;
+    const seen = this.coverSeen;
+    seen.clear();
+    for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
+      for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
+        const a = this.coverBuckets.get(coverBucketKey(bx, by));
+        if (!a) continue;
+        for (const im of a) {
+          if (seen.has(im)) continue;
+          seen.add(im);
+          if (!im.visible || im.depth <= sp.depth) continue;
+          const f = im.frame;
+          const l = im.x - im.originX * f.cutWidth * im.scaleX;
+          const t = im.y - im.originY * f.cutHeight * im.scaleY;
+          if (l >= x1 || l + f.cutWidth * im.scaleX <= x0 || t >= y1 || t + f.cutHeight * im.scaleY <= y0) continue;
+          out.push(im);
+        }
+      }
+    return out;
+  }
+
+  /** Draw the body's CURRENT frame into its slot, flip BAKED IN (so the slot is
+   * in display space and every consumer draws it with flipX false). */
+  private coverDrawBody(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+    const sp = b.sprite;
+    const s = b.coverSlot!;
+    const im = this.coverBlitter();
+    im.setTexture(sp.texture.key, sp.frame.name).setOrigin(0, 0).setFlipX(sp.flipX).setAlpha(1).clearTint();
+    if (im.isCropped) im.setCrop();
+    dt.batchDraw(im, s.x + RING_PAD, s.y + RING_PAD);
+    this.coverStat.quads++;
+  }
+
+  /** Erase every covering occluder out of the body's slot.
+   *
+   * THE PLACEMENT IS AN INTEGER TRANSLATION, AND THAT IS EXACT, NOT A ROUNDING
+   * FUDGE. A body's frame grid is not aligned to the world integer grid (its
+   * origin is the measured foot anchor — 56.504px into a 112px frame), so an
+   * occluder sits at a fractional offset q in the slot. But the two grids have
+   * the SAME PITCH (both scale 1), so NEAREST sampling at offset q gives
+   * literally the same texels as a whole-texel translation by ceil(q - 0.5):
+   * slot texel k wants source texel floor(k + 0.5 - q) = k - ceil(q - 0.5).
+   * That is exactly the CPU rule "which terrain texel is under this character
+   * texel's centre", expressed as a translation — and expressing it that way
+   * takes the engine's own sub-texel phase out of the answer. It has to be:
+   * MEASURED (scripts/_tmp-iso2.mjs), a DynamicTexture's endDraw blit shifts
+   * the Y phase of a fractionally-placed quad, which walked the cover boundary
+   * one texel outward along every diamond edge (15 of 1,795 silhouette texels
+   * at wallA, 0 after).
+   *
+   * Each image is then cropped to the slot's own window, or a 64x128 tile would
+   * spill into the neighbouring slot. */
+  private coverDrawOccluders(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+    const sp = b.sprite;
+    const s = b.coverSlot!;
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
+    const wx0 = sp.x - sp.originX * fw - RING_PAD;
+    const wy0 = sp.y - sp.originY * fh - RING_PAD;
+    const W = fw + RING_PAD * 2;
+    const H = fh + RING_PAD * 2;
+    const cands = this.coverCandidates(sp, wx0, wy0, wx0 + W, wy0 + H);
+    this.coverStat.cands += cands.length;
+    for (const im of cands) {
+      const f = im.frame;
+      const ow = f.cutWidth;
+      const oh = f.cutHeight;
+      const ix = Math.ceil(im.x - wx0 - 0.5); // slot column of the image's col 0
+      const iy = Math.ceil(im.y - wy0 - 0.5);
+      const dx0 = Math.max(0, -ix);
+      const dx1 = Math.min(ow, W - ix);
+      const dy0 = Math.max(0, -iy);
+      const dy1 = Math.min(oh, H - iy);
+      if (dx1 <= dx0 || dy1 <= dy0) continue;
+      let px = s.x + ix;
+      const py = s.y + iy;
+      const full = dx0 === 0 && dy0 === 0 && dx1 === ow && dy1 === oh;
+      if (!full) {
+        im.setCrop(dx0, dy0, dx1 - dx0, dy1 - dy0);
+        // MEASURED (scripts/_tmp-cropflip.mjs): on a flipped object Phaser puts
+        // the cropped window at display x = realWidth - x - width instead of at
+        // x, so the sub-image lands mirrored about the frame centre. The content
+        // it samples is right; only the registration is off, by this much.
+        if (im.flipX) px += 2 * dx0 + (dx1 - dx0) - f.realWidth;
+      }
+      dt.batchDraw(im, px, py);
+      this.coverStat.quads++;
+      if (!full) im.setCrop();
+    }
+  }
+
+  private coverDrawSlot(dt: Phaser.Textures.DynamicTexture, src: Phaser.Textures.DynamicTexture, s: CoverSlot, dx: number, dy: number, tint?: number) {
+    const im = this.coverBlitter();
+    im.setTexture(src.key, s.name).setOrigin(0, 0).setFlipX(false).setAlpha(1);
+    if (tint === undefined) im.clearTint();
+    else im.setTintFill(tint);
+    if (im.isCropped) im.setCrop();
+    dt.batchDraw(im, s.x + dx, s.y + dy);
+    this.coverStat.quads++;
+  }
+
+  /** Build all three surfaces for every body that registered this frame, once,
+   * after applyObjectLights — SEVEN draw brackets and three clears, CONSTANT in
+   * body count (that is the whole reason for the atlas: on a tile-based mobile
+   * GPU the charge is the render-pass switch, not the fill). Skipped entirely
+   * when no slot's signature moved. */
+  private flushCoverSurfaces() {
+    const q = this.coverQueue;
+    const E = this.coverE, C = this.coverC, O = this.coverO;
+    this.coverStat.slots = q.length;
+    if (!E || !C || !O || !q.length) {
+      this.coverQueue = [];
+      return;
+    }
+    let sig = String(this.coverGen);
+    for (const b of q) {
+      const sp = b.sprite;
+      const s = b.coverSlot!;
+      sig += `|${s.i},${sp.texture.key},${sp.frame.name},${sp.flipX ? 1 : 0},${Math.round(sp.x * 16)},${Math.round(sp.y * 16)},${Math.round(sp.depth * 8)}`;
+    }
+    if (sig === this.coverSig) {
+      this.coverStat.skips++;
+      this.coverQueue = [];
+      return;
+    }
+    this.coverSig = sig;
+    this.coverStat.flushes++;
+    this.coverStat.quads = 0;
+    this.coverStat.cands = 0;
+    this.coverStat.brackets = 7;
+
+    // E — what you can still SEE: the body, minus the terrain in front of it.
+    E.clear();
+    E.beginDraw();
+    for (const b of q) this.coverDrawBody(E, b);
+    E.endDraw();
+    E.beginDraw();
+    for (const b of q) this.coverDrawOccluders(E, b);
+    E.endDraw(true);
+
+    // C — what is COVERED: the body, minus what you can see. Complementary by
+    // construction, so nothing has to keep two rules in agreement.
+    C.clear();
+    C.beginDraw();
+    for (const b of q) this.coverDrawBody(C, b);
+    C.endDraw();
+    C.beginDraw();
+    for (const b of q) this.coverDrawSlot(C, E, b.coverSlot!, 0, 0);
+    C.endDraw(true);
+
+    // O — the outline: the L1-ball-2 dilation of C in the outer colour, the
+    // ball-1 dilation overpainted in the inner colour, then the body erased.
+    // Per SLOT, never whole-atlas: 18 blits of a 1024x512 atlas is ~9.4 Mpix a
+    // frame; 18 blits of a ~40x96 body is ~70 Kpix.
+    O.clear();
+    for (const pass of COVER_RING_PASSES) {
+      O.beginDraw();
+      for (const b of q) {
+        const s = b.coverSlot!;
+        for (const [dx, dy] of pass.offsets) this.coverDrawSlot(O, C, s, dx, dy, pass.color);
+      }
+      O.endDraw();
+    }
+    O.beginDraw();
+    for (const b of q) this.coverDrawBody(O, b);
+    O.endDraw(true);
+
+    this.coverBlitter().clearTint();
+    this.coverQueue = [];
+  }
+
   /** The engagement overlays, per frame after the monster loop: (1) the red
    * target/aggro borders + the blue item border; (2) the settings debug
    * rings: every monster's aggro radius, plus the provoke radius on the
@@ -3394,10 +3860,11 @@ export class WorldScene extends Phaser.Scene {
     const cropH = (b.coverY - frameTop) / sp.scaleY;
     const ab = this.artBounds(sp);
     if (cropH >= ab.y1) return hide(); // the cover line is below the art: nothing is hidden
-    const key = this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
-    if (!key) return hide();
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
+    const slot = this.coverSlotOf(b);
+    const key = slot ? this.coverO!.key : this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
+    if (!key) return hide();
     let img = b.hidden;
     if (!img) {
       img = this.add.image(0, 0, key).setVisible(false);
@@ -3406,31 +3873,55 @@ export class WorldScene extends Phaser.Scene {
     // Same sync chain as the target rings, and for the same reasons: position
     // from the LIVE sprite (lit copies sync later in the frame and smear a
     // hopping body sideways), and shift the origin by RING_PAD because the
-    // outline canvas is the frame padded on every side.
+    // outline canvas is the frame padded on every side. The cover SLOT is the
+    // same padded box (rounded up to its size class), so the only thing that
+    // changes is the denominator — and the flip, which is baked into the slot.
+    const sw = slot ? slot.w : fw + RING_PAD * 2;
+    const sh = slot ? slot.h : fh + RING_PAD * 2;
     img
-      .setTexture(key)
-      .setOrigin(
-        (sp.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
-        (sp.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
-      )
+      .setTexture(key, slot ? slot.name : undefined)
+      .setOrigin((sp.originX * fw + RING_PAD) / sw, (sp.originY * fh + RING_PAD) / sh)
       .setScale(sp.scaleX, sp.scaleY)
-      .setFlipX(sp.flipX)
+      .setFlipX(slot ? false : sp.flipX)
       .setPosition(sp.x, sp.y)
       .setAlpha(1)
       .setDepth(900_001.43)
       .setVisible(true);
-    // The crop lives in the PADDED frame, so every sprite-frame y needs
-    // + RING_PAD — a crop computed in sprite-frame pixels is silently 2px high
-    // and clips the top row of the line off.
-    if (cropH <= ab.y0 + 2) {
-      // Completely hidden — the whole silhouette is the outline. This is the
-      // case the feature exists for, and the inverse of syncLitCopy's
-      // setVisible(false) on the very same test.
+    if (slot) {
+      // THE PIXEL-EXACT PATH. The O surface already IS the ring of the covered
+      // sub-silhouette — a diagonal wall top, a doorway, a tree trunk — so
+      // there is nothing left to crop. (maintainer 2026-08-09: "the effect is
+      // just a line that is not close to the exact pixels that are actually
+      // behind something"; the flat coverY line was one horizontal row across
+      // the whole body, measured 71.5% false positives.)
+      if (img.isCropped) img.setCrop();
+    } else if (cropH <= ab.y0 + 2) {
+      // FALLBACK, unchanged: completely hidden — the whole silhouette is the
+      // outline, the inverse of syncLitCopy's setVisible(false) on this test.
       if (img.isCropped) img.setCrop();
     } else {
+      // The crop lives in the PADDED frame, so every sprite-frame y needs
+      // + RING_PAD — a crop computed in sprite-frame pixels is silently 2px
+      // high and clips the top row of the line off.
       const cut = cropH + RING_PAD;
       img.setCrop(0, cut, fw + RING_PAD * 2, fh + RING_PAD * 2 - cut);
     }
+    // THE WATER CUT (maintainer 2026-08-09: "when swimming behind a wall the
+    // entire body now gets the wall-hack effect while only the top of the
+    // players body should"). The outline was the ONE body layer that never got
+    // the waterline mask — updateWaterClip puts it on the base sprite and
+    // applyObjectLights puts the SAME object on the lit copy, so the ring was
+    // tracing the submerged legs through open water.
+    //
+    // Read `sp.mask`, never `swimming`/`swimT`: that is the same OBJECT the
+    // body itself is cut with, so the two cannot disagree — including in all
+    // three of updateWaterClip's bail-outs (not swimming, swimT<=0.001, no
+    // waterline span), where `sp.mask` is null and the outline is whole again
+    // in the SAME frame. Monsters and NPCs never swim, so `sprite.mask` is
+    // always null for them and this is a no-op.
+    if (sp.mask) {
+      if (img.mask !== sp.mask) img.setMask(sp.mask);
+    } else if (img.mask) img.clearMask();
   }
 
   private updateTargetOverlays() {
@@ -3692,6 +4183,7 @@ export class WorldScene extends Phaser.Scene {
     const mv = this.monsters.get(id);
     if (!mv) return;
     mv.lit?.destroy();
+    this.releaseCoverSlot(mv);
     mv.hidden?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
@@ -4746,6 +5238,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number) {
+    // One tick per frame, BEFORE any body registers. Both consumers test
+    // `coverAt === coverTick`, and so do the dev probes AFTER the frame has
+    // run — bumping it in the flush instead would make every probe read
+    // "this body has no surface" one tick too early.
+    this.coverTick++;
     this.redrawGround();
     this.rebuildOccluders();
     if (!this.room) return;
@@ -5747,6 +6244,9 @@ export class WorldScene extends Phaser.Scene {
       lights.push(...this.emissiveLights);
     }
     this.applyObjectLights();
+    // After every body has registered AND both consumers have read their slot,
+    // before render: rasterise the surfaces the frame's images point at.
+    this.flushCoverSurfaces();
     this.footsteps?.update(this.time.now);
     this.atmo.update(lights, this.cameras.main, dt);
   }
@@ -5983,6 +6483,13 @@ export class WorldScene extends Phaser.Scene {
       // Like the avatar lit copies: a camera-forward SOLID structure whose
       // art overlaps the fire must cover its lit copy too — otherwise the
       // flames float on top of the pillar in front (playtester report).
+      //
+      // DELIBERATELY THE LAST FLAT-LINE CONSUMER IN THE FILE. Bodies moved to
+      // the per-pixel cover surfaces (2026-08-09); this did not, and should
+      // not: it is the lit copy of a STATIC prop at a fixed spot, its "body" is
+      // a flame halo with no silhouette to trace, and it never gets an outline
+      // — so there is no second layer here for a flat line to disagree with.
+      // Not forgotten; if the fire ever grows a cover outline, give it a slot.
       if (on && this.campfire) {
         let coverY = Infinity;
         for (const o of this.occluderMeta) {
@@ -7047,6 +7554,10 @@ export class WorldScene extends Phaser.Scene {
       b.coverY = undefined;
     }
     b.sprite.setDepth(depth);
+    // The depth is final here, and `depth > sprite.depth` is what the cover
+    // surfaces filter occluders on — so the slot registers LAST, and in this
+    // one function rather than in either consumer (see registerCoverSlot).
+    this.registerCoverSlot(b);
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -7105,22 +7616,38 @@ export class WorldScene extends Phaser.Scene {
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
+    const sp = b.sprite;
+    // THE SAME CUT AS THE OUTLINE, FROM THE SAME PIXELS. On the exact path the
+    // lit copy literally IS the E surface and the outline is built from its
+    // complement by a single erase — so "no seam and no double-draw" stops
+    // being a discipline two call sites have to keep and becomes a property of
+    // the framebuffer. (It also kills the dark band the flat line left across
+    // visible legs, which only ever showed at Night.)
+    const slot = this.coverSlotOf(b);
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
     b.lit
       .setVisible(true)
-      .setTexture(b.sprite.texture.key, b.sprite.frame.name)
-      .setPosition(b.sprite.x, b.sprite.y)
-      .setOrigin(b.sprite.originX, b.sprite.originY)
-      .setScale(b.sprite.scaleX, b.sprite.scaleY)
-      .setDepth(litDepth(b.sprite.depth))
+      .setTexture(slot ? this.coverE!.key : sp.texture.key, slot ? slot.name : sp.frame.name)
+      .setPosition(sp.x, sp.y)
+      .setOrigin(
+        slot ? (sp.originX * fw + RING_PAD) / slot.w : sp.originX,
+        slot ? (sp.originY * fh + RING_PAD) / slot.h : sp.originY,
+      )
+      .setFlipX(slot ? false : sp.flipX)
+      .setScale(sp.scaleX, sp.scaleY)
+      .setDepth(litDepth(sp.depth))
       .setAlpha(1 - Math.min(1, Math.max(0, fog.a)))
       .setTint((r << 16) | (g << 8) | bl);
-    if (b.coverY !== undefined) {
-      // Frame-space y of the occluding wall's top line.
-      const frameTop = b.sprite.y - b.sprite.displayHeight * b.sprite.originY;
-      const cropH = (b.coverY - frameTop) / b.sprite.scaleY;
-      const ab = this.artBounds(b.sprite);
+    if (slot) {
+      if (b.lit.isCropped) b.lit.setCrop();
+    } else if (b.coverY !== undefined) {
+      // FALLBACK: frame-space y of the occluding wall's top line.
+      const frameTop = sp.y - sp.displayHeight * sp.originY;
+      const cropH = (b.coverY - frameTop) / sp.scaleY;
+      const ab = this.artBounds(sp);
       if (cropH <= ab.y0 + 2) b.lit.setVisible(false); // wall covers the whole figure
-      else b.lit.setCrop(0, 0, b.sprite.frame.cutWidth, cropH);
+      else b.lit.setCrop(0, 0, fw, cropH);
     } else if (b.lit.isCropped) b.lit.setCrop();
     return l;
   }
@@ -8874,6 +9401,11 @@ export class WorldScene extends Phaser.Scene {
       (t, v) => this.artYOff(tileKey(t, v)),
       false,
     ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
+
+    // The occluder + prop images have just been destroyed and recreated, so
+    // this is the one moment their broad-phase index (and every cover slot's
+    // "did the terrain move" signature term) can go stale.
+    this.rebuildCoverIndex();
   }
 
   /**
