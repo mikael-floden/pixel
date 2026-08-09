@@ -1444,6 +1444,43 @@ visible head/shoulders are ABOVE the surface).
   verify-bars asserts the REAL level-1 stats (40/40 HP, 20/20 EP, 0/50 XP)
   after waiting out the join race; verify-gamepad expects Jump+Pick up+Walk.
 
+## Death (WorldScene: startDeath / stepDeath / endDeath)
+
+Dying is a slow push into the dark that ENDS IN A PRESS (maintainer 2026-08-09).
+One eased curve over 10s drives all of it: the camera zooms to 3x on the body,
+and a screen-space veil ramps to 0.86 alpha. The veil COMPOSITES over the
+world's own night/weather/shadow — it never replaces them, which is the whole
+point: an earlier cut used a camera ColorMatrix for a monochrome pass, and
+adding a post-pipeline re-routes the scene through its own render target, which
+took the night overlays AND every body with it. The screen went LIGHTER at the
+moment it should have gone dark and the corpse vanished. **Do not put a postFX
+on the main camera.** Monochrome, if it ever comes back, belongs inside the
+night shader that already owns the world's colour.
+
+THE PRESS IS THE REVIVE. `PLAYER_RESPAWN_MS` is now the EARLIEST a press may
+land (the die clip must finish), not a deadline; `PLAYER_DEATH_MAX_MS` is a
+backstop for the client that never presses (closed tab, backgrounded phone).
+Both paths go through one `revivePlayer`. The prompt is a DOM card on the wiki
+theme in SCREEN space at 40% of the game view — as world-space Phaser text the
+3x zoom magnified it into a banner — and it is what ARMS the press: a tap
+during the fade is swallowed, and the server refuses one before the clip ends.
+
+OPEN, and the reason it is open: the corpse should stay LIGHTER than the world.
+A second copy of the body drawn above the veil did that and shipped briefly,
+but a body drawn twice is a body outside the depth sort and it covered things it
+belonged behind. The correct fix is LIGHTING, not compositing: fold the death
+dim into `ambOut`/`ambEff` (one place, ~line 6556) and divide it back out of my
+own body's `syncLitCopy` sample. The catch that makes it a real job rather than
+an edit: point lights, the torch, emission floors and the sun terms are NOT in
+ambient, so they must be scaled too or a torch stays bright in a black world —
+and that is the pipeline every day/night/indoor/weather look rides on, so it
+needs a browser pass across all of them.
+
+Probe: `__ml.deathInfo()` (armed / zoom progress / veil alpha / prompt), and the
+DEBUG-only `dbgkill` room message (same standing as `teleport`) runs the real
+hurtPlayer kill path — dying to a predator on demand is too slow and too flaky
+to verify a mood with.
+
 ## NPCs (maps2 placement + characters2 art, client-side decor)
 
 The maps2 agent places people (`maps2/worlds/<name>/npcs.json`,
