@@ -3549,11 +3549,54 @@ export class WorldScene extends Phaser.Scene {
     // A larger slot leaves transparent margin nobody reads, exactly as a body
     // smaller than its own class box already does.
     if (!slot) slot = this.coverTakeLargerFree(cw, ch);
+    // AND IF EVERY SLOT IS HELD, TAKE THE STALEST — never refuse.
+    //
+    // Recycling idle slots is not enough on its own: with the atlas packed and
+    // every slot owned by a body that is still covered, a newcomer gets nothing
+    // and falls back to the flat line FOREVER, decided by nothing but who
+    // happened to be covered first. That is the maintainer's "it reverts when
+    // you have played for a while" — and it lands on the player's own body as
+    // readily as on a monster, because the player is just another body in the
+    // queue. Eviction makes the failure GRACEFUL and self-healing instead:
+    // whoever has gone longest without being drawn gives up its slot, so the
+    // exact path always belongs to the bodies being looked at now, and a body
+    // that loses one gets it straight back the moment it is covered again.
+    // The atlas holds ~9-25 bodies against a handful covered at once, so this
+    // is a backstop, not a working path — but a backstop that cannot fail is
+    // the whole difference between a bug and a bounded resource.
+    if (!slot) slot = this.coverEvictStalest(b, cw, ch);
     if (!slot) return null;
     b.coverSlot = slot;
     slot.owner = b;
     b.coverAt = this.coverTick;
     return slot;
+  }
+
+  /** Free the least-recently-drawn slot that fits, and hand it over. Never
+   * takes a slot drawn THIS tick (those bodies are on screen right now) and
+   * never the caller's own. */
+  private coverEvictStalest(self: BodyVisual, cw: number, ch: number): CoverSlot | undefined {
+    let victim: CoverSlot | undefined;
+    let oldest = Infinity;
+    for (const s of this.coverSlots) {
+      const o = s.owner;
+      if (!o || o === self || o.coverSlot !== s) continue;
+      if (s.w < cw || s.h < ch) continue;
+      const at = o.coverAt ?? 0;
+      if (at >= this.coverTick) continue;
+      if (at < oldest) {
+        oldest = at;
+        victim = s;
+      }
+    }
+    if (!victim) return undefined;
+    this.releaseCoverSlot(victim.owner!);
+    const pool = this.coverFree.get(victim.cls);
+    if (pool) {
+      const i = pool.indexOf(victim);
+      if (i >= 0) pool.splice(i, 1);
+    }
+    return victim;
   }
 
   /** The smallest free slot that fits — see coverSlotFor. Smallest so a run of
