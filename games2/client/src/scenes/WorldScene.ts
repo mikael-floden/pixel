@@ -255,7 +255,7 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // in") — one easing, so the picture cannot arrive before the push does.
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
-const DEATH_DARK = 0.32; // brightness left at the end (0 would be a black screen)
+const DEATH_DARK = 0.14; // brightness left at the end (0 would be a black screen)
 const DEATH_BODY_LIFT = 0.75; // how much of the veil the corpse gets back
 const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
@@ -9429,7 +9429,7 @@ export class WorldScene extends Phaser.Scene {
       // game's chrome is DOM on the wiki theme, so this is too: the colours,
       // the serif and the radii are the theme's own custom properties, which
       // also means it follows light/dark for free and needs no JS to do it.
-      // Sits at 45% of the GAME VIEW's height — the camera centres the body
+      // Sits at 40% of the GAME VIEW's height — the camera centres the body
       // just below middle, so this lands over it without covering it.
       if (!d.el) {
         const el = document.createElement("div");
@@ -9438,7 +9438,7 @@ export class WorldScene extends Phaser.Scene {
         el.style.cssText = [
           "position:fixed",
           "left:50%",
-          "top:calc((100dvh - var(--hud-h, 0px)) * 0.45)",
+          "top:calc((100dvh - var(--hud-h, 0px)) * 0.40)",
           "transform:translate(-50%,-50%)",
           "z-index:6",
           "pointer-events:none",
