@@ -1191,6 +1191,43 @@ visible head/shoulders are ABOVE the surface).
   `roomDebug()` reports `depthCells`/`depthMax`, because a channel written once
   per world fails silently — "the effect does nothing" and "the channel is
   empty" look identical on screen.
+  - **THE DEPTH IS READ FROM THE CELL THAT IS DRAWN, NOT THE ONE THE RAY STOPS
+    ON** (`groundCellAt`, 2026-08-09 — and this is why five rounds of mask
+    surgery all rendered nothing). The surface march stops at the first column
+    whose top the ray meets and `heightAt` is max(terrain, deck), so a roofed
+    cave cell is opaque for its FULL height: every pixel of an opening resolved
+    to the first interior column, which is at BFS depth 0 — the mouth itself —
+    and multiplied by exactly 1.0. Measured on the shipped build: 0 of 86,640
+    mouth pixels darkened, worst multiply 1.00000. The floor and the inward
+    wall faces behind that column were never sampled, however the mask was
+    built. That also explains the detour: the near rock JAMBS *are* resolved by
+    the surface march, so marking them darkened the mouth convincingly — and a
+    house's outer wall is the same kind of cell, which is what turned every
+    house black; removing them removed the only cells the shader could see.
+    The GROUND field carries no decks, so the identical walk over `groundAt`
+    lands on the cell whose art is painted at the pixel (measured: 92% of
+    inward-wall pixels, 70% of floor pixels, at depths 1..8 instead of a flat
+    1). It is a SECOND, SEPARATE march on purpose — `cell`/`z` from the surface
+    walk still drive Lambert, shadows, AO and emission — and it runs only for
+    pixels already under the ceiling gate.
+  - The GATE stays on the surface march (`z < caveUnderAt(cell) - 0.5`): `z`,
+    not the cell, is what separates the opening from the lintel above it. The
+    ceiling underside comes from `grid.deckBot` into the mask's BLUE channel;
+    rederiving it from the deck table produced 0 cells and the shader compared
+    against zero forever.
+  - What the room mask must mark is the INWARD-FACING walls — `space.wallLeft`
+    / `wallRight`, the up-screen ones whose drawn face looks into the room —
+    never the whole fringe. A cell's drawn faces are its +col and +row sides, so
+    the NEAR half of a ring faces the camera and is the mountain's outside
+    skirt: darkening it is "you fade what's not inside the cave opening dark".
+    No band, no rings — a wall face is 8 levels (128px) against a 15px cell
+    step, so the next row of rock behind it is buried whole. The rock bar (two
+    levels of headroom above the room's ceiling) keeps house walls out: measured
+    over every space in the_island2, the cave marks 146 and every house and arch
+    marks 0.
+  - `uCaveK` is the single falloff dial (1.2: mouth untouched, then 30/9/2.7/
+    0.8% over the first four cells). 3.6 was a cliff once the depth reached the
+    drawn cells.
 - **A CAVE MOUTH IS NOT A WALL FACE.** `Ha` (uHeight.R) is max(terrain, deck),
   so every pixel under a roof slab classified as a wall FACE — and a face takes
   the face Lambert gate and the face shadow march, which painted the open cave
@@ -2406,6 +2443,57 @@ side collision just like monsters").
     outdoors in the open none at all — the gate asserts that CHAIN rather than
     any single number, because a monotone response to the dial is something an
     outline stuck on or stuck off cannot fake.
+  - **COVERAGE IS RASTERISED, NOT MODELLED** (2026-08-09, maintainer: "it was
+    intended to be pixel perfect. Only the exact pixel that was covered should
+    have gotten the wall hack effect. Now the effect is just a line"). `coverY`
+    is ONE screen-space scalar — the top of the highest covering column's 64px
+    IMAGE box — and the ring was the cached silhouette cropped below it. An iso
+    wall top is a diagonal, a rock lip jagged, an arch a hole with body visible
+    above AND below, and a prop billboard is arbitrary art alpha. Measured over
+    six spots: **79.8-93.7% of the outlined pixels were over ground nothing
+    covered**, 19-25 of 29 body columns had zero cover, the flat line sat
+    15.6-20.2px (max 31) above the true cover top, and at a tree a complete
+    268-texel outline was drawn around a body **0%** covered. Every tile's art
+    also starts >=6px below its box top (19px at the diamond's side corners), so
+    `min(o.y0)` over-claims by construction — MISSED was 0.0% at every spot, the
+    error is entirely one-sided. **No analytic field can fix this** (not the
+    heightmap, not the tile-top table): the occluder can be a billboard.
+    So the images that do the covering RASTERISE it, per body, into three
+    DynamicTextures in a shared atlas: E (the body minus the occluders in front
+    of it), C (the body minus E), O (dilate(C) minus the body = the ring).
+    "Covered" is then Phaser's own painter rule (`depth > sprite.depth`),
+    executed by the renderer, which is what the maintainer is looking at.
+    Verified by reading the shipped surfaces back off the GPU against an
+    independent CPU truth: **0 differing texels** at every spot, E∪C == the
+    silhouette, E∩C == 0, nothing painted outside it. Gated on WEBGL with the
+    flat-crop path kept verbatim as the fallback (`coverExact`).
+    THREE TRAPS, all paid for:
+    * **The atlas must RECYCLE.** Holding a slot until the body is destroyed
+      froze allocation at 13-25 slots after a couple of minutes, and every
+      covered body after that silently reverted to the flat line — the original
+      defect, back mid-session, on the player's own body. Any free slot big
+      enough serves a request (smallest first), and a body uncovered for
+      `COVER_SLOT_GRACE` ticks hands its slot back. What the atlas holds is the
+      bodies covered AT ONCE, not every body ever covered.
+    * **Ask about the ART BOX, not the frame box.** A 112x112 frame around a
+      29x86 figure admitted ~80 occluder candidates per body in mountain
+      terrain against a median ~6; artBounds (mirrored when `flipX`, since these
+      are world coordinates) took it to a mean 4.7 per flush. Safe because C ⊆
+      silhouette ⊆ artBounds, so an occluder clear of the box cannot cover an
+      opaque texel.
+    * **The flat line may not veto the exact path.** `coverY` below the art does
+      NOT mean nothing is covered (a low occluder in front of the feet):
+      measured 95 covered texels with no outline drawn, because the early-out
+      fired before the slot was consulted. With a slot, O answers for itself.
+  - **SWIMMING: WEAR THE BODY'S OWN MASK.** The outline was the one body layer
+    without `sprite.mask` — the same GeometryMask object `updateWaterClip` puts
+    on the sprite and `applyObjectLights` on the lit copy — so a swimmer behind
+    a wall had the ring tracing her skirt, both legs and both feet through the
+    water. Taking the OBJECT (never `swimming`/`swimT`, never a second copy of
+    `BOW_FRAC`) makes it structurally unable to disagree with the body's own
+    cut, bow, bob, exit-jump and all three of `updateWaterClip`'s bail-outs.
+    Measured fully submerged: 712 ring pixels above the crest, **0** below,
+    across 62 columns.
 - **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
   browser gate for "walk into a house and the roof comes off". It frames
   the_island2's house with ONE pinned camera from outside and from within and
