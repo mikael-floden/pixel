@@ -21,7 +21,7 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
-import { ROOM_NAME } from "@nangijala/shared";
+import { ROOM_NAME, PLAYER_RESPAWN_MS } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
 async function waitFor(cond: () => boolean, timeout = 8000, label = "condition"): Promise<void> {
@@ -48,6 +48,15 @@ function predators(room: any): { id: string; m: any }[] {
 async function hover(room: any, m: any, ms: number, hunting: () => boolean): Promise<boolean> {
   const until = Date.now() + ms;
   while (Date.now() < until) {
+    // Parking ON a predator gets you killed, and a dead player no longer comes
+    // back on a timer — the press does (see the death sequence). So stand back
+    // up and carry on: this test is about the aggro switch, not about dying.
+    const me = room.state.players.get(room.sessionId);
+    if (me?.dead) {
+      await new Promise((r) => setTimeout(r, PLAYER_RESPAWN_MS + 200));
+      room.send("respawn", {});
+      await new Promise((r) => setTimeout(r, 300));
+    }
     room.send("teleport", { x: m.x, y: m.y });
     await new Promise((r) => setTimeout(r, 120));
     if (hunting()) return true;

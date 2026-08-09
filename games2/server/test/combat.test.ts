@@ -8,7 +8,7 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
-import { ROOM_NAME, SLOW_FACTOR, PICKUP_RADIUS_WU } from "@nangijala/shared";
+import { ROOM_NAME, SLOW_FACTOR, PICKUP_RADIUS_WU, PLAYER_RESPAWN_MS } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
 async function waitFor(cond: () => boolean, timeout = 8000, label = "condition"): Promise<void> {
@@ -217,8 +217,15 @@ test("a monster kills a careless player; the player respawns", async () => {
     }
     assert.equal(me().action, "die", "die clip signalled");
     assert.equal(me().hp, 0);
-    // Respawn: back near spawn, full hp, alive.
-    await waitFor(() => me().dead === false, 6000, "respawn");
+    // NOBODY RESPAWNS ON A TIMER ANY MORE. The client runs the death sequence
+    // (fade, drain, slow push onto the body) and ends it with a prompt; the
+    // press is what asks. So the corpse must still be a corpse after the old
+    // 2.6s deadline has passed...
+    await new Promise((r) => setTimeout(r, PLAYER_RESPAWN_MS + 900));
+    assert.equal(me().dead, true, "a dead player waits for the press, not a timer");
+    // ...and come back when it does.
+    r1.send("respawn", {});
+    await waitFor(() => me().dead === false, 6000, "respawn on the press");
     assert.equal(me().hp, me().hpMax);
     assert.ok(Math.hypot(me().x - spawnX, me().y - spawnY) < 12 * 32, "respawned near the world spawn");
     await r1.leave();
