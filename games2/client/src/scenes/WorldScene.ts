@@ -9419,7 +9419,13 @@ export class WorldScene extends Phaser.Scene {
         el.textContent = "Press to continue...";
         el.style.cssText = [
           "position:fixed",
-          "left:50%",
+          // CENTRED ON THE GAME VIEW, not on the window. In landscape the menu
+          // is a side COLUMN, so the view is inset by --gv-left/--gv-right (in
+          // portrait both are 0 and this reduces to the middle of the screen).
+          // Same vars the chat log, the stat chips and the clock pill anchor
+          // off — anything that centres on 50vw is wrong the moment the layout
+          // turns sideways (maintainer 2026-08-09).
+          "left:calc(var(--gv-left, 0px) + (100vw - var(--gv-left, 0px) - var(--gv-right, 0px)) / 2)",
           "top:calc((100dvh - var(--hud-h, 0px)) * 0.40)",
           "transform:translate(-50%,-50%)",
           "z-index:6",
