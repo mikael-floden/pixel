@@ -129,6 +129,56 @@ try {
     fail(`no NPC took a non-south facing — the pin looks dead (placements: ${[...new Set(placed.map((p) => p.facing))].join("/")})`);
   ok(`${honoured} NPC(s) face maps2' own non-south direction, the rest fall back to south`);
 
+  // (2d) HEAD-TURNING: brush past an NPC and it looks at you, SWEEPING one
+  // compass notch at a time, then goes back to maps2' facing. Sampled fast
+  // (70ms) because the notches are 200ms apart — a slow poll would see the
+  // first and last rotation and call a snap a sweep.
+  {
+    const RING = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
+    const notches = (a, b) => {
+      const d = Math.abs(RING.indexOf(a) - RING.indexOf(b));
+      return Math.min(d, RING.length - d);
+    };
+    const one = npcs.find((n) => !n.culled) ?? npcs[0];
+    const read = () =>
+      page.evaluate((id) => {
+        const n = window.__ml.npcInfo().find((x) => x.id === id);
+        const me = window.__ml.me();
+        return n && { dir: n.dir, home: n.home, looking: n.looking, mx: me.x, my: me.y, nx: n.x, ny: n.y };
+      }, one.id);
+    const c = one.x / 32;
+    const r = one.y / 32;
+    // Approach from the UP-SCREEN side so the look is a big turn away from a
+    // southern home — a 1-notch turn could pass a sweep test by accident.
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 3, r - 3), [c, r]);
+    await page.waitForTimeout(1200);
+    const start = await read();
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 0.35, r - 0.35), [c, r]);
+    const chain = [];
+    for (let i = 0; i < 60; i++) {
+      const s = await read();
+      if (s && (!chain.length || chain[chain.length - 1] !== s.dir)) chain.push(s.dir);
+      await page.waitForTimeout(70);
+    }
+    const at = await read();
+    const dist = Math.hypot(at.mx - at.nx, at.my - at.ny);
+    if (!at.looking) fail(`${one.id}: player is ${dist.toFixed(1)}wu away and the NPC is not looking at them`);
+    const want = RING.includes(at.looking) ? at.looking : null;
+    if (want && at.dir !== want) fail(`${one.id}: looking=${want} but drawn facing is ${at.dir}`);
+    const jumps = chain.slice(1).filter((d, i) => notches(chain[i], d) !== 1).length;
+    if (jumps) fail(`${one.id}: turn SNAPPED — ${jumps} change(s) skipped a rotation (${chain.join(" -> ")})`);
+    if (chain.length < 3)
+      fail(`${one.id}: only ${chain.length} rotation(s) in the turn (${start.dir} -> ${at.dir}) — no sweep to see`);
+    ok(`look-at fires at ${dist.toFixed(1)}wu and SWEEPS: ${chain.join(" -> ")}`);
+    // ...and it hands the facing back to maps2 when you leave.
+    await page.evaluate(([c, r]) => window.__ml.teleport(c - 6, r - 6), [c, r]);
+    await page.waitForTimeout(4000);
+    const back = await read();
+    if (back.dir !== back.home && !back.looking)
+      fail(`${one.id}: after backing off it sits on ${back.dir}, not its home ${back.home} (glance is allowed, but none was active)`);
+    ok(`facing returns to maps2' ${back.home} once the player leaves`);
+  }
+
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
   // it must spend most of its time PARKED, and the pauses must vary — a fixed
   // cadence is exactly what the maintainer did not want.
