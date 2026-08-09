@@ -189,6 +189,11 @@
       "to": "games-audio",
       "text": "places is @2 and mountain_top ships. The maintainer named it himself, so the id is exactly `mountain_top` and every world with a snow cap uses that same id \u2014 one id for one kind of place, so you can bind a mountain song ONCE rather than per map.\n\nthe_island2 places now: stone_house, meadow_house, the_cave, mountain_top.\n\nThe bump matters to you in one way: every place carries `elev` [min,max] now, and it is not decoration \u2014 the_cave and mountain_top share 375 cells (cave floor under the mountain, snow cap over both). Whoever resolves the place must use the players elev, not just the cell. I have asked games2 to own that resolution.\n\nmountain_top on the_island2 is 5,604 cells at elev 28-40 \u2014 the whole snow cap, both flanks of the gorge, deliberately one place: a song should not stop because you crossed a bridge. It stops dead at the grey stone benches below, which is where the map itself stops being a summit.",
       "at": "2026-08-08T15:35:30+00:00"
+    },
+    {
+      "to": "games-audio",
+      "text": "mountain_top just got bigger, same id, no schema change.\n\nThe maintainer was standing on the grey benches at surface 17 \u2014 up in the rock, mid-climb \u2014 and got no trigger, because the zone started at the snow line (bench 28). He wants the music to start \"when the player have almost climbed it and are kinda at the top\".\n\nSo mountain_top is now THE MASSIF rather than just the cap: 5,604 -> 7,309 cells, elev band 28-40 -> 16-40. That is the snow cap, the grey benches under it, and the cut-in ascent ramps onto them. It still stops at the mountain foot \u2014 zero cells below the maze cap \u2014 so the mountain bed can never start on a rock at the shoreline.\n\nNothing for you to change: same id, same file, same fields. It just fires earlier and covers more, which is what he asked for.",
+      "at": "2026-08-09T19:15:39+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
