@@ -454,11 +454,16 @@ def list_npcs(client):
             if any((t or "").upper() == NPC_TAG for t in (c.get("tags") or []))]
 
 
-def _npc_index_entry(cid, listing, man):
+def _npc_index_entry(folder, cid, listing, man):
     """One npcs/index.json row. Authored fields ride along so a consumer (the
     wiki) can render the whole cast from ONE file; `pixellab_name` is the raw
     prompt junk, kept for tracing and never for display. `states` is the game's
-    addressing contract (idle -> folder)."""
+    addressing contract (idle -> folder).
+
+    The authored block is copied WHOLESALE from metadata.json — no field
+    whitelist. metadata.json promises that adding a field needs no code change,
+    and a hardcoded list here quietly broke that promise: a new field reached
+    character.json but never the index every consumer actually reads."""
     rec = {
         "pixellab_character_id": cid,
         "pixellab_name": listing.get("name"),
@@ -466,9 +471,7 @@ def _npc_index_entry(cid, listing, man):
     }
     if man.get("states") is not None:
         rec["states"] = man["states"]
-    for k in ("display_name", "species", "sex", "role", "lore"):
-        if man.get(k) is not None:
-            rec[k] = man[k]
+    rec.update(hero_metadata(folder))
     return rec
 
 
@@ -498,7 +501,7 @@ def sync_npcs(client, force=False, only=None):
             # untouched — keep its manifest as-is and still list it in the index
             man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
             if man:
-                index[folder] = _npc_index_entry(cid, c, man)
+                index[folder] = _npc_index_entry(folder, cid, c, man)
                 continue
         s = sync_character(client, folder, cid, force=force, dest=NPCS,
                            states_for=resolve_npc_states)
@@ -507,7 +510,7 @@ def sync_npcs(client, force=False, only=None):
         if not (s["rot_new"] or s["anim_new"]):
             totals["skipped"] += 1
         man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
-        index[folder] = _npc_index_entry(cid, c, man)
+        index[folder] = _npc_index_entry(folder, cid, c, man)
         if i % 25 == 0 or i == len(npcs):
             print(f"  npcs: {i}/{len(npcs)} mirrored "
                   f"(+{totals['frames']} frames so far)", flush=True)

@@ -1,5 +1,5 @@
 {
-  "_comment": "Hand-authored METADATA for each playable character — everything true about a character that cannot be derived from the PixelLab art. `lore` is only the first field; add more (tags, hometown, starting class, voice, …) as records grow. Keyed by the character's humans/<id> folder id. Authored HERE and merged onto humans/<id>/character.json by sync.py, because that file is regenerated on every sync and would otherwise wipe it — so consumers may read either this file or the merged fields on character.json.",
+  "_comment": "Hand-authored METADATA for each playable character — everything true about a character that cannot be derived from the PixelLab art. `lore` is only the first field; add more (tags, hometown, starting class, voice, …) as records grow. Keyed by the character's humans/<id> folder id. Authored HERE and merged onto humans/<id>/character.json by sync.py, because that file is regenerated on every sync and would otherwise wipe it — so consumers may read either this file or the merged fields on character.json. FIELDS BEYOND THE OBVIOUS: `no_turn` (bool) marks an NPC whose ART only reads right from one facing — it must NEVER change direction in game. Thorne is the first: his armorer's golden breastplate stands on the ground beside him in south/south-west and is absent in south-east, so turning makes the prop pop in and out. Absent means false.",
   "_maintenance": "Edit fields HERE, never in humans/<id>/character.json (generated). New character: add a record under `characters` keyed by its folder id. Every field is optional — absent fields are simply omitted downstream, so adding one never breaks a consumer.",
   "format": "characters2-metadata@1",
   "characters": {
@@ -566,7 +566,8 @@
       "species": "Human",
       "sex": "Male",
       "role": "armorer",
-      "lore": "Thorne, an armorer of Nangijala. Fits plate to bodies and knows exactly where every one of them is soft."
+      "lore": "Thorne, an armorer of Nangijala. Fits plate to bodies and knows exactly where every one of them is soft.",
+      "no_turn": true
     },
     "646b922c": {
       "display_name": "Sigrun",
