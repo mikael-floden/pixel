@@ -385,6 +385,10 @@ const BATTLE_TAIL_S = 4;
 
 const PLACE_BEDS: Record<string, BedName> = {
   the_cave: "cave4",
+  // The maps agent names the summit `mountain_top` on every world that has one
+  // (the_island2, the_island, demo_isle, demo_lost), so one entry covers them
+  // all — which is the payoff of keying on the place ID rather than the world.
+  mountain_top: "summit_triumph",
 };
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
