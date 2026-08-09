@@ -168,12 +168,16 @@ uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
-uniform sampler2D uRoom;  // per-cell: 1 where the cell is in MY room (see roomAt)
+uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
+                          // G: depth from the nearest opening PLUS ONE (0 = not a room).
+                          // B: the ceiling's UNDERSIDE level — the top of the opening.
+uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
+uniform sampler2D uHeightG; // GROUND column tops, LINEAR (see groundAtSoft)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
@@ -230,7 +234,20 @@ float baseTerrAt(vec2 cr) {
 // never dark because of the ambient; its own ceiling was eating the light.
 float groundAtSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).a * 255.0 / uHScale;
+  // Its own map, R channel. It used to be the linear map's ALPHA, which
+  // premultiplied every other channel of that texture — see the pin in
+  // buildHeightmap for what that cost.
+  return texture2D(uHeightG, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
+}
+
+// The GROUND column's top, NEAREST-sampled — the twin of heightAt, and the
+// answer to "is there anything solid here at all". A deck is a floating slab
+// with open air beneath it, so this is what decides whether a pixel below a
+// column's top is a WALL FACE or simply the view through a gap.
+float groundAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).r * 255.0 / uHScale;
 }
 
 // The SURFACE height a screen pixel resolves to.
@@ -271,6 +288,82 @@ float groundAtSoft(vec2 cr) {
 // and a cut-away that let daylight in through its own missing roof would light
 // the room from above as you turned the dial. So: what the camera SEES is
 // truncated, what the light TRAVELS THROUGH is not. The asymmetry is the point.
+// HOW DEEP INTO A ROOM THIS CELL SITS, in cells from the nearest opening.
+// Green of the room mask; 0 outdoors and at every entrance.
+// PER PIXEL, NOT PER TILE. The mask is NEAREST on purpose (its RED channel is
+// room membership and a LINEAR fetch would bleed ambient half a cell through
+// the walls), so the smoothing is done by hand here: four taps, bilinear
+// weights. Nearest sampling gave four flat bands marching into the cave, which
+// reads as steps of paint; the walker wants a gradient that thickens.
+float caveUnderAt(vec2 cr) {
+  if (uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  return texture2D(uRoom, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).b * 255.0;
+}
+
+float caveDepthAt(vec2 cr) {
+  if (uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  // THE SMOOTHING MUST NOT LEAK OUT OF THE ROOM. A bilinear tap next to the
+  // opening pulls interior depth onto the OUTER rock face, which darkened the
+  // whole mountain column (maintainer 2026-08-08: "you made the whole column
+  // dark! I want the inside dark, not the outside"). Gate on this pixel's OWN
+  // cell first: outside a room there is no darkening at all, and the four-tap
+  // blend only ever softens the gradient WITHIN the interior.
+  vec2 own = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  if (texture2D(uRoom, own).g <= 0.0) return 0.0;
+  vec2 g = cr - 0.5;              // sample grid sits at texel centres
+  vec2 f = fract(g);
+  vec2 b = floor(g);
+  vec2 sz = vec2(uIsoB.y, uIsoB.z);
+  float d00 = texture2D(uRoom, (b + vec2(0.5, 0.5)) / sz).g;
+  float d10 = texture2D(uRoom, (b + vec2(1.5, 0.5)) / sz).g;
+  float d01 = texture2D(uRoom, (b + vec2(0.5, 1.5)) / sz).g;
+  float d11 = texture2D(uRoom, (b + vec2(1.5, 1.5)) / sz).g;
+  return mix(mix(d00, d10, f.x), mix(d01, d11, f.x), f.y) * 255.0;
+}
+
+// WHICH CELL IS ACTUALLY DRAWN HERE, with the roof slabs taken out.
+//
+// This is the whole reason a correct mask darkened nothing. The surface march
+// in main() stops at the first column whose top the ray meets, and heightAt is
+// max(terrain, deck) - so a roofed cave cell is opaque for its FULL height and
+// every pixel of an opening resolves to the first interior column, which is at
+// BFS depth 0, which means "the mouth itself" and multiplies by exactly 1.0.
+// Measured on the shipped build: 0 of 86,640 mouth pixels darkened, worst
+// multiply 1.00000. The floor and the inward wall faces behind that column
+// were never sampled at all, however the mask was built - which is why widening
+// the mask kept moving the darkening onto the OUTSIDE rock (the near jambs are
+// the only cells the surface march does resolve, and a house's outer wall is
+// the same kind of cell, which is what turned every house black).
+//
+// The GROUND field has no decks in it, so the identical walk over groundAt
+// lands on the cell whose art is painted at this pixel: measured, 92% of
+// inward-wall pixels and 70% of floor pixels, carrying depths 1..8 instead of
+// a flat 1.
+//
+// It is a SECOND, SEPARATE march on purpose. cell/z from the surface walk still
+// drive every existing lighting rule - Lambert, shadows, AO, emission - so this
+// cannot move a pixel that is not already under a ceiling. It runs only for
+// pixels that pass the ceiling gate, which is a thin band of the screen.
+vec2 groundCellAt(float u, float v0, float kk) {
+  float vHi = v0 + uIsoB.w * kk;
+  vec2 hit = vec2(-1.0);
+  bool got = false;
+  for (int s = 0; s < 128; s++) {
+    if (got || vHi <= v0 - 1.5) break;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 c2 = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    float H = groundAt(c2);
+    if (H < 90.0 && v0 + H * kk >= vLo - 0.0001) { hit = c2; got = true; }
+    vHi = vLo;
+  }
+  return hit;
+}
+
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
@@ -476,16 +569,28 @@ void main() {
   if (uTest > 3.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
-    float isFace = (Ha < 90.0 && Ha - z > 0.05) ? 1.0 : 0.0;
+    float isFace = (Ha < 90.0 && Ha - z > 0.05 && groundAt(cell) - z > 0.05) ? 1.0 : 0.0;
     gl_FragColor = vec4(isFace, 1.0 - isFace, 0.0, 1.0);
     return;
   }
+
+  // A CAVE MOUTH IS NOT A WALL. Ha is max(terrain, deck), so every pixel
+  // under a roof slab used to classify as a wall FACE — and a face takes the
+  // face's Lambert gate and shadow march, which painted the open entrance of
+  // the cave with light and shadow as if a pane of glass were stretched across
+  // it (maintainer 2026-08-08: "the torch is casting shadows on the open cave
+  // entry... it looks like some sort of mirror or force-field. You can't cast
+  // shadows on it since it's empty air"). The light MARCH already knows this —
+  // see the two-solid-spans note above and groundAtSoft's own pin — the face
+  // classification simply never got the same rule. A face needs SOLID GROUND
+  // above the pixel, not a slab floating over open air.
+  float Hg = groundAt(cell);
 
   // Face geometry, light-independent — hoisted out of the light loop.
   // The face's attenuation anchor is its EXACT point on the wall plane
   // (0.99 keeps floor() in the owning cell): the old per-cell centroid made
   // brightness jump at every face/ground boundary (knife edges at wall bases).
-  bool isFace = (Ha < 90.0 && Ha - z > 0.05);
+  bool isFace = (Ha < 90.0 && Ha - z > 0.05 && Hg - z > 0.05);
   vec2 baseF = floor(cell);
   float uf = u - (baseF.x - baseF.y);   // pixel left/right of front corner
   float pickR = smoothstep(-0.2, 0.2, uf);
@@ -776,6 +881,64 @@ void main() {
   }
 
   light *= ao;
+
+  // THE CAVE SWALLOWS THE LIGHT. Everything a room shows you from OUTSIDE dims
+  // with its depth from the opening — one exponential, so it is dark fast and
+  // never quite reaches black at the mouth itself (a monster standing in the
+  // entrance stays visible, which is the whole point of an entrance).
+  //
+  // It multiplies the FINAL light, AFTER the point lights, deliberately: no
+  // light source punches in (maintainer 2026-08-08: "I think it looks best if
+  // no light source can punch in"). Shine a torch at a cave mouth and you get
+  // the first cell or so, never the depths.
+  //
+  // MY OWN room is exempt, and it un-dims on exactly the indoor blend — so
+  // walking in fades the depths up instead of snapping them on.
+  // UNDER THE SLAB, OR IT IS OUTSIDE. This is the containment test two earlier
+  // attempts got wrong by asking what CELL a pixel resolves to — the mountain's
+  // exterior face resolves onto interior cells, so the rock darkened with the
+  // room. Ask the pixel's own HEIGHT instead: an interior floor seen through
+  // the opening sits BELOW the roof slab, while the roof itself, and every bit
+  // of rock above the opening, resolves AT the slab or higher (maintainer
+  // 2026-08-08: "the roof and everything over the opening is outside and should
+  // not be affected"). The resolve cannot fake being under a ceiling.
+  // ...AND NOT A FACE. A face pixel is BELOW its column's top by definition, so
+  // the under-the-slab test alone admitted every vertical rock face on the
+  // mountain — the third way the same mistake wore a new hat. The shadow is for
+  // the interior GROUND you can see through the opening: a TOP pixel, under a
+  // slab. Faces belong to the rock, and the rock is outside.
+  // THE SHADOW LIVES ON THE CAVE FLOOR. Not "below the slab", not "not a face"
+  // — ON THE GROUND. the_island2's cave is not a thin ceiling over a room: its
+  // interior cells are terrain 0 with a deck at 24, so THE MOUNTAIN IS THE
+  // SLAB, its underside at 8 and its top at 24. Every bit of rock you see above
+  // the opening is that slab's own SIDE, resolving to the very same interior
+  // cells at z between 8 and 24 — which is why three gates in a row let it
+  // through: it is an interior cell, it is under the slab top, and (since a
+  // slab side is open air below, not a wall) it is not a face either.
+  // The floor is the one thing that resolves AT the ground column's top.
+  // ONLY BELOW THE CEILING'S UNDERSIDE. That is the opening; above it is the
+  // slab's own face, which is the mountain. Every earlier attempt either took
+  // the whole face (black mountain) or nothing (no effect) because the shader
+  // had no idea where the ceiling stopped. Now it is in the mask.
+  if (uCaveK > 0.0 && z < caveUnderAt(cell) - 0.5) {
+    // The GATE stays on the surface march - that is the piece that works, and z
+    // (not the cell) is what tells the opening apart from the lintel above it.
+    // The DEPTH comes from the deck-free march, because that is the cell whose
+    // art this pixel is showing. See groundCellAt.
+    vec2 dcell = groundCellAt(u, v0, kk);
+    float dep = dcell.x < 0.0 ? caveDepthAt(cell) : caveDepthAt(dcell);
+    if (dep > 0.0) {
+      float mine = roomAt(cell) * uIndoorMix;
+      // THE MOUTH ITSELF IS UNTOUCHED, and it goes dark FAST behind it. dep is
+      // stored as depth+1 so that 0 can mean "not a room" (see setRoom), and
+      // feeding that straight into the curve darkened the opening cell by half
+      // before you had gone anywhere — which reads as a flat wash rather than a
+      // cave swallowing the light (maintainer 2026-08-08: "I expected the
+      // effect to fade from no effect at all near the opening to very very dark
+      // a tile in"). Take the bias back off: the mouth multiplies by 1.
+      light *= mix(exp(-max(dep - 1.0, 0.0) * uCaveK), 1.0, mine);
+    }
+  }
 
   // Self-emission floor (tiles/emission.json): a glowing tile's OWN pixels
   // never drop below colour*self — lava stays molten, crystals stay lit.
@@ -1372,6 +1535,9 @@ export class NightLights {
   /** Did buildShader actually bind uRoom on the CURRENT shader? Re-derived on
    * every rebuild (a resize builds a new shader object). Drives uRoomOn. */
   private roomBound = false;
+  /** The mask's GREEN channel (cave depth) is world-static — written once. */
+  private depthWritten = false;
+  private underWritten = false;
   private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private gArr!: Float32Array; // CPU GROUND column tops (terrain + bump, no deck)
   private oArr!: Uint8Array;   // CPU solid-object flags
@@ -1448,6 +1614,7 @@ export class NightLights {
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
+      uHeightG: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -1489,6 +1656,32 @@ export class NightLights {
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
+      // OFF (0) until the containment is right. The depth map and the multiply are
+      // correct and tested; what is NOT solved is telling an INSIDE pixel from an
+      // OUTSIDE one. Gating on the pixel's own cell fails because the mountain's
+      // exterior face RESOLVES ONTO INTERIOR CELLS — so the rock darkened with the
+      // room (maintainer 2026-08-08: "you have darkened the entire mountain and the
+      // outside as well! The inside I said!"). The next attempt needs a test the
+      // resolve cannot spoof — the pixel being below the roof slab AND inside the
+      // room's own footprint — not a cell lookup.
+      // OFF, and it cannot be switched on from here. Outdoors heightAt returns
+      // max(terrain, deck) — 24 everywhere in the cave — so EVERY pixel of the
+      // interior resolves to the slab top and no z means "floor". Gates that
+      // admitted the floor admitted the mountain with it; the gate that
+      // excluded the mountain excluded the floor. The shader does not have the
+      // information. Shade the interior tiles where they are DRAWN (the ground
+      // RT knows which tile it is painting and can read the depth map directly)
+      // rather than trying to recover it per pixel here.
+      // 3.6, measured from the OPENING (which stays untouched): one tile in
+      // reads 3%, two 0.07%, i.e. black. Nothing at the mouth, gone immediately
+      // behind it.
+      // Depth falloff. Now that the depth reaches the cells that are really
+      // drawn (see groundCellAt), 3.6 was a cliff rather than a fade: it put
+      // the first cell behind the mouth at 2.7% and the second at 0.07%. 1.2
+      // reads as the brief - the mouth untouched, 30% one cell in, 9% two,
+      // 2.7% three, 0.8% four: dark fast, near-black by the third or fourth
+      // tile, still a gradient rather than a wall of paint.
+      uCaveK: { type: "1f", value: 1.2 },
       // 0 until uRoom is really bound — roomAt FAILS LIT on it, so a missing
       // bind can never black out the room itself. Same guard as uGlowOn, for
       // the same reason: an unbound sampler silently reads texture unit 0.
@@ -1496,6 +1689,7 @@ export class NightLights {
       uRoom: { type: "sampler2D", value: null },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
+      uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
       uGlow: { type: "sampler2D", value: null },
     });
@@ -1612,6 +1806,8 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+    if (this.scene.textures.exists("world-heightmap-ground"))
+      s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     s.setRenderToTexture(key);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
@@ -1635,6 +1831,8 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+    if (this.scene.textures.exists("world-heightmap-ground"))
+      s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
     // Glow field RT: canvas-sized. The shader samples it normalized over uCam's
@@ -1704,15 +1902,24 @@ export class NightLights {
    * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
    * an A below 255 would scale the R the shader reads.
    */
-  setRoom(cells: Iterable<number> | null) {
+  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>, under?: Map<number, number>) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
     if (!t || !src) return;
     const next = new Set<number>(cells ?? []);
+    // Two latches, not one: the first publish of a world carried DEPTH but no
+    // ceiling map, and a single flag meant the ceiling could never be written
+    // afterwards — measured as 940 cells in the scene and 0 in the texture,
+    // which is exactly why the shader gate compared against zero and nothing
+    // ever darkened.
+    const needDepth = (depth !== undefined && !this.depthWritten) || (under !== undefined && !this.underWritten);
     // Nothing to do if the room did not actually change (the scene guards this
-    // too, but the mask is also rebuilt for the CUT, which does not move it).
-    if (next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
+    // too, but the mask is also rebuilt for the CUT, which does not move it) —
+    // unless the DEPTH channel has never been written, which happens on the
+    // first publish of a world and whenever that publish is `null` (outdoors,
+    // which is exactly when you are looking into someone else's cave).
+    if (!needDepth && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
     const ctx = t.getContext();
     const w = this.world.width;
     const h = this.world.height;
@@ -1723,6 +1930,25 @@ export class NightLights {
     const d = this.roomImg.data;
     for (const i of this.roomCells) d[i * 4] = 0;
     for (const i of next) if (i >= 0 && i < w * h) d[i * 4] = 255;
+    // GREEN = DEPTH FROM DAYLIGHT, in cells, 0 at an opening. Static for a
+    // world, so it is written once: the geometry of a cave does not move.
+    if (needDepth) {
+      for (const [i, dep] of depth!)
+        // +1 SO ZERO MEANS 'NOT A ROOM'. Depth 0 is the cell at the opening,
+        // and storing it as a literal 0 made it indistinguishable from open
+        // ground — the containment gate then read every entrance cell as
+        // outside and the effect vanished exactly where it matters.
+        if (i >= 0 && i < w * h) d[i * 4 + 1] = Math.min(255, Math.max(0, dep) + 1);
+      this.depthWritten = true;
+      // BLUE = the ceiling's UNDERSIDE level: the top of the opening. Above it
+      // is the slab's own face, which is the mountain, and darkening that is
+      // what blackened the whole thing three times over.
+      if (under) {
+        for (const [i, u] of under)
+          if (i >= 0 && i < w * h) d[i * 4 + 2] = Math.max(1, Math.min(255, Math.round(u)));
+        this.underWritten = true;
+      }
+    }
     ctx.putImageData(this.roomImg, 0, 0);
     this.roomCells = next;
     t.refresh();
@@ -1747,12 +1973,27 @@ export class NightLights {
     const ctx = (t as Phaser.Textures.CanvasTexture).getContext();
     const d = ctx.getImageData(0, 0, src.width, src.height).data;
     let on = 0;
-    for (let i = 0; i < d.length; i += 4) if (d[i] > 127) on++;
+    // ...and the DEPTH channel, which is the one that can silently be empty:
+    // it is written once per world, so "the effect does nothing" and "the
+    // channel was never filled" look identical on screen.
+    let deep = 0;
+    let maxDep = 0;
+    let und = 0;
+    let maxUnd = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i] > 127) on++;
+      if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
+      if (d[i + 2] > 0) { und++; maxUnd = Math.max(maxUnd, d[i + 2]); }
+    }
     return {
       exists: true,
       w: src.width,
       h: src.height,
       lit: on,
+      depthCells: deep,
+      depthMax: maxDep,
+      underCells: und,
+      underMax: maxUnd,
       cells: this.roomCells.size,
       indoor: this.indoor,
       bound: this.roomBound,
@@ -1780,6 +2021,12 @@ export class NightLights {
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
+    // The GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED) — what
+    // lets the point-light march tell a floating slab from a solid pillar. Its
+    // OWN texture rather than a spare channel of the linear map, because the
+    // only channel left there was alpha, and alpha is not a data channel on a
+    // premultiplied upload (see the pin below).
+    const imgG = ctx.createImageData(w, h);
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
@@ -1880,12 +2127,25 @@ export class NightLights {
         const ei = glows ? emitIdx.get(cell.t) : undefined;
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
-        // A = the GROUND COLUMN's top (terrain + solid/prop bump, deck EXCLUDED)
-        // — see groundAtSoft. R stays max(ground, deck) so every existing reader
-        // is byte-identical; this channel is what lets the point-light march
-        // tell a floating slab from a solid pillar. On a deck-free world it
-        // equals R exactly, so those worlds march identically to before.
-        imgL.data[i + 3] = Math.min(255, groundH * hScale);
+        // A IS PINNED AT 255 — DATA MUST NEVER GO IN THIS CHANNEL.
+        //
+        // Canvas uploads are PREMULTIPLIED (UNPACK_PREMULTIPLY_ALPHA_WEBGL), so
+        // whatever goes in alpha SCALES R, G and B on the way to the GPU. This
+        // channel briefly held the ground column's top, and it silently wrecked
+        // the directional sun for the whole game: alpha = groundH * hScale, so
+        // every occlusion height the sun march reads came back multiplied by
+        // groundH*hScale/255. On the_island2 hScale is ~6.4, which means FLAT
+        // GROUND (groundH 0) scaled R to ZERO, a level-6 house wall to 0.15x,
+        // and a level-40 mountain to 255/255 = 1.0x — untouched. That is
+        // exactly what the maintainer reported (2026-08-08): the house and the
+        // hilltop stopped casting entirely, the bridge lit from nowhere, and
+        // "the mountain still casts on the ground but doesn't shade its own
+        // hillside" — the hillside is baseTerrAt, which reads B, scaled too.
+        // The sibling map pins its alpha for this same reason; this one did not.
+        // groundH now lives in its own texture (see world-heightmap-ground).
+        imgL.data[i + 3] = 255;
+        imgG.data[i] = Math.min(255, groundH * hScale);
+        imgG.data[i + 3] = 255;
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -1895,6 +2155,12 @@ export class NightLights {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
+    const texG = this.scene.textures.createCanvas("world-heightmap-ground", w, h);
+    if (texG) {
+      texG.getContext().putImageData(imgG, 0, 0);
+      texG.refresh();
+      texG.setFilter(Phaser.Textures.FilterMode.LINEAR);
     }
     // Palette texture: 2 texels per entry — texel 0 = colour, texel 1 =
     // (strength, self, anim mode 0/100/200). NEAREST so indices read exact.

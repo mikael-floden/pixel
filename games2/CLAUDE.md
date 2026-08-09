@@ -989,6 +989,258 @@ visible head/shoulders are ABOVE the surface).
   predator — a monster whose hunt just ended is `returning` and its scan is
   suppressed by design, so reusing one times the next step out for an
   unrelated reason.
+- **THE BODY-DODGE IS A MANOEUVRE, NOT A PER-FRAME OPINION** (`monsterDodge`).
+  NPCs and monsters have faked client-side collision: the INPUT slips around
+  their personal space. Two rules keep it smooth, and both were learned from
+  the same report (maintainer 2026-08-08: "the player changes direction and
+  runs back-and-forth-back-and-forth until the player finally walks around the
+  NPC").
+  - **Engage and release on DIFFERENT thresholds.** It used to be one test for
+    both: step aside, the body stops reading as "in front" by a hair, the dodge
+    drops, the raw heading points back at it, the dodge re-engages. Engage at
+    `dot >= 0.35` inside the personal corridor; HOLD the committed blocker
+    until `dot < 0.0` (truly beside/behind) with a 1.35x wider corridor.
+    Widening only the HOLD is what makes it hysteresis rather than a bigger
+    trigger — nothing new starts a dodge, an existing one just finishes.
+  - **The side is chosen ONCE and held.** Geometry decides the first frame;
+    after that only walkability may overrule it. The old code re-scored both
+    sides every frame with a +4wu bias toward the committed one, far less than
+    `clearance` swings by as the walker moves, so the winner kept flipping. The
+    45°-vs-90° escalation latches the same way and one way only.
+  - **A WAYPOINT SOMEBODY IS STANDING ON IS UNREACHABLE — count it as
+    arrived at.** This is the ROOT CAUSE the two rules above were only
+    symptoms of, and the reason tuning either one kept moving the problem
+    rather than fixing it. Routes are planned on the terrain grid, which knows
+    nothing about bodies, so a waypoint lands on an NPC routinely. The dodge
+    then keeps the walker out of that spot forever while the autopilot keeps
+    steering at it, and the resultant of "go there" and "not through her" is a
+    CIRCLE at personal-space radius (maintainer 2026-08-08: "instead of running
+    around the NPC the player runs a full circle around the NPC"). `stepAutopilot`
+    takes an optional `standoff(wx,wy)` — `bodyStandoff` in shared — and adds it
+    to both the waypoint-advance radius and the final arrival radius. The client
+    feeds it `nearBodies()`, **the same list the dodge gets**: if those two ever
+    disagree about who is standing where, they fight and the walker orbits again.
+  - **The openness test applies to the heading actually EMITTED.** The first
+    cut of the hold probed only the two 45° rotations and then emitted the 90°
+    one whenever the slip was too tight — a heading nothing had checked.
+    Per-frame re-deciding used to shake the walker loose from that; commitment
+    parked them on it instead (maintainer 2026-08-08: "after the player has
+    dodged the NPC ... the player starts to run straight into the wall for a
+    short time"). Candidates are now an ordered preference list —
+    `[2*side, side, 2*-side, -side]` when wide, 45° first when not — and the
+    first OPEN one wins. With no `openHeading`, or with nothing open, the
+    preferred rotation is emitted exactly as before. **Commitment never
+    outranks "can I physically move".**
+  - **A 90° rotation is a circle, not a detour.** On the 8-way ring a 2-step
+    rotation is exactly perpendicular: ZERO progress toward the waypoint, so
+    the body stays precisely as far ahead as it was and the release above can
+    never come true. It is reserved for the one case a person really uses it —
+    the walker is ALREADY INSIDE the personal space and has to step out — and
+    it cannot persist there, because the step itself opens the distance. So
+    what a dodge gives up, in order, is: magnitude (only when that tight),
+    then SIDE, and never progress. The escalation therefore must NOT latch,
+    even though the side does; latching it is what let the orbit run to
+    completion.
+  Measured walking past an NPC on the real client: **7 cross-track reversals
+  before, 1 after** — and 1 is the floor, since going around something IS one
+  reversal. The stall the emitted-heading bug caused was measured by replaying
+  the maintainer's exact walk at 60Hz in Node against the real world file:
+  **60 ticks (1.00s) of zero displacement into the house wall out-bound and 61
+  in-bound, 0 ticks both ways after** (and the trips finish quicker too, 4.58s
+  → 3.87s and 5.17s → 4.52s). A deterministic replay is the instrument to reach
+  for here — headless-GL browser probes starve under load and reported 178 of
+  220 samples as false "grinds". The orbit was measured the same way, as SWEEP
+  ABOUT THE BODY accumulated only while the dodge is engaged: **231° before,
+  116° after**. A close pass is inevitably ~180° (her bearing goes from ahead to
+  behind), so the bar is "under half a turn" — past 180° means you went round
+  the back. Tapping the spot she stands on: **199° and 4.40s of circling
+  before, 21° and 2.60s after**. Beware the naive version of that metric: sweep
+  about the NPC over the WHOLE trip reads 254° with no NPC in the world at all,
+  because the route itself curves around the house.
+  Gates: cases four to six in `server/test/wallhug.test.ts`. Four pins that the
+  same off-axis geometry does NOT start a fresh dodge (so the hold can never be
+  mistaken for a wider trigger) and that the escalation does not latch; five
+  walls off exactly the preferred heading and asserts the emitted one is open
+  and still progressing; six replays both directions of the walk plus a tap on
+  her own spot through the real brain, and fails at 232° without the standoff.
+- **ONE TAP, TWO MEANINGS — RESOLVED BY ROUTING BOTH** (`startBestTrip`).
+  **THE TWO READINGS ARE THE SAME PIXEL, IN DIFFERENT CELLS.** Screen y is
+  `(col+row)*ISO_DY - level*LEVEL_PX`, so the ground drawn at a level-6 slab's
+  pixel is 6*16/15 = **6.4 cells up-screen** — a different cell entirely. Read
+  "under it" as the floor of the SAME cell and you have moved the marker 96px
+  down the screen, which is the maintainer's input being overridden, not a fix.
+  A tap there is genuinely ambiguous. Choosing by what is
+  DRAWN on top is wrong whenever the top is out of reach: tapping the house from
+  the road resolves to the roof, six levels up with no ramp, so the walk fell
+  back to the floor and stopped a storey under the beacon. Both surfaces of the
+  tapped cell are now routed and scored — (1) **arriving beats giving up short**
+  (`endLevel` vs `goalLevel`; "the house doesn't even have a valid route to get
+  on top of it, so it must have meant the underside"), then (2) **the shorter
+  WALK wins** (`tripLength` through the waypoints, not a beeline — the detour to
+  a doorway is exactly what a beeline hides). Only a STRICT improvement
+  displaces the incumbent, so the drawn surface keeps ties and a single
+  candidate is byte-for-byte `startTrip`. The winner's `goalLevel` is what the
+  beacon is drawn at, so the choice and the marker offset come out of ONE
+  decision and cannot disagree.
+  **DO NOT "fix" the symptom by moving the beacon to meet the walk.** That
+  offsets the player's own input, and it was rejected twice (2026-08-08: "I
+  click where I click because I want the player to walk to that location", then
+  "now you move the marker to a spot I didn't click on"). Resolving between two
+  readings of the SAME pixel cannot move it; resolving between two levels of one
+  CELL always does. That is the whole difference between the two designs.
+  KNOWN LIMIT, not a bug to re-fix blindly: a roof pixel over a mountain (the
+  the_island2 house is built into one) has NO ground reading — the cell 6.4
+  up-screen is level-6 stone — and the roof needs a 6-level climb. There is then
+  no reachable surface at that pixel at all, the walk is a best effort to the
+  floor beneath, and it still ends ~96px below the marker. Moving the marker is
+  not the answer; a route onto the roof would be.
+  **A CLIFF IS AMBIGUOUS TOO, NOT JUST A ROOF.** The re-resolve originally
+  skipped DECKS only, so a cliff top — plain raised terrain — re-scanned to
+  itself, left a single candidate, and the walker always climbed even when two
+  steps would have put her behind it. `ignoreAtOrAbove` skips every surface at
+  or above the tapped level, terrain included, so any raised pixel offers both
+  readings and the routing picks.
+  **WHEN THE SECOND READING IS A WALL, TAKE THE NEAREST WALKABLE PIXEL** —
+  never "the floor of the cell you clicked", which draws level*lh (96px for a
+  house) BELOW the marker and is exactly the walker standing with her head at
+  it. `nearestGroundTo` searches a small ring in SCREEN space, because the
+  marker is a pixel: two cells equally far in world terms can be a storey apart
+  on screen.
+  **THE BEACON IS THE PIXEL YOU TOUCHED — never a projection of the route.**
+  Deriving it from `trip.target` is what made it drift: a WALL TOP is plain
+  terrain at level 6 with no deck under it, so the tap has only ONE reading, the
+  route cannot reach it, and findPath's best-effort rim is a NEIGHBOURING cell
+  — the beacon slid to that rim and lifted by six levels, landing at the
+  walker's head (2026-08-08: "if I click on top of the wall the marker moves a
+  bit up and the player walks so that her head is on the marker... if I click on
+  the roof the player correctly goes to the marker with her feet"). A roof hid
+  this, because it has two surfaces and the reachable one is under the finger
+  anyway. `tapMarkerAt` pins the beacon to the camera-world point of the touch,
+  and the per-frame follow and the drag both respect the pin.
+  **THE PICK POINT MUST SURVIVE THE HOLD.** `holdRepath` re-plans 50ms after
+  every tap and again on release, so a pick point passed only at pointerdown is
+  overwritten within a frame by a trip that never computed the second reading —
+  the feature ran once and was thrown away, on every real click. It lives on
+  `holdGround.at` now. A probe that calls setMoveTarget directly CANNOT see this
+  (that is how it shipped twice), so section 9 of the gate ends with a real
+  `page.mouse.click` and asserts it resolves the same as the probe.
+  Gates: `server/test/beacon.test.ts` (the unreachable roof, and a roof that
+  WINS on distance from the mountain shoulder — the case rule 1 alone cannot
+  decide) and section 9 of `verify-indoor.mjs`. Note what section 9 asserts:
+  **you arrive AT THE BEACON**, not at the tapped pixel — there is often no
+  walkable surface at a roof pixel at all, and an earlier cut that compared
+  (col+row) instead of screen Y reported "0.0 cells off the finger" against code
+  that still had the bug.
+- **`endLevel` IS WHAT MAKES THE ABOVE DECIDABLE.** findPath's waypoints carry
+  `lvl` (the LAYER the search actually stood on — additive, but note a
+  `deepEqual` on a waypoint sees it) and the trip carries `endLevel` beside
+  `goalLevel`. Without it, "the route reached the roof" and "the route gave up
+  and took the floor of that same cell" are indistinguishable: the cell has both
+  surfaces, so only the search's own layer can tell them apart. `goalLevel`
+  stays the WISH on purpose — a stall replan must keep re-aiming for the deck.
+- **THE OCCLUSION OUTLINE IS NOT A WALL-HACK.** It draws at 900_001.43, ABOVE
+  the darkness overlay, so zero ambient cannot hide it — the only thing that
+  can is refusing to draw it. Two symmetric gates in `syncCoverOutline`:
+  indoors, nobody OUTSIDE my room gets one (`indoorOutside`); outdoors, nobody
+  sealed INSIDE a room does either (`inHiddenRoom`) — without the second, a
+  monster deep in the mountain showed a crisp white silhouette through solid
+  rock (maintainer 2026-08-08: "they are indoors and I am outdoors, so this
+  should not be possible"). "Room" is the same verdict the indoor state machine
+  uses, not merely "has a slab overhead", so a body behind a cliff, a tower or
+  a BRIDGE keeps its outline — that IS the feature — and someone in the cave
+  MOUTH is not sealed (no slab over an entrance), so they outline normally.
+  **The gate is the CUT, never the fade mask.** `roomMask` outlives the indoor
+  verdict on purpose (it drives the ambient ease for OUTDOOR_FADE_MS after you
+  step out); reading it here kept every monster in the cave outlined through
+  solid rock for a whole second after the roof snapped back. `indoorInside &&
+  indoorMask` — the same pair `pickGround` and `aboveCut` use — flips in the
+  same frame redrawGround puts the roof back.
+  One flood fill answers for a whole space: `roomCellMemo` is filled from
+  `space.roof` in a single pass (the cave's 472 cells at once) and is a Map
+  lookup per body per frame thereafter; it clears on world change, the only
+  thing that can invalidate it. Fails OPEN — an outline shown that could have
+  been hidden is cosmetic, one hidden that should show is the feature broken.
+  Gates: section 8 of `verify-indoor.mjs`. It arms a per-FRAME recorder before
+  leaving the cave and latches the first frame that is already outdoors with the
+  fade still running (measured at mix 0.73-0.75) — sampling after `settle` would
+  miss the bug entirely, because settle WAITS for the fade to end. It is kept
+  non-vacuous by
+  `coverFrac` (what the GEOMETRY covers, independent of whether the ring is
+  drawn): it requires ≥2 monsters both sealed and >50% buried before asserting
+  none is outlined — and the mid-fade check requires ≥1, which it learned the
+  hard way, having once reported "none of the 0 sealed monsters is outlined" and
+  PASSED against code that still had the delay (the cave's population wanders,
+  so an empty frame is a no-measurement, not a pass) — and separately requires that bodies covered by OPEN-AIR
+  terrain still are — otherwise "switch the feature off" would pass.
+- **THE CAVE SWALLOWS THE LIGHT** (maintainer 2026-08-08: "darker and darker
+  the further into tiles being indoor you can see... a thickening shadow that
+  gets very dark, very fast"). Every room dims with **depth from its nearest
+  entrance** — DEPTH, not distance from the camera: a long twisting cave goes
+  black around its first corner while a shallow alcove stays readable, and
+  neither needs tuning because the geometry says how deep it is. `buildCaveDepth`
+  BFSes from `space.entrances` across each room's own cells, once per world
+  (~600 roofed cells on the_island2), skipping anything the indoor verdict does
+  not call a room so a bridge never acquires a shadow. It rides in the room
+  mask's free GREEN channel — same texture, same fetch — and the shader applies
+  ONE exponential, `exp(-depth * uCaveK)`.
+  It multiplies the FINAL light, after the point lights, on purpose: **no light
+  source punches in** ("I think it looks best if no light source can punch in").
+  A torch at the mouth buys you the first cell, never the depths. Your OWN room
+  is exempt and un-dims on `uIndoorMix`, so walking in fades the depths up
+  instead of snapping. 255 is the sentinel for "no opening reaches this cell".
+  `roomDebug()` reports `depthCells`/`depthMax`, because a channel written once
+  per world fails silently — "the effect does nothing" and "the channel is
+  empty" look identical on screen.
+  - **THE DEPTH IS READ FROM THE CELL THAT IS DRAWN, NOT THE ONE THE RAY STOPS
+    ON** (`groundCellAt`, 2026-08-09 — and this is why five rounds of mask
+    surgery all rendered nothing). The surface march stops at the first column
+    whose top the ray meets and `heightAt` is max(terrain, deck), so a roofed
+    cave cell is opaque for its FULL height: every pixel of an opening resolved
+    to the first interior column, which is at BFS depth 0 — the mouth itself —
+    and multiplied by exactly 1.0. Measured on the shipped build: 0 of 86,640
+    mouth pixels darkened, worst multiply 1.00000. The floor and the inward
+    wall faces behind that column were never sampled, however the mask was
+    built. That also explains the detour: the near rock JAMBS *are* resolved by
+    the surface march, so marking them darkened the mouth convincingly — and a
+    house's outer wall is the same kind of cell, which is what turned every
+    house black; removing them removed the only cells the shader could see.
+    The GROUND field carries no decks, so the identical walk over `groundAt`
+    lands on the cell whose art is painted at the pixel (measured: 92% of
+    inward-wall pixels, 70% of floor pixels, at depths 1..8 instead of a flat
+    1). It is a SECOND, SEPARATE march on purpose — `cell`/`z` from the surface
+    walk still drive Lambert, shadows, AO and emission — and it runs only for
+    pixels already under the ceiling gate.
+  - The GATE stays on the surface march (`z < caveUnderAt(cell) - 0.5`): `z`,
+    not the cell, is what separates the opening from the lintel above it. The
+    ceiling underside comes from `grid.deckBot` into the mask's BLUE channel;
+    rederiving it from the deck table produced 0 cells and the shader compared
+    against zero forever.
+  - What the room mask must mark is the INWARD-FACING walls — `space.wallLeft`
+    / `wallRight`, the up-screen ones whose drawn face looks into the room —
+    never the whole fringe. A cell's drawn faces are its +col and +row sides, so
+    the NEAR half of a ring faces the camera and is the mountain's outside
+    skirt: darkening it is "you fade what's not inside the cave opening dark".
+    No band, no rings — a wall face is 8 levels (128px) against a 15px cell
+    step, so the next row of rock behind it is buried whole. The rock bar (two
+    levels of headroom above the room's ceiling) keeps house walls out: measured
+    over every space in the_island2, the cave marks 146 and every house and arch
+    marks 0.
+  - `uCaveK` is the single falloff dial (1.2: mouth untouched, then 30/9/2.7/
+    0.8% over the first four cells). 3.6 was a cliff once the depth reached the
+    drawn cells.
+- **A CAVE MOUTH IS NOT A WALL FACE.** `Ha` (uHeight.R) is max(terrain, deck),
+  so every pixel under a roof slab classified as a wall FACE — and a face takes
+  the face Lambert gate and the face shadow march, which painted the open cave
+  entrance with light and shadow as if glass were stretched across it
+  (maintainer 2026-08-08: "it looks like some sort of mirror or force-field.
+  You can't cast shadows on it since it's empty air"). The light MARCH already
+  knew better (see the two-solid-spans rule and groundAtSoft's pin: a deck is a
+  floating slab with open air beneath); only the CLASSIFICATION had been left
+  behind. A face now also requires solid GROUND above the pixel —
+  `groundAt(cell) - z > 0.05`, the NEAREST twin of heightAt reading uHeightG.R.
+  The uTest-4 calibration branch carries the same condition, or the gates would
+  measure a rule that does not ship. Real walls are untouched (their ground top
+  IS their surface); what changes is only what is under a slab.
 - **WATER IS A PLAYER SANCTUARY** (maintainer 2026-08-05: "no monster can
   enter/go on water … the player can always use the water to escape/hide").
   Enforced at every layer: buildZoneRuntimes never returns swim cells
@@ -2096,6 +2348,22 @@ side collision just like monsters").
       sampler2D reads texture unit 0 — the heightmap — so the failure mode
       without it is a BLACK ROOM on a real phone while headless SwiftShader
       looks fine.
+    - **NOTHING STANDS ON GROUND THE CUT REMOVED** (`aboveCut`). The "draw it
+      and let the light decide" rule is right at MY level, where the ground
+      under a body really is painted. It stops being right ABOVE the cut,
+      because up there nothing is painted at all — the truncation is
+      world-wide — so a body up there hangs in the void (maintainer 2026-08-08:
+      "monsters on top of the mountain are drawn when you are inside the
+      cave"). Monsters, NPCs, remote players and ground drops are all hidden
+      when their surface level exceeds `indoorTop`. Note the threshold is the
+      CUT, not the ceiling, and the test is HEIGHT, not room membership: the
+      mountain around a cave is both outside the room and above the cut
+      (hidden), while the grass outside a house door is outside the room but at
+      my own level (drawn, and lit by a torch through the doorway). Gate:
+      verify-indoor section 7, which needs a populated mountain overhead and so
+      only works in a cave — and which turns "disable aggro" ON, because a gate
+      standing still in a level-24-36 cave gets killed and respawned outdoors
+      mid-measurement.
     - **Anything drawn ABOVE the darkness overlay must gate itself** — no
       amount of zero ambient touches depth 900_001+. `indoorOutside(fx,fy,z)`
       is that predicate, and it is NOT a visibility test: bodies are always
@@ -2175,6 +2443,57 @@ side collision just like monsters").
     outdoors in the open none at all — the gate asserts that CHAIN rather than
     any single number, because a monotone response to the dial is something an
     outline stuck on or stuck off cannot fake.
+  - **COVERAGE IS RASTERISED, NOT MODELLED** (2026-08-09, maintainer: "it was
+    intended to be pixel perfect. Only the exact pixel that was covered should
+    have gotten the wall hack effect. Now the effect is just a line"). `coverY`
+    is ONE screen-space scalar — the top of the highest covering column's 64px
+    IMAGE box — and the ring was the cached silhouette cropped below it. An iso
+    wall top is a diagonal, a rock lip jagged, an arch a hole with body visible
+    above AND below, and a prop billboard is arbitrary art alpha. Measured over
+    six spots: **79.8-93.7% of the outlined pixels were over ground nothing
+    covered**, 19-25 of 29 body columns had zero cover, the flat line sat
+    15.6-20.2px (max 31) above the true cover top, and at a tree a complete
+    268-texel outline was drawn around a body **0%** covered. Every tile's art
+    also starts >=6px below its box top (19px at the diamond's side corners), so
+    `min(o.y0)` over-claims by construction — MISSED was 0.0% at every spot, the
+    error is entirely one-sided. **No analytic field can fix this** (not the
+    heightmap, not the tile-top table): the occluder can be a billboard.
+    So the images that do the covering RASTERISE it, per body, into three
+    DynamicTextures in a shared atlas: E (the body minus the occluders in front
+    of it), C (the body minus E), O (dilate(C) minus the body = the ring).
+    "Covered" is then Phaser's own painter rule (`depth > sprite.depth`),
+    executed by the renderer, which is what the maintainer is looking at.
+    Verified by reading the shipped surfaces back off the GPU against an
+    independent CPU truth: **0 differing texels** at every spot, E∪C == the
+    silhouette, E∩C == 0, nothing painted outside it. Gated on WEBGL with the
+    flat-crop path kept verbatim as the fallback (`coverExact`).
+    THREE TRAPS, all paid for:
+    * **The atlas must RECYCLE.** Holding a slot until the body is destroyed
+      froze allocation at 13-25 slots after a couple of minutes, and every
+      covered body after that silently reverted to the flat line — the original
+      defect, back mid-session, on the player's own body. Any free slot big
+      enough serves a request (smallest first), and a body uncovered for
+      `COVER_SLOT_GRACE` ticks hands its slot back. What the atlas holds is the
+      bodies covered AT ONCE, not every body ever covered.
+    * **Ask about the ART BOX, not the frame box.** A 112x112 frame around a
+      29x86 figure admitted ~80 occluder candidates per body in mountain
+      terrain against a median ~6; artBounds (mirrored when `flipX`, since these
+      are world coordinates) took it to a mean 4.7 per flush. Safe because C ⊆
+      silhouette ⊆ artBounds, so an occluder clear of the box cannot cover an
+      opaque texel.
+    * **The flat line may not veto the exact path.** `coverY` below the art does
+      NOT mean nothing is covered (a low occluder in front of the feet):
+      measured 95 covered texels with no outline drawn, because the early-out
+      fired before the slot was consulted. With a slot, O answers for itself.
+  - **SWIMMING: WEAR THE BODY'S OWN MASK.** The outline was the one body layer
+    without `sprite.mask` — the same GeometryMask object `updateWaterClip` puts
+    on the sprite and `applyObjectLights` on the lit copy — so a swimmer behind
+    a wall had the ring tracing her skirt, both legs and both feet through the
+    water. Taking the OBJECT (never `swimming`/`swimT`, never a second copy of
+    `BOW_FRAC`) makes it structurally unable to disagree with the body's own
+    cut, bow, bob, exit-jump and all three of `updateWaterClip`'s bail-outs.
+    Measured fully submerged: 712 ring pixels above the crest, **0** below,
+    across 62 columns.
 - **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): the
   browser gate for "walk into a house and the roof comes off". It frames
   the_island2's house with ONE pinned camera from outside and from within and

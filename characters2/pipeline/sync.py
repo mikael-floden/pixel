@@ -454,11 +454,34 @@ def list_npcs(client):
             if any((t or "").upper() == NPC_TAG for t in (c.get("tags") or []))]
 
 
-def sync_npcs(client, force=False):
+def _npc_index_entry(cid, listing, man):
+    """One npcs/index.json row. Authored fields ride along so a consumer (the
+    wiki) can render the whole cast from ONE file; `pixellab_name` is the raw
+    prompt junk, kept for tracing and never for display. `states` is the game's
+    addressing contract (idle -> folder)."""
+    rec = {
+        "pixellab_character_id": cid,
+        "pixellab_name": listing.get("name"),
+        "animations": sorted((man.get("animations") or {}).keys()),
+    }
+    if man.get("states") is not None:
+        rec["states"] = man["states"]
+    for k in ("display_name", "species", "sex", "role", "lore"):
+        if man.get(k) is not None:
+            rec[k] = man[k]
+    return rec
+
+
+def sync_npcs(client, force=False, only=None):
     """Mirror ALL NPC-tagged PixelLab characters into npcs/<id8>/ and PRUNE any
     folder whose character lost the tag or was deleted (true mirror). Also
     writes npcs/index.json (characters2-npcs@1) so consumers can enumerate NPCs
-    without walking the tree."""
+    without walking the tree.
+
+    only=<set of folders> re-syncs just those NPCs (the rest keep their existing
+    files and manifests, and the index is rebuilt from disk either way). Use it
+    to chase a handful of stragglers — e.g. the NPCs still missing a direction —
+    without re-pulling thousands of unchanged frames."""
     os.makedirs(NPCS, exist_ok=True)
     npcs = list_npcs(client)
 
@@ -471,6 +494,12 @@ def sync_npcs(client, force=False):
     index = {}
     for i, c in enumerate(sorted(npcs, key=lambda c: c["id"]), 1):
         cid = c["id"]; folder = folders[cid]
+        if only is not None and folder not in only:
+            # untouched — keep its manifest as-is and still list it in the index
+            man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
+            if man:
+                index[folder] = _npc_index_entry(cid, c, man)
+                continue
         s = sync_character(client, folder, cid, force=force, dest=NPCS,
                            states_for=resolve_npc_states)
         totals["rot_new"] += s["rot_new"]; totals["anim_new"] += s["anim_new"]
@@ -478,21 +507,7 @@ def sync_npcs(client, force=False):
         if not (s["rot_new"] or s["anim_new"]):
             totals["skipped"] += 1
         man = _read_json(os.path.join(NPCS, folder, "character.json"), {}) or {}
-        # Authored fields are carried in the roll-up too, so a consumer (the
-        # wiki) can render the whole cast from ONE file. `pixellab_name` is the
-        # raw prompt junk — kept for tracing, never for display.
-        rec = {
-            "pixellab_character_id": cid,
-            "pixellab_name": c.get("name"),
-            "animations": sorted((man.get("animations") or {}).keys()),
-        }
-        # `states` is the game's addressing contract — idle -> folder.
-        if man.get("states") is not None:
-            rec["states"] = man["states"]
-        for k in ("display_name", "species", "sex", "role", "lore"):
-            if man.get(k) is not None:
-                rec[k] = man[k]
-        index[folder] = rec
+        index[folder] = _npc_index_entry(cid, c, man)
         if i % 25 == 0 or i == len(npcs):
             print(f"  npcs: {i}/{len(npcs)} mirrored "
                   f"(+{totals['frames']} frames so far)", flush=True)
@@ -528,6 +543,9 @@ def main():
     ap = argparse.ArgumentParser(description="Mirror the two heroes (+ animations) from PixelLab.")
     ap.add_argument("names", nargs="*", help="Which heroes to sync (default: all pinned).")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--only", default=None,
+                    help="NPC pass only: comma-separated npcs/<folder> ids to re-sync "
+                         "(others keep their files). For chasing stragglers cheaply.")
     ap.add_argument("--force", action="store_true",
                     help="Re-download every frame even if group-id/URL look unchanged "
                          "(catches PixelLab IN-PLACE animation edits).")
@@ -546,7 +564,8 @@ def main():
         if name == "npcs":
             print(f"+ syncing NPCs (every PixelLab character tagged {NPC_TAG})"
                   f"{' (FORCE)' if args.force else ''}")
-            t = sync_npcs(client, force=args.force)
+            only = {x.strip() for x in args.only.split(",") if x.strip()} if args.only else None
+            t = sync_npcs(client, force=args.force, only=only)
             print(f"  npcs: {t['npcs']} mirrored | +{t['frames']} frames | "
                   f"{t['skipped']} unchanged | {t['pruned']} pruned")
             commit_push(f"characters2: sync {t['npcs']} NPCs from PixelLab "

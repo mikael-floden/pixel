@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-05T08:02:23+00:00",
+  "generated_at": "2026-08-08T15:25:59+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -1055,6 +1055,1439 @@
             "seamless transition to beginning",
             "sustained string chords",
             "fade out non-essential elements"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "cave2": {
+      "id": "cave2",
+      "files": [
+        {
+          "file": "cave2.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1402281
+        },
+        {
+          "file": "cave2.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1768124
+        }
+      ],
+      "duration_s": 108.63,
+      "bpm": 61.52,
+      "asked_bpm": 74,
+      "musical": {
+        "root": "A",
+        "mode": "major",
+        "confidence": 0.8,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          1,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 61.52,
+        "beat_anchor_s": 0.673,
+        "confidence": 0.528,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 26.345,
+        "loop_end_s": 91.213,
+        "crossfade_ms": 900,
+        "score": 0.9829,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 1.4,
+        "lufs_in": -11.92,
+        "gain_db": -6.08,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.08
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -11.92,
+        "true_peak_dbtp": -1.0,
+        "lead_in_s": 1.4,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 14.11,
+        "centroid_hz": 3506.3,
+        "stereo_corr": 0.21,
+        "silence_frac": 0.035
+      },
+      "faults": [
+        "slow start (1.40s)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 72.75,
+          "faults": [
+            "slow start (1.40s)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -11.92,
+          "true_peak_dbtp": -1.0,
+          "lead_in_s": 1.4,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 14.11,
+          "centroid_hz": 3506.3,
+          "stereo_corr": 0.21,
+          "silence_frac": 0.035,
+          "loop_score": 0.9696
+        },
+        {
+          "score": 0.0,
+          "faults": [
+            "TRUNCATED (0.13s of 110s)"
+          ],
+          "duration_s": 0.13,
+          "lufs": -70.0,
+          "true_peak_dbtp": 6.08,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.0,
+          "crest_db": 2.6,
+          "centroid_hz": 10715.4,
+          "stereo_corr": 0.641,
+          "silence_frac": 0.0,
+          "loop_score": 0.0
+        },
+        {
+          "score": 63.85,
+          "faults": [
+            "slow start (1.25s)",
+            "gaps (6.1% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.33,
+          "true_peak_dbtp": -1.01,
+          "lead_in_s": 1.25,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 12.97,
+          "centroid_hz": 2099.2,
+          "stereo_corr": 0.114,
+          "silence_frac": 0.061,
+          "loop_score": 0.9806
+        }
+      ],
+      "sections": [
+        {
+          "name": "Deep Drone",
+          "duration_ms": 15000,
+          "styles": [
+            "immediate start",
+            "deep sustained low string drone",
+            "very soft dynamics",
+            "enormous reverb",
+            "solemn mood",
+            "low cello"
+          ]
+        },
+        {
+          "name": "Drips and Pulse",
+          "duration_ms": 25000,
+          "styles": [
+            "soft marimba notes",
+            "prepared-piano notes",
+            "long natural reverb",
+            "sounds like drips into water",
+            "quiet steady pulse emerges",
+            "gentle forward motion"
+          ]
+        },
+        {
+          "name": "Cavern Breath",
+          "duration_ms": 30000,
+          "styles": [
+            "distant breathy bass flute melody",
+            "slow low cello swells",
+            "continued marimba and piano pulse",
+            "deep warm low end",
+            "sense of awe"
+          ]
+        },
+        {
+          "name": "Crystal Shimmer",
+          "duration_ms": 25000,
+          "styles": [
+            "far-off soft bowed metal shimmer",
+            "gentle unfatiguing highs",
+            "ethereal atmosphere",
+            "sustained string drone continues",
+            "space between notes",
+            "quiet wonder"
+          ]
+        },
+        {
+          "name": "Loop and Fade",
+          "duration_ms": 15000,
+          "styles": [
+            "seamless loop point",
+            "marimba and piano pulse returning to forefront",
+            "deep string drone holds",
+            "gentle fade into reverb",
+            "sense of unending space",
+            "peaceful conclusion"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "cave3": {
+      "id": "cave3",
+      "files": [
+        {
+          "file": "cave3.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1349176
+        },
+        {
+          "file": "cave3.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1739333
+        }
+      ],
+      "duration_s": 108.53,
+      "bpm": 92.29,
+      "asked_bpm": 92,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.657,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 92.29,
+        "beat_anchor_s": 0.093,
+        "confidence": 0.72,
+        "raw_bpm": 92.29
+      },
+      "loop": {
+        "loop_start_s": 36.591,
+        "loop_end_s": 88.141,
+        "crossfade_ms": 900,
+        "score": 0.9417,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 1.5,
+        "lufs_in": -14.47,
+        "gain_db": -3.53,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -4.6
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -14.46,
+        "true_peak_dbtp": -1.07,
+        "lead_in_s": 1.5,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.62,
+        "centroid_hz": 2805.3,
+        "stereo_corr": 0.709,
+        "silence_frac": 0.061
+      },
+      "faults": [
+        "slow start (1.50s)",
+        "gaps (6.1% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 0.0,
+          "faults": [
+            "TRUNCATED (0.26s of 110s)"
+          ],
+          "duration_s": 0.26,
+          "lufs": -70.0,
+          "true_peak_dbtp": 6.57,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.0,
+          "crest_db": 2.94,
+          "centroid_hz": 10823.5,
+          "stereo_corr": 0.366,
+          "silence_frac": 0.0,
+          "loop_score": 0.0
+        },
+        {
+          "score": 66.88,
+          "faults": [
+            "slow start (1.50s)",
+            "gaps (6.5% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -13.68,
+          "true_peak_dbtp": -0.84,
+          "lead_in_s": 1.5,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 16.12,
+          "centroid_hz": 3558.5,
+          "stereo_corr": 0.351,
+          "silence_frac": 0.065,
+          "loop_score": 0.9317
+        },
+        {
+          "score": 68.4,
+          "faults": [
+            "slow start (1.50s)",
+            "gaps (6.1% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -14.46,
+          "true_peak_dbtp": -1.07,
+          "lead_in_s": 1.5,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.62,
+          "centroid_hz": 2805.3,
+          "stereo_corr": 0.709,
+          "silence_frac": 0.061,
+          "loop_score": 0.944
+        }
+      ],
+      "sections": [
+        {
+          "name": "Entrance",
+          "duration_ms": 25000,
+          "styles": [
+            "deep low string drone",
+            "clear steady pulse",
+            "soft marimba notes",
+            "prepared piano like drips",
+            "long natural reverb",
+            "immediate start"
+          ]
+        },
+        {
+          "name": "First Cavern",
+          "duration_ms": 30000,
+          "styles": [
+            "distant breathy bass flute melody",
+            "walking melody",
+            "slow low cello swells",
+            "continuous marimba",
+            "sustained drone"
+          ]
+        },
+        {
+          "name": "Crystal Grotto",
+          "duration_ms": 30000,
+          "styles": [
+            "far-off soft bowed metal shimmer",
+            "glimmering texture",
+            "prepared piano echoes",
+            "bass flute continues",
+            "cello swells intensify slightly"
+          ]
+        },
+        {
+          "name": "Deep Pool and Loop Point",
+          "duration_ms": 25000,
+          "styles": [
+            "bass flute melody fades",
+            "marimba and piano become sparser",
+            "cello swells recede",
+            "deep string drone remains",
+            "seamless transition to beginning"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "cave4": {
+      "id": "cave4",
+      "files": [
+        {
+          "file": "cave4.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1541158
+        },
+        {
+          "file": "cave4.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1767869
+        }
+      ],
+      "duration_s": 108.78,
+      "bpm": 68.0,
+      "asked_bpm": 68,
+      "musical": {
+        "root": "A",
+        "mode": "minor",
+        "confidence": 0.872,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          4,
+          5,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 68.0,
+        "beat_anchor_s": 0.627,
+        "confidence": 0.686,
+        "raw_bpm": 136.0
+      },
+      "loop": {
+        "loop_start_s": 31.851,
+        "loop_end_s": 90.071,
+        "crossfade_ms": 900,
+        "score": 0.9506,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 1.25,
+        "lufs_in": -12.7,
+        "gain_db": -5.3,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.74
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -12.7,
+        "true_peak_dbtp": -0.44,
+        "lead_in_s": 1.25,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.88,
+        "centroid_hz": 3725.0,
+        "stereo_corr": 0.53,
+        "silence_frac": 0.076
+      },
+      "faults": [
+        "slow start (1.25s)",
+        "gaps (7.6% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (3.00s)",
+            "gaps (8.5% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -14.6,
+          "true_peak_dbtp": -1.07,
+          "lead_in_s": 3.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 16.71,
+          "centroid_hz": 1706.7,
+          "stereo_corr": 0.321,
+          "silence_frac": 0.085,
+          "loop_score": 0.9637
+        },
+        {
+          "score": 66.6,
+          "faults": [
+            "slow start (1.25s)",
+            "gaps (7.6% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.7,
+          "true_peak_dbtp": -0.44,
+          "lead_in_s": 1.25,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.88,
+          "centroid_hz": 3725.0,
+          "stereo_corr": 0.53,
+          "silence_frac": 0.076,
+          "loop_score": 0.9567
+        },
+        {
+          "score": 65.44,
+          "faults": [
+            "slow start (1.50s)",
+            "gaps (9.1% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -14.22,
+          "true_peak_dbtp": -0.99,
+          "lead_in_s": 1.5,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 16.19,
+          "centroid_hz": 2127.3,
+          "stereo_corr": 0.173,
+          "silence_frac": 0.091,
+          "loop_score": 0.9426
+        }
+      ],
+      "sections": [
+        {
+          "name": "Immediate Drone and Ostinato",
+          "duration_ms": 25000,
+          "styles": [
+            "deep sustained low string drone",
+            "soft repeating marimba ostinato",
+            "gentle continuous movement",
+            "starts immediately",
+            "long natural reverb",
+            "very soft dynamics"
+          ]
+        },
+        {
+          "name": "Piano and Flute Entry",
+          "duration_ms": 30000,
+          "styles": [
+            "prepared piano enters, answering marimba",
+            "distant breathy bass flute melody",
+            "low string drone continues",
+            "marimba ostinato continues",
+            "enormous echoing space",
+            "deep warm low end"
+          ]
+        },
+        {
+          "name": "Development with Cello and Shimmer",
+          "duration_ms": 30000,
+          "styles": [
+            "slow low cello swells",
+            "occasional far-off soft bowed metal shimmer",
+            "marimba ostinato continues",
+            "bass flute melody weaves",
+            "full but uncluttered texture",
+            "sense of quiet wonder"
+          ]
+        },
+        {
+          "name": "Return and Fade",
+          "duration_ms": 25000,
+          "styles": [
+            "flute and cello melodies fade out",
+            "prepared piano becomes sparser",
+            "marimba ostinato and low drone continue",
+            "long decay",
+            "seamless loop point",
+            "gentle unfatiguing highs"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "battle_day": {
+      "id": "battle_day",
+      "files": [
+        {
+          "file": "battle_day.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1181104
+        },
+        {
+          "file": "battle_day.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1524294
+        }
+      ],
+      "duration_s": 90.001,
+      "bpm": 152.0,
+      "asked_bpm": 152,
+      "musical": {
+        "root": "A",
+        "mode": "minor",
+        "confidence": 0.588,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          4,
+          5,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 152.0,
+        "beat_anchor_s": 0.36,
+        "confidence": 0.905,
+        "raw_bpm": 76.0
+      },
+      "loop": {
+        "loop_start_s": 26.85,
+        "loop_end_s": 75.8,
+        "crossfade_ms": 900,
+        "score": 0.9531,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -12.64,
+        "gain_db": -5.36,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.28
+      },
+      "measured": {
+        "duration_s": 90.0,
+        "lufs": -12.64,
+        "true_peak_dbtp": 0.08,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 13.9,
+        "centroid_hz": 6678.3,
+        "stereo_corr": 0.82,
+        "silence_frac": 0.016
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 68.5,
+          "faults": [
+            "slow start (1.10s)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -12.91,
+          "true_peak_dbtp": -0.36,
+          "lead_in_s": 1.1,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.74,
+          "centroid_hz": 5913.8,
+          "stereo_corr": 0.848,
+          "silence_frac": 0.05,
+          "loop_score": 0.966
+        },
+        {
+          "score": 91.6,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -12.64,
+          "true_peak_dbtp": 0.08,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.9,
+          "centroid_hz": 6678.3,
+          "stereo_corr": 0.82,
+          "silence_frac": 0.016,
+          "loop_score": 0.9593
+        },
+        {
+          "score": 86.2,
+          "faults": [
+            "harsh/bright (7147 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -11.56,
+          "true_peak_dbtp": -0.38,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 13.22,
+          "centroid_hz": 7146.7,
+          "stereo_corr": 0.6,
+          "silence_frac": 0.012,
+          "loop_score": 0.9593
+        }
+      ],
+      "sections": [
+        {
+          "name": "Percussion Layer A",
+          "duration_ms": 30000,
+          "styles": [
+            "full energy from start",
+            "galloping rhythm",
+            "frame drums",
+            "low toms",
+            "shakers",
+            "pulsing low D drone",
+            "rhythmic stabs on D and A"
+          ]
+        },
+        {
+          "name": "Percussion Layer B",
+          "duration_ms": 30000,
+          "styles": [
+            "consistent intensity",
+            "tambourine and claps added",
+            "tight hand percussion",
+            "low D drone continues",
+            "urgent rhythmic stabs on D and A",
+            "uncluttered mid-range"
+          ]
+        },
+        {
+          "name": "Percussion Layer C (Loop)",
+          "duration_ms": 30000,
+          "styles": [
+            "driving rhythm continues",
+            "frame drums",
+            "low toms",
+            "shakers and tambourine",
+            "pulsing low D drone",
+            "short rhythmic stabs on D and A",
+            "seamless looping feel"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "battle_night": {
+      "id": "battle_night",
+      "files": [
+        {
+          "file": "battle_night.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1089198
+        },
+        {
+          "file": "battle_night.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1480840
+        }
+      ],
+      "duration_s": 90.001,
+      "bpm": 123.05,
+      "asked_bpm": 123,
+      "musical": {
+        "root": "A",
+        "mode": "minor",
+        "confidence": 0.449,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          4,
+          5,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 123.05,
+        "beat_anchor_s": 0.476,
+        "confidence": 0.723,
+        "raw_bpm": 61.52
+      },
+      "loop": {
+        "loop_start_s": 12.85,
+        "loop_end_s": 84.55,
+        "crossfade_ms": 900,
+        "score": 0.9719,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -10.8,
+        "gain_db": -7.2,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.75
+      },
+      "measured": {
+        "duration_s": 90.0,
+        "lufs": -10.8,
+        "true_peak_dbtp": -0.55,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 10.91,
+        "centroid_hz": 3767.0,
+        "stereo_corr": 0.897,
+        "silence_frac": 0.046
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 93.1,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -10.8,
+          "true_peak_dbtp": -0.55,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 10.91,
+          "centroid_hz": 3767.0,
+          "stereo_corr": 0.897,
+          "silence_frac": 0.046,
+          "loop_score": 0.9734
+        },
+        {
+          "score": 86.35,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -10.98,
+          "true_peak_dbtp": -0.7,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 11.27,
+          "centroid_hz": 6645.7,
+          "stereo_corr": 0.857,
+          "silence_frac": 0.051,
+          "loop_score": 0.9728
+        },
+        {
+          "score": 59.37,
+          "faults": [
+            "slow start (1.95s)",
+            "gaps (8.4% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 90.0,
+          "lufs": -11.18,
+          "true_peak_dbtp": -0.78,
+          "lead_in_s": 1.95,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 10.67,
+          "centroid_hz": 5311.5,
+          "stereo_corr": 0.953,
+          "silence_frac": 0.084,
+          "loop_score": 0.9416
+        }
+      ],
+      "sections": [
+        {
+          "name": "Rhythmic Layer Part 1",
+          "duration_ms": 30000,
+          "styles": [
+            "deep heartbeat kick drum",
+            "low toms",
+            "taut skin drums",
+            "metallic rattles and shakers",
+            "bowed double bass ostinato on A",
+            "short rhythmic cello stabs on E"
+          ]
+        },
+        {
+          "name": "Rhythmic Layer Part 2",
+          "duration_ms": 30000,
+          "styles": [
+            "deep heartbeat kick drum",
+            "low toms",
+            "taut skin drums",
+            "metallic rattles and shakers",
+            "bowed double bass ostinato on A",
+            "short rhythmic viola stabs on E"
+          ]
+        },
+        {
+          "name": "Rhythmic Layer Part 3",
+          "duration_ms": 30000,
+          "styles": [
+            "deep heartbeat kick drum",
+            "low toms",
+            "taut skin drums",
+            "metallic rattles and shakers",
+            "bowed double bass ostinato on A",
+            "short rhythmic cello stabs on E and A"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "summit_vista": {
+      "id": "summit_vista",
+      "files": [
+        {
+          "file": "summit_vista.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1560057
+        },
+        {
+          "file": "summit_vista.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1782610
+        }
+      ],
+      "duration_s": 109.97,
+      "bpm": 76.0,
+      "asked_bpm": 76,
+      "musical": {
+        "root": "A",
+        "mode": "minor",
+        "confidence": 0.903,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          4,
+          5,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 76.0,
+        "beat_anchor_s": 0.766,
+        "confidence": 0.695,
+        "raw_bpm": 152.0
+      },
+      "loop": {
+        "loop_start_s": 32.399,
+        "loop_end_s": 82.928,
+        "crossfade_ms": 900,
+        "score": 0.9657,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -11.99,
+        "gain_db": -6.01,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -6.72
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -11.99,
+        "true_peak_dbtp": -0.71,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.72,
+        "centroid_hz": 3310.9,
+        "stereo_corr": 0.388,
+        "silence_frac": 0.022
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 78.19,
+          "faults": [
+            "harsh/bright (7146 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -11.35,
+          "true_peak_dbtp": -0.25,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.33,
+          "centroid_hz": 7145.7,
+          "stereo_corr": 0.547,
+          "silence_frac": 0.051,
+          "loop_score": 0.9212
+        },
+        {
+          "score": 86.2,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -11.39,
+          "true_peak_dbtp": -0.36,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.04,
+          "centroid_hz": 6189.3,
+          "stereo_corr": 0.346,
+          "silence_frac": 0.035,
+          "loop_score": 0.916
+        },
+        {
+          "score": 96.7,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -11.99,
+          "true_peak_dbtp": -0.71,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.72,
+          "centroid_hz": 3310.9,
+          "stereo_corr": 0.388,
+          "silence_frac": 0.022,
+          "loop_score": 0.9679
+        }
+      ],
+      "sections": [
+        {
+          "name": "Opening Theme",
+          "duration_ms": 28000,
+          "styles": [
+            "immediate start",
+            "warm sustained strings",
+            "soaring solo horn melody",
+            "wide orchestration",
+            "deep warm bass",
+            "harp arpeggios",
+            "light glimmering bells"
+          ]
+        },
+        {
+          "name": "String Response",
+          "duration_ms": 27000,
+          "styles": [
+            "high strings take the melody",
+            "soaring and emotional",
+            "flute and oboe countermelodies",
+            "continued harp and bell textures",
+            "sense of forward drift",
+            "rich but airy orchestration"
+          ]
+        },
+        {
+          "name": "Development",
+          "duration_ms": 27000,
+          "styles": [
+            "full orchestra swell",
+            "wistful emotional peak",
+            "cello section carries a secondary theme",
+            "shimmering string tremolo",
+            "gentle cymbal roll",
+            "panoramic and vast"
+          ]
+        },
+        {
+          "name": "Return and Loop",
+          "duration_ms": 28000,
+          "styles": [
+            "solo horn melody returns",
+            "instrumentation becomes more sparse",
+            "seamless transition to beginning",
+            "gentle decrescendo",
+            "sustained high string note",
+            "feeling of endlessness",
+            "harp and bells fade slightly"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "summit_wind": {
+      "id": "summit_wind",
+      "files": [
+        {
+          "file": "summit_wind.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1412373
+        },
+        {
+          "file": "summit_wind.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1694361
+        }
+      ],
+      "duration_s": 103.98,
+      "bpm": 61.52,
+      "asked_bpm": 66,
+      "musical": {
+        "root": "A",
+        "mode": "major",
+        "confidence": 0.845,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          1,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 61.52,
+        "beat_anchor_s": 0.94,
+        "confidence": 0.698,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 30.159,
+        "loop_end_s": 95.615,
+        "crossfade_ms": 900,
+        "score": 0.9548,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 6.05,
+        "lufs_in": -12.52,
+        "gain_db": -5.48,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -6.23
+      },
+      "measured": {
+        "duration_s": 109.97,
+        "lufs": -12.52,
+        "true_peak_dbtp": -0.76,
+        "lead_in_s": 6.05,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 15.92,
+        "centroid_hz": 4344.4,
+        "stereo_corr": 0.438,
+        "silence_frac": 0.105
+      },
+      "faults": [
+        "slow start (6.05s)",
+        "gaps (10.5% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (6.05s)",
+            "gaps (10.5% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.52,
+          "true_peak_dbtp": -0.76,
+          "lead_in_s": 6.05,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 15.92,
+          "centroid_hz": 4344.4,
+          "stereo_corr": 0.438,
+          "silence_frac": 0.105,
+          "loop_score": 0.9577
+        },
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (5.55s)",
+            "gaps (11.4% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.7,
+          "true_peak_dbtp": -0.88,
+          "lead_in_s": 5.55,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.18,
+          "centroid_hz": 3205.4,
+          "stereo_corr": 0.535,
+          "silence_frac": 0.114,
+          "loop_score": 0.9534
+        },
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (6.05s)",
+            "gaps (12.5% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.97,
+          "lufs": -12.1,
+          "true_peak_dbtp": -1.1,
+          "lead_in_s": 6.05,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 11.63,
+          "centroid_hz": 2884.7,
+          "stereo_corr": 0.891,
+          "silence_frac": 0.125,
+          "loop_score": 0.9811
+        }
+      ],
+      "sections": [
+        {
+          "name": "Main Theme",
+          "duration_ms": 30000,
+          "styles": [
+            "begins immediately",
+            "soft low drone",
+            "quiet steady pulse",
+            "low duduk with simple aching melody",
+            "airy high strings",
+            "distant wordless female voice",
+            "slow shimmer of struck metal",
+            "low heartbeat rhythm"
+          ]
+        },
+        {
+          "name": "Melody Variation",
+          "duration_ms": 25000,
+          "styles": [
+            "duduk melody evolves slightly",
+            "wordless female voice becomes more present",
+            "airy strings swell gently",
+            "low drone and heartbeat pulse continue",
+            "shimmering cymbals continue",
+            "deep warm low end"
+          ]
+        },
+        {
+          "name": "Strings and Voice answer",
+          "duration_ms": 30000,
+          "styles": [
+            "duduk fades back slightly",
+            "high strings and wordless female voice answer the melody",
+            "call and response between instruments",
+            "heartbeat pulse remains steady",
+            "subtle wind sounds",
+            "calm and humbling feel"
+          ]
+        },
+        {
+          "name": "Return and Fade",
+          "duration_ms": 25000,
+          "styles": [
+            "duduk returns with original simple melody",
+            "all elements blend seamlessly",
+            "gradual fade of higher elements",
+            "drone and heartbeat persist longer",
+            "prepares for seamless loop",
+            "soft dynamics"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100"
+    },
+    "summit_triumph": {
+      "id": "summit_triumph",
+      "files": [
+        {
+          "file": "summit_triumph.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1568190
+        },
+        {
+          "file": "summit_triumph.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1716636
+        }
+      ],
+      "duration_s": 105.047,
+      "bpm": 100.67,
+      "asked_bpm": 100,
+      "musical": {
+        "root": "A#",
+        "mode": "major",
+        "confidence": 0.924,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          9,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          5,
+          7,
+          10
+        ]
+      },
+      "timing": {
+        "bpm": 100.67,
+        "beat_anchor_s": 0.151,
+        "confidence": 0.654,
+        "raw_bpm": 67.12
+      },
+      "loop": {
+        "loop_start_s": 31.202,
+        "loop_end_s": 102.634,
+        "crossfade_ms": 900,
+        "score": 0.8669,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -10.17,
+        "gain_db": -7.83,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.51
+      },
+      "measured": {
+        "duration_s": 105.05,
+        "lufs": -10.17,
+        "true_peak_dbtp": 0.32,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.644,
+        "crest_db": 13.82,
+        "centroid_hz": 6409.0,
+        "stereo_corr": 0.298,
+        "silence_frac": 0.0
+      },
+      "faults": [],
+      "candidates_tried": [
+        {
+          "score": 86.28,
+          "faults": [
+            "harsh/bright (7248 Hz)"
+          ],
+          "duration_s": 105.05,
+          "lufs": -10.24,
+          "true_peak_dbtp": 0.04,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.028,
+          "crest_db": 14.09,
+          "centroid_hz": 7248.3,
+          "stereo_corr": 0.187,
+          "silence_frac": 0.0,
+          "loop_score": 0.927
+        },
+        {
+          "score": 87.17,
+          "faults": [
+            "harsh/bright (7431 Hz)"
+          ],
+          "duration_s": 105.05,
+          "lufs": -10.07,
+          "true_peak_dbtp": 0.05,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.717,
+          "crest_db": 13.62,
+          "centroid_hz": 7431.2,
+          "stereo_corr": 0.468,
+          "silence_frac": 0.0,
+          "loop_score": 0.9389
+        },
+        {
+          "score": 88.82,
+          "faults": [],
+          "duration_s": 105.05,
+          "lufs": -10.17,
+          "true_peak_dbtp": 0.32,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.644,
+          "crest_db": 13.82,
+          "centroid_hz": 6409.0,
+          "stereo_corr": 0.298,
+          "silence_frac": 0.0,
+          "loop_score": 0.881
+        }
+      ],
+      "sections": [
+        {
+          "name": "Main Theme Part A",
+          "duration_ms": 20000,
+          "styles": [
+            "immediate start",
+            "walking pulse",
+            "strummed lute",
+            "plucked bass",
+            "light frame drum and tambourine",
+            "proud French horn melody",
+            "doubled with tin whistle"
+          ]
+        },
+        {
+          "name": "Main Theme Part B",
+          "duration_ms": 20000,
+          "styles": [
+            "warm strings answer",
+            "fiddle melody answering the horn",
+            "continued walking rhythm",
+            "bright and open feel",
+            "lush string harmonies"
+          ]
+        },
+        {
+          "name": "Climax Build",
+          "duration_ms": 15000,
+          "styles": [
+            "all instruments join",
+            "French horn and fiddle in harmony",
+            "strings swell",
+            "percussion slightly builds",
+            "sense of rising to a peak"
+          ]
+        },
+        {
+          "name": "Peak Moment",
+          "duration_ms": 15000,
+          "styles": [
+            "glad, open peak",
+            "full orchestra",
+            "soaring melody on French horn and strings",
+            "cymbals shimmer lightly",
+            "euphoric and triumphant"
+          ]
+        },
+        {
+          "name": "Return to Walking Stride (Part A)",
+          "duration_ms": 15000,
+          "styles": [
+            "settles back to main theme",
+            "French horn and tin whistle melody",
+            "strummed lute and light percussion",
+            "plucked bass resumes walking pulse",
+            "confident and steady"
+          ]
+        },
+        {
+          "name": "Walking Stride (Part B)",
+          "duration_ms": 20000,
+          "styles": [
+            "fiddle and warm strings respond",
+            "steady confident stride",
+            "seamlessly looping feel",
+            "rhythm section constant",
+            "gentle dynamic decrease"
           ]
         }
       ],

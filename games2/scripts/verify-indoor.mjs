@@ -747,9 +747,14 @@ try {
     await page.evaluate((v) => window.__ml.indoorWall(v), n);
     await page.waitForTimeout(900);
     const c = await page.evaluate(() => window.__ml.myCover());
+    // The REAL covered fraction, in texels, off the cover surfaces themselves
+    // (a GPU readback — dev only, never in the frame loop). On the pixel-exact
+    // path this is what the outline actually traces; `hiddenFrac` is only the
+    // band of the art box the flat cover LINE claims.
+    const cover = await page.evaluate(() => window.__ml.coverStats());
     const got = await page.evaluate(() => window.__ml.indoorWall().wall);
     if (got !== n) fail(`the dial refused ${n} levels (clamped to ${got}) — INDOOR_WALL_MAX and this gate disagree`);
-    hid.push({ n, ...c });
+    hid.push({ n, ...c, cover });
   }
   await page.evaluate((v) => window.__ml.indoorWall(v), before.wall);
   await page.waitForTimeout(900);
@@ -759,7 +764,25 @@ try {
     fail(`the outline does not follow the wall height: ${INDOOR_WALL_MAX - 1}/3/1 levels hide ${chain.join(" / ")} of the body — a taller wall must hide strictly more`);
   if (!(low.hiddenFrac < 0.4 * tall.hiddenFrac))
     fail(`a ONE-level wall still hides ${low.hiddenFrac} against a ${INDOOR_WALL_MAX - 1}-level wall's ${tall.hiddenFrac} — the outline is not tracking real cover`);
-  if (!tall.hiddenCropped)
+  // …AND THE OUTLINE TRACES ONLY THE HIDDEN PART. Which measurement proves
+  // that depends on the representation the outline is ON. `hiddenCropped` was
+  // literally `!!hidden.isCropped`, and the pixel-exact path has no crop to
+  // report — the ring IS the covered sub-silhouette's border, so what has to
+  // be true instead is that the covered set is a PROPER, non-empty subset of
+  // the silhouette. That is the strictly stronger claim: a horizontal crop can
+  // be "cropped" and still cover half the body that nothing is in front of.
+  if (tall.hiddenMode === "surface") {
+    const cs = tall.cover;
+    if (!cs || !(cs.coveredFrac > 0 && cs.coveredFrac < 1))
+      fail(`behind the tallest wall the outline traces ${cs ? `${cs.covered}/${cs.silhouette} = ${cs.coveredFrac}` : "an unreadable share"} ` +
+        `of the silhouette — a partly-visible body must be partly outlined, never all or nothing`);
+    const chainPx = hid.map((h) => (h.cover ? h.cover.coveredFrac : null));
+    if (chainPx.every((v) => v !== null) && !(chainPx[0] > chainPx[1] && chainPx[1] > chainPx[2]))
+      fail(`the COVERED TEXELS do not follow the wall height: ${INDOOR_WALL_MAX - 1}/3/1 levels cover ${chainPx.join(" / ")} ` +
+        `of the silhouette — the per-pixel cover set must grow with the wall`);
+    ok(`the outline is the covered sub-silhouette, per texel: ${INDOOR_WALL_MAX - 1}/3/1 levels cover ` +
+      `${chainPx.map((v) => (v === null ? "?" : `${Math.round(v * 100)}%`)).join(" / ")} of the body's own pixels`);
+  } else if (!tall.hiddenCropped)
     fail("the outline is drawn UNCROPPED over a partly-visible body — it must trace only the hidden part");
   // …and the ZERO, which is what proves the outline is not simply always on.
   // It comes from OUTDOORS in the open rather than from a short wall: the dial
@@ -1141,6 +1164,14 @@ try {
   // deepest chamber is the one with a way in. Height still has to be PROVEN,
   // not assumed — the assertion below refuses to pass unless the rock beside
   // the room really is far above the cut.
+  // DISABLE AGGRO for this section. the_island2's caves are populated with
+  // level 24-36 monsters, and a gate that has to stand still in one taking
+  // screenshots gets killed and respawned OUTDOORS mid-measurement — which
+  // reads as a failure of whatever was being measured. This is the switch the
+  // maintainer asked for on 2026-08-07 ("I will use this feature to test walk
+  // around in the cave without dying") doing exactly its job.
+  await page.evaluate(() => window.__ml.noAggro(true));
+  await page.waitForTimeout(400);
   const rockBy = (floor) => Math.max(...floor.map(([c, r]) =>
     Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
   const caves = (world.decks ?? [])
@@ -1167,7 +1198,19 @@ try {
         .sort((a, b) => Math.hypot(a[0] - cc, a[1] - cr) - Math.hypot(b[0] - cc, b[1] - cr))[0];
       tried.push(`${c0},${r0}`);
       await goTo(c0 + 0.5, r0 + 0.5).catch(() => {});
-      if (await settle(true, true, 25000)) { caveDeck = cand; sc0 = c0; sr0 = r0; break; }
+      if (!(await settle(true, true, 25000))) continue;
+      // "Settled indoors" is NOT enough to accept a candidate. The room is the
+      // 4-connected space around the PLAYER, and a big cave deck can span
+      // several chambers separated by rock — land in a small one and this
+      // deck's floor is mostly outside my room, leaving nothing to judge.
+      // Require the deck to actually contribute cells to the room I am in.
+      const mine = [];
+      for (const [c, r] of cand.floor) {
+        if (luma(await lightAt(c + 0.5, r + 0.5, 0)) > 0) mine.push([c, r]);
+        if (mine.length >= 6) break; // enough to know this chamber is the deck's
+      }
+      if (mine.length >= 6) { caveDeck = cand; sc0 = c0; sr0 = r0; break; }
+      tried[tried.length - 1] += `(only ${mine.length} of its cells are in the room I landed in)`;
     }
     if (!caveDeck)
       fail(`no cave could be stood in — tried ${tried.join(" ")}: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
@@ -1184,10 +1227,21 @@ try {
     // number the shader uses. So: every cell the light says is mine, and that
     // is on screen, must also be VISIBLE in the picture. A cell that is lit but
     // reads black is one the rock drew over — precisely this section's failure.
+    // ONE round-trip for the whole membership query, not one per cell. A cave
+    // deck has up to 472 floor cells, and 472 sequential page.evaluate calls
+    // take long enough that the SHARED live room can move the player out of the
+    // cave underneath the measurement — which is exactly how this section once
+    // reported a false failure against a `top` that no longer applied.
+    const mineCells = await page.evaluate((cells) => {
+      const out = [];
+      for (const [c, r] of cells) {
+        const l = window.__ml.lightAtCell(c + 0.5, r + 0.5, 0);
+        if (0.2126 * l[0] + 0.7152 * l[1] + 0.0722 * l[2] > 0) out.push([c, r]);
+      }
+      return out;
+    }, caveDeck.floor);
     const seen = [];
-    for (const [c, r] of caveDeck.floor) {
-      const l = await lightAt(c + 0.5, r + 0.5, 0);
-      if (luma(l) <= 0) continue; // not in my room
+    for (const [c, r] of mineCells) {
       const s = await cellScreen(c, r);
       const p = patch(caveShot, s.x + 32, s.y + 23, 4);
       if (!p) continue; // off screen
@@ -1211,9 +1265,254 @@ try {
     const rock = Math.max(...caveDeck.floor.map(([c, r]) => Math.max(lvl(c + 1, r + 1), lvl(c + 1, r), lvl(c, r + 1))));
     if (!(rock > cav.top + 4))
       fail(`the rock beside this cave tops out at level ${rock}, only ${rock - cav.top} above the cut — this proves nothing`);
+
+    // NOTHING STANDS ON GROUND THE CUT REMOVED (maintainer 2026-08-08:
+    // "monsters on top of the mountain are drawn when you are inside the
+    // cave"). The zero-ambient design draws the outside and lets the light
+    // decide — right at MY level, where the ground under a body really is
+    // painted. Above the cut nothing is painted at all, so a body up there
+    // hangs in the void. A cave is the only shipped place with a populated
+    // mountain overhead, which is why this lives here and not with the house.
+    // The monster list and the CUT are read in the SAME evaluate, and the
+    // indoor verdict with them: this is a shared live room, and a player who
+    // died or wandered out between the two reads would be judged against a
+    // `top` that no longer applies (measured — that is a false failure, not a
+    // leak). If we are no longer inside, say so instead of asserting nonsense.
+    const snap = await page.evaluate(() => ({
+      st: window.__ml.indoor(),
+      mons: window.__ml.monsterInfo().map((m) => ({
+        kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
+        lvl: m.surfLevel, culled: !!m.culled,
+      })),
+    }));
+    if (!snap.st.indoor)
+      fail(`the player left the cave before the overhead-monster check (indoor=${snap.st.indoor}) — retry`);
+    const mons = snap.mons;
+    const overhead = mons.filter((m) => m.lvl > snap.st.top);
+    if (overhead.length < 3)
+      fail(`only ${overhead.length} monsters stand above the cut (level ${snap.st.top}) near this cave — the assertion would be vacuous`);
+    const floating = overhead.filter((m) => !m.culled);
+    if (floating.length)
+      fail(`${floating.length} monsters are DRAWN above the cut while indoors: ` +
+        `${floating.slice(0, 6).map((m) => `${m.kind}@${m.c},${m.r} level ${m.lvl}`).join("; ")} — ` +
+        `the terrain they stand on is not drawn, so they hang in the void`);
+    // ...and the rule is about HEIGHT, not about being outside the room: a body
+    // at my own level must still be drawn, or this would just be the old
+    // "hide everything outside" design coming back in through the side door.
+    const atLevel = mons.filter((m) => m.lvl <= snap.st.top && !m.culled);
+    ok(`nothing stands on ground the cut removed: all ${overhead.length} monsters above level ${snap.st.top} ` +
+      `(up to ${Math.max(...overhead.map((m) => m.lvl))}) are not drawn, while ${atLevel.length} at or below it still are`);
     ok(`the cut is WORLD-WIDE: standing in a cave (ceiling ${cav.ceiling}, cut to level ${cav.top}, ${cav.roof} cells under it), ` +
       `all ${seen.length} on-screen floor cells are visible (median ${Math.min(...seen.map((s) => s.med)).toFixed(0)}-${Math.max(...seen.map((s) => s.med)).toFixed(0)}) ` +
       `with level-${rock} rock immediately down-screen`);
+  }
+
+  // 8. NO WALL-HACK INTO A ROOM YOU ARE NOT IN (maintainer 2026-08-08: "when
+  //    standing next to the mountain wall with the cave inside it I can see the
+  //    monsters white outline. They are indoors and I am outdoors, so this
+  //    should not be possible... I'm only talking about the white 'wall-hack'
+  //    feature now").
+  //
+  //    The occlusion outline draws at 900_001.43, ABOVE the darkness overlay,
+  //    so zero ambient cannot hide it: the only thing that can is refusing to
+  //    draw it. Section 7 proved the outline's real job (a body behind YOUR
+  //    walls stays readable) — this proves its inverse, from outside.
+  //
+  //    Stand where the maintainer stood: OUT of the cave, right against the
+  //    mountain, with the populated interior behind the rock.
+  {
+    const outside = await page.evaluate(() => {
+      const m = window.__ml.me();
+      return { c: m.x / 32, r: m.y / 32 };
+    });
+    // A PER-FRAME RECORDER, armed BEFORE we leave. The bug this catches lives
+    // in the window between the roof coming back (the indoor VERDICT flipping)
+    // and the ambient fade finishing ~1s later: read the fade mask instead of
+    // the cut and every monster in the cave keeps its outline through solid
+    // rock for that whole second (maintainer 2026-08-08: "there is a delay
+    // until the white border is removed... we should have no delay here").
+    // Sampling after `settle` would miss it entirely — settle WAITS for the
+    // fade to end — so this latches the first frame that is already outdoors
+    // while the fade is still running.
+    await page.evaluate(() => {
+      window.__leaveProbe = null;
+      const tick = () => {
+        const st = window.__ml.indoor();
+        if (!window.__leaveProbe && !st.indoor && st.mix > 0)
+          window.__leaveProbe = {
+            mix: st.mix,
+            mons: window.__ml.monsterInfo().map((m) => ({
+              kind: m.kind, sealed: !!m.inHiddenRoom, cover: m.coverFrac, ring: m.hiddenFrac,
+            })),
+          };
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    // Walk out of the cave down-screen until the verdict flips to outdoors.
+    let stood = false;
+    for (let step = 2; step <= 14 && !stood; step += 2) {
+      await goTo(outside.c + step, outside.r + step).catch(() => {});
+      stood = await settle(false, true, 20000);
+    }
+    if (!stood)
+      fail(`could not get back OUTSIDE the cave for the wall-hack check: ${JSON.stringify(await page.evaluate(() => window.__ml.indoor()))}`);
+    await page.waitForTimeout(700);
+
+    const snap = await page.evaluate(() => ({
+      st: window.__ml.indoor(),
+      mons: window.__ml.monsterInfo().map((m) => ({
+        kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
+        sealed: !!m.inHiddenRoom, cover: m.coverFrac, ring: m.hiddenFrac, culled: !!m.culled,
+      })),
+    }));
+    if (snap.st.indoor)
+      fail("the player is still indoors — the wall-hack check needs to run from OUTSIDE");
+    const sealed = snap.mons.filter((m) => m.sealed);
+    // NON-VACUITY, and it is the whole point of coverFrac: a sealed body that
+    // the rock does not actually cover would not have been outlined by the old
+    // code either, so it proves nothing. Require bodies that really are buried.
+    const buried = sealed.filter((m) => m.cover > 0.5);
+    if (buried.length < 2)
+      fail(`only ${buried.length} monsters are both sealed in a room and covered by rock from here ` +
+        `(${sealed.length} sealed in total, ${snap.mons.length} nearby) — this assertion would be vacuous`);
+    const leaking = buried.filter((m) => m.ring > 0);
+    if (leaking.length)
+      fail(`${leaking.length} monsters INSIDE a room show their occlusion outline from outside: ` +
+        `${leaking.slice(0, 6).map((m) => `${m.kind}@${m.c},${m.r} (${Math.round(m.ring * 100)}% of the body outlined through the rock)`).join("; ")} — ` +
+        `the outline draws above the darkness overlay, so this is a wall-hack`);
+    // ...and the outline is not simply dead everywhere: bodies out here in the
+    // open that a cliff or a tower covers must STILL be outlined, or this would
+    // be "switch the feature off" wearing a disguise.
+    const openAir = snap.mons.filter((m) => !m.sealed && !m.culled && m.cover > 0.5);
+    const stillDrawn = openAir.filter((m) => m.ring > 0);
+    if (openAir.length && !stillDrawn.length)
+      fail(`${openAir.length} monsters out in the open are covered by terrain and NONE is outlined — ` +
+        `the room gate is hiding outlines it should not (that is the feature switched off, not fixed)`);
+    // THE SAME FRAME THE ROOF IS BACK. The recorder above latched the first
+    // frame that was outdoors with the fade still mid-flight; nothing sealed in
+    // the cave may be outlined even there.
+    const mid = await page.evaluate(() => window.__leaveProbe);
+    if (!mid)
+      fail("never caught a frame that was outdoors with the ambient fade still running — the leave probe cannot judge the delay");
+    const midSealed = mid.mons.filter((m) => m.sealed && m.cover > 0.5);
+    // NON-VACUITY, and it bit: the first version of this check reported
+    // "none of the 0 sealed monsters is outlined" and PASSED against code that
+    // still had the delay. The cave's population wanders, so the latched frame
+    // may simply contain nobody buried — that is a no-measurement, not a pass.
+    if (!midSealed.length)
+      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed, buried monster ` +
+        `out of ${mid.mons.length} nearby — nothing was measured, retry`);
+    const midLeak = midSealed.filter((m) => m.ring > 0);
+    if (midLeak.length)
+      fail(`${midLeak.length} monsters keep their outline through the rock on the first frame after the roof came back ` +
+        `(fade still at mix ${mid.mix.toFixed(3)}): ${midLeak.slice(0, 5).map((m) => `${m.kind} ${Math.round(m.ring * 100)}%`).join("; ")} — ` +
+        `the gate is reading the FADE mask instead of the cut, so the border outlives the roof by a whole fade`);
+    ok(`the border dies with the roof: on the first frame outdoors (fade still at mix ${mid.mix.toFixed(3)}) ` +
+      `none of the ${midSealed.length} sealed monsters is outlined`);
+    ok(`no wall-hack into the cave: all ${buried.length} monsters sealed under its roof (up to ` +
+      `${Math.round(Math.max(...buried.map((m) => m.cover)) * 100)}% buried) draw NO outline from outside` +
+      (stillDrawn.length ? `, while ${stillDrawn.length} covered by open-air terrain still do` : ""));
+  }
+
+  // 9. A TAP WALKS YOU AS CLOSE TO THE MARKER AS YOU CAN GET (maintainer
+  //    2026-08-08: "the user always walks as close as he/she can get to the
+  //    marker... the house I'm clicking on doesn't even have a valid route to
+  //    get on top of it, so it must have meant the underside").
+  //
+  //    From OUTSIDE, the house's roof slab is drawn, so a tap on the house
+  //    resolves to the roof — level 6. A level-6 cell's FLOOR draws 6*lh = 96px
+  //    BELOW the finger, so targeting a roof with no ramp left the player a
+  //    storey under the beacon. Both surfaces are now routed and the one that
+  //    can actually be reached wins, beacon included.
+  //
+  //    THE METRIC IS SCREEN Y, NOT THE CELL. With the finger over a cell's own
+  //    roof, the broken and the fixed walk end at the same (col+row) — the whole
+  //    error is the LEVEL arrived on, so comparing cells passes either way.
+  //    Measured: a first cut of this section did exactly that and reported
+  //    "0.0 cells off the finger" against code that still had the bug.
+  {
+    const HALF_CELL_Y = 24; // px — the bar for "landed where you tapped"
+    await stand(184.5, 122.5, false, true);
+    await page.evaluate(() => window.__ml.lookAt(180, 118));
+    await page.waitForTimeout(700);
+
+    const probe = await page.evaluate(() => {
+      const dy = 15, lh = 16; // ISO_DY / LEVEL_PX (shared)
+      const s = window.__ml.cellScreen(179, 117);
+      if (!s) return { err: "cellScreen null" };
+      const cellWorldY = s.y / s.zoom + s.camY;        // that cell's drawn top
+      const oy = cellWorldY - (179 + 117) * dy + s.level * lh;
+      const wx = s.x / s.zoom + s.camX;
+      const wyRoof = cellWorldY - (6 - s.level) * lh;  // a pixel of ROOF SLAB
+      const r = window.__ml.tapPoint(wx, wyRoof);
+      if (!r) return { err: "tapPoint returned null (void/solid)" };
+      window.__tapScreen = { sx: s.x, sy: s.y - (6 - s.level) * lh * s.zoom };
+      // TWO PROPERTIES, and the second is the one that keeps getting broken:
+      //   (a) the walk ARRIVES on the surface it chose, and
+      //   (b) THE BEACON STAYS ON THE PIXEL THAT WAS CLICKED.
+      // The two readings of this click are the roof and the ground drawn at the
+      // same pixel — a cell 6.4 up-screen — so resolving between them must not
+      // shift the marker at all.
+      const endY = oy + ((r.target.x + r.target.y) / 32) * dy - (r.goalLevel ?? 0) * lh;
+      const m = window.__ml.marker();
+      return { picked: r.picked, target: r.target, goalLevel: r.goalLevel, endLevel: r.endLevel,
+               markerY: m ? m.y : null, markerOffFinger: m ? m.y - wyRoof : null,
+               walkOffMarker: m ? endY - m.y : null, wouldBe: 6 * lh };
+    });
+    if (probe.err) fail(`section 9 could not tap the roof: ${probe.err}`);
+    if (probe.picked.lvl !== 6)
+      fail(`the tap on the house resolved to level ${probe.picked.lvl}, not the roof slab — ` +
+        `section 9 is not exercising the ambiguous-cell path at all`);
+    // AIMED AT 179,117 ON PURPOSE. The ground drawn at a roof pixel is the cell
+    // 3.2 up-screen in BOTH axes, and for 178,117 that is 173,113 — a dividing
+    // WALL (col 173, rows 111-113), which has no floor reading at all. 179,117
+    // reads back to 175,113, real interior floor, so this fixture exercises the
+    // case that matters instead of the one degenerate pixel.
+    if (probe.markerY === null) fail("no destination beacon was placed by the tap");
+    // (b) THE MARKER MUST NOT MOVE. Twice now the "fix" was to drop the beacon
+    // onto whatever the walk could reach, which offsets the player's own input:
+    // "now you move the marker to a spot I didn't click on".
+    if (Math.abs(probe.markerOffFinger) > HALF_CELL_Y)
+      fail(`the beacon moved ${probe.markerOffFinger.toFixed(0)}px from the pixel that was clicked — ` +
+        `resolving the two readings must never shift the marker, they are the same pixel`);
+    // (a) ...and the walk ends there too.
+    // (a) THE WALK ENDS AT THE MARKER. Not under it: "you don't walk to the
+    // marker — you walk the player under it" is the whole complaint, and under
+    // is exactly 6*lh = 96px of screen y away.
+    if (Math.abs(probe.walkOffMarker) > HALF_CELL_Y)
+      fail(`the walk ends ${probe.walkOffMarker.toFixed(0)}px below the beacon (the roof-vs-floor ` +
+        `projection is ${probe.wouldBe}px) — target ${(probe.target.x / 32).toFixed(1)},` +
+        `${(probe.target.y / 32).toFixed(1)} at level ${probe.goalLevel}`);
+    // AND NOW THE REAL GESTURE. Everything above went through `tapPoint`, which
+    // calls setMoveTarget directly — but a real tap is pointerdown followed by
+    // holdRepath re-planning 50ms later and again on release, and THAT path
+    // dropped the pick point, so the two-reading resolution was computed once
+    // and thrown away a frame later. The feature never ran on a real click and
+    // no probe-driven gate could see it (maintainer 2026-08-08: "I click behind
+    // the wall and the player runs inside the house").
+    const tap = await page.evaluate(() => window.__tapScreen);
+    await page.mouse.click(tap.sx, tap.sy);
+    await page.waitForTimeout(900); // past the 50ms replan AND the release commit
+    const real = await page.evaluate(() => {
+      const t = window.__ml.target();
+      const m = window.__ml.marker();
+      return t && m ? { tx: t.x / 32, ty: t.y / 32, my: m.y } : null;
+    });
+    if (!real) fail("a real click started no trip at all");
+    const drift = Math.hypot(real.tx - probe.target.x / 32, real.ty - probe.target.y / 32);
+    if (drift > 1.5)
+      fail(`a REAL click lands ${drift.toFixed(1)} cells from where the same tap resolves through the ` +
+        `probe (${real.tx.toFixed(1)},${real.ty.toFixed(1)} vs ${(probe.target.x / 32).toFixed(1)},` +
+        `${(probe.target.y / 32).toFixed(1)}) — the hold re-plan is dropping the pick point, so the ` +
+        `two readings are never compared on a real tap`);
+    ok(`a REAL click resolves the same as the probe (${real.tx.toFixed(1)},${real.ty.toFixed(1)}) — the ` +
+      `pick point survives the hold re-plan and the release commit`);
+    ok(`the walk ends AT the marker, and the marker never moved: the tap picked level ${probe.picked.lvl}, ` +
+      `the routing chose the floor drawn at that same pixel (level ${probe.goalLevel}, cell ` +
+      `${(probe.target.x / 32).toFixed(1)},${(probe.target.y / 32).toFixed(1)}), the beacon sits ` +
+      `${Math.abs(probe.markerOffFinger).toFixed(0)}px from the clicked pixel and the walk ends ` +
+      `${Math.abs(probe.walkOffMarker).toFixed(0)}px from it (it used to stop ${probe.wouldBe}px under)`);
   }
 
   if (errs.length) fail(`page errors: ${errs.slice(0, 3).join(" | ")}`);

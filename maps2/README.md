@@ -225,9 +225,12 @@ self-intersections build-asserted away), may overlap, and carry the INTENDED
 elevation range so caves, bridge decks and the ground beneath them are
 unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
 decks at `[24,40]` over the same cells). Population is budgeted per monster
-TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
+TYPE so the roster stays BALANCED (world budget = land/205, split evenly across
 the types living there, then each type's total spread across its own zones by
-area, capped by ROOM) — the_island2 ships 141 monsters, 3-7 of every kind.
+area, capped by ROOM) — the_island2 ships 99 monsters, 2-5 of every kind.
+`WORLD_CELLS_PER_MONSTER` is the one dial for how busy the world feels (137 →
+205 on 2026-08-07, "reduce the total number of monsters on the map by 25%");
+worlds already on the per-type floor of 3, like demo_isle, don't shrink further.
 Zones are DERIVED by
 habitat rules in `pipeline/spawns.py` and re-derived AUTOMATICALLY whenever a
 world is written (`save_world` calls `spawns.refresh`), so a terrain edit can
@@ -249,6 +252,16 @@ caps the population, and `enforce_density`/`topup_population` settle what is
 left of the overlap; `assert_density()` fails the build on anything still over,
 above the irreducible one-monster-per-zone floor. Peak on the_island2:
 **0.527 → 0.049**/cell, the copse 24.4 → 2.0 monsters in a 9×9.
+**ENCLOSED GROUND CARRIES LESS** (maintainer 2026-08-08: "reduce the number of
+monsters in the cave by 50%"). The cap is per ZONE, not global: a dungeon is
+corridors and rooms where you meet a thing at arm's length with nowhere to back
+off to, so the same count that reads as sparse on a meadow reads as a swarm
+underground. Enclosed ground gets `CAVE_DENSITY_F` (0.4) of the open number —
+0.02/cell, one per 50 cells of floor — taking the cave from **18 monsters to 9**
+and costing the rest of the island nothing. Enclosure is a property of the
+SURFACE, never the column: the black-mountain ledge at elev 32-36 sits on top of
+the cave and shares every (x,y), but you stand there under open sky, so
+`enclosed()` asks whether your feet are below the slab's underside.
 **DIFFICULTY SCALES WITH DISTANCE FROM THE ARRIVAL POINT** (maintainer
 2026-08-06: "Why do you spawn Duskfang next to newcomers? … Try to make them
 enjoy the game instead"). Habitat alone knows nothing about danger — a level-8
@@ -285,6 +298,63 @@ world the crowding law does not bind, since two monsters on a 25-cell display
 pad is the point of the map. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
+
+## Named places — `worlds/<name>/places.json` (`pixel-maps2/places@2`)
+
+maintainer 2026-08-08: *"Can you give the 'in-door' on each map a name so we can
+trigger a sound when someone walks into that exact house/dungeon/cave etc… Does
+a name like that already exist?"* **It did not** — world@2 decks carry a `kind`
+and no identity; the game decides indoors GEOMETRICALLY per query
+(`findIndoorSpace` flood-fills the roofed cells around you and returns a space
+with no id); and the score's `cave`/`home` beds hang off continuous sensors, so
+every cave on every map is the same cave and there is no moment of *entering*.
+The missing piece was identity, and it belongs to whoever makes the rooms.
+
+**@2 adds OUTDOOR zones** (maintainer, same day: *"we might want different named
+zones for outdoor as well… We need a zone for `mountain_top`"*). @1 derived
+places from decks, so an inside was the only thing that could have a name; @2
+makes a place a named REGION, indoors or out.
+
+Each place ships `{id, name, kind (house|cave|summit), indoor, elev, anchor,
+cells}` — **cell → place is one lookup**. `id` is the event key and does not
+change; `name` is display text lore may rewrite. Full spec: `spec/PLACES.md`.
+
+**`elev` is not decoration — THE STACK.** `the_cave` and `mountain_top` share
+**375 cells**: the cave floor at elev 0-1 lies directly under the rock at 32-40
+with the snow cap over both. A consumer resolves (cell, the surface you stand
+on) — what `Player.elev` already carries. Two places may share cells, never
+cells AND an overlapping band, and the build asserts it.
+
+**`mountain_top` is measured, not chosen.** The summit is the ground at or above
+the world's own SNOW LINE, found by walking DOWN from the highest bench while
+each level's land is still mostly snow/ice. On the_island2 that lands on bench
+28 — 98% snow at 28, 0% and pure grey stone at 27 — the boundary the tiles
+themselves draw: 5,604 cells, elev 28-40, both flanks of the gorge, stopping
+dead at the grey benches. No per-world tuning (the_island 24, demo_isle 7,
+demo_lost 8) and every flat showcase map gets none, because its snow and ice are
+tile samples at level 0 and a snow line at 0 is not a mountain.
+
+Places are DERIVED, names are LOOKED UP: `roof`/`cave` decks group into
+8-connected footprints (the cave's twelve stacked slabs are one place; `bridge`
+is excluded — a span is a roof over open air and the game calls it outdoors),
+each group gets a ROLE computed from world.json alone (`house-1` = the house
+nearest the arrival point, `cave-1` = the cave), and `places.NAMES[world][role]`
+supplies the name. Keying on the role and never on a coordinate is what makes a
+name survive the terrain moving. Re-derived by `save_world` beside spawns/npcs.
+
+**Canon wins where canon has a name.** `lore/canon/CONSTRAINTS.md` §5 keeps the
+list of named map features ("use the names, never the positions") and
+`GLOSSARY.md`'s *the Waking* happens "within sight of **the stone house** and
+the fire" — so the_island2's cottage ships as **The Stone House** and its
+dungeon as **The Cave**, both adopted verbatim. Only the maintainer's second
+house needed a new one and it got a plain descriptive **The Meadow House**.
+
+`python maps2/pipeline/places.py --check`: every roofed cell belongs to a named
+place (a world that grows a house cannot ship it anonymous — a player can walk
+in there and the game has nothing to fire); every named cell still exists as it
+was named (indoor still under a deck, outdoor still land); and no cell is in two
+places at an overlapping elevation. Outdoor COVERAGE is deliberately not
+required — unnamed ground is just outdoors.
 
 ## NPCs — `worlds/<name>/npcs.json` (`pixel-maps2/npcs@1`)
 
@@ -389,7 +459,7 @@ and no world needs regenerating.
     undulates up *and* down (mostly up); rock with snowy/ice/obsidian peaks. Floor 16 sits a
     gated Δ4 above the maze cap 12.
   - **Maze** tiers are `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12 (dramatic cliffs,
-    no timid Δ2). Winding cliff/water corridors, a river + bridges.
+    no timid Δ2). Winding cliff/water corridors, the gorge river + its bridges.
   - **The TROLLSTIGEN** (`_foot_switchback`, rebuilt 2026-07-22 to the maintainer's own
     design after every axis-aligned attempt failed): the descent down the sheer toe is a
     wall-hugging stack of MIRRORED slope legs. His spec, verbatim rules: legs run ALONG the
@@ -433,7 +503,7 @@ and no world needs regenerating.
     stone. Their step faces point at the camera, so they read in any material. Bridge DECKS
     follow the same law (maintainer 2026-07-22: "create it in the same ground type, not
     always switch"): a deck wears its BANKS' ground — snow spans on the snow benches, stone
-    on the stone bench, grass over the maze river, dirt only where the road itself runs onto
+    on the stone bench, grass where the banks are grass, dirt only where the road runs onto
     the span. Laying-time mats are provisional (the gorge crossings are laid before
     `_materials` paints the caps); `_resolve_deck_mats` re-reads every deck's final banks
     (majority ground among adjacent walkable land within 1 level) just before `_paint`.
@@ -465,10 +535,42 @@ and no world needs regenerating.
     **flush** lakes at maze tiers `{4,12}` and mountain benches `{20,24}`, a flush alpine tarn, and a
     **sunken walk-in lagoon on the mountain snow** (`LAGOON_SITES`, water 2 levels down inside a Δ1
     walkable rim you descend into) — all transactional so they never seal a region.
-  - **Raised-valley MAZE RIVER** (`_maze_river`, carved AFTER `flatten_shores`): the river runs in a
-    tier-4 valley (shoulders lifted to 4, water cut to 0) so `_place_bridges` spans it with decks that
-    stand a bench ABOVE the water and meet tier-4/12 GROUND on both banks — raised bridges you cross,
-    not flat slabs flush on the water.
+  - **ONE RIVER** (maintainer 2026-08-07: *"The Island 2 has two rivers. One small to the left and
+    one big to the right. The small one should be removed"*). The second was `_maze_river`, a
+    raised-valley channel winding the length of the maze with five crossings of its own. Both it
+    and its bridges are **deleted** — a crossing exists because there is something to cross. The
+    massif gorge is now the island's river.
+  - **THE HEADLAND RULE** (`_bridge_headlands`, maintainer 2026-08-07: *"To walk over the big river
+    you first have to get up on a hill. That hill is to small… it need some area to make sense"*).
+    A bridge landing is a LANDFORM, not whatever ground survived beside the water. `_widen_hills`
+    had left the lower crossing's east landing as a 3-cell-wide grass ledge running fifteen rows
+    along the bank — too wide for `_widen_hills` to look at again (it only touches bbox min-dim
+    ≤ 2, and stops at 4) and far too narrow to read as a hill. Each end of every **lowland**
+    crossing now needs ≥ `HEADLAND_MIN` (160) cells of ground at deck level within
+    `HEADLAND_R` (12) of the landing, **≥ `HEADLAND_DIM` (9) across BOTH axes** — the clause that
+    bites, since a long thin ledge passes any pure area test. The generator grows it nearest-cell
+    first (a rounded rise around where you step off, never a tentacle along the bank), raising only
+    land BELOW the deck — never water, never the massif, never a reserved cell — and `build()`
+    asserts it. Mountain crossings are exempt: their banks are terraced rock and reshaping them
+    would break the antitone/terrace invariants. That ledge went 48 cells / 3 wide → **175 cells /
+    11×19**, with the walk from the spawn to the crossing unchanged at 86 cells.
+  - **…AND YOU HAVE TO BE ABLE TO WALK UP IT** (maintainer 2026-08-07: *"The new hill should have
+    more and wider ways/paths to go get up on it"*). Growing the landing without touching its rim
+    turned a ledge into a MESA — 175 cells of hilltop reachable only by a 3-cell scramble at the
+    southern tip, hard against the water. A **way up** is a run of rim cells whose levels are
+    within one of the top; runs narrower than `HEADLAND_WAY_W` (4) are scrambles and count for
+    nothing, and a landing needs `HEADLAND_ACCESS` (12) rim cells of real ways. That single test
+    is what lets a hill merging into the plain over 47 cells pass untouched while one notch fails.
+    What is missing is cut as `HEADLAND_RAMPS` (3) separate staircases, `HEADLAND_RAMP_W` (5)
+    wide, spread FARTHEST-APART-FIRST around the rim — and only ever **toward the camera**
+    (`+x`/`+y`), the constraint `_widen_hills` works under, so every new slope shows its own
+    faces. **Each lane starts at its OWN edge**: a hill boundary is ragged, and a ramp laid on one
+    straight lateral line leaves the lanes whose edge sits further in hanging a cell short with a
+    level-0 gap between — a staircase that starts nowhere (it shipped that way once and the
+    access assert caught it at 11 of 12). Result on that hill: **1 way of 3 → 4 ways of 5/5/5/3**,
+    and the walk from the spawn onto the hilltop **82–91 → 52–56** cells, because you no longer
+    round the whole hill to find the stair. The other three landings measured 47, 16 and 43 and
+    were not touched.
   - **Spiky massif**: benches `{16,20,24,28,32,36,40}`, ~10 sharp varied-height peaks with deep
     saddles + camera-fanning grooves → a jagged skyline (max level 40), not a smooth pyramid.
   - **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset via `_coastline`,

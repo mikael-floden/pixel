@@ -11,6 +11,7 @@ client/public/worlds.json
 # Throwaway headless-probe scripts (session scratch; never ship)
 scripts/_tmp-*.mjs
 scripts/_tmp-*.mts
+scripts/_tmp-*/
 scripts/_wf-*.mjs
 
 # Persistence + env / logs

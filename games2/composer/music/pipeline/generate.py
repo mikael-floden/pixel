@@ -173,6 +173,260 @@ TRACKS: dict[str, dict] = {
             "warm low end, gentle unfatiguing highs, seamless loop. Instrumental."
         ),
     },
+    # SAME CAVE, A BIT LESS SLOW (maintainer 2026-08-06: "I liked it, but it
+    # was just a bit to slow. But the feeling and everything was perfect. Try
+    # generate a new one with a very similar prompt.").
+    #
+    # So this is `cave` with the smallest edit that can move the tempo, and it
+    # is a SEPARATE track rather than an overwrite — the one he liked stays on
+    # disk so he can A/B them in the wiki and keep whichever wins.
+    #
+    # Three changes, nothing else touched:
+    #   1. 58 -> 74 BPM. `cave` asked 58 and MEASURED 55.57, so the model
+    #      undershoots here; 74 should land near 70, which is "a bit" faster
+    #      rather than a different piece.
+    #   2. "Very sparse and patient" -> sparse WITH GENTLE FORWARD MOTION.
+    #      Leaving "patient" in would have the prompt fighting the BPM — the
+    #      words that make a take slow are not only the number.
+    #   3. "Silence and space are as important as the notes" keeps its first
+    #      half but gains a steady quiet pulse, for the same reason.
+    # Everything about the FEELING — cathedral of wet stone, awe and quiet
+    # wonder, consonant and safe rather than frightening — is verbatim, because
+    # that is the part he said was perfect.
+    "cave2": {
+        "out": "cave2",
+        "seconds": 110,
+        "bpm": 74,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone. Sparse and unhurried but with a gentle forward "
+            "motion, a quiet steady pulse underneath that keeps it walking: soft "
+            "marimba and prepared-piano notes falling into a long natural reverb "
+            "like drips into water, a distant breathy bass flute, slow low cello "
+            "swells, occasional far-off soft bowed metal shimmer. Enormous, ancient "
+            "and solemn, full of AWE AND QUIET WONDER at how big and old it is — "
+            "mysterious but calm and consonant, safe rather than frightening, never "
+            "harsh or dissonant, no stingers, no sudden loud hits. Space matters as "
+            "much as the notes, over a pulse you can feel. Around 74 BPM, "
+            "minor-tinged modal, very soft dynamics, deep warm low end, gentle "
+            "unfatiguing highs, seamless loop. Instrumental."
+        ),
+    },
+    # TWO MORE CAVE VARIATIONS (maintainer 2026-08-06: "Try to generate two
+    # more variations. Still not happy.") — and deliberately NOT two rolls of
+    # the same dice, because that is what cave2 already was.
+    #
+    # THE MEASURED PROBLEM: this brief undershoots the tempo it asks for, and
+    # got worse the harder it was pushed. cave asked 58 and measured 55.57
+    # (-4%); cave2 asked 74 and measured 61.52 (-17%). So asking for a bigger
+    # number is ONE lever and clearly a weak one on its own.
+    #
+    # THE OTHER LEVER: "too slow" from a listener is usually EVENT DENSITY, not
+    # BPM. A sparse take drowned in long reverb reads as slow at any tempo,
+    # because almost nothing happens per bar. cave and cave2 both say "sparse"
+    # and "space matters as much as the notes" — that wording is probably doing
+    # more of the damage than the 58.
+    #
+    # So cave3 attacks the tempo and cave4 attacks the density, and whichever
+    # he prefers tells us which lever actually mattered. Both keep the FEELING
+    # verbatim — cathedral of wet stone, awe and quiet wonder, consonant and
+    # safe rather than frightening — because that part was never the problem.
+    #
+    # cave3: TEMPO. Ask 92 to land near 75 given the -17% undershoot, and make
+    # the pulse explicit and continuous rather than a hint.
+    "cave3": {
+        "out": "cave3",
+        "seconds": 110,
+        "bpm": 92,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone with a clear steady pulse already moving under it. "
+            "Flowing and continuous, never static: soft marimba and prepared-piano "
+            "notes falling steadily into a long natural reverb like drips into "
+            "water, a distant breathy bass flute carrying a walking melody, slow low "
+            "cello swells, occasional far-off soft bowed metal shimmer. Enormous, "
+            "ancient and solemn, full of AWE AND QUIET WONDER at how big and old it "
+            "is — mysterious but calm and consonant, safe rather than frightening, "
+            "never harsh or dissonant, no stingers, no sudden loud hits. Keep it "
+            "MOVING at a comfortable walking tempo, around 92 BPM, minor-tinged "
+            "modal, very soft dynamics, deep warm low end, gentle unfatiguing highs, "
+            "seamless loop. Instrumental."
+        ),
+    },
+    # cave4: DENSITY. Tempo stays near the original he liked — the difference is
+    # that something is always sounding: a continuous soft ostinato instead of
+    # isolated notes in space. If this is the one he keeps, the lesson is that
+    # "slow" meant empty, and the BPM was never the problem.
+    "cave4": {
+        "out": "cave4",
+        "seconds": 110,
+        "bpm": 68,
+        "prompt": (
+            "A vast, hushed underground theme for enormous echoing caverns deep "
+            "under a mountain — cathedral spaces of wet stone, still black pools, "
+            "faint glimmering crystal. It BEGINS IMMEDIATELY on a deep sustained "
+            "low string drone under a soft repeating marimba ostinato that runs "
+            "gently and continuously through the whole piece, like steady drips into "
+            "a pool — there is always something quietly moving. Over it: prepared "
+            "piano answering the pattern, a distant breathy bass flute melody, slow "
+            "low cello swells, occasional far-off soft bowed metal shimmer, all in a "
+            "long natural reverb. Enormous, ancient and solemn, full of AWE AND "
+            "QUIET WONDER at how big and old it is — mysterious but calm and "
+            "consonant, safe rather than frightening, never harsh or dissonant, no "
+            "stingers, no sudden loud hits. Around 68 BPM, minor-tinged modal, very "
+            "soft dynamics, deep warm low end, gentle unfatiguing highs, seamless "
+            "loop. Instrumental."
+        ),
+    },
+    # ---- BATTLE LAYERS (maintainer 2026-08-06) --------------------------------
+    # "a battle-track for each music-track - designed to be played on top of the
+    # music (with the music volume lowered by maybe 75-85%) … if the player
+    # attacks another monster right away we just fade right back into the action
+    # (so now the battle-track doesn't have to be restarted)."
+    #
+    # THE ONE DECISION THAT MAKES THIS WORK: these are LAYERS, not tracks. A
+    # battle track is a finished piece and two finished pieces played together
+    # is mud, whatever the tempo. A layer is deliberately INCOMPLETE — it brings
+    # rhythm and drive and NO harmony of its own, so there is nothing to argue
+    # with the bed's chords underneath it. Concretely, every brief below bans
+    # chord progressions and melodies and asks for percussion plus a pulse on
+    # the TONIC AND FIFTH only, which are consonant against nearly every chord a
+    # piece in that key will play.
+    #
+    # THREE THINGS ARE MATCHED, all measured rather than guessed (master.py's
+    # detect_key + estimate_tempo already produce them for every bed):
+    #   1. KEY, exactly. Day is D major, night is A minor — from the measured
+    #      `musical.root/mode` of the real files.
+    #   2. TEMPO, as a SIMPLE MULTIPLE. Doubling reads as "the same music, but
+    #      urgent" and stays phase-locked to the bed's beat grid: day 76 -> 152,
+    #      night's true pulse 123 (the estimator reports 61.52, half of the raw
+    #      123.05) -> 123 itself, which is already fight tempo.
+    #   3. THE MIDRANGE IS LEFT OPEN. The bed's melody lives around 300 Hz-3 kHz;
+    #      a layer that fills it buries the tune it is supposed to be part of.
+    #      So the layers live LOW (drums, pulse) and HIGH (shakers, metal), and
+    #      say so in the brief.
+    #
+    # The rest — ducking the bed 75-85%, holding the layer looping at zero gain
+    # so re-engaging is a gain change and not a restart, fading back out over a
+    # few seconds — is engine work, not generation, and is NOT being wired: he
+    # asked to hear these in the wiki before committing to anything.
+    "battle_day": {
+        "out": "battle_day",
+        "seconds": 90,
+        "bpm": 152,
+        "prompt": (
+            "A driving PERCUSSION-AND-PULSE LAYER meant to be played ON TOP of an "
+            "existing calm daytime folk theme, not a piece on its own. In D MAJOR, "
+            "152 BPM, straight and steady. It BEGINS IMMEDIATELY at full energy. "
+            "Frame drums, low toms, tight hand percussion, shakers, tambourine and "
+            "claps carrying an urgent galloping rhythm, over a pulsing low D drone "
+            "and short rhythmic stabs that use ONLY the notes D and A. Sudden "
+            "danger in a sunlit valley — brave and heroic rather than dark, "
+            "adventurous, propulsive, exciting. NO melody, NO chord progression, no "
+            "sustained chords, nothing tuneful — the tune is already playing "
+            "underneath this. Keep the MIDDLE OF THE SPECTRUM OPEN and uncluttered: "
+            "energy belongs in the deep low end and the bright percussive top. "
+            "Consistent intensity all the way through, no build, no drop, no "
+            "ending, seamless loop. Instrumental."
+        ),
+    },
+    "battle_night": {
+        "out": "battle_night",
+        "seconds": 90,
+        "bpm": 123,
+        "prompt": (
+            "A driving PERCUSSION-AND-PULSE LAYER meant to be played ON TOP of an "
+            "existing slow mystical night theme, not a piece on its own. In A "
+            "MINOR, 123 BPM, straight and steady. It BEGINS IMMEDIATELY at full "
+            "energy. Taut skin drums, low toms, a deep heartbeat kick, metallic "
+            "rattles and shakers driving an urgent rhythm, over a pulsing bowed "
+            "double-bass ostinato and short rhythmic stabs that use ONLY the notes "
+            "A and E. Danger under moonlight — tense, dark and thrilling but noble "
+            "rather than horrifying, never harsh or screeching. NO melody, NO chord "
+            "progression, no sustained chords, nothing tuneful — the tune is "
+            "already playing underneath this. Keep the MIDDLE OF THE SPECTRUM OPEN "
+            "and uncluttered: energy belongs in the deep low end and the bright "
+            "percussive top. Consistent intensity all the way through, no build, no "
+            "drop, no ending, seamless loop. Instrumental."
+        ),
+    },
+    # ---- THE SUMMIT (maintainer 2026-08-08: "3 music tracks that would sound
+    # good to play on top of the mountain … for now I just want the songs in the
+    # wiki"). Zones come later from the maps agent; nothing is routed.
+    #
+    # Three different ANSWERS to "what does a summit feel like", not three rolls
+    # of one idea — that is the mistake cave2 was. Standing on top of a mountain
+    # can be awe at the view, loneliness in thin air, or the reward for the
+    # climb, and which one this game wants is his call, not mine. So: one bed per
+    # reading, each committed to its own emotion rather than hedging between
+    # them.
+    #
+    # THE CAVE LESSON IS APPLIED THROUGHOUT. `cave` and `cave2` undershot their
+    # tempo badly (-4%, -17%) because the prompt said "very sparse and patient"
+    # and "silence and space are as important as the notes" — wording that drags
+    # whatever number follows it. cave3 and cave4 hit their asked tempo exactly
+    # once that came out. So every brief below names the MOTION it wants, and
+    # `summit_wind` in particular — the one that could easily become another
+    # slow drone — is told it has a steady quiet pulse.
+    "summit_vista": {
+        "out": "summit_vista",
+        "seconds": 110,
+        "bpm": 76,
+        "prompt": (
+            "A wide, breathtaking orchestral theme for standing on a mountain "
+            "summit and seeing an entire world laid out below — valleys, rivers, "
+            "distant sea, clouds beneath your feet. It OPENS IMMEDIATELY on warm "
+            "sustained strings already wide and moving. A long, patient, soaring "
+            "melody on solo horn answered by high strings, with harp and light "
+            "glimmering bells far underneath and a deep warm bass holding the "
+            "ground. Enormous DISTANCE and clean thin air — spacious, luminous, "
+            "full of AWE at how much of the world is visible from here. Majestic "
+            "and moving without ever becoming a fanfare or a battle. It keeps a "
+            "gentle, unhurried FORWARD DRIFT the whole way, like slow cloud "
+            "shadow crossing the land. Around 76 BPM, major key with a wistful "
+            "edge, rich but airy orchestration, seamless loop. Instrumental."
+        ),
+    },
+    "summit_wind": {
+        "out": "summit_wind",
+        "seconds": 110,
+        "bpm": 66,
+        "prompt": (
+            "A lonely, exposed theme for the bare top of a high mountain — cold "
+            "thin air, wind over stone, nobody for miles. It BEGINS IMMEDIATELY "
+            "on a soft low drone with a steady quiet pulse already moving under "
+            "it, so it breathes rather than hangs still. A single reedy low flute "
+            "or duduk carries a simple, aching, memorable melody; airy high "
+            "strings and a distant wordless female voice answer it; a slow "
+            "shimmer of struck metal far away, and a low heartbeat underneath. "
+            "SOLITUDE AND HEIGHT — beautiful and a little melancholy, humbling, "
+            "calm and safe rather than frightening, never harsh. Sparse but "
+            "always moving. Around 66 BPM, minor-tinged modal, very soft "
+            "dynamics, deep warm low end, seamless loop. Instrumental."
+        ),
+    },
+    "summit_triumph": {
+        "out": "summit_triumph",
+        "seconds": 105,
+        "bpm": 100,
+        "prompt": (
+            "A warm, noble folk-orchestral theme for having CLIMBED the mountain "
+            "and standing on top of it — the reward at the end of a long ascent. "
+            "It STARTS STRAIGHT INTO the tune with a walking pulse already going. "
+            "A proud, hummable melody on French horn and tin whistle, answered by "
+            "fiddle and warm strings, over strummed lute, plucked bass and light "
+            "frame-drum and tambourine keeping a steady confident stride. The "
+            "feeling is EARNED JOY and open sky — heroic and generous but human "
+            "and pastoral, a hard climb behind you rather than a battle won. "
+            "Rises to one glad open peak, then settles back and keeps walking so "
+            "it loops without ever sounding like an ending. Around 100 BPM, major "
+            "key, bright and unfatiguing, seamless loop. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
@@ -571,13 +825,22 @@ def main() -> int:
     if not key:
         print("ELEVENLABS_API_KEY not set — refusing to run (no placeholder audio).")
         return 1
-    seconds = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].strip() else None
+    # ARGS ARE POSITION-INDEPENDENT: the numeric one is `seconds`, every other
+    # one is a track name. This used to be `int(sys.argv[2])`, which assumed the
+    # caller passed at most one name — and composer-theme.yml interpolates its
+    # `track` input UNQUOTED, so asking it for "cave3 cave4" arrived as two argv
+    # entries and the run died on `int("cave4")` before generating anything.
+    # The workflow is quoted now, but a runner that splits arguments should not
+    # be able to kill a generation run: parse by SHAPE, not by position.
+    extra = [a.strip() for a in sys.argv[2:] if a.strip()]
+    seconds = next((int(a) for a in extra if a.isdigit()), None)
+    more = [a for a in extra if not a.isdigit()]
     if which == "all":
         names = list(TRACKS)
     elif which == "new":
         names = list(NEW_BEDS)
     else:
-        names = [n for n in which.replace(",", " ").split() if n]
+        names = [n for n in which.replace(",", " ").split() if n] + more
 
     session = requests.Session()
     session.headers.update({"xi-api-key": key})

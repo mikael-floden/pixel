@@ -24,6 +24,8 @@ import {
   DEFAULT_MONSTER_RADIUS,
   startTrip,
   stepAutopilot,
+  bodyStandoff,
+  startBestTrip,
   AutopilotTrip,
   findIndoorSpace,
   roofAbove,
@@ -117,7 +119,9 @@ import {
   artLift,
   DEFAULT_WORLD,
   Deck,
+  loadPlaces,
 } from "../maps";
+import type { PlaceLookup } from "../maps";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -167,7 +171,45 @@ const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
  * silently share the first-baked outer line too. */
 const HIDDEN_RING_COLOR = 0xf0f0f0; // inner, a hair off white
 const HIDDEN_RING_BRIGHT = 0xffffff; // outer — the white the maintainer asked for
+// How much of the border's brightness survives total darkness (see
+// syncCoverOutline). The rest tracks the local light, so the line dims at
+// night, darkens in shadow and warms in a torch pool. 1.0 = the old flat white.
+// 0.42 was still too loud after dark (maintainer 2026-08-09); at 0.30 a body
+// out of every light sits near a third of white instead of half.
+const RING_LIGHT_FLOOR = 0.30;
 const RING_PAD = 2; // outline canvas pad = border width in art pixels
+// THE COVER SURFACES (see registerCoverSlot / flushCoverSurfaces). Three
+// atlases sharing ONE slot layout, so a body's visible part, its covered part
+// and its outline are the same rectangle in all three and can never drift.
+// 1024x512 RGBA = 2 MB each. A slot is the body's frame padded by RING_PAD and
+// rounded up to a 32px class so freed slots are reusable; anything that does
+// not fit falls back to the flat coverY crop, together with its lit copy.
+const COVER_ATLAS_W = 1024;
+const COVER_ATLAS_H = 512;
+const COVER_GUTTER = 4; // > the 2px the ring dilation bleeds past a slot
+const COVER_BUCKET = 128; // occluder broad-phase bucket, world px
+// Ticks a body keeps its cover slot after it stops being covered (see
+// sweepCoverSlots). Generous: re-acquiring costs nothing while the atlas has
+// room, and a body stepping in and out of cover at a wall edge must not thrash.
+const COVER_SLOT_GRACE = 240;
+// The two dilation passes that build the outline out of the COVERED part —
+// exactly ringTextureFor's structuring element (two successive 4-neighbour
+// dilations = the L1 ball of radius 2), applied to the covered sub-silhouette
+// instead of the whole one. Distance 2 gets the outer colour, then distance 1
+// overpaints with the inner, then the body itself is erased: a ring texel
+// draws iff ANY silhouette texel within L1 2 of it is covered.
+/** Bucket key for the occluder broad phase. Offset so the negative screen y a
+ * tall column reaches still packs into one non-negative integer. */
+const coverBucketKey = (bx: number, by: number) => (bx + 1024) * 65536 + (by + 1024);
+const COVER_RING_PASSES: { color: number; offsets: [number, number][] }[] = [2, 1].map((r) => ({
+  color: r === 2 ? HIDDEN_RING_BRIGHT : HIDDEN_RING_COLOR,
+  offsets: (() => {
+    const o: [number, number][] = [];
+    for (let dy = -r; dy <= r; dy++)
+      for (let dx = -r; dx <= r; dx++) if (Math.abs(dx) + Math.abs(dy) <= r) o.push([dx, dy]);
+    return o;
+  })(),
+}));
 // Tap hitboxes (maintainer round 12: taps kept missing small targets). World
 // px ≈ screen px at zoom 1; phones run integer zoom ≥1, so these are AT
 // LEAST fingertip-scale on every device.
@@ -425,6 +467,13 @@ const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
 // (body nearest the viewer), rising to the sides. Dip = BOW_FRAC × the shoulder
 // span, in px. Both the clip mask and the foam crest follow it.
 const BOW_FRAC = 0.14;
+/** Depth falloff for the cave shadow: mouth 5%, 1 tile in 0.2%, then black.
+ * Steep because the ONLY surface a cave mouth actually shows is its floor —
+ * the walls of the room are buried behind the mountain's outer columns and
+ * never reach the screen, so the floor has to carry the whole effect. */
+const CAVE_FALLOFF = 3.0;
+/** The draw-time floor tint is OFF: the shader covers the same pixels. */
+const CAVE_TINT_TILES = false;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
@@ -489,6 +538,10 @@ interface Avatar {
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
+  // The pixel-exact cover surfaces (see BodyVisual) — structurally shared with
+  // monsters and NPCs through the same body pipeline.
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   hopUntil: number;
   hopDur?: number; // duration (ms) of the CURRENT hop arc (JUMP_MS jump vs STEP_HOP_MS step)
   hopH?: number; // peak height (px) of the current hop arc
@@ -683,6 +736,9 @@ interface MonsterAvatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
+  // The pixel-exact cover surfaces (see BodyVisual / registerCoverSlot).
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
   shadowH: number; // (footprint blended toward body width; see addMonster)
@@ -801,8 +857,31 @@ interface BodyVisual {
   lit?: Phaser.GameObjects.Sprite;
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
+  // The body's slot in the three cover atlases, held while it lives, and the
+  // frame counter it was last registered on. `coverAt === scene.coverTick` is
+  // what both consumers test — a body that did not register this frame falls
+  // back to the flat coverY crop, and the OUTLINE and the LIT COPY must always
+  // make that decision together.
+  coverSlot?: CoverSlot;
+  coverAt?: number;
   surfLevel?: number;
   swimming?: boolean;
+}
+
+/** One body-sized rectangle, at the SAME coordinates in all three cover
+ * atlases, registered as a named frame on each. `w`/`h` are the 32px-rounded
+ * class box; the body's padded frame sits at its top-left corner. */
+interface CoverSlot {
+  i: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  name: string;
+  cls: string;
+  /** The body currently holding this slot, so the idle sweep can hand it back
+   * (see sweepCoverSlots). Cleared by releaseCoverSlot. */
+  owner?: BodyVisual;
 }
 
 export class WorldScene extends Phaser.Scene {
@@ -885,10 +964,18 @@ export class WorldScene extends Phaser.Scene {
    * in the same dispatch, so the lock is lifted a beat later than it is
    * released. */
   private uiLockLiftAt = 0;
-  private holdGround: { x: number; y: number; lvl: number } | null = null;
+  /** The ground point the finger is over, WITH the camera-world point it was
+   * picked at. The `at` is load-bearing: holdRepath re-plans 50ms after every
+   * tap and again on release, so without it the tap's two-reading resolution is
+   * computed once at pointerdown and then thrown away a frame later. */
+  private holdGround: { x: number; y: number; lvl: number; at: { wx: number; wy: number } } | null = null;
   private holdRepathAt = 0;
   private keysActive = false;
   private tapMarker?: Phaser.GameObjects.Container;
+  /** Camera-world point the beacon is PINNED to — the pixel the finger touched.
+   * Null for beacons with no gesture behind them (probes, keyboard), which keep
+   * the old projected-from-the-target placement. */
+  private tapMarkerAt: { x: number; y: number } | null = null;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
@@ -906,6 +993,11 @@ export class WorldScene extends Phaser.Scene {
   // really differs is the torch day-gate, and that is answered by an O(1)
   // `indoorContains` lookup into MY space's roof set (no second flood fill).
   private indoorSpace: IndoorSpace | null = null;
+  // NAMED PLACES (maps2 places.json): which labelled room the player is in,
+  // and the last value handed to the composer. Null until the file loads, and
+  // null forever for a world that names nothing — both mean "outdoors".
+  private places: PlaceLookup | null = null;
+  private placeNow: string | null = null;
   private indoorInside = false; // the APPLIED verdict the renderer obeys
   private indoorPending = false; // verdict waiting on the dwell timer
   private indoorKey = -1; // canonical space id = min(roof); -1 = none
@@ -925,6 +1017,17 @@ export class WorldScene extends Phaser.Scene {
    * not indoorMask: the shader mask, the point-light filter, and the chrome
    * that draws above the darkness overlay. Dropped in easeIndoorMix. */
   private roomMask: Map<number, number> | null = null;
+  /** cell -> 1 when it is sealed inside a ROOM, 0 when it is not (open sky, a
+   * bridge, an arch). Filled a whole space at a time by inHiddenRoom; cleared
+   * when the world changes, which is the only thing that can invalidate it. */
+  private roomCellMemo = new Map<number, number>();
+  /** cell -> depth from the nearest entrance, for every ROOM in the world.
+   * Built once per world (buildCaveDepth) and published to the light in the
+   * room mask's green channel. */
+  private caveDepth: Map<number, number> | null = null;
+  /** cell -> the room ceiling's UNDERSIDE level. Everything below it is the
+   * opening you see through; everything above is the slab's face, i.e. rock. */
+  private caveUnder = new Map<number, number>();
   private indoorMaskSig = ""; // what indoorMask was built for (space key + cut)
   /** The room's CEILING level — the slab's UNDERSIDE over the player's own
    * cell, i.e. `deckBot`, NOT `IndoorSpace.roofLevel` (the slab's TOP). The two
@@ -996,6 +1099,36 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  // ── THE COVER SURFACES ────────────────────────────────────────────────────
+  // "Covered" is not modelled, it is RASTERISED: the very occluder Images that
+  // hide a body are drawn into that body's own frame grid, so a diagonal wall
+  // top is diagonal, a doorway is a hole and a tree trunk covers three columns
+  // — because that is what the terrain drew. Three surfaces, one slot layout:
+  //   E = the body frame MINUS every covering occluder  → the LIT COPY
+  //   C = the body frame MINUS E                        → the covered part
+  //   O = dilate2(C) two-tone MINUS the body frame      → the WHITE OUTLINE
+  // E and C are complements BY CONSTRUCTION (C is one erase of E), which is
+  // what makes the lit copy and the outline structurally unable to disagree —
+  // it used to rest on two call sites reading one scalar the same way.
+  private coverExact = false;
+  private coverE?: Phaser.Textures.DynamicTexture;
+  private coverC?: Phaser.Textures.DynamicTexture;
+  private coverO?: Phaser.Textures.DynamicTexture;
+  private coverSlots: CoverSlot[] = [];
+  private coverFree = new Map<string, CoverSlot[]>();
+  private coverShelf = { x: 0, y: 0, h: 0 };
+  private coverQueue: BodyVisual[] = [];
+  private coverScratch?: Phaser.GameObjects.Image;
+  private coverTick = 1;
+  private coverSig = "";
+  // Bumped by rebuildOccluders/rebuildProps — the ONLY things that move,
+  // create or cull an occluder image, so it is the whole "did the terrain
+  // change" term of a slot's rebuild signature.
+  private coverGen = 0;
+  private coverBuckets = new Map<number, Phaser.GameObjects.Image[]>();
+  private coverSeen = new Set<Phaser.GameObjects.Image>();
+  private coverCands: Phaser.GameObjects.Image[] = [];
+  private coverStat = { slots: 0, quads: 0, brackets: 0, skips: 0, flushes: 0, cands: 0 };
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
@@ -1130,6 +1263,15 @@ export class WorldScene extends Phaser.Scene {
     this.world = (this.registry.get("world") as World | null) ?? null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps2 = !!this.world && isMaps2World(this.world);
+    // The maps agent's named interiors, fetched alongside the world. Async and
+    // deliberately un-awaited: a world with no places.json is normal, and the
+    // music must not wait on a file that may never arrive. Until it lands,
+    // `places` is null and every cell reads as outdoors — which is what the
+    // game did before this existed.
+    void loadPlaces(this.worldName).then((p) => {
+      this.places = p;
+      this.indoorDirty = true; // re-answer "where am I" on the next frame
+    });
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
@@ -1142,6 +1284,8 @@ export class WorldScene extends Phaser.Scene {
       this.indoorSpace = null;
       this.indoorMask = null;
       this.roomMask = null; // no fade to finish — this world is gone
+      this.roomCellMemo.clear();
+      this.caveDepth = null;
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -1243,6 +1387,7 @@ export class WorldScene extends Phaser.Scene {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.ensureMonsterShadowTexture();
+    this.initCoverSurfaces();
     this.buildAnimations();
     this.buildMonsterAnimations();
     if (this.world) this.setupStreamingGround();
@@ -1350,23 +1495,28 @@ export class WorldScene extends Phaser.Scene {
       this.engagedId = null;
       this.pendingPickupId = null;
       this.holdPointerId = p.id;
-      this.holdGround = this.pickGround(p.worldX, p.worldY);
+      const down = this.pickGround(p.worldX, p.worldY);
+      this.holdGround = down ? { ...down, at: { wx: p.worldX, wy: p.worldY } } : null;
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
       // the beacon); subsequent drag replans go through holdRepath's budget.
-      if (this.holdGround) this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl);
+      if (this.holdGround)
+        this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl, true,
+          this.holdGround.at);
       this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
       if (p.id !== this.holdPointerId || !p.isDown) return;
       const g = this.pickGround(p.worldX, p.worldY);
       if (!g) return;
-      this.holdGround = g;
+      this.holdGround = { ...g, at: { wx: p.worldX, wy: p.worldY } };
       // The beacon tracks the FINGER in realtime (free — pure projection);
       // the actual findPath replan runs on holdRepath's adaptive budget, so
       // the drag never *feels* throttled even when a replan is deferred.
       if (this.tapMarker) {
-        const pr = this.projectFlat(g.x, g.y);
-        this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, g.lvl) * MAP_GEOMETRY.lh);
+        // Under the FINGER, literally — same pin as a fresh tap, so a drag can
+        // never leave the beacon on a projection of the route's end instead.
+        this.tapMarkerAt = { x: p.worldX, y: p.worldY };
+        this.tapMarker.setPosition(p.worldX, p.worldY);
       }
       this.holdRepath(performance.now());
     });
@@ -1793,6 +1943,21 @@ export class WorldScene extends Phaser.Scene {
         const deckL = this.terrain && this.world ? this.terrain.deck[row * this.world.width + col] : -1;
         return this.setMoveTarget(x, y, !!run, false, deckL >= 0 ? deckL : undefined);
       },
+      // THE REAL TAP PATH, at a camera-world POINT — pick + setMoveTarget,
+      // exactly what pointerdown does. `tapTo` above takes an already-resolved
+      // world position and so cannot exercise the two-candidate routing.
+      tapPoint: (wx: number, wy: number, run = false) => {
+        const g = this.pickGround(wx, wy);
+        if (!g) return null;
+        this.setMoveTarget(g.x, g.y, !!run, false, g.lvl, true, { wx, wy });
+        const t = this.trip;
+        return {
+          picked: { x: g.x, y: g.y, lvl: g.lvl },
+          target: t ? { x: t.target.x, y: t.target.y } : null,
+          goalLevel: t?.goalLevel ?? null,
+          endLevel: t?.endLevel ?? null,
+        };
+      },
       target: () => this.trip?.target ?? null,
       path: () => this.trip?.path ?? [],
       navLog: (n = 40) => this.navLog.slice(-n),
@@ -1836,6 +2001,12 @@ export class WorldScene extends Phaser.Scene {
         return { c0, r0, rows };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      caveDbg: () => ({
+        depth: this.caveDepth ? this.caveDepth.size : -1,
+        under: this.caveUnder.size,
+        deckBotAt: this.terrain ? this.terrain.deckBot[66 * this.terrain.width + 143] : null,
+        deckAt: this.terrain ? this.terrain.deck[66 * this.terrain.width + 143] : null,
+      }),
       // What a tap at these WORLD (iso screen-space) coords would select —
       // the exact hit test pointerdown runs (round 12 hitbox QA).
       tapAt: (wx: number, wy: number) => this.tapTarget(wx, wy),
@@ -1962,6 +2133,13 @@ export class WorldScene extends Phaser.Scene {
           // swallowed. It is the number to assert on, because "the ring exists"
           // is true even when it is cropped to nothing.
           hidden: av.hidden ? av.hidden.visible : null,
+          // WHICH REPRESENTATION the outline is on. "surface" = the pixel-exact
+          // cover atlas (a per-texel set, so there is no crop to report and
+          // `hiddenCropped` is meaningless); "crop" = the old flat coverY band,
+          // still the fail-open fallback. Ask coverStats() for the real
+          // covered/silhouette fraction — it costs a GPU readback, so it is a
+          // DEV probe and never runs in the frame loop.
+          hiddenMode: av.coverAt === this.coverTick && av.coverSlot ? "surface" : "crop",
           hiddenCropped: av.hidden ? !!av.hidden.isCropped : null,
           hiddenFrac: (() => {
             if (!av.hidden?.visible || av.coverY === undefined) return 0;
@@ -1972,6 +2150,52 @@ export class WorldScene extends Phaser.Scene {
           })(),
         };
       },
+      // THE REAL COVERED FRACTION, in texels — what the pixel-exact outline
+      // actually traces, as opposed to `hiddenFrac`'s band of the art box.
+      // Reads the body's own slot back out of the C (covered) and E (visible)
+      // surfaces, which tile its silhouette exactly, so
+      // `covered / (covered + visible)` needs no CPU alpha map and cannot
+      // disagree with what is drawn. ASYNC and dev-only: it is a GPU readback.
+      coverStats: (which?: string) => {
+        const b: BodyVisual | undefined = !which || which === "me"
+          ? this.avatars.get(this.room?.sessionId ?? "")
+          : this.monsters.get(which);
+        const slot = b ? this.coverSlotOf(b) : undefined;
+        if (!b || !slot || !this.coverC || !this.coverE) return Promise.resolve(null);
+        // NB whole-atlas snapshot, then index the slot: snapshotArea() is GL
+        // bottom-origin while snapshot() is not, and a silently y-flipped read
+        // would report a plausible-looking wrong number.
+        const count = (dt: Phaser.Textures.DynamicTexture) =>
+          new Promise<number>((res) => {
+            dt.snapshot((img: any) => {
+              const cnv = document.createElement("canvas");
+              cnv.width = dt.width;
+              cnv.height = dt.height;
+              const g = cnv.getContext("2d", { willReadFrequently: true })!;
+              g.drawImage(img, 0, 0);
+              const d = g.getImageData(slot.x, slot.y, slot.w, slot.h).data;
+              let n = 0;
+              for (let i = 3; i < d.length; i += 4) if (d[i] >= 128) n++;
+              res(n);
+            });
+          });
+        return Promise.all([count(this.coverC), count(this.coverE)]).then(([cov, vis]) => ({
+          covered: cov,
+          visible: vis,
+          silhouette: cov + vis,
+          coveredFrac: cov + vis ? +(cov / (cov + vis)).toFixed(4) : 0,
+          outlined: !!b.hidden?.visible,
+        }));
+      },
+      // Per-frame cost of the cover surfaces: draw brackets (CONSTANT in body
+      // count — that is what the shared atlas buys), quads, how many bodies are
+      // on a surface, and how often a frame needs no rebuild at all.
+      coverCost: () => ({
+        exact: this.coverExact,
+        ...this.coverStat,
+        allocated: this.coverSlots.length,
+        buckets: this.coverBuckets.size,
+      }),
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
@@ -2089,7 +2313,8 @@ export class WorldScene extends Phaser.Scene {
       // point at flat world (x,y)) — the frame-loop self-heal must clear it.
       wedgeHold: (x: number, y: number) => {
         this.holdPointerId = 1;
-        this.holdGround = { x, y, lvl: this.terrain ? levelAtWorld(this.terrain, x, y) : 0 };
+        this.holdGround = { x, y, lvl: this.terrain ? levelAtWorld(this.terrain, x, y) : 0,
+          at: { wx: x, wy: y } };
         this.holdRepathAt = 0;
       },
       swimDebug: () => {
@@ -2347,6 +2572,34 @@ export class WorldScene extends Phaser.Scene {
           lit: mv.lit
             ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16), alpha: +mv.lit.alpha.toFixed(3) }
             : null,
+          // The WHITE OCCLUSION OUTLINE. `hidden` alone is not assertable — the
+          // image survives cropped to nothing — so report the SHARE of the art
+          // box it claims, exactly as myCover does, plus whether this body is
+          // sealed in a room the camera's owner is not in (the wall-hack gate).
+          hidden: mv.hidden ? mv.hidden.visible : null,
+          // "surface" = the pixel-exact cover atlas, "crop" = the flat coverY
+          // band (the fail-open fallback). __ml.coverStats(id) reads the real
+          // covered/silhouette texel counts back off the surfaces.
+          hiddenMode: mv.coverAt === this.coverTick && mv.coverSlot ? "surface" : "crop",
+          hiddenFrac: (() => {
+            if (!mv.hidden?.visible || mv.coverY === undefined) return 0;
+            const ab = this.artBounds(mv.sprite);
+            const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
+            const cut = Math.min(Math.max((mv.coverY - top) / mv.sprite.scaleY, ab.y0), ab.y1);
+            return +((ab.y1 - cut) / (ab.y1 - ab.y0)).toFixed(3);
+          })(),
+          // What the GEOMETRY says is covered, regardless of whether the
+          // outline is actually drawn. The two together are what makes the
+          // wall-hack gate non-vacuous: a body with coverFrac 1 and hiddenFrac
+          // 0 is one the old code WOULD have outlined through the rock.
+          coverFrac: (() => {
+            if (mv.coverY === undefined || !mv.sprite.visible) return 0;
+            const ab = this.artBounds(mv.sprite);
+            const top = mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY;
+            const cut = Math.min(Math.max((mv.coverY - top) / mv.sprite.scaleY, ab.y0), ab.y1);
+            return +((ab.y1 - cut) / (ab.y1 - ab.y0)).toFixed(3);
+          })(),
+          inHiddenRoom: this.inHiddenRoom(mv.fx, mv.fy, mv.surfLevel ?? 0),
           // Animation state — a headless probe CAN catch "moving but frozen"
           // (screenshots can't distinguish a stuck walk from freeze-frame idle).
           anim: mv.sprite.anims.getName() || null,
@@ -2857,6 +3110,8 @@ export class WorldScene extends Phaser.Scene {
     if (!av) return;
     av.sprite.destroy();
     av.lit?.destroy();
+    // BEFORE av.waterMask is destroyed below — the outline holds that mask now.
+    this.releaseCoverSlot(av);
     av.hidden?.destroy();
     av.shadow.destroy();
     av.label.destroy();
@@ -3234,6 +3489,434 @@ export class WorldScene extends Phaser.Scene {
     return key;
   }
 
+  /** Allocate the three cover atlases, once, at boot. Everything downstream
+   * branches on `coverExact`, and the false side is the flat coverY crop this
+   * feature shipped with — so a Canvas renderer, or a driver that refuses the
+   * textures, degrades to the old behaviour instead of to no outline at all
+   * (showing a line that could have been hidden is cosmetic; hiding one that
+   * should show is the feature not working). */
+  private initCoverSurfaces() {
+    if (this.game.renderer.type !== Phaser.WEBGL) return;
+    try {
+      const mk = (key: string) => {
+        if (this.textures.exists(key)) this.textures.remove(key);
+        const dt = this.textures.addDynamicTexture(key, COVER_ATLAS_W, COVER_ATLAS_H);
+        // NEAREST explicitly — addDynamicTexture does not inherit pixelArt's
+        // default, and LINEAR smears the 2px outline into a halo (same trap
+        // ringTextureFor documents).
+        dt?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        // Belt and braces on top of the integer placement in
+        // coverDrawOccluders: a DynamicTexture's BaseCamera ships
+        // renderRoundPixels true and nothing ever updates it, so a quad it
+        // draws is snapped to the atlas grid. Every position we hand it is
+        // already a whole texel, so this changes nothing today — it just stops
+        // a future fractional draw from being silently re-registered.
+        if (dt) (dt.camera as unknown as { renderRoundPixels: boolean }).renderRoundPixels = false;
+        return dt ?? undefined;
+      };
+      this.coverE = mk("cover-E");
+      this.coverC = mk("cover-C");
+      this.coverO = mk("cover-O");
+      this.coverExact = !!(this.coverE && this.coverC && this.coverO);
+    } catch {
+      this.coverExact = false;
+    }
+  }
+
+  /** The reused off-display-list Image every atlas blit goes through (the
+   * pattern nightlight already ships for its glow stamps: one object,
+   * reconfigured and batchDraw'n per stamp inside a single beginDraw). */
+  private coverBlitter(): Phaser.GameObjects.Image {
+    if (!this.coverScratch)
+      this.coverScratch = this.make.image({ x: 0, y: 0, key: "__MISSING", add: false }).setOrigin(0, 0);
+    return this.coverScratch;
+  }
+
+  /** Give this body a slot, keeping the one it already has when the frame size
+   * class is unchanged. Null = no slot (atlas full, or a frame larger than the
+   * atlas) → BOTH consumers fall back, together. */
+  private coverSlotFor(b: BodyVisual, w: number, h: number): CoverSlot | null {
+    const cw = Math.ceil(w / 32) * 32;
+    const ch = Math.ceil(h / 32) * 32;
+    const cls = `${cw}x${ch}`;
+    const cur = b.coverSlot;
+    if (cur && cur.cls === cls) return cur;
+    if (cur) this.releaseCoverSlot(b);
+    const pool = this.coverFree.get(cls);
+    let slot = pool && pool.length ? pool.pop() : undefined;
+    if (!slot) slot = this.coverAllocSlot(cw, ch, cls) ?? undefined;
+    // ANY FREE SLOT BIG ENOUGH WILL DO. The shelf cursor never rewinds, so once
+    // the atlas is packed the only way to serve a body is to reuse a slot — and
+    // keying the free pools strictly by class meant a returned 160x192 could
+    // never serve a 96x96. Measured before this: allocation froze at 13 slots
+    // after three teleports (25 in another run), and from then on every further
+    // covered body silently fell back to the flat coverY line — the reported
+    // defect, returning mid-session with no recovery, on the player's own body.
+    // A larger slot leaves transparent margin nobody reads, exactly as a body
+    // smaller than its own class box already does.
+    if (!slot) slot = this.coverTakeLargerFree(cw, ch);
+    // AND IF EVERY SLOT IS HELD, TAKE THE STALEST — never refuse.
+    //
+    // Recycling idle slots is not enough on its own: with the atlas packed and
+    // every slot owned by a body that is still covered, a newcomer gets nothing
+    // and falls back to the flat line FOREVER, decided by nothing but who
+    // happened to be covered first. That is the maintainer's "it reverts when
+    // you have played for a while" — and it lands on the player's own body as
+    // readily as on a monster, because the player is just another body in the
+    // queue. Eviction makes the failure GRACEFUL and self-healing instead:
+    // whoever has gone longest without being drawn gives up its slot, so the
+    // exact path always belongs to the bodies being looked at now, and a body
+    // that loses one gets it straight back the moment it is covered again.
+    // The atlas holds ~9-25 bodies against a handful covered at once, so this
+    // is a backstop, not a working path — but a backstop that cannot fail is
+    // the whole difference between a bug and a bounded resource.
+    if (!slot) slot = this.coverEvictStalest(b, cw, ch);
+    if (!slot) return null;
+    b.coverSlot = slot;
+    slot.owner = b;
+    b.coverAt = this.coverTick;
+    return slot;
+  }
+
+  /** Free the least-recently-drawn slot that fits, and hand it over. Never
+   * takes a slot drawn THIS tick (those bodies are on screen right now) and
+   * never the caller's own. */
+  private coverEvictStalest(self: BodyVisual, cw: number, ch: number): CoverSlot | undefined {
+    let victim: CoverSlot | undefined;
+    let oldest = Infinity;
+    for (const s of this.coverSlots) {
+      const o = s.owner;
+      if (!o || o === self || o.coverSlot !== s) continue;
+      if (s.w < cw || s.h < ch) continue;
+      const at = o.coverAt ?? 0;
+      if (at >= this.coverTick) continue;
+      if (at < oldest) {
+        oldest = at;
+        victim = s;
+      }
+    }
+    if (!victim) return undefined;
+    this.releaseCoverSlot(victim.owner!);
+    const pool = this.coverFree.get(victim.cls);
+    if (pool) {
+      const i = pool.indexOf(victim);
+      if (i >= 0) pool.splice(i, 1);
+    }
+    return victim;
+  }
+
+  /** The smallest free slot that fits — see coverSlotFor. Smallest so a run of
+   * small bodies cannot eat the few boxes only a mammoth can use. */
+  private coverTakeLargerFree(cw: number, ch: number): CoverSlot | undefined {
+    let best: CoverSlot | undefined;
+    let bestPool: CoverSlot[] | undefined;
+    for (const pool of this.coverFree.values())
+      for (const s of pool)
+        if (s.w >= cw && s.h >= ch && (!best || s.w * s.h < best.w * best.h)) {
+          best = s;
+          bestPool = pool;
+        }
+    if (best && bestPool) bestPool.splice(bestPool.indexOf(best), 1);
+    return best;
+  }
+
+  /** Reclaim slots from bodies that have stopped being covered.
+   *
+   * A slot used to be held until the body was destroyed or changed frame size,
+   * so walking out from behind a rock kept it forever and the atlas only ever
+   * filled. What bounds the atlas is the number of bodies covered AT ONCE, which
+   * is small; what was filling it was every body ever covered. The grace period
+   * is generous because re-acquiring is free while the atlas has room, and a
+   * body stepping in and out of cover at a wall edge must not thrash. */
+  private sweepCoverSlots() {
+    if (!this.coverSlots.length) return;
+    for (const s of this.coverSlots) {
+      const b = s.owner;
+      if (!b || b.coverSlot !== s) continue;
+      if (this.coverTick - (b.coverAt ?? 0) > COVER_SLOT_GRACE) this.releaseCoverSlot(b);
+    }
+  }
+
+  /** Shelf packer over the shared atlas rect. One Frame per slot per surface,
+   * registered once and reused for its whole life — the frame rect is the
+   * CLASS box, so a smaller body simply leaves transparent margin nobody
+   * reads, and no frame is ever re-added. */
+  private coverAllocSlot(w: number, h: number, cls: string): CoverSlot | null {
+    if (!this.coverE || !this.coverC || !this.coverO) return null;
+    const s = this.coverShelf;
+    if (s.x + w > COVER_ATLAS_W) {
+      s.y += s.h + COVER_GUTTER;
+      s.x = 0;
+      s.h = 0;
+    }
+    if (s.y + h > COVER_ATLAS_H || w > COVER_ATLAS_W) return null;
+    const slot: CoverSlot = { i: this.coverSlots.length, x: s.x, y: s.y, w, h, name: `cs${this.coverSlots.length}`, cls };
+    s.x += w + COVER_GUTTER;
+    if (h > s.h) s.h = h;
+    for (const t of [this.coverE, this.coverC, this.coverO]) t.add(slot.name, 0, slot.x, slot.y, slot.w, slot.h);
+    this.coverSlots.push(slot);
+    return slot;
+  }
+
+  private releaseCoverSlot(b: BodyVisual) {
+    const slot = b.coverSlot;
+    if (!slot) return;
+    slot.owner = undefined;
+    b.coverSlot = undefined;
+    b.coverAt = undefined;
+    let pool = this.coverFree.get(slot.cls);
+    if (!pool) this.coverFree.set(slot.cls, (pool = []));
+    pool.push(slot);
+  }
+
+  /** Appended to the TAIL of resolveBodyDepth — the ONE place that runs for
+   * avatars, monsters AND NPCs before both consumers. Registering inside
+   * syncCoverOutline instead would skip every body the two room guards
+   * suppress, leaving their LIT COPIES on the flat crop while everyone else is
+   * per-pixel: the outline and the lit copy would be cut on different rules.
+   * `sprite.visible` first keeps the camera-culled bodies at zero cost. */
+  private registerCoverSlot(b: BodyVisual) {
+    b.coverAt = undefined;
+    const sp = b.sprite;
+    if (!this.coverExact || b.coverY === undefined || !sp.visible) return;
+    // The atlas maps world px to frame px by integer translation, which is
+    // only the identity at scale 1 (bodies and occluders both ship that).
+    if (sp.scaleX !== 1 || sp.scaleY !== 1) return;
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
+    if (!fw || !fh) return;
+    if (!this.coverSlotFor(b, fw + RING_PAD * 2, fh + RING_PAD * 2)) return;
+    b.coverAt = this.coverTick;
+    this.coverQueue.push(b);
+  }
+
+  /** The slot a consumer may read THIS frame, or undefined → flat-crop path. */
+  private coverSlotOf(b: BodyVisual): CoverSlot | undefined {
+    return b.coverAt === this.coverTick ? b.coverSlot : undefined;
+  }
+
+  /** Bucket index over the drawn occluder + prop images, rebuilt with them
+   * (i.e. once per OCC_STEP of camera drift, never per frame). Without it a
+   * covered body scans 100-3,885 images every frame on the phone's CPU. */
+  private rebuildCoverIndex() {
+    this.coverBuckets.clear();
+    this.coverGen++;
+    if (!this.coverExact) return;
+    const add = (im: Phaser.GameObjects.Image) => {
+      if (!im.visible) return;
+      const f = im.frame;
+      const x0 = im.x - im.originX * f.cutWidth * im.scaleX;
+      const y0 = im.y - im.originY * f.cutHeight * im.scaleY;
+      const x1 = x0 + f.cutWidth * im.scaleX;
+      const y1 = y0 + f.cutHeight * im.scaleY;
+      for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
+        for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
+          const k = coverBucketKey(bx, by);
+          let a = this.coverBuckets.get(k);
+          if (!a) this.coverBuckets.set(k, (a = []));
+          a.push(im);
+        }
+    };
+    for (const im of this.occluders) add(im);
+    for (const im of this.propImgs) add(im);
+  }
+
+  /** Everything drawn IN FRONT of this body that overlaps its padded frame box.
+   * `depth > sprite.depth` is Phaser's own painter rule, which is exactly what
+   * "covered" means on screen. The returned array is reused — consume it before
+   * asking again. */
+  private coverCandidates(sp: Phaser.GameObjects.Sprite, x0: number, y0: number, x1: number, y1: number) {
+    const out = this.coverCands;
+    out.length = 0;
+    const seen = this.coverSeen;
+    seen.clear();
+    for (let bx = Math.floor(x0 / COVER_BUCKET); bx <= Math.floor((x1 - 1) / COVER_BUCKET); bx++)
+      for (let by = Math.floor(y0 / COVER_BUCKET); by <= Math.floor((y1 - 1) / COVER_BUCKET); by++) {
+        const a = this.coverBuckets.get(coverBucketKey(bx, by));
+        if (!a) continue;
+        for (const im of a) {
+          if (seen.has(im)) continue;
+          seen.add(im);
+          if (!im.visible || im.depth <= sp.depth) continue;
+          const f = im.frame;
+          const l = im.x - im.originX * f.cutWidth * im.scaleX;
+          const t = im.y - im.originY * f.cutHeight * im.scaleY;
+          if (l >= x1 || l + f.cutWidth * im.scaleX <= x0 || t >= y1 || t + f.cutHeight * im.scaleY <= y0) continue;
+          out.push(im);
+        }
+      }
+    return out;
+  }
+
+  /** Draw the body's CURRENT frame into its slot, flip BAKED IN (so the slot is
+   * in display space and every consumer draws it with flipX false). */
+  private coverDrawBody(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+    const sp = b.sprite;
+    const s = b.coverSlot!;
+    const im = this.coverBlitter();
+    im.setTexture(sp.texture.key, sp.frame.name).setOrigin(0, 0).setFlipX(sp.flipX).setAlpha(1).clearTint();
+    if (im.isCropped) im.setCrop();
+    dt.batchDraw(im, s.x + RING_PAD, s.y + RING_PAD);
+    this.coverStat.quads++;
+  }
+
+  /** Erase every covering occluder out of the body's slot.
+   *
+   * THE PLACEMENT IS AN INTEGER TRANSLATION, AND THAT IS EXACT, NOT A ROUNDING
+   * FUDGE. A body's frame grid is not aligned to the world integer grid (its
+   * origin is the measured foot anchor — 56.504px into a 112px frame), so an
+   * occluder sits at a fractional offset q in the slot. But the two grids have
+   * the SAME PITCH (both scale 1), so NEAREST sampling at offset q gives
+   * literally the same texels as a whole-texel translation by ceil(q - 0.5):
+   * slot texel k wants source texel floor(k + 0.5 - q) = k - ceil(q - 0.5).
+   * That is exactly the CPU rule "which terrain texel is under this character
+   * texel's centre", expressed as a translation — and expressing it that way
+   * takes the engine's own sub-texel phase out of the answer. It has to be:
+   * MEASURED (scripts/_tmp-iso2.mjs), a DynamicTexture's endDraw blit shifts
+   * the Y phase of a fractionally-placed quad, which walked the cover boundary
+   * one texel outward along every diamond edge (15 of 1,795 silhouette texels
+   * at wallA, 0 after).
+   *
+   * Each image is then cropped to the slot's own window, or a 64x128 tile would
+   * spill into the neighbouring slot. */
+  private coverDrawOccluders(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+    const sp = b.sprite;
+    const s = b.coverSlot!;
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
+    const wx0 = sp.x - sp.originX * fw - RING_PAD;
+    const wy0 = sp.y - sp.originY * fh - RING_PAD;
+    const W = fw + RING_PAD * 2;
+    const H = fh + RING_PAD * 2;
+    // ASK ABOUT THE ART BOX, NOT THE FRAME BOX. A character's frame is 112x112
+    // and its drawn figure is 29x86 inside it, so querying the whole padded
+    // frame admits every tile that overlaps three cells of empty margin — 80
+    // candidates per body in mountain terrain (measured), against a median of
+    // ~6 that can actually touch the figure. An occluder clear of the art box
+    // cannot cover an opaque body texel, so skipping it changes no pixel: E is
+    // the body MINUS the occluders, and outside the silhouette there is no
+    // body to subtract from. The draw loop below still clips to the slot.
+    const ab = this.artBounds(sp);
+    // The slot bakes the flip in (coverDrawBody draws flipped), but these are
+    // WORLD coordinates and the sprite on screen is mirrored about its own
+    // frame box, so the art box mirrors with it.
+    const ax0 = sp.flipX ? fw - ab.x1 : ab.x0;
+    const ax1 = sp.flipX ? fw - ab.x0 : ab.x1;
+    const qx0 = wx0 + RING_PAD + ax0 * sp.scaleX;
+    const qx1 = wx0 + RING_PAD + ax1 * sp.scaleX;
+    const qy0 = wy0 + RING_PAD + ab.y0 * sp.scaleY;
+    const qy1 = wy0 + RING_PAD + ab.y1 * sp.scaleY;
+    const cands = this.coverCandidates(sp, qx0, qy0, qx1, qy1);
+    this.coverStat.cands += cands.length;
+    for (const im of cands) {
+      const f = im.frame;
+      const ow = f.cutWidth;
+      const oh = f.cutHeight;
+      const ix = Math.ceil(im.x - wx0 - 0.5); // slot column of the image's col 0
+      const iy = Math.ceil(im.y - wy0 - 0.5);
+      const dx0 = Math.max(0, -ix);
+      const dx1 = Math.min(ow, W - ix);
+      const dy0 = Math.max(0, -iy);
+      const dy1 = Math.min(oh, H - iy);
+      if (dx1 <= dx0 || dy1 <= dy0) continue;
+      let px = s.x + ix;
+      const py = s.y + iy;
+      const full = dx0 === 0 && dy0 === 0 && dx1 === ow && dy1 === oh;
+      if (!full) {
+        im.setCrop(dx0, dy0, dx1 - dx0, dy1 - dy0);
+        // MEASURED (scripts/_tmp-cropflip.mjs): on a flipped object Phaser puts
+        // the cropped window at display x = realWidth - x - width instead of at
+        // x, so the sub-image lands mirrored about the frame centre. The content
+        // it samples is right; only the registration is off, by this much.
+        if (im.flipX) px += 2 * dx0 + (dx1 - dx0) - f.realWidth;
+      }
+      dt.batchDraw(im, px, py);
+      this.coverStat.quads++;
+      if (!full) im.setCrop();
+    }
+  }
+
+  private coverDrawSlot(dt: Phaser.Textures.DynamicTexture, src: Phaser.Textures.DynamicTexture, s: CoverSlot, dx: number, dy: number, tint?: number) {
+    const im = this.coverBlitter();
+    im.setTexture(src.key, s.name).setOrigin(0, 0).setFlipX(false).setAlpha(1);
+    if (tint === undefined) im.clearTint();
+    else im.setTintFill(tint);
+    if (im.isCropped) im.setCrop();
+    dt.batchDraw(im, s.x + dx, s.y + dy);
+    this.coverStat.quads++;
+  }
+
+  /** Build all three surfaces for every body that registered this frame, once,
+   * after applyObjectLights — SEVEN draw brackets and three clears, CONSTANT in
+   * body count (that is the whole reason for the atlas: on a tile-based mobile
+   * GPU the charge is the render-pass switch, not the fill). Skipped entirely
+   * when no slot's signature moved. */
+  private flushCoverSurfaces() {
+    const q = this.coverQueue;
+    const E = this.coverE, C = this.coverC, O = this.coverO;
+    this.coverStat.slots = q.length;
+    if (!E || !C || !O || !q.length) {
+      this.coverQueue = [];
+      return;
+    }
+    let sig = String(this.coverGen);
+    for (const b of q) {
+      const sp = b.sprite;
+      const s = b.coverSlot!;
+      sig += `|${s.i},${sp.texture.key},${sp.frame.name},${sp.flipX ? 1 : 0},${Math.round(sp.x * 16)},${Math.round(sp.y * 16)},${Math.round(sp.depth * 8)}`;
+    }
+    if (sig === this.coverSig) {
+      this.coverStat.skips++;
+      this.coverQueue = [];
+      return;
+    }
+    this.coverSig = sig;
+    this.coverStat.flushes++;
+    this.coverStat.quads = 0;
+    this.coverStat.cands = 0;
+    this.coverStat.brackets = 7;
+
+    // E — what you can still SEE: the body, minus the terrain in front of it.
+    E.clear();
+    E.beginDraw();
+    for (const b of q) this.coverDrawBody(E, b);
+    E.endDraw();
+    E.beginDraw();
+    for (const b of q) this.coverDrawOccluders(E, b);
+    E.endDraw(true);
+
+    // C — what is COVERED: the body, minus what you can see. Complementary by
+    // construction, so nothing has to keep two rules in agreement.
+    C.clear();
+    C.beginDraw();
+    for (const b of q) this.coverDrawBody(C, b);
+    C.endDraw();
+    C.beginDraw();
+    for (const b of q) this.coverDrawSlot(C, E, b.coverSlot!, 0, 0);
+    C.endDraw(true);
+
+    // O — the outline: the L1-ball-2 dilation of C in the outer colour, the
+    // ball-1 dilation overpainted in the inner colour, then the body erased.
+    // Per SLOT, never whole-atlas: 18 blits of a 1024x512 atlas is ~9.4 Mpix a
+    // frame; 18 blits of a ~40x96 body is ~70 Kpix.
+    O.clear();
+    for (const pass of COVER_RING_PASSES) {
+      O.beginDraw();
+      for (const b of q) {
+        const s = b.coverSlot!;
+        for (const [dx, dy] of pass.offsets) this.coverDrawSlot(O, C, s, dx, dy, pass.color);
+      }
+      O.endDraw();
+    }
+    O.beginDraw();
+    for (const b of q) this.coverDrawBody(O, b);
+    O.endDraw(true);
+
+    this.coverBlitter().clearTint();
+    this.coverQueue = [];
+    this.sweepCoverSlots();
+  }
+
   /** The engagement overlays, per frame after the monster loop: (1) the red
    * target/aggro borders + the blue item border; (2) the settings debug
    * rings: every monster's aggro radius, plus the provoke radius on the
@@ -3277,16 +3960,38 @@ export class WorldScene extends Phaser.Scene {
     // around a figure you are meant to barely see out there inverts the whole
     // feature. The outline exists to show you who is behind YOUR walls.
     if (this.indoorOutside(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
+    // ...AND THE MIRROR OF IT: standing OUTSIDE, nobody sealed in a room gets
+    // one either (maintainer 2026-08-08: "when standing next to the mountain
+    // wall with the cave inside it I can see the monsters white outline. They
+    // are indoors and I am outdoors, so this should not be possible" — the
+    // outline was a wall-hack into the cave). The guard above only ever fired
+    // while I was indoors; out here `roomMask` is null, so nothing stopped a
+    // body under a mountain from being outlined through solid rock.
+    //
+    // The line is drawn at "sealed under a ROOM's roof that is not mine". A
+    // body merely behind a cliff, a tower or a BRIDGE still gets its outline —
+    // that is the feature, and roomAt() answers false for those. Someone in
+    // the cave MOUTH is not sealed either: an entrance cell has no slab over
+    // it, so they outline normally, which is what the maintainer asked for.
+    if (this.inHiddenRoom(b.fx, b.fy, b.surfLevel ?? 0)) return hide();
     // Frame-space y of the covering terrain's top line, exactly as syncLitCopy
     // computes it — the two MUST agree or the body shows a gap or a seam.
     const frameTop = sp.y - sp.displayHeight * sp.originY;
     const cropH = (b.coverY - frameTop) / sp.scaleY;
     const ab = this.artBounds(sp);
-    if (cropH >= ab.y1) return hide(); // the cover line is below the art: nothing is hidden
-    const key = this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
-    if (!key) return hide();
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
+    const slot = this.coverSlotOf(b);
+    // THE FLAT LINE MAY NOT VETO THE EXACT PATH. `coverY` is the top of the
+    // covering column's 64px IMAGE BOX, so a low occluder in front of the feet
+    // can put it below the art while genuinely covering texels — measured at
+    // (165,126): 95 covered texels of 1840 and no outline drawn at all, because
+    // this early-out fired before the slot was consulted. With a slot the O
+    // surface answers for itself: when nothing is covered it is empty and the
+    // image draws nothing, which costs one transparent quad and cannot lie.
+    if (!slot && cropH >= ab.y1) return hide();
+    const key = slot ? this.coverO!.key : this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
+    if (!key) return hide();
     let img = b.hidden;
     if (!img) {
       img = this.add.image(0, 0, key).setVisible(false);
@@ -3295,31 +4000,78 @@ export class WorldScene extends Phaser.Scene {
     // Same sync chain as the target rings, and for the same reasons: position
     // from the LIVE sprite (lit copies sync later in the frame and smear a
     // hopping body sideways), and shift the origin by RING_PAD because the
-    // outline canvas is the frame padded on every side.
+    // outline canvas is the frame padded on every side. The cover SLOT is the
+    // same padded box (rounded up to its size class), so the only thing that
+    // changes is the denominator — and the flip, which is baked into the slot.
+    const sw = slot ? slot.w : fw + RING_PAD * 2;
+    const sh = slot ? slot.h : fh + RING_PAD * 2;
+    // THE BORDER TAKES THE LIGHT — but never all of it (maintainer 2026-08-09:
+    // "especially at night the white is so extreme it becomes so much easier to
+    // see things behind walls vs in front of walls... visible but not stand out
+    // like crazy"). It draws ABOVE the darkness overlay so nothing dims it, and
+    // full-brightness white against a night world reads brighter than anything
+    // actually lit — the hidden body ended up the most legible thing on screen,
+    // which inverts the point of hiding it.
+    //
+    // Same sample the LIT COPY uses (litLevelOf + lightAt at the body's own
+    // surface height), so the ring dims with the hour, darkens in a wall's
+    // shadow and warms inside a torch pool, exactly as the body it traces
+    // would. The FLOOR is what keeps it a feature rather than a fade: at night
+    // ambient luma is ~0.10 and an honest multiply would leave the line
+    // essentially black, i.e. the wall-hack switched off after sunset.
+    // RING_LIGHT_FLOOR is the one dial — 1.0 restores the old flat white.
+    let ringTint = 0xffffff;
+    if (this.night) {
+      const l = this.night.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, this.litLevelOf(b), false);
+      const ch = (v: number) =>
+        Math.min(255, Math.round(255 * (RING_LIGHT_FLOOR + (1 - RING_LIGHT_FLOOR) * Math.min(1, Math.max(0, v)))));
+      ringTint = (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
+    }
     img
-      .setTexture(key)
-      .setOrigin(
-        (sp.originX * fw + RING_PAD) / (fw + RING_PAD * 2),
-        (sp.originY * fh + RING_PAD) / (fh + RING_PAD * 2),
-      )
+      .setTexture(key, slot ? slot.name : undefined)
+      .setOrigin((sp.originX * fw + RING_PAD) / sw, (sp.originY * fh + RING_PAD) / sh)
       .setScale(sp.scaleX, sp.scaleY)
-      .setFlipX(sp.flipX)
+      .setFlipX(slot ? false : sp.flipX)
       .setPosition(sp.x, sp.y)
       .setAlpha(1)
+      .setTint(ringTint)
       .setDepth(900_001.43)
       .setVisible(true);
-    // The crop lives in the PADDED frame, so every sprite-frame y needs
-    // + RING_PAD — a crop computed in sprite-frame pixels is silently 2px high
-    // and clips the top row of the line off.
-    if (cropH <= ab.y0 + 2) {
-      // Completely hidden — the whole silhouette is the outline. This is the
-      // case the feature exists for, and the inverse of syncLitCopy's
-      // setVisible(false) on the very same test.
+    if (slot) {
+      // THE PIXEL-EXACT PATH. The O surface already IS the ring of the covered
+      // sub-silhouette — a diagonal wall top, a doorway, a tree trunk — so
+      // there is nothing left to crop. (maintainer 2026-08-09: "the effect is
+      // just a line that is not close to the exact pixels that are actually
+      // behind something"; the flat coverY line was one horizontal row across
+      // the whole body, measured 71.5% false positives.)
+      if (img.isCropped) img.setCrop();
+    } else if (cropH <= ab.y0 + 2) {
+      // FALLBACK, unchanged: completely hidden — the whole silhouette is the
+      // outline, the inverse of syncLitCopy's setVisible(false) on this test.
       if (img.isCropped) img.setCrop();
     } else {
+      // The crop lives in the PADDED frame, so every sprite-frame y needs
+      // + RING_PAD — a crop computed in sprite-frame pixels is silently 2px
+      // high and clips the top row of the line off.
       const cut = cropH + RING_PAD;
       img.setCrop(0, cut, fw + RING_PAD * 2, fh + RING_PAD * 2 - cut);
     }
+    // THE WATER CUT (maintainer 2026-08-09: "when swimming behind a wall the
+    // entire body now gets the wall-hack effect while only the top of the
+    // players body should"). The outline was the ONE body layer that never got
+    // the waterline mask — updateWaterClip puts it on the base sprite and
+    // applyObjectLights puts the SAME object on the lit copy, so the ring was
+    // tracing the submerged legs through open water.
+    //
+    // Read `sp.mask`, never `swimming`/`swimT`: that is the same OBJECT the
+    // body itself is cut with, so the two cannot disagree — including in all
+    // three of updateWaterClip's bail-outs (not swimming, swimT<=0.001, no
+    // waterline span), where `sp.mask` is null and the outline is whole again
+    // in the SAME frame. Monsters and NPCs never swim, so `sprite.mask` is
+    // always null for them and this is a no-op.
+    if (sp.mask) {
+      if (img.mask !== sp.mask) img.setMask(sp.mask);
+    } else if (img.mask) img.clearMask();
   }
 
   private updateTargetOverlays() {
@@ -3581,6 +4333,7 @@ export class WorldScene extends Phaser.Scene {
     const mv = this.monsters.get(id);
     if (!mv) return;
     mv.lit?.destroy();
+    this.releaseCoverSlot(mv);
     mv.hidden?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
@@ -3755,7 +4508,15 @@ export class WorldScene extends Phaser.Scene {
       // A drop lying outside my room is DRAWN and goes black with the ground
       // under it — no special case. The art only shows once its texture has
       // landed: a drop still on "__MISSING" must stay hidden.
-      const out = rec.img.texture.key === "__MISSING";
+      // ...and a drop resting on terrain the cut removed is hidden with it —
+      // same rule as the bodies (see aboveCut). `wx/wy` is the FLAT world
+      // position; the level it lies on is the terrain there.
+      const dropLvl = this.terrain
+        ? this.terrain.level[
+            Math.floor(rec.wy / CELL_WU) * this.terrain.width + Math.floor(rec.wx / CELL_WU)
+          ] ?? 0
+        : 0;
+      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl);
       rec.img.setVisible(!out);
       rec.shadow.setVisible(!out);
       const left = DROP_TTL_MS - (now - rec.bornAt);
@@ -4243,9 +5004,12 @@ export class WorldScene extends Phaser.Scene {
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
-        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK;
-      // NB no indoor test: a villager on the street outside my room is drawn
-      // and lit like the street is — black, until my torch finds them.
+        npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
+        !this.aboveCut(npc.surfLevel ?? 0);
+      // The indoor test is ONLY about height (see aboveCut). A villager on the
+      // street outside my room is drawn and lit like the street is — black,
+      // until my torch finds them. One standing on a rooftop is not drawn at
+      // all, because the rooftop is not drawn either.
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
@@ -4624,6 +5388,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number) {
+    // One tick per frame, BEFORE any body registers. Both consumers test
+    // `coverAt === coverTick`, and so do the dev probes AFTER the frame has
+    // run — bumping it in the flush instead would make every probe read
+    // "this body has no surface" one tick too early.
+    this.coverTick++;
     this.redrawGround();
     this.rebuildOccluders();
     if (!this.room) return;
@@ -5050,8 +5819,13 @@ export class WorldScene extends Phaser.Scene {
       // are meant to barely see, so the label and the chat bubble follow the
       // room while the body follows the light. I am never outside my own room.
       const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
-      av.label.setVisible(!away);
-      av.shadow.setVisible(!av.swimming);
+      // ABOVE THE CUT the body goes too, not just its name tag: it would be
+      // standing on terrain that is not drawn. I am never above my own cut —
+      // the room is resolved from where I stand.
+      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0);
+      av.sprite.setVisible(!overhead);
+      av.label.setVisible(!away && !overhead);
+      av.shadow.setVisible(!av.swimming && !overhead);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -5076,7 +5850,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away); // goes with the body
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away && !overhead); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -5161,10 +5935,13 @@ export class WorldScene extends Phaser.Scene {
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB;
-        // NB no indoor test: a monster outside my room is drawn and lit like
-        // the ground under it. Its ABOVE-OVERLAY chrome is another matter —
-        // see indoorOutside and updateMonsterHpBar.
+          ay - sp.displayHeight <= vB &&
+          !this.aboveCut(m.elev ?? g.lvl);
+        // The indoor test is ONLY about height. A monster outside my room but
+        // at my level is drawn and lit like the ground under it — that is the
+        // whole zero-ambient design. One ABOVE the cut is different: the
+        // terrain it stands on is not drawn, so it would hang in the void.
+        // Its ABOVE-OVERLAY chrome is a third case — see indoorOutside.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -5617,6 +6394,9 @@ export class WorldScene extends Phaser.Scene {
       lights.push(...this.emissiveLights);
     }
     this.applyObjectLights();
+    // After every body has registered AND both consumers have read their slot,
+    // before render: rasterise the surfaces the frame's images point at.
+    this.flushCoverSurfaces();
     this.footsteps?.update(this.time.now);
     this.atmo.update(lights, this.cameras.main, dt);
   }
@@ -5853,6 +6633,13 @@ export class WorldScene extends Phaser.Scene {
       // Like the avatar lit copies: a camera-forward SOLID structure whose
       // art overlaps the fire must cover its lit copy too — otherwise the
       // flames float on top of the pillar in front (playtester report).
+      //
+      // DELIBERATELY THE LAST FLAT-LINE CONSUMER IN THE FILE. Bodies moved to
+      // the per-pixel cover surfaces (2026-08-09); this did not, and should
+      // not: it is the lit copy of a STATIC prop at a fixed spot, its "body" is
+      // a flame halo with no silhouette to trace, and it never gets an outline
+      // — so there is no second layer here for a flat line to disagree with.
+      // Not forgotten; if the fire ever grows a cover outline, give it a slot.
       if (on && this.campfire) {
         let coverY = Infinity;
         for (const o of this.occluderMeta) {
@@ -5947,21 +6734,28 @@ export class WorldScene extends Phaser.Scene {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
         // the distance a poring does, so the near-filter box must admit the
         // biggest bodies' lookahead (~140wu), not the old fixed 48.
-        const near: Array<{ id: string; x: number; y: number; r: number }> = [];
-        this.monsters.forEach((mv, id) => {
-          if (Math.abs(mv.fx - me.fx) < 140 && Math.abs(mv.fy - me.fy) < 140)
-            near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
-        });
-        // NPCs get the SAME faked collision (maintainer 2026-08-06). They are
-        // client-side decor with no server body, so — exactly like monsters —
-        // the INPUT slips around them rather than the grid blocking: you walk
-        // around the shopkeeper instead of through her, and the server
-        // integrates the identical deflected vector, so nothing rubber-bands.
-        this.npcs.forEach((npc, id) => {
-          if (Math.abs(npc.fx - me.fx) < 140 && Math.abs(npc.fy - me.fy) < 140)
-            near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
-        });
-        const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
+        const near = this.nearBodies(me.fx, me.fy);
+        // Which way round a body is WALKABLE, not just roomier — simulated
+        // with the real movement tick, the same instrument steerAssist uses,
+        // so the dodge can never disagree with the collision probes. Without
+        // it the dodge is pure geometry and will happily send you into a wall
+        // that happens to be on the roomier side of the person in your way.
+        const openHeading = this.terrain
+          ? (hax: number, hay: number) => {
+              const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+              const dt = 0.08; // ≈5.6wu at walk speed — one substep plus margin
+              const r = stepMovement(
+                me.fx, me.fy, hax, hay, false, dt,
+                makeBlockedElev(this.terrain!, walk, () => me.surfLevel ?? 0),
+                1, true, this.worldW, this.worldH,
+                makeSideBlocked(this.terrain!, walk),
+              );
+              return Math.hypot(r.x - me.fx, r.y - me.fy) > WALK_SPEED * dt * 0.35;
+            }
+          : undefined;
+        const dodge = near.length
+          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading)
+          : null;
         if (dodge) {
           ax = dodge.ax;
           ay = dodge.ay;
@@ -6149,7 +6943,21 @@ export class WorldScene extends Phaser.Scene {
     return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, lift, shadowDepth, z };
   }
 
-  private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
+  private pickGround(
+    wx: number,
+    wy: number,
+    // Ignore EVERY surface at or above this level — decks AND raised terrain —
+    // so the scan falls through to the other surface drawn under the same
+    // pixel. That surface is a different CELL (the projection subtracts
+    // level*lh from screen y), which is why it looks like the same spot.
+    //
+    // Decks alone was a real gap: a CLIFF is plain terrain, so the re-scan
+    // matched the same cliff top again, left one candidate, and the walker
+    // always climbed — even when two steps would have put her behind it
+    // (maintainer 2026-08-08: "did you only try two paths if I clicked on a
+    // roof and forgot that a cliff can also mean two things?").
+    ignoreAtOrAbove?: number,
+  ): { x: number; y: number; lvl: number } | null {
     const clampW = (x: number, y: number, lvl: number) => ({
       x: Math.max(1, Math.min(this.worldW - 1, x)),
       y: Math.max(1, Math.min(this.worldH - 1, y)),
@@ -6181,7 +6989,8 @@ export class WorldScene extends Phaser.Scene {
       // indoors, where the slab over your head is exactly what is NOT drawn.
       if (cut < 0) {
         const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
-        if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+        if (deckL === l && !(ignoreAtOrAbove !== undefined && deckL >= ignoreAtOrAbove))
+          return clampW(col * CELL_WU, row * CELL_WU, l);
       }
       // THE CUT TRUNCATES THE DRAWING, NOT THE WORLD. A parapet you can see
       // over is still a full-height wall you cannot stand on, so a tap that
@@ -6196,11 +7005,60 @@ export class WorldScene extends Phaser.Scene {
       // out on the grass is exactly as unstandable as a parapet.
       if (cut >= 0 && cell.l > cut) continue;
       if (cell.l !== l) continue;
+      // Re-resolve mode: this surface is the one we are looking UNDER.
+      if (ignoreAtOrAbove !== undefined && l >= ignoreAtOrAbove) continue;
       const s = surfaceFor(cell.t);
-      if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
+      if (!s.standable && !s.swimmable) {
+        // Re-resolve mode asks "what GROUND is under this pixel, given I am
+        // ignoring the slab it hit" — so a solid on the way down is something
+        // to look UNDER, not a reason to give up. The ray from a roof pixel
+        // crosses the wall carrying that roof, and aborting there is why an
+        // earlier cut of this never found the second reading at all.
+        if (ignoreAtOrAbove !== undefined) continue;
+        return null; // tapped a solid prop/structure
+      }
       return clampW(col * CELL_WU, row * CELL_WU, l);
     }
     return null; // void (outside the drawn world)
+  }
+
+  /** The nearest spot a body can STAND whose drawn position is closest to a
+   * camera-world pixel. Used when the pixel's own ground reading is a wall or
+   * empty — the walker must still end up as near the marker as the world
+   * allows, and "the cell under the one you clicked" is 96px away, not near.
+   *
+   * Screen distance, not world distance: the marker is a pixel, and two cells
+   * equally far in world terms can be a storey apart on screen. Bounded to a
+   * small ring around the pixel's own ground cell — this runs once per tap. */
+  private nearestGroundTo(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
+    const g = this.terrain;
+    if (!g || !this.world) return null;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (wx - this.iso.ox - tile / 2) / dx;
+    const v = (wy - this.iso.oy - dy) / dy; // the LEVEL-0 reading of this pixel
+    const c0 = Math.floor((u + v) / 2);
+    const r0 = Math.floor((v - u) / 2);
+    let best: { x: number; y: number; lvl: number } | null = null;
+    let bestD = Infinity;
+    for (let dr = -4; dr <= 4; dr++)
+      for (let dc = -4; dc <= 4; dc++) {
+        const c = c0 + dc;
+        const r = r0 + dr;
+        const cell = this.world.rows[r]?.[c];
+        if (!cell) continue;
+        const surf = surfaceFor(cell.t);
+        if (!surf.standable) continue;
+        if (g.blocked[r * g.width + c]) continue;
+        // Where this cell's surface DRAWS, against the pixel we are aiming at.
+        const sy = this.iso.oy + (c + r) * dy + dy - cell.l * lh;
+        const sx = this.iso.ox + (c - r) * dx + tile / 2;
+        const d = Math.hypot(sx - wx, sy - wy);
+        if (d < bestD) {
+          bestD = d;
+          best = { x: (c + 0.5) * CELL_WU, y: (r + 0.5) * CELL_WU, lvl: cell.l };
+        }
+      }
+    return best;
   }
 
   /** Start a tap-to-move trip (run = double-tap). Plans a route with the
@@ -6228,7 +7086,10 @@ export class WorldScene extends Phaser.Scene {
   private commitReleaseHold() {
     this.holdRepathAt = 0;
     this.holdRepath(performance.now());
-    if (this.trip && this.tapMarker) {
+    if (this.tapMarkerAt && this.tapMarker) {
+      // Pinned: the gesture already decided where this beacon lives.
+      this.tapMarker.setPosition(this.tapMarkerAt.x, this.tapMarkerAt.y);
+    } else if (this.trip && this.tapMarker) {
       const e = this.trip.target;
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
@@ -6251,12 +7112,22 @@ export class WorldScene extends Phaser.Scene {
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
     const t0 = performance.now();
-    this.setMoveTarget(g.x, g.y, true, true, g.lvl);
+    this.setMoveTarget(g.x, g.y, true, true, g.lvl, true, g.at);
     const cost = performance.now() - t0;
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
-  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number, showMarker = true) {
+  private setMoveTarget(
+    x: number,
+    y: number,
+    run: boolean,
+    hold = false,
+    goalLevel?: number,
+    showMarker = true,
+    // The camera-world point the tap came from. Needed to find the SECOND
+    // surface drawn under that same pixel — a different cell, same pixel.
+    pick?: { wx: number; wy: number },
+  ) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
@@ -6268,8 +7139,47 @@ export class WorldScene extends Phaser.Scene {
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, fromElev, goalLevel);
+    // ONE TAP, TWO MEANINGS — BOTH UNDER THE FINGER. A raised pixel — a roof
+    // slab OR a cliff top — also shows the ground drawn at that same pixel,
+    // which is a different CELL (6.4 of them up-screen for level 6). Offer both and let the ROUTING decide:
+    // startBestTrip drops a candidate whose route cannot finish on it (the house
+    // roof, six levels up with no ramp) and otherwise takes the shorter walk (a
+    // bridge you can get both under and over). The tapped surface goes first so
+    // it keeps ties.
+    //
+    // THE BEACON DOES NOT MOVE between the two: they are the same pixel. That
+    // is the whole reason to resolve it this way rather than by dropping the
+    // marker onto whatever the walk managed to reach.
+    const cands: Array<{ x: number; y: number; goalLevel?: number }> = [{ x, y, goalLevel }];
+    // (1) the other surface drawn at the SAME PIXEL — a different cell, since
+    //     screen y subtracts level*lh. Usually the room under a roof.
+    const under = pick && goalLevel !== undefined ? this.pickGround(pick.wx, pick.wy, goalLevel) : null;
+    if (under) cands.push({ x: under.x, y: under.y, goalLevel: under.lvl });
+    // ...and when that reading is a WALL or empty sky, the answer is NOT "the
+    // floor of the cell you clicked": that draws `level * lh` = 96px below the
+    // marker, which is the walker standing with her head at it. Take the
+    // nearest walkable spot to the MARKER instead, measured in screen space —
+    // "as close as she can get" is a statement about the pixel, not the cell.
+    else if (pick) {
+      const near = this.nearestGroundTo(pick.wx, pick.wy);
+      if (near) cands.push({ x: near.x, y: near.y, goalLevel: near.lvl });
+    }
+    // THE SAME CELL'S FLOOR IS NOT A CANDIDATE, and adding it was a mistake
+    // worth naming: it draws `level * lh` BELOW the marker, so choosing it is
+    // precisely the bug — "you don't walk to the marker, you walk the player
+    // under it". The marker's pixel is the contract; a destination that is not
+    // at that pixel is not what was clicked, however close it looks in plan.
+    const trip = startBestTrip(this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands);
     if (!trip) return;
+    // THE BEACON DOES NOT MOVE — and now it cannot, because every candidate is
+    // the SAME PIXEL. It is drawn from the winner's cell AND the winner's level,
+    // which is the only pair that lands back on the clicked pixel: the ground
+    // reading is 3.2 cells up-screen in both axes AND 6 levels lower, and those
+    // two shifts cancel exactly. Lifting the ground cell by the ROOF's level
+    // instead puts the marker 96px above the click (measured); using the tapped
+    // cell with the ground's level puts it 96px below. Both are wrong, and both
+    // were shipped once.
+    goalLevel = trip.goalLevel;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run
     // every retarget and oscillate run/walk forever.
@@ -6283,12 +7193,28 @@ export class WorldScene extends Phaser.Scene {
       this.tapMarker = undefined;
       return;
     }
+    // THE BEACON IS THE PIXEL YOU TOUCHED — it is never derived from where the
+    // route ends. Deriving it from `trip.target` is what made it drift: a click
+    // on a WALL TOP has only one surface (plain terrain at level 6, no deck
+    // under it), the route cannot reach it, and findPath's best-effort rim is a
+    // NEIGHBOURING cell — so the beacon slid to that rim and lifted by the
+    // wall's six levels, landing at the walker's head (maintainer 2026-08-08:
+    // "if I click on top of the wall the marker moves a bit up and the player
+    // walks so that her head is on the marker... if I click on the roof the
+    // player correctly goes to the marker with her feet"). A ROOF hid this,
+    // because it has two surfaces and the reachable one lands exactly under the
+    // finger anyway.
     const end = trip.target;
     this.ensureTapAssets();
-    const p = this.projectFlat(end.x, end.y);
+    const p = pick
+      ? { x: pick.wx, y: pick.wy, lvl: 0 }
+      : this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    // Remembered so the per-frame follow below cannot drag it off that pixel
+    // either — the route may be re-planned many times during one gesture.
+    this.tapMarkerAt = pick ? { x: pick.wx, y: pick.wy } : null;
     // Hold replans never touch the beacon: while the finger is down the
     // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
     // rebuilding the container + tween per replan also made the pulse
@@ -6323,9 +7249,32 @@ export class WorldScene extends Phaser.Scene {
     if (this.tapMarker) {
       const m = this.tapMarker;
       this.tapMarker = undefined;
+      this.tapMarkerAt = null;
       this.tweens.killTweensOf(m);
       this.tweens.add({ targets: m, alpha: 0, duration: 180, onComplete: () => m.destroy() });
     }
+  }
+
+  /** Every BODY near a point that the walker's input has to slip around —
+   * monsters (server-driven, per-art radii) and NPCs (client-side decor with
+   * no server body, same faked collision since 2026-08-06).
+   *
+   * ONE list, read by both the dodge AND the autopilot's standoff. They have to
+   * agree about who is standing where: when they disagreed, the autopilot
+   * steered at a waypoint the dodge would never allow, and the walker circled
+   * the NPC. The near-filter box admits the biggest bodies' lookahead (~140wu),
+   * not the old fixed 48 — a mammoth deflects from ~4× a poring's distance. */
+  private nearBodies(fx: number, fy: number): Array<{ id: string; x: number; y: number; r: number }> {
+    const near: Array<{ id: string; x: number; y: number; r: number }> = [];
+    this.monsters.forEach((mv, id) => {
+      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140)
+        near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
+    });
+    this.npcs.forEach((npc, id) => {
+      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140)
+        near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
+    });
+    return near;
   }
 
   /** One autopilot step — delegates every decision to the shared
@@ -6337,7 +7286,16 @@ export class WorldScene extends Phaser.Scene {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me || !this.trip) return idle;
     const myElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
-    const d = stepAutopilot(this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH, myElev);
+    // A waypoint someone is STANDING ON is unreachable — the dodge will never
+    // let the walker have that spot — so it counts as arrived at from as near
+    // as her personal space allows. Without this the two halves fight and the
+    // walker orbits her (maintainer 2026-08-08: "the player runs a full circle
+    // around the NPC").
+    const bodies = this.nearBodies(me.fx, me.fy);
+    const d = stepAutopilot(
+      this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH, myElev,
+      bodies.length ? (wx, wy) => bodyStandoff(wx, wy, bodies) : undefined,
+    );
     if (d.done) {
       this.clearMoveTarget();
       return idle;
@@ -6746,6 +7704,10 @@ export class WorldScene extends Phaser.Scene {
       b.coverY = undefined;
     }
     b.sprite.setDepth(depth);
+    // The depth is final here, and `depth > sprite.depth` is what the cover
+    // surfaces filter occluders on — so the slot registers LAST, and in this
+    // one function rather than in either consumer (see registerCoverSlot).
+    this.registerCoverSlot(b);
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -6804,22 +7766,38 @@ export class WorldScene extends Phaser.Scene {
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
+    const sp = b.sprite;
+    // THE SAME CUT AS THE OUTLINE, FROM THE SAME PIXELS. On the exact path the
+    // lit copy literally IS the E surface and the outline is built from its
+    // complement by a single erase — so "no seam and no double-draw" stops
+    // being a discipline two call sites have to keep and becomes a property of
+    // the framebuffer. (It also kills the dark band the flat line left across
+    // visible legs, which only ever showed at Night.)
+    const slot = this.coverSlotOf(b);
+    const fw = sp.frame.cutWidth;
+    const fh = sp.frame.cutHeight;
     b.lit
       .setVisible(true)
-      .setTexture(b.sprite.texture.key, b.sprite.frame.name)
-      .setPosition(b.sprite.x, b.sprite.y)
-      .setOrigin(b.sprite.originX, b.sprite.originY)
-      .setScale(b.sprite.scaleX, b.sprite.scaleY)
-      .setDepth(litDepth(b.sprite.depth))
+      .setTexture(slot ? this.coverE!.key : sp.texture.key, slot ? slot.name : sp.frame.name)
+      .setPosition(sp.x, sp.y)
+      .setOrigin(
+        slot ? (sp.originX * fw + RING_PAD) / slot.w : sp.originX,
+        slot ? (sp.originY * fh + RING_PAD) / slot.h : sp.originY,
+      )
+      .setFlipX(slot ? false : sp.flipX)
+      .setScale(sp.scaleX, sp.scaleY)
+      .setDepth(litDepth(sp.depth))
       .setAlpha(1 - Math.min(1, Math.max(0, fog.a)))
       .setTint((r << 16) | (g << 8) | bl);
-    if (b.coverY !== undefined) {
-      // Frame-space y of the occluding wall's top line.
-      const frameTop = b.sprite.y - b.sprite.displayHeight * b.sprite.originY;
-      const cropH = (b.coverY - frameTop) / b.sprite.scaleY;
-      const ab = this.artBounds(b.sprite);
+    if (slot) {
+      if (b.lit.isCropped) b.lit.setCrop();
+    } else if (b.coverY !== undefined) {
+      // FALLBACK: frame-space y of the occluding wall's top line.
+      const frameTop = sp.y - sp.displayHeight * sp.originY;
+      const cropH = (b.coverY - frameTop) / sp.scaleY;
+      const ab = this.artBounds(sp);
       if (cropH <= ab.y0 + 2) b.lit.setVisible(false); // wall covers the whole figure
-      else b.lit.setCrop(0, 0, b.sprite.frame.cutWidth, cropH);
+      else b.lit.setCrop(0, 0, fw, cropH);
     } else if (b.lit.isCropped) b.lit.setCrop();
     return l;
   }
@@ -7400,6 +8378,15 @@ export class WorldScene extends Phaser.Scene {
   private updateIndoor() {
     const now = this.time.now;
     const g = this.terrain;
+    // PUBLISH THE DEPTH MAP EVEN IF YOU NEVER GO INSIDE. It used to ride along
+    // with the room mask, which is only ever published on entering or leaving a
+    // room — so a player who merely WALKS PAST a cave got an empty green
+    // channel and no darkening at all, which is precisely the case the feature
+    // exists for. Once per world; setRoom early-returns on every later call.
+    if (!this.caveDepth && g && this.world) {
+      this.caveDepth = this.buildCaveDepth();
+      this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
+    }
     const av = this.avatars.get(this.room?.sessionId ?? "");
     if (!g || !av || av.surfLevel === undefined) {
       // No grid / no body yet: outdoors, and forget the cache so the next real
@@ -7412,6 +8399,14 @@ export class WorldScene extends Phaser.Scene {
     const col = Math.floor(av.fx / CELL_WU);
     const row = Math.floor(av.fy / CELL_WU);
     const elev = av.surfLevel;
+    // WHICH NAMED PLACE? Same cell the roof test already needs, so this costs
+    // one Map lookup and only talks to the composer when the answer CHANGES —
+    // a bed swap on every frame you stand in the cave would restart the music.
+    const place = this.places?.at(col, row) ?? null;
+    if (place !== this.placeNow) {
+      this.placeNow = place;
+      gameAudio.setPlace(place);
+    }
     if (!this.indoorDirty && col === this.indoorAtCol && row === this.indoorAtRow && elev === this.indoorAtElev) {
       // Nothing that can change the answer has changed. Still service the dwell
       // timer — a verdict deferred on the doorstep must land even if you then
@@ -7606,7 +8601,7 @@ export class WorldScene extends Phaser.Scene {
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
     // reach it (the torch through the doorway) while the sky cannot.
-    this.night?.setRoom(m.keys());
+    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
     return true;
   }
 
@@ -7625,7 +8620,7 @@ export class WorldScene extends Phaser.Scene {
     // HERE and not the moment the verdict flipped.
     if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
       this.roomMask = null;
-      this.night?.setRoom(null);
+      this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
     }
   }
 
@@ -7655,6 +8650,30 @@ export class WorldScene extends Phaser.Scene {
    *
    * `z` in LEVELS: a body up on the roof is outside even though the cell under
    * it is my floor. */
+  /** Indoors, is this body standing ABOVE THE CUT — on terrain that is not
+   * drawn at all?
+   *
+   * The zero-ambient design says draw the outside and let the light decide,
+   * and that is right for everything at ground level: the ground under it IS
+   * drawn, so a villager out there is a black silhouette your torch can find.
+   * It stops being right above the cut, because up there NOTHING is drawn —
+   * the cut removes every column's art above `indoorTop`, world-wide. A body
+   * standing on that vanished terrain has no ground under it and hangs in the
+   * void, which is exactly the artefact the old design was full of (maintainer
+   * 2026-08-08: "monsters on top of the mountain are drawn when you are inside
+   * the cave... you should not draw monsters outside that are on top of the
+   * roof/ceiling when you are indoors").
+   *
+   * So the rule is not "outside my room" — it is "on ground I am not drawing".
+   * The two differ exactly where it matters: the mountain around a cave is
+   * outside the room AND above the cut (hidden), while the grass outside a
+   * house door is outside the room but at my own level (drawn, and lit by a
+   * torch through the doorway). The threshold is the CUT, not the ceiling: the
+   * cut is what decides what is painted. */
+  private aboveCut(z: number): boolean {
+    return this.indoorInside && !!this.indoorMask && z > this.indoorTop;
+  }
+
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
     const w = this.world;
     if (!this.roomMask || !w) return false;
@@ -7662,6 +8681,167 @@ export class WorldScene extends Phaser.Scene {
     const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return true;
     return !((this.roomMask.get(row * w.width + col) ?? 0) !== 0 && z < this.indoorCeil);
+  }
+
+  /** DEPTH FROM DAYLIGHT for every cell of every ROOM in the world: 0 at an
+   * entrance, +1 per cell further in. This is what "you cannot see deep into
+   * the cave" rides on (maintainer 2026-08-08: "darker and darker the further
+   * into tiles being indoor you can see... a thickening shadow that gets very
+   * dark, very fast").
+   *
+   * DEPTH, NOT DISTANCE FROM THE CAMERA. A long twisting cave goes black around
+   * its first corner while a shallow alcove stays readable, and neither needs
+   * tuning — the geometry says how deep it is. `findIndoorSpace` already hands
+   * back the room's `entrances`, so this is a 4-connected BFS from them across
+   * the room's own cells.
+   *
+   * Built ONCE per world: every roofed cell is visited at most twice (once to
+   * discover its space, once in that space's fill), and the whole of
+   * the_island2 is ~600 roofed cells. Bridges and arches are skipped — the
+   * indoor verdict decides what is a room, exactly as it does everywhere else,
+   * so a bridge does not acquire a shadow just for having a slab. */
+  private buildCaveDepth(): Map<number, number> {
+    const out = new Map<number, number>();
+    this.caveUnder = new Map<number, number>();
+    const g = this.terrain;
+    const w = this.world;
+    if (!g || !w) return out;
+    const seen = new Uint8Array(w.width * w.height);
+    for (let r = 0; r < w.height; r++)
+      for (let c = 0; c < w.width; c++) {
+        const i = r * w.width + c;
+        if (seen[i] || g.deck[i] < 0) continue;
+        const space = findIndoorSpace(g, c, r, g.level[i]);
+        if (!space) { seen[i] = 1; continue; }
+        for (const ci of space.roof) seen[ci] = 1;
+        if (!this.indoorVerdict(space, INDOOR_DEPTH)) continue;
+        // THE CEILING'S UNDERSIDE, which is where the OPENING stops. The slab's
+        // own face runs from here up to its top, and that face is the mountain
+        // — darkening it is what blackened the whole mountain three times. Below
+        // it is the void you look through (maintainer 2026-08-08: "you should
+        // just have stopped making it dark over the opening").
+        // grid.deckBot IS the underside — already computed per cell when the
+        // terrain was built. Rederiving it from the deck table produced nothing
+        // (measured: 0 cells carried a value, so the shader compared against
+        // zero and never fired), which is the whole reason the last attempt
+        // darkened nothing at all.
+        for (const ci of space.roof) {
+          const ub = g.deckBot[ci];
+          if (ub >= 0) this.caveUnder.set(ci, ub);
+        }
+
+        // BFS from the openings. A sealed room (no entrance at all) gets the
+        // maximum everywhere — nothing can see into it, which is correct.
+        const q: number[] = [];
+        for (const e of space.entrances)
+          for (const n of [e - 1, e + 1, e - w.width, e + w.width])
+            if (space.roof.has(n) && !out.has(n)) { out.set(n, 0); q.push(n); }
+        if (!q.length) { for (const ci of space.roof) out.set(ci, 255); continue; }
+        for (let head = 0; head < q.length; head++) {
+          const cur = q[head];
+          const d = out.get(cur)!;
+          for (const n of [cur - 1, cur + 1, cur - w.width, cur + w.width])
+            if (space.roof.has(n) && !out.has(n)) { out.set(n, d + 1); q.push(n); }
+        }
+        // Anything the fill never reached is walled off from every opening.
+        for (const ci of space.roof) if (!out.has(ci)) out.set(ci, 255);
+        // THE INWARD-FACING WALLS — the ones you are actually looking AT when
+        // you look into a mouth. The floor alone is a thin sliver through an
+        // opening; what fills the frame is rock, and until now every attempt to
+        // include rock took the WHOLE ring around the room. Half that ring is
+        // the NEAR (down-screen) side, whose two drawn faces point away from
+        // the room and out at the camera: that is the mountain's outside skirt,
+        // and darkening it is "you fade what's not inside the cave opening
+        // dark" (maintainer 2026-08-08) — the same complaint in a new coat.
+        //
+        // The projection settles which is which and the detector already sorts
+        // them: a cell's drawn faces are its +col and +row sides (both go DOWN
+        // the screen), so a fringe cell shows the room an inward face exactly
+        // when the room lies on one of those two sides — space.wallLeft /
+        // wallRight, the far walls, and no others. See IndoorSpace.wallLeft.
+        //
+        // No band, no rings: a wall face is 8 levels tall (128px) while a cell
+        // step is 15px, so the second row of rock behind it is buried whole.
+        //
+        // AND ONLY WHERE IT IS ROCK, NOT A HOUSE WALL. A house's far wall is
+        // one cell thick and its inward face is what the cut-away shows you
+        // from inside — taking it blindly turned every house's sides black.
+        // The two part on how far the column rises above the room's ceiling:
+        // measured on the_island2, the cave's 146 far walls stand at terrain
+        // 24-40 under an 8-level ceiling, while both houses' far walls stop at
+        // 6 under a 6-level roof. Two levels of headroom is the bar, and it
+        // keeps 146 cave cells and 0 house cells.
+        for (const fi of [...space.wallLeft, ...space.wallRight]) {
+          if (out.has(fi)) continue;
+          // The ceiling and the depth both come from the room cell this wall
+          // faces: the wall is as deep in as the floor in front of it, and it
+          // is framed by the same opening.
+          let ub = -1;
+          let best = Infinity;
+          for (const n of [fi - 1, fi + 1, fi - w.width, fi + w.width]) {
+            if (!space.roof.has(n)) continue;
+            if (g.deckBot[n] >= 0) ub = Math.max(ub, g.deckBot[n]);
+            const d = out.get(n);
+            if (d !== undefined && d < best) best = d;
+          }
+          if (ub < 0 || g.level[fi] <= ub + 2) continue; // a house wall, not rock
+          if (best < Infinity) { out.set(fi, best + 1); this.caveUnder.set(fi, ub); }
+        }
+      }
+    return out;
+  }
+
+  /** Is this point sealed inside a ROOM that is not the one I am standing in?
+   *
+   * The occlusion outline draws above the darkness overlay, so without this a
+   * monster deep inside the mountain shows a crisp white silhouette through
+   * solid rock — a wall-hack, and the exact inverse of what the feature is for.
+   *
+   * "Room" is the SAME verdict the indoor state machine uses (roof size, wall
+   * ratio, depth), not merely "has a slab overhead": a bridge or an arch is not
+   * a room, and a body under one must keep its outline. The verdict is a
+   * property of the whole space, so ONE flood fill answers for every cell of
+   * it — the cave's 472 cells are memoised in a single pass, and thereafter
+   * this is a Map lookup per body per frame. Outdoor cells cost even less:
+   * `roofAbove` returns null before any fill starts.
+   *
+   * Fails OPEN (outline shown) when the geometry can't be resolved — a body on
+   * a surface whose level disagrees with the terrain, say. Showing an outline
+   * that could have been hidden is a cosmetic miss; hiding one that should show
+   * is the feature not working. */
+  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+    const g = this.terrain;
+    const w = this.world;
+    if (!g || !w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (col < 0 || row < 0 || col >= w.width || row >= w.height) return false;
+    const idx = row * w.width + col;
+    let room = this.roomCellMemo.get(idx);
+    if (room === undefined) {
+      const space = findIndoorSpace(g, col, row, z);
+      this.indoorComputes++; // the QA counter counts EVERY fill, including these
+      room = space && this.indoorVerdict(space, INDOOR_DEPTH) ? 1 : 0;
+      // Memoise the WHOLE space, not just the queried cell: one fill then
+      // answers for every body in the cave for the rest of the session.
+      if (space) for (const c of space.roof) this.roomCellMemo.set(c, room);
+      else this.roomCellMemo.set(idx, 0);
+    }
+    if (!room) return false;
+    // It IS a room — mine or someone else's? THE TEST IS "IS THE CUT STILL
+    // APPLIED", i.e. is the roof off, and NOT the fade mask.
+    //
+    // `roomMask` outlives the verdict on purpose: it drives the ambient fade,
+    // which keeps easing for OUTDOOR_FADE_MS after you step out. Reading it
+    // here meant that for a whole second after the roof snapped back, every
+    // monster still in the cave kept its outline — drawn straight through the
+    // mountain (maintainer 2026-08-08: "there is a delay until the white border
+    // is removed... the very instant the roof is back the white border is
+    // placed around all monsters in the cave"). `indoorInside && indoorMask` is
+    // the same pair `pickGround` and `aboveCut` use, and it flips in the SAME
+    // frame redrawGround puts the roof back, so the outline and the rock can
+    // never disagree about which of them the camera is looking at.
+    return !(this.indoorInside && this.indoorMask && this.inMyRoom(col, row));
   }
 
   /** Is this body under MY roof? O(1) — no extra flood fill. Used by the torch
@@ -7707,6 +8887,25 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setDepth(-1_000_000);
     this.lastGround = { x: NaN, y: NaN };
+  }
+
+  /** Multiplicative grey for an interior floor tile, by its depth from the
+   * opening — white (no tint) everywhere else. `depth` is stored +1, so 1 is
+   * the cell at the mouth and 0 means "not a room" (see buildCaveDepth).
+   * Skipped while INDOORS: the room you are standing in is lit by its own
+   * ambient, and darkening it would undo the cut-away. */
+  private caveTint(idx: number, indoors: boolean): number {
+    if (indoors || !this.caveDepth) return 0xffffff;
+    const dep = this.caveDepth.get(idx) ?? 0;
+    if (dep <= 0) return 0xffffff;
+    // DISABLED: the shader now darkens everything below the ceiling, floor
+    // included, so tinting the floor here as well multiplied the two together
+    // and the opening went pitch black. Kept as one switch rather than deleted
+    // — if the shader path ever has to go, this is the fallback that worked.
+    if (!CAVE_TINT_TILES) return 0xffffff;
+    const f = Math.max(0, Math.min(1, Math.exp(-dep * CAVE_FALLOFF)));
+    const c = Math.round(f * 255);
+    return (c << 16) | (c << 8) | c;
   }
 
   private redrawGround() {
@@ -7812,8 +9011,17 @@ export class WorldScene extends Phaser.Scene {
             }
             continue; // never the deck slab — that IS the roof
           }
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-          rt.batchDraw(topKey, bx, by - cell.l * lh);
+          // The face stack too: an interior wall is what you actually SEE
+          // through the opening, and a floor alone still reads bright.
+          const ct = this.caveTint(row * world.width + col, !!mask);
+          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh, 1, ct);
+          // THE CAVE SWALLOWS THE LIGHT — and it has to happen HERE, not in the
+          // light shader. Outdoors the shader resolves every pixel of a cave to
+          // max(terrain, deck), which in the_island2 is the MOUNTAIN's own 24:
+          // floor and rock become the same number, so no per-pixel test can
+          // separate them (four tried). At THIS line there is no ambiguity —
+          // this is the cell's floor tile, being drawn as a floor.
+          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, ct);
           // world@2 deck slab (roof / bridge span) at this cell, drawn right
           // after its base in (x+y) order: `thickness` face tiles below the top
           // with OPEN AIR beneath (so you see under it), then the top diamond.
@@ -7824,8 +9032,9 @@ export class WorldScene extends Phaser.Scene {
               const dTop = dk.cell.flip ? this.flippedKey(dTop0) : dTop0;
               const dFace = this.deckFaceKey(dk.deck, dTop0);
               const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh);
-              rt.batchDraw(dTop, bx, by - dk.deck.level * lh);
+              const dct = this.caveTint(row * world.width + col, !!mask);
+              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh, 1, dct);
+              rt.batchDraw(dTop, bx, by - dk.deck.level * lh, 1, dct);
             }
           }
           continue;
@@ -8342,6 +9551,11 @@ export class WorldScene extends Phaser.Scene {
       (t, v) => this.artYOff(tileKey(t, v)),
       false,
     ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
+
+    // The occluder + prop images have just been destroyed and recreated, so
+    // this is the one moment their broad-phase index (and every cover slot's
+    // "did the terrain move" signature term) can go stale.
+    this.rebuildCoverIndex();
   }
 
   /**

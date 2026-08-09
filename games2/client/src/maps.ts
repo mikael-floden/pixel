@@ -58,6 +58,40 @@ export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | n
   }
 }
 
+/** NAMED INDOOR PLACES (maps2 `places.json`, schema pixel-maps2/places@1): the
+ * maps agent labels the interiors — "the_cave", "meadow_house" — so the game
+ * can react to WHERE the player is standing rather than re-deriving it from
+ * geometry. The composer uses it to put a specific score inside a specific
+ * room (maintainer 2026-08-08: cave4 inside the_cave, day or night).
+ *
+ * Returned as a cell lookup because that is the only question anyone asks of
+ * it — "what am I standing in?" — and a 472-cell polygon test per frame would
+ * be silly when a Map hit is O(1). Missing file is not an error: a world may
+ * simply have no named places, and the game must not care. */
+export type PlaceLookup = { at(cx: number, cy: number): string | null; ids: string[] };
+
+export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLookup | null> {
+  const url = `/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/places.json`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const doc = (await res.json()) as { places?: { id?: string; cells?: [number, number][] }[] };
+    const byCell = new Map<number, string>();
+    const ids: string[] = [];
+    for (const p of doc.places ?? []) {
+      if (!p?.id || !Array.isArray(p.cells)) continue;
+      ids.push(p.id);
+      // One integer key per cell — cheaper than a string and collision-free for
+      // any world under 65536 cells wide.
+      for (const c of p.cells) if (Array.isArray(c)) byCell.set(((c[0] | 0) << 16) | (c[1] & 0xffff), p.id);
+    }
+    if (!byCell.size) return null;
+    return { at: (cx, cy) => byCell.get(((cx | 0) << 16) | (cy & 0xffff)) ?? null, ids };
+  } catch {
+    return null;
+  }
+}
+
 /** One selectable world (client/public/worlds.json, built by build-worlds.mjs). */
 export interface WorldInfo {
   name: string;

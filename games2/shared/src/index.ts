@@ -1447,7 +1447,13 @@ export function findPath(
   toX: number,
   toY: number,
   opts?: { canSwim?: boolean; maxNodes?: number; fromElev?: number; goalLevel?: number },
-): { x: number; y: number }[] | null {
+  // Waypoints carry the LEVEL of the surface the route stands on there. The
+  // last one's is the only honest answer to "where does this trip actually
+  // END": a goal you cannot reach (a roof with no stairs) resolves to the
+  // best-effort rim, which is typically the SAME CELL one layer down — so the
+  // cell alone cannot tell you, and `goalLevel` is the tap's WISH, not the
+  // outcome. Additive: every existing caller reads {x,y} and is unaffected.
+): { x: number; y: number; lvl?: number }[] | null {
   const W = grid.width;
   const H = grid.height;
   // The mover is CLAMPED to the SPAWN_MARGIN band at the world border
@@ -1472,7 +1478,7 @@ export function findPath(
       opts?.fromElev === undefined ||
       grid.deck[gi] < 0 ||
       Math.abs(opts.fromElev - opts.goalLevel) < 0.5;
-    if (sameLayer) return [clearanceAdjust(grid, toX, toY)];
+    if (sameLayer) return [{ ...clearanceAdjust(grid, toX, toY), lvl: opts?.fromElev ?? grid.level[gi] }];
   }
   const canSwim = opts?.canSwim ?? true;
   const maxNodes = opts?.maxNodes ?? 4000;
@@ -1514,14 +1520,39 @@ export function findPath(
     const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
     return !s.standable && s.swimmable;
   };
-  // Nudge a waypoint away from adjacent solid cells (≤8wu, stays in-cell) so
-  // the followed line keeps real clearance around prop corners.
+  // A WALL for the purpose of keeping the followed line clear: a solid cell,
+  // OR one this cell cannot be walked into because of the CLIMB. The second
+  // half is the load-bearing one and it used to be missing.
+  //
+  // A house wall is TERRAIN at level 6 — perfectly `standable`, so `cellSolid`
+  // is false for it and the route treated it as ordinary open ground to hug.
+  // But the body cannot enter it, and its collision probes reach PLAYER_RADIUS
+  // ahead, so a route running along its foot keeps the wall inside probe range
+  // for the whole segment. On the iso grid that is fatal: the follower steers
+  // in 8 SCREEN directions, and screen-EAST is world (col+1, row-1) — the
+  // nearest 8-way heading to "walk east along this wall" aims diagonally INTO
+  // it. The body slides along the face, drifts north until its leading probe
+  // touches the wall cell, stops making progress, and the per-waypoint stall
+  // timer gives the whole trip up — the player stands pinned against the house
+  // (maintainer 2026-08-07: "the character gets stuck running into an NPC and
+  // not around the NPC"; the NPC was a bystander standing on that exact spot.
+  // Measured: the body settles at y=120.383, against the geometric limit of
+  // 120.375 — one probe-length off the wall — and the trip is then dropped).
+  const wallCell = (from: number, c: number, r: number) => {
+    if (solidCell(c, r)) return true;
+    if (c < 0 || r < 0 || c >= W || r >= H) return false;
+    if (grid.deck[r * W + c] >= 0) return false; // a walkable slab is not a wall
+    return grid.level[r * W + c] - from > WALK_CLIMB;
+  };
+  // Nudge a waypoint away from adjacent walls (≤8wu, stays in-cell) so the
+  // followed line keeps real clearance around prop corners AND wall feet.
   const nudged = (c: number, r: number) => {
     let px = 0;
     let py = 0;
+    const from = c >= 0 && r >= 0 && c < W && r < H ? grid.level[r * W + c] : 0;
     for (let dr = -1; dr <= 1; dr++)
       for (let dc = -1; dc <= 1; dc++)
-        if ((dc !== 0 || dr !== 0) && solidCell(c + dc, r + dr)) {
+        if ((dc !== 0 || dr !== 0) && wallCell(from, c + dc, r + dr)) {
           const l = Math.hypot(dc, dr);
           px -= dc / l;
           py -= dr / l;
@@ -1606,7 +1637,7 @@ export function findPath(
       r1 = bestCell.r;
       toX = cx(c1);
       toY = cy(r1);
-      if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+      if (c0 === c1 && r0 === r1) return [{ ...clearanceAdjust(grid, toX, toY), lvl: opts?.fromElev ?? grid.level[r1 * W + c1] }];
     } else {
       return null;
     }
@@ -1706,16 +1737,23 @@ export function findPath(
   // prop line has no interior nudged points, and the 8-way-quantized follower
   // drifted into the prop margin mid-leg. Per-cell waypoints keep the route
   // tracked tightly everywhere.
-  const pts: { x: number; y: number }[] = [];
+  const pts: { x: number; y: number; lvl?: number }[] = [];
   for (const n of cells) {
     const c = n % W;
     const r = (n - c) / W;
     pts.push(nudged(c, r));
   }
+  // Each waypoint's surface level, from the LAYER the search actually used —
+  // `cells` is cell-only, so walk the sid chain again for the layers.
+  const sids: number[] = [];
+  for (let n: number | undefined = dest; n !== undefined && n !== startSid; n = cameFrom.get(n)) sids.push(n);
+  sids.reverse();
+  for (let i = 0; i < pts.length && i < sids.length; i++)
+    pts[i].lvl = elevOf(sidCell(sids[i]), sidLayer(sids[i]));
   // The last waypoint is the exact tapped point pushed out of any solid's
   // collision margin — a spot the body can genuinely stand on. Best-effort
   // paths end at their rim cell's centre instead.
-  if (found) pts[pts.length - 1] = clearanceAdjust(grid, toX, toY);
+  if (found) pts[pts.length - 1] = { ...clearanceAdjust(grid, toX, toY), lvl: elevOf(sidCell(dest), sidLayer(dest)) };
   return pts;
 }
 
@@ -1776,6 +1814,15 @@ export interface AutopilotTrip {
   target: { x: number; y: number; run: boolean };
   path: { x: number; y: number }[];
   goalLevel?: number; // world@2: the surface LEVEL to arrive on (deck vs base); carried so a stall replan keeps routing onto the deck
+  /** The level the route REALLY ends on, which is not `goalLevel` whenever the
+   * tapped surface can't be reached — tap a roof with no stairs and the search
+   * falls back to the best-effort rim, usually the floor of the very same cell.
+   * `goalLevel` stays the wish (a stall replan must keep aiming for the deck);
+   * this is the outcome, and it is what the destination beacon must sit on, or
+   * the marker floats a storey above the spot the player actually walks to
+   * (maintainer 2026-08-08: "the player walks to a spot that is under the
+   * target-nav-symbol"). */
+  endLevel?: number;
   repathed: boolean; // one re-route per trip when progress stalls
   progress: { d: number; t: number }; // best waypoint distance so far + when
   lastPos: { x: number; y: number } | null; // last step's position (segment sweep)
@@ -1795,6 +1842,105 @@ export interface AutopilotTrip {
 /** Plan a trip from (fromX,fromY) to the tapped (toX,toY). Null → nowhere to
  * go (tap into a sealed area) — callers ignore the tap. Without a grid the
  * trip is a beeline (open worlds). */
+/** How far the walker actually travels along a planned route: their own
+ * position through every waypoint. Straight-line distance to the goal is the
+ * wrong measure — the whole question is which way round the geometry is
+ * shorter, and the detour to a doorway is exactly what a beeline hides. */
+export function tripLength(fromX: number, fromY: number, path: Array<{ x: number; y: number }>): number {
+  let d = 0;
+  let px = fromX;
+  let py = fromY;
+  for (const p of path) {
+    d += Math.hypot(p.x - px, p.y - py);
+    px = p.x;
+    py = p.y;
+  }
+  return d;
+}
+
+/** ONE TAP, TWO MEANINGS — resolved by ROUTING BOTH.
+ *
+ * ONE PIXEL SHOWS TWO SURFACES: the deck (roof, bridge) drawn at that pixel,
+ * and the ground drawn at that same pixel — which is a DIFFERENT CELL, 6.4 of
+ * them up-screen for a level-6 slab, because the iso projection subtracts
+ * `level * lh` from the screen y. Clicking there is genuinely ambiguous, and
+ * picking by what is DRAWN on top gets it wrong whenever the top is out of
+ * reach: tap the house from the road and the roof wins, but that roof is six
+ * levels up with no ramp.
+ *
+ * BOTH READINGS LIE UNDER THE FINGER, so resolving between them never moves the
+ * beacon — which is the point. Moving the marker to meet the walk offsets the
+ * player's own input and was rejected twice (maintainer 2026-08-08: "now you
+ * move the marker to a spot I didn't click on").
+ *
+ * Two rules, in order (maintainer 2026-08-08):
+ *   1. ARRIVING BEATS GIVING UP SHORT. "The house I'm clicking on doesn't even
+ *      have a valid route to get on top of it, so in this case it must have
+ *      meant the underside." A candidate whose route does not finish ON its own
+ *      surface was never what the tap meant.
+ *   2. AMONG THOSE THAT ARRIVE, THE SHORTER WALK WINS. "If it's closer to walk
+ *      under, the user probably meant that. If it's closer to walk on top, the
+ *      user meant that." Both are reachable on a bridge you can get under and
+ *      over, and then only distance can say which was intended.
+ *   3. AMONG THOSE THAT DON'T, THE ONE THAT GETS CLOSEST TO ITS OWN TARGET
+ *      WINS — never the shortest, which rewards giving up early.
+ *
+ * Candidates are tried in the caller's preference order and only a STRICT
+ * improvement displaces the incumbent, so the drawn surface keeps ties.
+ *
+ * The winner's `goalLevel` is the elevation the caller draws the beacon at, so
+ * the choice and the marker offset come out of one decision and cannot disagree
+ * the way they did when the surface was fixed before the routing ran. */
+export function startBestTrip(
+  grid: TerrainGrid | null,
+  fromX: number,
+  fromY: number,
+  run: boolean,
+  nowMs: number,
+  fromElev: number | undefined,
+  // THE CANDIDATES ARE WHOLE DESTINATIONS, NOT JUST LEVELS. The two readings of
+  // one click are different CELLS — the iso projection puts a level-6 slab and
+  // the level-0 ground under the same pixel from cells 6.4 apart — so a
+  // candidate carries its own x/y as well as its level. That is also why the
+  // beacon never moves between them: both are drawn at the pixel you clicked.
+  candidates: Array<{ x: number; y: number; goalLevel?: number }>,
+): AutopilotTrip | null {
+  let best: AutopilotTrip | null = null;
+  let bestArrived = false;
+  let bestLen = Infinity;
+  let bestMiss = Infinity;
+  for (const { x: toX, y: toY, goalLevel } of candidates) {
+    const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
+    if (!trip) continue;
+    const arrived =
+      goalLevel === undefined || trip.endLevel === undefined
+        ? true
+        : Math.abs(trip.endLevel - goalLevel) < 0.5;
+    const len = tripLength(fromX, fromY, trip.path);
+    // HOW FAR SHORT IT GAVE UP. Among routes that DON'T arrive, "shorter walk"
+    // is not just meaningless, it is backwards: a candidate that gives up after
+    // three steps has the shortest path of all and wins every time. Measured on
+    // the maintainer's click behind the house — the ground out there needs the
+    // long way round, the wall top at that same pixel needs a climb, so neither
+    // arrives; the wall's route bailed out a few steps in, INSIDE the house,
+    // and beat the long walk to the spot actually clicked ("I want to go behind
+    // the house... the player runs inside the house"). What "as close as you can
+    // get" means for a route that fails is how close to ITS OWN target it got.
+    const miss = Math.hypot(trip.target.x - toX, trip.target.y - toY);
+    const better =
+      best === null ||
+      (arrived && !bestArrived) ||
+      (arrived === bestArrived && (arrived ? len < bestLen - 1e-6 : miss < bestMiss - 1e-6));
+    if (better) {
+      best = trip;
+      bestArrived = arrived;
+      bestLen = len;
+      bestMiss = miss;
+    }
+  }
+  return best;
+}
+
 export function startTrip(
   grid: TerrainGrid | null,
   fromX: number,
@@ -1831,6 +1977,7 @@ export function startTrip(
     target: { x: end.x, y: end.y, run },
     path,
     goalLevel,
+    endLevel: end.lvl ?? goalLevel,
     repathed: false,
     progress: { d: Infinity, t: nowMs },
     lastPos: null,
@@ -1876,6 +2023,11 @@ export function stepAutopilot(
   worldW: number = WORLD_WIDTH,
   worldH: number = WORLD_HEIGHT,
   fromElev?: number, // world@2: live elevation for a deck-aware stall replan
+  // How close a walker may actually get to a point, given the BODIES standing
+  // around (see bodyStandoff). Optional so grid-only callers are unchanged;
+  // the client passes its near-body list, which is the same one the dodge uses
+  // — the two must agree or they fight and the walker orbits.
+  standoff?: (wx: number, wy: number) => number,
 ): AutopilotDrive {
   const t = trip.target;
   // A waypoint counts as reached when the position lands within the radius OR
@@ -1907,7 +2059,11 @@ export function stepAutopilot(
   // heading has up to ~22° of error, tight radii would make it orbit).
   while (trip.path.length > 1) {
     const w0 = trip.path[0];
-    if (Math.hypot(w0.x - x, w0.y - y) > advanceR && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
+    // A waypoint someone is STANDING ON is reached from as near as their
+    // personal space allows — otherwise the walker is asked to occupy a spot
+    // the dodge will never let them have, and circles it instead.
+    const reachR = advanceR + (standoff ? standoff(w0.x, w0.y) : 0);
+    if (Math.hypot(w0.x - x, w0.y - y) > reachR && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
     trip.path.shift();
     trip.progress = { d: Infinity, t: nowMs };
     trip.steer = null; // new waypoint → re-pick the detour heading fresh
@@ -1916,7 +2072,11 @@ export function stepAutopilot(
   const dxw = wp.x - x;
   const dyw = wp.y - y;
   const dist = Math.hypot(dxw, dyw);
-  if (trip.path.length <= 1 && (dist < arriveR || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))) {
+  // The DESTINATION gets the same treatment: tap the ground an NPC is standing
+  // on and "arrived" has to mean "as close as she lets me", or the trip never
+  // ends and the walker orbits her until the stall timer bails it out.
+  const arriveSlack = arriveR + (standoff ? standoff(wp.x, wp.y) : 0);
+  if (trip.path.length <= 1 && (dist < arriveSlack || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))) {
     return AUTOPILOT_IDLE; // arrived at the final target
   }
   // Stall detection is per-WAYPOINT (euclid distance to the final target can
@@ -2087,6 +2247,38 @@ const DODGE_RING: Array<[number, number]> = [
 export interface MonsterDodgeState {
   side: number; // committed rotation sign (+1 / -1)
   blocker: string; // monster id the commitment applies to
+  /** Was the 90° detour taken (rather than the 45° slip)? Held for the whole
+   * manoeuvre: re-deciding it per frame makes the walker visibly snap between
+   * two headings while passing one body. */
+  wide?: boolean;
+}
+
+/** HOW CLOSE CAN A WALKER ACTUALLY GET TO THIS POINT, given who is standing
+ * there? 0 when the point is free; otherwise how far outside it the nearest
+ * legal spot is.
+ *
+ * A route is planned on the terrain grid, which knows nothing about bodies —
+ * so a waypoint (or a tapped destination) routinely lands exactly where an NPC
+ * is standing. `monsterDodge` then keeps the walker out of that spot forever
+ * while the autopilot keeps steering at it, and the resultant of "go there" and
+ * "not through her" is a CIRCLE at personal-space radius: the maintainer's
+ * "instead of running around the NPC the player runs a full circle around the
+ * NPC". Neither half is wrong on its own, which is why tuning either one only
+ * moved the problem around. The fix is to admit the point is unreachable and
+ * count it as arrived at from as near as the bodies allow. */
+export function bodyStandoff(
+  wx: number,
+  wy: number,
+  bodies: Array<{ x: number; y: number; r?: number }>,
+  selfR: number = PLAYER_BODY_RADIUS,
+): number {
+  let out = 0;
+  for (const b of bodies) {
+    const p = (b.r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN;
+    const d = Math.hypot(wx - b.x, wy - b.y);
+    if (d < p) out = Math.max(out, p - d);
+  }
+  return out;
 }
 
 export function monsterDodge(
@@ -2097,6 +2289,11 @@ export function monsterDodge(
   monsters: Array<{ id: string; x: number; y: number; r?: number }>,
   state?: MonsterDodgeState,
   selfR: number = PLAYER_BODY_RADIUS, // the dodger's own body radius
+  // IS THIS SCREEN HEADING ACTUALLY WALKABLE from here? Optional so the pure
+  // geometric behaviour is unchanged for callers without a grid (tests, the
+  // server's own uses), but the CLIENT passes it, and without it this function
+  // will happily deflect a walker into a wall — see the side choice below.
+  openHeading?: (ax: number, ay: number) => boolean,
 ): { ax: number; ay: number; state: MonsterDodgeState } | null {
   const sax = Math.sign(ax);
   const say = Math.sign(ay);
@@ -2116,14 +2313,33 @@ export function monsterDodge(
   // in front (dot), and the straight line would pass inside its personal space.
   let hit: { id: string; x: number; y: number; r?: number } | null = null;
   let hitD = Infinity;
+  // ENGAGE AND RELEASE ON DIFFERENT THRESHOLDS. This used to be one test for
+  // both, and that is what made the walker weave: it sidesteps, the body stops
+  // being "in front" by a hair, the dodge drops, the raw heading points back at
+  // the body, the dodge re-engages... the maintainer, 2026-08-08: "the player
+  // changes direction and runs back-and-forth-back-and-forth until the player
+  // finally walks around the NPC". A dodge is a MANOEUVRE, not a per-frame
+  // opinion — once begun it holds until the body is genuinely passed.
+  //   • engage: clearly ahead (dot >= 0.35) and the line passes inside the
+  //     personal space;
+  //   • hold (this is the blocker we already committed to): all the way until
+  //     it is truly beside/behind (dot < 0.0), with a 1.35x wider corridor so
+  //     the very sidestep we just made does not read as "misses".
+  // Widening only the HOLD is what makes this hysteresis rather than a bigger
+  // trigger: nothing new starts a dodge, an existing one just finishes.
+  const committed = state ? state.blocker : "";
   for (const m of monsters) {
     const p = personal(m);
+    const held = m.id === committed;
     const tx = m.x - x;
     const ty = m.y - y;
     const d = Math.hypot(tx, ty);
     if (d < 1e-6 || d > Math.max(MONSTER_DODGE_LOOKAHEAD, p + 20)) continue;
-    if ((tx * ux + ty * uy) / d < 0.35) continue; // beside/behind — free
-    if (Math.abs(tx * uy - ty * ux) > p) continue; // misses
+    if ((tx * ux + ty * uy) / d < (held ? 0.0 : 0.35)) continue; // beside/behind — free
+    if (Math.abs(tx * uy - ty * ux) > (held ? p * 1.35 : p)) continue; // misses
+    // The held blocker wins ties AND near-ties: switching mid-pass to a body
+    // that is marginally closer restarts the side choice and weaves again.
+    if (held) { hitD = -1; hit = m; break; }
     if (d < hitD) {
       hitD = d;
       hit = m;
@@ -2140,12 +2356,77 @@ export function monsterDodge(
     const vl = Math.hypot(v.x, v.y) || 1;
     return Math.hypot(hit!.x - (x + (v.x / vl) * PROBE), hit!.y - (y + (v.y / vl) * PROBE));
   };
-  const stick = state && state.blocker === hit.id ? state.side : 0;
-  const side =
-    clearance(1) + (stick === 1 ? 4 : 0) >= clearance(-1) + (stick === -1 ? 4 : 0) ? 1 : -1;
-  const rot = clearance(side) < hitP ? 2 * side : side;
+  // THE SIDE IS CHOSEN ONCE, then held for the whole pass. The old code
+  // re-scored both sides every frame with only a +4wu bias toward the
+  // committed one — far too weak, because `clearance` swings by much more than
+  // that as the body moves, so the winner flipped repeatedly and the walker
+  // wove across the obstacle's face. Geometry decides the FIRST frame; after
+  // that only walkability may overrule it (below), and only if the committed
+  // side has actually become unwalkable.
+  const held = state && state.blocker === hit.id;
+  let side = held ? state!.side : clearance(1) >= clearance(-1) ? 1 : -1;
+  // WALKABILITY OUTRANKS GEOMETRY. The clearance test above only asks which
+  // way gets further from the BODY — it has no idea what is underfoot, so a
+  // villager standing at the foot of a house wall could send the walker into
+  // the wall, where they grind to a halt and the autopilot's stall timer
+  // eventually drops the whole trip. That is the maintainer's report verbatim
+  // (2026-08-07): "the character gets stuck running into an NPC and not around
+  // the NPC" — it WAS trying to go around, on the side that happened to be
+  // masonry. Only override when exactly one side is open: if both are open the
+  // wider berth is still the better dodge, and if neither is, pushing on lets
+  // unstick/steer-assist/the stall re-plan resolve it as before.
+  // A 90° SIDESTEP IS A CIRCLE, NOT A DETOUR — so it is reserved for the one
+  // case a person actually uses it.
+  //
+  // On the 8-way ring a 2-step rotation is exactly perpendicular to the
+  // heading: its progress toward the waypoint is ZERO. Walk it around a body
+  // that stands between you and where you are going and the body stays
+  // precisely as "in front" as it was, at precisely the same distance — the
+  // release test can never come true, and the walker orbits. That is not a
+  // tuning miss, it is what perpendicular motion IS, and latching the
+  // escalation (which is what stopped it snapping back and forth) made the
+  // orbit run to completion. Measured on the maintainer's own walk: **254° of
+  // sweep around the NPC**, three quarters of a full turn (2026-08-08: "now
+  // instead of running around the NPC the player runs a full circle around
+  // the NPC").
+  //
+  // So: 90° only when the walker is ALREADY INSIDE the personal space, where
+  // the honest move is to step out sideways and there is no progress to
+  // protect. It cannot persist, because a sideways step opens the distance —
+  // one or two frames later the 45° slip is back on. Otherwise 45° is the cap:
+  // it clears the body AND still carries the walker to the waypoint, so every
+  // pass terminates. This replaces the `wide` latch entirely; the flag is
+  // still reported for tracing, but nothing reads it back.
+  const tight = Math.hypot(hit.x - x, hit.y - y) < hitP;
+  // CANDIDATES IN PREFERENCE ORDER, and the OPENNESS TEST APPLIES TO THE ONE
+  // WE ACTUALLY EMIT.
+  //
+  // The first cut of this probed only the two 45° rotations and then emitted
+  // 2*side anyway when the slip was tight — a heading nothing had checked.
+  // Held by the hysteresis above, the walker sat on a blocked 90° heading and
+  // stopped dead: a FULL SECOND of zero displacement against the house wall
+  // ("the player starts to run straight into the wall for a short time"). A
+  // candidate now has to be OPEN to be chosen, and what gets given up, in
+  // order, is: magnitude first (when tight), then SIDE, and never progress.
+  // Swapping sides costs one commitment; a wall on the committed side is
+  // static, so it cannot chatter. If nothing is open we emit the preferred
+  // rotation anyway and let unstick / steer assist / the stall re-plan resolve
+  // it, exactly as before.
+  const order = tight
+    ? [2 * side, side, -side, 2 * -side]
+    : [side, -side];
+  let rot = order[0];
+  if (openHeading) {
+    for (const cand of order) {
+      const [rx, ry] = DODGE_RING[(idx + cand + 8) % 8];
+      if (openHeading(rx, ry)) { rot = cand; break; }
+    }
+  }
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
-  return { ax: nax, ay: nay, state: { side, blocker: hit.id } };
+  return {
+    ax: nax, ay: nay,
+    state: { side: Math.sign(rot) || side, blocker: hit.id, wide: Math.abs(rot) === 2 },
+  };
 }
 
 export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRuntime[] {
