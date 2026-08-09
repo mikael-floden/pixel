@@ -1186,7 +1186,6 @@ export class WorldScene extends Phaser.Scene {
     at: number;
     armed: boolean;
     text?: Phaser.GameObjects.Text;
-    cm?: Phaser.FX.ColorMatrix;
     veil?: Phaser.GameObjects.Rectangle;
     /** A copy of the body drawn ABOVE the veil, so the corpse darkens LESS
      * than the world around it. */
@@ -2285,7 +2284,6 @@ export class WorldScene extends Phaser.Scene {
           zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
           ghost: +(d.ghost?.alpha ?? 0).toFixed(3),
-          mono: !!d.cm,
           veil: +(d.veil?.alpha ?? 0).toFixed(3),
           prompt: +(d.text?.alpha ?? 0).toFixed(3),
         };
@@ -9358,13 +9356,13 @@ export class WorldScene extends Phaser.Scene {
     if (this.death) return;
     const cam = this.cameras.main;
     this.death = { at: this.time.now, armed: false, mode: "hushed" };
-    if (this.game.renderer.type === Phaser.WEBGL) {
-      try {
-        this.death.cm = cam.postFX.addColorMatrix();
-      } catch {
-        this.death.cm = undefined;
-      }
-    }
+    // NO CAMERA POST-PIPELINE. The monochrome pass was a camera ColorMatrix,
+    // and adding one re-routes the whole scene through its own render target —
+    // which took the night/weather/shadow overlays and the bodies with it. The
+    // screen went LIGHTER at the moment it was supposed to go dark, and the
+    // corpse and its killer vanished (maintainer 2026-08-09, with shots). The
+    // darkening has to COMPOSITE ON TOP of the light the world already has, so
+    // it is a plain veil and nothing else touches the render path.
     // The veil is a screen-space rectangle, scrollFactor 0, above everything
     // the world draws but BELOW the prompt.
     this.death.veil = this.add
@@ -9403,7 +9401,6 @@ export class WorldScene extends Phaser.Scene {
       d.veil.setPosition(cam.midPoint.x, cam.midPoint.y);
       d.veil.setAlpha((1 - DEATH_DARK) * ease);
     }
-    if (d.cm) d.cm.grayscale(ease);
     if (av) {
       const sp = av.sprite;
       if (!d.ghost) d.ghost = this.add.image(0, 0, sp.texture.key).setDepth(1_500_000.5);
@@ -9447,10 +9444,6 @@ export class WorldScene extends Phaser.Scene {
     d.text?.destroy();
     d.veil?.destroy();
     d.ghost?.destroy();
-    // clear(), not remove(): nothing else puts a post-pipeline on the main
-    // camera, and the typed remove() wants a Controller the ColorMatrix
-    // factory does not return. Revisit if a second FX ever lands here.
-    if (d.cm) this.cameras.main.postFX.clear();
     gameAudio.setMode("overworld");
     this.camDetached = false;
     this.camChase.init = false; // snap back onto the living body
