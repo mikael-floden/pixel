@@ -111,6 +111,52 @@ const unRow = await p.evaluate(() => {
 });
 ok(unRow !== null && unRow > 0, `and the role line is still there at its normal height (${unRow}px), so nothing below it moves`);
 
+// ---------- `no_turn` is the Game Master's, and only theirs
+// characters2 sets it when a character's ART only reads right from ONE facing,
+// so the game must never rotate them — Thorne's breastplate stands beside him
+// in south and south-west and is gone in south-east. A constraint on the art,
+// not a fact about the character, so a player never sees it (maintainer
+// 2026-08-07). Driven from the DATA, so it keeps working as more are tagged.
+const noTurn = D.domains.characters.filter((c) => c.noTurn);
+const turns = D.domains.characters.find((c) => c.kind === "npc" && !c.noTurn);
+console.log(`no_turn: ${noTurn.length} character(s) — ${noTurn.map((c) => c.name).join(", ") || "none"}`);
+if (noTurn.length) {
+  const readRow = () => p.evaluate(() => {
+    const t = document.querySelector(".npc-trade");
+    return { pill: !!t?.querySelector(".npc-noturn"), text: t?.querySelector(".npc-noturn")?.textContent,
+      title: t?.querySelector(".npc-noturn")?.title ?? "",
+      h: t ? Math.round(t.getBoundingClientRect().height) : null,
+      ovf: t ? Math.round(t.scrollWidth - t.clientWidth) : 0 };
+  });
+  // as a PLAYER
+  await p.goto(`${W}#/characters/${noTurn[0].id}`, { waitUntil: "load" });
+  await p.waitForTimeout(1800);
+  const asPlayer = await readRow();
+  ok(!asPlayer.pill, `${noTurn[0].name}: a player is not shown the art constraint`);
+  // as the GAME MASTER (faked at the network layer — this is client logic, and
+  // a gate that skips without the password is where a regression hides)
+  await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await p.addInitScript(() => localStorage.setItem("wiki-admin-token", `9999999999.${"a".repeat(64)}`));
+  await p.goto(`${W}#/characters/${noTurn[0].id}`, { waitUntil: "load" });
+  await p.reload({ waitUntil: "load" });     // the planted token is read at boot
+  await p.waitForTimeout(2200);
+  ok(await p.evaluate(() => document.documentElement.classList.contains("is-admin")),
+    "the check really is in admin mode");
+  const asAdmin = await readRow();
+  console.log("no_turn row:", JSON.stringify(asAdmin));
+  ok(asAdmin.pill, `${noTurn[0].name}: the Game Master sees it ("${asAdmin.text}")`);
+  ok(/only reads right from ONE facing/.test(asAdmin.title), "and the tooltip says what it means");
+  ok(asAdmin.h === asPlayer.h && asAdmin.ovf === 0,
+    `and it stays on the one line (${asAdmin.h}px, overflow ${asAdmin.ovf})`);
+  // an untagged NPC must NOT get it, even as admin
+  if (turns) {
+    await p.goto(`${W}#/characters/${turns.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(1800);
+    ok(!(await readRow()).pill, `${turns.name} is untagged and shows no such pill`);
+  }
+  await p.unroute("**/api/wiki/me");
+}
+
 // ---------- the Races list marks the placed ones so they are findable
 await p.goto(W + "#/characters", { waitUntil: "load" });
 await p.waitForTimeout(2000);

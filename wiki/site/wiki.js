@@ -1588,6 +1588,12 @@ function viewCharacter(id) {
         // allowed to shrink and ellipsize — the full list stays in its title.
         h("div", { class: "npc-trade muted" }, ...(() => {
           const out = c.role ? [h("span", { class: "npc-role" }, c.role)] : [];
+          // A constraint on the ART, not a fact about the character, so it is
+          // the Game Master's business (maintainer 2026-08-07). characters2
+          // sets `no_turn` when a character only reads right from one facing —
+          // Thorne's breastplate stands beside him in south and south-west and
+          // is missing in south-east, so a turn pops the prop in and out.
+          if (state.admin && c.noTurn) out.push(h("span", { class: "pill warn npc-noturn", title: "characters2 `no_turn`: this character's art only reads right from ONE facing, so the game must never rotate them." }, "never turns"));
           const sp = npcPlacements(c.id);
           if (!sp?.length) return out;
           const merchant = sp.find((x) => x.type === "MERCHANT");

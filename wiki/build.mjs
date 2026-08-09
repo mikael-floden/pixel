@@ -407,6 +407,13 @@ function buildCharacters() {
       species: cj.species ?? "Human",
       sex: cj.sex ?? null,
       lore: cj.lore ?? null,
+      // characters2' `no_turn`: this NPC's ART only reads right from ONE
+      // facing, so the game must never rotate them. Thorne is the first —
+      // his armorer's breastplate stands on the ground beside him in south
+      // and south-west and is absent in south-east, so a turn pops the prop
+      // in and out. Absent means false (their README, 2026-08-07). A pipeline
+      // constraint on the art, so the wiki shows it to the Game Master only.
+      noTurn: cj.no_turn === true,
       path: `characters2/npcs/${key}`,
       preview: art(`characters2/npcs/${key}/base/south`),
       baseStrip: art(`characters2/npcs/${key}/base/preview`),

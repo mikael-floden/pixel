@@ -704,7 +704,8 @@ button.drop-row {
 /* "in the world" is the fact worth keeping whole, so it never shrinks. The
    role and the wares list both ellipsize instead — min-width:0 is what
    actually lets a flex item do that. */
-.npc-trade .pill.ok { flex: none; }
+.npc-trade .pill.ok,
+.npc-trade .npc-noturn { flex: none; }
 .npc-trade .npc-role,
 .npc-trade .npc-wares { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 /* The few NPCs maps2 actually stands in the world, marked ON the portrait so

@@ -691,6 +691,17 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+**`no_turn` is the Game Master's, and only theirs.** characters2 sets it on an
+NPC whose ART only reads right from ONE facing, so the game must never rotate
+them — Thorne's armorer breastplate stands on the ground beside him in south
+and south-west and is absent in south-east, so a turn pops the prop in and out.
+The wiki reads `no_turn` off the character's own `character.json` and shows a
+**"never turns"** pill on the role line, admin-only: it is a constraint on the
+art, not a fact about the character, so a player has no use for it. Driven from
+the data, so it follows as more get tagged. `check-npcmap.mjs` asserts a player
+never sees it, the Game Master does, the tooltip explains it, an untagged NPC
+does not get it, and the row stays one line.
+
 ## The animation viewer shows only what exists
 
 - **Direction buttons are the directions that ART EXISTS FOR** (maintainer
