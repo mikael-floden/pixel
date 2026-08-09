@@ -390,10 +390,16 @@ function makePlayer(entity, kind) {
 
   const dirPad = h("span", { class: "dirpad" });
   function renderDirPad() {
-    dirPad.replaceChildren(...state.data.directions.map((d) =>
+    // ONLY the directions this state actually has (maintainer 2026-08-07:
+    // "I think only directions that exist should be visible as buttons").
+    // All eight used to render with the missing ones merely greyed out, so an
+    // NPC whose idle is south-only showed eight buttons and you had to press
+    // them to learn which way the art faces. Availability is PER STATE — a
+    // monster's angry can ship 5 of 8 while its walk ships all — so this
+    // re-runs on every state change, which it already did.
+    dirPad.replaceChildren(...state.data.directions.filter(clipForDir).map((d) =>
       h("button", {
         class: d === cur.dir ? "on" : "", title: d,
-        disabled: clipForDir(d) ? null : "disabled",
         onclick: () => { cur.dir = d; loadClip(); renderDirPad(); },
       }, DIR_LABEL[d])));
   }

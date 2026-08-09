@@ -691,6 +691,35 @@ to replace the parsing.
     so neither side can drift silently, and it fails on any bound event whose
     route isn't one the engine would actually take. Verified to name all three
     reported symptoms when pointed at the old data.
+## The animation viewer shows only what exists
+
+- **Direction buttons are the directions that ART EXISTS FOR** (maintainer
+  2026-08-07: "only directions that exist should be visible as buttons").
+  All eight used to render with the missing ones greyed out, so an NPC whose
+  idle is south-only showed eight buttons and you had to press them to learn
+  which way the art faces. Availability is **per state** — Mosscairn's `angry`
+  ships 5 of 8 while its `walk` ships all 8 — so the pad rebuilds on every
+  state change, which it already did. Picking a direction the next state lacks
+  hops to one it has, so the selection is never stranded on a hidden button.
+  `.dirpad` keeps a `min-height` so the panels below cannot move.
+- **A character with NO animation art shows its standing rotations.** Three of
+  the 191 NPCs synced with a `base/` folder and no `animations/` folder, so the
+  player drew an empty chessboard with a "—" counter and no explanation
+  ("Why is Morwenna not visible in the animation viewer?"). `baseRotationClip()`
+  turns `base/<dir>.webp` into a one-frame `standing` clip — a synthesised
+  clip, not a UI special case, so the player, the direction buttons and the
+  state chip work unchanged and the card says "Standing" rather than
+  impersonating an idle. Only directions whose file is on disk are emitted: a
+  clip pointing at a missing rotation trades an empty viewer for a broken
+  image. **It disables itself** — the fallback fires only when the animations
+  map is empty, so a re-sync makes it stop applying with no cleanup.
+- Gates: `check-segscroll.mjs` walks every state of a monster that ships both a
+  partial and a full one, and checks the button count against **the art's own
+  count per state** (not merely "fewer"), that no greyed button survives, that
+  the selection is always visible, that each state still draws, and that the
+  pad holds one height. `check-deadend.mjs` asserts no character has an empty
+  animation map and that the standing fallback paints real pixels.
+
 ## Paging ‹ › must not move the panels
 
 An NPC's role and its world pills share **one unwrappable row** (`.npc-trade`).
