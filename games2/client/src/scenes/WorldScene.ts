@@ -5118,17 +5118,42 @@ export class WorldScene extends Phaser.Scene {
         npc.nextGlanceAt = now + NPC_HOME_MIN_MS; // no art to glance with — ask again later
       }
     }
-    const want = looking ? npc.lookDir! : now < npc.glanceUntil ? npc.glanceDir ?? npc.home : npc.home;
-    if (want === npc.dir || now < npc.turnAt) return;
-    // THE SWEEP. DIRECTIONS is a compass ring, so the gap in indices IS the
-    // number of notches, and the head takes them one at a time the short way
-    // round — a neck does not teleport, and the maintainer asked for the
-    // in-between rotations even at 0.2s each.
-    const from = DIRECTIONS.indexOf(npc.dir as never);
-    const to = DIRECTIONS.indexOf(want as never);
-    if (from < 0 || to < 0) return;
     const n = DIRECTIONS.length;
-    const step = ((((to - from) % n) + n) % n) <= n / 2 ? 1 : -1;
+    // The facing this NPC would hold with nobody around: home, or the glance
+    // it is currently on. A look is measured AGAINST this, never against the
+    // last frame's facing, or the clamp below would ratchet round the compass
+    // one notch at a time and become the head-spin it exists to prevent.
+    const base = now < npc.glanceUntil ? npc.glanceDir ?? npc.home : npc.home;
+    const bi = DIRECTIONS.indexOf(base as never);
+
+    if (looking && bi >= 0) {
+      // A GLANCE OVER THE SHOULDER, NOT A TRACKING TURRET (maintainer
+      // 2026-08-09: "at most ±1 direction and that has to be INSTANT... they
+      // will not follow you when running by"). Clamp the direction of the
+      // player to ONE notch either side of base, and take it THIS FRAME — a
+      // 200ms sweep on something that lasts a second reads as the NPC lagging
+      // behind you, which is the opposite of noticing you. Running past
+      // therefore plays as base+1 -> base -> base-1: a head tilting to follow,
+      // then letting you go.
+      const li = DIRECTIONS.indexOf(npc.lookDir as never);
+      if (li >= 0) {
+        let d = (((li - bi) % n) + n) % n;
+        if (d > n / 2) d -= n;
+        const want = DIRECTIONS[(bi + Math.max(-1, Math.min(1, d)) + n) % n];
+        if (want !== npc.dir) this.setNpcDir(npc, want);
+        npc.turnAt = now; // the sweep owes nothing after an instant look
+      }
+      return;
+    }
+
+    if (base === npc.dir || now < npc.turnAt) return;
+    // THE SWEEP, and it is ONLY for turns the NPC makes on its own — settling
+    // back from a look, or going to and from a glance. DIRECTIONS is a compass
+    // ring, so the gap in indices IS the notch count, and the head takes them
+    // one at a time the short way round: a neck does not teleport.
+    const from = DIRECTIONS.indexOf(npc.dir as never);
+    if (from < 0 || bi < 0) return;
+    const step = ((((bi - from) % n) + n) % n) <= n / 2 ? 1 : -1;
     this.setNpcDir(npc, DIRECTIONS[(from + step + n) % n]);
     npc.turnAt = now + NPC_TURN_STEP_MS;
   }
@@ -5141,9 +5166,17 @@ export class WorldScene extends Phaser.Scene {
     npc.dir = dir;
     const def = npc.def;
     const baseKey = `npc:${def.id}:${dir}`;
-    if (this.textures.exists(baseKey)) npc.sprite.setTexture(baseKey);
-    const a = def.anchors?.[dir];
-    if (a) npc.sprite.setOrigin(a.x, a.y);
+    // THE ORIGIN MOVES WITH THE ROTATION IT BELONGS TO, NEVER AHEAD OF IT.
+    // Every facing has its own measured foot anchor, so applying the new one
+    // while the old rotation is still on screen shifts the drawn body off the
+    // ground point — the feet slide out from under the nadir shadow for as
+    // long as the art takes to arrive. Both move together or neither does; the
+    // turn then completes late at worst, which is invisible.
+    if (this.textures.exists(baseKey)) {
+      npc.sprite.setTexture(baseKey);
+      const a = def.anchors?.[dir];
+      if (a) npc.sprite.setOrigin(a.x, a.y);
+    }
     const frames = def.idle?.[dir] ?? 0;
     const animKey = `npcanim:${def.id}:${dir}`;
     npc.animKey = null;

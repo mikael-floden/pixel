@@ -148,28 +148,58 @@ try {
       }, one.id);
     const c = one.x / 32;
     const r = one.y / 32;
-    // Approach from the UP-SCREEN side so the look is a big turn away from a
-    // southern home — a 1-notch turn could pass a sweep test by accident.
+    // Approach from the UP-SCREEN side: the direction OF the player is then
+    // several notches from a southern home, so a clamp that is not working
+    // shows up as the NPC spinning to face it.
     await page.evaluate(([c, r]) => window.__ml.teleport(c - 3, r - 3), [c, r]);
     await page.waitForTimeout(1200);
     const start = await read();
+    if (start.dir !== start.home) fail(`${one.id}: standing 3 cells off and already facing ${start.dir}, not home ${start.home}`);
     await page.evaluate(([c, r]) => window.__ml.teleport(c - 0.35, r - 0.35), [c, r]);
+    // Sample FAST: the look must be instant, so anything slower than a frame
+    // or two cannot tell "instant" from "swept in 200ms steps".
     const chain = [];
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 40; i++) {
       const s = await read();
       if (s && (!chain.length || chain[chain.length - 1] !== s.dir)) chain.push(s.dir);
-      await page.waitForTimeout(70);
+      await page.waitForTimeout(50);
     }
     const at = await read();
     const dist = Math.hypot(at.mx - at.nx, at.my - at.ny);
     if (!at.looking) fail(`${one.id}: player is ${dist.toFixed(1)}wu away and the NPC is not looking at them`);
-    const want = RING.includes(at.looking) ? at.looking : null;
-    if (want && at.dir !== want) fail(`${one.id}: looking=${want} but drawn facing is ${at.dir}`);
-    const jumps = chain.slice(1).filter((d, i) => notches(chain[i], d) !== 1).length;
-    if (jumps) fail(`${one.id}: turn SNAPPED — ${jumps} change(s) skipped a rotation (${chain.join(" -> ")})`);
-    if (chain.length < 3)
-      fail(`${one.id}: only ${chain.length} rotation(s) in the turn (${start.dir} -> ${at.dir}) — no sweep to see`);
-    ok(`look-at fires at ${dist.toFixed(1)}wu and SWEEPS: ${chain.join(" -> ")}`);
+    // (i) AT MOST ONE NOTCH off home — a glance over the shoulder, never a
+    // tracking turret (maintainer 2026-08-09: "they will not follow you when
+    // running by"). The direction OF the player is deliberately further away
+    // than that here, so an unclamped look fails this.
+    const off = notches(at.dir, at.home);
+    if (off > 1) fail(`${one.id}: looking ${at.dir}, which is ${off} notches off home ${at.home} — the look must clamp to 1`);
+    // (ii) INSTANT: home -> the clamped look, with nothing in between. A
+    // 200ms-per-notch sweep on a one-second event reads as lagging behind the
+    // player, which is the opposite of noticing them.
+    const extra = chain.filter((d) => d !== at.home && d !== at.dir);
+    if (extra.length) fail(`${one.id}: the look SWEPT through ${extra.join("/")} — it must be instant (${chain.join(" -> ")})`);
+    if (chain.length > 2) fail(`${one.id}: ${chain.length} rotations during the look (${chain.join(" -> ")}) — expected home then the look`);
+    ok(`look-at fires at ${dist.toFixed(1)}wu, clamped ${off} notch off home, instantly (${chain.join(" -> ")})`);
+    // (iii) AND THE FEET STAY UNDER THE BODY THROUGH THE TURN. Every rotation
+    // has its OWN measured foot anchor, so a turn that moves the origin while
+    // the previous rotation is still drawn slides the body off its nadir
+    // shadow (maintainer 2026-08-09: "make sure the shadow nadir is under
+    // their feet so the turn looks good"). Re-checked HERE, mid-look, because
+    // 2b only ever saw NPCs at rest on their placed facing.
+    const turned = await page.evaluate(async (id) => {
+      const man = await (await fetch("/npcs.json")).json();
+      const byId = new Map(man.npcs.map((d) => [d.id, d]));
+      const n = window.__ml.npcInfo().find((x) => x.id === id);
+      const a = byId.get(n.charId)?.anchors?.[n.dir] ?? null;
+      return { dir: n.dir, measured: a, originX: n.originX, originY: n.originY,
+               dx: +(n.shadowX - n.sx).toFixed(2), dy: +(n.shadowY - n.sy).toFixed(2), tex: n.tex };
+    }, one.id);
+    if (!turned.measured) fail(`${one.id}: no measured anchor for the turned-to ${turned.dir}`);
+    if (Math.abs(turned.originY - turned.measured.y) > 0.001 || Math.abs(turned.originX - turned.measured.x) > 0.001)
+      fail(`${one.id}: after turning to ${turned.dir} the origin is ${turned.originX},${turned.originY}, not that rotation's anchor ${turned.measured.x},${turned.measured.y}`);
+    if (Math.abs(turned.dx) > 1 || Math.abs(turned.dy) > 1)
+      fail(`${one.id}: turned to ${turned.dir} and the shadow is ${turned.dx},${turned.dy}px off the feet`);
+    ok(`mid-turn (${turned.dir}): origin is that rotation's own anchor and the shadow is still under the feet`);
     // ...and it hands the facing back to maps2 when you leave.
     await page.evaluate(([c, r]) => window.__ml.teleport(c - 6, r - 6), [c, r]);
     await page.waitForTimeout(4000);
