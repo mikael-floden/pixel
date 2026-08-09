@@ -22,6 +22,7 @@ import {
   makeSideBlocked,
   unstickFromSolids,
   surfaceAtWorld,
+  surfaceAtWorldElev,
   isStandableAtWorld,
   findSpawn,
   WALK_CLIMB,
@@ -801,7 +802,13 @@ export class WorldRoom extends Room<WorldState> {
           player.y = u.y;
           // Surface under the feet drives walk speed; a jump raises how high
           // you can step (crossing a 1-level ledge) but slows ground travel.
-          const surf = surfaceAtWorld(terrain, player.x, player.y);
+          // ELEVATION-AWARE: on a DECK the feet are on the deck's own material,
+          // not on the water or chasm it spans. Reading the base made every
+          // bridge crossing a swim (maintainer 2026-08-09: "I don't want
+          // players to run slower over bridges"). The client's prediction calls
+          // the identical function — they must, or the two disagree about speed
+          // and the body rubber-bands the length of the bridge.
+          const surf = surfaceAtWorldElev(terrain, player.x, player.y, player.elev);
           const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
           r = stepMovement(
             player.x,

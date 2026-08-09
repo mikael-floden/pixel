@@ -775,6 +775,13 @@ export interface TerrainGrid {
    * without this, walking into a tall cave-roof step "fell through" the rock
    * onto the cave floor. -1 where there is no deck. */
   deckBot: number[];
+  /** The deck's own MATERIAL per cell ("" where there is no deck) — a bridge is
+   * made of snow, dirt, planks or stone, and that is what your feet are on when
+   * you cross it. Kept because the base `type` under a bridge is the WATER or
+   * chasm it spans: reading speed from there made every bridge a swim
+   * (maintainer 2026-08-09: "I don't want players to run slower over bridges.
+   * The ground type decides the speed as normal"). See surfaceAtWorldElev. */
+  deckType: string[];
 }
 
 export function buildTerrainGrid(
@@ -782,13 +789,14 @@ export function buildTerrainGrid(
   height: number,
   rows: { t: string; l?: number }[][],
   props: { col: number; row: number }[] = [],
-  decks: { level: number; thickness?: number; cells: { col: number; row: number }[] }[] = [],
+  decks: { level: number; thickness?: number; mat?: string; cells: { col: number; row: number }[] }[] = [],
 ): TerrainGrid {
   const level: number[] = new Array(width * height).fill(0);
   const type: string[] = new Array(width * height).fill("");
   const blocked: boolean[] = new Array(width * height).fill(false);
   const deck: number[] = new Array(width * height).fill(-1);
   const deckBot: number[] = new Array(width * height).fill(-1);
+  const deckType: string[] = new Array(width * height).fill("");
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
@@ -811,6 +819,7 @@ export function buildTerrainGrid(
         // which reproduces the pre-deckBot behaviour exactly: the base below is
         // enterable from any elevation under the walk surface.
         deckBot[i] = Math.max(0, d.level - (d.thickness ?? 0));
+        deckType[i] = d.mat ?? "";
       }
     }
   }
@@ -822,7 +831,7 @@ export function buildTerrainGrid(
     if (p.col >= 0 && p.row >= 0 && p.col < width && p.row < height)
       blocked[p.row * width + p.col] = true;
   }
-  return { width, height, level, type, blocked, deck, deckBot };
+  return { width, height, level, type, blocked, deck, deckBot, deckType };
 }
 
 /** Is the BASE surface of cell `i` reachable for a mover at `elev`? A deck's
@@ -856,6 +865,28 @@ function cellIndex(grid: TerrainGrid, x: number, y: number): number {
 export function surfaceAtWorld(grid: TerrainGrid, x: number, y: number): Surface {
   const i = cellIndex(grid, x, y);
   if (i < 0) return VOID_SURFACE;
+  const t = grid.type[i];
+  return t ? surfaceFor(t) : VOID_SURFACE;
+}
+
+/** The surface UNDER THE FEET of a body standing at `elev`.
+ *
+ * `surfaceAtWorld` answers for the BASE terrain, which is the right answer
+ * everywhere except on a deck — and on a bridge the base is the water or chasm
+ * the bridge spans, so it reported swim speed and the player waded across a
+ * plank walkway. The deck carries its own material (a bridge is snow, dirt,
+ * grass or stone on the shipped worlds), so standing on one simply asks that
+ * material what it is, exactly as any other ground does.
+ *
+ * Walking UNDER a deck still reads the base: the test is the body's own
+ * elevation, not the presence of a slab overhead. Cells with no deck reduce to
+ * surfaceAtWorld byte for byte, so every world@1 map is untouched. */
+const DECK_SURFACE_EPS = 1e-6; // elev is a level number; this is float slack, not tolerance
+export function surfaceAtWorldElev(grid: TerrainGrid, x: number, y: number, elev: number): Surface {
+  const i = cellIndex(grid, x, y);
+  if (i < 0) return VOID_SURFACE;
+  const d = grid.deck[i];
+  if (d >= 0 && Math.abs(elev - d) <= DECK_SURFACE_EPS && grid.deckType[i]) return surfaceFor(grid.deckType[i]);
   const t = grid.type[i];
   return t ? surfaceFor(t) : VOID_SURFACE;
 }

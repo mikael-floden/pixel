@@ -34,6 +34,7 @@ import {
   INDOOR_WALL_RATIO,
   MIN_ROOM_CELLS,
   surfaceAtWorld,
+  surfaceAtWorldElev,
   levelAtWorld,
   integrateFall,
   isStandableAtWorld,
@@ -5684,8 +5685,13 @@ export class WorldScene extends Phaser.Scene {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
+            // THE SAME ELEVATION-AWARE SURFACE THE SERVER USES. On a deck the
+            // feet are on the deck's material, not the water it spans — and
+            // prediction must ask the identical question or the two disagree
+            // about speed for the whole length of the bridge, which is a
+            // rubber-band, not a wrong number.
             speed =
-              surfaceAtWorld(this.terrain, rx, ry).speed *
+              surfaceAtWorldElev(this.terrain, rx, ry, predElev).speed *
               (jumping ? JUMP_SPEED_FACTOR : 1) *
               slowF;
           }
