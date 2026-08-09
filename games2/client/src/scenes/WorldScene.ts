@@ -1190,6 +1190,7 @@ export class WorldScene extends Phaser.Scene {
     /** A copy of the body drawn ABOVE the veil, so the corpse darkens LESS
      * than the world around it. */
     ghost?: Phaser.GameObjects.Image;
+    themeKey?: string; // light/dark the card was last built for
     mode: string;
   } | null = null;
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
@@ -9422,21 +9423,31 @@ export class WorldScene extends Phaser.Scene {
       // A CARD IN THE HUD'S OWN CLOTHES, over the body — the character is
       // lying down, so where the head used to be is empty picture and the one
       // place a card does not cover anything (maintainer 2026-08-09).
-      if (!d.text) {
-        d.text = this.add
-          .text(0, 0, "Press to continue...", {
-            // the wiki theme's serif, the same stack the stat chips use
-            fontFamily: '"Iowan Old Style","Palatino Linotype",Palatino,Georgia,ui-serif,serif',
-            fontSize: "11px",
-            color: "#262624",
-            backgroundColor: "#faf9f5",
-            padding: { x: 7, y: 4 },
-            fontStyle: "600",
-          })
-          .setOrigin(0.5, 1)
-          .setDepth(1_500_002)
-          .setResolution(4)
-          .setAlpha(0);
+      // A CARD IN THE HUD'S OWN CLOTHES — including its THEME. The colours are
+      // read from the live CSS custom properties rather than written here, so
+      // it follows light/dark exactly as every other surface does, including
+      // the "follow the OS" case (theme.ts DELETES data-theme for that, so the
+      // attribute alone is not the answer — the computed value is).
+      const themeKey = `${document.documentElement.dataset.theme ?? "auto"}:${
+        window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "d" : "l"
+      }`;
+      if (!d.text || d.themeKey !== themeKey) {
+        const css = getComputedStyle(document.documentElement);
+        const pick = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+        const style = {
+          fontFamily: pick("--serif", '"Iowan Old Style",Palatino,Georgia,ui-serif,serif'),
+          fontSize: "11px",
+          color: pick("--ink", "#262624"),
+          backgroundColor: pick("--surface", "#faf9f5"),
+          padding: { x: 7, y: 4 },
+          fontStyle: "600",
+        };
+        if (!d.text) {
+          d.text = this.add.text(0, 0, "Press to continue...", style).setOrigin(0.5, 1).setDepth(1_500_002).setResolution(4).setAlpha(0);
+        } else {
+          d.text.setStyle(style);
+        }
+        d.themeKey = themeKey;
       }
       // ABOVE the body: art-box top, minus a little air.
       d.text.setPosition(av.sprite.x, av.sprite.y - av.sprite.displayHeight * 0.9);
