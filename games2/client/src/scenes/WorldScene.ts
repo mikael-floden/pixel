@@ -1186,6 +1186,8 @@ export class WorldScene extends Phaser.Scene {
     armed: boolean;
     veil?: Phaser.GameObjects.Rectangle;
     el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
+    /** The camera pose the push starts from — see startDeath. */
+    from: { x: number; y: number; zoom: number };
     mode: string;
   } | null = null;
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
@@ -9350,7 +9352,20 @@ export class WorldScene extends Phaser.Scene {
   private startDeath() {
     if (this.death) return;
     const cam = this.cameras.main;
-    this.death = { at: this.time.now, armed: false, mode: "hushed" };
+    // WHERE THE CAMERA ACTUALLY IS, not where a chase would have put it. The
+    // chase runs a trail (up to CAM_TRAIL_MAX behind you) and a speed-coupled
+    // zoom-out, so at the moment of death the camera is centred somewhere
+    // BEHIND the body at a fractional zoom. Starting the push from the body at
+    // base zoom therefore snapped both on the first dead frame — it read as a
+    // lag spike (maintainer 2026-08-09: "the camera jumps a bit... as if we
+    // don't interpolate from where the camera actually was"). The push now
+    // eases FROM this pose, so frame one is a no-op by construction.
+    this.death = {
+      at: this.time.now,
+      armed: false,
+      mode: "hushed",
+      from: { x: cam.midPoint.x, y: cam.midPoint.y, zoom: cam.zoom },
+    };
     // NO CAMERA POST-PIPELINE. The monochrome pass was a camera ColorMatrix,
     // and adding one re-routes the whole scene through its own render target —
     // which took the night/weather/shadow overlays and the bodies with it. The
@@ -9384,8 +9399,12 @@ export class WorldScene extends Phaser.Scene {
     const zp = Math.min(1, t / DEATH_ZOOM_MS);
     const ease = 1 - Math.pow(1 - zp, 3);
     const base = this.zoomFor();
-    cam.setZoom(base + (base * DEATH_ZOOM - base) * ease);
-    if (av) cam.centerOn(av.sprite.x, av.sprite.y - av.sprite.displayHeight * 0.35);
+    cam.setZoom(d.from.zoom + (base * DEATH_ZOOM - d.from.zoom) * ease);
+    if (av) {
+      const tx = av.sprite.x;
+      const ty = av.sprite.y - av.sprite.displayHeight * 0.35;
+      cam.centerOn(d.from.x + (tx - d.from.x) * ease, d.from.y + (ty - d.from.y) * ease);
+    }
     if (d.veil) {
       d.veil.setPosition(cam.midPoint.x, cam.midPoint.y);
       d.veil.setAlpha((1 - DEATH_DARK) * ease);
