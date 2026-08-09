@@ -253,8 +253,8 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // The drain rides the ZOOM's own curve, not a clock of its own (maintainer
 // 2026-08-09: "monochrome and darkness should fade in together with the zoom
 // in") — one easing, so the picture cannot arrive before the push does.
-const DEATH_ZOOM_MS = 7000; // the SLOW push onto the body — the whole mood
-const DEATH_ZOOM = 4; // x the normal integer zoom, as asked
+const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
+const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 const DEATH_DARK = 0.32; // brightness left at the end (0 would be a black screen)
 const DEATH_BODY_LIFT = 0.75; // how much of the veil the corpse gets back
 const DEATH_PROMPT_MS = 450; // the prompt fades in once the push has landed
@@ -9419,19 +9419,27 @@ export class WorldScene extends Phaser.Scene {
     // space, so it rides the zoom with it instead of floating in screen space.
     if (zp >= 1 && !d.armed) d.armed = true;
     if (d.armed && av) {
+      // A CARD IN THE HUD'S OWN CLOTHES, over the body — the character is
+      // lying down, so where the head used to be is empty picture and the one
+      // place a card does not cover anything (maintainer 2026-08-09).
       if (!d.text) {
         d.text = this.add
-          .text(0, 0, "press to continue...", {
-            fontFamily: "monospace",
-            fontSize: "7px",
-            color: "#cfcfd6",
+          .text(0, 0, "Press to continue...", {
+            // the wiki theme's serif, the same stack the stat chips use
+            fontFamily: '"Iowan Old Style","Palatino Linotype",Palatino,Georgia,ui-serif,serif',
+            fontSize: "11px",
+            color: "#262624",
+            backgroundColor: "#faf9f5",
+            padding: { x: 7, y: 4 },
+            fontStyle: "600",
           })
-          .setOrigin(0.5, 0)
-          .setDepth(1_500_001)
-          .setResolution(3)
+          .setOrigin(0.5, 1)
+          .setDepth(1_500_002)
+          .setResolution(4)
           .setAlpha(0);
       }
-      d.text.setPosition(av.sprite.x, av.sprite.y + 6);
+      // ABOVE the body: art-box top, minus a little air.
+      d.text.setPosition(av.sprite.x, av.sprite.y - av.sprite.displayHeight * 0.9);
       d.text.setAlpha(Math.min(1, (now - (d.at + DEATH_ZOOM_MS)) / DEATH_PROMPT_MS));
     }
   }
