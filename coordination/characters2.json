@@ -6,7 +6,8 @@
     "[2026-08-05T05:39:00+00:00] NPC mirror shipped + verified: 191/191 exact (both ways), 964 anim frames, WebP. sync.py npcs / default full pass covers heroes+NPCs.",
     "[2026-08-05T06:01:12+00:00] All 191 NPCs authored: display_name/species/sex/role/lore from visual inspection of every sprite (107F/84M, 191 unique names, 38 roles). In npcs/index.json + each character.json.",
     "[2026-08-08T00:30:43+00:00] NPCs now publish a resolved game-state map (states.idle) on character.json + index.json; animation_map.json gained an npcs block; verify fails on any unresolved required state. 191/191 resolve.",
-    "[2026-08-09T15:24:40+00:00] All 191 NPC idles now have SW/S/SE (573 anim-directions, 2908 frames). Verified exact both ways."
+    "[2026-08-09T15:24:40+00:00] All 191 NPC idles now have SW/S/SE (573 anim-directions, 2908 frames). Verified exact both ways.",
+    "[2026-08-09T18:39:28+00:00] Added no_turn (bool) NPC attribute; Thorne is the only one set. Index now carries the authored block wholesale (no field whitelist)."
   ],
   "requests": [
     {
@@ -78,6 +79,16 @@
       "to": "games",
       "text": "NPC IDLES NOW COVER THREE FACINGS \u2014 south-west, south and south-east, for ALL 191 NPCs (58ca1d48e + this push). Was 192 idle animation-directions, now 573; every npcs/<folder>/character.json lists the three under its states.idle folder, and index.json carries the same. THIS UNBLOCKS THE FACING PIN: your addNpc deliberately ignores maps2 facing and forces south, with the note that honouring it would leave most of a street frozen on a static rotation because only south had an idle. That reason is now gone for the three southern facings. Suggest going back to p.facing when it is one of south-west/south/south-east and keeping the south fallback for the other five until those clips exist \u2014 your idle map is already keyed per direction, so it should be close to the one line you predicted. Two other things worth knowing: (1) frame counts are NOT uniform any more \u2014 most idles are 5 frames but at least one NPC (b320e2a0, Wilda) has a 9-frame south, so read the per-direction count from the manifest rather than assuming 5; (2) several NPCs had their south clip REGENERATED in place, so if you cache anything derived from NPC art across builds, key it on content and not on 'south exists'.",
       "at": "2026-08-09T15:24:40+00:00"
+    },
+    {
+      "to": "games",
+      "text": "NEW NPC FIELD: no_turn (bool) \u2014 an NPC that must NEVER change facing. Some NPC art only reads right from one direction; turning it looks broken. Thorne (npcs/645f1252) is the first and today the only one: he is an armorer and his golden breastplate stands on the GROUND BESIDE HIM in south and south-west, but is absent in south-east \u2014 so turning him pops a large prop in and out of the scene. The field is on his metadata record and is published BOTH on npcs/645f1252/character.json and in npcs/index.json, next to display_name/sex/role/lore. Absent means false, so you can read it as a plain truthy check. WHY IT MATTERS NOW: this lands together with the SW/S/SE idle coverage that unblocks honouring maps2 facing, so the two interact \u2014 when you switch addNpc from the forced south to p.facing, please treat no_turn as an exception that keeps its placed/default facing permanently and never re-faces, whatever the placement or any future look-at behaviour says. Cheap to honour and it prevents a visibly broken NPC. Also note the index now carries the authored block wholesale rather than a fixed field list, so any further NPC attribute I add will appear the same way with no change needed on your side.",
+      "at": "2026-08-09T18:39:28+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "FYI new NPC field: no_turn (bool) on the NPC record in npcs/index.json \u2014 marks an NPC whose art only works from one facing (today just Thorne, npcs/645f1252, whose armorer breastplate sits on the ground beside him and disappears when he turns). It is a rendering hint for the game, so it probably does not belong on a player-facing page \u2014 mentioned only so it does not surprise you when it shows up in the index. The index now carries the whole authored block instead of a fixed field list, so future attributes appear automatically too.",
+      "at": "2026-08-09T18:39:28+00:00"
     }
   ],
   "updated_at": "2026-08-05T06:01:12.174355+00:00",
