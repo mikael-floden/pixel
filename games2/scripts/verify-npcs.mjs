@@ -99,11 +99,35 @@ try {
     ok(`${anchored.length} NPC(s): origin == art-measured foot anchor, shadow on it (<=1px)`);
   }
 
-  // (2c) they all face SOUTH — the only rotation with an idle clip for now.
-  const facings = [...new Set(npcs.map((n) => n.dir))];
-  if (facings.length !== 1 || facings[0] !== "south")
-    fail(`NPCs face ${facings.join("/")} — only south has idle art, so all must face south`);
-  ok("every NPC faces south (the only rotation with an idle clip)");
+  // (2c) MAPS2' FACING IS HONOURED WHEREVER THE ART CAN BREATHE, and south
+  // everywhere else. The rule is not "these three directions" — it is "a
+  // direction this character has an IDLE for", because a frozen NPC standing
+  // beside a breathing one is what the south-only pin existed to prevent. So
+  // the gate asks the ART MANIFEST the same question the client does, rather
+  // than hard-coding today's coverage: the day north-east is generated, this
+  // passes unchanged and a client that ignored it fails.
+  const defs = await page.evaluate(async () => {
+    const r = await fetch("/npcs.json");
+    const j = await r.json();
+    return Object.fromEntries(j.npcs.map((n) => [n.id, n.idle ?? {}]));
+  });
+  let honoured = 0;
+  for (const p of placed) {
+    const n = npcs.find((x) => x.id === p.id);
+    if (!n) continue;
+    const idle = defs[p.character] ?? {};
+    const canIdle = (idle[p.facing] ?? 0) > 0;
+    const want = canIdle ? p.facing : "south";
+    if (n.dir !== want)
+      fail(`${p.id} faces ${n.dir}; maps2 placed it ${p.facing} and it ${canIdle ? "HAS" : "has no"} idle art for that, so it should face ${want}`);
+    if (canIdle && p.facing !== "south") honoured++;
+  }
+  // NON-VACUOUS: the_island2 places 9 NPCs south-west, so "everything is south"
+  // must not be able to pass this. Without it, a client that still forced south
+  // would sail through on a world that happened to place everyone south.
+  if (!honoured)
+    fail(`no NPC took a non-south facing — the pin looks dead (placements: ${[...new Set(placed.map((p) => p.facing))].join("/")})`);
+  ok(`${honoured} NPC(s) face maps2' own non-south direction, the rest fall back to south`);
 
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample
   // it must spend most of its time PARKED, and the pauses must vary — a fixed

@@ -4895,22 +4895,47 @@ export class WorldScene extends Phaser.Scene {
     const seen = new Set<string>();
     for (const p of placed) {
       const def = byId.get(p.character);
-      if (!def || seen.has(def.id)) continue;
-      seen.add(def.id);
-      const url = def.base[DEFAULT_DIRECTION];
-      const key = `npc:${def.id}:${DEFAULT_DIRECTION}`;
+      if (!def) continue;
+      // KEYED BY CHARACTER **AND** DIRECTION. Now that maps2' facing is
+      // honoured, two placements of the same character can need two different
+      // rotations — deduping by character alone preloaded one of them and left
+      // the other on the placeholder until its lazy load landed.
+      const dir = this.npcFacing(p, def);
+      if (seen.has(`${def.id}:${dir}`)) continue;
+      seen.add(`${def.id}:${dir}`);
+      const url = def.base[dir];
+      const key = `npc:${def.id}:${dir}`;
       if (url && !this.textures.exists(key)) this.load.image(key, withV(url));
     }
   }
 
+  /** WHICH WAY THIS NPC STANDS — the one rule, so the boot preload and the
+   * spawn cannot disagree (they did: the preload fetched south while the body
+   * rendered south-west, and it showed as the placeholder texture).
+   *
+   * maps2' `facing` is honoured whenever this character has an IDLE for it, and
+   * falls back to south otherwise. The test is the ART, not a list of today's
+   * three directions: a frozen NPC beside a breathing one is what the old
+   * south-only pin existed to prevent, and the day characters2 generates
+   * north-east this starts honouring it with no edit here. */
+  private npcFacing(p: NpcPlacement, def: NpcDef): string {
+    const want = p.facing && DIRECTIONS.includes(p.facing as never) ? p.facing : null;
+    return want && (def.idle?.[want] ?? 0) > 0 && def.base[want] ? want : DEFAULT_DIRECTION;
+  }
+
   private addNpc(p: NpcPlacement, def: NpcDef) {
-    // ALWAYS SOUTH for now (maintainer 2026-08-06): the generated idle exists
-    // for south alone, so an NPC placed facing any other way would stand
-    // frozen on a static rotation while its neighbours breathe. maps2' own
-    // `facing` is deliberately ignored until characters2 generates the other
-    // seven rotations — then this becomes `p.facing` again and nothing else
-    // changes. They never walk either; there is no walk art and no server body.
-    const dir = DEFAULT_DIRECTION;
+    // MAPS2 DECIDES THE FACING, as far as the art can carry it (2026-08-09).
+    // The rule has never been about placement — it is that a frozen NPC beside
+    // a breathing one reads as broken, so a facing is only honoured when this
+    // character actually has an IDLE for it. characters2 has now generated
+    // SOUTH-EAST and SOUTH-WEST for all 191, so those three are honoured and
+    // the other five still fall back to south rather than standing still.
+    // Asking the manifest (`def.idle[dir]`) rather than listing the three
+    // directions here means the day north-east lands, this needs no edit: the
+    // fallback simply stops firing for it. Missing/unknown facings and the few
+    // characters with no idle at all resolve to south exactly as before.
+    // They still never walk — there is no walk art and no server body.
+    const dir = this.npcFacing(p, def);
     // maps2 gives a TILE cell; bodies stand at the cell CENTRE like everything
     // else that is placed by cell (the campfire, spawn scatter).
     const fx = (p.x + 0.5) * CELL_WU;
