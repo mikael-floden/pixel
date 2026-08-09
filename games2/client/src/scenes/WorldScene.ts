@@ -245,6 +245,19 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // ALMOST TOUCHING, deliberately: the look is a reaction to someone brushing
 // past you, not a 5-cell stare. A player body is ~9wu and a cell is 32, so
 // this fires roughly when the two bodies overlap.
+// THE DEATH SEQUENCE (maintainer 2026-08-09: "make it a little bit more
+// dramatic... fade very dark and if possible even monochrome, the music should
+// become silent and the camera should slowly slowly zoom into the player").
+// Nothing here is on a timer that revives you — the press is (see the server's
+// "respawn" message); these only pace the picture.
+// The drain rides the ZOOM's own curve, not a clock of its own (maintainer
+// 2026-08-09: "monochrome and darkness should fade in together with the zoom
+// in") — one easing, so the picture cannot arrive before the push does.
+const DEATH_ZOOM_MS = 7000; // the SLOW push onto the body — the whole mood
+const DEATH_ZOOM = 4; // x the normal integer zoom, as asked
+const DEATH_DARK = 0.32; // brightness left at the end (0 would be a black screen)
+const DEATH_BODY_LIFT = 0.75; // how much of the veil the corpse gets back
+const DEATH_PROMPT_MS = 450; // the prompt fades in once the push has landed
 const NPC_LOOK_WU = 26;
 const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
 // ONE COMPASS NOTCH AT A TIME, so a turn SWEEPS instead of snapping — even a
@@ -1167,6 +1180,19 @@ export class WorldScene extends Phaser.Scene {
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  /** The death sequence, while it runs. `armed` = the push has landed and the
+   * prompt is up, so a press now asks the server to revive. */
+  private death: {
+    at: number;
+    armed: boolean;
+    text?: Phaser.GameObjects.Text;
+    cm?: Phaser.FX.ColorMatrix;
+    veil?: Phaser.GameObjects.Rectangle;
+    /** A copy of the body drawn ABOVE the veil, so the corpse darkens LESS
+     * than the world around it. */
+    ghost?: Phaser.GameObjects.Image;
+    mode: string;
+  } | null = null;
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
   private pendingPickupId: string | null = null; // walk-to-item, grab on arrival
   private pickupIntentUntil = 0; // give up on a pickup intent after this
@@ -1491,6 +1517,14 @@ export class WorldScene extends Phaser.Scene {
       // A HUD modal is up (or just closed under this very gesture): the world
       // takes no input at all — no trip, no engage, no fetch.
       if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
+      // DEAD: the only thing a press does is ask to come back, and only once
+      // the push has landed and the prompt is up. Before that a press is
+      // swallowed — a stray tap during the fade must not skip the sequence,
+      // and the server refuses it anyway until the die clip has finished.
+      if (this.selfDead) {
+        if (this.death?.armed) this.room?.send("respawn", {});
+        return;
+      }
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
       // TAP TARGETS outrank ground movement (RO: click a monster to fight it,
       // click an item to fetch it). Hit-tested against the drawn art boxes in
@@ -2237,6 +2271,23 @@ export class WorldScene extends Phaser.Scene {
           base: this.zoomFor(),
           trail: av ? Math.hypot(av.sprite.x - cx, av.sprite.y - cy) : null,
           detached: this.camDetached,
+        };
+      },
+      // The death sequence's live state (fade/zoom progress, whether the press
+      // is armed) — a gate cannot see a mood from the outside.
+      deathInfo: () => {
+        const d = this.death;
+        if (!d) return null;
+        const t = this.time.now - d.at;
+        return {
+          armed: d.armed,
+          ms: Math.round(t),
+          zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
+          ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
+          ghost: +(d.ghost?.alpha ?? 0).toFixed(3),
+          mono: !!d.cm,
+          veil: +(d.veil?.alpha ?? 0).toFixed(3),
+          prompt: +(d.text?.alpha ?? 0).toFixed(3),
         };
       },
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -5811,6 +5862,7 @@ export class WorldScene extends Phaser.Scene {
         running = false;
         if (id === myId && !this.selfDead) {
           this.selfDead = true;
+          this.startDeath();
           this.clearMoveTarget();
           this.dropHold();
           this.engagedId = null;
@@ -5826,6 +5878,7 @@ export class WorldScene extends Phaser.Scene {
         }
         if (id === myId && this.selfDead) {
           this.selfDead = false; // respawned: the >2-cell snap does the rest
+          this.endDeath();
         }
       }
 
@@ -6337,6 +6390,7 @@ export class WorldScene extends Phaser.Scene {
     // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
     this.stepGroundDecor();
 
+    if (this.death) this.stepDeath(this.time.now);
     this.updateChaseCam(delta);
 
     // The bonfire is world ART and is DRAWN wherever it stands — indoors the
@@ -9288,6 +9342,121 @@ export class WorldScene extends Phaser.Scene {
    * integer zoom proportionally to the avatar's world speed so movement
    * reveals slightly more of the world. At rest it settles back onto the
    * crisp integer zoom and dead-centres the player. */
+  /** DEATH: fade dark, drain the colour, and push slowly onto the body.
+   *
+   * The camera work is here rather than in updateChaseCam because it is the
+   * opposite of a chase — it ignores the trail, the speed zoom and the
+   * settle-to-integer rule, and simply eases onto a corpse that cannot move.
+   * Nothing in it revives the player: the sequence ENDS in a prompt, and the
+   * press is what asks the server (maintainer 2026-08-09: "only when/if the
+   * player presses the screen will the player respawn").
+   *
+   * The colour drain wants a post-pipeline, which is WebGL-only — on the Canvas
+   * renderer the veil alone still carries the fade, just without the
+   * desaturation. Same shape as the cover surfaces' WEBGL gate. */
+  private startDeath() {
+    if (this.death) return;
+    const cam = this.cameras.main;
+    this.death = { at: this.time.now, armed: false, mode: "hushed" };
+    if (this.game.renderer.type === Phaser.WEBGL) {
+      try {
+        this.death.cm = cam.postFX.addColorMatrix();
+      } catch {
+        this.death.cm = undefined;
+      }
+    }
+    // The veil is a screen-space rectangle, scrollFactor 0, above everything
+    // the world draws but BELOW the prompt.
+    this.death.veil = this.add
+      .rectangle(0, 0, this.scale.width * 4, this.scale.height * 4, 0x05050a, 0)
+      .setScrollFactor(0)
+      .setDepth(1_500_000)
+      .setOrigin(0.5, 0.5);
+    // MUSIC DOWN. `hushed` is the quietest mode the audio engine publishes
+    // (0.25x); the composer agent owns that table and a true silence needs a
+    // mode from them — asked for on their board. Restored on revive.
+    gameAudio.setMode(this.death.mode);
+    // THE CORPSE DARKENS LESS THAN THE WORLD. A copy of the body drawn ABOVE
+    // the veil puts back the light the veil takes away — the same pixels, so
+    // the body is simply less dark, not re-lit or re-coloured. It still rides
+    // the camera's colour drain with everything else: exempting it needed a
+    // second camera of its own, which was built and then dropped — the body
+    // reads better desaturated WITH the world, just brighter than it.
+    this.camDetached = true; // updateChaseCam must not fight the push
+  }
+
+  private stepDeath(now: number) {
+    const d = this.death;
+    if (!d) return;
+    const cam = this.cameras.main;
+    const id = this.room?.sessionId;
+    const av = id ? this.avatars.get(id) : undefined;
+    const t = now - d.at;
+    // ONE curve for the push, the dark and the drain: ease-out, so it starts
+    // quickly enough to read as a reaction and then crawls.
+    const zp = Math.min(1, t / DEATH_ZOOM_MS);
+    const ease = 1 - Math.pow(1 - zp, 3);
+    const base = this.zoomFor();
+    cam.setZoom(base + (base * DEATH_ZOOM - base) * ease);
+    if (av) cam.centerOn(av.sprite.x, av.sprite.y - av.sprite.displayHeight * 0.35);
+    if (d.veil) {
+      d.veil.setPosition(cam.midPoint.x, cam.midPoint.y);
+      d.veil.setAlpha((1 - DEATH_DARK) * ease);
+    }
+    if (d.cm) d.cm.grayscale(ease);
+    if (av) {
+      const sp = av.sprite;
+      if (!d.ghost) d.ghost = this.add.image(0, 0, sp.texture.key).setDepth(1_500_000.5);
+      d.ghost
+        .setTexture(sp.texture.key, sp.frame.name)
+        .setPosition(sp.x, sp.y)
+        .setOrigin(sp.originX, sp.originY)
+        .setScale(sp.scaleX, sp.scaleY)
+        .setFlipX(sp.flipX)
+        .setVisible(sp.visible)
+        // Exactly the share of the veil the body gets back. 1 would undo the
+        // darkening entirely and float the corpse off the picture.
+        .setAlpha((d.veil?.alpha ?? 0) * DEATH_BODY_LIFT);
+    }
+    // ARMED once the push has landed. The prompt sits UNDER the body, in world
+    // space, so it rides the zoom with it instead of floating in screen space.
+    if (zp >= 1 && !d.armed) d.armed = true;
+    if (d.armed && av) {
+      if (!d.text) {
+        d.text = this.add
+          .text(0, 0, "press to continue...", {
+            fontFamily: "monospace",
+            fontSize: "7px",
+            color: "#cfcfd6",
+          })
+          .setOrigin(0.5, 0)
+          .setDepth(1_500_001)
+          .setResolution(3)
+          .setAlpha(0);
+      }
+      d.text.setPosition(av.sprite.x, av.sprite.y + 6);
+      d.text.setAlpha(Math.min(1, (now - (d.at + DEATH_ZOOM_MS)) / DEATH_PROMPT_MS));
+    }
+  }
+
+  /** Revived (or left the world): put everything back. */
+  private endDeath() {
+    const d = this.death;
+    if (!d) return;
+    this.death = null;
+    d.text?.destroy();
+    d.veil?.destroy();
+    d.ghost?.destroy();
+    // clear(), not remove(): nothing else puts a post-pipeline on the main
+    // camera, and the typed remove() wants a Controller the ColorMatrix
+    // factory does not return. Revisit if a second FX ever lands here.
+    if (d.cm) this.cameras.main.postFX.clear();
+    gameAudio.setMode("overworld");
+    this.camDetached = false;
+    this.camChase.init = false; // snap back onto the living body
+    this.cameras.main.setZoom(this.zoomFor());
+  }
+
   private updateChaseCam(deltaMs: number) {
     if (this.camDetached) return;
     const id = this.room?.sessionId;

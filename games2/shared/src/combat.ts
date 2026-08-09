@@ -170,7 +170,14 @@ export const ORBIT_FLIP_MEAN_S = 60;
 
 // --- death / respawn / regen ------------------------------------------------
 
-export const PLAYER_RESPAWN_MS = 2_600; // die clip plays, then snap to spawn
+// THE EARLIEST a dead player may respawn — the die clip has to finish. It is a
+// FLOOR now, not a deadline: the player presses to continue, and only then do
+// they come back (maintainer 2026-08-09).
+export const PLAYER_RESPAWN_MS = 2_600;
+// ...and the backstop, because a corpse that nobody presses is a session stuck
+// forever: a closed tab, a backgrounded phone, a client that never loads. Long
+// enough that it can never cut the sequence short (the zoom alone is ~7s).
+export const PLAYER_DEATH_MAX_MS = 180_000;
 export const REGEN_DELAY_MS = 4_000; // out-of-combat delay before regen starts
 export const HP_REGEN_FRAC_PER_S = 0.06; // of hpMax, per second, out of combat
 export const EP_REGEN_FRAC_PER_S = 0.08;

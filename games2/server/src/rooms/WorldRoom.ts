@@ -79,6 +79,7 @@ import {
   MONSTER_DIE_MS,
   MONSTER_RESPAWN_MS,
   PLAYER_RESPAWN_MS,
+  PLAYER_DEATH_MAX_MS,
   REGEN_DELAY_MS,
   HP_REGEN_FRAC_PER_S,
   EP_REGEN_FRAC_PER_S,
@@ -368,13 +369,35 @@ export class WorldRoom extends Room<WorldState> {
     // spawn; the client snaps to the teleport (its >2-cell jump threshold).
     this.onMessage("respawn", (client) => {
       const player = this.state.players.get(client.sessionId);
-      // Dead players ride the death->respawn cycle instead: teleporting the
-      // corpse mid-die-clip would strand a walking body at spawn.
-      if (!player || player.dead) return;
+      if (!player) return;
+      // DEAD PLAYERS COME BACK WHEN THEY ASK TO. The death sequence (fade,
+      // desaturate, slow zoom onto the body, "press to continue") runs on the
+      // client and ends in this message — the server only insists the die clip
+      // has finished, so a stray early press cannot strand a walking body at
+      // spawn mid-animation. Before this, respawn was on a 2.6s timer and the
+      // message ignored the dead entirely.
+      if (player.dead) {
+        if (Date.now() < player.respawnAt) return;
+        this.revivePlayer(player);
+        return;
+      }
       this.placeAtSpawn(player);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
       player.jumpUntil = 0;
+    });
+
+    // DEBUG ONLY, same standing as `teleport`: drop my own hp to zero so the
+    // death sequence can be driven from a gate. It runs the REAL death path
+    // (hurtPlayer's kill branch), so what a probe sees is what a monster does
+    // — a test that fakes the state would not have caught the respawn timer
+    // still firing underneath the new press-to-continue.
+    this.onMessage("dbgkill", (client) => {
+      const player = this.state.players.get(client.sessionId);
+      if (!player || player.dead) return;
+      // Full hp of damage through the REAL path, so every field death sets
+      // (respawnAt, deadUntil, the die clip, the chat line) is set the same way.
+      this.hurtPlayer(player, player.hpMax + 1, Date.now());
     });
 
     // ENGAGE a monster (RO: click a monster to fight it). The client walks
@@ -1358,7 +1381,8 @@ export class WorldRoom extends Room<WorldState> {
       player.actionSeq++;
       player.slow = 1;
       player.target = "";
-      player.respawnAt = now + PLAYER_RESPAWN_MS;
+      player.respawnAt = now + PLAYER_RESPAWN_MS; // earliest the press may land
+      player.deadUntil = now + PLAYER_DEATH_MAX_MS; // backstop if it never does
       for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
       player.inputQueue.length = 0;
       player.moving = false;
@@ -1366,6 +1390,24 @@ export class WorldRoom extends Room<WorldState> {
       this.broadcast("chat", { name: "—", text: `${player.name} was slain.` });
       this.savePlayer(player); // a crash between here and respawn loses nothing
     }
+  }
+
+  /** Bring a dead player back: fresh spawn, full bars, queues cleared. ONE
+   * implementation for both the press and the backstop — two copies of a
+   * revive is how a field gets cleared on one path and not the other. */
+  private revivePlayer(player: Player) {
+    this.placeAtSpawn(player);
+    player.hp = player.hpMax;
+    player.ep = player.epMax;
+    player.dead = false;
+    player.action = "";
+    player.slow = 1;
+    player.lastHitAt = -100000;
+    player.regenAccHp = 0;
+    player.regenAccEp = 0;
+    for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
+    player.inputQueue.length = 0;
+    player.timeCredit = 0;
   }
 
   /** A monster dies: start the die clip (the schema entry lingers so every
@@ -1554,20 +1596,10 @@ export class WorldRoom extends Room<WorldState> {
     const radii = monsterRadii();
     this.state.players.forEach((player: Player, sid: string) => {
       if (player.dead) {
-        if (now >= player.respawnAt) {
-          this.placeAtSpawn(player);
-          player.hp = player.hpMax;
-          player.ep = player.epMax;
-          player.dead = false;
-          player.action = "";
-          player.slow = 1;
-          player.lastHitAt = -100000;
-          player.regenAccHp = 0;
-          player.regenAccEp = 0;
-          for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
-          player.inputQueue.length = 0;
-          player.timeCredit = 0;
-        }
+        // The BACKSTOP only — the press is what normally revives (see the
+        // "respawn" message). Without it a closed tab leaves a corpse in the
+        // world forever.
+        if (now >= player.deadUntil) this.revivePlayer(player);
         return;
       }
       if (now - player.lastCombatAt > REGEN_DELAY_MS) {
