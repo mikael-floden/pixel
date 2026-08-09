@@ -325,14 +325,22 @@ with the snow cap over both. A consumer resolves (cell, the surface you stand
 on) — what `Player.elev` already carries. Two places may share cells, never
 cells AND an overlapping band, and the build asserts it.
 
-**`mountain_top` is measured, not chosen.** The summit is the ground at or above
-the world's own SNOW LINE, found by walking DOWN from the highest bench while
-each level's land is still mostly snow/ice. On the_island2 that lands on bench
-28 — 98% snow at 28, 0% and pure grey stone at 27 — the boundary the tiles
-themselves draw: 5,604 cells, elev 28-40, both flanks of the gorge, stopping
-dead at the grey benches. No per-world tuning (the_island 24, demo_isle 7,
-demo_lost 8) and every flat showcase map gets none, because its snow and ice are
-tile samples at level 0 and a snow line at 0 is not a mountain.
+**`mountain_top` is measured, not chosen** — and it is THE MASSIF, not just the
+cap (maintainer 2026-08-08, standing at surface 17 on the grey benches: *"I want
+the mountain top to start when the player have almost climbed it and are kinda
+at the top"*). Found from the top, grown down, stopped at the foot: (1) the SNOW
+LINE, by walking down from the highest bench while each level is still mostly
+snow/ice — bench 28 on the_island2, 98% snow at 28 and 0% at 27, the boundary
+the tiles draw; (2) grown down through mountain GROUND rather than by level,
+which is what separates the massif from the high grass plateaus sharing its
+benches (bench 20 is 58% meadow); (3) stopped one bench below the massif's
+lowest REAL bench — real relative to this mountain — which keeps the cut-in
+ascent ramps and drops the toe running to the sea. On the_island2 the benches
+come out 20/24/28/32/36/40, so the foot derives to **16**, exactly where the
+generator puts the massif floor. Result: **7,309 cells, elev 16-40**, zero below
+the maze cap. No per-world tuning (the_island 24, demo_isle 7, demo_lost 8) and
+every flat showcase map gets none, because its snow and ice are tile samples at
+level 0 and a snow line at 0 is not a mountain.
 
 Places are DERIVED, names are LOOKED UP: `roof`/`cave` decks group into
 8-connected footprints (the cave's twelve stacked slabs are one place; `bridge`

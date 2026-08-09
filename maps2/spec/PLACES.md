@@ -36,7 +36,7 @@ Every world now ships `worlds/<name>/places.json` beside `world.json`,
      "indoor": true,  "elev": [0, 0],   "anchor": [200, 115],
      "cells": [[198,113], [199,113], "…"]},
     {"id": "mountain_top", "name": "The Mountain Top", "kind": "summit",
-     "indoor": false, "elev": [28, 40], "anchor": [76, 94],
+     "indoor": false, "elev": [16, 40], "anchor": ["…"],
      "cells": ["…"]}
   ]
 }
@@ -141,35 +141,50 @@ The standing doctrine (rules, never spot edits) applies to the geometry:
 
 ### The outdoor rule: `mountain_top`
 
-The summit is the ground at or above the world's own **snow line**, and the
-snow line is *measured, not chosen*: walk **down** from the highest populated
-surface level while each level's land is still mostly snow/ice, and stop at the
-first level that is not.
+> "Change the mountain_top area to include the lower section of the mountain_top.
+> In fact I want the mountain top to start when the player have almost climbed it
+> and are kinda at the top." — maintainer, 2026-08-08, standing at surface **17**
+> on the grey benches
 
-On `the_island2` that lands on **bench 28** — at 28 the massif is 98% snow, at
-27 it is 0% and pure grey stone. That is the boundary the tiles themselves
-draw, so the zone comes out as the snow cap exactly: 5,604 cells, elev 28-40,
-both flanks of the gorge (the top of the mountain is one place even where a
-canyon splits it, and a song should not stop because you crossed a bridge),
-stopping dead at the grey benches below.
+The zone is **the massif**: found from the top, grown down, stopped at the
+mountain's own foot. Every step is measured off the terrain — there is no magic
+number in it.
 
-It needs no per-world tuning: `the_island` 24, `demo_isle` 7, `demo_lost` 8,
-and every flat showcase map gets **no summit at all** — their snow and ice are
-tile *samples* at level 0, and a snow line at level 0 is not a mountain.
+1. **The snow line.** Walk *down* from the highest populated surface level while
+   each level's land is still mostly snow/ice; stop at the first that is not. On
+   `the_island2` that lands on **bench 28** — 98% snow at 28, 0% and pure grey
+   stone at 27 — the boundary the tiles themselves draw. No per-world tuning:
+   `the_island` 24, `demo_isle` 7, `demo_lost` 8, and every flat showcase map
+   gets **no summit at all**, because its snow and ice are tile *samples* at
+   level 0 and a snow line at level 0 is not a mountain.
+2. **Grow down through mountain GROUND** (stone, obsidian, snow, ice), not by
+   level. That is what separates the massif from the high **grass** plateaus
+   that share its benches: bench 20 on `the_island2` is 58% meadow, and no
+   level-only rule can tell the West Plateau from the mountain's shoulder.
+3. **Stop at the foot** — one bench below the massif's lowest *real* bench,
+   where a bench is real relative to *this* mountain (≥ `BENCH_FRAC` of its
+   biggest level). Keeping one bench below the lowest keeps the **cut-in ascent
+   ramps** — the climb — and dropping the rest loses the toe running to the sea.
 
-Two statistics were tried and rejected first, both worth not re-deriving: a
-fixed drop from the peak (`max - 8`) reads the whole of a shallow world as
-summit, and the *cumulative* cap fraction crossed its threshold on
-`the_island2` by 0.06% and swept in 2,780 cells of meadow.
+On `the_island2` the benches come out 20/24/28/32/36/40, so the foot derives to
+**16** — which is exactly where the generator puts the massif floor ("floor 16
+sits a gated Δ4 above the maze cap 12"). The derivation was not tuned to that;
+it landed there, which is the check that it measures something real.
 
-Keying on the role rather than on a coordinate is what makes a name survive the
-terrain: a house that moves keeps its name, and a re-generated world needs no
-edit. `bridge` decks are deliberately excluded — a span is a roof over open
-air, and the game's own classifier calls a bridge outdoors however enclosed it
-measures.
+Result: **7,309 cells, elev 16-40** — the snow cap, the grey benches under it,
+and the ascent onto them, both flanks of the gorge (the top of a mountain does
+not become a different place because a canyon splits it, and a song should not
+stop because you crossed a bridge). Zero cells below the maze cap, so the
+mountain music can never play on a rock at the shoreline.
 
-Places are re-derived automatically whenever a world is written (`save_world`
-calls `places.refresh`, beside spawns and npcs).
+Three statistics were tried and rejected on the way, recorded so nobody
+re-derives them:
+
+| tried | what went wrong |
+|---|---|
+| fixed drop from the peak (`max − 8`) | reads the whole of a shallow world as summit |
+| *cumulative* snow fraction | crossed its threshold by 0.06% and swept in 2,780 cells of meadow |
+| *absolute* bench-size floor | elected 60 cells of coastal rock at level 1 as the bottom bench, leaving the foot at 0 |
 
 ## The gate
 

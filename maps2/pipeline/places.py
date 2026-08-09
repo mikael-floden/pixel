@@ -77,19 +77,31 @@ world.json alone. The names table is keyed on that role, never on coordinates,
 so a house that moves keeps its name and a re-generated world needs no edit.
 `--check` fails when a world grows a place nobody has named.
 
-THE OUTDOOR RULE, and why it is not a magic number. `mountain_top` is the
-ground above the world's own SNOW LINE, and the snow line is measured, not
-chosen: walk DOWN from the highest populated surface level while each level's
-land is still mostly snow/ice, and stop at the first level that is not. On
-the_island2 that lands on bench 28 — at 28 the massif is 98% snow, at 27 it is
-0% and pure grey stone — which is the boundary the tiles themselves draw. It
-also answers correctly everywhere else with no per-world tuning: the_island 24,
-demo_isle 7, demo_lost 8, and every flat showcase map (whose snow and ice are
-tile SAMPLES at level 0) gets no summit at all, because a snow line at level 0
-is not a mountain. Two statistics were tried and rejected first: a fixed drop
-from the peak ("max - 8") reads the whole of a shallow world as summit, and the
-CUMULATIVE cap fraction crossed its threshold on the_island2 by 0.06% and swept
-in 2,780 cells of meadow.
+THE OUTDOOR RULE, and why none of it is a magic number. `mountain_top` is THE
+MASSIF: found from the top and grown down.
+
+  1. the SNOW LINE is measured, not chosen — walk DOWN from the highest
+     populated surface level while each level's land is still mostly snow/ice,
+     and stop at the first that is not. the_island2 lands on bench 28 (98% snow
+     at 28, 0% and pure grey stone at 27), the boundary the tiles draw. No
+     per-world tuning: the_island 24, demo_isle 7, demo_lost 8, and every flat
+     showcase map gets nothing, because its snow and ice are tile SAMPLES at
+     level 0 and a snow line at level 0 is not a mountain.
+  2. that cap is grown DOWN through MOUNTAIN ground (`ROCK`) — which is what
+     separates the massif from the high GRASS plateaus sharing its benches; on
+     the_island2 bench 20 is 58% meadow, and no level-only rule can tell the
+     West Plateau from the mountain's shoulder.
+  3. it stops at the mountain's own FOOT: one bench below its lowest real bench
+     (see `mountain_foot`). That keeps the cut-in ascent ramps — the climb — and
+     drops the toe running to the sea.
+
+Three statistics were tried and rejected on the way, all recorded so nobody
+re-derives them: a fixed drop from the peak ("max - 8") reads the whole of a
+shallow world as summit; the CUMULATIVE snow fraction crossed its threshold on
+the_island2 by 0.06% and swept in 2,780 cells of meadow; and an ABSOLUTE
+bench-size floor elected the 60 cells of coastal rock at level 1 as the
+mountain's bottom bench, which left the foot at 0 and the zone reaching the
+shoreline.
 
     python maps2/pipeline/places.py                  # every world
     python maps2/pipeline/places.py the_island2 ...  # only the named ones
@@ -101,6 +113,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from collections import deque
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
@@ -126,6 +139,34 @@ CAP = ("regular_snow", "crystal_ice")
 CAP_FRAC = 0.5
 LEVEL_MIN = 20
 SUMMIT_MIN = 200
+BENCH_FRAC = 0.05      # a real bench, relative to the massif's biggest level
+
+# ...AND THE CLIMB COUNTS (maintainer 2026-08-08, screenshot from surface 17 on
+# the grey benches): "I want the mountain top to start when the player have
+# almost climbed it and are kinda at the top. Want the entire mountain_top +
+# almost up on it to have the trigger."
+#
+# The snow line alone starts the zone at bench 28, so a player on the ascent —
+# already up in the rock with the whole massif around them — got nothing. The
+# zone is therefore the MASSIF, grown DOWN from the cap through MOUNTAIN ground
+# and stopping at the mountain's own foot:
+#
+#   * ROCK is what the massif is made of. Growing down through it rather than by
+#     level is what separates the mountain from the high GRASS plateaus that
+#     share its benches — level 20 on the_island2 is 58% meadow, and no
+#     level-only rule can tell the West Plateau from the mountain's shoulder.
+#   * the FOOT is one bench below the lowest REAL bench (a level carrying at
+#     least LEVEL_MIN cells of massif). Everything under that is single-digit
+#     slivers: the cut-in ascent ramps and the toe running to the sea. Keeping
+#     one bench of them is what makes the zone start where the climb ends
+#     instead of at the summit proper; dropping the rest is what stops the
+#     mountain music playing on a rock at the shoreline.
+#
+# On the_island2 the benches are 20/24/28/32/36/40, so the foot derives to 16 —
+# which is exactly where the generator puts the massif floor ("floor 16 sits a
+# gated Delta-4 above the maze cap 12"). The derivation was not tuned to that;
+# it landed there, which is the check that it is measuring something real.
+ROCK = ("stone_mountain", "black_mountain", "regular_snow", "crystal_ice")
 
 # role -> (id, display name). The ROLE is derived (see role_of): `house-1` is
 # the house nearest the arrival point, `house-2` the next, `cave-1` the cave.
@@ -218,19 +259,63 @@ def snow_line(t):
     return line
 
 
-def _outdoor(t):
-    """The named OUTDOOR regions of a world: [(kind, cells)]. Today, the summit.
+def mountain_foot(t, comp):
+    """The level the massif stands ON: one bench below its lowest REAL bench.
 
-    Everything at or above the snow line, both flanks of the gorge included —
-    'the top of the mountain' is one place even where a canyon splits it, and a
-    song does not stop because you crossed a bridge."""
+    A bench is real RELATIVE TO THIS MOUNTAIN — at least BENCH_FRAC of its
+    biggest level. An absolute threshold does not work: the_island2's coastal
+    rock is 60 cells at level 1, which clears any fixed floor and would elect
+    itself the mountain's bottom bench, while the terrace slivers between real
+    benches (20-25 cells each) would count as benches too and collapse the
+    measured spacing from 4 to 1. Against the region's own scale the six benches
+    20/24/28/32/36/40 separate cleanly from everything else.
+
+    The SPACING is measured for the same reason (4 on a Delta-4 terraced massif,
+    1 on a smoothly-sloped one), so 'one bench below' means the same thing on
+    both and there is no step size to pick. Everything under that foot is the
+    cut-in ascent ramps and the toe running to the sea."""
+    per = {}
+    for c in comp:
+        lv = t.surf(*c)
+        per[lv] = per.get(lv, 0) + 1
+    bar = max(per.values()) * BENCH_FRAC
+    benches = sorted(l for l, n in per.items() if n >= bar)
+    if not benches:
+        return min(per)
+    step = min((b - a for a, b in zip(benches, benches[1:])), default=1)
+    return benches[0] - step
+
+
+def _outdoor(t):
+    """The named OUTDOOR regions of a world: [(kind, cells)]. Today, the massif.
+
+    Grown DOWN from the snow cap through mountain ground to the mountain's own
+    foot — so the zone covers the summit AND the climb onto it. Both flanks of
+    the gorge are one place: the top of a mountain does not become a different
+    place because a canyon splits it, and a song should not stop because you
+    crossed a bridge."""
     line = snow_line(t)
     if line is None:
         return []
-    cells = {c for c in t.land() if t.surf(*c) >= line}
-    if len(cells) < SUMMIT_MIN:
-        return []                          # a nub, not a mountain top
-    return [("summit", cells)]
+    rock = {c for c in t.land() if t.mat[c[1]][c[0]] in ROCK}
+    comp = {c for c in rock if t.surf(*c) >= line}
+    if not comp:
+        return []
+    left, q = rock - comp, deque(comp)
+    while q:                               # down the mountain, never off it
+        x, y = q.popleft()
+        for i in (-1, 0, 1):
+            for j in (-1, 0, 1):
+                n = (x + i, y + j)
+                if n in left:
+                    left.discard(n)
+                    comp.add(n)
+                    q.append(n)
+    foot = mountain_foot(t, comp)
+    comp = {c for c in comp if t.surf(*c) >= foot}
+    if len(comp) < SUMMIT_MIN:
+        return []                          # a nub, not a mountain
+    return [("summit", comp)]
 
 
 def _groups(doc):
