@@ -256,7 +256,6 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 const DEATH_DARK = 0.14; // brightness left at the end (0 would be a black screen)
-const DEATH_BODY_LIFT = 0.75; // how much of the veil the corpse gets back
 const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
 const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
@@ -1186,9 +1185,6 @@ export class WorldScene extends Phaser.Scene {
     at: number;
     armed: boolean;
     veil?: Phaser.GameObjects.Rectangle;
-    /** A copy of the body drawn ABOVE the veil, so the corpse darkens LESS
-     * than the world around it. */
-    ghost?: Phaser.GameObjects.Image;
     el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
     mode: string;
   } | null = null;
@@ -2283,7 +2279,6 @@ export class WorldScene extends Phaser.Scene {
           ms: Math.round(t),
           zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
-          ghost: +(d.ghost?.alpha ?? 0).toFixed(3),
           veil: +(d.veil?.alpha ?? 0).toFixed(3),
           prompt: d.el ? +(d.el.style.opacity || 0) : 0,
         };
@@ -9374,12 +9369,6 @@ export class WorldScene extends Phaser.Scene {
     // (0.25x); the composer agent owns that table and a true silence needs a
     // mode from them — asked for on their board. Restored on revive.
     gameAudio.setMode(this.death.mode);
-    // THE CORPSE DARKENS LESS THAN THE WORLD. A copy of the body drawn ABOVE
-    // the veil puts back the light the veil takes away — the same pixels, so
-    // the body is simply less dark, not re-lit or re-coloured. It still rides
-    // the camera's colour drain with everything else: exempting it needed a
-    // second camera of its own, which was built and then dropped — the body
-    // reads better desaturated WITH the world, just brighter than it.
     this.camDetached = true; // updateChaseCam must not fight the push
   }
 
@@ -9401,20 +9390,13 @@ export class WorldScene extends Phaser.Scene {
       d.veil.setPosition(cam.midPoint.x, cam.midPoint.y);
       d.veil.setAlpha((1 - DEATH_DARK) * ease);
     }
-    if (av) {
-      const sp = av.sprite;
-      if (!d.ghost) d.ghost = this.add.image(0, 0, sp.texture.key).setDepth(1_500_000.5);
-      d.ghost
-        .setTexture(sp.texture.key, sp.frame.name)
-        .setPosition(sp.x, sp.y)
-        .setOrigin(sp.originX, sp.originY)
-        .setScale(sp.scaleX, sp.scaleY)
-        .setFlipX(sp.flipX)
-        .setVisible(sp.visible)
-        // Exactly the share of the veil the body gets back. 1 would undo the
-        // darkening entirely and float the corpse off the picture.
-        .setAlpha((d.veil?.alpha ?? 0) * DEATH_BODY_LIFT);
-    }
+    // THE BODY DARKENS WITH THE WORLD. A second copy of the corpse used to be
+    // drawn above the veil so it stayed brighter, and it worked — but a body
+    // drawn twice is a body outside the depth sort, so it sat over things it
+    // should have been behind (maintainer 2026-08-09: "don't draw the player
+    // again so the z-order get buggy... we can make the player lighter in a
+    // non-buggy way when we have time"). Lifting it properly means lighting,
+    // not a second draw.
     // ARMED once the push has landed. The prompt sits UNDER the body, in world
     // space, so it rides the zoom with it instead of floating in screen space.
     if (zp >= 1 && !d.armed) d.armed = true;
@@ -9468,7 +9450,6 @@ export class WorldScene extends Phaser.Scene {
     this.death = null;
     d.el?.remove();
     d.veil?.destroy();
-    d.ghost?.destroy();
     gameAudio.setMode("overworld");
     this.camDetached = false;
     this.camChase.init = false; // snap back onto the living body
