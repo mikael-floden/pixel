@@ -171,6 +171,10 @@ const ITEM_RING_BRIGHT = 0xc4ecfa; // outer line, brighter
  * silently share the first-baked outer line too. */
 const HIDDEN_RING_COLOR = 0xf0f0f0; // inner, a hair off white
 const HIDDEN_RING_BRIGHT = 0xffffff; // outer — the white the maintainer asked for
+// How much of the border's brightness survives total darkness (see
+// syncCoverOutline). The rest tracks the local light, so the line dims at
+// night, darkens in shadow and warms in a torch pool. 1.0 = the old flat white.
+const RING_LIGHT_FLOOR = 0.42;
 const RING_PAD = 2; // outline canvas pad = border width in art pixels
 // THE COVER SURFACES (see registerCoverSlot / flushCoverSurfaces). Three
 // atlases sharing ONE slot layout, so a body's visible part, its covered part
@@ -3999,6 +4003,28 @@ export class WorldScene extends Phaser.Scene {
     // changes is the denominator — and the flip, which is baked into the slot.
     const sw = slot ? slot.w : fw + RING_PAD * 2;
     const sh = slot ? slot.h : fh + RING_PAD * 2;
+    // THE BORDER TAKES THE LIGHT — but never all of it (maintainer 2026-08-09:
+    // "especially at night the white is so extreme it becomes so much easier to
+    // see things behind walls vs in front of walls... visible but not stand out
+    // like crazy"). It draws ABOVE the darkness overlay so nothing dims it, and
+    // full-brightness white against a night world reads brighter than anything
+    // actually lit — the hidden body ended up the most legible thing on screen,
+    // which inverts the point of hiding it.
+    //
+    // Same sample the LIT COPY uses (litLevelOf + lightAt at the body's own
+    // surface height), so the ring dims with the hour, darkens in a wall's
+    // shadow and warms inside a torch pool, exactly as the body it traces
+    // would. The FLOOR is what keeps it a feature rather than a fade: at night
+    // ambient luma is ~0.10 and an honest multiply would leave the line
+    // essentially black, i.e. the wall-hack switched off after sunset.
+    // RING_LIGHT_FLOOR is the one dial — 1.0 restores the old flat white.
+    let ringTint = 0xffffff;
+    if (this.night) {
+      const l = this.night.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, this.litLevelOf(b), false);
+      const ch = (v: number) =>
+        Math.min(255, Math.round(255 * (RING_LIGHT_FLOOR + (1 - RING_LIGHT_FLOOR) * Math.min(1, Math.max(0, v)))));
+      ringTint = (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
+    }
     img
       .setTexture(key, slot ? slot.name : undefined)
       .setOrigin((sp.originX * fw + RING_PAD) / sw, (sp.originY * fh + RING_PAD) / sh)
@@ -4006,6 +4032,7 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(slot ? false : sp.flipX)
       .setPosition(sp.x, sp.y)
       .setAlpha(1)
+      .setTint(ringTint)
       .setDepth(900_001.43)
       .setVisible(true);
     if (slot) {
