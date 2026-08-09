@@ -174,7 +174,9 @@ const HIDDEN_RING_BRIGHT = 0xffffff; // outer — the white the maintainer asked
 // How much of the border's brightness survives total darkness (see
 // syncCoverOutline). The rest tracks the local light, so the line dims at
 // night, darkens in shadow and warms in a torch pool. 1.0 = the old flat white.
-const RING_LIGHT_FLOOR = 0.42;
+// 0.42 was still too loud after dark (maintainer 2026-08-09); at 0.30 a body
+// out of every light sits near a third of white instead of half.
+const RING_LIGHT_FLOOR = 0.30;
 const RING_PAD = 2; // outline canvas pad = border width in art pixels
 // THE COVER SURFACES (see registerCoverSlot / flushCoverSurfaces). Three
 // atlases sharing ONE slot layout, so a body's visible part, its covered part
