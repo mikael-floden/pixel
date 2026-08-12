@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_post_001",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 1,
+  "name": "Weathered oak post 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "weathered oak post",
+  "glow_concept": null,
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, weathered oak post, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "lantern_posts/lantern_post_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.78,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "36864f55-30ba-4c0e-9187-21254790d5f6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
