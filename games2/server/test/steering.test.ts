@@ -180,3 +180,87 @@ test("integration: dead into a 3-prop wall stays honestly stuck", () => {
   assert.ok(x < 8 * CELL_WU, "still west of the wall");
   assert.ok(Math.abs(y - 8.5 * CELL_WU) < CELL_WU * 0.6, "not silently detoured sideways");
 });
+
+// ---------------------------------------------------------------------------
+// TERRAIN-WALL assist (round 2, maintainer 2026-08-12: "it doesn't work for
+// regular tiles forming a wall… running into a wall is probably not what the
+// player wanted — find the closest path around taking the player forward").
+// The door-finder: hunts up to STEER_DOOR_RANGE cells along the wall, either
+// side, nearest opening first. Same law as the pathfinder: never toward a
+// damaging drop. 1-level ledges stay auto-jump's domain; a wall with no
+// opening in range keeps the honest collision.
+// ---------------------------------------------------------------------------
+
+/** A level-`h` terrain wall spanning column 8, rows r0..r1, minus door rows. */
+function walled(h: number, r0: number, r1: number, doors: number[] = []): TerrainGrid {
+  const cells: { c: number; r: number; l: number }[] = [];
+  for (let r = r0; r <= r1; r++) if (!doors.includes(r)) cells.push({ c: 8, r, l: h });
+  return world([], cells);
+}
+
+test("terrain wall: the door two cells over is found and steered to", () => {
+  const g = walled(6, 4, 12, [8]); // door at (8,8); player will hit (8,6)
+  const x = 8 * CELL_WU - 14;
+  const y = 6.5 * CELL_WU;
+  const east = screenFor(1, 0);
+  const out = steerAssist(g, x, y, east.ax, east.ay);
+  assert.ok(out, "assist fires on a terrain wall with a reachable door");
+  const d = worldDirOf(out!);
+  assert.ok(d.y > 0.9 && Math.abs(d.x) < 0.1, `deflects toward the door (south), got (${d.x.toFixed(2)},${d.y.toFixed(2)})`);
+});
+
+test("terrain wall: integration slides to the door and walks through it", () => {
+  const g = walled(6, 4, 12, [8]);
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  let x = 8 * CELL_WU - 14;
+  let y = 6.5 * CELL_WU;
+  const east = screenFor(1, 0);
+  const dt = 1 / 20;
+  for (let t = 0; t < 6 / dt; t++) {
+    let { ax, ay } = east;
+    const a = steerAssist(g, x, y, ax, ay);
+    if (a) {
+      ax = a.ax;
+      ay = a.ay;
+    }
+    const r = stepMovement(
+      x, y, ax, ay, true, dt,
+      makeBlocked(g, walk), 1, true, 16 * CELL_WU, 16 * CELL_WU,
+      makeSideBlocked(g, walk),
+    );
+    x = r.x;
+    y = r.y;
+  }
+  assert.ok(x > 9 * CELL_WU, `passed through the door (x=${(x / CELL_WU).toFixed(2)} cells)`);
+});
+
+test("terrain wall: no opening in range keeps the honest collision", () => {
+  const g = walled(6, 0, 15); // an unbroken wall
+  const x = 8 * CELL_WU - 14;
+  const y = 8.5 * CELL_WU;
+  const east = screenFor(1, 0);
+  assert.equal(steerAssist(g, x, y, east.ax, east.ay), null);
+});
+
+test("terrain wall: an opening over a damaging drop is NOT a door", () => {
+  // The player stands on a level-8 shelf; the wall ahead is level 20; the one
+  // gap in it leads to level-0 ground — an 8-level fall. The assist must obey
+  // the same "at any cost avoid fall damage" law as the pathfinder.
+  const cells: { c: number; r: number; l: number }[] = [];
+  for (let r = 0; r < 16; r++) for (let c = 0; c <= 7; c++) cells.push({ c, r, l: 8 }); // the shelf
+  for (let r = 4; r <= 12; r++) if (r !== 8) cells.push({ c: 8, r, l: 20 }); // the wall
+  // (8,8) and everything east stays level 0: the gap is a cliff edge.
+  const g = world([], cells);
+  const x = 8 * CELL_WU - 14;
+  const y = 6.5 * CELL_WU;
+  const east = screenFor(1, 0);
+  assert.equal(steerAssist(g, x, y, east.ax, east.ay), null, "a cliff gap attracts nobody");
+});
+
+test("terrain wall: a 1-level ledge stays auto-jump's domain", () => {
+  const g = walled(1, 4, 12, [8]);
+  const x = 8 * CELL_WU - 14;
+  const y = 6.5 * CELL_WU;
+  const east = screenFor(1, 0);
+  assert.equal(steerAssist(g, x, y, east.ax, east.ay), null, "jumpable ledges never deflect");
+});

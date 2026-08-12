@@ -17,6 +17,7 @@
 // public @nangijala/shared surface is unchanged.
 export { CELL_WU } from "./units";
 import { CELL_WU } from "./units";
+import { FALL_DMG_MIN_LEVELS } from "./combat";
 export const WORLD_GRID = 160;
 export const WORLD_WIDTH = WORLD_GRID * CELL_WU;
 export const WORLD_HEIGHT = WORLD_GRID * CELL_WU;
@@ -1307,7 +1308,7 @@ export function steerAssist(
       break;
     }
   }
-  if (bc < 0) return null; // stalled on elevation/water/border — not an object
+  if (bc < 0) return steerAssistWall(grid, x, y, ax, ay, ux, uy, w, sim, moved);
   // Perpendicular axis relative to the DOMINANT world axis of the intent.
   const domX = Math.abs(w.x) >= Math.abs(w.y);
   const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
@@ -1344,6 +1345,142 @@ export function steerAssist(
     if (!best) continue;
     if (moved(sim(best.ax, best.ay)) < WALK_SPEED * dt * 0.35) continue;
     return best;
+  }
+  return null;
+}
+
+/** How far along a terrain wall the steer assist hunts for an opening, in
+ * cells. "An obvious path around it NOT FAR AWAY" (maintainer 2026-08-12) —
+ * past this it is a real detour and the player should see the honest stop. */
+const STEER_DOOR_RANGE = 4;
+
+/**
+ * TERRAIN-WALL steer assist (round 2, maintainer 2026-08-12: "it doesn't work
+ * for regular tiles forming a wall… running into a wall is probably not what
+ * the player wanted — find the closest path around taking the player forward,
+ * as the input suggests. This helps when the player doesn't manage to aim at
+ * the door exactly right").
+ *
+ * The solid-prop assist looks one cell to each side; a DOORWAY in a house
+ * wall can be a few cells off the aim line, so this hunts laterally up to
+ * STEER_DOOR_RANGE cells — nearest opening first, either side — and deflects
+ * toward it. Same non-negotiables as the prop assist: only on a REAL stall
+ * (the caller established it), only walls even a JUMP can't take (1-level
+ * ledges are auto-jump's domain), the deflection must itself move, and a wall
+ * with no opening in range keeps the honest collision. Two rules of its own:
+ * the LANE the body will slide through is checked cell by cell (a door
+ * behind a boulder is not a door), and no candidate may sit a DAMAGING drop
+ * below the feet — the assist serves the same "at any cost avoid fall
+ * damage" law the pathfinder follows.
+ */
+function steerAssistWall(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  ux: number,
+  uy: number,
+  w: { x: number; y: number },
+  sim: (iax: number, iay: number) => { x: number; y: number },
+  moved: (r: { x: number; y: number }) => number,
+): { ax: number; ay: number } | null {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const myLevel = levelAtWorld(grid, x, y);
+  // The wall cell the body is stalled on: same probe points as the prop
+  // branch, but the tell is CLIMB — higher than even a jump takes. (A
+  // jumpable 1-level ledge never reaches here alive: auto-jump fires first,
+  // and if it somehow didn't, deflecting around it would fight the hop.)
+  const d = (PLAYER_RADIUS + 3) / Math.max(Math.abs(ux), Math.abs(uy));
+  const px = x + ux * d;
+  const py = y + uy * d;
+  let wc = -1;
+  let wr = -1;
+  for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
+    const c = Math.floor((px - uy * lat) / CELL_WU);
+    const r = Math.floor((py + ux * lat) / CELL_WU);
+    if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+    if (grid.deck[r * grid.width + c] >= 0) continue; // a walkable slab is not a wall
+    if (grid.level[r * grid.width + c] - myLevel > JUMP_CLIMB + 1e-9) {
+      wc = c;
+      wr = r;
+      break;
+    }
+  }
+  if (wc < 0) return null; // water/border/slope — an honest stop
+  const domX = Math.abs(w.x) >= Math.abs(w.y);
+  const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
+  const fwd = domX ? { x: Math.sign(w.x), y: 0 } : { x: 0, y: Math.sign(w.y) };
+  const myC = Math.floor(x / CELL_WU);
+  const myR = Math.floor(y / CELL_WU);
+  const myPerp = domX ? y : x;
+  const wallPerp = domX ? (wr + 0.5) * CELL_WU : (wc + 0.5) * CELL_WU;
+  const firstSgn = myPerp <= wallPerp ? -1 : 1;
+  const centre = (c: number, r: number) => ({ cx: (c + 0.5) * CELL_WU, cy: (r + 0.5) * CELL_WU });
+  // A cell the body may pass through on the way to (or through) the door:
+  // in bounds, not solid, reachable at walk climb from the previous cell,
+  // and NEVER a damaging drop below the feet.
+  const passable = (fc: number, fr: number, tc: number, tr: number) => {
+    if (tc < 0 || tr < 0 || tc >= grid.width || tr >= grid.height) return false;
+    if (myLevel - levelAtWorld(grid, (tc + 0.5) * CELL_WU, (tr + 0.5) * CELL_WU) >= FALL_DMG_MIN_LEVELS)
+      return false;
+    const f = centre(fc, fr);
+    const t = centre(tc, tr);
+    return canEnter(grid, f.cx, f.cy, t.cx, t.cy, walk);
+  };
+  // NEAREST opening wins regardless of side: distance is the outer loop.
+  for (let dist = 1; dist <= STEER_DOOR_RANGE; dist++) {
+    for (const sgn of [firstSgn, -firstSgn]) {
+      // The candidate opening: the wall line's cell `dist` steps to the side.
+      const oc = wc + perp.x * sgn * dist;
+      const or_ = wr + perp.y * sgn * dist;
+      // The lane the body slides through sits on MY side of the wall — check
+      // it cell by cell up to the door's lateral offset. A door behind a
+      // boulder (or past a gap in the floor) is not a door.
+      let laneOk = true;
+      let pc = myC;
+      let pr = myR;
+      for (let k = 1; k <= dist && laneOk; k++) {
+        const lc = myC + perp.x * sgn * k;
+        const lr = myR + perp.y * sgn * k;
+        laneOk = passable(pc, pr, lc, lr);
+        pc = lc;
+        pr = lr;
+      }
+      if (!laneOk) continue;
+      // The opening itself must be enterable from the lane cell beside it…
+      if (!passable(pc, pr, oc, or_)) continue;
+      // …and must LEAD FORWARD (the input's own direction): the cell beyond
+      // it is enterable too, at jump climb — a sill one step up past a door
+      // is what auto-jump exists for. Without this an alcove attracts.
+      const fc = oc + fwd.x;
+      const fr = or_ + fwd.y;
+      if (fc < 0 || fr < 0 || fc >= grid.width || fr >= grid.height) continue;
+      if (myLevel - levelAtWorld(grid, (fc + 0.5) * CELL_WU, (fr + 0.5) * CELL_WU) >= FALL_DMG_MIN_LEVELS)
+        continue;
+      const o = centre(oc, or_);
+      const f = centre(fc, fr);
+      if (!canEnter(grid, o.cx, o.cy, f.cx, f.cy, { maxClimb: JUMP_CLIMB, canSwim: true }))
+        continue;
+      // Deflect purely sideways, snapped to a real 8-way input — exactly the
+      // prop assist's move. Re-evaluated every tick: the moment forward opens
+      // (the doorway), the stall test stops firing and forward resumes.
+      const target = { x: perp.x * sgn, y: perp.y * sgn };
+      let best: { ax: number; ay: number } | null = null;
+      let bestDot = 0.5;
+      for (const [cax, cay] of EIGHT_WAY) {
+        const cw = screenToWorldVector(cax, cay);
+        const cl = Math.hypot(cw.x, cw.y) || 1;
+        const dot = (cw.x * target.x + cw.y * target.y) / cl;
+        if (dot > bestDot) {
+          bestDot = dot;
+          best = { ax: cax, ay: cay };
+        }
+      }
+      if (!best) continue;
+      if (moved(sim(best.ax, best.ay)) < WALK_SPEED * 0.08 * 0.35) continue;
+      return best;
+    }
   }
   return null;
 }
@@ -1396,18 +1533,33 @@ function stepReach(
   // the pathfinder's per-neighbour expansion, the hottest loop in findPath.
   const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim))
     && baseUnderDeckOpen(grid, bi, elev);
+  // A ROUTED step never takes a DAMAGING fall (maintainer 2026-08-12: "the nav
+  // system should at any cost avoid fall damage — this is probably not what
+  // the player wanted"). Small hops down stay free; a drop of
+  // FALL_DMG_MIN_LEVELS+ is simply not an edge — landing in water included,
+  // because the pathfinder cannot promise the body ARRIVES in the water (it
+  // may clip the cliff base), and a route that dives off the map reads as a
+  // mistake even when it survives. This is also what stops the mountain-top
+  // hurl: an unreachable summit tap used to best-effort "behind the mountain",
+  // whose route began by walking off the plateau — with drop edges gone, the
+  // reachable set stays on top and the best effort stops at the rim.
+  // MANUAL input still falls (stepMovement is untouched) — that's the player's
+  // own doing, and fall damage is the price.
+  const safeDrop = (level: number) => elev - level < FALL_DMG_MIN_LEVELS - 1e-9;
   if (baseOpen) {
     const level = grid.level[bi];
     const climb = level - elev;
-    if (climb <= walkMax + 1e-9) out.push({ level, layer: 0, jump: false }); // walk (drops are free)
-    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 0, jump: true }); // 2-level auto-jump
+    if (climb <= walkMax + 1e-9) {
+      if (safeDrop(level)) out.push({ level, layer: 0, jump: false }); // walk (small drops free)
+    } else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 0, jump: true }); // 2-level auto-jump
     // else too high to reach from here
   }
   if (grid.deck[bi] >= 0) { // deck slab: solid walkable
     const level = grid.deck[bi];
     const climb = level - elev;
-    if (climb <= walkMax + 1e-9) out.push({ level, layer: 1, jump: false });
-    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 1, jump: true });
+    if (climb <= walkMax + 1e-9) {
+      if (safeDrop(level)) out.push({ level, layer: 1, jump: false });
+    } else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 1, jump: true });
   }
   return out;
 }

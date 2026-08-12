@@ -280,6 +280,55 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   truly moves). Probe: `__ml.steerAt(x,y,ax,ay)`; tests:
   `server/test/steering.test.ts` (closest-side, fallback side, wall stays
   stuck, ledge untouched, wall-slide untouched, end-to-end corner round).
+- **TERRAIN-WALL steer assist — the door-finder** (round 2, maintainer
+  2026-08-12: "it doesn't work for regular tiles forming a wall… running into
+  a wall is probably not what the player wanted — find the closest path
+  around taking the player forward, as the input suggests; this helps when
+  the player doesn't manage to aim at the door exactly right").
+  `steerAssistWall` (shared, called from `steerAssist` when the stall is not
+  a solid prop): on a real stall against terrain even a JUMP can't climb
+  (1-level ledges stay auto-jump's domain), hunt up to `STEER_DOOR_RANGE`
+  (4) cells laterally along the wall — nearest opening first, either side —
+  and deflect purely sideways toward it, re-evaluated every tick so forward
+  resumes at the doorway by itself. The LANE the body slides through is
+  checked cell by cell (a door behind a boulder is not a door), the opening
+  must LEAD FORWARD (the cell beyond it enterable at jump climb — a sill is
+  auto-jump's job; without this an alcove attracts), and no candidate may
+  sit a DAMAGING drop below the feet — the assist obeys the same
+  "at any cost avoid fall damage" law as the pathfinder. No opening in range
+  → null, the honest collision. Tests: the terrain-wall block of
+  `server/test/steering.test.ts` (door found + integration walks through it
+  + unbroken wall stays stuck + a cliff gap attracts nobody + 1-level ledge
+  untouched).
+- **FALL DAMAGE + THE NO-FALL ROUTING LAW** (maintainer 2026-08-12: "the nav
+  system should at any cost avoid fall damage — this is probably not what
+  the player wanted. A house is 10% health. Top of the mountain at The
+  Island 2 is 95%. Higher than that means you die even with full health.").
+  Three layers, one line (`FALL_DMG_MIN_LEVELS` = 6, the house roof):
+  - **The curve** (`shared/combat.ts fallDamageFrac`): linear from 6 levels
+    = 10% of MAX hp through 32 levels (the_island2's summit) = 95%, and past
+    it — ~34 levels crosses 100% and kills from full health. Monotone.
+  - **The route** (`stepReach`): a step that DROPS ≥ 6 levels is simply not
+    an edge — for walks, deck dismounts and diagonal flanks alike. This is
+    what fixes the mountain-top hurl: an unreachable summit tap used to
+    best-effort "behind the mountain" via the (165,45)→(166,45) 30-level
+    sheer rim; with drop edges gone the reachable set stays on the plateau
+    and the best effort stops at the rim. Landing in water is NOT exempted
+    in routing (the pathfinder can't promise the body arrives IN the water).
+    KNOWN CONSEQUENCE: the island house's roof and floor are now reachable
+    from DISJOINT regions (the shoulder's only descent was a damaging hop),
+    so beacon rule 2's real-world case became one-sided — its test moved to
+    a synthetic both-arrive fixture (beacon.test.ts).
+  - **The landing** (WorldRoom, on the input integration's elev resolve
+    only — teleport/respawn/join assign elev directly and can never bill
+    theirs as a fall): a drop ≥ 6 levels costs `round(frac·hpMax)` through
+    the standard `hurtPlayer` (flinch, slow, death path all reuse). Landing
+    in SWIMMABLE water is a dive — free. Manual input may still walk off a
+    cliff; that is the player's own doing and this is the price.
+  - Gates: `server/test/falldamage.test.ts` — the curve pins, the
+    the_island2 route law (VERIFIED failing on the pre-fix baseline), and a
+    live room walking off occlusion_test's 14-level cliff (exact damage) and
+    diving off its 9-level water ledge (free).
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump so you don't
   tap Space at every ledge (`WorldScene.maybeAutoJump`/`wouldAutoJump`, called
   from `predictAndSend`). The rule is exactly `!canEnter(walk) && canEnter(jump)`

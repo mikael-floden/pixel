@@ -188,6 +188,30 @@ export const DROP_SCATTER_WU = 26; // items land scattered around the corpse/pla
 export const DROP_SPACING_WU = 24; // keep ground items at least this far apart (readability)
 export const DROP_TTL_MS = 60_000; // ground items despawn after a minute (maintainer 2026-08-05)
 export const DROP_FLASH_MS = 5_000; // final stretch: flash transparent, faster and faster
+// --- Fall damage (maintainer 2026-08-12) -------------------------------------
+// "Fall damage will start when you fall from a house roof and will only go up
+// at higher falls. A house is 10% health. Top of the mountain at The Island 2
+// is 95%. Higher than that means you die even with full health."
+// Linear between the two calibration points and PAST the top one, so a drop of
+// ~34+ levels crosses 100% and kills from full HP. Landing in swimmable water
+// is free (a dive, not a fall) — enforced at the server's landing check.
+// FALL_DMG_MIN_LEVELS is also the NAVIGATION line: findPath refuses any edge
+// that drops this far ("the nav system should at any cost avoid fall damage"),
+// and the steer assist never deflects toward such a drop. Manual input may
+// still walk off — that is the player's own doing, and this is the price.
+export const FALL_DMG_MIN_LEVELS = 6; // the house roof deck
+export const FALL_DMG_MAX_LEVELS = 32; // the_island2's summit plateau
+export const FALL_DMG_AT_MIN = 0.1;
+export const FALL_DMG_AT_MAX = 0.95;
+
+/** Fraction of MAX HP a fall of `drop` levels costs (0 below the threshold,
+ * may exceed 1 — certain death — above the calibrated summit). */
+export function fallDamageFrac(drop: number): number {
+  if (drop < FALL_DMG_MIN_LEVELS) return 0;
+  const t = (drop - FALL_DMG_MIN_LEVELS) / (FALL_DMG_MAX_LEVELS - FALL_DMG_MIN_LEVELS);
+  return FALL_DMG_AT_MIN + t * (FALL_DMG_AT_MAX - FALL_DMG_AT_MIN);
+}
+
 export const PICKUP_RADIUS_WU = 40; // how close the body must be to grab
 export const INV_MAX_STACK = 99;
 export const INV_MAX_SLOTS = 30;

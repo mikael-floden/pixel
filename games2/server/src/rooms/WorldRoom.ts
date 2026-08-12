@@ -23,6 +23,8 @@ import {
   unstickFromSolids,
   surfaceAtWorld,
   surfaceAtWorldElev,
+  FALL_DMG_MIN_LEVELS,
+  fallDamageFrac,
   isStandableAtWorld,
   findSpawn,
   WALK_CLIMB,
@@ -859,7 +861,24 @@ export class WorldRoom extends Room<WorldState> {
         // Update the surface elevation the player now stands on (deck vs base).
         if (terrain) {
           const ctx2 = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+          const elevBefore = player.elev;
           player.elev = resolveElevAt(terrain, player.elev, player.x, player.y, ctx2);
+          // FALL DAMAGE (maintainer 2026-08-12): a drop of FALL_DMG_MIN_LEVELS+
+          // costs fallDamageFrac of MAX hp — the house roof 10%, the_island2's
+          // summit 95%, higher is death from full health. Landing in swimmable
+          // WATER is a dive, not a fall. This sits on the INPUT integration
+          // only, so teleport/respawn/join (which assign elev directly) can
+          // never bill their elevation change as a fall. Routed navigation
+          // refuses these drops outright (stepReach) — a damaging fall can
+          // only be the player's own input walking off the edge.
+          const drop = elevBefore - player.elev;
+          if (drop >= FALL_DMG_MIN_LEVELS && !player.dead) {
+            const landing = surfaceAtWorldElev(terrain, player.x, player.y, player.elev);
+            if (!landing.swimmable) {
+              const dmg = Math.round(fallDamageFrac(drop) * player.hpMax);
+              if (dmg > 0) this.hurtPlayer(player, dmg, now);
+            }
+          }
         }
         moving = r.moving;
         running = r.moving && inp.running;

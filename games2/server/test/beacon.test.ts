@@ -70,9 +70,14 @@ test("the two readings of one click are the SAME PIXEL, and the reachable one wi
 });
 
 test("a roof you CAN reach still wins when it is the shorter walk", () => {
-  // From the mountain shoulder at level 6 the roof is a few steps away, while
-  // the floor beneath it means walking back down and round to the door. This is
-  // the case rule 1 alone cannot decide — both candidates arrive.
+  // RESHAPED 2026-08-12 by the no-fall law: from the mountain shoulder the
+  // floor route used to exist only because the pathfinder would hop 6 levels
+  // off the shoulder — a damaging fall. findPath refuses those edges now
+  // (probed: no legal descent exists from the shoulder even at 60k nodes), so
+  // from THIS start the floor no longer arrives and RULE 1 decides: the roof
+  // — the reading you can actually reach — wins. Rule 2 (shorter walk among
+  // candidates that BOTH arrive) moves to the synthetic fixture below, where
+  // both readings are safely reachable by construction.
   const from: [number, number] = [173.5, 113.5];
   assert.equal(grid.level[at(173, 113)], 6, "the mountain shoulder moved");
 
@@ -80,16 +85,53 @@ test("a roof you CAN reach still wins when it is the shorter walk", () => {
   const down = startTrip(grid, wu(from[0]), wu(from[1]), wu(177.5), wu(117.5), false, 0, 6, 0);
   assert.ok(up && down, "one of the two readings has no route at all");
   assert.equal(up!.endLevel, 6, "the roof is not actually reachable from the shoulder — fixture is wrong");
-  const upLen = tripLength(wu(from[0]), wu(from[1]), up!.path);
-  const downLen = tripLength(wu(from[0]), wu(from[1]), down!.path);
-  assert.ok(upLen < downLen,
-    `the fixture does not discriminate: roof ${upLen.toFixed(0)}wu vs floor ${downLen.toFixed(0)}wu`);
+  assert.notEqual(down!.endLevel, 0,
+    "the floor arrived from the shoulder — only a damaging fall could do that, the no-fall law is off");
 
-  // Offer the GROUND first, so only distance can pick the roof.
+  // Offer the GROUND first, so only "arriving beats giving up" can pick the roof.
   const trip = startBestTrip(grid, wu(from[0]), wu(from[1]), false, 0, 6,
     [{ x: wu(177.5), y: wu(117.5), goalLevel: 0 }, { x: wu(177.5), y: wu(117.5), goalLevel: 6 }]);
-  assert.equal(trip!.goalLevel, 6,
-    `the shorter walk (roof, ${upLen.toFixed(0)}wu) lost to the longer one (floor, ${downLen.toFixed(0)}wu)`);
+  assert.equal(trip!.goalLevel, 6, "the reading that ARRIVES (the roof) lost to one that gives up short");
+});
+
+test("rule 2: among two readings that BOTH arrive, the shorter walk wins", () => {
+  // Synthetic, because the no-fall law made the island's house one-sided: its
+  // roof and floor are now reachable from DISJOINT regions (the descent from
+  // the shoulder was a damaging hop). Here a level-4 slab has a stairs ramp,
+  // so both readings arrive safely: from the ramp top the roof is a couple of
+  // steps, the floor beneath means walking back down and around — only the
+  // trip LENGTH can decide, which is exactly rule 2.
+  const rows: { t: string; l?: number }[][] = [];
+  for (let r = 0; r < 20; r++) {
+    rows.push([]);
+    for (let c = 0; c < 20; c++) rows[r].push({ t: "grass", l: 0 });
+  }
+  for (let i = 0; i < 4; i++) rows[8][12 + i] = { t: "stairs", l: 3 - i }; // ramp: 12,8=3 … 15,8=0
+  const deck = {
+    kind: "roof",
+    mat: "grass",
+    level: 4,
+    thickness: 1,
+    cells: [] as { col: number; row: number; path: string; flip: boolean }[],
+  };
+  for (let r = 7; r <= 10; r++)
+    for (let c = 8; c <= 11; c++) deck.cells.push({ col: c, row: r, path: "x", flip: false });
+  const g2 = buildTerrainGrid(20, 20, rows, [], [deck]);
+  const from: [number, number] = [12.5, 8.5]; // standing on the ramp top (level 3)
+  const up2 = startTrip(g2, wu(from[0]), wu(from[1]), wu(10.5), wu(8.5), false, 0, 3, 4);
+  const down2 = startTrip(g2, wu(from[0]), wu(from[1]), wu(10.5), wu(8.5), false, 0, 3, 0);
+  assert.ok(up2 && down2, "one of the two readings has no route at all");
+  assert.equal(up2!.endLevel, 4, "the ramp does not reach the slab — fixture is wrong");
+  assert.equal(down2!.endLevel, 0, "the floor under the slab is not reachable — fixture is wrong");
+  const upLen2 = tripLength(wu(from[0]), wu(from[1]), up2!.path);
+  const downLen2 = tripLength(wu(from[0]), wu(from[1]), down2!.path);
+  assert.ok(upLen2 < downLen2,
+    `the fixture does not discriminate: roof ${upLen2.toFixed(0)}wu vs floor ${downLen2.toFixed(0)}wu`);
+  // Offer the GROUND first, so only distance can pick the roof.
+  const trip2 = startBestTrip(g2, wu(from[0]), wu(from[1]), false, 0, 3,
+    [{ x: wu(10.5), y: wu(8.5), goalLevel: 0 }, { x: wu(10.5), y: wu(8.5), goalLevel: 4 }]);
+  assert.equal(trip2!.goalLevel, 4,
+    `the shorter walk (roof, ${upLen2.toFixed(0)}wu) lost to the longer one (floor, ${downLen2.toFixed(0)}wu)`);
 });
 
 test("the drawn surface keeps ties, and a single candidate is unchanged", () => {
