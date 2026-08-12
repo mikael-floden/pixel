@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_001",
+  "group": "waystones",
+  "rank": 6,
+  "index": 1,
+  "name": "Sea-smoothed coastal stone 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "sea-smoothed coastal stone",
+  "glow_concept": null,
+  "prompt": "a standing roadside stone waymarker with a carved direction mark and worn lettering, sea-smoothed coastal stone, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.16,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ef976bbc-e6e6-4d3f-99e4-0f8fdfec8d7a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
