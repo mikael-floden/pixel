@@ -1986,6 +1986,9 @@ side collision just like monsters").
   (z=-1 → the cell's own height); regression:
   scripts/verify-sunshadow.mjs (night=1 everywhere, morning/evening
   flip sides, noon shortest — runs on the default cliffy world).
+  NOTE: verify-glow-seams.mjs is STALE too (measured 2026-08-12: 11 horizontal
+  raw-field seams on glow_test, IDENTICAL count on the pre-light-ledger
+  baseline — pre-existing, not a lights regression).
   NOTE: verify-solidband.mjs + verify-wallspread.mjs are STALE (they
   predate the maps2 worlds and fail on baseline too — "no 5-cell wall
   run on screen"). verify-penumbra is now PINNED TO NIGHT (the day sun
@@ -2107,6 +2110,53 @@ side collision just like monsters").
     Ideal: `tiles2` classifies a material WHEN it creates it, before any world
     uses it, so a deploy is never blocked. If a DIFFERENT gate fails on an art
     push, that's a real art bug — not a surfaces edit.
+- **EMISSIVE TILES ARE REAL LIGHTS — THE LIGHT SLOT LEDGER** (maintainer
+  2026-08-12: "there should be NO DIFFERENCE in how bright the bonfire [tile]
+  is vs the campfire [object]. SAME PLACE. SAME NIGHT."). For its whole life
+  the emission system only ever produced additive glow STAMPS — a sticker over
+  the darkened frame: no attenuation, no LOS, no elevation, capped alpha —
+  while the campfire object was a true `ShaderLight`. The shader's real-light
+  path (including the NEGATIVE-radius shadow-free glow pool) had been built
+  and never wired to emission. Now: `buildEmissiveSources()` resolves every
+  emissive prop once per world; `pickWorldLights()` fills the world slots per
+  frame, closest first, hysteresis `LIGHT_HYST_PX` against boundary strobing.
+  Measured parity bonfire-tile/campfire 0.95 on real pixels, and the indoor
+  bonfire room (pitch black around a burning fire in the maintainer's shot)
+  reads 1.02 near the fire vs 0.24 across the room. THE LEDGER (12 slots):
+  1 my own torch + 1 ambient agent + 2 future fx (self spells / monster fx)
+  + **8 world** — reservations STRICT, never lent; write-side APIs in
+  `client/src/lightslots.ts`; full spec `games2/spec/LIGHT_BUDGET.md`.
+  Learned/necessary pieces:
+  - **REMOTE PLAYERS' TORCHES ARE NEVER LIGHTS ANY MORE** ("a player can only
+    ever see its own torch") — with 8 slots handed to the world, a crowded
+    street of torch-bearers would starve it. `torchLit(id)` is gone; only
+    `this.torchOn` matters. Player.torch stays synced server-side; nothing
+    client reads it now.
+  - **A slotted source's ground-pool STAMP is filtered out per frame** at the
+    `night.update` call (`srcId` + `ry` tags it): the real light replaces it —
+    keeping both double-brightens ground AND characters, since `curLights` and
+    `curStamps` both feed `lightAt`. High per-cluster halos stay (the art's own
+    bloom). The glow RT repaints from the stamp array every frame, so this is
+    a filter, not a rebuild. Lose the slot → the pool returns = the OVERFLOW
+    FALLBACK (over-budget spots degrade to exactly the pre-ledger look).
+  - Light params: `tiles2/emission.json` optional `lights` table (curated in
+    tiles2's `pipeline/emission.py` LIGHTS — a hand-edit of the json alone
+    would be lost on regeneration). Tile-path stem beats material; `null` =
+    stamp-only; absent → QUIET derived default (pool colour, radius
+    material+1.5 cap 5). The bonfire tile pins the campfire's exact numbers
+    (radius 7, [1.9,0.88,0.3] overbright, flicker 1).
+  - The indoor ROOM FILTER applies to emissive lights exactly as to the torch
+    — a fire in your room lights it, one outside fades on `indoorMix`. That
+    filter is also what fixed the dead indoor bonfire.
+  - `check-light-budget.mjs` (in `npm test`): no camera window may be
+    reachable by >8 world pools. RATCHET: pre-existing over-budget worlds are
+    pinned in `spec/light-budget-baseline.json` at their measured worst (all
+    demos; live the_island2 = 6/8) and only fail when they get WORSE.
+  - The QA `probeLight` consumes a WORLD slot while set — gates that count
+    slots must expect ≤7 world holders then.
+  - Probes: `__ml.lightSlots()` (live ledger + overflow), `__ml.lightAt()`
+    (CPU twin at a cell), `__ml.torch(on?)`. Gate:
+    `scripts/verify-lightparity.mjs` (parity, indoor, budget invariants).
 - **Self-emission (maps2 era)** is data-driven from `tiles2/emission.json`
   (`tiles2-emission@1`, owned by the tiles2 agent): per-MATERIAL glow params
   + per-tile-path glow `sources`. In maps2 worlds every emissive tile is a

@@ -1,0 +1,9 @@
+{
+  "_note": "RATCHET for check-light-budget.mjs (2026-08-12). Worlds listed here already exceeded the 8-light window when the light ledger shipped; they degrade gracefully (overflow keeps the glow-stamp look) and fail the gate only if they get WORSE. Burn these down when touched \u2014 the budget for new work is 8. glow_test is the deliberate every-material showcase and stays.",
+  "demo_isle": 10,
+  "demo_lost": 13,
+  "glow_test": 181,
+  "occlusion_test": 20,
+  "prop_demo": 142,
+  "the_island": 12
+}

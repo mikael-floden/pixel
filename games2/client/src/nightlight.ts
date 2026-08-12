@@ -70,6 +70,12 @@ export interface GlowStamp {
   // an offset and dims when you stand under it (the "brighter then darker as I
   // approach" bug). Undefined = eligible (legacy/terrain stamps, near-ground).
   litChar?: boolean;
+  // The emissive source ("col,row") this stamp belongs to. A source holding a
+  // REAL light slot has its ground POOL filtered out for the frame (the light
+  // replaces it — keeping both double-brightens the ground AND the characters,
+  // since curLights and curStamps both feed lightAt); its high halos stay, they
+  // are the art's own bloom, the campfire's flame-core equivalent.
+  srcId?: string;
 }
 
 export const MAX_SHADER_LIGHTS = 12;

@@ -90,6 +90,7 @@ import {
   GlowStamp,
   buildGlowStamps,
 } from "../nightlight";
+import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot } from "../live";
 import { ChatUI } from "../chat";
@@ -359,6 +360,36 @@ const MONSTER_CULL_SLACK = 64;
 // inside the rebuild window: culling only ever drops light that is entirely
 // off-screen.
 const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
+
+// THE LIGHT SLOT LEDGER — see lightslots.ts for the layout. World lights are
+// picked closest-to-camera-first among candidates whose POOL can touch the
+// view; a source holding a slot keeps it until a competitor is meaningfully
+// closer (hysteresis), so walking a boundary can't strobe a light on and off.
+const LIGHT_HYST_PX = 160; // ≈ 2.5 cells of screen-space stickiness
+// A world light candidate resolved from an emissive prop + emission.json.
+interface EmissiveSource {
+  id: string; // "col,row" — matches the pool stamp's srcId
+  col: number;
+  row: number;
+  z: number;
+  radius: number; // cells
+  color: [number, number, number];
+  flicker: number;
+  shadows: boolean; // false → negative radius = the shader's shadow-free glow pool
+  sx: number; // projected screen anchor (elevation-lifted) for view culling
+  sy: number;
+}
+// The optional `lights` block in tiles2/emission.json (per tile-path stem or
+// per material). All fields optional; radius in CELLS; color may exceed 1
+// (the shader clamps the multiply at 1.25, so >1 widens the hot plateau —
+// the campfire trick); z = levels above the cell surface.
+interface EmissiveLightCfg {
+  radius?: number;
+  color?: [number, number, number];
+  flicker?: number;
+  shadows?: boolean;
+  z?: number;
+}
 const EMISSION_BUCKET = 3; // cells per cluster bucket side
 // Pool reach ≈ radius(≤3.5 cells) × cluster growth(≤2) × 45.3 px/cell ≈ 316px,
 // plus the 96px camera drift allowed between occluder rebuilds.
@@ -1264,6 +1295,21 @@ export class WorldScene extends Phaser.Scene {
   // material name = a maps2 cell/prop's `t`) + per-tile-path glow sources.
   private tiles2Mat: EmissionMap = {};
   private tiles2Src: Record<string, EmissionSource[]> = {};
+  // OPTIONAL real-light params from emission.json `lights` (tiles2-owned):
+  // keyed by tile-path STEM (no extension) or material name; explicit null =
+  // "stamp only, never a real light". Absent → a subtle default is derived.
+  private tiles2Lights: Record<string, EmissiveLightCfg | null> = {};
+  // Every emissive prop in the WORLD, resolved once per world into real-light
+  // candidates. World-level on purpose: a light reaches the screen before its
+  // source does, so the per-frame pick below cannot start from the visible-prop
+  // set the way the stamps do.
+  private emissiveSources: EmissiveSource[] = [];
+  // Which world-slot holders are lit THIS frame (emissive ids + "campfire").
+  // Read by the stamp filter (a slotted source's ground POOL is replaced by
+  // its real light) and by the __ml.lightSlots probe.
+  private slotLit = new Set<string>();
+  private lightOverflow = 0; // in-view candidates that did NOT fit the budget
+  private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
   // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
   private propStamps: GlowStamp[] = [];
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
@@ -1484,11 +1530,17 @@ export class WorldScene extends Phaser.Scene {
     // flat terrain glows, so this stays out of the per-cell shader floor.
     if (this.maps2) {
       const t2 = this.cache.json.get("tiles2-emission") as
-        | { materials?: EmissionMap; sources?: Record<string, EmissionSource[]> }
+        | {
+            materials?: EmissionMap;
+            sources?: Record<string, EmissionSource[]>;
+            lights?: Record<string, EmissiveLightCfg | null>;
+          }
         | undefined;
       this.tiles2Mat = t2?.materials ?? {};
       this.tiles2Src = t2?.sources ?? {};
+      this.tiles2Lights = t2?.lights ?? {};
       if (!t2) console.warn("[nangijala] tiles2/emission.json missing — prop glow disabled");
+      this.buildEmissiveSources();
     }
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
@@ -2319,6 +2371,37 @@ export class WorldScene extends Phaser.Scene {
           })(),
         };
       },
+      // THE LIGHT SLOT LEDGER, live: which sources hold a real slot, what
+      // overflowed to the stamp fallback, whether the reserved slots are in
+      // use. A budget that only fails by LOOKING dim needs this to be
+      // assertable ("the channel is empty" and "the effect does nothing" are
+      // identical on screen — the cave lesson).
+      // The CPU light twin at an exact cell — the same sample the lit copies
+      // tint by (point lights + room gating + sun/cloud), so a gate can assert
+      // "this ground is fire-lit" numerically instead of decoding screenshots.
+      lightAt: (col: number, row: number, z?: number) => {
+        if (!this.night || !this.world) return null;
+        const zz = z ?? (this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0);
+        return this.night.lightAt(col, row, zz, false).map((v) => +v.toFixed(4));
+      },
+      // Torch switch for gates: measuring a fire's OWN pool needs my torch
+      // dark, and the settings button is not reachable headlessly.
+      torch: (on?: boolean) => {
+        if (on !== undefined && on !== this.torchOn) this.toggleTorch();
+        return this.torchOn;
+      },
+      lightSlots: () => ({
+        max: MAX_SHADER_LIGHTS,
+        reserved: RESERVED_LIGHT_SLOTS,
+        worldSlots: WORLD_LIGHT_SLOTS,
+        torch: this.lastSlotInfo.torch,
+        reservedInUse: this.lastSlotInfo.reserved,
+        total: this.lastSlotInfo.total,
+        slotted: [...this.slotLit],
+        overflow: this.lightOverflow,
+        sources: this.emissiveSources.length,
+        probe: !!this.probeLight,
+      }),
       // WHICH OF MY OWN CHARACTER'S CLIPS ARE REGISTERED. "The player is
       // loaded" means clips, not textures: a frame in the texture manager that
       // no clip points at is exactly the state this probe exists to catch.
@@ -6487,86 +6570,70 @@ export class WorldScene extends Phaser.Scene {
     this.night?.setActive(shaderNight);
     this.atmo.suppressGrade = shaderNight;
     if (shaderNight && this.world) {
+      // THE LIGHT SLOT LEDGER (maintainer 2026-08-12) — 12 slots, laid out so
+      // no system can starve another. See lightslots.ts for the contract:
+      //   1 my own torch · 1 ambient agent · 2 future fx · 8 the world.
+      // Push order below IS the layout. The QA probe light consumes a WORLD
+      // slot when set, so the total can never exceed MAX_SHADER_LIGHTS.
       const sl: ShaderLight[] = [];
       // Debug-only probe light (set via __ml.probeLight) — lets headless
       // verification place a light at an exact grid position, since walking
       // there is dt-clamped to a crawl on slow headless clients.
       if (this.probeLight) sl.push(this.probeLight);
-      if (fireLit && this.campfire) {
-        const c = this.campfire;
-        // Overbright core: the shader clamps the multiplier at 1.25, so values
-        // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
-        // a fast falloff into the ember-red rim).
-        sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 });
-      }
-      // MY TORCH IS THE DEATH LIGHT (maintainer 2026-08-12: "the players torch
-      // will be the thing that highlights the player being dead"). It rides the
+      // [SLOT: MY TORCH] — and ONLY mine. Remote players' torches are no
+      // longer lights at all (maintainer 2026-08-12: "a player can only ever
+      // see its own torch") — with 8 slots handed to the world, a crowded
+      // street of torch-bearers would otherwise be the thing that starves it.
+      //
+      // MY TORCH IS ALSO THE DEATH LIGHT (2026-08-12: "the players torch will
+      // be the thing that highlights the player being dead"). It rides the
       // SAME eased curve as the zoom and the veil, so a torch that was out —
-      // because it is broad daylight, or because I switched it off — kindles as
-      // the world goes dark instead of popping on at the first dead frame. A
-      // torch already burning is untouched: max() below can only ever raise it.
+      // broad daylight, or switched off — kindles as the world goes dark
+      // instead of popping on at the first dead frame; one already burning is
+      // untouched, max() can only raise it.
       const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
       const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
-      // Torches fill the remaining slots (emission glow pools live in the
-      // additive glow field, not in light slots — they can't be crowded out).
-      // (Filtered to my own room at the end of this block while indoors.)
-      // While dead MY body is registered FIRST: the slot array is capped at
-      // MAX_SHADER_LIGHTS and a crowded street must not be the thing that
-      // leaves the corpse in the dark.
-      const bodies: Iterable<[string, Avatar]> =
-        deathTorch > 0 && myId && this.avatars.has(myId)
-          ? [
-              [myId, this.avatars.get(myId)!] as [string, Avatar],
-              ...[...this.avatars.entries()].filter(([k]) => k !== myId),
-            ]
-          : this.avatars.entries();
-      for (const [id, a] of bodies) {
-        // The day gate is now PER BODY: "re-enable the player's torch even if
-        // it's day outside" (maintainer) — but only for bodies sharing MY room,
-        // which is an O(1) Set lookup into the space I already have, not a
-        // second flood fill. Everyone else keeps the global fade.
-        // `continue`, NOT `break`: the old gate broke the whole loop because
-        // curTorchF was loop-INVARIANT. Per-body, one daylit outdoor avatar
-        // early in the Map's join order would silently cancel every indoor
-        // torch behind it. max() is the right combiner — it never dims a torch
-        // daylight already allows, and it is continuous in both arguments, so
-        // the day fade and the doorway fade compose without a step.
-        //
-        // The lit gate and the day/doorway fade are ONE expression now, so the
-        // death ramp can join them as a third term: an unlit torch contributes
-        // 0, and mine while dead contributes the ramp. Alive, deathTorch is 0
-        // and this reduces exactly to the two `continue`s it replaced.
-        const base = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
-        const tf = Math.max(this.torchLit(id, myId, state) ? base : 0, id === myId ? deathTorch : 0);
-        if (tf <= 0.01) continue; // full Day, outdoors: torches have no impact
-        if (sl.length >= MAX_SHADER_LIGHTS) break;
-        // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
-        // world units) — the projected lx/ly live in screen space and put the
-        // torch underground, so the terrain shadowed its own light.
-        sl.push({
-          col: a.fx / CELL_WU,
-          row: a.fy / CELL_WU,
-          // Held low (waist height): a high torch grazes over ledge lips and
-          // lights ground far below cliffs, which reads as leakage. Anchor to the
-          // avatar's RENDERED elevation (litLevelOf: a.elev px → levels, or the
-          // pool surface while swimming) so a torch carried ONTO a deck
-          // (bridge/roof) sits at the deck's height and lights the deck around it
-          // — not the base ground 4 levels below, nor the pool floor a swimmer
-          // is sunk to (its head + the torch it holds float at the surface).
-          z: this.litLevelOf(a) + 0.55,
-          radius: 6,
-          // Colour scales with the day-fade: the light's whole contribution
-          // is linear in it, so the pool melts out smoothly. While dead my own
-          // torch goes OVERBRIGHT — the shader clamps the multiplier at 1.25,
-          // so values past 1 widen the hot plateau instead of blowing out (the
-          // campfire uses the same trick). That is what survives the veil.
-          color: (() => {
-            const k = tf * (id === myId ? 1 + (DEATH_TORCH_BOOST - 1) * deathTorch : 1);
-            return [0.85 * k, 0.58 * k, 0.32 * k] as [number, number, number];
-          })(),
-          flicker: 0.35, // hand torch: gentle fire flicker
-        });
+      const me = myId ? this.avatars.get(myId) : undefined;
+      this.lastSlotInfo.torch = false;
+      if (me) {
+        // Day gate + doorway override, now for one body: full Day outdoors a
+        // torch has no impact; indoors the doorway fade re-enables it.
+        const base = Math.max(this.curTorchF, this.indoorContains(me.fx, me.fy) ? this.indoorMix : 0);
+        const tf = Math.max(this.torchOn ? base : 0, deathTorch);
+        if (tf > 0.01) {
+          this.lastSlotInfo.torch = true;
+          // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
+          // world units) — the projected lx/ly live in screen space and put
+          // the torch underground, so the terrain shadowed its own light.
+          // Held low (waist height), anchored to the RENDERED elevation
+          // (litLevelOf) so a torch carried onto a deck lights the deck.
+          // While dead it goes OVERBRIGHT (the clamp widens the plateau
+          // instead of blowing out) — that is what survives the death veil.
+          const k = tf * (1 + (DEATH_TORCH_BOOST - 1) * deathTorch);
+          sl.push({
+            col: me.fx / CELL_WU,
+            row: me.fy / CELL_WU,
+            z: this.litLevelOf(me) + 0.55,
+            radius: 6,
+            color: [0.85 * k, 0.58 * k, 0.32 * k],
+            flicker: 0.35, // hand torch: gentle fire flicker
+          });
+        }
       }
+      // [SLOT: AMBIENT AGENT] + [2 FX SLOTS] — reserved write-side APIs in
+      // lightslots.ts. Empty slots stay empty: the reservation is strict, a
+      // loan would mean a world light pops off when the owner shows up.
+      const rl = reservedLights();
+      this.lastSlotInfo.reserved = 0;
+      for (const l of [rl.ambient, rl.selfFx, rl.monsterFx])
+        if (l) {
+          sl.push(l);
+          this.lastSlotInfo.reserved++;
+        }
+      // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
+      // range, as REAL lights at last. Overflow keeps the glow stamp.
+      this.pickWorldLights(sl, fireLit);
+      this.lastSlotInfo.total = sl.length;
       // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
       // "point light from outside has to be turned off"). This became load
       // bearing the moment the outside stopped being a void: it is drawn now
@@ -6717,11 +6784,20 @@ export class WorldScene extends Phaser.Scene {
       const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
+      // A source holding a REAL light slot hands its ground POOL stamp back
+      // for the frame — the light replaces it (keeping both double-brightens
+      // ground and characters: curLights and curStamps both feed lightAt).
+      // High halos (no srcId pool tag match... they carry the same srcId but
+      // ry is unset) stay: they are the art's own bloom. The glow RT repaints
+      // from this array every frame, so this is a filter, not a rebuild.
+      const stampsDrawn = this.slotLit.size
+        ? this.glowStamps.filter((g) => !(g.srcId && g.ry !== undefined && this.slotLit.has(g.srcId)))
+        : this.glowStamps;
       this.night!.update(
         this.cameras.main,
         sl,
         ambEff,
-        this.glowStamps,
+        stampsDrawn,
         sunIn,
         this.curCloud * (1 - iF),
         this.curAurora * (1 - iF),
@@ -6756,16 +6832,16 @@ export class WorldScene extends Phaser.Scene {
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
     if (!shaderNight) {
+      // MY torch only — same rule as the shader path (2026-08-12: remote
+      // players' torches are never lights), same death term so the corpse is
+      // lit on the Canvas renderer too.
       const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
       const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
-      for (const [id, a] of this.avatars.entries()) {
-        // Same per-body gate as the shader path, same `continue`-not-`break`
-        // reason (the scalar is no longer loop-invariant), and the same death
-        // term so the corpse is lit on the Canvas renderer too.
-        const base = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
-        const tf = Math.max(this.torchLit(id, myId, this.room?.state as any) ? base : 0, id === myId ? deathTorch : 0);
-        if (tf <= 0.5) continue;
-        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
+      const meAv = myId ? this.avatars.get(myId) : undefined;
+      if (meAv) {
+        const base = Math.max(this.curTorchF, this.indoorContains(meAv.fx, meAv.fy) ? this.indoorMix : 0);
+        const tf = Math.max(this.torchOn ? base : 0, deathTorch);
+        if (tf > 0.5) lights.push({ x: meAv.lx, y: meAv.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
     }
@@ -6808,18 +6884,10 @@ export class WorldScene extends Phaser.Scene {
     this.chat.addLog("—", `My torch: ${this.torchOn ? "on" : "off"}`);
   }
 
-  /** Is a player's torch lit? Mine reads the instant local mirror; everyone
-   * else reads their synced player state (default lit). This is the PREFERENCE
-   * only and has never held a day gate — that lives at the two consumption
-   * sites, which scale by `curTorchF` (0 at full Day: torches are an
-   * evening/night/morning feature, the switch keeps the preference and the
-   * flame waits for the light to fade). Since 2026-08-06 that gate is per body
-   * and INDOORS overrides it: "it's important to re-enable the players torch
-   * even if it's day outside" (maintainer). */
-  private torchLit(id: string, myId: string, state: any): boolean {
-    if (id === myId) return this.torchOn;
-    return state?.players?.get?.(id)?.torch ?? true;
-  }
+  // (torchLit(id) is gone with the remote torch lights, 2026-08-12: only MY
+  // torch is ever a light — "a player can only ever see its own torch" — so
+  // the preference is just this.torchOn. Player.torch stays synced on the
+  // server; nothing here reads it any more.)
 
   /** Cover the game render with a flat colour (frame QA): the Settings
    * "OVERLAY" button cycles NONE -> BLACK -> WHITE -> PINK. The cover is a
@@ -10266,7 +10334,19 @@ export class WorldScene extends Phaser.Scene {
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop;
     for (const p of props) {
-      const propOut = !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF);
+      // ROOM MEMBERSHIP FOR A PROP IS ROOF ∪ WALL, not roof alone. A prop
+      // BLOCKS its own cell in the terrain grid, so the room flood-fill can
+      // never put that cell in `roof` ("could the player stand here") — it
+      // lands in the shell. Gating on IN_ROOF alone therefore classified every
+      // emissive prop as "outside my room" the moment you stepped indoors,
+      // including the bonfire burning in the middle of the room you are
+      // standing in (maintainer 2026-08-12, screenshot: a pitch-black room
+      // around a lit fire). The LIGHT filter's mask has always been floor ∪
+      // shell for exactly this reason ("a torch mounted ON the wall of my room
+      // lights it") — the stamp gate now matches it. A glowing mushroom out on
+      // the grass is neither roof nor wall and stays suppressed.
+      const propOut =
+        !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & (IN_ROOF | IN_WALL));
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;
@@ -10330,6 +10410,10 @@ export class WorldScene extends Phaser.Scene {
           anim,
           phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
           litChar: true,
+          // Tagged with its source: while this source holds a REAL light slot
+          // the pool is filtered out per frame (the light replaces it) and it
+          // returns the moment the slot is lost — the overflow fallback.
+          srcId: `${p.col},${p.row}`,
         });
         // (b) HIGH HALOS — cosmetic bloom on the glowing pixels of the art
         // itself (rendered into the glow field over the prop body). NOT used to
@@ -10519,6 +10603,124 @@ export class WorldScene extends Phaser.Scene {
    * alone in unrelated terrain on every map. findSpawn then snaps to standable
    * ground exactly as the server does, so both sides agree without a round
    * trip. Its fire feeds the night shader. */
+  /** Resolve every emissive prop in the world into a REAL-light candidate,
+   * once per world. Until 2026-08-12 an emissive tile only ever produced an
+   * additive glow stamp — a sticker over the darkened frame, no attenuation,
+   * no LOS, no elevation ("why can't the bonfire tile look like the campfire
+   * object? SAME PLACE, SAME NIGHT" — maintainer). The shader's real-light
+   * path (including the never-wired negative-radius glow pool) was built for
+   * exactly this; what was missing is this list and the per-frame pick.
+   *
+   * Params come from emission.json's optional `lights` block (tile-path stem
+   * beats material name; explicit null = stamp-only opt-out). Absent, a
+   * SUBTLE default is derived from the data that already ships: the same
+   * strength-weighted source colour the pool stamp uses, radius a little
+   * past the stamp's, flicker from the material's anim. The bonfire tile's
+   * entry pins the campfire object's exact numbers — that parity is the
+   * whole point — while a glowing flower stays a quiet pool. */
+  private buildEmissiveSources() {
+    this.emissiveSources = [];
+    if (!this.world?.props?.length) return;
+    const stem = (p: string) => p.replace(/\.(png|webp)$/, "");
+    for (const p of this.world.props) {
+      const srcs = this.tiles2Src[p.path];
+      if (!srcs?.length) continue;
+      const mat = p.path.split("/")[1];
+      const cfg = this.tiles2Lights[stem(p.path)] !== undefined
+        ? this.tiles2Lights[stem(p.path)]
+        : this.tiles2Lights[mat];
+      if (cfg === null) continue; // tiles2 said: stamp only
+      const em = this.tiles2Mat[mat];
+      // Same colour derivation as the pool stamp — the ground must glow in
+      // the colour the art actually emits, not the material's average hue.
+      let cr = 0, cg = 0, cb = 0, sw = 0;
+      for (const g of srcs) {
+        cr += g.color[0] * g.s;
+        cg += g.color[1] * g.s;
+        cb += g.color[2] * g.s;
+        sw += g.s;
+      }
+      const glowColor: [number, number, number] =
+        sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
+      const avgS = srcs.length ? sw / srcs.length : 0;
+      const lvl = this.world.rows[p.row]?.[p.col]?.l ?? 0;
+      const pj = this.project((p.col + 0.5) * CELL_WU, (p.row + 0.5) * CELL_WU);
+      const k = avgS * 0.9; // derived default: a QUIET pool, not a bonfire
+      this.emissiveSources.push({
+        id: `${p.col},${p.row}`,
+        col: p.col + 0.5,
+        row: p.row + 0.5,
+        z: lvl + (cfg?.z ?? 0.5),
+        radius: Math.max(1, cfg?.radius ?? Math.min(5, (em?.radius ?? 2) + 1.5)),
+        color: cfg?.color ?? [glowColor[0] * k, glowColor[1] * k, glowColor[2] * k],
+        flicker: cfg?.flicker ?? (em?.anim === "flicker" ? 0.5 : em?.anim === "pulse" ? 0.15 : 0),
+        shadows: cfg?.shadows ?? true,
+        sx: pj.x,
+        sy: pj.y,
+      });
+    }
+  }
+
+  /** Fill the WORLD light slots for this frame: the campfire scenery + every
+   * emissive source whose pool can touch the view, closest to the camera
+   * first, at most WORLD_LIGHT_SLOTS of them (the QA probe light consumes one
+   * when set, so the total can never exceed MAX_SHADER_LIGHTS). The
+   * reservation is STRICT — empty torch/ambient/fx slots are never lent out,
+   * because a loan would mean a world light pops the moment the torch is
+   * struck. Losers keep their glow stamp (the old system IS the overflow
+   * fallback), so an over-budget spot degrades to exactly yesterday's look. */
+  private pickWorldLights(sl: ShaderLight[], fireLit: boolean) {
+    const room = Math.max(0, WORLD_LIGHT_SLOTS - (this.probeLight ? 1 : 0));
+    const cam = this.cameras.main;
+    const wv = cam.worldView;
+    const cx = cam.midPoint.x;
+    const cy = cam.midPoint.y;
+    type Cand = { key: string; score: number; l: ShaderLight };
+    const cands: Cand[] = [];
+    if (fireLit && this.campfire) {
+      const c = this.campfire;
+      cands.push({
+        key: "campfire",
+        score: Math.hypot(c.x - cx, c.y - cy) - (this.slotLit.has("campfire") ? LIGHT_HYST_PX : 0),
+        l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
+      });
+    }
+    for (const s of this.emissiveSources) {
+      // A pool reaches radius*dx px past its anchor — the light must be LIVE
+      // before its source scrolls on, or pools visibly pop at the screen edge.
+      const reach = s.radius * MAP_GEOMETRY.dx + 128;
+      if (s.sx + reach < wv.x || s.sx - reach > wv.right || s.sy + reach < wv.y || s.sy - reach > wv.bottom)
+        continue;
+      cands.push({
+        key: s.id,
+        score: Math.hypot(s.sx - cx, s.sy - cy) - (this.slotLit.has(s.id) ? LIGHT_HYST_PX : 0),
+        l: {
+          col: s.col,
+          row: s.row,
+          z: s.z,
+          // Sign of radius: negative = the shader's shadow-free glow pool.
+          radius: s.shadows ? s.radius : -s.radius,
+          color: s.color,
+          flicker: s.flicker,
+        },
+      });
+    }
+    cands.sort((a, b) => a.score - b.score);
+    this.slotLit.clear();
+    this.lightOverflow = Math.max(0, cands.length - room);
+    // STABLE PUSH ORDER: the shader's flicker phase is derived from the SLOT
+    // INDEX (uAnimTime*2.9 + i*5.3), not from the light itself — pushing in
+    // score order would re-phase every flame whenever the camera drifts and
+    // the ranking shuffles. Pick by score, then push the winners sorted by
+    // their own key, so a stable set keeps stable slots.
+    const win = cands.slice(0, room).sort((a, b) => (a.key < b.key ? -1 : 1));
+    for (const c of win) {
+      if (sl.length >= MAX_SHADER_LIGHTS) break;
+      sl.push(c.l);
+      this.slotLit.add(c.key);
+    }
+  }
+
   private placeCampfire() {
     if (!this.world || !this.terrain) return;
     if (!this.textures.exists(CAMPFIRE_KEY)) {
