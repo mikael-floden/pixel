@@ -134,6 +134,10 @@ jobs:
             /characters2/
             /maps2/worlds/
             /live/
+            # check-light-budget reads the emissive tiles' light params to
+            # count how many real light pools can reach one camera window.
+            # The FILE only (707 KB) — not the 34 MB of tiles2 art.
+            /tiles2/emission.json
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:

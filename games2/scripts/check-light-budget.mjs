@@ -44,7 +44,20 @@ const REACH_X = Math.SQRT2 * 32; // px per radius cell, horizontal
 const REACH_Y = Math.SQRT2 * 15; // px per radius cell, vertical
 const BASELINE = JSON.parse(readFileSync(join(here, "..", "spec", "light-budget-baseline.json"), "utf8"));
 
-const emission = JSON.parse(readFileSync(join(root, "tiles2", "emission.json"), "utf8"));
+// NEVER pass vacuously when the input is missing — but say WHY, because a raw
+// ENOENT stack from a CI runner is a puzzle. The deploy workflow's test job
+// takes a SPARSE checkout (games2/characters2/maps2 worlds/live), so this file
+// has to be listed there explicitly; it was not, and the first deploy after the
+// light ledger died here with a bare node trace (2026-08-12).
+const emissionPath = join(root, "tiles2", "emission.json");
+if (!existsSync(emissionPath)) {
+  console.error(
+    `check-light-budget: cannot read ${emissionPath}. If this is CI, the checkout is missing it — ` +
+      "the deploy workflow takes a sparse checkout and must list /tiles2/emission.json.",
+  );
+  process.exit(1);
+}
+const emission = JSON.parse(readFileSync(emissionPath, "utf8"));
 const lightsCfg = emission.lights ?? {};
 const stem = (p) => p.replace(/\.(png|webp)$/, "");
 
