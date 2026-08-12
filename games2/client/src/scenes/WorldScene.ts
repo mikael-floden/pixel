@@ -253,6 +253,12 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // The drain rides the ZOOM's own curve, not a clock of its own (maintainer
 // 2026-08-09: "monochrome and darkness should fade in together with the zoom
 // in") — one easing, so the picture cannot arrive before the push does.
+// What the game can actually make the local player do within seconds of a
+// spawn, most urgent first. These lead the deferred batch; my remaining states
+// (the weapon/spell clips, which nothing can trigger yet — there are no weapons
+// and every swing resolves to kick or punch) queue behind the NPCs. Ordering
+// only, never a filter: everything still loads.
+const PLAYER_URGENT_STATES = ["hurt", "die", "kick", "punch", "pickup"];
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 // THE VEIL IS A VIGNETTE, NOT A FLAT WASH. A flat one crushes the torch pool
@@ -1191,6 +1197,8 @@ export class WorldScene extends Phaser.Scene {
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  /** Deferred-batch bookkeeping for MY OWN character's clips — see animReady. */
+  private myAnimDebug: { queued: number; left: number; at: number | null } | null = null;
   /** The death sequence, while it runs. `armed` = the push has landed and the
    * prompt is up, so a press now asks the server to revive. */
   private death: {
@@ -1385,7 +1393,10 @@ export class WorldScene extends Phaser.Scene {
     // movement states (BOOT_ANIM_STATES); the 9 action states (~800 PNGs the
     // 2026-07-29 overhaul added, nothing triggers them yet) background-load
     // AFTER the avatar is in (loadDeferredAnims) so joining stays fast.
-    for (const def of this.manifest.characters) {
+    // MY OWN CHARACTER LEADS THE QUEUE (charsMeFirst) — the loader is FIFO, so
+    // otherwise whether my art is first or last is decided by where I happen to
+    // sit in characters.json.
+    for (const def of this.charsMeFirst()) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         if (!BOOT_ANIM_STATES.includes(state)) continue;
         for (const [dir, count] of Object.entries(dirs)) {
@@ -2306,6 +2317,38 @@ export class WorldScene extends Phaser.Scene {
             const l = this.night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, this.litLevelOf(a), false);
             return { on: this.torchOn, l: l.map((v) => +v.toFixed(3)) };
           })(),
+        };
+      },
+      // WHICH OF MY OWN CHARACTER'S CLIPS ARE REGISTERED. "The player is
+      // loaded" means clips, not textures: a frame in the texture manager that
+      // no clip points at is exactly the state this probe exists to catch.
+      animReady: () => {
+        const def = this.myCharacter;
+        if (!def) return null;
+        const states: Record<string, string> = {};
+        let ready = 0;
+        let total = 0;
+        for (const [state, dirs] of Object.entries(def.animations)) {
+          let n = 0;
+          const dirCount = Object.keys(dirs).length;
+          for (const dir of Object.keys(dirs)) {
+            if (this.anims.exists(animKey(def.uid, state, dir))) n++;
+          }
+          states[state] = `${n}/${dirCount}`;
+          ready += n;
+          total += dirCount;
+        }
+        return {
+          uid: def.uid,
+          ready,
+          total,
+          states,
+          kicked: this.deferredAnimsKicked,
+          // The early-registration path: how many of MY frames the deferred
+          // batch queued, how many are still outstanding, and when my clips
+          // actually became playable. `left` stuck above 0 with `at` null after
+          // the batch is the tell that the fast path silently did nothing.
+          mine: this.myAnimDebug,
         };
       },
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -8371,30 +8414,62 @@ export class WorldScene extends Phaser.Scene {
     if (this.deferredAnimsKicked) return;
     this.deferredAnimsKicked = true;
     let queued = 0;
-    // NPC IDLE FRAMES GO FIRST. They ride the deferred batch (never boot — a
-    // second loader run mid-create restarted the loading bar), but queued
-    // LAST they landed 18s in, behind ~800 action-state frames and every
-    // monster combat strip, so a town stood frozen the whole time. They are
-    // ~95 tiny images: first in the queue they arrive in a second or two, and
-    // the calm idle's frame-0 hold covers even that.
+    const queueState = (def: CharacterDef, state: string): string[] => {
+      const keys: string[] = [];
+      for (const [dir, count] of Object.entries(def.animations[state] ?? {})) {
+        for (let n = 0; n < count; n++) {
+          const fk = frameKey(def.uid, state, dir, n);
+          if (this.textures.exists(fk)) continue;
+          this.load.image(fk, withV(frameUrl(def, state, dir, n)));
+          keys.push(fk);
+          queued++;
+        }
+      }
+      return keys;
+    };
+    const deferredStates = (def: CharacterDef) =>
+      Object.keys(def.animations).filter((s) => !BOOT_ANIM_STATES.includes(s));
+
+    // MY OWN URGENT STATES GO FIRST — ahead of the NPCs, who held this spot
+    // until now (maintainer 2026-08-12: "the player is the most critical
+    // graphics/animations to always have fully loaded"). hurt/die/kick/punch/
+    // pickup are ALL deferred, so in manifest order the local player's could sit
+    // behind ~315 NPC frames AND another character's 408 — many seconds on a
+    // phone, and exactly the window where you spawn, get jumped by a predator
+    // and have no die clip. The NPCs lose their head start for this and the calm
+    // idle's frame-0 hold covers it: a frozen villager is cosmetic, a player
+    // with no death animation is not.
+    //
+    // PLAYER_URGENT_STATES is what the game can actually trigger seconds after
+    // a spawn. The weapon and spell states are deliberately NOT in it and are
+    // queued dead LAST of mine — nothing in the game can play them yet (there
+    // are no weapons; every swing resolves to kick or punch), and at 128 of my
+    // 408 frames they were a third of my own set sitting in front of art that
+    // was about to be drawn.
+    const chars = this.charsMeFirst();
+    const myDef = chars[0]?.uid === this.myCharacter?.uid ? chars[0] : null;
+    const mineByState = new Map<string, string[]>();
+    let myRest: string[] = [];
+    if (myDef) {
+      const all = deferredStates(myDef);
+      const urgent = PLAYER_URGENT_STATES.filter((s) => all.includes(s));
+      myRest = all.filter((s) => !urgent.includes(s));
+      for (const s of urgent) mineByState.set(s, queueState(myDef, s));
+    }
+    // NPC idle frames next. They ride the deferred batch (never boot — a second
+    // loader run mid-create restarted the loading bar), but queued LAST they
+    // landed 18s in, behind every action-state frame and every monster combat
+    // strip, so a town stood frozen the whole time.
     for (const f of this.npcIdleQueue) {
       if (this.textures.exists(f.key)) continue;
       this.load.image(f.key, withV(f.url));
       queued++;
     }
     this.npcIdleQueue = [];
-    for (const def of this.manifest.characters) {
-      for (const [state, dirs] of Object.entries(def.animations)) {
-        if (BOOT_ANIM_STATES.includes(state)) continue;
-        for (const [dir, count] of Object.entries(dirs)) {
-          for (let n = 0; n < count; n++) {
-            const fk = frameKey(def.uid, state, dir, n);
-            if (this.textures.exists(fk)) continue;
-            this.load.image(fk, withV(frameUrl(def, state, dir, n)));
-            queued++;
-          }
-        }
-      }
+    if (myDef) for (const s of myRest) mineByState.set(s, queueState(myDef, s));
+    for (const def of chars) {
+      if (def.uid === myDef?.uid) continue; // already queued, first
+      for (const s of deferredStates(def)) queueState(def, s);
     }
     // MONSTER combat strips (attack/angry/die — 525 strips, ~3.1 MB) join the
     // SAME background batch: boot stays walk+idle only (the loading-time work
@@ -8433,6 +8508,53 @@ export class WorldScene extends Phaser.Scene {
     // (Neither target marker needs an asset since rounds 9-11 — both borders
     // are drawn from the marked body's own silhouette.)
     if (!queued) return;
+    // AND MY CLIPS REGISTER THE MOMENT MY ART IS IN — queueing first buys
+    // nothing on its own, because buildAnimations ran ONLY on the loader's
+    // COMPLETE, i.e. after the other character, every NPC idle, all 525 monster
+    // combat strips and the blood spatters. My frames could be sitting in the
+    // texture manager for ten seconds with no clip pointing at them. Counting
+    // MY OWN queued keys is what makes the early run safe: a clip is built from
+    // whatever frames exist and is never repaired, so it may only fire once
+    // every one of them has landed — which is exactly when `left` hits 0.
+    // ...AND EACH OF MY STATES REGISTERS THE MOMENT ITS OWN FRAMES ARE IN.
+    // Queueing first buys nothing on its own, because buildAnimations ran ONLY
+    // on the loader's COMPLETE — after the other character, every NPC idle, all
+    // 525 monster combat strips and the blood spatters. Measured: my frames sat
+    // in the texture manager with no clip pointing at them for the whole batch.
+    // PER STATE and not per character, because those are 40-88 frames rather
+    // than 408: `hurt` is playable in a fraction of the time `sword` takes, and
+    // it is the one you need. Counting the keys is also what makes an early run
+    // SAFE — a clip is built from whatever frames exist and is never repaired,
+    // so a state may only be built once every one of its frames has landed.
+    const owner = new Map<string, string>(); // frame key -> which state wants it
+    const left = new Map<string, number>(); // state -> frames outstanding
+    for (const [s, keys] of mineByState) {
+      if (!keys.length) continue;
+      left.set(s, keys.length);
+      for (const k of keys) owner.set(k, s);
+    }
+    this.myAnimDebug = { queued: owner.size, left: owner.size, at: null };
+    if (owner.size) {
+      const dbg = this.myAnimDebug;
+      const onFile = (key: string) => {
+        const s = owner.get(key);
+        if (s === undefined) return;
+        owner.delete(key);
+        dbg.left--;
+        const n = (left.get(s) ?? 1) - 1;
+        if (n > 0) return void left.set(s, n);
+        left.delete(s);
+        this.buildAnimations(myDef?.uid, s);
+        if (dbg.at === null) dbg.at = Math.round(this.time.now);
+        if (!left.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile);
+      };
+      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onFile);
+      // A file that ERRORS never fires FILE_COMPLETE, so a state could stall at
+      // 1 forever — the batch's own COMPLETE drops the listener either way.
+      this.load.once(Phaser.Loader.Events.COMPLETE, () =>
+        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile),
+      );
+    }
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
       this.buildAnimations();
       // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
@@ -8454,7 +8576,23 @@ export class WorldScene extends Phaser.Scene {
     this.load.start();
   }
 
-  private buildAnimations() {
+  /** The character list with MY OWN first. The Phaser loader is a FIFO queue,
+   * so manifest order alone decides whose art exists first — and the local
+   * player's is the one nobody can tolerate missing (maintainer 2026-08-12:
+   * "the player is the most critical graphics/animations to always have fully
+   * loaded"). `sort` is stable, so everyone else keeps manifest order. */
+  private charsMeFirst(): CharacterDef[] {
+    const uid = this.myCharacter?.uid;
+    if (!uid) return this.manifest.characters;
+    return [...this.manifest.characters].sort((a, b) => (a.uid === uid ? 0 : 1) - (b.uid === uid ? 0 : 1));
+  }
+
+  /** `onlyUid` scopes the run to one character. IT IS NOT AN OPTIMISATION —
+   * a clip is built from whatever frames EXIST and, once created, is never
+   * repaired (`anims.exists` skips it), so registering mid-load would freeze a
+   * 9-frame die clip at the 2 frames that happened to have landed. Only pass a
+   * uid whose every frame is known to be in. */
+  private buildAnimations(onlyUid?: string, onlyState?: string) {
     // Anti-moonwalk playback rates measured from the art (build-manifest
     // gaitFps): the fps at which the gait's feet track the ground at the
     // gait's BASE speed. ONE rate per gait — legs keep the same cadence in
@@ -8462,7 +8600,9 @@ export class WorldScene extends Phaser.Scene {
     // made cadence pop on turns). Movement speed itself is untouched; actual
     // speed variation scales anims.timeScale per frame (applyAnimState).
     for (const def of this.manifest.characters) {
+      if (onlyUid && def.uid !== onlyUid) continue;
       for (const [state, dirs] of Object.entries(def.animations)) {
+        if (onlyState && state !== onlyState) continue;
         for (const [dir, count] of Object.entries(dirs)) {
           const key = animKey(def.uid, state, dir);
           if (this.anims.exists(key)) continue;

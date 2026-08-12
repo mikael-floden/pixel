@@ -2666,6 +2666,45 @@ side collision just like monsters").
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).
+- **THE LOCAL PLAYER'S OWN ART IS FIRST IN EVERY QUEUE, AND REGISTERS PER
+  STATE** (maintainer 2026-08-12: "often when I load the game it feels like the
+  player's own animations have not been loaded yet — the player is the most
+  critical graphics/animations to always have fully loaded"). Two independent
+  causes, and fixing either alone does nothing:
+  - **Order.** Both batches iterated `manifest.characters` in file order, so
+    whether MY art loaded first or last was decided by where I happen to sit in
+    `characters.json`. `charsMeFirst()` (stable sort) puts mine at the head of
+    the boot batch and of the deferred one. In the deferred batch mine now leads
+    the NPC idles too — the NPCs lose the head start they were given in the
+    2026-08-06 round, and the calm idle's frame-0 hold covers it. A frozen
+    villager is cosmetic; a player with no death animation is not.
+  - **Registration.** `buildAnimations()` ran ONLY on the loader's `COMPLETE`,
+    so every player clip became playable at ONE moment — after the other
+    character, all 315 NPC idle frames, 525 monster combat strips and the blood
+    spatters. Measured: my frames sat in the texture manager with no clip
+    pointing at them for the whole batch, and prioritising them changed nothing
+    at all (all 13 states still registered together). Each of my states now
+    registers the instant its OWN frames land.
+  - **Counting the keys is what makes an early run SAFE.** A clip is built from
+    whatever frames EXIST and, once created, is never repaired (`anims.exists`
+    skips it) — so registering mid-load would freeze an 88-frame die clip at
+    the 2 frames that happened to have arrived. `buildAnimations(uid, state)`
+    may only be called once every key queued for that state has fired
+    `FILE_COMPLETE`. A file that ERRORS never fires it, so the batch's own
+    `COMPLETE` drops the listener either way.
+  - `PLAYER_URGENT_STATES` = hurt/die/kick/punch/pickup — what the game can
+    actually trigger seconds after a spawn. The weapon and spell states are
+    deliberately NOT in it and queue behind the NPCs: nothing can play them yet
+    (there are no weapons; every swing resolves to kick or punch), and at 128 of
+    my 408 deferred frames they were a third of my own set sitting in front of
+    art about to be drawn. Ordering only, never a filter — everything still
+    loads.
+  - Measured on a throttled 12 Mbps / 40 ms link, seconds after the world is up:
+    **hurt 1.18, die 2.99, kick 3.77, punch 4.30, pickup 5.32**, with the
+    unusable weapon/spell clips trailing at 10.5-11.5 — where before every one
+    of them registered together at the end of the whole batch. Probe:
+    `__ml.animReady()` (per-state `n/dirs`, plus `mine.queued/left/at` — `left`
+    stuck above 0 with `at` null is the tell that the fast path did nothing).
 - **Asset loading is SPLIT + deploy-pinned cached** (maintainer 2026-07-29:
   "loading for so long" after the 13-state animation overhaul ballooned boot to
   ~1200 frame PNGs): (1) preload fetches ONLY `BOOT_ANIM_STATES`
