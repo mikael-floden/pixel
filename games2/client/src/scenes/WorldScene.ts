@@ -1184,7 +1184,7 @@ export class WorldScene extends Phaser.Scene {
   private death: {
     at: number;
     armed: boolean;
-    veil?: Phaser.GameObjects.Rectangle;
+    veil?: HTMLDivElement;
     el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
     /** The camera pose the push starts from — see startDeath. */
     from: { x: number; y: number; zoom: number };
@@ -2281,7 +2281,7 @@ export class WorldScene extends Phaser.Scene {
           ms: Math.round(t),
           zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
-          veil: +(d.veil?.alpha ?? 0).toFixed(3),
+          veil: +(d.veil?.style.opacity || 0),
           prompt: d.el ? +(d.el.style.opacity || 0) : 0,
         };
       },
@@ -9373,13 +9373,29 @@ export class WorldScene extends Phaser.Scene {
     // corpse and its killer vanished (maintainer 2026-08-09, with shots). The
     // darkening has to COMPOSITE ON TOP of the light the world already has, so
     // it is a plain veil and nothing else touches the render path.
-    // The veil is a screen-space rectangle, scrollFactor 0, above everything
-    // the world draws but BELOW the prompt.
-    this.death.veil = this.add
-      .rectangle(0, 0, this.scale.width * 4, this.scale.height * 4, 0x05050a, 0)
-      .setScrollFactor(0)
-      .setDepth(1_500_000)
-      .setOrigin(0.5, 0.5);
+    // A DOM VEIL OVER THE GAME VIEW. It was a Phaser Rectangle with
+    // scrollFactor 0 — screen space — positioned every frame at cam.midPoint,
+    // which is WORLD space. So it sat thousands of pixels off-screen and the
+    // darkening never appeared at all (maintainer 2026-08-09: "it doesn't feel
+    // at all like the game becomes darker, that effect feels totally
+    // missing"). In the DOM there is no scroll factor and no zoom to get
+    // wrong: it covers the game view's own box, the same --gv-*/--hud-h insets
+    // the card uses, and sits under the card and over the canvas.
+    const veil = document.createElement("div");
+    veil.className = "ml-death-veil";
+    veil.style.cssText = [
+      "position:fixed",
+      "left:var(--gv-left, 0px)",
+      "right:var(--gv-right, 0px)",
+      "top:0",
+      "bottom:var(--hud-h, 0px)",
+      "z-index:5",
+      "pointer-events:none",
+      "background:#05050a",
+      "opacity:0",
+    ].join(";");
+    document.body.appendChild(veil);
+    this.death.veil = veil;
     // MUSIC DOWN. `hushed` is the quietest mode the audio engine publishes
     // (0.25x); the composer agent owns that table and a true silence needs a
     // mode from them — asked for on their board. Restored on revive.
@@ -9405,10 +9421,7 @@ export class WorldScene extends Phaser.Scene {
       const ty = av.sprite.y - av.sprite.displayHeight * 0.35;
       cam.centerOn(d.from.x + (tx - d.from.x) * ease, d.from.y + (ty - d.from.y) * ease);
     }
-    if (d.veil) {
-      d.veil.setPosition(cam.midPoint.x, cam.midPoint.y);
-      d.veil.setAlpha((1 - DEATH_DARK) * ease);
-    }
+    if (d.veil) d.veil.style.opacity = String((1 - DEATH_DARK) * ease);
     // THE BODY DARKENS WITH THE WORLD. A second copy of the corpse used to be
     // drawn above the veil so it stayed brighter, and it worked — but a body
     // drawn twice is a body outside the depth sort, so it sat over things it
@@ -9474,7 +9487,7 @@ export class WorldScene extends Phaser.Scene {
     if (!d) return;
     this.death = null;
     d.el?.remove();
-    d.veil?.destroy();
+    d.veil?.remove();
     gameAudio.setMode("overworld");
     this.camDetached = false;
     this.camChase.init = false; // snap back onto the living body
