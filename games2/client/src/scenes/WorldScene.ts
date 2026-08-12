@@ -255,7 +255,18 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // in") — one easing, so the picture cannot arrive before the push does.
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
-const DEATH_DARK = 0.14; // brightness left at the end (0 would be a black screen)
+// THE VEIL IS A VIGNETTE, NOT A FLAT WASH. A flat one crushes the torch pool
+// exactly as hard as everything else — and at 3x zoom the body sits well INSIDE
+// the torch's 6-cell radius, so there is no falloff left on screen to read as a
+// pool either. Both together are why the shipped fade read as "very dark only"
+// with no torch at all (maintainer 2026-08-12, with a shot). So the veil keeps
+// most of the light ON the body and takes nearly all of it at the edges: the
+// gradient MANUFACTURES the pool the zoom flattened, and what shows through it
+// is the torch's own warm light.
+const DEATH_DARK = 0.05; // brightness left at the screen EDGE
+const DEATH_DARK_CORE = 0.62; // brightness left ON the body — the torch's pool
+const DEATH_FOCUS_Y = 0.46; // where the body lands in the view (see DEATH_AIM_FRAC)
+const DEATH_TORCH_BOOST = 1.6; // x my torch while dead — overbright widens the hot plateau
 const DEATH_AIM_FRAC = 0.12; // how far above the foot anchor the push aims — a lying body
 const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
@@ -5458,7 +5469,14 @@ export class WorldScene extends Phaser.Scene {
         for (const id of [...this.drops.keys()]) this.removeDrop(id);
         this.engagedId = null;
         this.pendingPickupId = null;
+        // AND THE DEATH SEQUENCE, which is DOM and therefore outlives the room
+        // that started it. A backgrounded tab drops the connection, the server
+        // revives me on its own backstop, and the fresh room's state has me
+        // ALIVE — so the dead→alive transition that normally ends the sequence
+        // never fires here, and the veil and the prompt hung over a player
+        // running around at full health (maintainer 2026-08-12, with shots).
         this.selfDead = false;
+        this.endDeath();
         this.pending = [];
         this.inputSeq = 0;
         this.sendAccum = 0;
@@ -6495,8 +6513,14 @@ export class WorldScene extends Phaser.Scene {
           z: this.litLevelOf(a) + 0.55,
           radius: 6,
           // Colour scales with the day-fade: the light's whole contribution
-          // is linear in it, so the pool melts out smoothly.
-          color: [0.85 * tf, 0.58 * tf, 0.32 * tf],
+          // is linear in it, so the pool melts out smoothly. While dead my own
+          // torch goes OVERBRIGHT — the shader clamps the multiplier at 1.25,
+          // so values past 1 widen the hot plateau instead of blowing out (the
+          // campfire uses the same trick). That is what survives the veil.
+          color: (() => {
+            const k = tf * (id === myId ? 1 + (DEATH_TORCH_BOOST - 1) * deathTorch : 1);
+            return [0.85 * k, 0.58 * k, 0.32 * k] as [number, number, number];
+          })(),
           flicker: 0.35, // hand torch: gentle fire flicker
         });
       }
@@ -9420,6 +9444,11 @@ export class WorldScene extends Phaser.Scene {
     // missing"). In the DOM there is no scroll factor and no zoom to get
     // wrong: it covers the game view's own box, the same --gv-*/--hud-h insets
     // the card uses, and sits under the card and over the canvas.
+    // Sweep strays first — the same rule the landscape gamepad follows. These
+    // two nodes live on <body>, so a teardown that skipped endDeath (a scene
+    // swap, a reload race) leaves them behind, and the card is
+    // pointer-events:none and can never be dismissed by hand.
+    for (const el of document.querySelectorAll(".ml-death-veil, .ml-death-card")) el.remove();
     const veil = document.createElement("div");
     veil.className = "ml-death-veil";
     veil.style.cssText = [
@@ -9430,7 +9459,17 @@ export class WorldScene extends Phaser.Scene {
       "bottom:var(--hud-h, 0px)",
       "z-index:5",
       "pointer-events:none",
-      "background:#05050a",
+      // ONE static gradient, rasterised once; only `opacity` moves per frame,
+      // which the compositor animates without repainting anything.
+      `background:radial-gradient(circle at 50% ${(DEATH_FOCUS_Y * 100).toFixed(0)}%,` +
+        ` rgba(5,5,10,${(1 - DEATH_DARK_CORE).toFixed(3)}) 0%,` +
+        // The mid stop is out at 34% so the whole FIGURE stays in the bright
+        // part — at 3x zoom the body is ~200px tall and a tighter core put a
+        // gradient across it. The gradient's extent is farthest-corner.
+        ` rgba(5,5,10,${(1 - (DEATH_DARK_CORE + DEATH_DARK) / 2).toFixed(3)}) 34%,` +
+        ` rgba(5,5,10,${(1 - DEATH_DARK).toFixed(3)}) 76%)`,
+      "will-change:opacity",
+      "transform:translateZ(0)",
       "opacity:0",
     ].join(";");
     document.body.appendChild(veil);
@@ -9445,6 +9484,11 @@ export class WorldScene extends Phaser.Scene {
   private stepDeath(now: number) {
     const d = this.death;
     if (!d) return;
+    // SELF-HEAL: the sequence may not outlive being dead. `selfDead` is cleared
+    // on the revive AND by the rejoin's clean slate, and anything else that
+    // learns I am alive gets this for free rather than having to remember to
+    // tear down a pair of DOM nodes it does not know about.
+    if (!this.selfDead) return this.endDeath();
     const cam = this.cameras.main;
     const id = this.room?.sessionId;
     const av = id ? this.avatars.get(id) : undefined;
@@ -9466,7 +9510,9 @@ export class WorldScene extends Phaser.Scene {
       const ty = av.sprite.y - av.sprite.displayHeight * DEATH_AIM_FRAC;
       cam.centerOn(d.from.x + (tx - d.from.x) * ease, d.from.y + (ty - d.from.y) * ease);
     }
-    if (d.veil) d.veil.style.opacity = String((1 - DEATH_DARK) * ease);
+    // The gradient already carries how dark each part of the screen ends up, so
+    // the ramp is the plain ease — 1 means "the vignette, fully arrived".
+    if (d.veil) d.veil.style.opacity = String(ease);
     // THE BODY DARKENS WITH THE WORLD. A second copy of the corpse used to be
     // drawn above the veil so it stayed brighter, and it worked — but a body
     // drawn twice is a body outside the depth sort, so it sat over things it

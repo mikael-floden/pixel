@@ -1465,6 +1465,28 @@ theme in SCREEN space at 40% of the game view — as world-space Phaser text the
 3x zoom magnified it into a banner — and it is what ARMS the press: a tap
 during the fade is swallowed, and the server refuses one before the clip ends.
 
+THE VEIL IS A VIGNETTE, NOT A FLAT WASH. A flat one darkens the torch pool by
+exactly as much as it darkens everything else, so lighting the torch changed
+nothing you could see — and at 3x zoom the body sits well INSIDE the torch's
+6-cell radius, so there is no falloff left on screen to read as a pool either.
+Both together are why the first cut read as "very dark only". The gradient keeps
+`DEATH_DARK_CORE` of the light on the body and takes all but `DEATH_DARK` at the
+edges: it MANUFACTURES the pool the zoom flattened, and what shows through it is
+the torch's own warm light. It is ONE static gradient — only `opacity` moves per
+frame, which the compositor animates without repainting, so this costs nothing
+per frame however dramatic it gets.
+
+THE SEQUENCE IS DOM, SO IT OUTLIVES THE ROOM THAT STARTED IT. A backgrounded tab
+drops the connection; the server revives me on its own backstop; the rejoin's
+fresh state has me ALIVE, so the dead→alive transition that normally ends the
+sequence never fires — and the veil and the prompt hung over a player running
+around at full health, with the card `pointer-events:none` and impossible to
+dismiss (maintainer 2026-08-12, with shots). Three layers, and the middle one is
+the rule: `handleDrop`'s clean slate calls `endDeath()`; `stepDeath` SELF-HEALS
+on `!selfDead`, so anything that learns I am alive tears the sequence down
+without having to know these two nodes exist; and `startDeath` sweeps strays off
+`<body>` first, for a teardown that skipped `endDeath` entirely.
+
 THE TORCH IS WHAT PICKS THE CORPSE OUT OF THE DARK (maintainer 2026-08-12). My
 own torch is exempt from BOTH of its gates while I am dead — the day fade
 (`curTorchF`, 0 at full Day) and the on/off switch — and it KINDLES on the same
