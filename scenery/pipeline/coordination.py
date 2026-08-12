@@ -90,16 +90,6 @@ def publish(current, progress, budget_remaining, health="running", add_notes=Non
     return status
 
 
-def progress_snapshot(cfg):
-    """Filesystem-derived progress for the heartbeat."""
-    specs = factory.object_specs(cfg)
-    complete = sum(1 for s in specs
-                   if (factory.read_manifest(s["id"]) or {}).get("status") == "complete")
-    started = sum(1 for s in specs if factory.has_base(s["id"]))
-    return {"scenery_complete": complete, "scenery_started": started,
-            "scenery_target": len(specs)}
-
-
 def peer_summary(peers):
     """One-line-per-peer human summary for run startup."""
     if not peers:

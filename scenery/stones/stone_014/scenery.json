@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_014",
+  "group": "stones",
+  "rank": 2,
+  "index": 14,
+  "name": "Toppled old gatepost stone 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "toppled old gatepost stone",
+  "glow_concept": "thin runes etched glowing warm amber",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, toppled old gatepost stone, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.54,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "226a64bd-852b-43af-afad-accd3d8fba10",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

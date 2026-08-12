@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_006",
+  "group": "stones",
+  "rank": 2,
+  "index": 6,
+  "name": "Stacked pair of stones 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stacked pair of stones",
+  "glow_concept": "tiny golden memory motes drifting above it",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stacked pair of stones, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.68,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6f114d77-b0e9-4df9-9edf-780be49c0d45",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

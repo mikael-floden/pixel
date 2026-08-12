@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_004",
+  "group": "stones",
+  "rank": 2,
+  "index": 4,
+  "name": "Smooth river-worn boulder 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "smooth river-worn boulder",
+  "glow_concept": "ring of ghost-blue lichen circles",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, smooth river-worn boulder, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.9,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e4dc5d1b-432a-44b9-b1b6-6ca29846b0a3",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

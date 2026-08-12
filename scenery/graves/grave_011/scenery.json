@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grave_011",
+  "group": "graves",
+  "rank": 3,
+  "index": 11,
+  "name": "Carved whalebone marker 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved whalebone marker",
+  "glow_concept": null,
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, carved whalebone marker, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.99,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "792e7df6-3cd0-4ec1-bf91-4fa0425e4170",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

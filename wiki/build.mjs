@@ -503,21 +503,32 @@ function buildObjects() {
   // The scenery domain (renamed from objects/ 2026-08-12 — scenery agent). The
   // wiki's INTERNAL domain key stays "objects" (route slugs are URLs and
   // feedback ids ride on them); only the disk paths moved.
+  // v2 (2026-08-12): pieces live in ranked GROUPS — scenery/<group>/<id>/ —
+  // with three legacy pieces still at the top level. A top-level dir carrying
+  // scenery.json is a legacy piece; one whose children carry it is a group.
   const base = join(ROOT, "scenery");
   if (!isDir(base)) return null;
+  const entries = [];
+  for (const top of listDirs(base)) {
+    if (["config", "pipeline", "spec"].includes(top)) continue;
+    const legacy = readJson(join(base, top, "scenery.json"));
+    if (legacy) { entries.push([top, null, legacy]); continue; }
+    for (const child of listDirs(join(base, top))) {
+      const m = readJson(join(base, top, child, "scenery.json"));
+      if (m) entries.push([`${top}/${child}`, top, m]);
+    }
+  }
   const objects = [];
-  for (const id of listDirs(base)) {
-    if (["config", "pipeline", "spec"].includes(id)) continue;
-    const oj = readJson(join(base, id, "scenery.json"));
-    if (!oj) continue;
+  for (const [rel, group, oj] of entries) {
+    const id = rel.split("/").pop();
     const anims = {};
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
       const dirs = {};
       for (const dir of DIRS) {
         const d = a.directions?.[dir];
         if (!d) continue;
-        const stripRel = d.strip ?? `${id}/animations/${key}__${dir}.png`;
-        const declared = `scenery/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
+        const stripRel = d.strip ?? `${rel}/animations/${key}__${dir}.png`;
+        const declared = `scenery/${stripRel.startsWith(rel.split("/")[0] + "/") ? stripRel : `${rel}/animations/${key}__${dir}.png`}`;
         // scenery.json names the file, and it may still say ".png" for a while
         // after the scenery domain converts. Resolve against the DISK, so the
         // wiki doesn't go blank waiting for another agent's metadata edit.
@@ -532,10 +543,11 @@ function buildObjects() {
     objects.push({
       id,
       name: oj.name ?? titleCase(id),
-      category: oj.category ?? "misc",
-      description: oj.description ?? "",
-      path: `scenery/${id}`,
-      preview: art(`scenery/${id}/sprite`),
+      category: group ?? oj.category ?? "misc",
+      lights: oj.lights ?? null,
+      description: oj.description ?? oj.prompt ?? "",
+      path: `scenery/${rel}`,
+      preview: art(`scenery/${rel}/sprite`),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,

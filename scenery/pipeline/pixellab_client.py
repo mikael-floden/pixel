@@ -127,17 +127,55 @@ class PixelLabClient:
 
     # -- server-side object store (v2/objects) -------------------------------
     #
-    # PixelLab keeps a server-side "Object creator" store at v2/objects. Our loop
-    # does NOT create these (it uses the stateless image endpoints), and the store
-    # has no create endpoint (POST -> 405), so it's effectively read + delete for
-    # us. Sync uses these to (a) mirror any object a human authored in the UI and
-    # (b) keep repo/PixelLab deletions in lockstep (no loose pointers).
+    # PixelLab keeps a server-side "Object creator" store at v2/objects. Since
+    # 2026-08 the API creates into it directly (create-1-direction-object /
+    # create-8-direction-object) — the old "POST /objects -> 405" note predates
+    # that. Sync uses these reads to (a) mirror any object a human authored or
+    # regenerated in the UI and (b) keep repo/PixelLab deletions in lockstep.
+
+    PAGE = 100  # the API's hard cap (limit > 100 is a 422)
+
+    def _objects_page(self, offset):
+        r = self._request("GET", f"{OBJECTS_URL}?limit={self.PAGE}&offset={offset}")
+        if isinstance(r, list):
+            return r, None
+        return (r.get("objects") or r.get("items") or []), r.get("total")
 
     def list_objects(self):
-        resp = self._request("GET", OBJECTS_URL)
-        if isinstance(resp, list):
-            return resp
-        return resp.get("objects") or resp.get("items") or []
+        """EVERY object in the store, deduped by id — never a single page.
+
+        PixelLab's limit/offset pagination is NOT stable (the items agent
+        measured consecutive pages repeating one record and skipping another),
+        and a short listing is DANGEROUS here: deletion parity treats "not in
+        the listing" as "deleted upstream" and removes repo folders. The 2026-
+        08-12 incident proved it — a single-page listing of a 228-object store
+        made parity delete the three game-referenced legacy pieces. So pages
+        OVERLAP (offset advances by half a page, then a third on the retry
+        sweep), ids are deduped, and a listing shorter than the server's own
+        `total` RAISES instead of being returned."""
+        seen, total = {}, None
+        for stride in (self.PAGE // 2, self.PAGE // 3):
+            offset = 0
+            while True:
+                batch, t = self._objects_page(offset)
+                if t is not None:
+                    total = t
+                for it in batch:
+                    if it.get("id"):
+                        seen[it["id"]] = it
+                if not batch:
+                    break
+                offset += stride
+                if total is not None and offset >= total:
+                    break
+            if total is None or len(seen) >= total:
+                break
+        if total is not None and len(seen) < total:
+            raise PixelLabError(
+                f"objects: listed only {len(seen)} of {total} records — the API's "
+                f"pagination is dropping rows. Refusing to return a short list: "
+                f"deletion parity prunes what a listing omits.")
+        return list(seen.values())
 
     def get_object(self, object_id):
         return self._request("GET", f"{OBJECTS_URL}/{object_id}")
@@ -159,6 +197,74 @@ class PixelLabClient:
         if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
             return 200, Image.open(io.BytesIO(r.content)).convert("RGBA"), r.headers.get("Last-Modified")
         return r.status_code, None, if_modified
+
+    # -- scenery v2: batched 1-direction objects ------------------------------
+    #
+    # The v2 factory's whole cost model rides on ONE API rule: a
+    # create-1-direction-object call costs 20-40 generations but yields
+    # MULTIPLE candidate objects at once when the size allows it (<=42px -> 64
+    # candidates, <=85 -> 16, <=170 -> 4, else 1), each candidate drawable from
+    # its own `item_descriptions` entry. The call lands in status 'review';
+    # select-frames turns kept candidates into completed individual objects and
+    # tags them all (`common_tag`) in the same request.
+
+    def create_1d_batch(self, description, size, item_descriptions=None, view="top-down"):
+        """Queue one batched 1-direction create. Returns the raw response
+        ({object_id, background_job_id, ...}) without waiting."""
+        payload = {"description": description, "size": int(size), "view": view}
+        if item_descriptions:
+            payload["item_descriptions"] = list(item_descriptions)
+        return self._request("POST", f"{V2_BASE}/create-1-direction-object", json=payload)
+
+    def wait_object(self, object_id, want=("review", "completed"), timeout=1200, interval=6):
+        """Poll GET /objects/{id} until it reaches one of `want` (or fails)."""
+        deadline = time.monotonic() + timeout
+        while True:
+            o = self.get_object(object_id)
+            st = o.get("status")
+            if st in want:
+                return o
+            if st == "failed":
+                raise PixelLabError(f"object {object_id} generation failed")
+            if time.monotonic() > deadline:
+                raise PixelLabError(f"object {object_id} still '{st}' after {timeout}s")
+            time.sleep(interval)
+
+    def select_frames(self, object_id, indices, common_tag=None):
+        """Keep review candidates as completed individual objects; `common_tag`
+        tags every newly-created object in the same call."""
+        payload = {"indices": list(indices)}
+        if common_tag:
+            payload["common_tag"] = common_tag
+        return self._request("POST", f"{OBJECTS_URL}/{object_id}/select-frames", json=payload)
+
+    def dismiss_review(self, object_id):
+        return self._request("POST", f"{OBJECTS_URL}/{object_id}/dismiss-review", json={})
+
+    def set_tags(self, object_id, tags):
+        """Replace ALL tags on an object (max 20 tags, 50 chars each)."""
+        return self._request("PATCH", f"{OBJECTS_URL}/{object_id}/tags", json={"tags": list(tags)})
+
+    @staticmethod
+    def sprite_url(detail):
+        """The single image URL of a 1-direction object's detail record.
+        1-direction objects carry null rotation_urls; the art lives in
+        storage_urls (or, in review status, frame_urls)."""
+        rot = detail.get("rotation_urls") or {}
+        if rot.get("south"):
+            return rot["south"]
+        storage = detail.get("storage_urls") or {}
+        for v in storage.values():
+            if isinstance(v, str) and v:
+                return v
+            if isinstance(v, dict):
+                for u in v.values():
+                    if isinstance(u, str) and u:
+                        return u
+        frames = detail.get("frame_urls") or []
+        if frames:
+            return frames[0]
+        return detail.get("preview_url")
 
     # -- persistent 8-direction objects (create-object UI + animations) ------
 

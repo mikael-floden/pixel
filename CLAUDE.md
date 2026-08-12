@@ -18,10 +18,14 @@ do not add domain-specific files to the repo root.
 - `maps2/` — worlds, 2nd generation (its own agent; `worlds/<name>/world.json`).
 - `scenery/` — scenery, formerly `objects/` (renamed 2026-08-12; its own
   **scenery agent**): freely placeable, optionally animated set dressing —
-  campfires, grave crosses, lamps. Unlike a tile it doesn't follow the tile
-  grid, and it can animate (tiles can't). Generated on PixelLab; the maps2
-  agent places it in worlds. One folder per piece with a `scenery.json`
-  manifest, rolled up into `scenery/viewer_data.json`. See `scenery/README.md`.
+  trees, stones, graves, lamps. Unlike a tile it doesn't follow the tile
+  grid, and it can animate (tiles can't). Generated on PixelLab (every store
+  object tagged `SCENERY`); the maps2 agent places it in worlds. v2 factory:
+  100 ranked GROUPS (`scenery/<group>/<id>/scenery.json`), quota by rank
+  toward 2,650 pieces, half LIGHTS_ON / half LIGHTS_OFF, SOUTH-only, daily
+  ~100-piece loop; three legacy top-level pieces (campfire, grave_cross,
+  blood_spatter) are game-referenced and frozen. Rolled up into
+  `scenery/viewer_data.json`. See `scenery/README.md`.
 - `games2/` — the Nangijala game (consumer of the art domains; see
   `games2/CLAUDE.md`).
 - `items/` — game items via PixelLab (its own agent; the item TYPE tags on

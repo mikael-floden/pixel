@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_005",
+  "group": "stones",
+  "rank": 2,
+  "index": 5,
+  "name": "Barnacled coastal rock 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "barnacled coastal rock",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, barnacled coastal rock, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.74,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e4e12a72-d105-44a8-804d-aa57c2291c4b",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

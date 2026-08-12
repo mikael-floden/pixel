@@ -1,116 +1,3695 @@
 {
-  "_comment": "Scenery factory. Every scenery piece is a PixelLab 8-direction object (create-8-direction-object) sized for its type (32-256), Grave Seasons style, scaled vs a 64px character. ANIMATIONS BY OBVIOUSNESS: default 0; add 1 if the piece has one obvious motion (fire flicker, foliage sway in wind, a chest opening, a creature moving), 2 if it clearly has two (a campfire: flames + smoke). Animations use max frames (16) across all 8 directions.",
+  "format": "scenery-factory@2",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated in batched create-1-direction-object calls (item_descriptions), half lit / half unlit, deterministic plan in pipeline/catalog.py.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, a single centered game prop on a transparent background",
-  "style_version": 2,
-  "_style_version": "Bump this when the look changes. Scenery whose manifest records an older style_version is considered stale; run the loop with --restyle (or the workflow's restyle input) to delete and regenerate it in the new style.",
-  "defaults": {
-    "view": "low top-down",
-    "direction": "south",
-    "outline": "selective outline",
-    "shading": "detailed shading",
-    "detail": "highly detailed",
-    "no_background": true,
-    "text_guidance_scale": 8.0,
-    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling, thick uniform black cartoon outline, sticker look, flat solid colors, low effort",
-    "animation_image_guidance_scale": 3.0,
-    "animation_text_guidance_scale": 6.0
+  "tag": "SCENERY",
+  "view": "top-down",
+  "max_batch": 16,
+  "quota_rule": {
+    "base": 102,
+    "step": -2,
+    "floor": 2,
+    "_comment": "quota(rank) = max(floor, base + step*rank). The floor keeps the maintainer's 'two versions of every type' promise: every type gets at least its ON/OFF pair. One knob to grow the bottom half later."
+  },
+  "lights": {
+    "off_clause": "completely unlit, no glow, no light sources, no self-emission",
+    "on_clause": "self-emissive at night, softly radiating light",
+    "_comment": "Composed into every piece prompt: odd piece numbers are LIGHTS_OFF, even are LIGHTS_ON with a per-piece glow concept from the group's glow_concepts."
   },
   "scale": {
-    "_comment": "REALISM RULE: scenery is scaled to the world by real height, so it sits correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each piece's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every piece MUST have a world_height_m (per-piece, else category_height_m fallback).",
+    "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
-    "character_height_m": 1.7,
-    "category_height_m": {
-      "container": 0.8,
-      "valuable": 0.25,
-      "tool": 1.0,
-      "nature": 1.0,
-      "light": 1.0,
-      "creature": 0.25,
-      "misc": 0.8,
-      "building": 4.0,
-      "structure": 1.0
-    }
+    "character_height_m": 1.7
   },
   "budget": {
     "min_generations_remaining": 2000,
-    "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
+    "min_usd": 2.0,
+    "daily_pieces": 100,
+    "_comment": "A batch may run while the subscription pool sits above the fleet's shared floor (coordination/PROTOCOL.md) OR usd credits sit above min_usd. The loop stops cleanly at the floor and simply resumes next day."
   },
-  "targets": {
-    "num_scenery": 1,
-    "_comment": "PIN KEPT ON PURPOSE (scenery agent, 2026-08-12). History: 2026-07-31 the maintainer cut this dormant domain to what the game actually draws and pinned the target so the loop could not refill it with props nothing asked for. The scenery agent now exists and owns this domain (renamed objects/ -> scenery/), but the pin stays until the maintainer green-lights the next generation round — raise it DELIBERATELY together with new catalog entries, never as a side effect of running the loop."
-  },
-  "catalog": [
-    {
-      "id": "campfire",
-      "name": "Campfire",
-      "category": "light",
-      "description": "a campfire of logs with dancing flames",
-      "size": 96,
-      "animations": [
-        {
-          "key": "burn",
-          "description": "the fire burning and dancing",
-          "frames": 16
-        },
-        {
-          "key": "smoke",
-          "description": "smoke rising from the fire",
-          "frames": 16
-        }
-      ],
-      "world_height_m": 0.6
-    },
-    {
-      "id": "grave_cross",
-      "name": "Wooden grave cross",
-      "category": "decor",
-      "description": "a wooden grave cross that appears from the ground where something died",
-      "size": 34,
-      "animations": [
-        {
-          "key": "appear",
-          "description": "Appears from the ground",
-          "frames": 16
-        }
-      ],
-      "world_height_m": 0.9,
-      "pixellab_object_id": "56b75726-69bd-4b23-a54f-3626b5df3700",
-      "_note": "The maintainer's own PixelLab object (2026-08-05): synced as-is, SOUTH-only animation by design — the game plays it at monster graves and reverses it to sink away. Do not regenerate."
-    },
-    {
-      "id": "blood_spatter",
-      "name": "Blood spatter",
-      "category": "effect",
-      "description": "a burst of blood dispersing into particles — the game's hit effect",
-      "size": 34,
-      "animations": [
-        {
-          "key": "spatter",
-          "description": "blood spatter in all directions",
-          "frames": 16
-        }
-      ],
-      "world_height_m": 0.5,
-      "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
-      "_note": "The maintainer's own PixelLab object (2026-08-05), stored TRIMMED (see scenery.json 'edited'): the game plays only the burst->dispersal window, forward or reversed, on every landed hit. Do not regenerate and do not mirror verbatim over the trims."
-    }
+  "legacy_pieces": [
+    "campfire",
+    "grave_cross",
+    "blood_spatter"
   ],
-  "_procedural": "When the explicit catalog is exhausted but targets.num_scenery is not yet reached, the loop synthesizes more scenery by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
-  "procedural": {
-    "kinds": [],
-    "adjectives": [
-      "ancient",
-      "ornate",
-      "rusty",
-      "enchanted",
-      "weathered",
-      "gilded",
-      "mossy",
-      "cracked",
-      "polished",
-      "runed"
-    ],
-    "_disabled": "Emptied 2026-07-31 with the domain reduction. This is what invents scenery once the catalog is exhausted; with num_scenery 1 it would not fire, but raising the target would silently start generating props nothing asked for."
-  },
-  "_animations": "Every scenery piece is a persistent 8-direction PixelLab object (create-8-direction-object) with animations chosen to fit it, each animated across all 8 directions."
+  "groups": [
+    {
+      "rank": 1,
+      "id": "trees",
+      "prefix": "tree",
+      "name": "Tree",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage",
+      "world_height_m": [
+        2.8,
+        5.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "gnarled old oak",
+        "slender silver birch",
+        "tall scots pine",
+        "dark narrow spruce",
+        "wild cherry in blossom, tall irregular crown",
+        "rowan with red berries",
+        "flame-red autumn maple",
+        "golden autumn beech",
+        "bare dead tree",
+        "lightning-split trunk",
+        "snow-dusted fir",
+        "slim young aspen",
+        "white-blossomed hawthorn",
+        "heart-leaved linden",
+        "crooked windswept pine",
+        "ivy-strangled elm",
+        "copper beech"
+      ],
+      "glow_concepts": [
+        "iron lantern hung from a low branch",
+        "golden sap veins glowing through bark cracks",
+        "swarm of fireflies drifting through the crown",
+        "blue-white soul-light spilling from a knot hole",
+        "teal bioluminescent moss patches up the trunk",
+        "carved initials glowing ember-orange in the bark",
+        "memorial candles nestled between the roots",
+        "pale blossoms shining faintly across the branches"
+      ],
+      "animation_idea": "crown foliage swaying gently in the wind with a few leaves drifting loose",
+      "lore_fit": "Every remembered climbing-tree and churchyard oak still stands here, so Nangijala's valleys are stitched together out of the trees the dead could not forget."
+    },
+    {
+      "rank": 2,
+      "id": "stones",
+      "prefix": "stone",
+      "name": "Stone",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss",
+      "world_height_m": [
+        0.3,
+        1.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "grey granite boulder",
+        "rounded mossy stone",
+        "split rock with sharp cleft",
+        "flat lichen-covered slab",
+        "weathered sandstone lump",
+        "dark basalt block",
+        "white quartz-flecked boulder",
+        "red iron-stained stone",
+        "smooth river-worn boulder",
+        "frost-cracked angular rock",
+        "stacked pair of stones",
+        "half-buried tilted stone",
+        "pitted volcanic rock",
+        "pale limestone chunk",
+        "flaking layered slate stone",
+        "boulder wrapped in briar roots",
+        "snow-dusted winter stone",
+        "stone with carved initials",
+        "toppled old gatepost stone",
+        "barnacled coastal rock"
+      ],
+      "glow_concepts": [
+        "thin runes etched glowing warm amber",
+        "patches of luminous blue-green moss",
+        "molten orange soulstone veins in deep cracks",
+        "glowing pale handprint pressed on the face",
+        "tiny golden memory motes drifting above it",
+        "ring of ghost-blue lichen circles",
+        "ember light leaking from a hollow beneath"
+      ],
+      "animation_idea": "moss glow softly pulsing while golden motes drift up",
+      "lore_fit": "Every plain stone is a fact somebody still remembers about a field or a path, the humblest furniture of the remembered valleys."
+    },
+    {
+      "rank": 3,
+      "id": "graves",
+      "prefix": "grave",
+      "name": "Grave",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base",
+      "world_height_m": [
+        0.5,
+        1.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "rounded granite headstone",
+        "cracked slate slab",
+        "weathered wooden plank marker",
+        "moss-covered fieldstone",
+        "child's small pebble marker",
+        "carved whalebone marker",
+        "rusted iron plate marker",
+        "twin stones, shared mound",
+        "headstone with carved bird",
+        "briar-rose grown stone",
+        "snow-capped winter headstone",
+        "marble stone, gilded name",
+        "toppled half-sunk stone",
+        "sea-worn driftwood marker"
+      ],
+      "glow_concepts": [
+        "carved name letters glowing warm amber",
+        "single votive candle flickering at the base",
+        "pale soul-wisp hovering above the stone",
+        "bioluminescent moss veining the cracks",
+        "thin soulstone vein glinting through the rock",
+        "small lantern hung on the marker",
+        "luminous white flowers blooming against the stone"
+      ],
+      "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
+      "lore_fit": "A grave with a legible name is a spoken fact holding its shape \u2014 the first defense against the Quiet."
+    },
+    {
+      "rank": 4,
+      "id": "braziers",
+      "prefix": "brazier",
+      "name": "Brazier",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs",
+      "world_height_m": [
+        0.7,
+        1.3
+      ],
+      "art_size": 64,
+      "variety": [
+        "bronze bowl on tripod",
+        "cast-iron drum brazier",
+        "carved stone basin brazier",
+        "riveted copper bowl",
+        "rusted battlefield brazier",
+        "silver-rimmed ceremonial bowl",
+        "squat clay pot brazier",
+        "wrought basket-legged brazier",
+        "cracked leaning brazier",
+        "antlered iron brazier",
+        "ship's brazier with chain rim",
+        "soot-black courtyard brazier",
+        "woven iron strap basket",
+        "ship's cresset basket",
+        "double-tier tall basket"
+      ],
+      "glow_concepts": [
+        "roaring orange wood flame above the bowl",
+        "deep red coal bed breathing light",
+        "silver-white soul-fire burning without smoke",
+        "green copper-salt flame licking the rim",
+        "molten soulstone shards glowing among coals",
+        "column of drifting gold sparks",
+        "coals glowing through the weave in stripes"
+      ],
+      "animation_idea": "flames licking upward with sparks drifting off",
+      "lore_fit": "A tended brazier is sacred infrastructure \u2014 the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth."
+    },
+    {
+      "rank": 5,
+      "id": "lantern_posts",
+      "prefix": "lantern_post",
+      "name": "Lantern Post",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top",
+      "world_height_m": [
+        1.5,
+        2.2
+      ],
+      "art_size": 96,
+      "variety": [
+        "weathered oak post",
+        "birch pole with bark",
+        "iron-banded dark post",
+        "whitewashed garden post",
+        "carved spiral post",
+        "moss-capped old post",
+        "red-painted farmyard post",
+        "tar-blackened coastal post",
+        "driftwood post with barnacles",
+        "rune-notched waymark post",
+        "leaning crooked post",
+        "rope-lashed twin post"
+      ],
+      "glow_concepts": [
+        "steady candle flame behind horn panes",
+        "green foxfire packed behind the panes",
+        "smokeless white soul-flame floating on the wick",
+        "glass jar packed with gathered fireflies",
+        "raw glowing amber soulstone chunk",
+        "thread of woven light burning like a wick"
+      ],
+      "animation_idea": "candle flame wavering with faint light spill",
+      "lore_fit": "Lantern courtesy is how neighbors tell each other a path is still remembered, so a lit post means the way beyond it has not gone soft."
+    },
+    {
+      "rank": 6,
+      "id": "waystones",
+      "prefix": "waystone",
+      "name": "Waystone",
+      "description": "a standing roadside stone waymarker with a carved direction mark and worn lettering",
+      "world_height_m": [
+        0.6,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "rounded granite milestone",
+        "moss-capped boundary stone",
+        "white quartz-veined stone",
+        "leaning cracked stone",
+        "red-painted mark stone",
+        "sea-smoothed coastal stone",
+        "lichen-ringed old stone",
+        "chiseled numeral milestone",
+        "knot-pattern carved stone",
+        "half-sunken meadow stone"
+      ],
+      "glow_concepts": [
+        "carved runes glowing warm amber",
+        "soulstone veins threading the rock alight",
+        "cap of luminous blue moss",
+        "ring of foxfire mushrooms at the base",
+        "warm handprint glow where travelers touch",
+        "inner light leaking through hairline cracks",
+        "engraved pointing hand lit like a signpost",
+        "glowworms clustered in the carved lettering"
+      ],
+      "animation_idea": "rune glow pulsing slowly brighter and dimmer",
+      "lore_fit": "Waystones are facts pressed toward mineral \u2014 direction and distance worn down to one carved certainty that even the Quiet chews slowly."
+    },
+    {
+      "rank": 7,
+      "id": "torch_posts",
+      "prefix": "torch_post",
+      "name": "Torch Post",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top",
+      "world_height_m": [
+        1.4,
+        2.1
+      ],
+      "art_size": 96,
+      "variety": [
+        "rag-wrapped ash stake",
+        "iron sconce on oak post",
+        "double-torch crossarm post",
+        "tar-dipped pine torch",
+        "banded ceremonial torch post",
+        "charred half-burnt post",
+        "birch-bark wrapped torch",
+        "leaning trailside torch",
+        "brass-cupped torch post",
+        "resin-knot pine torch",
+        "stone-socketed torch post",
+        "rope-bound triple torch"
+      ],
+      "glow_concepts": [
+        "ragged orange flame trailing black smoke",
+        "smokeless pale-blue soul-flame",
+        "slow blue resin flame with white core",
+        "ember-crusted head glowing without open flame",
+        "halo of glow-moths circling the head",
+        "molten pitch dripping in glowing beads"
+      ],
+      "animation_idea": "flame streaming sideways as if in wind",
+      "lore_fit": "Torch posts line the roads between fires, planted by walkers who wanted the dark stretches between remembered places to stay short."
+    },
+    {
+      "rank": 8,
+      "id": "signposts",
+      "prefix": "signpost",
+      "name": "Signpost",
+      "description": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "three-armed oak fingerpost",
+        "crooked many-armed post",
+        "white-painted village signpost",
+        "cast-iron city signpost",
+        "rope-and-plank trail sign",
+        "carved gothic-letter signpost",
+        "faded unreadable signpost",
+        "pale birch fingerpost",
+        "tar-lettered harbor signpost",
+        "flower-garlanded signpost",
+        "snow-capped mountain signpost",
+        "arrow-cluster crossroads post",
+        "single-armed old milepost"
+      ],
+      "glow_concepts": [
+        "painted place-names glowing like embers",
+        "gilded lettering lit from within",
+        "arrow edges limned with firefly light",
+        "small oil lamp bracketed beneath the arms",
+        "rune-burned names shining through the wood",
+        "soft halo around one true arrow"
+      ],
+      "animation_idea": "loosest arm creaking and rocking slightly",
+      "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten."
+    },
+    {
+      "rank": 9,
+      "id": "cairns",
+      "prefix": "cairn",
+      "name": "Cairn",
+      "description": "a hand-stacked pile of balanced stones tapering upward, built as a marker, with small gaps between the stones",
+      "world_height_m": [
+        0.5,
+        1.8
+      ],
+      "art_size": 96,
+      "variety": [
+        "neat conical trail cairn",
+        "tall balanced stone stack",
+        "wide low memorial cairn",
+        "toppled half-collapsed cairn",
+        "moss-grown ancient cairn",
+        "snow-capped mountain cairn",
+        "cairn with flat capstone",
+        "rounded sea-pebble cairn",
+        "cairn ringed with small offerings",
+        "stacked slate slab cairn",
+        "tiny three-stone cairn",
+        "red thread-wound cairn",
+        "antler-topped cairn",
+        "painted-names cairn"
+      ],
+      "glow_concepts": [
+        "topmost stone glowing like a lantern",
+        "warm light spilling from gaps between stones",
+        "chalk name-marks shining white on each stone",
+        "wisps of soul-light circling the peak",
+        "cold blue soul-light seeping from under the base"
+      ],
+      "animation_idea": "warm light flickering in the gaps between the stones",
+      "lore_fit": "Travelers stack them so a path stays spoken of, each added stone a small promise that the way will not go soft."
+    },
+    {
+      "rank": 10,
+      "id": "fences",
+      "prefix": "fence",
+      "name": "Fence",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them",
+      "world_height_m": [
+        0.7,
+        1.3
+      ],
+      "art_size": 128,
+      "variety": [
+        "split-rail birch, bark on",
+        "slanted roundpole g\u00e4rdsg\u00e5rd run",
+        "weathered grey picket run",
+        "woven hazel wattle hurdle",
+        "white-painted pickets, peeling",
+        "run with small wicket gate",
+        "snow-topped winter rails",
+        "briar rose climbing one post",
+        "moss-eaten collapsing rails",
+        "falu-red painted farm rails",
+        "lichen-spotted spruce rails",
+        "stone-footed post and rail"
+      ],
+      "glow_concepts": [
+        "small tin lantern hung on the end post",
+        "foxfire fungus shelves on a rotting rail",
+        "carved farm-mark rune shining on a post",
+        "golden glow where hands wore the top rail smooth",
+        "glowworms dotted along the lower rail",
+        "pale soulstone cap stones on the posts"
+      ],
+      "animation_idea": "a loose rail rocking gently in the wind",
+      "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft."
+    },
+    {
+      "rank": 11,
+      "id": "wells",
+      "prefix": "well",
+      "name": "Well",
+      "description": "a round fieldstone well with a peaked wooden roof on two posts, a windlass crank and a rope-hung bucket",
+      "world_height_m": [
+        1.4,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "mossy fieldstone, cedar shingle roof",
+        "whitewashed stone, red-painted roof",
+        "rough granite blocks, thatched roof",
+        "worn brick rim, slate roof",
+        "open stone ring, no roof",
+        "timber-clad shaft, turf roof",
+        "snow-capped winter well",
+        "briar roses climbing the posts",
+        "cracked ancient stone, ivy-grown",
+        "twin-bucket chain windlass well",
+        "rune-carved rim stones",
+        "autumn leaves drifted on roof"
+      ],
+      "glow_concepts": [
+        "soft blue soul-light rising from the water below",
+        "hanging tin lantern lit under the roof peak",
+        "glowing runes carved around the stone rim",
+        "raised bucket brimming with luminous water",
+        "pale green moonmoss between the stones",
+        "soulstone vein glinting through cracked stonework"
+      ],
+      "animation_idea": "the windlass rope swaying and light glinting on the water below",
+      "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does."
+    },
+    {
+      "rank": 12,
+      "id": "hedges",
+      "prefix": "hedge",
+      "name": "Hedge",
+      "description": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground",
+      "world_height_m": [
+        1.0,
+        1.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "neat boxwood hedge",
+        "flowering hawthorn hedge",
+        "wild overgrown hedge",
+        "copper autumn beech hedge",
+        "dark green yew hedge",
+        "briar rose hedge in bloom",
+        "gap-toothed old hedge",
+        "snow-topped winter hedge",
+        "privet hedge with berries",
+        "hedge with bird nest tuft"
+      ],
+      "glow_concepts": [
+        "small iron lanterns set into clipped niches",
+        "luminous white briar roses threaded through",
+        "firefly colony blinking through the leaves",
+        "new-growth tips glowing soft green along the trim",
+        "a candle niche cut into the hedge face",
+        "glowing sap threads veining the twigs"
+      ],
+      "animation_idea": "waves of leaf-shiver running along the trimmed surface in the wind",
+      "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them."
+    },
+    {
+      "rank": 13,
+      "id": "briar_thickets",
+      "prefix": "briar_thicket",
+      "name": "Briar Thicket",
+      "description": "an arching mound of thorny briar canes dotted with open wild roses",
+      "world_height_m": [
+        0.9,
+        1.6
+      ],
+      "art_size": 96,
+      "variety": [
+        "pale pink dog roses",
+        "deep crimson wild roses",
+        "white briar roses",
+        "bare winter canes, red hips",
+        "scarlet rose hip clusters",
+        "golden-leaved autumn briar",
+        "briar arching over a fallen log",
+        "briar climbing a mossy boulder",
+        "low creeping briar patch",
+        "tall fountain of arching canes",
+        "petal-strewn shedding briar",
+        "yellow wild roses",
+        "garden rose gone wild, double blooms",
+        "blackberry bramble tangle",
+        "raspberry cane thicket",
+        "berry-laden bramble mound"
+      ],
+      "glow_concepts": [
+        "rose blossoms glowing like paper lanterns",
+        "rose hips burning like strung embers",
+        "thorn tips sparking with points of light",
+        "a warm heart of light buried deep inside",
+        "glowworms strung along the arching canes",
+        "petals shedding slow drifting motes of light",
+        "moon-white roses casting a pale halo"
+      ],
+      "animation_idea": "a loose petal breaking free and drifting to the ground",
+      "lore_fit": "Briar roses bloomed over Cherry Valley in every story the dead tell of it, so here they bloom in stubborn thorny plenty, keeping the Quiet out at the meadow edges."
+    },
+    {
+      "rank": 14,
+      "id": "bell_posts",
+      "prefix": "bell_post",
+      "name": "Bell Post",
+      "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel",
+      "world_height_m": [
+        2.0,
+        3.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "single oak post, bronze bell",
+        "twin-post frame, iron bell",
+        "crooked birch post, small bell",
+        "rune-carved post, patina bell",
+        "shingle-roofed bell cap",
+        "tall post, rope and tassel",
+        "ship's bell on driftwood post",
+        "grey post, cracked bell",
+        "painted red post, silver bell",
+        "antler-bracket bell",
+        "stone pillar, bell arm",
+        "snow-capped winter post",
+        "double bells, one post",
+        "wind-chime cluster post"
+      ],
+      "glow_concepts": [
+        "the bronze bell glowing furnace-warm",
+        "faint concentric light rings rippling from the bell",
+        "glowing pull-rope with luminous tassel",
+        "rune-carved crossbeam shining amber",
+        "small oil lamp hung beside the bell",
+        "soulstone clapper glinting inside the bell mouth",
+        "light-moths circling the bell"
+      ],
+      "animation_idea": "bell swaying gently with faint light rings rippling outward",
+      "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire."
+    },
+    {
+      "rank": 15,
+      "id": "streetlights",
+      "prefix": "streetlight",
+      "name": "Streetlight",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground",
+      "world_height_m": [
+        2.6,
+        4.2
+      ],
+      "art_size": 160,
+      "variety": [
+        "ornate cast-iron gas lamp",
+        "square-headed medieval wooden post",
+        "green-enameled telegraph-era lamp",
+        "curved-neck art nouveau lamp",
+        "double-headed twin lantern post",
+        "fluted stone column lamp",
+        "onion-domed brass head",
+        "black wrought iron with scrollwork",
+        "verdigris copper-headed lamp",
+        "hexagonal glass head lamp",
+        "white-painted village lamp",
+        "ivy-overgrown leaning lamp",
+        "rope-wrapped harbor lamp",
+        "cracked derelict tilted lamp"
+      ],
+      "glow_concepts": [
+        "warm gas mantle flame behind glass panes",
+        "pale blue soul-light orb hovering inside",
+        "fireflies swarming and filling the lamp head",
+        "amber soulstone shard mounted as the bulb",
+        "cluster of dripping candles behind the panes",
+        "cold gas-blue ring flame at the mantle"
+      ],
+      "animation_idea": "flame guttering inside the head, halo slowly breathing",
+      "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind."
+    },
+    {
+      "rank": 16,
+      "id": "flame_niches",
+      "prefix": "flame_niche",
+      "name": "Flame Niche",
+      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish",
+      "world_height_m": [
+        0.8,
+        1.7
+      ],
+      "art_size": 96,
+      "variety": [
+        "fieldstone arch niche",
+        "brick niche, iron grate",
+        "carved granite aedicula",
+        "clay oven-shaped niche",
+        "stacked slate niche",
+        "whitewashed rounded niche",
+        "rune-bordered niche",
+        "twin-arch double niche",
+        "mossy ruined half-niche",
+        "copper-hooded niche",
+        "column-flanked tall niche",
+        "snow-hooded winter niche",
+        "driftwood-framed niche",
+        "niche with offering sill"
+      ],
+      "glow_concepts": [
+        "small orange flame on a stone dish",
+        "cold blue flame burning without fuel",
+        "bed of ember coals glowing deep red",
+        "white soul-flame hovering above a bare soulstone",
+        "gilded niche interior reflecting warm candlelight",
+        "row of tealights along the sill",
+        "sparks drifting up from the flame"
+      ],
+      "animation_idea": "flame flickering with tiny sparks drifting upward",
+      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure \u2014 a tended fire small enough to keep one memory warm."
+    },
+    {
+      "rank": 17,
+      "id": "haystacks",
+      "prefix": "haystack",
+      "name": "Haystack",
+      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base",
+      "world_height_m": [
+        1.5,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "fresh golden domed stack",
+        "grey weathered old stack",
+        "half-used stack with pitchfork",
+        "short hay-drying rack row",
+        "netted stack, hanging stone weights",
+        "snow-dusted winter stack",
+        "storm-leaning tousled stack",
+        "twin small hillock stacks",
+        "wildflower-flecked meadow stack",
+        "thatch-capped rain-hooded stack",
+        "burrow-holed hollow old stack",
+        "rope-bound conical stack"
+      ],
+      "glow_concepts": [
+        "stray straws glinting like spun gold",
+        "warm light leaking from a hollow inside",
+        "fireflies swarming the crown",
+        "luminous seed-heads threaded through the hay",
+        "shielded lantern hung on the center pole",
+        "pale foxfire crust on the rotting side"
+      ],
+      "animation_idea": "loose straws lifting off and drifting away in the breeze",
+      "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape."
+    },
+    {
+      "rank": 18,
+      "id": "orchard_trees",
+      "prefix": "orchard_tree",
+      "name": "Orchard Tree",
+      "description": "a pruned orchard fruit tree with a short trunk, low rounded crown, and visible fruit or blossom among the leaves",
+      "world_height_m": [
+        2.2,
+        3.5
+      ],
+      "art_size": 160,
+      "variety": [
+        "apple heavy with red fruit",
+        "apple in white blossom",
+        "sweet cherry with dark fruit",
+        "cherry in full blossom",
+        "golden pear tree",
+        "blue plum tree",
+        "gnarled unpruned old apple",
+        "whitewashed-trunk apple",
+        "autumn apple with windfalls",
+        "bare winter orchard tree",
+        "young staked fruit tree",
+        "espaliered apple on frame"
+      ],
+      "glow_concepts": [
+        "ripe fruit glowing like warm paper lanterns",
+        "harvest lanterns hung among the branches",
+        "blossom clusters shining soft pink-white",
+        "whitewashed trunk band glowing moon-pale",
+        "amber light from a hive hollow",
+        "ring of fireflies circling the crown"
+      ],
+      "animation_idea": "a fruit-heavy bough dipping and bobbing lightly in the breeze",
+      "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once."
+    },
+    {
+      "rank": 19,
+      "id": "wayside_shrines",
+      "prefix": "wayside_shrine",
+      "name": "Wayside Shrine",
+      "description": "a small roofed wooden shrine raised on a post, its open front holding a tiny painted icon and offerings",
+      "world_height_m": [
+        1.0,
+        2.0
+      ],
+      "art_size": 96,
+      "variety": [
+        "red-painted shrine box",
+        "shingle-roofed post shrine",
+        "open-front stone hut shrine",
+        "birch-bark roofed shrine",
+        "tiny painted icon shrine",
+        "blue double-shutter shrine",
+        "turf-roofed squat shrine",
+        "carved pole shrine",
+        "lantern-hung roadside shrine",
+        "ivy-eaten ruined shrine",
+        "bell-and-cup shrine",
+        "snow-laden winter shrine",
+        "ribbon-draped shrine",
+        "whitewashed clay shrine"
+      ],
+      "glow_concepts": [
+        "warm interior light spilling from the doorway",
+        "tiny hanging lamp under the eaves",
+        "painted icon inside glowing gently",
+        "votive glasses glowing red and gold",
+        "pale white soul-candles that never shorten",
+        "rooftop finial star shining pale",
+        "painted door symbols traced in light",
+        "wisps sheltering under the roof"
+      ],
+      "animation_idea": "hanging lamp swinging slightly, its light wavering",
+      "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm."
+    },
+    {
+      "rank": 20,
+      "id": "fallen_logs",
+      "prefix": "fallen_log",
+      "name": "Fallen Log",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length",
+      "world_height_m": [
+        0.5,
+        1.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "moss-covered oak log",
+        "fresh-fallen birch trunk",
+        "hollow rotted log",
+        "charred lightning-felled trunk",
+        "log with torn root disc",
+        "fungus-shelved beech log",
+        "two crossed fallen trunks",
+        "half-buried mossy log",
+        "snow-capped winter log",
+        "sawn timber log with cut ends",
+        "ivy-wrapped ancient log",
+        "fern-flanked damp log",
+        "log with honey fungus clumps"
+      ],
+      "glow_concepts": [
+        "blue foxfire glowing in the bark cracks",
+        "rows of shelf fungi glowing pale green",
+        "luminous moss carpeting the upper side",
+        "ember-orange glow inside the hollow end",
+        "soulstone crystals erupting from a split",
+        "a lit traveler's lantern resting on top",
+        "row of small glowing caps along the log's spine"
+      ],
+      "animation_idea": "small ferns and grass beside the trunk swaying in the wind",
+      "lore_fit": "Even a tree's death is remembered here; a fallen trunk is the storm somebody still tells the story of."
+    },
+    {
+      "rank": 21,
+      "id": "story_posts",
+      "prefix": "story_post",
+      "name": "Story Post",
+      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper",
+      "world_height_m": [
+        1.5,
+        2.5
+      ],
+      "art_size": 96,
+      "variety": [
+        "oak post, spiral scenes",
+        "ribbon-hung birch post",
+        "stacked carved faces post",
+        "weathervane-bird finial post",
+        "painted story panels",
+        "rope-wrapped knotted post",
+        "small roofed cap post",
+        "antler-topped tale post",
+        "charred rune-burned post",
+        "wooden token-hung post",
+        "fresh pale new-cut post",
+        "ancient split banded post",
+        "carved fox topper post",
+        "wave-carved sea-tale post"
+      ],
+      "glow_concepts": [
+        "carved story scenes glowing panel by panel",
+        "tiny glowing letters spiraling up the post",
+        "luminous ribbons streaming from the top",
+        "oil lantern hooked below the finial",
+        "knot-hole shining like a small hearth",
+        "carved bird topper glowing softly",
+        "glowing symbol hovering above the finial"
+      ],
+      "animation_idea": "ribbons fluttering in the wind",
+      "lore_fit": "These are the told-aloud stations where stories must be retold, because what is spoken of holds its shape."
+    },
+    {
+      "rank": 22,
+      "id": "offering_tables",
+      "prefix": "offering_table",
+      "name": "Offering Table",
+      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead",
+      "world_height_m": [
+        0.6,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "rough plank table, bread",
+        "flat dolmen stone, apples",
+        "birch log table, berries",
+        "stone slab, cherry branches",
+        "low table, folded letters",
+        "table with milk jug",
+        "driftwood table, shells",
+        "cloth-draped embroidered table",
+        "harvest table, grain sheaves",
+        "winter table, evergreen sprigs",
+        "table with wooden toys",
+        "honey jars and flowers",
+        "stacked-stone table, clay bowls",
+        "table with drinking horns"
+      ],
+      "glow_concepts": [
+        "the offerings themselves glowing faintly gold",
+        "ring of lit tea candles among the gifts",
+        "luminous steam curling from an offering bowl",
+        "glowing runes carved along the table edge",
+        "small wisps gathered over the food",
+        "embroidered cloth threads woven with light",
+        "one bowl of live ember coals"
+      ],
+      "animation_idea": "luminous steam curling up from the offering bowl",
+      "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body."
+    },
+    {
+      "rank": 23,
+      "id": "soulstone_outcrops",
+      "prefix": "soulstone_outcrop",
+      "name": "Soulstone Outcrop",
+      "description": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces",
+      "world_height_m": [
+        0.5,
+        1.5
+      ],
+      "art_size": 96,
+      "variety": [
+        "single facet-smooth soulstone",
+        "cluster of pressed soulstones",
+        "soulstone half-swallowed by turf",
+        "obsidian-dark glassy outcrop",
+        "pearl-grey rounded soulstone",
+        "soulstone with inscribed word",
+        "layered many-memory outcrop",
+        "cracked leaking soulstone",
+        "soulstone fused to granite base",
+        "deep violet crystalline outcrop",
+        "purple amethyst cluster",
+        "single tall quartz shard",
+        "crystal growing through split rock"
+      ],
+      "glow_concepts": [
+        "a single word glowing in the surface",
+        "deep violet heart-light pulsing slowly",
+        "hairline cracks bleeding golden light",
+        "one sharp glowing facet like a window into the stone",
+        "cold white star point buried deep inside",
+        "concentric glowing rings like tree rings",
+        "tips glowing like small candle flames"
+      ],
+      "animation_idea": "heart-light pulsing like a slow breath",
+      "lore_fit": "Soulstones are what remains when a thing thins far enough \u2014 one fact pressed to mineral \u2014 and here they surface right out of the ground."
+    },
+    {
+      "rank": 24,
+      "id": "stumps",
+      "prefix": "stump",
+      "name": "Stump",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base",
+      "world_height_m": [
+        0.3,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "fresh-cut pale stump",
+        "old rotting stump",
+        "mushroom-ringed stump",
+        "moss-capped stump",
+        "cluster of three stumps",
+        "tall snapped snag",
+        "stump with axe embedded",
+        "sprouting stump with shoots",
+        "charred burnt stump",
+        "snow-covered stump",
+        "hollow stump with fern",
+        "stump with tinder fungus",
+        "split stump with lion's mane"
+      ],
+      "glow_concepts": [
+        "growth rings glowing like concentric embers",
+        "ring of glowing mushrooms around the base",
+        "a single candle burning on the cut face",
+        "soulstone core shining in the heartwood",
+        "foxfire seeping from gaps in the bark",
+        "luminous green sapling sprouting from the center",
+        "shelf undersides shedding pale spore light downward"
+      ],
+      "animation_idea": "the young shoot at its edge trembling and mushroom caps quivering in the breeze",
+      "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years."
+    },
+    {
+      "rank": 25,
+      "id": "bushes",
+      "prefix": "bush",
+      "name": "Bush",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base",
+      "world_height_m": [
+        0.7,
+        1.6
+      ],
+      "art_size": 96,
+      "variety": [
+        "red-berried currant bush",
+        "low blueberry shrub",
+        "white-flowering elderberry",
+        "spiky juniper shrub",
+        "autumn-red barberry bush",
+        "hazel with dangling catkins",
+        "white snowberry bush",
+        "lilac in purple bloom",
+        "bare winter twig bush",
+        "gooseberry bush"
+      ],
+      "glow_concepts": [
+        "berries glowing like scattered tiny lanterns",
+        "fireflies nesting deep in the foliage",
+        "pale luminescent flowers dotting the surface",
+        "inner lantern glow silhouetting the leaves",
+        "phosphorescent rime edging every leaf"
+      ],
+      "animation_idea": "the whole clump of foliage rustling in a light breeze",
+      "lore_fit": "Berry bushes are remembered hands-first \u2014 every picker who filled a pail keeps their bush standing at the field edge."
+    },
+    {
+      "rank": 26,
+      "id": "scarecrows",
+      "prefix": "scarecrow",
+      "name": "Scarecrow",
+      "description": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves",
+      "world_height_m": [
+        1.8,
+        2.4
+      ],
+      "art_size": 96,
+      "variety": [
+        "sack-head, patched brown coat",
+        "turnip-head with felt hat",
+        "dress-and-shawl scarecrow",
+        "pot-helmet old-soldier scarecrow",
+        "crow-feather trimmed hat",
+        "fresh straw, bright kerchief",
+        "snow-shouldered winter scarecrow",
+        "slumped collapsing scarecrow",
+        "Sunday-coat scarecrow, brass buttons",
+        "tall thin twin-pole scarecrow",
+        "pumpkin-head autumn scarecrow",
+        "net-draped shoreline scarecrow"
+      ],
+      "glow_concepts": [
+        "carved turnip head lit from inside",
+        "twin ember-orange eyes in the sack face",
+        "lantern hung from an outstretched arm",
+        "soul-light heart glowing through the coat",
+        "straw cuffs shedding drifting sparks of light",
+        "glowing stitched runes across the patches"
+      ],
+      "animation_idea": "coat hem and straw fingers fluttering in the wind",
+      "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own."
+    },
+    {
+      "rank": 27,
+      "id": "carts",
+      "prefix": "cart",
+      "name": "Cart",
+      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground",
+      "world_height_m": [
+        1.1,
+        2.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "hay-heaped harvest cart",
+        "empty cart, shafts down",
+        "apple-crate laden cart",
+        "falu-red market cart",
+        "firewood-stacked cart",
+        "broken wheel, propped on stones",
+        "roped tarpaulin-covered load",
+        "milk-churn cart, brass churns",
+        "pumpkin and turnip cart",
+        "snow-drifted abandoned cart",
+        "moss-grown wreck, wildflowers sprouting",
+        "barrel-laden cooper's cart"
+      ],
+      "glow_concepts": [
+        "candle lantern swinging from the cart shaft",
+        "cargo of softly glowing lantern-fruit",
+        "wheel hubs ringed with glowing painted charms",
+        "warm soul-light seeping between the floor slats",
+        "phosphorescent moss blanketing a wrecked cart",
+        "small brazier of tended coals in the bed",
+        "glowing chalk waymarks scrawled on the sideboards"
+      ],
+      "animation_idea": "the hanging lantern swaying from the cart shaft",
+      "lore_fit": "Every homestead's goods rode a cart at least once, so the half-remembered roads keep their carts even where the horses that pulled them are gone."
+    },
+    {
+      "rank": 28,
+      "id": "barrels",
+      "prefix": "barrel",
+      "name": "Barrel",
+      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground",
+      "world_height_m": [
+        0.7,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "upright oak, rusted hoops",
+        "stacked pair, one tapped",
+        "tipped barrel spilling apples",
+        "brimming rain barrel, wet rim",
+        "tar-blackened herring barrel",
+        "open brine barrel, floating lid",
+        "small ale keg on trestle",
+        "flour-dusted pale barrel",
+        "moss-ringed leaky barrel",
+        "snow-lidded winter barrel",
+        "festival barrel, painted flowers",
+        "cracked-stave double-banded barrel"
+      ],
+      "glow_concepts": [
+        "bunghole leaking warm amber light",
+        "open barrel brimful of luminous shining water",
+        "candle stub burning on the lid",
+        "glowing rune brand scorched into the staves",
+        "pale soulstone hoops instead of iron",
+        "foxfire fungus fringing the damp base"
+      ],
+      "animation_idea": "a slow drip from the tap with a rippling puddle",
+      "lore_fit": "Winter stores were counted and re-counted aloud until spring, and anything counted that often holds its shape for centuries."
+    },
+    {
+      "rank": 29,
+      "id": "lantern_stands",
+      "prefix": "lantern_stand",
+      "name": "Hanging Lantern Stand",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain",
+      "world_height_m": [
+        1.7,
+        2.5
+      ],
+      "art_size": 128,
+      "variety": [
+        "wrought-iron crook stand",
+        "double-hook twin lantern stand",
+        "gallows-arm timber stand",
+        "curled fern-tip iron stand",
+        "rusted harbor crane stand",
+        "brass-hooked garden stand",
+        "chain-wrapped heavy stand",
+        "slender reed-thin stand",
+        "antler-shaped forked stand",
+        "stone-footed iron stand",
+        "leaning overgrown stand",
+        "festival stand with ribbons"
+      ],
+      "glow_concepts": [
+        "punched-tin lantern scattering pinprick light",
+        "paper lantern glowing through painted panes",
+        "caged ember-stone shedding deep orange light",
+        "wickless ghost-flame hovering inside the cage",
+        "green foxfire fungus packed behind the glass",
+        "stained-glass panes throwing colored light"
+      ],
+      "animation_idea": "lantern swaying gently on its chain",
+      "lore_fit": "Hanging a lantern out for travelers is a small act of keeping, and its swinging light marks the doorsteps of people the Quiet has not touched."
+    },
+    {
+      "rank": 30,
+      "id": "beehives",
+      "prefix": "beehive",
+      "name": "Beehive",
+      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole",
+      "world_height_m": [
+        0.6,
+        1.3
+      ],
+      "art_size": 64,
+      "variety": [
+        "golden fresh-coiled straw skep",
+        "grey weathered patched skep",
+        "clay-daubed cracked skep",
+        "hollow-log hive, bark roof",
+        "twin skeps on shared bench",
+        "tall four-coil skep",
+        "moss-capped forest skep",
+        "straw-wrapped snowy winter skep",
+        "honey-stained wicker skep",
+        "stone-slab roofed log hive",
+        "tilted ivy-grown abandoned skep",
+        "flower-ringed meadow skep"
+      ],
+      "glow_concepts": [
+        "entrance hole glowing warm honey-gold from within",
+        "luminous bees drifting around the dome like sparks",
+        "shining amber honey seeping down the coils",
+        "faint honeycomb pattern of light through the straw",
+        "votive candle on the stand beside the hive",
+        "moon-pale gleaming wax drippings"
+      ],
+      "animation_idea": "a few bees looping lazily around the entrance hole",
+      "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet."
+    },
+    {
+      "rank": 31,
+      "id": "mushrooms",
+      "prefix": "mushroom",
+      "name": "Mushroom",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter",
+      "world_height_m": [
+        0.15,
+        0.5
+      ],
+      "art_size": 48,
+      "variety": [
+        "brown penny bun boletes",
+        "golden chanterelle cluster",
+        "pale ivory field mushrooms",
+        "red-capped white-spotted toadstools",
+        "ink-black shaggy inkcaps",
+        "violet amethyst deceivers",
+        "rosy russula pair",
+        "tall slender parasol mushroom",
+        "honey-brown clustered sheathed stems",
+        "frost-grey winter mushrooms",
+        "speckled tawny grisettes",
+        "tiny bonnet mushroom troop"
+      ],
+      "glow_concepts": [
+        "bioluminescent gills casting light from under the caps",
+        "caps speckled with glowing spore freckles",
+        "translucent stems glowing from within like candles",
+        "soft foxfire halo hugging the whole cluster",
+        "faint glowing spore motes drifting above the caps",
+        "tiny rune scratched on one cap glowing softly",
+        "dewdrops on the caps lit like tiny lamps"
+      ],
+      "animation_idea": "caps bobbing faintly while a few spores drift upward",
+      "lore_fit": "Humble Nordic-forest mushrooms rise wherever the remembered valley soil is rich, first to sprout at the soft edges where the Quiet begins."
+    },
+    {
+      "rank": 32,
+      "id": "reed_beds",
+      "prefix": "reed_bed",
+      "name": "Reed Bed",
+      "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 96,
+      "variety": [
+        "tall green summer reeds",
+        "golden autumn reeds",
+        "winter-bleached pale reeds",
+        "wind-bent leaning reeds",
+        "sparse young reed shoots",
+        "dense overgrown reed wall",
+        "reeds with brown seed plumes",
+        "snow-dusted broken reeds",
+        "reeds mixed with marsh grass",
+        "dark bog reeds",
+        "reeds around an empty nest",
+        "storm-flattened splayed reeds",
+        "flowering rush with pink blooms",
+        "reeds mixed with yellow iris",
+        "thick bulrush clump"
+      ],
+      "glow_concepts": [
+        "fireflies drifting between the stalks",
+        "foxfire glow on rotted stems at the waterline",
+        "seed plumes glowing like lit wicks",
+        "a will-o-wisp hovering inside the clump",
+        "pale blue bioluminescent stalk tips",
+        "a tiny hidden lantern glowing deep in the reeds"
+      ],
+      "animation_idea": "stalks swaying together in a slow breeze",
+      "lore_fit": "Reed beds fringe every remembered lakeshore in the valley, and their constant whispering is often the only voice keeping the water's edge spoken of."
+    },
+    {
+      "rank": 33,
+      "id": "cattail_clumps",
+      "prefix": "cattail_clump",
+      "name": "Cattail Clump",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground",
+      "world_height_m": [
+        1.0,
+        1.8
+      ],
+      "art_size": 96,
+      "variety": [
+        "green summer cattails",
+        "autumn gold cattails",
+        "burst fluffy seed heads",
+        "slim young cattails",
+        "thick mature brown heads",
+        "frost-rimed cattails",
+        "wind-tattered ragged cattails",
+        "dense double clump",
+        "cattails with drooping leaves",
+        "dark marsh cattails",
+        "cattails among grass tufts",
+        "single stately tall cattail"
+      ],
+      "glow_concepts": [
+        "seed heads smoldering like ember torches",
+        "burst fluff drifting off as glowing motes",
+        "a firefly cluster nested in the leaves",
+        "a foxfire ring around the wet base",
+        "a soulstone pebble shining among the roots",
+        "marsh-gas wisps flickering above the heads"
+      ],
+      "animation_idea": "heads nodding while loose fluff drifts away",
+      "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water."
+    },
+    {
+      "rank": 34,
+      "id": "flower_stands",
+      "prefix": "flower_stand",
+      "name": "Flower Stand",
+      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights",
+      "world_height_m": [
+        0.6,
+        1.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "purple lupine spires",
+        "pink foxglove stand",
+        "white oxeye daisies",
+        "red poppy cluster",
+        "blue cornflower stand",
+        "yellow tansy stand",
+        "briar roses on arching canes",
+        "fireweed in magenta bloom",
+        "midsummer wildflower mix",
+        "white cow parsley stand",
+        "harebells on thin stems",
+        "dry winter seed-head stand"
+      ],
+      "glow_concepts": [
+        "foxglove bells glowing like hanging lamps",
+        "luminous golden pollen motes drifting upward",
+        "petals edged with soft white light",
+        "rose hips glowing like small coals",
+        "night-blooms open and shining moon-pale",
+        "a glowing memorial ribbon tied among stems"
+      ],
+      "animation_idea": "flower heads nodding on their stems in the breeze",
+      "lore_fit": "Wild Rose Valley is named for its briars, and every posy the living once picked still blooms here exactly where its picker remembers kneeling."
+    },
+    {
+      "rank": 35,
+      "id": "dock_pilings",
+      "prefix": "dock_piling",
+      "name": "Dock Piling",
+      "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline",
+      "world_height_m": [
+        1.0,
+        2.0
+      ],
+      "art_size": 96,
+      "variety": [
+        "three posts bound together",
+        "single tall barnacled piling",
+        "pair of leaning pilings",
+        "cut-off short piling stumps",
+        "pilings with tarred rope wraps",
+        "pilings with green algae skirts",
+        "split storm-broken piling",
+        "pilings with iron mooring cleat",
+        "pilings with hanging rope fenders",
+        "ice-sheathed winter pilings",
+        "pilings with old plank fragment",
+        "white gull-stained pilings",
+        "single bollard post with iron ring",
+        "post with thick rope coil"
+      ],
+      "glow_concepts": [
+        "a lantern on a rusted iron bracket",
+        "ghost-blue barnacle rings glowing at the waterline",
+        "carved tally marks shining down one post",
+        "a wisp of soul-light perched on the tallest post",
+        "a glowing algae skirt below the tide stain",
+        "rope wraps smoldering with faint ember light",
+        "the rope coil glowing like a slow fuse"
+      ],
+      "animation_idea": "rope fenders knocking softly against the wood",
+      "lore_fit": "The pier they carried has gone soft into the Quiet, but the pilings stand because departures are the part everyone remembers."
+    },
+    {
+      "rank": 36,
+      "id": "grass_tufts",
+      "prefix": "grass_tuft",
+      "name": "Grass Tuft",
+      "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it",
+      "world_height_m": [
+        0.4,
+        0.9
+      ],
+      "art_size": 48,
+      "variety": [
+        "tall meadow fescue tuft",
+        "feathery seed-plume grass",
+        "golden dry autumn tuft",
+        "lush green spring tuft",
+        "wind-flattened leaning tuft",
+        "tuft with white cotton-grass",
+        "frost-rimed winter tuft",
+        "tuft mixed with clover",
+        "coarse marsh grass tuft",
+        "silvery hair-grass tuft"
+      ],
+      "glow_concepts": [
+        "seed heads glowing like tiny lamps",
+        "scattered blades shining thread-thin gold",
+        "dewdrops lit like tiny stars",
+        "fireflies resting low between the blades",
+        "faint green foxfire at the roots"
+      ],
+      "animation_idea": "blades rippling over in a passing breeze",
+      "lore_fit": "Meadow grass is the ground note of every remembered summer, so tufts of it spring up wherever anyone's memory of hayfields touches the world."
+    },
+    {
+      "rank": 37,
+      "id": "crystals",
+      "prefix": "crystal",
+      "name": "Crystal",
+      "description": "a cluster of pointed natural crystals growing up out of the ground at angles, sharp faceted spikes around one tall central shard",
+      "world_height_m": [
+        0.4,
+        1.6
+      ],
+      "art_size": 96,
+      "variety": [
+        "purple amethyst cluster",
+        "clear white quartz spikes",
+        "deep emerald green cluster",
+        "ice-blue crystal spray",
+        "rose-pink crystal fan",
+        "amber-gold shard cluster",
+        "smoky grey crystal spikes",
+        "single tall leaning shard",
+        "twin crossed shards",
+        "crystal cluster through split rock",
+        "ring of small crystal points",
+        "frost-rimed pale cluster",
+        "dark violet night cluster",
+        "sea-glass teal cluster"
+      ],
+      "glow_concepts": [
+        "the whole cluster radiating its own gem color",
+        "light pulsing slowly up the central shard",
+        "tips burning like small candle flames",
+        "inner core glowing through frosted faces",
+        "sparks of light drifting off the points",
+        "ground around the base lit in the crystal's color"
+      ],
+      "animation_idea": "inner light slowly pulsing while tiny sparks drift off the tips",
+      "lore_fit": "Bright mineral the valleys remember from every tale of treasure \u2014 distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about."
+    },
+    {
+      "rank": 38,
+      "id": "standing_stones",
+      "prefix": "standing_stone",
+      "name": "Standing Stone",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face",
+      "world_height_m": [
+        1.6,
+        3.5
+      ],
+      "art_size": 160,
+      "variety": [
+        "runestone with serpent bands",
+        "plain grey menhir",
+        "leaning weathered monolith",
+        "picture stone with ship carving",
+        "notch-scored slender pillar",
+        "cracked iron-clamped stone",
+        "moss-hooded ancient stone",
+        "red sandstone obelisk",
+        "holed stone with round opening",
+        "spiral-carved granite pillar",
+        "rope-wrapped venerated stone",
+        "split stone, twin names",
+        "black stone, inlaid letters",
+        "rose-wrapped stone"
+      ],
+      "glow_concepts": [
+        "full column of runes blazing ice-blue",
+        "spiral carvings glowing ember orange",
+        "crown of beacon light at the tip",
+        "glowing notch marks along one edge",
+        "pulsing moon-white ring symbols",
+        "pale aurora veil rising off the stone",
+        "the central name shining bright white"
+      ],
+      "animation_idea": "runes brightening in sequence from base to tip",
+      "lore_fit": "The oldest dead raised them to keep telling their names, and names still spoken stand harder than anything else in Nangijala."
+    },
+    {
+      "rank": 39,
+      "id": "toadstool_rings",
+      "prefix": "toadstool_ring",
+      "name": "Toadstool Ring",
+      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil",
+      "world_height_m": [
+        0.2,
+        0.4
+      ],
+      "art_size": 96,
+      "variety": [
+        "small ring of red-white toadstools",
+        "wide ring of pale caps",
+        "half-broken crescent ring",
+        "ring in autumn leaf litter",
+        "snow-dusted winter ring",
+        "ring around a mossy stone",
+        "double concentric ring",
+        "ring of tiny brown caps",
+        "ring in flowering meadow grass",
+        "old ring of withered caps",
+        "ring of golden waxcaps"
+      ],
+      "glow_concepts": [
+        "every cap lit from inside like paper lanterns",
+        "glowing mycelium threads linking the toadstools underground",
+        "faint curtain of light rising inside the ring",
+        "alternating caps glowing in a dotted circle",
+        "circle of light on the soil beneath the caps",
+        "low glowing spore mist pooled in the center"
+      ],
+      "animation_idea": "spore mist slowly circling around the inside of the ring",
+      "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else."
+    },
+    {
+      "rank": 40,
+      "id": "washing_lines",
+      "prefix": "washing_line",
+      "name": "Washing Line",
+      "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes",
+      "world_height_m": [
+        1.6,
+        2.1
+      ],
+      "art_size": 128,
+      "variety": [
+        "billowing white linens",
+        "patched work clothes row",
+        "small child-size clothes",
+        "quilts and woven blankets",
+        "festival ribbons and pennants",
+        "fisherman's nets and oilskins",
+        "red-striped sheets",
+        "frozen-stiff winter shirts",
+        "empty line, dangling pegs",
+        "wool socks and mittens",
+        "dye-stained craftsman's cloths",
+        "lace and Sunday whites"
+      ],
+      "glow_concepts": [
+        "white linens glowing moonlit from within",
+        "storm lantern hooked on one post",
+        "embroidered hems stitched in shining thread",
+        "garments filled with the warm light of wearers",
+        "glowworm-dotted rope like strung beads",
+        "one garment glowing while the rest hang dark"
+      ],
+      "animation_idea": "the linens rippling and billowing on the line",
+      "lore_fit": "Wash on the line means somebody still keeps house, and clothes remembered by the bodies that wore them hold their shape the longest."
+    },
+    {
+      "rank": 41,
+      "id": "ivy_posts",
+      "prefix": "ivy_post",
+      "name": "Ivy Post",
+      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "common green ivy, oak post",
+        "white-edged variegated ivy",
+        "scarlet autumn ivy",
+        "ivy on cracked stone pillar",
+        "ivy on rusted iron post",
+        "young sparse ivy runners",
+        "dense overgrown ivy mound",
+        "ivy with black berry clusters",
+        "frost-dusted winter ivy",
+        "ivy on leaning birch post",
+        "ivy swallowing an old signpost",
+        "honeysuckle threaded through ivy",
+        "pale spring ivy shoots"
+      ],
+      "glow_concepts": [
+        "leaf veins glowing warm lamplight amber",
+        "fireflies nested deep among the leaves",
+        "green foxfire seeping from the rotten post core",
+        "a swallowed tin lantern still burning inside the ivy",
+        "ivy berries lit like tiny coals",
+        "a carved name shining through gaps in the leaves",
+        "dewdrops holding points of caught light"
+      ],
+      "animation_idea": "loose tendrils at the top swaying gently in the wind",
+      "lore_fit": "Fences outlive their farms in Nangijala, and the ivy somebody once cursed at keeps its post upright long after the field around it has gone quiet."
+    },
+    {
+      "rank": 42,
+      "id": "ferns",
+      "prefix": "fern",
+      "name": "Fern",
+      "description": "a bushy clump of arching ferns rising from a shaggy root crown",
+      "world_height_m": [
+        0.4,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "green bracken clump",
+        "lady fern fountain",
+        "hart's tongue rosette",
+        "copper autumn bracken",
+        "unrolling fiddlehead cluster",
+        "tall royal fern clump",
+        "frost-silvered fern",
+        "dense shield fern mound",
+        "ostrich fern vase",
+        "small polypody tuft"
+      ],
+      "glow_concepts": [
+        "frond tips glowing like green candle flames",
+        "luminous spore dots lining the frond undersides",
+        "central fiddlehead coil glowing as it unrolls",
+        "veins of light tracing every frond",
+        "cool fog of light pooling under the fronds",
+        "one bright glowing frond among dark ones"
+      ],
+      "animation_idea": "fronds swaying and nodding in a light breeze",
+      "lore_fit": "Ferns are older than every era standing in the valley, remembered bone-deep by even the most ancient dead."
+    },
+    {
+      "rank": 43,
+      "id": "telegraph_poles",
+      "prefix": "telegraph_pole",
+      "name": "Telegraph Pole",
+      "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire",
+      "world_height_m": [
+        4.5,
+        6.5
+      ],
+      "art_size": 256,
+      "variety": [
+        "single crossarm pine pole",
+        "double crossarm pole",
+        "leaning storm-tilted pole",
+        "snapped pole, dangling wire",
+        "tarred black pole",
+        "pale weathered gray pole",
+        "ivy-wrapped pole",
+        "pole with climbing pegs",
+        "pole with tin sign",
+        "frost-rimed winter pole",
+        "moss-footed rotting pole",
+        "pole with coiled spare wire",
+        "triple ceramic insulator row",
+        "bird nest on crossarm"
+      ],
+      "glow_concepts": [
+        "ceramic insulators glowing like small lanterns",
+        "pulses of light traveling along the sagging wire",
+        "pale ghost-fire crackling on the crossarm tips",
+        "carved initials in the wood glowing ember-orange",
+        "a lit storm lantern hung from a climbing peg",
+        "swarm of glowing moths circling the pole top"
+      ],
+      "animation_idea": "the cut wire swinging gently in the wind",
+      "lore_fit": "Somebody's century still remembers sending word down the wire, so its poles march across meadows where no line was ever strung."
+    },
+    {
+      "rank": 44,
+      "id": "fish_drying_racks",
+      "prefix": "fish_drying_rack",
+      "name": "Fish Drying Rack",
+      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass",
+      "world_height_m": [
+        1.5,
+        2.2
+      ],
+      "art_size": 96,
+      "variety": [
+        "rack full of split herring",
+        "rack with few large fish",
+        "empty rack with bare lines",
+        "rack with smoked dark fish",
+        "sagging overloaded rack",
+        "rack with hanging eels",
+        "fresh birch-pole rack",
+        "old grey lichened rack",
+        "rack with net draped over",
+        "rack with salted white fillets",
+        "rack half covered by canvas",
+        "winter rack with frozen fish"
+      ],
+      "glow_concepts": [
+        "a low bed of smoking embers glowing beneath",
+        "fish scales shimmering with pale soul-light",
+        "a tallow lamp hanging from the crossbar",
+        "glowing smoke curling through the hanging fish",
+        "tiny votive candles strung along the frame",
+        "fireflies gathered on the top pole"
+      ],
+      "animation_idea": "the hanging fish swaying slightly in the wind",
+      "lore_fit": "Whole coastal generations remember winters survived on racks like these, and remembered providence keeps the fish from ever spoiling."
+    },
+    {
+      "rank": 45,
+      "id": "moss_clumps",
+      "prefix": "moss_clump",
+      "name": "Moss Clump",
+      "description": "a rounded cushion of thick moss mounded up from the forest floor",
+      "world_height_m": [
+        0.2,
+        0.6
+      ],
+      "art_size": 48,
+      "variety": [
+        "pillow moss hummock",
+        "moss-capped boulder",
+        "star moss dome",
+        "sphagnum bog cushion",
+        "hair-cap moss tussock",
+        "moss-swallowed stump",
+        "red-tinged autumn moss mound",
+        "frost-rimed moss cushion",
+        "lichen-patched moss dome",
+        "moss mound with tiny sprouts"
+      ],
+      "glow_concepts": [
+        "constellation of glowing pinprick spore capsules",
+        "moss veined with glowing soulstone seams",
+        "gently pulsing green glow deep inside the clump",
+        "dew beads on the moss lit like glass lanterns",
+        "glowing footprint pressed into the moss top",
+        "rune-shaped bare patch glowing on the mound"
+      ],
+      "animation_idea": "dew beads glinting as the cushion slowly swells and settles",
+      "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently."
+    },
+    {
+      "rank": 46,
+      "id": "beacons",
+      "prefix": "beacon",
+      "name": "Beacon",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top",
+      "world_height_m": [
+        3.0,
+        4.8
+      ],
+      "art_size": 192,
+      "variety": [
+        "tarred timber mast beacon",
+        "stone cairn base beacon",
+        "iron lattice mast beacon",
+        "leaning coastal beacon",
+        "hilltop signal beacon",
+        "basket-topped tripod beacon",
+        "chain-hoisted cage beacon",
+        "whitewashed harbor beacon",
+        "rune-carved warning beacon",
+        "double-cage war beacon",
+        "moss-footed forgotten beacon",
+        "banner-flying festival beacon"
+      ],
+      "glow_concepts": [
+        "great orange signal blaze in the cage",
+        "pillar of pale soul-light rising skyward",
+        "slow red ember eye pulsing in the cage",
+        "burning soulstone shining like a fixed star",
+        "cold green marsh-fire flame",
+        "spark column streaming off downwind"
+      ],
+      "animation_idea": "blaze raging with sparks streaming off the cage",
+      "lore_fit": "A beacon is a whole village's agreement to remember the way home, raised high so its light can hold the valley's edges against the Quiet."
+    },
+    {
+      "rank": 47,
+      "id": "windmills",
+      "prefix": "windmill",
+      "name": "Windmill",
+      "description": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut",
+      "world_height_m": [
+        3.0,
+        4.8
+      ],
+      "art_size": 192,
+      "variety": [
+        "wooden post mill",
+        "squat stone tower mill",
+        "whitewashed smock mill",
+        "tarred timber mill",
+        "mill with torn sails",
+        "mill missing one sail",
+        "red-roofed mill",
+        "thatched cap mill",
+        "ivy-grown abandoned mill",
+        "snow-dusted winter mill",
+        "weathered gray coastal mill",
+        "mill with furled sails"
+      ],
+      "glow_concepts": [
+        "sail edges rimmed with pale spirit-light",
+        "glowing grain dust drifting from the loading door",
+        "ember-red glow at the hub of the sails",
+        "a lantern hung beside the boarded hatch",
+        "faint light leaking between the cap shingles"
+      ],
+      "animation_idea": "the sails turning slowly in the wind",
+      "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat."
+    },
+    {
+      "rank": 48,
+      "id": "maypoles",
+      "prefix": "maypole",
+      "name": "Maypole",
+      "description": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing",
+      "world_height_m": [
+        4.0,
+        6.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "birch-leaf wrapped pole",
+        "freshly raised flower-bright pole",
+        "faded late-summer pole",
+        "ribbonless plain leafy pole",
+        "small village-green pole",
+        "towering festival pole",
+        "autumn pole, dry brown leaves",
+        "snow-clad forgotten winter pole",
+        "pole with striped spiral ribbons",
+        "leaning old pole, slipped wreaths",
+        "pole topped with small flag",
+        "rose-and-daisy garlanded pole"
+      ],
+      "glow_concepts": [
+        "the twin wreaths glowing like hung lanterns",
+        "ribbons streaming with woven light",
+        "spiral of fireflies climbing the pole",
+        "blossom wrappings shining soft pink-white",
+        "crown of warm light at the pole top",
+        "ghost-pale ring of dancers' light in the grass below"
+      ],
+      "animation_idea": "ribbons and wreaths swaying gently in the breeze",
+      "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet."
+    },
+    {
+      "rank": 49,
+      "id": "market_stalls",
+      "prefix": "market_stall",
+      "name": "Market Stall",
+      "description": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods",
+      "world_height_m": [
+        2.0,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "red-striped canopy, apple baskets",
+        "green canopy, root vegetables",
+        "fishmonger's slab, hanging fish",
+        "baker's stall, stacked loaves",
+        "cloth merchant's bolt rolls",
+        "potter's stall, stacked crockery",
+        "honey and candle stall",
+        "blue canopy, flower bunches",
+        "shuttered stall, boarded counter",
+        "patched canvas, secondhand wares",
+        "fur-and-lantern winter stall",
+        "berry stall, stained baskets"
+      ],
+      "glow_concepts": [
+        "paper lanterns strung along the canopy edge",
+        "counter of glowing honey jars and lit candles",
+        "canopy cloth lit from within like a tent",
+        "soulstone merchant scales shining on the counter",
+        "glowing chalked price-runes on the signboard",
+        "small coal brazier beside the counter"
+      ],
+      "animation_idea": "the canopy edge fluttering and hanging goods swinging",
+      "lore_fit": "Market day is remembering out loud \u2014 prices, names and gossip repeated weekly for lifetimes \u2014 so stalls stand firm even in villages gone half-Quiet."
+    },
+    {
+      "rank": 50,
+      "id": "chimney_stacks",
+      "prefix": "chimney_stack",
+      "name": "Chimney Stack",
+      "description": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown",
+      "world_height_m": [
+        2.5,
+        4.0
+      ],
+      "art_size": 160,
+      "variety": [
+        "fieldstone chimney, wide hearth",
+        "red brick chimney",
+        "whitewashed plaster chimney",
+        "cracked leaning chimney",
+        "ivy-clad chimney",
+        "chimney with iron pot hook",
+        "tall narrow city chimney",
+        "squat cottage chimney",
+        "chimney with intact mantel shelf",
+        "snow-capped winter chimney",
+        "fire-scorched black chimney",
+        "chimney with swallow nests"
+      ],
+      "glow_concepts": [
+        "hearthfire still burning in the soot-black hearth",
+        "warm light spilling from the flue top",
+        "embers breathing deep red in the firebox",
+        "ghost outline of the vanished house glowing faintly",
+        "soot marks above the mantel glowing like runes",
+        "smoke of soft light curling from the crown"
+      ],
+      "animation_idea": "hearth flames flickering while thin smoke curls from the crown",
+      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften \u2014 the fire everyone gathered at stands long after the walls are gone."
+    },
+    {
+      "rank": 51,
+      "id": "ruined_arches",
+      "prefix": "ruined_arch",
+      "name": "Ruined Arch",
+      "description": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet",
+      "world_height_m": [
+        2.5,
+        4.0
+      ],
+      "art_size": 160,
+      "variety": [
+        "round roman arch",
+        "pointed gothic arch",
+        "crumbling brick arch",
+        "narrow doorway arch",
+        "wide gate arch",
+        "half-fallen arch",
+        "arch missing its keystone",
+        "ivy-curtained arch",
+        "briar-rose arch",
+        "pale limestone arch",
+        "dark basalt arch",
+        "post-and-lintel dolmen arch"
+      ],
+      "glow_concepts": [
+        "a faint curtain of light filling the opening",
+        "glowing keystone at the crown",
+        "rune-carved voussoirs glowing one by one",
+        "luminous briar roses climbing one side",
+        "pinpoints of light in the crumbled mortar joints",
+        "cold aurora shimmer hanging under the arch"
+      ],
+      "animation_idea": "briar rose vines swaying against the stonework",
+      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through."
+    },
+    {
+      "rank": 52,
+      "id": "hanging_willows",
+      "prefix": "hanging_willow",
+      "name": "Hanging Willow",
+      "description": "a weeping willow tree with long curtain-like branches trailing all the way to the ground",
+      "world_height_m": [
+        4.0,
+        6.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "fresh green spring willow",
+        "silver-leaved willow",
+        "golden autumn willow",
+        "bare winter willow strands",
+        "ancient thick-trunked willow",
+        "young slender willow",
+        "willow hung with catkins",
+        "twin-trunked willow",
+        "storm-bent leaning willow",
+        "moss-hung old willow",
+        "red-stemmed willow strands",
+        "willow shading a flat stone"
+      ],
+      "glow_concepts": [
+        "every strand tipped with a droplet of light",
+        "a lantern glowing behind the branch curtain",
+        "fireflies drifting slowly between the hanging strands",
+        "catkins burning like rows of candle flames",
+        "soul-light pooled in the hollow of the trunk",
+        "leaves that hold moonlight long after dark",
+        "bright sap beads glowing along the bark"
+      ],
+      "animation_idea": "the branch curtains rippling gently in the wind",
+      "lore_fit": "Willows lean over every riverbank the dead remember, curtained trees a child could hide inside, and grief keeps them greener than anything else in the valley."
+    },
+    {
+      "rank": 53,
+      "id": "puffballs",
+      "prefix": "puffball",
+      "name": "Puffball",
+      "description": "a plump round puffball mushroom sitting directly on bare earth",
+      "world_height_m": [
+        0.2,
+        0.7
+      ],
+      "art_size": 48,
+      "variety": [
+        "giant white puffball",
+        "cluster of small puffballs",
+        "pear-shaped stump puffball",
+        "cracked leathery earthball",
+        "collared earthstar",
+        "burst spent puffball husk",
+        "smooth ivory twin puffballs",
+        "warted common puffball",
+        "grey weathered old puffball",
+        "earthstar with curled rays"
+      ],
+      "glow_concepts": [
+        "whole ball glowing like a round paper lamp",
+        "crack pattern glowing across the leathery skin",
+        "top vent breathing out glowing spore dust",
+        "ring of glowing freckles around the middle",
+        "slow heartbeat pulse of light under the skin",
+        "burst husk spilling a pile of glowing spores"
+      ],
+      "animation_idea": "puffball venting a little spore cloud in a slow rhythm",
+      "lore_fit": "Each puff scatters spores like retold stories, seeding firm ground downwind of wherever people still talk."
+    },
+    {
+      "rank": 54,
+      "id": "soulstone_plinths",
+      "prefix": "soulstone_plinth",
+      "name": "Soulstone Plinth",
+      "description": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base",
+      "world_height_m": [
+        0.9,
+        1.8
+      ],
+      "art_size": 96,
+      "variety": [
+        "amber stone, granite plinth",
+        "blue stone, carved column",
+        "milk-white stone, boulder base",
+        "green stone, iron cradle",
+        "violet stone, glass dome",
+        "split stone, two halves",
+        "ember-red stone, black plinth",
+        "half-sunk stone pedestal",
+        "cluster of small soulstones",
+        "copper-wire bound stone",
+        "pale stone, driftwood stand",
+        "rune-ringed dais stone",
+        "cracked fading dim stone",
+        "twin stones, shared plinth"
+      ],
+      "glow_concepts": [
+        "the soulstone's core pulsing with inner light",
+        "bright veins branching through the stone",
+        "thin column of light rising from the stone",
+        "motes orbiting the stone in slow rings",
+        "carved word on the plinth glowing",
+        "glass dome scattering the stone's glow",
+        "luminous crystal frost spreading down the pedestal"
+      ],
+      "animation_idea": "core light pulsing like a slow heartbeat with orbiting motes",
+      "lore_fit": "When a memory has thinned to one mineral fact, displaying its soulstone keeps that last fact spoken for."
+    },
+    {
+      "rank": 55,
+      "id": "gravel_piles",
+      "prefix": "gravel_pile",
+      "name": "Gravel Pile",
+      "description": "a loose heaped mound of small stones and gravel with scattered pebbles spilling around its base",
+      "world_height_m": [
+        0.3,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "grey scree heap",
+        "rounded river gravel mound",
+        "slate chip pile",
+        "quarry rubble heap",
+        "white pebble drift",
+        "rust-red gravel mound",
+        "gravel pile with old shovel",
+        "moss-fringed settled pile",
+        "coal-black cinder heap",
+        "shell-and-pebble beach pile"
+      ],
+      "glow_concepts": [
+        "scattered pebbles glowing like banked coals",
+        "faint ember light rising between the stones",
+        "one bright glowing shard atop the pile",
+        "phosphorescent dust film over the surface",
+        "trickle of glowing pebbles down one side"
+      ],
+      "animation_idea": "a loose pebble occasionally trickling down the slope",
+      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten \u2014 memory ground down but not yet gone to the Quiet."
+    },
+    {
+      "rank": 56,
+      "id": "aqueduct_fragments",
+      "prefix": "aqueduct_fragment",
+      "name": "Aqueduct Fragment",
+      "description": "a freestanding fragment of a stone aqueduct, one arch on weathered piers with a broken water channel on top",
+      "world_height_m": [
+        3.0,
+        5.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "single intact stone arch",
+        "half-collapsed arch",
+        "lone square pier",
+        "double-tier arch stub",
+        "ivy-covered arch",
+        "red brick arch",
+        "pale limestone arch",
+        "moss-blackened arch",
+        "arch with fallen rubble",
+        "broken channel spout end",
+        "snow-capped winter arch",
+        "briar roses climbing pier"
+      ],
+      "glow_concepts": [
+        "ghostly luminous water still flowing along the top channel",
+        "glowing drips falling from the underside of the arch",
+        "soulstone veins glowing through cracked masonry",
+        "bioluminescent moss lining the mortar joints",
+        "keystone carved with a softly glowing sigil",
+        "votive candles flickering in a pier niche"
+      ],
+      "animation_idea": "remembered water trickling and dripping from the broken channel",
+      "lore_fit": "The oldest dead still trust their empire's stonework, so its arches stand beside cherry orchards, carrying water only they remember."
+    },
+    {
+      "rank": 57,
+      "id": "driftwood_logs",
+      "prefix": "driftwood_log",
+      "name": "Driftwood Log",
+      "description": "a weathered silver-grey driftwood log with twisted broken branch stubs, half sunk in sand and pebbles at the shore",
+      "world_height_m": [
+        0.4,
+        1.0
+      ],
+      "art_size": 96,
+      "variety": [
+        "long silver-grey log",
+        "gnarled twisted root ball",
+        "salt-bleached white branch",
+        "dark waterlogged log",
+        "log with peeling bark",
+        "short stout stump piece",
+        "forked two-branch driftwood",
+        "log crusted with barnacles",
+        "moss-capped old log",
+        "sand-buried half log",
+        "smooth wave-worn sculpted wood",
+        "log with rusted iron spike"
+      ],
+      "glow_concepts": [
+        "shipworm bore holes leaking pale light",
+        "glowing salt crystals crusted along the grain",
+        "foxfire fungus shelves on the damp side",
+        "a soulstone vein running through the split wood",
+        "mourners' carved initials glowing faintly",
+        "ghost-blue barnacle colonies at the sand line"
+      ],
+      "animation_idea": "a caught gull feather fluttering on a branch stub",
+      "lore_fit": "Every drowned sailor and river child remembers wood the water gave back, so the shores of Nangijala are strewn with it."
+    },
+    {
+      "rank": 58,
+      "id": "cup_fungi",
+      "prefix": "cup_fungus",
+      "name": "Cup Fungus",
+      "description": "a cluster of small goblet-shaped cup fungi growing from mossy ground",
+      "world_height_m": [
+        0.1,
+        0.4
+      ],
+      "art_size": 48,
+      "variety": [
+        "scarlet elf cups cluster",
+        "orange peel fungus patch",
+        "brown bonfire cups",
+        "green-stained elfcup group",
+        "pale ivory goblet fungi",
+        "purple jellydisc cluster",
+        "yellow fairy cups on twig",
+        "frost-edged winter cups",
+        "moss-nested scarlet cups",
+        "tiered stacked goblet fungi"
+      ],
+      "glow_concepts": [
+        "each cup brimming with glowing liquid light",
+        "cup rims glowing ember orange like wicks",
+        "thin steam of light rising from the cups",
+        "single glowing raindrop pooled in every cup",
+        "inner cup walls glowing like lantern glass",
+        "glowing haze puffing from the cups"
+      ],
+      "animation_idea": "faint luminous steam curling up out of the cups",
+      "lore_fit": "Little cups that hold light the way the valley holds its tended fires, keeping a sip of memory lit through the night."
+    },
+    {
+      "rank": 59,
+      "id": "waterwheels",
+      "prefix": "waterwheel",
+      "name": "Waterwheel",
+      "description": "a large old wooden waterwheel with paddle blades and an iron-banded rim, standing on a mossy stone mounting",
+      "world_height_m": [
+        2.0,
+        3.6
+      ],
+      "art_size": 160,
+      "variety": [
+        "overshot wooden wheel",
+        "undershot paddle wheel",
+        "iron-rimmed wheel",
+        "half-buried broken wheel",
+        "leaning detached wheel",
+        "moss-slick green wheel",
+        "rotted gap-toothed wheel",
+        "small creek wheel",
+        "tall narrow wheel",
+        "ice-fringed winter wheel",
+        "red-painted mill wheel",
+        "wheel wrapped in weeds"
+      ],
+      "glow_concepts": [
+        "glowing droplets flung from the turning paddles",
+        "bioluminescent algae coating the wet lower half",
+        "millrace water at the base shining pale blue",
+        "foxfire fungus glowing on the rotten paddles",
+        "iron hub glowing forge-red at the axle",
+        "a slow halo of soul-light between the spokes"
+      ],
+      "animation_idea": "the wheel creaking through a slow turn, water dripping from the paddles",
+      "lore_fit": "The mill it drove has gone soft into the Quiet, but the wheel keeps turning because the water was the part everyone talked about."
+    },
+    {
+      "rank": 60,
+      "id": "ancient_trees",
+      "prefix": "ancient_tree",
+      "name": "Ancient Tree",
+      "description": "an enormous ancient tree with a gnarled hollow trunk, sprawling surface roots, and a vast twisted crown",
+      "world_height_m": [
+        5.5,
+        6.8
+      ],
+      "art_size": 256,
+      "variety": [
+        "colossal hollow oak",
+        "world-old dark yew",
+        "split-crowned ancient ash",
+        "moss-shrouded giant spruce",
+        "petrified grey elder",
+        "lightning-scarred titan pine",
+        "vast blossoming elder cherry",
+        "many-trunked old linden",
+        "half-fallen leaning giant",
+        "burl-covered swollen beech",
+        "bare skeletal elder oak"
+      ],
+      "glow_concepts": [
+        "strings of paper lanterns wound through the branches",
+        "glowing runes spiraling up the trunk",
+        "soulstone veins shining through split bark",
+        "hollow heart glowing like embers inside",
+        "crown wreathed in drifting golden memory-motes",
+        "candlelit shrines tucked between the roots",
+        "stacked bracket fungi glowing phosphorescent green"
+      ],
+      "animation_idea": "the massive crown breathing in a slow sway while motes drift down through it",
+      "lore_fit": "A tree spoken of for generations becomes a landmark certainty, older and firmer than the ground it stands on, and whole districts of the dead navigate by it."
+    },
+    {
+      "rank": 61,
+      "id": "broken_columns",
+      "prefix": "broken_column",
+      "name": "Broken Column",
+      "description": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle",
+      "world_height_m": [
+        1.0,
+        2.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "fluted marble stump",
+        "tall leaning column",
+        "toppled drum stack",
+        "granite column stump",
+        "weathered sandstone column",
+        "ivy-choked column",
+        "column with fallen capital",
+        "red porphyry stump",
+        "lichen-mottled pale column",
+        "cracked basalt column",
+        "column split lengthwise",
+        "snow-capped winter column"
+      ],
+      "glow_concepts": [
+        "a band of carved runes glowing around the shaft",
+        "soulstone veins shining in the fracture face",
+        "lines of light pooled in the fluting grooves",
+        "bioluminescent ivy spiraling up the stump",
+        "a votive candle burning on the broken top",
+        "ember-orange cracks like cooling magma"
+      ],
+      "animation_idea": "ivy leaves fluttering against the shaft",
+      "lore_fit": "A temple nobody fully remembers has thinned to its last certain piece: one column somebody once leaned against and never forgot."
+    },
+    {
+      "rank": 62,
+      "id": "fading_relics",
+      "prefix": "fading_relic",
+      "name": "Fading Relic",
+      "description": "a single piece of old household furniture standing alone outdoors on grass, one side solid and detailed, the other side dissolving into a faint transparent outline",
+      "world_height_m": [
+        0.7,
+        2.0
+      ],
+      "art_size": 96,
+      "variety": [
+        "half-faded armchair",
+        "ghost-outline wardrobe",
+        "translucent rocking chair",
+        "half-gone spinning wheel",
+        "fading grandfather clock",
+        "ghost-outline bed frame",
+        "half-erased upright piano",
+        "translucent kitchen table",
+        "fading harmonium",
+        "ghost-outline cradle",
+        "half-faded bookshelf",
+        "translucent writing desk",
+        "fading iron stove"
+      ],
+      "glow_concepts": [
+        "the remembered half glowing while the rest fades",
+        "bright memory-outline tracing the missing parts",
+        "drifting motes of light unraveling from the edges",
+        "soulstone crystallizing at the dissolved corner",
+        "a lit candle left beside it in remembrance",
+        "ghost-white afterimage hovering slightly offset",
+        "soft aurora shimmer across the thinned surface"
+      ],
+      "animation_idea": "the faded half slowly flickering between half-visible and almost gone",
+      "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone."
+    },
+    {
+      "rank": 63,
+      "id": "water_lily_clumps",
+      "prefix": "water_lily_clump",
+      "name": "Water Lily Clump",
+      "description": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath",
+      "world_height_m": [
+        0.1,
+        0.3
+      ],
+      "art_size": 64,
+      "variety": [
+        "white blossoms open wide",
+        "pink blossoms in bud",
+        "yellow pond lilies",
+        "pads only no blossoms",
+        "red-tinged autumn pads",
+        "one huge single-bloom pad",
+        "dense many-pad raft",
+        "pads beaded with dew",
+        "torn ragged old pads",
+        "night-closed folded blossoms",
+        "frost-edged late pads",
+        "pads with fallen petals"
+      ],
+      "glow_concepts": [
+        "blossoms glowing from within like floating lanterns",
+        "pad rims traced in bioluminescent light",
+        "glowing pollen hearts at each bloom's center",
+        "soul-light shining up through gaps between pads",
+        "dew beads lit like tiny stars",
+        "a will-o-wisp resting on the largest pad"
+      ],
+      "animation_idea": "pads drifting gently on a slow ripple",
+      "lore_fit": "Lilies bloom over the deepest remembered water, each flower marking a place where someone was last looked for; shipped as water-overlay scenery for maps2 to place only on water tiles."
+    },
+    {
+      "rank": 64,
+      "id": "flower_trellises",
+      "prefix": "flower_trellis",
+      "name": "Flower Trellis",
+      "description": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "climbing pink roses",
+        "purple clematis stars",
+        "blazing orange nasturtiums",
+        "white moonflower vine",
+        "blue morning glories",
+        "mixed pastel sweet peas",
+        "cream and yellow honeysuckle",
+        "fan trellis, red roses",
+        "ladder trellis, sparse young vine",
+        "weathered gray trellis, jasmine",
+        "white-painted trellis, clematis",
+        "rustic birch-branch trellis",
+        "obelisk trellis, runner beans",
+        "autumn trellis, silvery seed heads"
+      ],
+      "glow_concepts": [
+        "every blossom lit from within like lanterns",
+        "fireflies weaving through the lattice squares",
+        "sap glowing in bright lines along the stems",
+        "a candle lantern hung at the trellis peak",
+        "pollen sifting down as glowing dust",
+        "carved runes on the frame glowing softly",
+        "moonflowers open and shining white"
+      ],
+      "animation_idea": "leaves fluttering while one heavy blossom nods on its stem",
+      "lore_fit": "Cottage gardeners keep their trellises exactly as they were proudest of them, and a well-spoken-of trellis stays sharp-edged while the beds around it soften."
+    },
+    {
+      "rank": 65,
+      "id": "petrified_stumps",
+      "prefix": "petrified_stump",
+      "name": "Petrified Stump",
+      "description": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral",
+      "world_height_m": [
+        0.5,
+        1.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "opalized broad oak stump",
+        "agate-ringed cut stump",
+        "tall broken petrified trunk",
+        "root-splayed stone stump",
+        "rainbow silica stump",
+        "charcoal-dark petrified stump",
+        "moss-capped stone stump",
+        "stump with stone fungus shelves",
+        "twin fused stone stumps",
+        "half-crumbled ancient stump"
+      ],
+      "glow_concepts": [
+        "growth rings glowing amber in the cut top",
+        "opalized bark shimmering with rainbow light",
+        "roots traced in glowing gold veins",
+        "small ghost-flames where branches once grew",
+        "glowing moss and fungus on stone bark",
+        "sap channels lit like slow embers"
+      ],
+      "animation_idea": "amber ring-light breathing slowly while spore motes rise",
+      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments."
+    },
+    {
+      "rank": 66,
+      "id": "hop_poles",
+      "prefix": "hop_pole",
+      "name": "Hop Pole",
+      "description": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones",
+      "world_height_m": [
+        3.2,
+        4.8
+      ],
+      "art_size": 192,
+      "variety": [
+        "single pole, dense cones",
+        "three-pole hop teepee",
+        "pole with twine guides",
+        "young sparse first-year bine",
+        "golden dry autumn bine",
+        "half-harvested stripped bine",
+        "red-stemmed heritage hops",
+        "pole with crossbar arm",
+        "leaning weathered old pole",
+        "double spiraling bines",
+        "frost-browned late bine",
+        "pole with tied ribbon marker"
+      ],
+      "glow_concepts": [
+        "hop cones glowing like strings of paper lanterns",
+        "a glowworm spiral climbing the bine",
+        "foxfire light seeping from the pole's split core",
+        "the topmost cone shining like a beacon star",
+        "cones dusted with luminous golden pollen",
+        "a thin line of glowing sap spiraling upward"
+      ],
+      "animation_idea": "the bine tip high above swaying in a slow circle",
+      "lore_fit": "Brewers from every century remember their hop gardens at harvest, and the beer poured around tended fires keeps the poles standing tall and certain."
+    },
+    {
+      "rank": 67,
+      "id": "beast_skulls",
+      "prefix": "beast_skull",
+      "name": "Beast Skull",
+      "description": "a large weathered animal skull resting on grassy ground, bleached bone with empty eye sockets, cracked surfaces and a heavy jaw",
+      "world_height_m": [
+        0.3,
+        1.0
+      ],
+      "art_size": 64,
+      "variety": [
+        "elk skull broad antlers",
+        "ram skull curled horns",
+        "bear skull heavy jaw",
+        "horse skull long muzzle",
+        "stag skull one antler broken",
+        "wolf skull bared teeth",
+        "moose skull palmate antlers",
+        "bison skull sun-bleached",
+        "boar skull jutting tusks",
+        "goat skull stubby horns",
+        "moss-grown ancient skull",
+        "cracked half-buried skull"
+      ],
+      "glow_concepts": [
+        "ember soul-light glowing in the eye sockets",
+        "luminous green moss patched over the crown",
+        "carved memory-runes glowing along the brow",
+        "soulstone crystal budding from a cracked socket",
+        "candle stub burning between the antlers",
+        "faint ghost-flesh shimmer outlining the skull",
+        "foxfire fungus shelf glowing on the jaw"
+      ],
+      "animation_idea": "a butterfly settling on the antler tip, slowly fanning its wings, then fluttering off",
+      "lore_fit": "Bones are the last firm fact of a beast, still held in shape by every hunter and child who told of it."
+    },
+    {
+      "rank": 68,
+      "id": "rusted_machines",
+      "prefix": "rusted_machine",
+      "name": "Rusted Machine",
+      "description": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion",
+      "world_height_m": [
+        1.2,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "seized steam pump",
+        "rusted flywheel engine",
+        "broken printing press",
+        "corroded boiler on legs",
+        "exposed gear-train frame",
+        "hand-crank water pump",
+        "threshing machine hulk",
+        "copper still with pipes",
+        "telegraph relay cabinet",
+        "rusted lathe on stand",
+        "moss-grown traction engine",
+        "dead generator dynamo"
+      ],
+      "glow_concepts": [
+        "one round gauge face still lit warm",
+        "ember glow through the furnace grate",
+        "blue sparks arcing between corroded terminals",
+        "a small pilot flame under the boiler",
+        "luminous oil seeping from a riveted seam",
+        "copper coils holding a faint galvanic glow"
+      ],
+      "animation_idea": "a gauge needle twitching with an occasional puff of steam",
+      "lore_fit": "An engineer's pride outlasts its factory: the machine idles in a meadow, kept solid by everyone who ever bragged about it."
+    },
+    {
+      "rank": 69,
+      "id": "owl_snags",
+      "prefix": "owl_snag",
+      "name": "Owl Snag",
+      "description": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk where an owl roosts",
+      "world_height_m": [
+        3.0,
+        5.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "lightning-split oak snag",
+        "hollow birch snag",
+        "twisted pine snag",
+        "double-hollow beech snag",
+        "bark-shedding elm snag",
+        "burnt black snag",
+        "ivy-clad snag",
+        "woodpecker-drilled snag",
+        "leaning cracked snag",
+        "stout willow snag",
+        "mossy alder snag"
+      ],
+      "glow_concepts": [
+        "owl eyes glowing from the dark hollow",
+        "hollow lit from within like a lantern window",
+        "foxfire brackets stepping up the trunk",
+        "luminous moss sleeving one side",
+        "carved name-runes glowing on the bark",
+        "soulstone knot where a branch broke off",
+        "small wisps circling the broken top"
+      ],
+      "animation_idea": "the owl in the hollow blinking slowly and swiveling its head",
+      "lore_fit": "Dead trees stand long in Nangijala because owls are watched and spoken of, and speaking keeps the snag from thinning."
+    },
+    {
+      "rank": 70,
+      "id": "bone_piles",
+      "prefix": "bone_pile",
+      "name": "Bone Pile",
+      "description": "sun-bleached animal bones heaped on the ground, a curved ribcage arc and scattered vertebrae with grass growing up between them",
+      "world_height_m": [
+        0.4,
+        1.8
+      ],
+      "art_size": 96,
+      "variety": [
+        "elk ribcage half-buried",
+        "whale rib arch",
+        "scattered leg bones",
+        "spine curled in grass",
+        "heaped mixed bone pile",
+        "wildflowers growing through ribcage",
+        "bleached white vertebrae string",
+        "weathered gray jawbone cluster",
+        "pelvis bone in moss",
+        "crossed tusk pair",
+        "small bird-bone scatter",
+        "fish skeleton fan"
+      ],
+      "glow_concepts": [
+        "warm marrow-light leaking through hairline cracks",
+        "will-o-wisp hovering inside the ribcage",
+        "phosphorescent lichen freckling the ribs",
+        "votive candles wedged among the bones",
+        "soulstone seam fusing two ribs together",
+        "spectral beast outline flickering over its bones",
+        "glowing knotted memory-cords wound around the ribs"
+      ],
+      "animation_idea": "tall grass swaying around the bones while one loose rib rocks and settles",
+      "lore_fit": "Even beasts are remembered in Nangijala, and their bones lie where a story once put them, kept solid by retelling."
+    },
+    {
+      "rank": 71,
+      "id": "rail_carts",
+      "prefix": "rail_cart",
+      "name": "Rail Cart",
+      "description": "an abandoned wooden mine rail cart with iron wheels standing on a short stub of rusted track",
+      "world_height_m": [
+        1.0,
+        1.7
+      ],
+      "art_size": 96,
+      "variety": [
+        "wooden ore cart",
+        "iron mine cart",
+        "tipped-over empty cart",
+        "cart heaped with ore",
+        "rust-red flatbed cart",
+        "hand-pump rail trolley",
+        "cart with broken wheel",
+        "moss-filled abandoned cart",
+        "cart on buckled rails",
+        "coal-dusted black cart",
+        "cart overgrown with weeds",
+        "snow-filled winter cart"
+      ],
+      "glow_concepts": [
+        "heaped soulstone ore glowing in the bed",
+        "a lit brake lantern hanging from the rim",
+        "wheel hubs glowing ember-red",
+        "faint glowing coal dust in the empty bed",
+        "the rail stub beneath shining softly",
+        "glowing handprints on the push bar"
+      ],
+      "animation_idea": "the cart rocking slightly on its rails with a settling creak",
+      "lore_fit": "The mine and the line are gone quiet, but the cart a miner pushed every day for thirty years still waits exactly where he left it."
+    },
+    {
+      "rank": 72,
+      "id": "overgrown_archways",
+      "prefix": "overgrown_archway",
+      "name": "Overgrown Archway",
+      "description": "a freestanding stone garden arch swallowed by climbing vines and hanging blossom",
+      "world_height_m": [
+        2.4,
+        3.2
+      ],
+      "art_size": 160,
+      "variety": [
+        "gray fieldstone arch, ivy",
+        "red brick arch, white roses",
+        "wooden arch, honeysuckle",
+        "half-collapsed broken arch",
+        "white marble arch, jasmine",
+        "rune-carved arch, thin ivy",
+        "twin-pillar arch, briar canes",
+        "mossy ancient sagging arch",
+        "arch hung with bellflowers",
+        "iron rose arch, red roses",
+        "keystone arch, autumn creeper",
+        "arch draped in trumpet vine"
+      ],
+      "glow_concepts": [
+        "keystone carved with a softly glowing name",
+        "blossoms strung along the curve like lanterns",
+        "pale memory-light filling the opening like a curtain",
+        "foxfire moss glowing in the stone seams",
+        "fireflies gathered thick under the arch",
+        "soulstone chips in the mortar, veined with light",
+        "hanging seed pods glowing like small lamps"
+      ],
+      "animation_idea": "loose vine strands swinging slowly in the opening",
+      "lore_fit": "Every era's dead remember a gateway they were proud to walk through, so arches stand alone in the meadows long after the walls they belonged to were forgotten."
+    },
+    {
+      "rank": 73,
+      "id": "flower_garlands",
+      "prefix": "flower_garland",
+      "name": "Flower Garland",
+      "description": "two short wooden posts with a swag of flowering garland strung between them",
+      "world_height_m": [
+        1.2,
+        1.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "daisy and briar-rose garland",
+        "evergreen and berry garland",
+        "dried harvest-flower garland",
+        "ribbon-woven midsummer garland",
+        "ivy and fern garland",
+        "white posts, pink garland",
+        "birch posts, meadow flowers",
+        "double drooping swags",
+        "wilted half-fallen garland",
+        "red rowan-berry garland",
+        "paper-flower festival garland",
+        "cherry-blossom garland"
+      ],
+      "glow_concepts": [
+        "tiny paper lanterns tied along the swag",
+        "blossoms lit like a string of fairy lights",
+        "glowing ribbon threads woven through the garland",
+        "candle stubs burning on each post top",
+        "dew beads shining lamp-bright along the swag",
+        "post tops carved with glowing painted names"
+      ],
+      "animation_idea": "the garland swag bobbing gently between the posts",
+      "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk."
+    },
+    {
+      "rank": 74,
+      "id": "hanging_baskets",
+      "prefix": "hanging_basket",
+      "name": "Hanging Basket",
+      "description": "a wrought-iron shepherd's crook post with a hanging basket overflowing with trailing flowers",
+      "world_height_m": [
+        1.9,
+        2.4
+      ],
+      "art_size": 96,
+      "variety": [
+        "trailing red geraniums",
+        "cascading purple petunias",
+        "foaming white lobelia",
+        "mixed cottage flowers",
+        "trailing strawberry runners",
+        "fern and moss basket",
+        "double-hook twin baskets",
+        "wooden post, wicker basket",
+        "rusted crook, wildflowers",
+        "overgrown basket trailing groundward",
+        "autumn heather basket",
+        "primrose and ivy basket"
+      ],
+      "glow_concepts": [
+        "the basket glowing from within like a lantern",
+        "each flower lit like a small flame",
+        "a candle nested in among the blooms",
+        "the iron crook tip glowing lantern-warm",
+        "trailing vines dripping slow glowing droplets",
+        "moss lining glowing soft foxfire green"
+      ],
+      "animation_idea": "the basket swinging slightly on its creaking hook",
+      "lore_fit": "Hanging a light and flowers out for travelers is old lantern courtesy, and the dead keep the habit even where the door it belonged to is gone."
+    },
+    {
+      "rank": 75,
+      "id": "stone_fountains",
+      "prefix": "stone_fountain",
+      "name": "Stone Fountain",
+      "description": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water",
+      "world_height_m": [
+        1.2,
+        2.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "round basin with column spout",
+        "square basin with lion-head spout",
+        "two-tiered small fountain",
+        "mossy half-crumbled fountain",
+        "fountain with carved child figure",
+        "dry cracked empty fountain",
+        "fountain with copper spout pipe",
+        "ivy-grown corner fountain",
+        "fountain with chained drinking ladle",
+        "snow-rimmed steaming fountain",
+        "fountain ringed with potted flowers",
+        "dark slate stone fountain"
+      ],
+      "glow_concepts": [
+        "the basin water glowing pale gold",
+        "votive candles ringing the basin rim",
+        "carved memorial runes shining on the stone",
+        "offering coins gleaming with soul-light underwater",
+        "foxfire moss patching the wet stone",
+        "the spout stream falling as a ribbon of light"
+      ],
+      "animation_idea": "water trickling and rippling in the basin",
+      "lore_fit": "Every village square in living memory had a fountain, and the sound of one still running keeps a whole square from going quiet."
+    },
+    {
+      "rank": 76,
+      "id": "rock_spires",
+      "prefix": "rock_spire",
+      "name": "Rock Spire",
+      "description": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy",
+      "world_height_m": [
+        3.0,
+        6.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "tapered granite pinnacle",
+        "layered sandstone hoodoo",
+        "sea-stack style column",
+        "twisted basalt spire",
+        "split twin-pronged spire",
+        "pine-topped rock spire",
+        "window-pierced eroded spire",
+        "chalk-white needle spire",
+        "frost-split northern pinnacle",
+        "moss-streaked valley spire"
+      ],
+      "glow_concepts": [
+        "summit glowing like a lighthouse lamp",
+        "banded strata glowing in warm layers",
+        "swarm of glowing motes spiraling upward",
+        "crystal seams flashing down its length",
+        "eroded hollows lit from inside",
+        "tip capped in cold starlight"
+      ],
+      "animation_idea": "glowing motes spiraling slowly up around the spire",
+      "lore_fit": "A landmark pointed at from afar by so many of the dead that it keeps its exact silhouette across every era's world."
+    },
+    {
+      "rank": 77,
+      "id": "trailing_planters",
+      "prefix": "trailing_planter",
+      "name": "Trailing Planter",
+      "description": "a weathered barrel planter with flowering vines spilling over the rim and pooling on the ground",
+      "world_height_m": [
+        0.6,
+        1.0
+      ],
+      "art_size": 64,
+      "variety": [
+        "oak barrel, orange nasturtiums",
+        "cracked barrel, spilling ivy",
+        "blue-painted barrel, petunias",
+        "stone trough, trailing thyme",
+        "clay pot, tumbling geraniums",
+        "old wheelbarrow, mixed flowers",
+        "milk churn, sweet peas",
+        "mossy barrel, ferns",
+        "barrel swallowed whole by vines",
+        "winter barrel, bare trailing stems",
+        "strawberry barrel, red fruit",
+        "rope-bound barrel, morning glories"
+      ],
+      "glow_concepts": [
+        "blossoms glowing like banked coals",
+        "light leaking through cracks between the staves",
+        "silvery glowing snail trails across the barrel",
+        "fireflies sheltering under the trailing leaves",
+        "vine tips glowing like tiny candle wicks",
+        "iron hoops etched with faintly glowing runes"
+      ],
+      "animation_idea": "the trailing vine tips stirring softly against the barrel",
+      "lore_fit": "A barrel of flowers by the door is the plainest certainty of home the dead carry, so planters bloom on doorsteps whose houses have long since gone soft."
+    },
+    {
+      "rank": 78,
+      "id": "wisteria_snags",
+      "prefix": "wisteria_snag",
+      "name": "Wisteria Snag",
+      "description": "a dead leafless tree draped in woody wisteria vines with long hanging clusters of flowers",
+      "world_height_m": [
+        2.6,
+        3.8
+      ],
+      "art_size": 160,
+      "variety": [
+        "lavender wisteria cascades",
+        "white wisteria cascades",
+        "deep purple wisteria",
+        "soft pink wisteria",
+        "sparse first blooms",
+        "overwhelming full bloom",
+        "autumn wisteria, velvet seed pods",
+        "snag with one living branch",
+        "lightning-split blackened snag",
+        "low twisted gnarled snag",
+        "tall straight bare snag",
+        "wisteria tangled with ivy"
+      ],
+      "glow_concepts": [
+        "flower clusters glowing like hanging lamps",
+        "vine coils traced in thin violet light",
+        "seed pods cracked open and leaking light",
+        "growth rings glowing at the snapped limbs",
+        "luminous moths at rest among the blooms",
+        "fallen petals glowing in a ring below",
+        "a soulstone in the trunk hollow, veins alight"
+      ],
+      "animation_idea": "the long flower clusters swinging like slow pendulums",
+      "lore_fit": "The tree itself died long ago, but its flowering is still spoken of every spring, so the wisteria returns to dress the dead wood in what it is remembered for."
+    },
+    {
+      "rank": 79,
+      "id": "giant_mushrooms",
+      "prefix": "giant_mushroom",
+      "name": "Giant Mushroom",
+      "description": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap",
+      "world_height_m": [
+        2.2,
+        4.5
+      ],
+      "art_size": 192,
+      "variety": [
+        "towering red-capped fly agaric",
+        "broad flat parasol giant",
+        "pale birch bolete colossus",
+        "twin-stalked joined caps",
+        "leaning crooked giant",
+        "blue-grey milkcap tower",
+        "shaggy-stemmed golden giant",
+        "drooping wavy-brimmed cap",
+        "moss-skirted ancient giant",
+        "spotted violet-capped giant"
+      ],
+      "glow_concepts": [
+        "underside of the huge cap glowing like a lamp ceiling",
+        "bright gill slats radiating light beneath the cap",
+        "glowing sap veins climbing the thick stalk",
+        "cap spots lit like little cottage windows",
+        "halo of drifting luminous spores around the cap rim",
+        "band of foxfire ringing the stalk base"
+      ],
+      "animation_idea": "cap swaying gently while spore motes fall like slow snow",
+      "lore_fit": "In woods drifting toward the Quiet, growth stops obeying anyone's certainty, and mushrooms nobody contradicts swell to the size of trees."
+    },
+    {
+      "rank": 80,
+      "id": "nest_posts",
+      "prefix": "nest_post",
+      "name": "Nest Post",
+      "description": "a weathered wooden post with a woven twig bird nest built on top, straw and moss sticking out of the rounded nest cup",
+      "world_height_m": [
+        1.2,
+        2.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "weathered fence post nest",
+        "telegraph pole crossarm nest",
+        "tall stork-nest pole",
+        "magpie nest with trinkets",
+        "moss-lined round nest",
+        "twig nest speckled eggs",
+        "abandoned tattered nest",
+        "snow-capped winter nest",
+        "leaning crooked post nest",
+        "carved milestone post nest",
+        "double stacked nests",
+        "gate post swallow nest"
+      ],
+      "glow_concepts": [
+        "eggs glowing warm through the woven twigs",
+        "fireflies nesting among the sticks",
+        "hoarded glass beads shining in the nest cup",
+        "small tin lantern hung from the post",
+        "phantom bird of light brooding on the nest",
+        "glowworm strands dangling from the nest rim",
+        "waymark rune on the post glowing softly"
+      ],
+      "animation_idea": "nestling heads popping up with open beaks, then ducking back down into the cup",
+      "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright."
+    },
+    {
+      "rank": 81,
+      "id": "web_frames",
+      "prefix": "web_frame",
+      "name": "Web Frame",
+      "description": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "broken window frame",
+        "old gate frame",
+        "wagon wheel on post",
+        "empty picture frame",
+        "lone standing doorframe",
+        "ladder with rung webs",
+        "loom frame web",
+        "dew-beaded morning web",
+        "funnel web corner",
+        "torn ragged web",
+        "frost-rimed web",
+        "layered double web"
+      ],
+      "glow_concepts": [
+        "dewdrops on the web lit like strung lanterns",
+        "the silk spiral itself glowing moon-white",
+        "wrapped prey bundles glowing like paper lanterns",
+        "tiny glowing spider sitting at the hub",
+        "web spun into a glowing rune pattern",
+        "frame wood veined with glinting soulstone",
+        "ghost-light halo where threads have thinned away"
+      ],
+      "animation_idea": "the web rippling gently in the breeze while the spider bobs at the hub",
+      "lore_fit": "Frames whose houses have gone quiet stand alone in the meadows, and spiders web over the gaps the Quiet left."
+    },
+    {
+      "rank": 82,
+      "id": "cliff_fragments",
+      "prefix": "cliff_fragment",
+      "name": "Cliff Fragment",
+      "description": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale",
+      "world_height_m": [
+        1.5,
+        3.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "huge fallen granite slab",
+        "fresh-broken angular chunk",
+        "layered sedimentary block",
+        "fragment with fossil face",
+        "white chalk cliff fragment",
+        "basalt column fragment",
+        "overhanging tilted fragment",
+        "ivy-draped old fragment",
+        "split fragment with gap",
+        "glacial erratic boulder"
+      ],
+      "glow_concepts": [
+        "exposed crystal pocket blazing on the fracture face",
+        "glowing fossil spiral embedded in the surface",
+        "glowing ore veins branching like lightning",
+        "curtain of glowing green moss down one side",
+        "raw break faces shining pale white",
+        "warm light from a sheltered hollow beneath"
+      ],
+      "animation_idea": "dust sifting from the cracks while moss sways gently",
+      "lore_fit": "A piece of a remembered mountain that outlived the mountain itself when the Quiet took the rest of the range."
+    },
+    {
+      "rank": 83,
+      "id": "ant_hills",
+      "prefix": "ant_hill",
+      "name": "Ant Hill",
+      "description": "a mounded anthill of soil and pine needles rising from the grass, dotted with small dark entrance holes and tiny crawling ants",
+      "world_height_m": [
+        0.3,
+        1.0
+      ],
+      "art_size": 48,
+      "variety": [
+        "pine-needle thatch mound",
+        "sandy crater mound",
+        "grass-tufted mound",
+        "pebble-studded mound",
+        "tall forest anthill",
+        "twin-peaked mound",
+        "collapsed old mound",
+        "mound around stump",
+        "red-soil mound",
+        "moss-ringed mound",
+        "rain-gullied mound"
+      ],
+      "glow_concepts": [
+        "entrance holes glowing like tiny furnace vents",
+        "glowing ant trail spiraling up the mound",
+        "lit inner tunnels showing through thin soil",
+        "phosphorescent fungus ring around the base",
+        "soulstone grains sparkling through the dirt",
+        "ants carrying glowing ember crumbs",
+        "thin wisps of light rising from the crown"
+      ],
+      "animation_idea": "lines of ants trickling in and out of the entrance holes",
+      "lore_fit": "The small diligent lives of the meadow are remembered too, and their mounds firm up wherever people once watched ants work."
+    },
+    {
+      "rank": 84,
+      "id": "beached_rowboats",
+      "prefix": "beached_rowboat",
+      "name": "Beached Rowboat",
+      "description": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside",
+      "world_height_m": [
+        0.9,
+        1.3
+      ],
+      "art_size": 160,
+      "variety": [
+        "faded red painted hull",
+        "blue hull with white trim",
+        "bare weathered grey wood",
+        "green mossy old hull",
+        "freshly tarred black hull",
+        "hull with peeling white paint",
+        "overturned hull on blocks",
+        "boat with folded net inside",
+        "boat half filled with rainwater",
+        "yellow hull with worn name",
+        "boat with patched planks",
+        "small dinghy with rope coil"
+      ],
+      "glow_concepts": [
+        "a storm lantern glowing at the prow",
+        "the painted name on the hull glowing softly",
+        "bioluminescent algae ring along the waterline stain",
+        "warm soul-light seeping between the planks",
+        "a candle stub burning on the rowing thwart",
+        "glowing net floats heaped in the stern"
+      ],
+      "animation_idea": "a loose mooring rope swaying against the hull",
+      "lore_fit": "For many the crossing into Nangijala was a last ferry over dark water, and each beached hull is somebody's arrival still held ashore."
+    },
+    {
+      "rank": 85,
+      "id": "geodes",
+      "prefix": "geode",
+      "name": "Geode",
+      "description": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals",
+      "world_height_m": [
+        0.3,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "cracked amethyst geode",
+        "halved citrine geode",
+        "unopened round geode ball",
+        "agate-banded open geode",
+        "sky-blue celestine geode",
+        "smoky quartz geode",
+        "double split geode pair",
+        "moss-crusted weathered geode",
+        "large hollow half geode",
+        "black crystal void geode"
+      ],
+      "glow_concepts": [
+        "crystal-lined mouth glowing violet from within",
+        "thin beam of light escaping the crack",
+        "interior glow pulsing like a slow heartbeat",
+        "sugar-crystal lining glittering with tiny sparks",
+        "opening rimmed in soft ember light"
+      ],
+      "animation_idea": "crystal lining glinting as the interior glow flickers",
+      "lore_fit": "Memory keeps its brightest part hidden \u2014 a plain stone that cracks open to show the light it has been holding all along."
+    },
+    {
+      "rank": 86,
+      "id": "wasp_nest_trees",
+      "prefix": "wasp_nest_tree",
+      "name": "Wasp Nest Tree",
+      "description": "a small gnarled tree with a large gray paper wasp nest hanging from a branch, layered papery swirls around a round entrance hole",
+      "world_height_m": [
+        2.5,
+        4.2
+      ],
+      "art_size": 192,
+      "variety": [
+        "birch sapling single globe",
+        "dead oak teardrop nest",
+        "pine branch twin nests",
+        "gnarled apple tree nest",
+        "willow with striped nest",
+        "bare snag three nests",
+        "crabapple with papery bulb",
+        "aspen with tiered nest",
+        "hawthorn with weathered nest",
+        "rowan with pale nest",
+        "elm stub swollen nest"
+      ],
+      "glow_concepts": [
+        "paper nest lit from inside like a lantern",
+        "glowing wasps drifting like slow sparks",
+        "amber honey seep glowing down the bark",
+        "nest entrance glowing like a blown ember",
+        "faint light bands between the papery layers",
+        "foxfire brackets climbing the trunk",
+        "ghost-pale nest turned translucent and shining"
+      ],
+      "animation_idea": "wasps drifting lazily in and out of the nest entrance while the nest sways slightly",
+      "lore_fit": "Everyone remembers the tree they were told never to poke, so the gray paper nests hang unusually firm."
+    },
+    {
+      "rank": 87,
+      "id": "woodpiles",
+      "prefix": "woodpile",
+      "name": "Woodpile",
+      "description": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it",
+      "world_height_m": [
+        0.8,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "neat birch cordwood stack",
+        "round beehive-style wood stack",
+        "tarpaulin-topped stack",
+        "half-used leaning stack",
+        "fresh pale split-pine stack",
+        "moss-eaten forgotten stack",
+        "snow-capped winter stack",
+        "chopping block with sunk axe",
+        "stack between two posts",
+        "bark-on rough log stack",
+        "bound kindling bundle stack",
+        "toppled scattered stack"
+      ],
+      "glow_concepts": [
+        "log ends glowing like a wall of embers",
+        "axe blade shining with cold soul-light",
+        "warm hearthlight leaking between the split logs",
+        "foxfire fungus on the bottom mossy row",
+        "one glowing log deep in the dark stack",
+        "sparks of light drifting off fresh-split wood"
+      ],
+      "animation_idea": "a loose log settling as fine wood dust drifts",
+      "lore_fit": "Firewood laid up for winter feeds the tended fires, and a full woodpile is the standing promise that a fire will not be allowed to go out."
+    },
+    {
+      "rank": 88,
+      "id": "letter_boxes",
+      "prefix": "letter_box",
+      "name": "Letter Box",
+      "description": "a small wooden letterbox on a post with a slot and a hinged lid, stuffed with folded letters, a few tucked under the lid",
+      "world_height_m": [
+        1.0,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "red-painted tin box",
+        "weathered box, overflowing letters",
+        "blue enamel box, brass slot",
+        "carved farmhouse name box",
+        "leaning mossy old box",
+        "twin boxes on shared post",
+        "box with wax-sealed envelopes",
+        "ribbon-tied letter bundle beneath",
+        "snow-capped winter box",
+        "open-lid empty box",
+        "iron city box, fluted post",
+        "driftwood box with pebble weight"
+      ],
+      "glow_concepts": [
+        "letters glowing warm gold through the slot",
+        "painted name on the box shining softly",
+        "wax seals glowing like small embers",
+        "one bright letter lit among dark ones",
+        "small lantern hooked beneath the box",
+        "address runes glowing down the post"
+      ],
+      "animation_idea": "the hinged lid lifting slightly and settling as if breathing",
+      "lore_fit": "The dead write letters to the still-living and to each other, and every letter waiting in a box is a name being spoken in ink."
+    },
+    {
+      "rank": 89,
+      "id": "statues",
+      "prefix": "statue",
+      "name": "Statue",
+      "description": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age",
+      "world_height_m": [
+        1.5,
+        3.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "robed woman holding urn",
+        "armored knight statue",
+        "headless torso statue",
+        "child holding a bird",
+        "seated scholar with book",
+        "angel with broken wing",
+        "horseman fragment on plinth",
+        "moss-green bronze figure",
+        "pale marble maiden",
+        "stern bearded king",
+        "shepherd with lamb",
+        "hooded mourner figure",
+        "fisherman with net",
+        "two brothers side by side",
+        "waiting dog on plinth",
+        "harpist mid-song"
+      ],
+      "glow_concepts": [
+        "eyes glowing with soft white light",
+        "golden light filling the cracks like kintsugi",
+        "glowing tear tracks running down the face",
+        "a halo of pale light above the head",
+        "the held lantern or sword faintly alight",
+        "constellation of glowing lichen spots on the stone",
+        "ring of votive candles around the pedestal",
+        "whole figure translucent, lit from within"
+      ],
+      "animation_idea": "moths slowly circling the statue's head",
+      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered \u2014 hardest of all for the Quiet to take."
+    },
+    {
+      "rank": 90,
+      "id": "rope_swings",
+      "prefix": "rope_swing",
+      "name": "Rope Swing",
+      "description": "a wooden swing hanging by two ropes from a stout timber frame, its plank seat swaying above a patch of worn bare ground",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "rough timber A-frame swing",
+        "plank seat, hemp ropes",
+        "knotted single-rope stick seat",
+        "painted red frame swing",
+        "weathered grey frame, frayed ropes",
+        "flower-carved seat swing",
+        "double swing, two seats",
+        "snow-dusted winter swing",
+        "ivy-twined old frame",
+        "fresh pale new-built swing",
+        "leaning crooked frame",
+        "ribbon-wound festival swing"
+      ],
+      "glow_concepts": [
+        "the empty seat glowing softly as if just left",
+        "ropes glowing like two threads of light",
+        "ghost-light of a small sitter flickering on the seat",
+        "fireflies ringing the frame top",
+        "carved initials on the crossbeam glowing warm",
+        "worn ground beneath shining in a faint ring"
+      ],
+      "animation_idea": "the empty seat swinging gently as if someone just jumped off",
+      "lore_fit": "Children remember swings with their whole bodies, so the swings of Nangijala keep swinging over ground worn bare by feet that still return."
+    },
+    {
+      "rank": 91,
+      "id": "water_pumps",
+      "prefix": "water_pump",
+      "name": "Water Pump",
+      "description": "a cast-iron village hand pump with a long curved handle and a spout hanging over a small stone splash slab",
+      "world_height_m": [
+        1.0,
+        1.6
+      ],
+      "art_size": 64,
+      "variety": [
+        "green-painted iron pump",
+        "rusted red-brown pump",
+        "black fluted column pump",
+        "wooden box pump",
+        "pump with hanging tin cup",
+        "pump with filled bucket",
+        "leaning worn pump",
+        "whitewashed yard pump",
+        "frost-wrapped winter pump",
+        "pump with lion-head spout",
+        "moss-footed old pump",
+        "pump with chained ladle"
+      ],
+      "glow_concepts": [
+        "spout trickling a thread of glowing water",
+        "handle worn to a warm hand-shaped glow",
+        "glowing droplets beading the spout mouth",
+        "maker's name on the casting shining softly",
+        "pale light welling up from the splash slab",
+        "tin cup brimming with luminous water"
+      ],
+      "animation_idea": "the handle dipping slowly as a trickle falls from the spout",
+      "lore_fit": "Every era pumped its own water, and a pump that still primes means the dooryard it served is still spoken of."
+    },
+    {
+      "rank": 92,
+      "id": "anchors",
+      "prefix": "anchor",
+      "name": "Anchor",
+      "description": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base",
+      "world_height_m": [
+        1.0,
+        2.0
+      ],
+      "art_size": 96,
+      "variety": [
+        "rust-brown admiralty anchor",
+        "barnacled sea-worn anchor",
+        "tarred black anchor",
+        "small skiff anchor",
+        "huge half-buried anchor",
+        "anchor wound with rope",
+        "anchor with wooden stock",
+        "seaweed-draped fresh-raised anchor",
+        "white-painted memorial anchor",
+        "snow-capped winter anchor",
+        "broken one-fluke anchor",
+        "chain-wrapped leaning anchor"
+      ],
+      "glow_concepts": [
+        "chain links glowing like strung embers",
+        "ghost-blue barnacle colonies freckling the iron",
+        "ship's name on the stock shining softly",
+        "soul-light pooling where the fluke bites the ground",
+        "rust cracks glowing furnace-orange",
+        "a lantern hung from the anchor ring"
+      ],
+      "animation_idea": "the loose chain end swaying and clinking softly",
+      "lore_fit": "An anchor set ashore is a sailor's promise that the voyage is over, holding whole harbors of memory fast against the Quiet."
+    },
+    {
+      "rank": 93,
+      "id": "sundials",
+      "prefix": "sundial",
+      "name": "Sundial",
+      "description": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon",
+      "world_height_m": [
+        0.9,
+        1.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "fluted column sundial",
+        "square baluster pedestal",
+        "moss-grown tilted sundial",
+        "brass-plate garden sundial",
+        "millstone dial on boulder",
+        "carved motto rim sundial",
+        "verdigris green dial plate",
+        "white marble sundial",
+        "cracked frost-split pedestal",
+        "ivy-wrapped old sundial",
+        "slate dial, gold numerals",
+        "armillary ring sundial"
+      ],
+      "glow_concepts": [
+        "hour lines glowing in sequence around the dial",
+        "the gnomon's shadow burning as a line of light",
+        "engraved motto glowing around the rim",
+        "brass plate shining moon-pale",
+        "a wrong-time shadow glowing where no sun stands",
+        "dial numerals lit like small windows"
+      ],
+      "animation_idea": "the glowing shadow line creeping slowly around the dial",
+      "lore_fit": "Time runs strangely where every era stands at once, and each sundial in Nangijala keeps the hour its keeper remembers best."
+    },
+    {
+      "rank": 94,
+      "id": "spring_basins",
+      "prefix": "spring_basin",
+      "name": "Spring Basin",
+      "description": "a raised rustic stone basin fed by a natural spring, rough mossy masonry walls holding clear welling water, a wooden feed spout at one side",
+      "world_height_m": [
+        0.8,
+        1.2
+      ],
+      "art_size": 96,
+      "variety": [
+        "rough fieldstone basin",
+        "moss-rimmed old basin",
+        "peat-dark amber water basin",
+        "steaming warm spring basin",
+        "fern-flanked shaded basin",
+        "iced-over winter basin",
+        "basin with wooden feed spout",
+        "twin stepped basins",
+        "rune-carved rim basin",
+        "basin with sunken white pebbles",
+        "briar rose leaning over basin",
+        "cracked slowly leaking basin"
+      ],
+      "glow_concepts": [
+        "soul-light welling up from the basin's throat",
+        "glowing bubbles rising and bursting",
+        "rune-carved rim stones shining faintly",
+        "lit mist curling off the warm water",
+        "moonmilk mineral crust glowing on the rim stones"
+      ],
+      "animation_idea": "bubbles rising as rings spread across the water surface",
+      "lore_fit": "Springs are where the land remembers water beginning, and drinking from a kept basin is said to steady whatever in you has gone thin."
+    },
+    {
+      "rank": 95,
+      "id": "sheaf_poles",
+      "prefix": "sheaf_pole",
+      "name": "Sheaf Pole",
+      "description": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord",
+      "world_height_m": [
+        1.6,
+        2.4
+      ],
+      "art_size": 96,
+      "variety": [
+        "single fat oat sheaf",
+        "double-sheaf crossarm pole",
+        "barley sheaf pole",
+        "ribbon-tied festival sheaf",
+        "snow-dusted midwinter sheaf",
+        "pecked-thin late sheaf",
+        "fresh golden harvest sheaf",
+        "tall birch pole sheaf",
+        "leaning old sheaf pole",
+        "sheaf with perched sparrows",
+        "rye sheaf, long beards",
+        "small child-raised sheaf"
+      ],
+      "glow_concepts": [
+        "grain heads glowing like strings of tiny lamps",
+        "golden chaff motes drifting off the sheaf",
+        "glowing birds of light perched among the grain",
+        "straw binding shining like a hot band",
+        "the whole sheaf haloed warm against dusk",
+        "seed heads sparking softly as they nod"
+      ],
+      "animation_idea": "grain heads nodding while sparrows flutter in and out",
+      "lore_fit": "Setting out the midwinter sheaf for the birds is remembered kindness, and kindness repeated every year holds its pole upright for centuries."
+    },
+    {
+      "rank": 96,
+      "id": "dovecotes",
+      "prefix": "dovecote",
+      "name": "Dovecote",
+      "description": "a small wooden dove tower on a stout post, with rows of arched pigeon holes, landing ledges, and a shingled roof",
+      "world_height_m": [
+        2.0,
+        3.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "white six-hole post dovecote",
+        "stone drum dovecote",
+        "red-roofed farm dovecote",
+        "weathered grey leaning dovecote",
+        "octagonal fancy dovecote",
+        "turf-roofed squat dovecote",
+        "ivy-climbed old dovecote",
+        "snow-capped winter dovecote",
+        "double-tier many-hole dovecote",
+        "blue-doored cottage dovecote",
+        "dovecote with perched doves",
+        "abandoned boarded dovecote"
+      ],
+      "glow_concepts": [
+        "pigeon holes lit from within like little windows",
+        "white doves glowing faintly as they roost",
+        "warm straw light spilling from the arched openings",
+        "ring of pale glowing feathers on the ground",
+        "roof finial shining like a small star",
+        "ghost-doves of light circling the roof"
+      ],
+      "animation_idea": "doves shuffling on the ledges, one fluttering off and returning",
+      "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms."
+    },
+    {
+      "rank": 97,
+      "id": "rocking_horses",
+      "prefix": "rocking_horse",
+      "name": "Rocking Horse",
+      "description": "a weathered wooden rocking horse on curved rockers standing in meadow grass, with a carved mane, leather tack and worn paint",
+      "world_height_m": [
+        0.6,
+        1.0
+      ],
+      "art_size": 48,
+      "variety": [
+        "dapple-grey painted horse",
+        "red-saddled dark bay",
+        "paint-worn pale horse",
+        "fresh white new-carved horse",
+        "moss-flecked forgotten horse",
+        "rope-tailed simple horse",
+        "snow-dusted winter horse",
+        "horse with horsehair mane",
+        "cracked one-eared old horse",
+        "gilded fairground horse",
+        "tiny foal-sized horse",
+        "ribbon-braided festival horse"
+      ],
+      "glow_concepts": [
+        "glass eyes glowing softly amber",
+        "saddle shining where small hands held on",
+        "rockers leaving glowing curved tracks in the grass",
+        "mane streaming with faint light",
+        "candle stub burning between the rockers",
+        "painted dapples lit like tiny lanterns"
+      ],
+      "animation_idea": "rocking gently on its own with a slow creak",
+      "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small."
+    },
+    {
+      "rank": 98,
+      "id": "anvils",
+      "prefix": "anvil",
+      "name": "Anvil",
+      "description": "a heavy blacksmith's anvil mounted on a broad oak stump, with tongs and a hammer resting across its face",
+      "world_height_m": [
+        0.7,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "black iron anvil",
+        "rust-brown weathered anvil",
+        "bright-faced working anvil",
+        "double-horn forge anvil",
+        "moss-footed forgotten anvil",
+        "anvil with leaning sledgehammer",
+        "anvil with horseshoe pile",
+        "snow-capped winter anvil",
+        "small farrier's anvil",
+        "anvil with coiled chain",
+        "scarred deep-dented anvil",
+        "stone-set ancient anvil"
+      ],
+      "glow_concepts": [
+        "the face glowing forge-yellow as if just struck",
+        "a cooling horseshoe shining ember-red on top",
+        "hammer sparks of light frozen mid-scatter above",
+        "smith's touchmark glowing on the flank",
+        "the horn tip shining white-hot",
+        "warm forge-light pooling in the stump's cracks"
+      ],
+      "animation_idea": "a faint ring of sparks scattering as if from an unseen hammer blow",
+      "lore_fit": "The smith's trade is remembered in every era at once, and an anvil rings on in the meadow long after its forge went soft."
+    },
+    {
+      "rank": 99,
+      "id": "charcoal_kilns",
+      "prefix": "charcoal_kiln",
+      "name": "Charcoal Kiln",
+      "description": "a tall clay-domed charcoal kiln mound with ridged earthen sides, pocked with small vent holes seeping thin smoke",
+      "world_height_m": [
+        1.8,
+        3.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "turf-covered dome kiln",
+        "red clay dome kiln",
+        "grey mud-plastered kiln",
+        "cracked half-collapsed kiln",
+        "freshly sealed dark kiln",
+        "tall conical stack kiln",
+        "squat rounded kiln",
+        "kiln with side chimney",
+        "vine-grown cold old kiln",
+        "snow-dusted winter kiln",
+        "stone-footed kiln",
+        "twin paired kilns"
+      ],
+      "glow_concepts": [
+        "vent holes glowing like furnace mouths",
+        "molten light seams cracking up the flanks",
+        "banded rings of ember glow around the dome",
+        "soulstone core shining through a broken flank",
+        "sparks drifting from the crown vent",
+        "inner charcoal bed glowing through deep cracks"
+      ],
+      "animation_idea": "heat shimmer and thin smoke rising from the vent holes",
+      "lore_fit": "Charcoal burners watched their smoking mounds night and day for weeks, and a thing watched that hard keeps burning here, feeding the valley's tended fires."
+    },
+    {
+      "rank": 100,
+      "id": "beaver_lodges",
+      "prefix": "beaver_lodge",
+      "name": "Beaver Lodge",
+      "description": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave",
+      "world_height_m": [
+        0.8,
+        1.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "fresh-built stick dome",
+        "mossy old lodge",
+        "snow-capped winter lodge",
+        "reed-thatched lodge",
+        "birch-log lodge",
+        "mud-plastered smooth lodge",
+        "abandoned sagging lodge",
+        "lodge with gnawed stumps beside",
+        "double-mound twin lodge",
+        "grass-grown ancient lodge",
+        "lodge with fresh peeled branches",
+        "low wide bank lodge"
+      ],
+      "glow_concepts": [
+        "lodge-light glowing through gaps between the sticks",
+        "ghostly beaver light glimpsed inside the lattice",
+        "gnawed branch tips glowing like ember pokers",
+        "soulstone pebbles packed into the mud",
+        "fireflies hovering low over the dome"
+      ],
+      "animation_idea": "one loose twig quivering while warm light flickers inside the dome",
+      "lore_fit": "Streams remember being worked, and the lodges of long-dead beavers stand at the shore because valley folk still tell where the water pooled."
+    }
+  ]
 }

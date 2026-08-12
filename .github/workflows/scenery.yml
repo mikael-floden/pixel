@@ -1,33 +1,31 @@
 name: Scenery factory loop
 
-# Autonomous generation loop for the scenery/ domain. Runs on a schedule (and on
-# demand), advances the factory by a bounded chunk, and the loop itself commits +
-# pushes each unit. Manage it from a phone: add the PIXELLAB_API_KEY secret in
-# GitHub repo settings, and trigger/disable from the Actions tab.
+# Autonomous DAILY generation for the scenery/ domain (v2, 2026-08-12): the
+# loop plans deterministically from the filesystem (catalog.py), generates up
+# to ~100 pieces per day in batched 1-direction PixelLab calls, tags every
+# created object SCENERY, commits + pushes per batch, and exits cleanly when
+# the budget floor is reached (it then simply tries again the next day — the
+# maintainer's "always know what to do based on what has been generated").
+# Manage from a phone: the PIXELLAB_API_KEY repo secret powers it; trigger or
+# disable from the Actions tab.
 
 on:
-  # Scheduled loop is DISABLED (stopped on request). Re-enable by uncommenting the
-  # cron below; the loop still runs on demand via the Actions "Run workflow" button.
-  # schedule:
-  #   - cron: "25 * * * *"
+  schedule:
+    - cron: "30 2 * * *"        # daily 02:30 UTC — one ~100-piece pass
   workflow_dispatch:
     inputs:
+      max_pieces:
+        description: "Pieces to generate this pass"
+        default: "100"
       max_minutes:
         description: "Minutes to run this pass"
-        default: "80"
-      min_balance:
-        description: "Stop when generations remaining drops below this"
-        default: "2000"
-      restyle:
-        description: "Regenerate scenery made under an older style_version (true/false)"
-        default: "false"
+        default: "300"
 
 # Allow the job (and the loop's git push) to write to the repo.
 permissions:
   contents: write
 
-# Never let two scenery passes run at once (scheduled + manual). This is a
-# separate group from the character loop, so the two domains can run in parallel.
+# Never let two scenery passes run at once (scheduled + manual).
 concurrency:
   group: scenery-loop
   cancel-in-progress: false
@@ -35,11 +33,9 @@ concurrency:
 jobs:
   loop:
     runs-on: ubuntu-latest
-    # Generous headroom over the loop's --max-minutes clean exit: a single
-    # 8-direction/16-frame animation unit can take ~8 min, so the last unit must
-    # be able to finish and COMMIT well before the job is killed. (A 55-min cap
-    # was cancelling passes mid-unit and losing that piece.)
-    timeout-minutes: 120
+    # Headroom over the loop's --max-minutes clean exit: the last batch must be
+    # able to finish, download and COMMIT before the job is killed.
+    timeout-minutes: 350
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -47,7 +43,7 @@ jobs:
           ref: main
           # depth 1: the pack is >1 GiB of binary-art history — the loop only
           # needs the tip to commit+push (rebase-on-reject fetches what it
-          # needs). Full history cost ~minutes per run for nothing.
+          # needs).
           fetch-depth: 1
 
       - name: Set up Python
@@ -70,6 +66,5 @@ jobs:
           git config user.name "pixel-scenery-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python scenery/pipeline/loop.py \
-            --max-minutes "${{ github.event.inputs.max_minutes || '80' }}" \
-            --min-balance "${{ github.event.inputs.min_balance || '2000' }}" \
-            ${{ github.event.inputs.restyle == 'true' && '--restyle' || '' }}
+            --max-pieces "${{ github.event.inputs.max_pieces || '100' }}" \
+            --max-minutes "${{ github.event.inputs.max_minutes || '300' }}"

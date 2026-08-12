@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_003",
+  "group": "stones",
+  "rank": 2,
+  "index": 3,
+  "name": "Stone with carved initials 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "stone with carved initials",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.09,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a8cf1239-b5ad-45df-8808-b30254ff3993",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

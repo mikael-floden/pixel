@@ -1,33 +1,729 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 3,
-  "target_count": 1,
+  "scenery_count": 36,
+  "target_count": 2653,
   "scale": {
-    "_comment": "REALISM RULE: scenery is scaled to the world by real height, so it sits correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each piece's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every piece MUST have a world_height_m (per-piece, else category_height_m fallback).",
+    "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
-    "character_height_m": 1.7,
-    "category_height_m": {
-      "container": 0.8,
-      "valuable": 0.25,
-      "tool": 1.0,
-      "nature": 1.0,
-      "light": 1.0,
-      "creature": 0.25,
-      "misc": 0.8,
-      "building": 4.0,
-      "structure": 1.0
-    }
+    "character_height_m": 1.7
   },
+  "groups": [
+    {
+      "rank": 1,
+      "id": "trees",
+      "name": "Tree",
+      "quota": 100,
+      "done": 1
+    },
+    {
+      "rank": 2,
+      "id": "stones",
+      "name": "Stone",
+      "quota": 98,
+      "done": 16
+    },
+    {
+      "rank": 3,
+      "id": "graves",
+      "name": "Grave",
+      "quota": 96,
+      "done": 16
+    },
+    {
+      "rank": 4,
+      "id": "braziers",
+      "name": "Brazier",
+      "quota": 94,
+      "done": 0
+    },
+    {
+      "rank": 5,
+      "id": "lantern_posts",
+      "name": "Lantern Post",
+      "quota": 92,
+      "done": 0
+    },
+    {
+      "rank": 6,
+      "id": "waystones",
+      "name": "Waystone",
+      "quota": 90,
+      "done": 0
+    },
+    {
+      "rank": 7,
+      "id": "torch_posts",
+      "name": "Torch Post",
+      "quota": 88,
+      "done": 0
+    },
+    {
+      "rank": 8,
+      "id": "signposts",
+      "name": "Signpost",
+      "quota": 86,
+      "done": 0
+    },
+    {
+      "rank": 9,
+      "id": "cairns",
+      "name": "Cairn",
+      "quota": 84,
+      "done": 0
+    },
+    {
+      "rank": 10,
+      "id": "fences",
+      "name": "Fence",
+      "quota": 82,
+      "done": 0
+    },
+    {
+      "rank": 11,
+      "id": "wells",
+      "name": "Well",
+      "quota": 80,
+      "done": 0
+    },
+    {
+      "rank": 12,
+      "id": "hedges",
+      "name": "Hedge",
+      "quota": 78,
+      "done": 0
+    },
+    {
+      "rank": 13,
+      "id": "briar_thickets",
+      "name": "Briar Thicket",
+      "quota": 76,
+      "done": 0
+    },
+    {
+      "rank": 14,
+      "id": "bell_posts",
+      "name": "Bell Post",
+      "quota": 74,
+      "done": 0
+    },
+    {
+      "rank": 15,
+      "id": "streetlights",
+      "name": "Streetlight",
+      "quota": 72,
+      "done": 0
+    },
+    {
+      "rank": 16,
+      "id": "flame_niches",
+      "name": "Flame Niche",
+      "quota": 70,
+      "done": 0
+    },
+    {
+      "rank": 17,
+      "id": "haystacks",
+      "name": "Haystack",
+      "quota": 68,
+      "done": 0
+    },
+    {
+      "rank": 18,
+      "id": "orchard_trees",
+      "name": "Orchard Tree",
+      "quota": 66,
+      "done": 0
+    },
+    {
+      "rank": 19,
+      "id": "wayside_shrines",
+      "name": "Wayside Shrine",
+      "quota": 64,
+      "done": 0
+    },
+    {
+      "rank": 20,
+      "id": "fallen_logs",
+      "name": "Fallen Log",
+      "quota": 62,
+      "done": 0
+    },
+    {
+      "rank": 21,
+      "id": "story_posts",
+      "name": "Story Post",
+      "quota": 60,
+      "done": 0
+    },
+    {
+      "rank": 22,
+      "id": "offering_tables",
+      "name": "Offering Table",
+      "quota": 58,
+      "done": 0
+    },
+    {
+      "rank": 23,
+      "id": "soulstone_outcrops",
+      "name": "Soulstone Outcrop",
+      "quota": 56,
+      "done": 0
+    },
+    {
+      "rank": 24,
+      "id": "stumps",
+      "name": "Stump",
+      "quota": 54,
+      "done": 0
+    },
+    {
+      "rank": 25,
+      "id": "bushes",
+      "name": "Bush",
+      "quota": 52,
+      "done": 0
+    },
+    {
+      "rank": 26,
+      "id": "scarecrows",
+      "name": "Scarecrow",
+      "quota": 50,
+      "done": 0
+    },
+    {
+      "rank": 27,
+      "id": "carts",
+      "name": "Cart",
+      "quota": 48,
+      "done": 0
+    },
+    {
+      "rank": 28,
+      "id": "barrels",
+      "name": "Barrel",
+      "quota": 46,
+      "done": 0
+    },
+    {
+      "rank": 29,
+      "id": "lantern_stands",
+      "name": "Hanging Lantern Stand",
+      "quota": 44,
+      "done": 0
+    },
+    {
+      "rank": 30,
+      "id": "beehives",
+      "name": "Beehive",
+      "quota": 42,
+      "done": 0
+    },
+    {
+      "rank": 31,
+      "id": "mushrooms",
+      "name": "Mushroom",
+      "quota": 40,
+      "done": 0
+    },
+    {
+      "rank": 32,
+      "id": "reed_beds",
+      "name": "Reed Bed",
+      "quota": 38,
+      "done": 0
+    },
+    {
+      "rank": 33,
+      "id": "cattail_clumps",
+      "name": "Cattail Clump",
+      "quota": 36,
+      "done": 0
+    },
+    {
+      "rank": 34,
+      "id": "flower_stands",
+      "name": "Flower Stand",
+      "quota": 34,
+      "done": 0
+    },
+    {
+      "rank": 35,
+      "id": "dock_pilings",
+      "name": "Dock Piling",
+      "quota": 32,
+      "done": 0
+    },
+    {
+      "rank": 36,
+      "id": "grass_tufts",
+      "name": "Grass Tuft",
+      "quota": 30,
+      "done": 0
+    },
+    {
+      "rank": 37,
+      "id": "crystals",
+      "name": "Crystal",
+      "quota": 28,
+      "done": 0
+    },
+    {
+      "rank": 38,
+      "id": "standing_stones",
+      "name": "Standing Stone",
+      "quota": 26,
+      "done": 0
+    },
+    {
+      "rank": 39,
+      "id": "toadstool_rings",
+      "name": "Toadstool Ring",
+      "quota": 24,
+      "done": 0
+    },
+    {
+      "rank": 40,
+      "id": "washing_lines",
+      "name": "Washing Line",
+      "quota": 22,
+      "done": 0
+    },
+    {
+      "rank": 41,
+      "id": "ivy_posts",
+      "name": "Ivy Post",
+      "quota": 20,
+      "done": 0
+    },
+    {
+      "rank": 42,
+      "id": "ferns",
+      "name": "Fern",
+      "quota": 18,
+      "done": 0
+    },
+    {
+      "rank": 43,
+      "id": "telegraph_poles",
+      "name": "Telegraph Pole",
+      "quota": 16,
+      "done": 0
+    },
+    {
+      "rank": 44,
+      "id": "fish_drying_racks",
+      "name": "Fish Drying Rack",
+      "quota": 14,
+      "done": 0
+    },
+    {
+      "rank": 45,
+      "id": "moss_clumps",
+      "name": "Moss Clump",
+      "quota": 12,
+      "done": 0
+    },
+    {
+      "rank": 46,
+      "id": "beacons",
+      "name": "Beacon",
+      "quota": 10,
+      "done": 0
+    },
+    {
+      "rank": 47,
+      "id": "windmills",
+      "name": "Windmill",
+      "quota": 8,
+      "done": 0
+    },
+    {
+      "rank": 48,
+      "id": "maypoles",
+      "name": "Maypole",
+      "quota": 6,
+      "done": 0
+    },
+    {
+      "rank": 49,
+      "id": "market_stalls",
+      "name": "Market Stall",
+      "quota": 4,
+      "done": 0
+    },
+    {
+      "rank": 50,
+      "id": "chimney_stacks",
+      "name": "Chimney Stack",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 51,
+      "id": "ruined_arches",
+      "name": "Ruined Arch",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 52,
+      "id": "hanging_willows",
+      "name": "Hanging Willow",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 53,
+      "id": "puffballs",
+      "name": "Puffball",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 54,
+      "id": "soulstone_plinths",
+      "name": "Soulstone Plinth",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 55,
+      "id": "gravel_piles",
+      "name": "Gravel Pile",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 56,
+      "id": "aqueduct_fragments",
+      "name": "Aqueduct Fragment",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 57,
+      "id": "driftwood_logs",
+      "name": "Driftwood Log",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 58,
+      "id": "cup_fungi",
+      "name": "Cup Fungus",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 59,
+      "id": "waterwheels",
+      "name": "Waterwheel",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 60,
+      "id": "ancient_trees",
+      "name": "Ancient Tree",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 61,
+      "id": "broken_columns",
+      "name": "Broken Column",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 62,
+      "id": "fading_relics",
+      "name": "Fading Relic",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 63,
+      "id": "water_lily_clumps",
+      "name": "Water Lily Clump",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 64,
+      "id": "flower_trellises",
+      "name": "Flower Trellis",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 65,
+      "id": "petrified_stumps",
+      "name": "Petrified Stump",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 66,
+      "id": "hop_poles",
+      "name": "Hop Pole",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 67,
+      "id": "beast_skulls",
+      "name": "Beast Skull",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 68,
+      "id": "rusted_machines",
+      "name": "Rusted Machine",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 69,
+      "id": "owl_snags",
+      "name": "Owl Snag",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 70,
+      "id": "bone_piles",
+      "name": "Bone Pile",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 71,
+      "id": "rail_carts",
+      "name": "Rail Cart",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 72,
+      "id": "overgrown_archways",
+      "name": "Overgrown Archway",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 73,
+      "id": "flower_garlands",
+      "name": "Flower Garland",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 74,
+      "id": "hanging_baskets",
+      "name": "Hanging Basket",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 75,
+      "id": "stone_fountains",
+      "name": "Stone Fountain",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 76,
+      "id": "rock_spires",
+      "name": "Rock Spire",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 77,
+      "id": "trailing_planters",
+      "name": "Trailing Planter",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 78,
+      "id": "wisteria_snags",
+      "name": "Wisteria Snag",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 79,
+      "id": "giant_mushrooms",
+      "name": "Giant Mushroom",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 80,
+      "id": "nest_posts",
+      "name": "Nest Post",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 81,
+      "id": "web_frames",
+      "name": "Web Frame",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 82,
+      "id": "cliff_fragments",
+      "name": "Cliff Fragment",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 83,
+      "id": "ant_hills",
+      "name": "Ant Hill",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 84,
+      "id": "beached_rowboats",
+      "name": "Beached Rowboat",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 85,
+      "id": "geodes",
+      "name": "Geode",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 86,
+      "id": "wasp_nest_trees",
+      "name": "Wasp Nest Tree",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 87,
+      "id": "woodpiles",
+      "name": "Woodpile",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 88,
+      "id": "letter_boxes",
+      "name": "Letter Box",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 89,
+      "id": "statues",
+      "name": "Statue",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 90,
+      "id": "rope_swings",
+      "name": "Rope Swing",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 91,
+      "id": "water_pumps",
+      "name": "Water Pump",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 92,
+      "id": "anchors",
+      "name": "Anchor",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 93,
+      "id": "sundials",
+      "name": "Sundial",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 94,
+      "id": "spring_basins",
+      "name": "Spring Basin",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 95,
+      "id": "sheaf_poles",
+      "name": "Sheaf Pole",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 96,
+      "id": "dovecotes",
+      "name": "Dovecote",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 97,
+      "id": "rocking_horses",
+      "name": "Rocking Horse",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 98,
+      "id": "anvils",
+      "name": "Anvil",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 99,
+      "id": "charcoal_kilns",
+      "name": "Charcoal Kiln",
+      "quota": 2,
+      "done": 0
+    },
+    {
+      "rank": 100,
+      "id": "beaver_lodges",
+      "name": "Beaver Lodge",
+      "quota": 2,
+      "done": 0
+    }
+  ],
   "categories": {
     "effect": 1,
     "light": 1,
-    "decor": 1
+    "decor": 1,
+    "graves": 16,
+    "stones": 16,
+    "trees": 1
   },
   "scenery": [
     {
       "id": "blood_spatter",
+      "rel": "blood_spatter",
       "name": "Blood spatter",
       "category": "effect",
+      "lights": null,
       "description": "a burst of blood dispersing into particles \u2014 the game's hit effect",
       "view": "low top-down",
       "size": 34,
@@ -54,8 +750,10 @@
     },
     {
       "id": "campfire",
+      "rel": "campfire",
       "name": "Campfire",
       "category": "light",
+      "lights": null,
       "description": "a campfire of logs with dancing flames",
       "view": "low top-down",
       "size": 96,
@@ -100,8 +798,10 @@
     },
     {
       "id": "grave_cross",
+      "rel": "grave_cross",
       "name": "Wooden grave cross",
       "category": "decor",
+      "lights": null,
       "description": "a wooden grave cross that appears from the ground where something died",
       "view": "low top-down",
       "size": 34,
@@ -134,6 +834,732 @@
           "directions": {}
         }
       ]
+    },
+    {
+      "id": "grave_001",
+      "rel": "graves/grave_001",
+      "name": "Briar-rose grown stone 001",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.91,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1526a863-9616-4874-ac84-55316aa6da32",
+      "sprite": "graves/grave_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_002",
+      "rel": "graves/grave_002",
+      "name": "Snow-capped winter headstone 002 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, snow-capped winter headstone, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.75,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "509869c1-ffd4-4b29-be98-fc982de5573c",
+      "sprite": "graves/grave_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_003",
+      "rel": "graves/grave_003",
+      "name": "Marble stone, gilded name 003",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.1,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ec70a267-ac86-420d-b196-7feae2b4efbc",
+      "sprite": "graves/grave_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_004",
+      "rel": "graves/grave_004",
+      "name": "Toppled half-sunk stone 004 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, self-emissive at night, softly radiating light: single votive candle flickering at the base",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.03,
+        "world_px_height": 39,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c1d64609-9739-4ebf-ad40-4ffe53de74ec",
+      "sprite": "graves/grave_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_005",
+      "rel": "graves/grave_005",
+      "name": "Sea-worn driftwood marker 005",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, sea-worn driftwood marker, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.93,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f2373b5f-97a6-4625-b076-70a40df02c22",
+      "sprite": "graves/grave_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_006",
+      "rel": "graves/grave_006",
+      "name": "Rounded granite headstone 006 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, self-emissive at night, softly radiating light: luminous white flowers blooming against the stone",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.76,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "687fdf47-4d1a-49e1-a080-03d51727ebb0",
+      "sprite": "graves/grave_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_007",
+      "rel": "graves/grave_007",
+      "name": "Cracked slate slab 007",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, cracked slate slab, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.09,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6c813cdf-243e-4120-894c-7fd922a53e2b",
+      "sprite": "graves/grave_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_008",
+      "rel": "graves/grave_008",
+      "name": "Weathered wooden plank marker 008 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, weathered wooden plank marker, self-emissive at night, softly radiating light: thin soulstone vein glinting through the rock",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.97,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9d201616-9974-4043-91b2-a28611232636",
+      "sprite": "graves/grave_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_009",
+      "rel": "graves/grave_009",
+      "name": "Moss-covered fieldstone 009",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, moss-covered fieldstone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.87,
+        "world_px_height": 33,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b3bd2b69-4dfb-4f1c-830c-f147a4bdd32d",
+      "sprite": "graves/grave_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_010",
+      "rel": "graves/grave_010",
+      "name": "Child's small pebble marker 010 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, child's small pebble marker, self-emissive at night, softly radiating light: pale soul-wisp hovering above the stone",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.85,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a494a7d6-060a-4ca8-83e7-955a5abee484",
+      "sprite": "graves/grave_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_011",
+      "rel": "graves/grave_011",
+      "name": "Carved whalebone marker 011",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, carved whalebone marker, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.99,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "792e7df6-3cd0-4ec1-bf91-4fa0425e4170",
+      "sprite": "graves/grave_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_012",
+      "rel": "graves/grave_012",
+      "name": "Rusted iron plate marker 012 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rusted iron plate marker, self-emissive at night, softly radiating light: carved name letters glowing warm amber",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.15,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f4c58c17-7c5f-4b0a-94fa-b438ee809be7",
+      "sprite": "graves/grave_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_013",
+      "rel": "graves/grave_013",
+      "name": "Twin stones, shared mound 013",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, twin stones, shared mound, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.8,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c9d58df7-a2e6-4b74-942b-309a5061a82b",
+      "sprite": "graves/grave_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_014",
+      "rel": "graves/grave_014",
+      "name": "Headstone with carved bird 014 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, headstone with carved bird, self-emissive at night, softly radiating light: small lantern hung on the marker",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.88,
+        "world_px_height": 33,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7e52a243-b8b5-49e1-8c9e-ca48c76f6268",
+      "sprite": "graves/grave_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_015",
+      "rel": "graves/grave_015",
+      "name": "Briar-rose grown stone 015",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.97,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fb95b127-542e-4ede-b7e2-1d0042c8bb7a",
+      "sprite": "graves/grave_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_016",
+      "rel": "graves/grave_016",
+      "name": "Snow-capped winter headstone 016 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, snow-capped winter headstone, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.14,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bc645c89-a3b5-4834-823e-73c7d100332c",
+      "sprite": "graves/grave_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_001",
+      "rel": "stones/stone_001",
+      "name": "Boulder wrapped in briar roots 001",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, boulder wrapped in briar roots, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.76,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bd880689-92f3-4be4-a8ce-bd23d1fad436",
+      "sprite": "stones/stone_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_002",
+      "rel": "stones/stone_002",
+      "name": "White quartz-flecked boulder 002 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, white quartz-flecked boulder, self-emissive at night, softly radiating light: ember light leaking from a hollow beneath",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.68,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "69803f3a-b47d-425e-82e9-0daf7cfe28eb",
+      "sprite": "stones/stone_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_003",
+      "rel": "stones/stone_003",
+      "name": "Stone with carved initials 003",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.09,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a8cf1239-b5ad-45df-8808-b30254ff3993",
+      "sprite": "stones/stone_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_004",
+      "rel": "stones/stone_004",
+      "name": "Smooth river-worn boulder 004 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, smooth river-worn boulder, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.9,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e4dc5d1b-432a-44b9-b1b6-6ca29846b0a3",
+      "sprite": "stones/stone_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_005",
+      "rel": "stones/stone_005",
+      "name": "Barnacled coastal rock 005",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, barnacled coastal rock, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.74,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e4e12a72-d105-44a8-804d-aa57c2291c4b",
+      "sprite": "stones/stone_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_006",
+      "rel": "stones/stone_006",
+      "name": "Stacked pair of stones 006 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stacked pair of stones, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.68,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6f114d77-b0e9-4df9-9edf-780be49c0d45",
+      "sprite": "stones/stone_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_007",
+      "rel": "stones/stone_007",
+      "name": "Rounded mossy stone 007",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, rounded mossy stone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.1,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bf1ad0a7-468b-4705-a82c-1c2ea16251bc",
+      "sprite": "stones/stone_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_008",
+      "rel": "stones/stone_008",
+      "name": "Pitted volcanic rock 008 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, pitted volcanic rock, self-emissive at night, softly radiating light: glowing pale handprint pressed on the face",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.96,
+        "world_px_height": 36,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "38071190-4c8b-49f5-9cfa-52acdcff818a",
+      "sprite": "stones/stone_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_009",
+      "rel": "stones/stone_009",
+      "name": "Flat lichen-covered slab 009",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flat lichen-covered slab, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.81,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6be24f44-5d4f-4070-b046-372b155259da",
+      "sprite": "stones/stone_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_010",
+      "rel": "stones/stone_010",
+      "name": "Flaking layered slate stone 010 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flaking layered slate stone, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.54,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "60cdd3fb-d189-4cdc-a1c6-4b9eff055b5e",
+      "sprite": "stones/stone_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_011",
+      "rel": "stones/stone_011",
+      "name": "Dark basalt block 011",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, dark basalt block, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.23,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d435c5be-1a68-4c27-91f7-24f665ee853f",
+      "sprite": "stones/stone_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_012",
+      "rel": "stones/stone_012",
+      "name": "Snow-dusted winter stone 012 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, snow-dusted winter stone, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.31,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "af98029f-3025-4612-9ff2-c78181a98534",
+      "sprite": "stones/stone_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_013",
+      "rel": "stones/stone_013",
+      "name": "Red iron-stained stone 013",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.32,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "42f3bac2-9813-4fbe-91e2-337c43a3b5df",
+      "sprite": "stones/stone_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_014",
+      "rel": "stones/stone_014",
+      "name": "Toppled old gatepost stone 014 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, toppled old gatepost stone, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.54,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "226a64bd-852b-43af-afad-accd3d8fba10",
+      "sprite": "stones/stone_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_015",
+      "rel": "stones/stone_015",
+      "name": "Frost-cracked angular rock 015",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, frost-cracked angular rock, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.22,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c65b100c-f3fa-4eae-92d7-9f57c23550a2",
+      "sprite": "stones/stone_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_016",
+      "rel": "stones/stone_016",
+      "name": "Grey granite boulder 016 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, grey granite boulder, self-emissive at night, softly radiating light: ember light leaking from a hollow beneath",
+      "view": "top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.28,
+        "world_px_height": 48,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2aa163dc-442c-4b8a-a7fb-d71aa5470644",
+      "sprite": "stones/stone_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_001",
+      "rel": "trees/tree_001",
+      "name": "Slender silver birch 001",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, slender silver birch, completely unlit, no glow, no light sources, no self-emission",
+      "view": "top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.19,
+        "world_px_height": 158,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "463ebe11-33f2-4caa-b9c3-3870e66be6aa",
+      "sprite": "trees/tree_001/sprite.webp",
+      "rotations": {},
+      "animations": []
     }
   ]
 }

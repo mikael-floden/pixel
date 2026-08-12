@@ -102,6 +102,27 @@ def as_list(doc, key: str) -> list:
 
 
 # ---------------------------------------------------------------- live repo
+def _scenery_manifests() -> list[dict]:
+    """Every scenery piece manifest: legacy top-level pieces AND the v2
+    grouped layout (scenery/<group>/<id>/scenery.json), sorted, deduped by
+    directory. Tooling dirs carry no scenery.json and skip themselves."""
+    root = ROOT / "scenery"
+    out: list[dict] = []
+    if not root.is_dir():
+        return out
+    for child in sorted(p for p in root.iterdir() if p.is_dir()):
+        meta = read_json(child / "scenery.json")
+        if meta:
+            meta.setdefault("id", child.name)
+            out.append(meta)
+            continue
+        for sub in sorted(p for p in child.iterdir() if p.is_dir()):
+            m = read_json(sub / "scenery.json")
+            if m:
+                m.setdefault("id", sub.name)
+                out.append(m)
+    return out
+
 
 def live_descriptions() -> dict[str, list[str]]:
     """The short descriptions each domain ships today, per wiki domain.
@@ -125,13 +146,14 @@ def live_descriptions() -> dict[str, list[str]]:
 
     # The scenery domain (renamed from objects/ 2026-08-12 — scenery agent).
     # Lore's own key stays "objects" for now; only the disk path moved.
-    objects_dir = ROOT / "scenery"
+    # v2 (2026-08-12): pieces live in scenery/<group>/<id>/ with three legacy
+    # top-level pieces; scan both. The wiki shows description ?? prompt, so the
+    # layout budget measures the same field.
     out["objects"] = []
-    if objects_dir.is_dir():
-        for child in sorted(p for p in objects_dir.iterdir() if p.is_dir()):
-            meta = read_json(child / "scenery.json") or {}
-            if meta.get("description"):
-                out["objects"].append(meta["description"])
+    for meta in _scenery_manifests():
+        text = meta.get("description") or meta.get("prompt")
+        if text:
+            out["objects"].append(text)
 
     tiles = read_json(ROOT / "tiles2" / "config" / "tiles2.json")
     out["tiles"] = [
@@ -176,13 +198,11 @@ def live_ids() -> dict[str, dict[str, str]]:
         if isinstance(rec, dict)
     }
 
-    objects_dir = ROOT / "scenery"    # renamed domain — see live_descriptions()
-    ids["objects"] = {}
-    if objects_dir.is_dir():
-        for child in sorted(p for p in objects_dir.iterdir() if p.is_dir()):
-            meta = read_json(child / "scenery.json")
-            if meta:
-                ids["objects"][child.name] = meta.get("name", child.name)
+    ids["objects"] = {}          # renamed domain — see live_descriptions()
+    for meta in _scenery_manifests():
+        pid = meta.get("id")
+        if pid:
+            ids["objects"][pid] = meta.get("name", pid)
 
     tiles = read_json(ROOT / "tiles2" / "config" / "tiles2.json")
     ids["tiles"] = {

@@ -1,166 +1,144 @@
 # Nangijala Scenery
 
 **Scenery** is the game's freely placeable, optionally animated set dressing —
-campfires, grave crosses, street lamps, trees, wells… A scenery piece differs
-from a tile in two ways that define this domain:
+trees, stones, graves, braziers, streetlights… A scenery piece differs from a
+tile in two ways that define this domain:
 
 1. **It can be placed anywhere** — it does not have to follow the tile grid
    (tiles are `tiles2/`'s job).
 2. **It can animate** — tiles cannot.
 
-This domain is owned by the **scenery agent** (board file
-`coordination/scenery.json`). It generates new scenery on
-[PixelLab](https://pixellab.ai); the **maps2 agent** is the one that places
-scenery in worlds; the game (`games2/`) renders it.
+Owned by the **scenery agent** (board file `coordination/scenery.json`).
+Generated on [PixelLab](https://pixellab.ai); the **maps2 agent** places
+scenery in worlds; the game (`games2/`) renders it; the **maintainer**
+approves/rejects/comments every piece in the wiki's Scenery section.
 
-> **History:** this directory was `objects/` (the "object-agent"'s domain) until
-> 2026-08-12, when the scenery agent took over and renamed the domain end to
-> end: `objects/` → `scenery/`, `object.json` → `scenery.json`,
-> `config/objects.json` → `config/factory.json`, workflow `objects.yml` →
-> `scenery.yml`, heartbeat `coordination/objects.json` →
-> `coordination/scenery.json`, and every consumer path (games2 Dockerfile +
-> `/assets/scenery/...` URLs, `.dockerignore`, deploy triggers, wiki builder,
-> lore builder). The wiki already labelled this content "Scenery"; its route
-> slug `#/objects` and the wiki/lore internal data keys deliberately stay for
-> now — they are URLs/ids, and renaming them is those agents' call. The 16
-> deleted first-round props (axe, barrel, oak_tree…) live in git history.
+> **History:** this directory was `objects/` until 2026-08-12, when the
+> scenery agent took over, renamed the domain end to end, and the same day
+> replaced the dormant v1 8-direction factory with the **v2 grouped factory**
+> below. The 16 deleted first-round props live in git history.
 
-## What ships today — three pieces, all drawn by the game
+## The v2 factory — the maintainer's structure (2026-08-12)
+
+- **100 ranked TYPES**, each a group folder `scenery/<group>/` (designed in a
+  lore-grounded multi-agent pass; ranked so quota tracks how often a
+  world-builder actually places the thing).
+- **Quota per type follows the rank**: `quota(rank) = max(2, 102 - 2*rank)` —
+  #1 `trees/` 100 pieces, #2 `stones/` 98, … floor 2 so EVERY type ships at
+  least one lit + one unlit piece. **2,650 pieces total.** One knob
+  (`config/factory.json → quota_rule`) grows the bottom half later.
+- **LIGHTS_ON / LIGHTS_OFF**: every type is half self-emissive, half not,
+  interleaved — odd piece numbers unlit, even lit, each lit piece drawing one
+  of the type's curated `glow_concepts`. In this world glow is lore-loaded:
+  light is memory being kept (lore/RED_LINE.md).
+- **SOUTH only.** Scenery never rotates: pieces are 1-direction PixelLab
+  objects — no rotations generated, stored, or paid for. Animations come later
+  (S-only), one idle per type (`animation_idea` in the config).
+- **Every PixelLab object is tagged `SCENERY`** (the tag is applied by
+  `select-frames`' `common_tag` / `PATCH /objects/{id}/tags` at creation).
+- **Deterministic**: `pipeline/catalog.py` derives every piece's id, variety,
+  glow, height and prompt from seeded hashes — the filesystem alone says what
+  is next, so any run resumes exactly where the last one stopped.
+
+### The batch economics (why 2,650 pieces is affordable)
+
+`create-1-direction-object` costs 20–40 generations per CALL but yields
+multiple candidate objects per call at small sizes (≤42px → 64, ≤85 → 16,
+≤170 → 4, else 1), each drawn from its own `item_descriptions` prompt.
+`select-frames` then turns candidates into completed individual objects — and
+tags them — in one request. Measured live 2026-08-12: **a 16-piece 64px batch
+cost $0.09 of USD credits** (subscription pool was at 0). Whole-catalog
+estimate: ~680 calls ≈ 20k generations ≈ two months of the Tier-3 pool, or
+~$60 of credits.
+
+### Daily rhythm
+
+`.github/workflows/scenery.yml` runs the loop daily (02:30 UTC), capped at
+~100 pieces/day (`budget.daily_pieces`). The loop stops cleanly at the budget
+floor — subscription pool below `min_generations_remaining` (the fleet's
+shared 2000 floor, coordination/PROTOCOL.md) AND credits below `min_usd` —
+and simply resumes the next day. Manual pass: Actions → "Scenery factory
+loop" → Run workflow.
+
+## What a piece is, on disk
+
+```
+scenery/<group>/<piece>/
+  scenery.json      the manifest (id, group, rank, name, lights, variety,
+                    glow_concept, prompt, size, sprite, placement,
+                    pixellab_object_id, tags, animations)
+  sprite.webp       the SOUTH sprite (lossless WebP; lossless=True AND
+                    exact=True — both non-default, both mandatory)
+```
+
+Three **legacy pieces** stay at the top level, 8-direction, game-referenced,
+frozen — never regenerate them:
 
 | id | what the game does with it |
 | --- | --- |
-| `campfire` | the spawn bonfire (`burn__south`, 16f) — also a real shader light; the tiles2 bonfire *tile* pins its exact light params |
-| `grave_cross` | rises where a monster died (16-frame SOUTH-only `appear`, held, then played reversed to sink away) — the maintainer's own PixelLab object |
-| `blood_spatter` | plays on every landed hit (8 direction variants, forward or reversed) — the maintainer's own PixelLab object, stored deliberately TRIMMED (see its manifest's `edited` note); never regenerate or mirror verbatim over the trims |
+| `campfire` | the spawn bonfire (`burn__south`) — also a real shader light; the tiles2 bonfire *tile* pins its exact light params |
+| `grave_cross` | rises where a monster died — the maintainer's own PixelLab object |
+| `blood_spatter` | plays on every landed hit — the maintainer's own, stored deliberately TRIMMED (see its manifest's `edited` note) |
 
-The generation loop is currently **parked**: `config/factory.json` pins
-`targets.num_scenery` to 1 and `procedural.kinds` is empty, so running the loop
-cannot silently refill the domain. That pin is deliberate — raise it **on
-purpose, with the maintainer**, together with new catalog entries, when the
-next generation round is green-lit.
+### Sizing scenery in the world
 
-## What is a scenery piece, on disk?
-
-**One folder per piece** — `scenery/<id>/` with a `scenery.json` manifest. The
-only non-scenery folders are the tooling (`pipeline/`, `config/`, `spec/`).
-Every piece is a **persistent PixelLab object** (created with
-`create-8-direction-object`, PixelLab's product term for the store entity), so
-it also lives in the PixelLab **create-object** web tool — regenerate it there
-and `sync.py` pulls the new art back.
-
-```
-scenery/<id>/
-  scenery.json                the manifest — describes everything below (read this)
-  sprite.webp                 the base sprite (transparent, facing `south`)
-  rotations/                  one image per direction (south == sprite)
-    south.webp east.webp ...
-  animations/
-    <key>/<dir>/NN.webp       per-frame images, zero-padded
-    <key>__<dir>.webp         sprite-sheet STRIP: all frames in a horizontal row
-    <key>__<dir>.gif          looping preview GIF (plays in the GitHub app)
-```
-
-### `scenery.json` fields
-
-Same contract the old `object.json` carried: `id`, `name`, `category`,
-`description`, `view`, `size` (square art px), `sprite`, `rotations`
-(`{dir: path}`), `animations` (`{key: {description, frame_count, directions:
-{dir: {frames, strip, gif, frame_paths}}}}`), and **`placement`** — the realism
-rule. All paths are **domain-relative** (they start with the piece id).
-
-### Sizing scenery in the world (important)
-
-Art resolution ≠ world size. Render each sprite scaled so its on-screen height
-equals **`placement.world_px_height`**, next to characters drawn at
-`placement.character_height_px` (64px = 1.7m). A coin is ~8px, an oak ~226px.
-Change heights in `config/factory.json → scale` and the loop rewrites every
-manifest's `placement` on its next run — no regeneration.
-
-### Manifest extensions may lag the art
-
-**Lossless WebP is the repo-wide image format** (project default 2026-07-31;
-this domain is fully converted — the manifests may still *name* `.png` in
-places, and consumers resolve the real extension on disk). Two hard-won rules
-from `games2/CLAUDE.md`: encode with Pillow's `lossless=True` **and**
-`exact=True` (both non-default), and never write a "small file = corrupt" guard
-— a fully transparent WebP frame is a valid 28-byte file.
-
-⚠️ **`pipeline/sync.py` still writes `.png`.** It cannot be exercised without
-the PixelLab API, and untested pipeline edits are worse than a documented gap.
-After any real re-sync: `python3 games2/scripts/to-webp.py --write --replace
-scenery/` then re-run `pipeline/viewer_build.py`.
+Art resolution ≠ world size. Each piece carries `placement.world_px_height`
+(from its seeded `world_height_m`; 64px = 1.7m character) — render the sprite
+scaled to that height and everything composes at believable scale. Group art
+sizes live in the config; heights vary per piece inside the group's range.
 
 ## Who consumes this domain
 
-- **games2** — bakes `scenery/` into its image (`games2/Dockerfile` →
-  `/assets/scenery/...`) and hardcodes the three URLs it draws in
-  `client/src/scenes/WorldScene.ts` (this domain ships no runtime manifest the
-  game reads; if that changes, give the game a manifest and a board note).
-- **wiki** — `wiki/build.mjs buildObjects()` reads every `scenery/<id>/scenery.json`
-  into the wiki's "Scenery" section (internal domain key `objects` for now).
-- **lore** — `lore/pipeline/build.py` reads the manifests for per-entity lore
-  (`lore/entities/objects/<id>.json`, same key note as the wiki).
-- **maps2** — will place scenery in worlds (no world references scenery yet).
-- **Deploys**: a push touching `scenery/**` auto-deploys the game
-  (`.github/workflows/nangijala-deploy.yml`), and `.dockerignore` must allowlist
-  the domain (`!scenery`) or every asset 404s in prod — that file is the first
-  place to look for that symptom.
+- **games2** — bakes `scenery/` into its image (`/assets/scenery/...`); draws
+  the three legacy pieces via hardcoded URLs in `WorldScene.ts`.
+- **wiki** — `wiki/build.mjs buildObjects()` scans every
+  `scenery/<group>/<id>/scenery.json` (groups become the wiki's categories);
+  the maintainer approves/rejects/comments pieces there. Internal domain key
+  is still `objects` (route slugs are URLs — the wiki agent's call).
+- **lore** — `lore/pipeline/build.py` reads the manifests for per-entity lore.
+- **maps2** — places scenery in worlds (post a board request for specific
+  props; check `viewer_data.json → groups` for what exists).
+- **Deploys** — a push touching `scenery/**` auto-deploys the game;
+  `.dockerignore` must allowlist the domain (`!scenery`) or assets 404 in prod.
 
-Placement rule for anything emissive (campfires, lamps, glowing trees): the
-renderer has **8 world light slots** — see `games2/spec/LIGHT_BUDGET.md` and run
-`node games2/scripts/check-light-budget.mjs` before shipping worlds that place
-glowing scenery.
+**Light budget rule** for anything emissive (half of all scenery!): the
+renderer has **8 world light slots** — `games2/spec/LIGHT_BUDGET.md`; run
+`node games2/scripts/check-light-budget.mjs` before shipping worlds placing
+glowing scenery. LIGHTS_ON art carries baked glow (self-emission in the
+sprite); becoming a real shader light is a separate, budgeted decision made
+at placement time (tiles2/emission.json pattern).
 
-## Browse it
-
-- Phone / GitHub app: open any `scenery/<id>/animations/*.gif`.
-- `index.html` + `viewer_data.json` (rebuilt by `pipeline/viewer_build.py`) —
-  a gallery with a to-scale character comparison; serve the folder with
-  `python -m http.server`.
-- In-game wiki: the **Scenery** section at `/assets/wiki/site/`.
-
-## Run / extend the loop
+## Run it
 
 ```bash
 pip install -r ../requirements.txt
 export PIXELLAB_API_KEY=...            # gitignored .env; NEVER committed
 
-python pipeline/loop.py --once                 # one unit (one generation)
-python pipeline/loop.py --max-minutes 50       # a bounded chunk (for a schedule)
-python pipeline/sync.py --dry-run              # reconcile report, zero generations
+python pipeline/loop.py --dry-run                # see the plan, spend nothing
+python pipeline/loop.py --once                   # one batch
+python pipeline/loop.py --max-pieces 100         # a daily-sized pass
+python pipeline/sync.py --dry-run                # reconcile report
 ```
 
-Each **unit** is one PixelLab generation (a base 8-direction object, or one
-animation across all 8 directions). After each unit the loop rebuilds
-`viewer_data.json`, updates the heartbeat, commits and pushes. It reads the
-filesystem to find the next missing unit, so it is **fully resumable**, and it
-stops cleanly at the shared-budget floor
-(`config/factory.json → budget.min_generations_remaining`, 2000 per
-`coordination/PROTOCOL.md`).
+Each **batch** (one API call) creates up to 16 pieces, downloads their
+sprites, writes manifests, rebuilds `viewer_data.json`, refreshes the
+heartbeat, commits and pushes. `sync.py` keeps PixelLab and the repo in
+lockstep: deletion parity (reject-and-delete in the UI propagates here),
+loose-pointer pruning, changed-art re-mirror (If-Modified-Since), and an
+orphan report for SCENERY-tagged store objects nothing tracks. v2 sync writes
+lossless WebP only.
 
-**Add scenery** by appending to `config/factory.json → catalog` and raising
-`targets.num_scenery`. See [`spec/SCENERY_SPEC.md`](spec/SCENERY_SPEC.md) for
-the full design and the exact PixelLab endpoints.
+## Browse it
 
-### On a schedule
-
-[`.github/workflows/scenery.yml`](../.github/workflows/scenery.yml) runs the
-loop on demand (its cron is commented out while the domain is pinned). It
-no-ops with a warning unless the `PIXELLAB_API_KEY` Actions secret is set.
-
-## Coordinating with the other agents
-
-Per [`coordination/PROTOCOL.md`](../coordination/PROTOCOL.md): this agent stays
-inside `scenery/`, writes its heartbeat + requests to
-**`coordination/scenery.json`** (the only file it writes outside the domain),
-reads every other board file at the start of a run, and respects the shared
-PixelLab budget floor. On the rare occasion it must touch another domain's
-files (like the 2026-08-12 rename), it leaves that agent a note on the board.
+- In-game wiki: the **Scenery** section (`/assets/wiki/site/`) — approval UI.
+- `index.html` + `viewer_data.json` — the domain's own gallery with a
+  to-scale character comparison (`python -m http.server` in this folder).
+- `viewer_data.json → groups` — per-group quota/done progress at a glance.
 
 ## Don't
 
 - **Never commit secrets** — `PIXELLAB_API_KEY` lives in a gitignored `.env`.
-- Don't run the loop without checking the shared budget and the target pin.
-- Don't regenerate the maintainer's own pieces (`grave_cross`, `blood_spatter`).
-- Don't re-pose art locally — PixelLab owns rigging/animation; this domain owns
-  orchestration, packaging, QA-of-output, and the viewer.
+- Don't regenerate the maintainer's legacy pieces.
+- Don't raise `quota_rule` or `budget` knobs on your own — maintainer's call.
+- Don't re-pose art locally — PixelLab owns drawing/animation; this domain
+  owns orchestration, packaging, QA-of-output, and the viewer.

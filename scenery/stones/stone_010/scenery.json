@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_010",
+  "group": "stones",
+  "rank": 2,
+  "index": 10,
+  "name": "Flaking layered slate stone 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flaking layered slate stone",
+  "glow_concept": "molten orange soulstone veins in deep cracks",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flaking layered slate stone, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.54,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "60cdd3fb-d189-4cdc-a1c6-4b9eff055b5e",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

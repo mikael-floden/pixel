@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_015",
+  "group": "stones",
+  "rank": 2,
+  "index": 15,
+  "name": "Frost-cracked angular rock 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "frost-cracked angular rock",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, frost-cracked angular rock, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_015/sprite.webp",
+  "placement": {
+    "world_height_m": 1.22,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c65b100c-f3fa-4eae-92d7-9f57c23550a2",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

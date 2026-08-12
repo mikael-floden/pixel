@@ -1,98 +1,82 @@
-# Scenery Spec — Nangijala Scenery (persistent 8-direction PixelLab objects)
+# Scenery Spec — the v2 grouped factory (S-only, batched, tagged)
 
-> Formerly `objects/spec/OBJECTS_SPEC.md`. The domain was renamed **scenery**
-> 2026-08-12 when the scenery agent took over ("objects" survives below only as
-> PixelLab's own product term for the store entity these pieces persist as).
-> **Scenery** = freely placeable, optionally animated set dressing: it does not
-> follow the tile grid (tiles2's job) and it can animate (which tiles cannot).
-> The maps2 agent places it in worlds.
+> v2, 2026-08-12 — replaces the v1 8-direction spec (git history). "Object"
+> below is PixelLab's product term for the store entity a scenery piece
+> persists as. **Scenery** = freely placeable, optionally animated set
+> dressing: doesn't follow the tile grid, can animate. The maps2 agent places
+> it; the maintainer approves/rejects it in the wiki.
 
-## Goal
+## The structure (maintainer's design)
 
-An automated, resumable loop that produces **game-ready pixel-art scenery** —
-props and set dressing that make a *Grave Seasons*-style world come alive
-(campfires, grave crosses, trees, wells, street lamps, barrels…). Every piece is
-a **real, persistent PixelLab object**: it shows in the PixelLab
-**create-object** web tool (so a human can regenerate it if it looks bad), it
-animates, and it **syncs back** into this repo. This is the scenery analogue of
-the character system.
+1. **100 ranked types**, each a group folder `scenery/<group>/`. Rank means
+   placement FREQUENCY (how often a world-builder drops one), which is why it
+   also decides quantity.
+2. **Quota** `= max(2, 102 - 2*rank)`: trees 100, stones 98, … floor 2 so
+   every type ships both light versions. 2,650 pieces total.
+3. **Two versions of every type**: LIGHTS_OFF (no self-emission) and LIGHTS_ON
+   (self-emissive), half/half, interleaved odd/even so both exist from the
+   first pair. Each type carries 4–8 curated, visually distinct
+   `glow_concepts`; a lit piece draws one deterministically.
+4. **SOUTH only** — no rotations, ever. Animations later, S-only, one idle
+   per type (`animation_idea`).
+5. **Every created object is tagged `SCENERY`** on PixelLab.
+6. **Sizes are real-world**: each type has a `world_height_m` range (64px =
+   1.7m human) and an `art_size` canvas; per-piece height is seeded within
+   the range and lands in `placement.world_px_height`.
 
-## What every scenery piece is
+The full catalog (descriptions, variety axes, glow concepts, ranks) lives in
+`config/factory.json → groups`, produced by a lore-grounded multi-agent
+design pass (10 themed drafts × 10 → 3-lens ranking with the world-density
+lens weighted double → adversarial verify → synthesis) and hand-audited.
 
-- A **persistent 8-direction object** created with `create-8-direction-object`
-  (returns a `pixellab_object_id`; 8 rotations). **Always 8 directions.**
-- Sized for its **type**: `size` (32–256, a single square int) scales with the
-  piece — a lantern ~48px, a campfire ~96px, an oak ~128px.
-- Carries **animations chosen to fit it** (campfire → burn/smoke, chest →
-  open/close, tree → sway…), each generated across **all 8 directions** at
-  **max frames (16, mode v3)**.
-- Drawn in the shared **Grave Seasons** style (`style_base`, selective outline,
-  painterly shading).
+## PixelLab integration (verified live, 2026-08-12)
 
-## Realism rule — world scale
+- `POST /v2/create-1-direction-object` `{description, size, view:"top-down",
+  item_descriptions:[...]}` → `{object_id, background_job_id}`. Costs
+  **20–40 generations per call**, but the effective size decides how many
+  candidate objects ONE call produces: ≤42px → 64, ≤85 → 16, ≤170 → 4,
+  else 1 — each candidate drawn from its own `item_descriptions` entry.
+  Measured: a 16-piece 64px call = **$0.09** in USD-credit overage.
+- Poll `GET /v2/objects/{id}` → status `review` (multi-candidate) or
+  `completed` (single).
+- `POST /v2/objects/{id}/select-frames` `{indices, common_tag:"SCENERY"}` →
+  `{created_object_ids: [...]}` in candidate order — every kept candidate
+  becomes its own completed object, already tagged.
+- `PATCH /v2/objects/{id}/tags` `{tags:["SCENERY"]}` — the single-candidate
+  path tags explicitly.
+- 1-direction objects carry the art in `storage_urls` (rotation_urls are all
+  null); `pixellab_client.sprite_url()` resolves it.
+- Later animations: `POST /v2/objects/{id}/animations` with `mode:'v3'`
+  (cheaper + better than 'pro'); **do not pass `directions`** for 1-direction
+  objects — they animate their single direction.
+- Balance: `GET /v2/balance` → subscription generations + USD credits. Calls
+  draw USD overage when the subscription pool is empty.
 
-Art size ≠ world size. Each piece declares a real-world height `world_height_m`
-(or a `scale.category_height_m` fallback); the loop derives
-`world_px_height = round(world_height_m * character_height_px / character_height_m)`
-(reference: 64px = 1.7m) into each manifest's `placement`. A game renders the
-sprite scaled to `world_px_height` beside a 64px character, so a coin (~8px) is
-tiny and an oak (~226px) towers. Nothing ships without a `placement`.
+## The loop (pipeline/loop.py)
 
-## PixelLab integration (verified, v2)
+One **batch** = one create call (up to `max_batch`=16 pieces of one group at
+the group's art size), then select+tag, download, lossless-WebP save,
+manifest write, viewer rebuild, heartbeat, commit, push. Deterministic
+planner (`catalog.py`): the group with the fewest finished pieces that still
+has quota goes first (tie → rank) — early variety, importance wins over time.
+Budget gate: subscription pool above the shared 2000 floor OR credits above
+`min_usd`; else stop cleanly and retry next day. Caps: `--max-pieces`
+(default `budget.daily_pieces` = 100), `--max-minutes`, `--max-batches`,
+`--once`, `--dry-run`.
 
-- `POST /create-8-direction-object` `{description, size, view}` →
-  `{object_id, background_job_id}`; poll the job, then `GET /objects/{id}` for
-  `rotation_urls` (8 PNGs).
-- `POST /objects/{id}/animations` `{animation_description, frame_count,
-  directions}` → `{animation_group_id}`; frames land **asynchronously per
-  direction** — poll `GET /objects/{id}` until all 8 directions of the group have
-  `storage_urls.frames`, then download. `frame_count`: even 4–16 (v3), max **16**.
-  **Pass all 8 directions** — omitting it animates a single direction (the bug we
-  hit first).
-- `GET /objects` (list), `GET /objects/{id}` (detail), `DELETE /objects/{id}`.
-- There is **no** object *create* on `/objects` itself (`POST /objects` → 405)
-  and the character endpoints only make humanoids — `create-8-direction-object`
-  is the one true object-create path.
-- Auth: `Authorization: Bearer $PIXELLAB_API_KEY`. Balance/generations on
-  `/v2/balance`.
+Failure honesty: a batch that can't map candidates to pieces RAISES (never
+guesses); a piece without a downloaded sprite is re-planned next run;
+`sync.py` reports SCENERY-tagged store orphans instead of adopting or
+deleting them.
 
-## Loop algorithm
+## Sync (pipeline/sync.py)
 
-The next unit is derived from the filesystem (resumable); each unit commits +
-pushes:
+Deletion parity (UI delete → repo delete), loose-pointer prune, changed-art
+re-mirror via If-Modified-Since, orphan report. Writes lossless WebP only.
 
-```
-for piece in (catalog then procedural up to targets.num_scenery):
-    if no sprite                     -> create the 8-direction object   (1 unit)
-    else for each of its anims       -> if missing, animate all 8 dirs  (1 unit each)
--> all scenery complete
-```
+## Costs at a glance
 
-Every pass also (zero-cost): `sync` mirrors any PixelLab-side regenerations /
-deletions in, and `refresh_placement` re-derives world scale.
-
-## Sync (PixelLab is the source of truth)
-
-`sync.py` mirrors each tracked piece (`pixellab_object_id`) from PixelLab into
-the repo — rotations + animations — only re-downloading frames whose
-`Last-Modified` changed (`If-Modified-Since` → 304 skip), exactly like the
-characters agent. **Regenerate a piece in the create-object web tool → sync
-pulls it down.** Deletion parity: an object removed on PixelLab is removed from
-the repo (and vice-versa via `--restyle`), so there are never loose pointers.
-⚠️ `sync.py` still writes `.png`; shipped art is lossless WebP — see the
-conversion step in `scenery/README.md` before committing a real re-sync.
-
-## Packaging
-
-Per piece: `sprite.webp` (south) + `rotations/<dir>.webp` (8). Per animation, per
-direction: `animations/<key>/<dir>/NN.webp` frames + `animations/<key>__<dir>.webp`
-strip + `animations/<key>__<dir>.gif` preview. `scenery.json` indexes it all;
-`viewer_build.py` rolls everything into `viewer_data.json` for `index.html`.
-(Manifest paths may lag a conversion — consumers resolve the real extension on
-disk.)
-
-## Cost model
-
-base (8 rotations) + each animation × 8 directions × up to 16 frames. This is a
-heavy domain per piece, so the loop is budget-aware (floor **2000**, shared
-pool — see `coordination/PROTOCOL.md`) and runs durably on GitHub Actions.
+~680 calls for the full 2,650 pieces ≈ 20k generations ≈ 2 months of the
+Tier-3 subscription pool (10k/month) — or ~$60 of USD credits at the measured
+overage rate. The daily 100-piece cap spreads it and leaves the shared pool
+headroom the moment the monthly generations reset.

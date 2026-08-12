@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grave_002",
+  "group": "graves",
+  "rank": 3,
+  "index": 2,
+  "name": "Snow-capped winter headstone 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-capped winter headstone",
+  "glow_concept": "bioluminescent moss veining the cracks",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, snow-capped winter headstone, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.75,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "509869c1-ffd4-4b29-be98-fc982de5573c",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

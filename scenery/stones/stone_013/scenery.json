@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_013",
+  "group": "stones",
+  "rank": 2,
+  "index": 13,
+  "name": "Red iron-stained stone 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "red iron-stained stone",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.32,
+    "world_px_height": 12,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "42f3bac2-9813-4fbe-91e2-337c43a3b5df",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}

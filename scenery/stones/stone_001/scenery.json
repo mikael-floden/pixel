@@ -1,0 +1,30 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_001",
+  "group": "stones",
+  "rank": 2,
+  "index": 1,
+  "name": "Boulder wrapped in briar roots 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "boulder wrapped in briar roots",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, boulder wrapped in briar roots, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.76,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bd880689-92f3-4be4-a8ce-bd23d1fad436",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)"
+}
