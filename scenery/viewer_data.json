@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 20,
+  "scenery_count": 21,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 4,
@@ -713,6 +713,7 @@
     "effect": 1,
     "light": 1,
     "decor": 1,
+    "graves": 1,
     "stones": 16,
     "trees": 1
   },
@@ -833,6 +834,28 @@
           "directions": {}
         }
       ]
+    },
+    {
+      "id": "grave_001",
+      "rel": "graves/grave_001",
+      "name": "Briar-rose grown stone 001",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.91,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
+      "sprite": "graves/grave_001/sprite.webp",
+      "rotations": {},
+      "animations": []
     },
     {
       "id": "stone_001",

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grave_001",
+  "group": "graves",
+  "rank": 3,
+  "index": 1,
+  "name": "Briar-rose grown stone 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "briar-rose grown stone",
+  "glow_concept": null,
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
