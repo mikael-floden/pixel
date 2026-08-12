@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_001",
+  "group": "cairns",
+  "rank": 9,
+  "index": 1,
+  "name": "Toppled half-collapsed cairn 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "toppled half-collapsed cairn",
+  "glow_concept": null,
+  "prompt": "a hand-stacked pile of balanced stones tapering upward, built as a marker, with small gaps between the stones, toppled half-collapsed cairn, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cairns/cairn_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.07,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4bd08f99-8ba0-4d3f-ab4b-c1efc8f65108",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
