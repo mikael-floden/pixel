@@ -29,21 +29,26 @@ The full catalog (descriptions, variety axes, glow concepts, ranks) lives in
 design pass (10 themed drafts × 10 → 3-lens ranking with the world-density
 lens weighted double → adversarial verify → synthesis) and hand-audited.
 
-## PixelLab integration (verified live, 2026-08-12)
+## PixelLab integration (verified live, 2026-08-12/13)
 
-- `POST /v2/create-1-direction-object` `{description, size, view:"top-down",
-  item_descriptions:[...]}` → `{object_id, background_job_id}`. Costs
-  **20–40 generations per call**, but the effective size decides how many
-  candidate objects ONE call produces: ≤42px → 64, ≤85 → 16, ≤170 → 4,
-  else 1 — each candidate drawn from its own `item_descriptions` entry.
-  Measured: a 16-piece 64px call = **$0.09** in USD-credit overage.
-- Poll `GET /v2/objects/{id}` → status `review` (multi-candidate) or
-  `completed` (single).
-- `POST /v2/objects/{id}/select-frames` `{indices, common_tag:"SCENERY"}` →
-  `{created_object_ids: [...]}` in candidate order — every kept candidate
-  becomes its own completed object, already tagged.
-- `PATCH /v2/objects/{id}/tags` `{tags:["SCENERY"]}` — the single-candidate
-  path tags explicitly.
+v2.1 (maintainer 2026-08-13): ONE full canvas per piece — multi-candidate
+batching retired (icon-grade candidates, stranded review popups, and the
+broken-pixel-grid bug all lived there; the first graves were per-pixel mush).
+
+- **≤168px** → `POST /v2/create-8-direction-object` `{description, size,
+  view:"low top-down"}` — a real 8-direction object; the loop keeps ONLY the
+  SOUTH rotation (the maintainer's "fool PixelLab" rule: never rotates, but
+  stays a first-class animatable object). The 8-rotation pipeline rejects
+  sizes above 168.
+- **>168px** → `POST /v2/create-1-direction-object` `{description, size}` —
+  a SINGLE candidate, full canvas, auto-kept, never enters review.
+- Either path: **20–40 generations (~$0.09 USD overage) per call**, one call
+  per piece. Poll `GET /v2/objects/{id}` to `completed`.
+- `PATCH /v2/objects/{id}/tags` `{tags:["SCENERY"]}` — every piece, both
+  paths.
+- (Retired but kept in the client for sync tooling: `select-frames` returns
+  `{created_object_ids}` in candidate order; `dismiss-review` clears a
+  stranded review parent.)
 - 1-direction objects carry the art in `storage_urls` (rotation_urls are all
   null); `pixellab_client.sprite_url()` resolves it.
 - Later animations: `POST /v2/objects/{id}/animations` with `mode:'v3'`
@@ -54,9 +59,9 @@ lens weighted double → adversarial verify → synthesis) and hand-audited.
 
 ## The loop (pipeline/loop.py)
 
-One **batch** = one create call (up to `max_batch`=16 pieces of one group at
-the group's art size), then select+tag, download, lossless-WebP save,
-manifest write, viewer rebuild, heartbeat, commit, push. Deterministic
+One **piece** = one create call (path by size, above), tag, SOUTH download,
+lossless-WebP save, manifest write, viewer rebuild, heartbeat, commit —
+pushes go every 8 pieces so a pass doesn't fire a deploy per sprite. Deterministic
 planner (`catalog.py`): the group with the fewest finished pieces that still
 has quota goes first (tie → rank) — early variety, importance wins over time.
 Budget gate: subscription pool above the shared 2000 floor OR credits above
@@ -76,7 +81,8 @@ re-mirror via If-Modified-Since, orphan report. Writes lossless WebP only.
 
 ## Costs at a glance
 
-~680 calls for the full 2,650 pieces ≈ 20k generations ≈ 2 months of the
-Tier-3 subscription pool (10k/month) — or ~$60 of USD credits at the measured
-overage rate. The daily 100-piece cap spreads it and leaves the shared pool
-headroom the moment the monthly generations reset.
+One call per piece: the full 2,650 pieces ≈ 80k generations ≈ ~$240 of USD
+overage, or months of the Tier-3 pool (10k/month minus the fleet's 2000
+floor ≈ ~265 pieces/month) — quality bought deliberately (AAA, not a coupon
+hunt). The daily 100-piece cap and both budget floors make the pace purely a
+funding knob the maintainer holds.

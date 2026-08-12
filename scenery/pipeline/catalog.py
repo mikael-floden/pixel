@@ -10,9 +10,11 @@ The maintainer's structure (2026-08-12):
     LIGHTS_OFF (no self-emission) and LIGHTS_ON (self-emissive glow). Odd
     piece numbers are LIGHTS_OFF, even are LIGHTS_ON, so both appear from the
     first pair onward.
-  - SOUTH only. Scenery never rotates, so pieces are 1-direction PixelLab
-    objects — no rotations are generated or stored. Animations come later
-    (S-only) per the maintainer's plan.
+  - SOUTH only. Scenery never rotates — but pieces <=168px are generated as
+    REAL 8-direction PixelLab objects (only SOUTH is kept/stored): the
+    maintainer's "fool PixelLab" rule, so every piece stays a first-class
+    animatable object. Bigger pieces are single 1-direction objects (the
+    8-rotation pipeline caps at 168px). Animations come later (S-only).
 
 Everything here is DETERMINISTIC: the piece list, each piece's variety pick,
 glow concept, world height and prompt are all derived from the config + seeded
@@ -58,18 +60,16 @@ def group_quota(group: dict, cfg: dict) -> int:
 
 
 def batch_capacity(art_size: int, cfg: dict) -> int:
-    """How many candidate objects one create-1-direction-object call yields at
-    this size (API rule: <=42 -> 64, <=85 -> 16, <=170 -> 4, else 1), capped by
-    config so one canvas never has to hold more prompts than it can honour."""
-    if art_size <= 42:
-        cap = 64
-    elif art_size <= 85:
-        cap = 16
-    elif art_size <= 170:
-        cap = 4
-    else:
-        cap = 1
-    return min(cap, int(cfg.get("max_batch", 16)))
+    """ONE piece per call — multi-candidate batching is retired (maintainer
+    2026-08-13). The shared-canvas candidates behaved like icons, sat in a
+    'Review Generated Frames' popup in his UI when a run died mid-select, and
+    were where the broken-pixel-grid bug lived (the graves came out as per-
+    pixel mush while single-canvas pieces were crisp). Every piece now gets
+    the model's full canvas: 8-direction objects for sizes the 8-rotation
+    pipeline accepts, single 1-direction objects above that — same 20-40
+    generations per call either way."""
+    del art_size, cfg
+    return 1
 
 
 def piece_id(group: dict, index: int) -> str:
@@ -109,12 +109,6 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
         "size": int(group["art_size"]),
         "world_height_m": height,
     }
-
-
-def full_description(cfg: dict, group: dict) -> str:
-    """The batch-level description (shared canvas prompt): what KIND of thing
-    plus the project style. Per-piece detail rides in item_descriptions."""
-    return (f"{group['description']}, {cfg['style_base']}")
 
 
 def plan_group(cfg: dict, group: dict) -> list[dict]:

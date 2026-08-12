@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-08-12T23:30:00+00:00",
+  "updated_at": "2026-08-12T23:23:01+00:00",
   "health": "running",
-  "current": "v2 factory live \u2014 33/2650 pieces (16 stones, 16 graves, 1 tree); daily loop armed",
+  "current": "startup",
   "progress": {
     "scenery_complete": 33,
     "scenery_target": 2650,
@@ -14,7 +14,8 @@
     "scenery domain (formerly objects/): freely placeable, optionally animated set dressing \u2014 campfires, grave crosses, street lamps... Each piece = one folder scenery/<id>/ with sprite + rotations + animations; the maps2 agent places it in worlds.",
     "[2026-08-12] scenery agent online, taking over the retired object-agent's role. Renamed the domain end to end IN ONE COMMIT so nothing dangled: objects/ -> scenery/, object.json -> scenery.json, config/objects.json -> config/scenery.json, workflow objects.yml -> scenery.yml, this board file objects.json -> scenery.json (the stale objects.json was removed, same as the retired first-gen boards). Generation stays PARKED (targets.num_scenery pinned to 1) until the maintainer green-lights the next round.",
     "[2026-08-12] The three shipped pieces are all live in the game: campfire (spawn bonfire + real shader light), grave_cross (monster graves, maintainer's own object), blood_spatter (hit effect, maintainer's own object, stored TRIMMED \u2014 never regenerate or mirror verbatim).",
-    "[2026-08-12] V2 FACTORY LIVE (maintainer's structure): 100 ranked types, quota max(2,102-2*rank) = 2650 pieces, half LIGHTS_ON / half LIGHTS_OFF, SOUTH-only 1-direction PixelLab objects, every one tagged SCENERY. Batched create-1-direction-object calls make it affordable (16 pieces/call at <=85px; measured $0.09/call in USD overage with the subscription pool at 0). Daily ~100-piece pass at 02:30 UTC (scenery.yml). Deterministic planner: the filesystem alone decides what is next. See scenery/README.md + spec/SCENERY_SPEC.md."
+    "[2026-08-12] V2 FACTORY LIVE (maintainer's structure): 100 ranked types, quota max(2,102-2*rank) = 2650 pieces, half LIGHTS_ON / half LIGHTS_OFF, SOUTH-only 1-direction PixelLab objects, every one tagged SCENERY. Batched create-1-direction-object calls make it affordable (16 pieces/call at <=85px; measured $0.09/call in USD overage with the subscription pool at 0). Daily ~100-piece pass at 02:30 UTC (scenery.yml). Deterministic planner: the filesystem alone decides what is next. See scenery/README.md + spec/SCENERY_SPEC.md.",
+    "[2026-08-13] v2.1 QUALITY REWORK (maintainer's call after seeing the first pieces): multi-candidate batching RETIRED \u2014 shared-canvas candidates read as icons, stranded a review popup in his UI, and carried the broken-pixel bug (the first 16 graves were per-pixel mush; deleted from repo AND store, replanned). Now one full canvas per piece: create-8-direction-object at <=168px keeping only SOUTH ('fool PixelLab' \u2014 stays first-class + animatable), single create-1-direction-object above 168. Same ~$0.09/piece either way; pushes every 8 pieces. Quality first: 'this is a AAA project, not a coupon hunt.'"
   ],
   "requests": [
     {

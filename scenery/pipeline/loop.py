@@ -1,20 +1,28 @@
-"""The scenery loop (v2): batched, S-only, tag-stamped, fully resumable.
+"""The scenery loop (v2.1): one full canvas per piece, S-only, tag-stamped.
 
-One BATCH = one create-1-direction-object call carrying up to `max_batch`
-per-piece prompts (`item_descriptions`) on one canvas — the API yields multiple
-candidate objects per call at small sizes (<=42px -> 64, <=85 -> 16,
-<=170 -> 4, else 1), which is what makes a 2,650-piece catalog affordable
-(~2-8 generations per piece instead of 20-40). select-frames turns every
-candidate into its own completed PixelLab object and tags them all
-`SCENERY` in the same call.
+ONE PIECE = one PixelLab call (20-40 generations either way):
+  - art_size <= 168: `create-8-direction-object` (view "low top-down") and we
+    keep ONLY the SOUTH rotation — the maintainer's "fool PixelLab" rule:
+    scenery never rotates, but generating it as a real 8-direction object
+    keeps every piece a first-class, animatable store citizen instead of an
+    icon-grade candidate.
+  - art_size > 168 (the 8-rotation pipeline's cap): a SINGLE-candidate
+    `create-1-direction-object` — full canvas, auto-kept, never enters review.
+
+Multi-candidate batching (v2.0) is retired: shared-canvas candidates read as
+icons, stranded 'Review Generated Frames' popups in the maintainer's UI when
+a run died mid-select, and carried the broken-pixel-grid bug (the first
+graves came out as per-pixel mush; every single-canvas piece was crisp).
 
 The plan is deterministic (catalog.py): the filesystem alone decides what is
-next, so the loop can stop anywhere — mid-day, mid-batch, out of budget — and
-the next run continues exactly where it left off.
+next, so the loop can stop anywhere — mid-day, mid-piece, out of budget — and
+the next run continues exactly where it left off. Pieces commit one by one;
+pushes go every PUSH_EVERY pieces so a long pass doesn't fire a deploy per
+sprite.
 
 Run a bounded chunk (intended for the daily schedule / GitHub Action):
   python scenery/pipeline/loop.py --max-pieces 100 --max-minutes 300
-Other flags: --max-batches N, --once (one batch), --no-push, --dry-run,
+Other flags: --max-batches N, --once (one piece), --no-push, --dry-run,
 --no-sync.
 """
 
@@ -86,111 +94,73 @@ def can_spend(cfg, state):
     return state["usd"] >= float(bud.get("min_usd", 2.0))
 
 
-# --- one batch --------------------------------------------------------------
+# --- one piece ---------------------------------------------------------------
 
-def _extract_created(resp):
-    """The objects created by select-frames, in candidate-index order.
-    Tolerant of shape: a list, {objects: [...]}, {object_ids: [...]},
-    {created: [...]} — entries either ids or {id: ...} records."""
-    if resp is None:
-        return []
-    raw = resp
-    if isinstance(resp, dict):
-        for key in ("created_object_ids", "objects", "created_objects", "object_ids",
-                    "created", "ids"):
-            if isinstance(resp.get(key), list):
-                raw = resp[key]
-                break
-        else:
-            raw = []
-    out = []
-    for entry in raw:
-        if isinstance(entry, str):
-            out.append(entry)
-        elif isinstance(entry, dict) and entry.get("id"):
-            out.append(entry["id"])
-    return out
+PUSH_EVERY = 8   # commit per piece, push (-> deploy) every N pieces + at exit
 
 
-def run_batch(client, cfg, group, specs, push=True):
-    """Execute one batch end-to-end. Returns the piece ids written."""
+def run_piece(client, cfg, group, spec, push=True):
+    """Generate ONE piece end-to-end. Returns the piece id (or raises)."""
     tag = (cfg.get("tag") or "SCENERY").upper()
-    size = int(group["art_size"])
-    desc = catalog.full_description(cfg, group)
-    prompts = [s["prompt"] for s in specs]
-    label = f"{group['id']} {specs[0]['id']}..{specs[-1]['id']}"
-    print(f"batch: {label} ({len(specs)} piece(s) @ {size}px)")
+    size = int(spec["size"])
+    desc = f"{spec['prompt']}, {cfg['style_base']}"
+    print(f"piece: {group['id']}/{spec['id']} ({size}px, {spec['lights']})")
 
-    resp = client.create_1d_batch(desc, size, item_descriptions=prompts)
-    parent_id = resp.get("object_id") or resp.get("id")
-    if not parent_id:
-        raise PixelLabError(f"create returned no object_id: {str(resp)[:200]}")
-    parent = client.wait_object(parent_id)
-
-    if parent.get("status") == "review":
-        sel = client.select_frames(parent_id, list(range(len(specs))), common_tag=tag)
-        created = _extract_created(sel)
-        if len(created) != len(specs):
-            raise PixelLabError(
-                f"select-frames created {len(created)} object(s) for {len(specs)} "
-                f"candidate(s) — refusing to guess the mapping. Raw: {str(sel)[:400]}")
-        pairs = list(zip(specs, created))
+    if size <= 168:
+        oid = client.create_object(desc, size=size,
+                                   view=cfg.get("view", "low top-down"))
+        pixellab_directions = 8
     else:
-        # Single-candidate path: the parent IS the piece.
-        if len(specs) != 1:
-            raise PixelLabError(
-                f"expected review status for a {len(specs)}-piece batch, got "
-                f"'{parent.get('status')}'")
-        client.set_tags(parent_id, [tag])
-        pairs = [(specs[0], parent_id)]
+        resp = client.create_1d_batch(desc, size)   # single candidate, auto-kept
+        oid = resp.get("object_id") or resp.get("id")
+        if not oid:
+            raise PixelLabError(f"create returned no object_id: {str(resp)[:200]}")
+        pixellab_directions = 1
 
-    written = []
-    for spec, oid in pairs:
-        detail = client.wait_object(oid, want=("completed",))
-        url = client.sprite_url(detail)
-        img = client._download(url) if url else None
-        if img is None:
-            print(f"  ! {spec['id']}: no downloadable sprite (object {oid}) — skipped, "
-                  f"will be re-planned")
-            continue
-        img = factory._normalize(img, size)
-        rel = f"{group['id']}/{spec['id']}"
-        factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")
-        factory.write_manifest(rel, {
-            "format": "scenery-piece@2",
-            "id": spec["id"],
-            "group": group["id"],
-            "rank": group["rank"],
-            "index": spec["index"],
-            "name": spec["name"],
-            "lights": spec["lights"],
-            "variety": spec["variety"],
-            "glow_concept": spec["glow_concept"],
-            "prompt": spec["prompt"],
-            "view": cfg.get("view", "top-down"),
-            "direction": "south",
-            "size": size,
-            "sprite": f"{rel}/sprite.webp",
-            "placement": factory.placement(cfg, spec["world_height_m"]),
-            "pixellab_object_id": oid,
-            "tags": [tag],
-            "status": "complete",
-            "animations": {},
-            "source": "pixellab.ai create-1-direction-object (batched, S-only)",
-        })
-        written.append(spec["id"])
+    detail = client.wait_object(oid, want=("completed",))
+    client.set_tags(oid, [tag])
+    url = (detail.get("rotation_urls") or {}).get("south") or client.sprite_url(detail)
+    img = client._download(url) if url else None
+    if img is None:
+        raise PixelLabError(f"{spec['id']}: no downloadable SOUTH sprite (object {oid})")
 
-    if written:
-        viewer_build.build()
-        done = factory.done_by_group()
-        coordination.publish(
-            current=f"generated {label}",
-            progress=catalog.progress(cfg, done),
-            budget_remaining=budget_state(client)["generations"])
-        lit = sum(1 for s in specs if s["id"] in written and s["lights"] == "LIGHTS_ON")
-        commit_push(f"scenery: {group['id']} +{len(written)} "
-                    f"({written[0]}..{written[-1]}, {lit} lit)", push=push)
-    return written
+    img = factory._normalize(img, size)
+    rel = f"{group['id']}/{spec['id']}"
+    factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")
+    factory.write_manifest(rel, {
+        "format": "scenery-piece@2",
+        "id": spec["id"],
+        "group": group["id"],
+        "rank": group["rank"],
+        "index": spec["index"],
+        "name": spec["name"],
+        "lights": spec["lights"],
+        "variety": spec["variety"],
+        "glow_concept": spec["glow_concept"],
+        "prompt": spec["prompt"],
+        "view": cfg.get("view", "low top-down"),
+        "direction": "south",
+        "size": size,
+        "sprite": f"{rel}/sprite.webp",
+        "placement": factory.placement(cfg, spec["world_height_m"]),
+        "pixellab_object_id": oid,
+        "pixellab_directions": pixellab_directions,
+        "tags": [tag],
+        "status": "complete",
+        "animations": {},
+        "source": ("pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+                   if pixellab_directions == 8 else
+                   "pixellab.ai create-1-direction-object (single, S-only)"),
+    })
+
+    viewer_build.build()
+    coordination.publish(
+        current=f"generated {rel}",
+        progress=catalog.progress(cfg, factory.done_by_group()),
+        budget_remaining=budget_state(client)["generations"])
+    commit_push(f"scenery: {group['id']} +1 ({spec['id']}, "
+                f"{'lit' if spec['lights'] == 'LIGHTS_ON' else 'unlit'})", push=push)
+    return spec["id"]
 
 
 # --- main -------------------------------------------------------------------
@@ -274,14 +244,15 @@ def main():
             break
         specs = specs[:room]
         try:
-            written = run_batch(client, cfg, group, specs, push=not args.no_push)
+            push_now = (not args.no_push) and ((pieces + 1) % PUSH_EVERY == 0)
+            run_piece(client, cfg, group, specs[0], push=push_now)
         except PixelLabError as e:
-            print(f"  ! batch failed: {e}")
-            stop_reason = f"batch error: {str(e)[:120]}"
+            print(f"  ! piece failed: {e}")
+            stop_reason = f"piece error: {str(e)[:120]}"
             break
-        pieces += len(written)
+        pieces += 1
         batches += 1
-        print(f"  = {pieces} piece(s) in {batches} batch(es) this run")
+        print(f"  = {pieces} piece(s) this run")
         if args.once or (args.max_batches and batches >= args.max_batches):
             stop_reason = "batch cap"
             break

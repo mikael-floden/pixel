@@ -40,16 +40,26 @@ approves/rejects/comments every piece in the wiki's Scenery section.
   glow, height and prompt from seeded hashes — the filesystem alone says what
   is next, so any run resumes exactly where the last one stopped.
 
-### The batch economics (why 2,650 pieces is affordable)
+### One full canvas per piece (v2.1, maintainer 2026-08-13)
 
-`create-1-direction-object` costs 20–40 generations per CALL but yields
-multiple candidate objects per call at small sizes (≤42px → 64, ≤85 → 16,
-≤170 → 4, else 1), each drawn from its own `item_descriptions` prompt.
-`select-frames` then turns candidates into completed individual objects — and
-tags them — in one request. Measured live 2026-08-12: **a 16-piece 64px batch
-cost $0.09 of USD credits** (subscription pool was at 0). Whole-catalog
-estimate: ~680 calls ≈ 20k generations ≈ two months of the Tier-3 pool, or
-~$60 of credits.
+Multi-candidate batching is retired: shared-canvas candidates read as icons,
+stranded review popups in the maintainer's UI, and carried the broken-pixel
+bug (the first graves came out as per-pixel mush; single-canvas pieces were
+crisp). Now every piece gets the model's full attention — quality first, this
+is a AAA project:
+
+- **≤168px** → `create-8-direction-object` (view `low top-down`), keeping
+  ONLY the SOUTH rotation. Scenery never rotates, but generating as a real
+  8-direction object keeps every piece a first-class animatable store
+  citizen — the maintainer's "fool PixelLab" rule.
+- **>168px** (the 8-rotation cap) → a SINGLE-candidate
+  `create-1-direction-object`: full canvas, auto-kept, never enters review
+  (tree_001, the crisp birch, was born this way).
+
+Either path costs **20–40 generations (~$0.09 of USD overage) per piece**.
+Whole-catalog: ~2,650 calls ≈ 80k generations — months of the Tier-3 pool
+plus credits at whatever pace the maintainer funds. The loop's budget floors
+make running out a clean pause, never an error.
 
 ### Daily rhythm
 
