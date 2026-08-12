@@ -129,6 +129,36 @@ const par4 = bonR4 / Math.max(1, campR4);
 ok(par2 > 0.5 && par2 < 2.0, `parity at 2.2 cells: bonfire/campfire = ${par2.toFixed(2)}`);
 ok(par4 > 0.5 && par4 < 2.0, `parity at 4 cells: bonfire/campfire = ${par4.toFixed(2)}`);
 
+// ---- 2b. THE BODY BESIDE A GLOWING TILE IS LIT ------------------------------
+// Maintainer 2026-08-12 (screenshots at 212,123 and 75,124): "some tiles don't
+// seem to affect the player... the surrounding is lit up more than the player."
+// Two causes: shadowed defaults were eaten by the prop's own occluder cell
+// before reaching a body beside it, and the derived intensity undershot the
+// pool stamp it replaced. Defaults are shadow-free pools now, and stronger.
+// lightAt is the very sample the body's lit copy tints by, so assert THAT.
+await page.evaluate(() => window.__ml.lookAt(211.5, 122.5));
+await page.waitForTimeout(500);
+const beside = await page.evaluate(() => window.__ml.lightAt(212.4, 123.3));
+const besideFar = await page.evaluate(() => window.__ml.lightAt(199, 133));
+console.log(`body-beside-tile lightAt: near=${mag(beside).toFixed(3)} far=${mag(besideFar).toFixed(3)}`);
+ok(mag(beside) > mag(besideFar) * 1.8, `a body beside the beach tile is lit (${mag(beside).toFixed(3)} vs ${mag(besideFar).toFixed(3)})`);
+
+// ---- 2c. A SEALED ROOM'S FIRE NEVER LEAKS OUTSIDE ---------------------------
+// Maintainer 2026-08-12 (screenshot at 170.5,107.6, outdoors): "I can clearly
+// see there is a light source inside the house bleeding through the walls."
+// The LOS march's 0.22 bounce floor passes 22% of any light through any wall,
+// and the fire's halo stamps painted on the roof pixels — so a sealed-room
+// fire is indoor-only now.
+await page.evaluate(() => window.__ml.lookAt());
+await page.evaluate(() => window.__ml.teleport(170, 107));
+await page.waitForTimeout(1500);
+const outSlots = await page.evaluate(() => window.__ml.lightSlots());
+ok(!outSlots.slotted.includes("170,111"), "the indoor bonfire holds NO slot while I am outside");
+const wallOut = await page.evaluate(() => window.__ml.lightAt(170, 107.5));
+const plainOut = await page.evaluate(() => window.__ml.lightAt(160, 100));
+console.log(`outside-the-house lightAt: nearWall=${mag(wallOut).toFixed(3)} plain=${mag(plainOut).toFixed(3)}`);
+ok(mag(wallOut) < mag(plainOut) * 1.5 + 0.05, `no fire bleeds through the wall (${mag(wallOut).toFixed(3)} vs plain ${mag(plainOut).toFixed(3)})`);
+
 // ---- 3. INDOORS: the fire lights its room -----------------------------------
 // The maintainer's screenshot: bonfire prop at (170,111), player at ~171,115,
 // the room floor pitch black around a burning fire.

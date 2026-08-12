@@ -72,7 +72,7 @@ LIGHTS = {
     # (radius 7, overbright warm core, full fire flicker). "There should be NO
     # DIFFERENCE in how bright the bonfire is vs the campfire" (maintainer).
     "tiles2/saturated_grass/base_x_3/base_x_3_1054990476/tile_12":
-        {"radius": 7, "color": [1.90, 0.88, 0.30], "flicker": 1, "shadows": True, "z": 0.5},
+        {"radius": 7, "color": [1.90, 0.88, 0.30], "flicker": 1, "shadows": True, "z": 1.1},
 }
 
 # -- P1: hue-AGNOSTIC glow detection. A glow is a saturated, colourful accent that

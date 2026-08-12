@@ -378,6 +378,12 @@ interface EmissiveSource {
   shadows: boolean; // false → negative radius = the shader's shadow-free glow pool
   sx: number; // projected screen anchor (elevation-lifted) for view culling
   sy: number;
+  // The source stands inside a SEALED ROOM (the indoor verdict's own rule — a
+  // bridge or arch is not a room). Such a light is INDOOR-ONLY: lit exactly to
+  // the degree I am in its room, never from outside. Probed via the cell's
+  // 4-neighbours because a prop BLOCKS its own cell — the room flood can never
+  // contain it (the same trap the stamp gate fell into).
+  sealed: boolean;
 }
 // The optional `lights` block in tiles2/emission.json (per tile-path stem or
 // per material). All fields optional; radius in CELLS; color may exceed 1
@@ -1310,6 +1316,8 @@ export class WorldScene extends Phaser.Scene {
   private slotLit = new Set<string>();
   private lightOverflow = 0; // in-view candidates that did NOT fit the budget
   private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
+  // Cells of emissive props standing inside a sealed room (indoor-only light).
+  private sealedEmissiveCells = new Set<number>();
   // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
   private propStamps: GlowStamp[] = [];
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
@@ -9350,12 +9358,14 @@ export class WorldScene extends Phaser.Scene {
    * a surface whose level disagrees with the terrain, say. Showing an outline
    * that could have been hidden is a cosmetic miss; hiding one that should show
    * is the feature not working. */
-  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+  /** The STATIC half of inHiddenRoom: is this CELL part of a space the indoor
+   * verdict calls a room? (Memoised per space; knows nothing about which room
+   * is currently mine.) Split out 2026-08-12 so the light ledger can ask the
+   * same question about an emissive source once per world. */
+  private roomVerdictAt(col: number, row: number, z = 0): boolean {
     const g = this.terrain;
     const w = this.world;
     if (!g || !w) return false;
-    const col = Math.floor(fx / CELL_WU);
-    const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return false;
     const idx = row * w.width + col;
     let room = this.roomCellMemo.get(idx);
@@ -9368,7 +9378,15 @@ export class WorldScene extends Phaser.Scene {
       if (space) for (const c of space.roof) this.roomCellMemo.set(c, room);
       else this.roomCellMemo.set(idx, 0);
     }
-    if (!room) return false;
+    return !!room;
+  }
+
+  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+    const w = this.world;
+    if (!w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (!this.roomVerdictAt(col, row, z)) return false;
     // It IS a room — mine or someone else's? THE TEST IS "IS THE CUT STILL
     // APPLIED", i.e. is the roof off, and NOT the fade mask.
     //
@@ -10345,8 +10363,16 @@ export class WorldScene extends Phaser.Scene {
       // shell for exactly this reason ("a torch mounted ON the wall of my room
       // lights it") — the stamp gate now matches it. A glowing mushroom out on
       // the grass is neither roof nor wall and stays suppressed.
+      const propIdx = p.row * this.world.width + p.col;
       const propOut =
-        !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & (IN_ROOF | IN_WALL));
+        (!!mask && !((mask.get(propIdx) ?? 0) & (IN_ROOF | IN_WALL))) ||
+        // A SEALED-ROOM fire's stamps are indoor-only too: its high halos
+        // paint at the prop's screen position, which from OUTSIDE is the
+        // house's ROOF — an orange blob glowing on the shingles (the other
+        // half of the maintainer's bleed-through screenshot). Same gate as
+        // the light: visible only while I am in its room. rebuildProps
+        // re-runs on the indoor commit, so door crossings stay fresh.
+        (this.sealedEmissiveCells.has(propIdx) && !(this.roomMask && this.inMyRoom(p.col, p.row)));
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;
@@ -10620,6 +10646,7 @@ export class WorldScene extends Phaser.Scene {
    * whole point — while a glowing flower stays a quiet pool. */
   private buildEmissiveSources() {
     this.emissiveSources = [];
+    this.sealedEmissiveCells.clear();
     if (!this.world?.props?.length) return;
     const stem = (p: string) => p.replace(/\.(png|webp)$/, "");
     for (const p of this.world.props) {
@@ -10645,7 +10672,25 @@ export class WorldScene extends Phaser.Scene {
       const avgS = srcs.length ? sw / srcs.length : 0;
       const lvl = this.world.rows[p.row]?.[p.col]?.l ?? 0;
       const pj = this.project((p.col + 0.5) * CELL_WU, (p.row + 0.5) * CELL_WU);
-      const k = avgS * 0.9; // derived default: a QUIET pool, not a bonfire
+      // Derived default intensity. 0.9 was too quiet ON BODIES (maintainer
+      // 2026-08-12, screenshots: "the surrounding is lit up more than the
+      // player") — the pool stamp this replaces tinted a body ~avgS*0.7 at
+      // its core, and the light must at least match it where you stand.
+      const k = avgS * 1.3;
+      // SEALED-ROOM test: the prop's own cell is blocked (never in a room's
+      // roof set), so ask the 4-neighbours — the floor around a fire in a
+      // room IS the room. A fire under a bridge stays unsealed (a bridge is
+      // not a room by the indoor verdict), so it still lights the night.
+      let sealed = false;
+      for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+        const nc = p.col + dc;
+        const nr = p.row + dr;
+        const nl = this.world.rows[nr]?.[nc]?.l ?? lvl;
+        if (this.roomVerdictAt(nc, nr, nl)) {
+          sealed = true;
+          break;
+        }
+      }
       this.emissiveSources.push({
         id: `${p.col},${p.row}`,
         col: p.col + 0.5,
@@ -10654,10 +10699,22 @@ export class WorldScene extends Phaser.Scene {
         radius: Math.max(1, cfg?.radius ?? Math.min(5, (em?.radius ?? 2) + 1.5)),
         color: cfg?.color ?? [glowColor[0] * k, glowColor[1] * k, glowColor[2] * k],
         flicker: cfg?.flicker ?? (em?.anim === "flicker" ? 0.5 : em?.anim === "pulse" ? 0.15 : 0),
-        shadows: cfg?.shadows ?? true,
+        // Derived defaults are SHADOW-FREE GLOW POOLS (negative radius) — the
+        // path built for tile emission. Two reasons, both from the maintainer's
+        // first night with the ledger: a prop occludes ITS OWN CELL in the
+        // heightmap, so a shadowed light at z 0.5 is eaten by its own prop
+        // before it reaches the body standing beside it (the ground survives
+        // on the march's bounce floor — which is exactly why "the surrounding
+        // is lit up more than the player"); and a decorative glow has no
+        // business casting hard LOS geometry anyway. Curated entries (the
+        // bonfire) opt back into shadows and must place their z ABOVE the
+        // prop's +1 occluder.
+        shadows: cfg?.shadows ?? false,
         sx: pj.x,
         sy: pj.y,
+        sealed,
       });
+      if (sealed) this.sealedEmissiveCells.add(p.row * this.world.width + p.col);
     }
   }
 
@@ -10691,6 +10748,19 @@ export class WorldScene extends Phaser.Scene {
       const reach = s.radius * MAP_GEOMETRY.dx + 128;
       if (s.sx + reach < wv.x || s.sx - reach > wv.right || s.sy + reach < wv.y || s.sy - reach > wv.bottom)
         continue;
+      // A SEALED-ROOM fire is indoor-only: lit exactly to the degree I am in
+      // its room, invisible from outside. Without this, the LOS march's 0.22
+      // bounce floor let 22% of the indoor bonfire pour through the house
+      // walls at night (maintainer 2026-08-12: "I'm outside of the house and
+      // I can clearly see there is a light source inside bleeding through").
+      // Scaled by indoorMix — the same roll the room's ambient rides — so
+      // walking out fades the fire with the room instead of popping it.
+      let gain = 1;
+      if (s.sealed) {
+        if (!(this.roomMask && this.inMyRoom(s.col, s.row))) continue;
+        gain = this.indoorMix;
+        if (gain <= 0.01) continue;
+      }
       cands.push({
         key: s.id,
         score: Math.hypot(s.sx - cx, s.sy - cy) - (this.slotLit.has(s.id) ? LIGHT_HYST_PX : 0),
@@ -10700,7 +10770,7 @@ export class WorldScene extends Phaser.Scene {
           z: s.z,
           // Sign of radius: negative = the shader's shadow-free glow pool.
           radius: s.shadows ? s.radius : -s.radius,
-          color: s.color,
+          color: gain === 1 ? s.color : [s.color[0] * gain, s.color[1] * gain, s.color[2] * gain],
           flicker: s.flicker,
         },
       });

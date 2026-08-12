@@ -2152,6 +2152,25 @@ side collision just like monsters").
     reachable by >8 world pools. RATCHET: pre-existing over-budget worlds are
     pinned in `spec/light-budget-baseline.json` at their measured worst (all
     demos; live the_island2 = 6/8) and only fail when they get WORSE.
+  - **Derived defaults are SHADOW-FREE GLOW POOLS (negative radius), and
+    stronger (avgS·1.3)** — round 2, from the maintainer's first night: a prop
+    OCCLUDES ITS OWN CELL in the heightmap, so a shadowed light at z 0.5 was
+    eaten by its own prop before reaching the body beside it (the ground
+    survived on the march's 0.22 bounce floor, hence "the surrounding is lit
+    up more than the player"), and avgS·0.9 undershot the pool stamp it
+    replaced. A curated entry that opts back into `shadows` must put its z
+    ABOVE the prop's +1 occluder (the bonfire is z 1.1 now).
+  - **A SEALED-ROOM fire is INDOOR-ONLY** — lit exactly to the degree I am in
+    its room (scaled by indoorMix), never from outside. Without this the LOS
+    march's 0.22 bounce floor poured 22% of the indoor bonfire through the
+    house walls at night, and its halo stamps painted an orange blob ON the
+    roof pixels (maintainer screenshot, outdoors at 170,107). `sealed` is
+    probed per source at the 4-NEIGHBOURS via `roomVerdictAt` (split out of
+    inHiddenRoom) — the prop's own cell is blocked and never in the room's
+    roof set, the same trap the stamp gate fell into. A fire under a BRIDGE
+    stays unsealed (a bridge is not a room by the indoor verdict) and lights
+    the night. Stamps take the same gate in rebuildProps
+    (`sealedEmissiveCells`).
   - The QA `probeLight` consumes a WORLD slot while set — gates that count
     slots must expect ≤7 world holders then.
   - Probes: `__ml.lightSlots()` (live ledger + overflow), `__ml.lightAt()`
