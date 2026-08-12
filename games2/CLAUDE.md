@@ -2220,6 +2220,27 @@ side collision just like monsters").
     stays unsealed (a bridge is not a room by the indoor verdict) and lights
     the night. Stamps take the same gate in rebuildProps
     (`sealedEmissiveCells`).
+  - **SLOTS ARE HELD BY TENURE, NOT RE-RANKED** (round 3, maintainer
+    2026-08-12, running across glow_test: "a lot of light sources pop in and
+    out inside the view… maintain a light for as long as it's still impacting
+    the game view before you free up its slot"). Per-frame closest-first
+    ranking meant slots changed hands while BOTH fires were mid-screen — a
+    visible pop each handover on any over-budget map. Now a HOLDER keeps its
+    slot until its pool stops touching the view (release needs
+    `LIGHT_EXIT_PX` past the boundary; acquisition requires actually
+    touching, so entry is strictly tighter than release and a boundary
+    hoverer can't flicker). Newcomers take only genuinely FREE slots,
+    nearest first, and RAMP in over `LIGHT_RAMP_MS` (450) while their pool
+    stamp crossfades out at the complementary weight — a mid-view
+    acquisition is a dissolve, never a swap. An over-budget map therefore
+    degrades to "some fires are stamp-only while visible", a look, never an
+    event. A sealed-room fire still exits via its own `gain` fade first.
+    Gate: `scripts/verify-lighttenure.mjs` pans glow_test (~180 sources per
+    window vs 8 slots) and asserts every release happens past the view
+    boundary (probe `edges` = the release rule's own numbers) and every deep
+    acquisition arrives mid-ramp. ITS ONE TRAP: the first lookAt is a camera
+    TELEPORT from spawn that legitimately dumps the spawn-side holders —
+    settle at the pan start before the baseline sample.
   - The QA `probeLight` consumes a WORLD slot while set — gates that count
     slots must expect ≤7 world holders then.
   - Probes: `__ml.lightSlots()` (live ledger + overflow), `__ml.lightAt()`

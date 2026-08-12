@@ -365,7 +365,12 @@ const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
 // picked closest-to-camera-first among candidates whose POOL can touch the
 // view; a source holding a slot keeps it until a competitor is meaningfully
 // closer (hysteresis), so walking a boundary can't strobe a light on and off.
-const LIGHT_HYST_PX = 160; // ≈ 2.5 cells of screen-space stickiness
+// A newly acquired light ramps in over this long, its pool stamp crossfading
+// out underneath — a mid-view acquisition is a fade, never a pop.
+const LIGHT_RAMP_MS = 450;
+// Exit margin past the pool's own reach before a HELD light is released — a
+// pool sitting exactly on the view boundary must not flicker candidacy.
+const LIGHT_EXIT_PX = 96;
 // A world light candidate resolved from an emissive prop + emission.json.
 interface EmissiveSource {
   id: string; // "col,row" — matches the pool stamp's srcId
@@ -1314,6 +1319,15 @@ export class WorldScene extends Phaser.Scene {
   // Read by the stamp filter (a slotted source's ground POOL is replaced by
   // its real light) and by the __ml.lightSlots probe.
   private slotLit = new Set<string>();
+  // TENURE: who holds a world slot and how far their fade-in has come. A
+  // holder keeps its slot until its pool stops touching the view — see
+  // pickWorldLights.
+  private slotTenure = new Map<string, { ramp: number }>();
+  // Each holder's measured px-past-view edge this frame (negative = the pool
+  // touches the screen). QA only: the churn gate proves releases happen at the
+  // boundary, never mid-view, and it can only do that from the same numbers
+  // the release rule reads.
+  private slotEdges: Record<string, number> = {};
   private lightOverflow = 0; // in-view candidates that did NOT fit the budget
   private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
   // Cells of emissive props standing inside a sealed room (indoor-only light).
@@ -2406,6 +2420,10 @@ export class WorldScene extends Phaser.Scene {
         reservedInUse: this.lastSlotInfo.reserved,
         total: this.lastSlotInfo.total,
         slotted: [...this.slotLit],
+        // Tenure ramps (0..1): a value under 1 means that light is still
+        // fading in over its crossfading pool stamp.
+        ramps: Object.fromEntries([...this.slotTenure].map(([k, t]) => [k, +t.ramp.toFixed(3)])),
+        edges: this.slotEdges,
         overflow: this.lightOverflow,
         sources: this.emissiveSources.length,
         probe: !!this.probeLight,
@@ -6640,7 +6658,7 @@ export class WorldScene extends Phaser.Scene {
         }
       // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
       // range, as REAL lights at last. Overflow keeps the glow stamp.
-      this.pickWorldLights(sl, fireLit);
+      this.pickWorldLights(sl, fireLit, this.game.loop.delta);
       this.lastSlotInfo.total = sl.length;
       // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
       // "point light from outside has to be turned off"). This became load
@@ -6792,14 +6810,23 @@ export class WorldScene extends Phaser.Scene {
       const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
-      // A source holding a REAL light slot hands its ground POOL stamp back
-      // for the frame — the light replaces it (keeping both double-brightens
-      // ground and characters: curLights and curStamps both feed lightAt).
-      // High halos (no srcId pool tag match... they carry the same srcId but
-      // ry is unset) stay: they are the art's own bloom. The glow RT repaints
-      // from this array every frame, so this is a filter, not a rebuild.
-      const stampsDrawn = this.slotLit.size
-        ? this.glowStamps.filter((g) => !(g.srcId && g.ry !== undefined && this.slotLit.has(g.srcId)))
+      // A source holding a REAL light slot hands its ground POOL stamp back —
+      // the light replaces it (keeping both double-brightens ground and
+      // characters: curLights and curStamps both feed lightAt). CROSSFADED on
+      // the tenure ramp: while the light fades in, the pool fades out under it
+      // at exactly the complementary weight, so acquiring a slot mid-view is a
+      // dissolve between the two looks, never a swap. High halos (ry unset)
+      // stay: they are the art's own bloom. The glow RT repaints from this
+      // array every frame, so this is a map, not a rebuild.
+      const stampsDrawn = this.slotTenure.size
+        ? this.glowStamps.flatMap((g) => {
+            if (!g.srcId || g.ry === undefined) return [g];
+            const t = this.slotTenure.get(g.srcId);
+            if (!t || !this.slotLit.has(g.srcId)) return [g];
+            if (t.ramp >= 1) return [];
+            const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
+            return [{ ...g, alpha: g.alpha * (1 - k) }];
+          })
         : this.glowStamps;
       this.night!.update(
         this.cameras.main,
@@ -10647,6 +10674,7 @@ export class WorldScene extends Phaser.Scene {
   private buildEmissiveSources() {
     this.emissiveSources = [];
     this.sealedEmissiveCells.clear();
+    this.slotTenure.clear(); // a fresh world starts with no held slots
     if (!this.world?.props?.length) return;
     const stem = (p: string) => p.replace(/\.(png|webp)$/, "");
     for (const p of this.world.props) {
@@ -10726,28 +10754,39 @@ export class WorldScene extends Phaser.Scene {
    * because a loan would mean a world light pops the moment the torch is
    * struck. Losers keep their glow stamp (the old system IS the overflow
    * fallback), so an over-budget spot degrades to exactly yesterday's look. */
-  private pickWorldLights(sl: ShaderLight[], fireLit: boolean) {
+  private pickWorldLights(sl: ShaderLight[], fireLit: boolean, dtMs: number) {
     const room = Math.max(0, WORLD_LIGHT_SLOTS - (this.probeLight ? 1 : 0));
     const cam = this.cameras.main;
     const wv = cam.worldView;
     const cx = cam.midPoint.x;
     const cy = cam.midPoint.y;
-    type Cand = { key: string; score: number; l: ShaderLight };
-    const cands: Cand[] = [];
+    type Cand = { key: string; dist: number; edge: number; l: ShaderLight };
+    const cands = new Map<string, Cand>();
+    // How far OUTSIDE the view rect a pool's reach ends: negative while the
+    // pool can touch the screen. Enter and exit use DIFFERENT margins (space
+    // hysteresis): a light comes alive just before its pool scrolls on, but a
+    // HELD one is only released once it is comfortably past — a pool sitting
+    // exactly on the boundary must not flicker candidacy.
+    const edgeOf = (sx: number, sy: number, reach: number) =>
+      Math.max(wv.x - (sx + reach), sx - reach - wv.right, wv.y - (sy + reach), sy - reach - wv.bottom);
     if (fireLit && this.campfire) {
       const c = this.campfire;
-      cands.push({
-        key: "campfire",
-        score: Math.hypot(c.x - cx, c.y - cy) - (this.slotLit.has("campfire") ? LIGHT_HYST_PX : 0),
-        l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
-      });
+      const reach = 7 * MAP_GEOMETRY.dx;
+      const edge = edgeOf(c.x, c.y, reach);
+      if (edge < LIGHT_EXIT_PX)
+        cands.set("campfire", {
+          key: "campfire",
+          dist: Math.hypot(c.x - cx, c.y - cy),
+          edge,
+          l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
+        });
     }
     for (const s of this.emissiveSources) {
       // A pool reaches radius*dx px past its anchor — the light must be LIVE
       // before its source scrolls on, or pools visibly pop at the screen edge.
       const reach = s.radius * MAP_GEOMETRY.dx + 128;
-      if (s.sx + reach < wv.x || s.sx - reach > wv.right || s.sy + reach < wv.y || s.sy - reach > wv.bottom)
-        continue;
+      const edge = edgeOf(s.sx, s.sy, reach);
+      if (edge >= LIGHT_EXIT_PX) continue;
       // A SEALED-ROOM fire is indoor-only: lit exactly to the degree I am in
       // its room, invisible from outside. Without this, the LOS march's 0.22
       // bounce floor let 22% of the indoor bonfire pour through the house
@@ -10761,9 +10800,10 @@ export class WorldScene extends Phaser.Scene {
         gain = this.indoorMix;
         if (gain <= 0.01) continue;
       }
-      cands.push({
+      cands.set(s.id, {
         key: s.id,
-        score: Math.hypot(s.sx - cx, s.sy - cy) - (this.slotLit.has(s.id) ? LIGHT_HYST_PX : 0),
+        dist: Math.hypot(s.sx - cx, s.sy - cy),
+        edge,
         l: {
           col: s.col,
           row: s.row,
@@ -10775,19 +10815,76 @@ export class WorldScene extends Phaser.Scene {
         },
       });
     }
-    cands.sort((a, b) => a.score - b.score);
+    // TENURE, not a per-frame ranking (maintainer 2026-08-12, running across
+    // glow_test: "a lot of light sources pop in and out inside the view…
+    // maintain a light for as long as it's still impacting the game view
+    // before you free up its slot"). Re-ranking by distance every frame means
+    // slots change hands while BOTH fires are mid-screen — the loser snaps to
+    // stamp-look, the winner snaps to full light, a visible pop each handover.
+    // So: a HOLDER keeps its slot until its pool stops touching the view (or
+    // its candidacy dies — sealed rooms fade themselves out first via `gain`).
+    // Newcomers take only genuinely FREE slots, nearest first, and RAMP in
+    // over LIGHT_RAMP_MS while their pool stamp crossfades out — an
+    // over-budget map degrades to "some fires are stamp-only while visible",
+    // which is a look, never an event.
+    // Release: a holder leaves tenure only when its pool is a full
+    // LIGHT_EXIT_PX beyond touching the view (it fell out of `cands`), or its
+    // candidacy died (sealed room left — which faded itself to zero via
+    // `gain` first). Acquisition below requires edge < 0 (actually touching),
+    // so entry is strictly TIGHTER than release: a pool hovering on the
+    // boundary can neither flicker in nor flicker out.
+    for (const key of this.slotTenure.keys()) {
+      if (!cands.has(key)) this.slotTenure.delete(key);
+    }
+    // Probe shrinks the room (QA): evict the farthest holders to fit.
+    while (this.slotTenure.size > room) {
+      let worst: string | null = null;
+      let worstDist = -1;
+      for (const key of this.slotTenure.keys()) {
+        const d = cands.get(key)?.dist ?? Infinity;
+        if (d > worstDist) {
+          worstDist = d;
+          worst = key;
+        }
+      }
+      if (worst === null) break;
+      this.slotTenure.delete(worst);
+    }
+    // Free slots go to the nearest unslotted candidates. Most acquisitions
+    // happen as a pool ENTERS the view (edge ≈ 0) where the ramp is invisible;
+    // a mid-view acquisition (a slot freed while a fire is centre screen)
+    // fades in instead of popping on.
+    if (this.slotTenure.size < room) {
+      const free = [...cands.values()]
+        .filter((c) => c.edge < 0 && !this.slotTenure.has(c.key))
+        .sort((a, b) => a.dist - b.dist);
+      for (const c of free) {
+        if (this.slotTenure.size >= room) break;
+        this.slotTenure.set(c.key, { ramp: 0 });
+      }
+    }
+    this.lightOverflow = Math.max(0, cands.size - this.slotTenure.size);
     this.slotLit.clear();
-    this.lightOverflow = Math.max(0, cands.length - room);
     // STABLE PUSH ORDER: the shader's flicker phase is derived from the SLOT
-    // INDEX (uAnimTime*2.9 + i*5.3), not from the light itself — pushing in
-    // score order would re-phase every flame whenever the camera drifts and
-    // the ranking shuffles. Pick by score, then push the winners sorted by
-    // their own key, so a stable set keeps stable slots.
-    const win = cands.slice(0, room).sort((a, b) => (a.key < b.key ? -1 : 1));
-    for (const c of win) {
+    // INDEX (uAnimTime*2.9 + i*5.3), not from the light itself — a shuffled
+    // order re-phases every flame. Tenure keys, sorted, are stable while the
+    // held set is.
+    const held = [...this.slotTenure.keys()].sort();
+    this.slotEdges = {};
+    for (const key of held) {
+      const c = cands.get(key);
+      const t = this.slotTenure.get(key)!;
+      if (!c) continue;
+      this.slotEdges[key] = Math.round(c.edge);
+      t.ramp = Math.min(1, t.ramp + dtMs / LIGHT_RAMP_MS);
+      const k = t.ramp * t.ramp * (3 - 2 * t.ramp); // smoothstep — no snap at either end
       if (sl.length >= MAX_SHADER_LIGHTS) break;
-      sl.push(c.l);
-      this.slotLit.add(c.key);
+      sl.push(
+        k >= 1
+          ? c.l
+          : { ...c.l, color: [c.l.color[0] * k, c.l.color[1] * k, c.l.color[2] * k] },
+      );
+      this.slotLit.add(key);
     }
   }
 
