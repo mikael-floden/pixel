@@ -142,7 +142,7 @@ const ANIM_FPS: Record<string, number> = {
   pickup: 9,
   die: 8,
 };
-// The blood spatter's 8 direction variants (objects/blood_spatter, trimmed to
+// The blood spatter's 8 direction variants (scenery/blood_spatter, trimmed to
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
 const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
@@ -297,15 +297,15 @@ const frameIndexOf = (key?: string): number => {
 const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
 const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
 const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
-// Spawn campfire (objects/campfire, burn/south): 96px frames; per its
+// Spawn campfire (scenery/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
 const CAMPFIRE_KEY = "campfire-burn";
 // The ONE art asset the game names directly instead of reading it from a
-// manifest — objects/ ships none, and that whole domain is now this single
-// file. If objects/ ever gains a manifest, read the url from it instead of
+// manifest — scenery/ ships none the game reads, and that whole domain is now
+// this single file. If scenery/ ever gains a manifest, read the url from it instead of
 // hardcoding the extension here.
-const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.webp";
+const CAMPFIRE_URL = "/assets/scenery/campfire/animations/burn__south.webp";
 const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
@@ -1283,7 +1283,7 @@ export class WorldScene extends Phaser.Scene {
     }
   >();
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
-  // Grave crosses (objects/grave_cross): appear where a monster died, hold on
+  // Grave crosses (scenery/grave_cross): appear where a monster died, hold on
   // the last frame, then REVERSE back into the ground and vanish.
   private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
   private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
@@ -4608,7 +4608,7 @@ export class WorldScene extends Phaser.Scene {
     this.monsters.delete(id);
   }
 
-  /** The wooden grave cross (objects/grave_cross, the maintainer's PixelLab
+  /** The wooden grave cross (scenery/grave_cross, the maintainer's PixelLab
    * object): plays its 16-frame SOUTH "appear" once at the death spot, holds
    * on the LAST frame, and after a minute plays the same clip REVERSED —
    * sinking back into the ground — and vanishes. Client-local decoration:
@@ -4624,7 +4624,7 @@ export class WorldScene extends Phaser.Scene {
     this.pendingCrosses.push({ lx, lyFlat, elevPx });
     if (!this.crossLoadQueued) {
       this.crossLoadQueued = true;
-      this.load.spritesheet(KEY, withV("/assets/objects/grave_cross/animations/appear__south.webp"), {
+      this.load.spritesheet(KEY, withV("/assets/scenery/grave_cross/animations/appear__south.webp"), {
         frameWidth: 34,
         frameHeight: 34,
       });
@@ -4860,7 +4860,7 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  /** A blood spatter on a struck body (objects/blood_spatter, the
+  /** A blood spatter on a struck body (scenery/blood_spatter, the
    * maintainer's PixelLab object trimmed to burst->dispersal): one of the 8
    * direction variants at random, played forward or REVERSED at random —
    * reversed reads as the burst converging, so no two hits look alike. */
@@ -8570,12 +8570,12 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-    // The BLOOD SPATTER variants (objects/blood_spatter, trimmed) ride the
+    // The BLOOD SPATTER variants (scenery/blood_spatter, trimmed) ride the
     // same batch — tiny (8 strips, 34px frames), ready before the first hit.
     for (const dir of BLOOD_DIRS) {
       const bk = `blood:${dir}`;
       if (this.textures.exists(bk)) continue;
-      this.load.spritesheet(bk, withV(`/assets/objects/blood_spatter/animations/spatter__${dir}.webp`), {
+      this.load.spritesheet(bk, withV(`/assets/scenery/blood_spatter/animations/spatter__${dir}.webp`), {
         frameWidth: 34,
         frameHeight: 34,
       });

@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..", "..");
 const ARGS = process.argv.slice(2);
-const TARGETS = ARGS.length ? ARGS : ["monsters", "characters2", "objects", "tiles2", "items", "wiki/site/icons"];
+const TARGETS = ARGS.length ? ARGS : ["monsters", "characters2", "scenery", "tiles2", "items", "wiki/site/icons"];
 
 // THE FUNCTION UNDER TEST — keep byte-identical to build.mjs:imageSize().
 function imageSize(path) {

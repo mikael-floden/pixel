@@ -6,7 +6,7 @@ the afterworld in Astrid Lindgren's *The Brothers Lionheart*.
 
 Lives inside the [`pixel`](https://github.com/mikael-floden/pixel) monorepo at
 `games/nangijala` and renders the art produced by the sibling agent domains
-(`characters/`, `tiles/`, `maps/`, `objects/`) — **no submodule, no cross-repo
+(`characters2/`, `tiles2/`, `maps2/`, `scenery/`) — **no submodule, no cross-repo
 dependency**. It is read-only toward the art: it never edits those directories.
 
 ## Tech stack

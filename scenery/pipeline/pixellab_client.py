@@ -1,22 +1,20 @@
-"""PixelLab API client for OBJECTS (props, tools, items).
+"""PixelLab API client for the SCENERY domain (this domain's own copy — each
+domain keeps its own `pixellab_client.py`, per coordination/PROTOCOL.md).
 
-Objects use PixelLab's **image** endpoints, which are different from the
-character endpoints another agent's loop uses:
+Scenery pieces persist as PixelLab **objects** on the `/v2` API ("object" is
+PixelLab's product term; the repo mirrors the store):
 
-  - characters/ drives `create-character-*` / `animate-character` — asynchronous
-    *character* jobs (background job polling, raw rgba_bytes frames, stored on
-    PixelLab under a character_id).
-  - objects/ (this file) drives the stateless **image** tools on the `/v1` API:
-      * generate-image-pixflux  — text -> a single pixel-art sprite
-      * rotate                  — one sprite -> a rotated view
-      * animate-with-text       — one sprite -> a short animation (text action)
+  - `create-8-direction-object` -> `{object_id, background_job_id}`; poll the
+    job, then `GET /objects/{id}` for the 8 `rotation_urls`.
+  - `POST /objects/{id}/animations` -> an animation group whose frames land
+    asynchronously per direction; poll `GET /objects/{id}` until all 8
+    directions carry `storage_urls.frames`, then download.
+  - `GET /objects` (list), `DELETE /objects/{id}`, `/v2/balance` for budget.
 
-These `/v1` image endpoints are **synchronous**: the POST returns the finished
-art inline as a Base64 PNG (`{"image": {"base64": ...}}` or
-`{"images": [{"base64": ...}]}`), with `{"usage": {"generations": N}}`. There is
-no job to poll and — unlike a character — no server-side object to re-fetch, so
-the repo (not PixelLab) is the source of truth for objects. Verified live against
-the API (see objects/spec/OBJECTS_SPEC.md).
+The old stateless `/v1` image tools (generate-image-pixflux / rotate /
+animate-with-text) remain at the bottom for one-off sprites; they return the
+finished art inline as Base64 with `{"usage": {"generations": N}}`. Verified
+live against the API (see scenery/spec/SCENERY_SPEC.md).
 
 Every method returns decoded Pillow images so callers work synchronously.
 """

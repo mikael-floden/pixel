@@ -123,7 +123,7 @@ change breaks the **build** rather than stranding somebody in the deployed game.
    cave-floor cell at the mouth — not from the step outside it. Measuring from
    the step is off by one column and lets a sprite clip the edge of the door.
 5. **Never in the spawn campfire.** The game draws one animated campfire at
-   every world's arrival point — the only `objects/` asset it draws, and canon
+   every world's arrival point — the only `scenery/` asset it draws, and canon
    (`lore/RED_LINE.md` §2: *"there is a campfire burning at the place where you
    arrive"*). It is **not** a prop in `world.json`, so nothing in the terrain
    says it is there, and the first cast duly stood a commoner in the flames —

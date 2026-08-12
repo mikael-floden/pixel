@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pixel Object Factory</title>
+<title>Nangijala Scenery</title>
 <style>
   :root { --bg:#12141a; --card:#1b1e27; --edge:#2b2f3d; --ink:#e8eaf0; --dim:#9aa0b0; --accent:#ffcf6b; }
   * { box-sizing:border-box; }
@@ -38,7 +38,7 @@
 </head>
 <body>
 <header>
-  <h1>🧰 Pixel Object Factory</h1>
+  <h1>🏕️ Nangijala Scenery</h1>
   <div class="meta" id="meta">loading…</div>
   <div class="filters" id="filters"></div>
 </header>
@@ -56,7 +56,7 @@ function openDetail(o) {
   b.innerHTML = "";
   b.appendChild(el("div", "name", o.name + ' <span class="badge">· ' + o.category + '</span>'));
   b.appendChild(el("div", "sub", o.description || ""));
-  b.appendChild(el("div", "sub", (o.size ? o.size.join("×") + "px art · " : "") + (o.view || "") + " · " + (o.status || "")));
+  b.appendChild(el("div", "sub", (o.size ? o.size + "px art · " : "") + (o.view || "") + " · " + (o.status || "")));
 
   const pl = o.placement;
   if (pl) {
@@ -69,20 +69,20 @@ function openDetail(o) {
   b.appendChild(el("h3", null, "Sprite"));
   const srow = el("div", "row");
   srow.appendChild(cell(o.sprite, "base"));
-  const rf = o.rotation_files || {};
+  const rf = o.rotations || {};
   Object.keys(rf).forEach(d => { if (d !== o.view) srow.appendChild(cell(rf[d], d)); });
   b.appendChild(srow);
 
   if (o.animations && o.animations.length) {
     b.appendChild(el("h3", null, "Animations"));
     const arow = el("div", "row");
-    o.animations.forEach(a => arow.appendChild(cell(a.gif, a.key + " (" + (a.frames||"?") + "f)")));
+    o.animations.forEach(a => arow.appendChild(cell(a.preview_gif, a.key + " (" + (a.frames||"?") + "f)")));
     b.appendChild(arow);
   }
   document.getElementById("detail").showModal();
 }
 
-// A to-scale comparison: object sprite (scaled to world_px_height) next to a
+// A to-scale comparison: scenery sprite (scaled to world_px_height) next to a
 // character-height silhouette, both standing on one ground line.
 function scaleRow(o, pl) {
   const charPx = pl.character_height_px || 64, objPx = pl.world_px_height || charPx;
@@ -96,9 +96,9 @@ function scaleRow(o, pl) {
     "px;background:#3a3f4d;border-radius:40% 40% 20% 20%/30% 30% 10% 10%;opacity:.8;";
   const chc = el("div", "cell"); chc.appendChild(ch);
   chc.appendChild(el("div", "sub", "character"));
-  // object sprite at true relative size
+  // scenery sprite at true relative size
   const oc = el("div", "cell");
-  const img = el("img"); img.src = (o.animations[0] && o.animations[0].gif) || o.sprite;
+  const img = el("img"); img.src = (o.animations[0] && o.animations[0].preview_gif) || o.sprite;
   img.style.cssText = "height:" + Math.round(objPx * factor) + "px;width:auto;object-fit:contain;image-rendering:pixelated;background:none;";
   oc.appendChild(img); oc.appendChild(el("div", "sub", pl.world_px_height + "px"));
   wrap.appendChild(chc); wrap.appendChild(oc);
@@ -113,15 +113,15 @@ function cell(src, label) {
 
 function render() {
   const grid = document.getElementById("grid"); grid.innerHTML = "";
-  DATA.objects.filter(o => activeCat === "all" || o.category === activeCat).forEach(o => {
+  DATA.scenery.filter(o => activeCat === "all" || o.category === activeCat).forEach(o => {
     const card = el("div", "card");
     const thumb = el("div", "thumb");
-    const img = el("img"); img.src = (o.animations[0] && o.animations[0].gif) || o.sprite; img.loading = "lazy";
+    const img = el("img"); img.src = (o.animations[0] && o.animations[0].preview_gif) || o.sprite; img.loading = "lazy";
     thumb.appendChild(img); card.appendChild(thumb);
     card.appendChild(el("div", "name", o.name));
     card.appendChild(el("div", "sub", o.category + (o.placement ? " · " + o.placement.world_height_m + "m" : "")));
     const tags = el("div", "tags");
-    if (o.rotation_files && Object.keys(o.rotation_files).length) tags.appendChild(el("span", "tag", Object.keys(o.rotation_files).length + "‑dir"));
+    if (o.rotations && Object.keys(o.rotations).length) tags.appendChild(el("span", "tag", Object.keys(o.rotations).length + "‑dir"));
     o.animations.forEach(a => tags.appendChild(el("span", "tag", "▶ " + a.key)));
     card.appendChild(tags);
     card.onclick = () => openDetail(o);
@@ -133,7 +133,7 @@ function renderFilters() {
   const f = document.getElementById("filters"); f.innerHTML = "";
   const cats = ["all", ...Object.keys(DATA.categories).sort()];
   cats.forEach(c => {
-    const chip = el("span", "chip" + (c === activeCat ? " active" : ""), c + (c === "all" ? " (" + DATA.object_count + ")" : " (" + DATA.categories[c] + ")"));
+    const chip = el("span", "chip" + (c === activeCat ? " active" : ""), c + (c === "all" ? " (" + DATA.scenery_count + ")" : " (" + DATA.categories[c] + ")"));
     chip.onclick = () => { activeCat = c; renderFilters(); render(); };
     f.appendChild(chip);
   });
@@ -142,7 +142,7 @@ function renderFilters() {
 fetch("viewer_data.json").then(r => r.json()).then(d => {
   DATA = d;
   document.getElementById("meta").textContent =
-    d.object_count + " / " + d.target_count + " objects · tap one for sprite, rotations & animations";
+    d.scenery_count + " / " + d.target_count + " scenery pieces · tap one for sprite, rotations & animations";
   renderFilters(); render();
 }).catch(e => { document.getElementById("meta").textContent = "could not load viewer_data.json — run the loop first."; });
 </script>

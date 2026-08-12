@@ -1,8 +1,8 @@
 {
-  "_comment": "Persistent-object factory. Every object is a PixelLab 8-direction object (create-8-direction-object) sized for its type (32-256), Grave Seasons style, scaled vs a 64px character. ANIMATIONS BY OBVIOUSNESS: default 0; add 1 if the object has one obvious motion (fire flicker, foliage sway in wind, a chest opening, a creature moving), 2 if it clearly has two (a campfire: flames + smoke). Animations use max frames (16) across all 8 directions.",
+  "_comment": "Scenery factory. Every scenery piece is a PixelLab 8-direction object (create-8-direction-object) sized for its type (32-256), Grave Seasons style, scaled vs a 64px character. ANIMATIONS BY OBVIOUSNESS: default 0; add 1 if the piece has one obvious motion (fire flicker, foliage sway in wind, a chest opening, a creature moving), 2 if it clearly has two (a campfire: flames + smoke). Animations use max frames (16) across all 8 directions.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, a single centered game prop on a transparent background",
   "style_version": 2,
-  "_style_version": "Bump this when the look changes. Objects whose manifest records an older style_version are considered stale; run the loop with --restyle (or the workflow's restyle input) to delete and regenerate them in the new style.",
+  "_style_version": "Bump this when the look changes. Scenery whose manifest records an older style_version is considered stale; run the loop with --restyle (or the workflow's restyle input) to delete and regenerate it in the new style.",
   "defaults": {
     "view": "low top-down",
     "direction": "south",
@@ -16,7 +16,7 @@
     "animation_text_guidance_scale": 6.0
   },
   "scale": {
-    "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
+    "_comment": "REALISM RULE: scenery is scaled to the world by real height, so it sits correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each piece's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every piece MUST have a world_height_m (per-piece, else category_height_m fallback).",
     "character_height_px": 64,
     "character_height_m": 1.7,
     "category_height_m": {
@@ -36,8 +36,8 @@
     "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
   },
   "targets": {
-    "num_objects": 1,
-    "_comment": "MAINTAINER 2026-07-31: this domain is down to ONE asset (the campfire) and has NO agent. It was generating toward 75 objects that nothing referenced — no maps2 world has ever pointed at objects/, and the game loads exactly one file from here (the spawn bonfire). The other 16 were deleted. If the objects agent is recreated, RAISE THIS DELIBERATELY and add catalog entries back; do not let the loop refill to 75 on its own."
+    "num_scenery": 1,
+    "_comment": "PIN KEPT ON PURPOSE (scenery agent, 2026-08-12). History: 2026-07-31 the maintainer cut this dormant domain to what the game actually draws and pinned the target so the loop could not refill it with props nothing asked for. The scenery agent now exists and owns this domain (renamed objects/ -> scenery/), but the pin stays until the maintainer green-lights the next generation round — raise it DELIBERATELY together with new catalog entries, never as a side effect of running the loop."
   },
   "catalog": [
     {
@@ -92,10 +92,10 @@
       ],
       "world_height_m": 0.5,
       "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
-      "_note": "The maintainer's own PixelLab object (2026-08-05), stored TRIMMED (see object.json 'edited'): the game plays only the burst->dispersal window, forward or reversed, on every landed hit. Do not regenerate and do not mirror verbatim over the trims."
+      "_note": "The maintainer's own PixelLab object (2026-08-05), stored TRIMMED (see scenery.json 'edited'): the game plays only the burst->dispersal window, forward or reversed, on every landed hit. Do not regenerate and do not mirror verbatim over the trims."
     }
   ],
-  "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
+  "_procedural": "When the explicit catalog is exhausted but targets.num_scenery is not yet reached, the loop synthesizes more scenery by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
   "procedural": {
     "kinds": [],
     "adjectives": [
@@ -110,8 +110,7 @@
       "polished",
       "runed"
     ],
-    "_disabled": "Emptied 2026-07-31 with the domain reduction. This is what invents objects once the catalog is exhausted; with num_objects 1 it would not fire, but an agent raising the target would silently start generating props nothing asked for."
+    "_disabled": "Emptied 2026-07-31 with the domain reduction. This is what invents scenery once the catalog is exhausted; with num_scenery 1 it would not fire, but raising the target would silently start generating props nothing asked for."
   },
-  "_animations": "Every object is a persistent 8-direction PixelLab object (create-8-direction-object) with EXACTLY 3 animations chosen to fit it, each animated across all 8 directions.",
-  "num_objects": 3
+  "_animations": "Every scenery piece is a persistent 8-direction PixelLab object (create-8-direction-object) with animations chosen to fit it, each animated across all 8 directions."
 }

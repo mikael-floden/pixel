@@ -14,7 +14,7 @@ the `client/public/ui2/` + `client/public/ui/` assets, and the HUD-related
 CSS. Mine: the world (WorldScene), movement/netcode/shared, chat internals,
 and the Settings buttons' BEHAVIOUR (they call into WorldScene — the `state`
 callback contract in `HudActions` is our interface; keep it stable).
-Art domains (`tiles2/`, `maps2/`, `characters2/`, `objects/`) belong to other
+Art domains (`tiles2/`, `maps2/`, `characters2/`, `scenery/`) belong to other
 agents — read-only, always. UI concept art comes from the MAINTAINER directly
 as uploads; that's yours to extract.
 

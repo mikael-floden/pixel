@@ -1,29 +1,37 @@
-# Objects Spec — Pixel Object Factory (persistent 8-direction objects)
+# Scenery Spec — Nangijala Scenery (persistent 8-direction PixelLab objects)
+
+> Formerly `objects/spec/OBJECTS_SPEC.md`. The domain was renamed **scenery**
+> 2026-08-12 when the scenery agent took over ("objects" survives below only as
+> PixelLab's own product term for the store entity these pieces persist as).
+> **Scenery** = freely placeable, optionally animated set dressing: it does not
+> follow the tile grid (tiles2's job) and it can animate (which tiles cannot).
+> The maps2 agent places it in worlds.
 
 ## Goal
 
-An automated, resumable loop that produces **game-ready pixel-art objects** —
-props, tools and items that make a *Grave Seasons*-style map come alive (trees,
-chests, coins, torches, wells, mushrooms, barrels…). Every object is a **real,
-persistent PixelLab object**: it shows in the PixelLab **create-object** web tool
-(so a human can regenerate it if it looks bad), it animates, and it **syncs back**
-into this repo. This is the object analogue of the character system.
+An automated, resumable loop that produces **game-ready pixel-art scenery** —
+props and set dressing that make a *Grave Seasons*-style world come alive
+(campfires, grave crosses, trees, wells, street lamps, barrels…). Every piece is
+a **real, persistent PixelLab object**: it shows in the PixelLab
+**create-object** web tool (so a human can regenerate it if it looks bad), it
+animates, and it **syncs back** into this repo. This is the scenery analogue of
+the character system.
 
-## What every object is
+## What every scenery piece is
 
 - A **persistent 8-direction object** created with `create-8-direction-object`
   (returns a `pixellab_object_id`; 8 rotations). **Always 8 directions.**
 - Sized for its **type**: `size` (32–256, a single square int) scales with the
-  object — a coin ~48px, a chest ~64px, an oak ~128px.
-- Carries exactly **3 animations chosen to fit it** (chest → open/close/rattle,
-  coin → spin/flip/bounce, tree → sway/rustle/shake…), each generated across
-  **all 8 directions** at **max frames (16, mode v3)**.
+  piece — a lantern ~48px, a campfire ~96px, an oak ~128px.
+- Carries **animations chosen to fit it** (campfire → burn/smoke, chest →
+  open/close, tree → sway…), each generated across **all 8 directions** at
+  **max frames (16, mode v3)**.
 - Drawn in the shared **Grave Seasons** style (`style_base`, selective outline,
   painterly shading).
 
 ## Realism rule — world scale
 
-Art size ≠ world size. Each object declares a real-world height `world_height_m`
+Art size ≠ world size. Each piece declares a real-world height `world_height_m`
 (or a `scale.category_height_m` fallback); the loop derives
 `world_px_height = round(world_height_m * character_height_px / character_height_m)`
 (reference: 64px = 1.7m) into each manifest's `placement`. A game renders the
@@ -54,10 +62,10 @@ The next unit is derived from the filesystem (resumable); each unit commits +
 pushes:
 
 ```
-for object in (catalog then procedural up to targets.num_objects):
-    if no sprite.png                 -> create the 8-direction object   (1 unit)
-    else for each of its 3 anims     -> if missing, animate all 8 dirs  (1 unit each)
--> all objects complete
+for piece in (catalog then procedural up to targets.num_scenery):
+    if no sprite                     -> create the 8-direction object   (1 unit)
+    else for each of its anims       -> if missing, animate all 8 dirs  (1 unit each)
+-> all scenery complete
 ```
 
 Every pass also (zero-cost): `sync` mirrors any PixelLab-side regenerations /
@@ -65,22 +73,26 @@ deletions in, and `refresh_placement` re-derives world scale.
 
 ## Sync (PixelLab is the source of truth)
 
-`sync.py` mirrors each tracked object (`pixellab_object_id`) from PixelLab into
+`sync.py` mirrors each tracked piece (`pixellab_object_id`) from PixelLab into
 the repo — rotations + animations — only re-downloading frames whose
 `Last-Modified` changed (`If-Modified-Since` → 304 skip), exactly like the
-characters agent. **Regenerate an object in the create-object web tool → sync
+characters agent. **Regenerate a piece in the create-object web tool → sync
 pulls it down.** Deletion parity: an object removed on PixelLab is removed from
 the repo (and vice-versa via `--restyle`), so there are never loose pointers.
+⚠️ `sync.py` still writes `.png`; shipped art is lossless WebP — see the
+conversion step in `scenery/README.md` before committing a real re-sync.
 
 ## Packaging
 
-Per object: `sprite.png` (south) + `rotations/<dir>.png` (8). Per animation, per
-direction: `animations/<key>/<dir>/NN.png` frames + `animations/<key>__<dir>.png`
-strip + `animations/<key>__<dir>.gif` preview. `object.json` indexes it all;
+Per piece: `sprite.webp` (south) + `rotations/<dir>.webp` (8). Per animation, per
+direction: `animations/<key>/<dir>/NN.webp` frames + `animations/<key>__<dir>.webp`
+strip + `animations/<key>__<dir>.gif` preview. `scenery.json` indexes it all;
 `viewer_build.py` rolls everything into `viewer_data.json` for `index.html`.
+(Manifest paths may lag a conversion — consumers resolve the real extension on
+disk.)
 
 ## Cost model
 
-base (8 rotations) + 3 animations × 8 directions × up to 16 frames. This is the
-heaviest domain per object, so the loop is budget-aware (floor **2000**, shared
+base (8 rotations) + each animation × 8 directions × up to 16 frames. This is a
+heavy domain per piece, so the loop is budget-aware (floor **2000**, shared
 pool — see `coordination/PROTOCOL.md`) and runs durably on GitHub Actions.

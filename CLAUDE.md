@@ -16,7 +16,12 @@ do not add domain-specific files to the repo root.
 - `characters2/` — character art, 2nd generation (its own agent).
 - `tiles2/` — tile/material library, 2nd generation (its own agent).
 - `maps2/` — worlds, 2nd generation (its own agent; `worlds/<name>/world.json`).
-- `objects/` — animated props / map objects (a separate agent).
+- `scenery/` — scenery, formerly `objects/` (renamed 2026-08-12; its own
+  **scenery agent**): freely placeable, optionally animated set dressing —
+  campfires, grave crosses, lamps. Unlike a tile it doesn't follow the tile
+  grid, and it can animate (tiles can't). Generated on PixelLab; the maps2
+  agent places it in worlds. One folder per piece with a `scenery.json`
+  manifest, rolled up into `scenery/viewer_data.json`. See `scenery/README.md`.
 - `games2/` — the Nangijala game (consumer of the art domains; see
   `games2/CLAUDE.md`).
 - `items/` — game items via PixelLab (its own agent; the item TYPE tags on
@@ -45,7 +50,7 @@ do not add domain-specific files to the repo root.
 
 **LOSSLESS WEBP IS THE IMAGE FORMAT FOR ALL GAME ART.** Project default since
 2026-07-31; every domain the game loads has migrated (characters2, monsters,
-tiles2, maps2, objects, items, wiki — zero PNGs between them). **Ship new art as
+tiles2, maps2, scenery, items, wiki — zero PNGs between them). **Ship new art as
 WebP.** VP8L is mathematically lossless, so this is not a quality trade: it is
 the same pixels at ~33% of the bytes.
 

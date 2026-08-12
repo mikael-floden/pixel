@@ -123,11 +123,13 @@ def live_descriptions() -> dict[str, list[str]]:
         r["lore"] for r in record.values() if isinstance(r, dict) and r.get("lore")
     ]
 
-    objects_dir = ROOT / "objects"
+    # The scenery domain (renamed from objects/ 2026-08-12 — scenery agent).
+    # Lore's own key stays "objects" for now; only the disk path moved.
+    objects_dir = ROOT / "scenery"
     out["objects"] = []
     if objects_dir.is_dir():
         for child in sorted(p for p in objects_dir.iterdir() if p.is_dir()):
-            meta = read_json(child / "object.json") or {}
+            meta = read_json(child / "scenery.json") or {}
             if meta.get("description"):
                 out["objects"].append(meta["description"])
 
@@ -174,11 +176,11 @@ def live_ids() -> dict[str, dict[str, str]]:
         if isinstance(rec, dict)
     }
 
-    objects_dir = ROOT / "objects"
+    objects_dir = ROOT / "scenery"    # renamed domain — see live_descriptions()
     ids["objects"] = {}
     if objects_dir.is_dir():
         for child in sorted(p for p in objects_dir.iterdir() if p.is_dir()):
-            meta = read_json(child / "object.json")
+            meta = read_json(child / "scenery.json")
             if meta:
                 ids["objects"][child.name] = meta.get("name", child.name)
 

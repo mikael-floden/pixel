@@ -5,7 +5,7 @@
 **Nangijala** is a browser-based **multiplayer** (MMO-style) pixel-art RPG.
 Everyone who connects joins the **same shared isometric world**. It lives inside
 the **`pixel` monorepo** at `games2/` and renders the art produced by the
-sibling agent domains (`characters2/`, `tiles2/`, `maps2/`, `objects/`).
+sibling agent domains (`characters2/`, `tiles2/`, `maps2/`, `scenery/`).
 **Read-only toward the art** — never edit those directories (see
 `coordination/PROTOCOL.md`; this game owns `games2/` +
 `coordination/games.json`). No submodule. Developed by a self-iterating loop —
@@ -31,7 +31,7 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
 
 - Art is read from the repo-root sibling domains — NOT copied in. The dev server
   (Vite middleware in `client/vite.config.ts`) and prod server (`server/index.ts`)
-  both serve `/assets/<domain>/…` from `characters2/ tiles2/ maps2/ objects/`
+  both serve `/assets/<domain>/…` from `characters2/ tiles2/ maps2/ scenery/`
   (override the location with `ASSETS_ROOT`, e.g. in Docker).
 - `scripts/build-manifest.mjs` scans `characters2/humans/` →
   `client/public/characters.json` (uid, name, frame size, per-anim/dir counts,
@@ -102,7 +102,7 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   - Gate: `server/test/imagelib.test.ts` (in `npm test`) with committed
     PNG+WebP fixture pairs. TWO assets are still named directly in game code,
     and both queue the png stem and re-queue `.webp` on 404: the campfire strip
-    (`objects/` ships no manifest, `WorldScene`) and the world minimap
+    (`scenery/` ships no manifest, `WorldScene`) and the world minimap
     (`MapPreviewScene`). Everything else resolves through data.
   - **Serving**: prod's `express.static` knows webp from its own mime db, but
     the DEV middleware in `client/vite.config.ts` has a HAND-WRITTEN extension
@@ -1279,9 +1279,9 @@ visible head/shoulders are ABOVE the surface).
   transparent FASTER AND FASTER (2→10Hz, timed from the witnessed onAdd —
   join-inherited drops restart the clock, the server sweep stays the truth).
   Freshly witnessed drops TOSS UP a few px and bounce to rest (subtle; the
-  join flood lands silent). THE GRAVE CROSS (objects/grave_cross — the
+  join flood lands silent). THE GRAVE CROSS (scenery/grave_cross — the
   maintainer's PixelLab object, synced 2026-08-05 with config pin + README
-  note in objects/): when the corpse fades, the 16-frame SOUTH "appear" clip
+  note in scenery/): when the corpse fades, the 16-frame SOUTH "appear" clip
   rises at the death spot alongside the loot, HOLDS its last frame, and
   after a minute plays REVERSED — sinking away. Client-local decor driven by
   the synced die state; `graveCrosses()` probe + verify-combat assert it.
@@ -1427,9 +1427,9 @@ visible head/shoulders are ABOVE the surface).
   corpse offset, then popped it off-spawn on revive.
 - **Hit feedback (round 7)**: damage floats are 26px and linger 850ms
   (maintainer: twice as big, 0.2s longer); every landed hit — player or
-  monster — plays a BLOOD SPATTER (objects/blood_spatter, the maintainer's
+  monster — plays a BLOOD SPATTER (scenery/blood_spatter, the maintainer's
   PixelLab object stored TRIMMED to the already-scattered dispersal window he
-  green-circled; see object.json:edited before any resync): one of the 8
+  green-circled; see scenery.json:edited before any resync): one of the 8
   direction variants at random, forward or REVERSED at random, 14fps, at
   depth 900_001.95 (lighting never dims it), preloaded in the deferred batch
   with the sword marker (a lazy first-engage load lost the walk-to race).
@@ -2723,7 +2723,7 @@ side collision just like monsters").
 - **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
   + full unit/sim suite) IN PARALLEL with the layer-cached image build;
   `deploy` needs both. Triggers on games2/** AND on every art domain the
-  image bakes (characters2/tiles2/maps2/objects) — art pushes deploy
+  image bakes (characters2/tiles2/maps2/scenery) — art pushes deploy
   automatically (maintainer 2026-07-17; manual dispatches got old fast).
   The concurrency group collapses rapid art pushes into the newest run.
   NOTE: a maps2 push that uses an unclassified tile category will fail the

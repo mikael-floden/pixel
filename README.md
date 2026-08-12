@@ -13,7 +13,7 @@ generates art and pushes it to `main`.
 | [`characters2/`](characters2/) | Modular characters (2nd gen) — base bodies + per-direction animations | see `characters2/` |
 | [`tiles2/`](tiles2/) | Tile/material library (2nd gen) — iso terrain + prop sheets | see `tiles2/` |
 | [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
-| [`objects/`](objects/) | Animated props / map objects | see `objects/` |
+| [`scenery/`](scenery/) | Scenery (formerly `objects/`, renamed 2026-08-12) — freely placeable, optionally animated set dressing (campfires, grave crosses, lamps…): unlike a tile it doesn't follow the tile grid and it can animate; generated on PixelLab by the **scenery agent**, placed in worlds by the maps2 agent | [`scenery/README.md`](scenery/README.md) |
 | [`sounds/`](sounds/) | AAA game sound effects (UI, items, tools, movement, combat) — ElevenLabs SFX v2, lossless 48 kHz, mastered; needs `ELEVENLABS_API_KEY` | [`sounds/README.md`](sounds/README.md) |
 | [`music/`](music/) | Film-score-grade background music — ElevenLabs Music (`music_v1`); every track ships a sub-second `metadata.json` (sections, beat grid, onsets, loudness curve, key/scale for in-key SFX pitching) so the game can sync effects to the score; needs `ELEVENLABS_API_KEY` | [`music/README.md`](music/README.md) |
 | [`items/`](items/) | Items — everything tagged with an item type on PixelLab (`MISC`, `SOUL`, later `CONSUMABLE`/`SWORD`/`BOW`/`WAND`/`ARMOR`), mirrored one folder per item with game metadata (name, rarity, gold value, soul power) in `items/<id>/item.json` + a rolled-up `items/viewer_data.json` | [`items/README.md`](items/README.md) |

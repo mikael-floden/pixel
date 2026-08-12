@@ -9,7 +9,7 @@ classifications yourself so an art push is never blocked waiting on me.
 ## The one thing that blocks an art deploy
 
 Every push to `main` under `maps2/**`, `tiles2/**`, `characters2/**`,
-`objects/**`, `sounds/**`, `music/**` (and `games2/**`) auto‑deploys Nangijala
+`scenery/**`, `sounds/**`, `music/**` (and `games2/**`) auto‑deploys Nangijala
 (`.github/workflows/nangijala-deploy.yml`). The deploy only ships if a parallel
 `test` job goes green: `npm run typecheck` + `npm test` in `games2/`.
 

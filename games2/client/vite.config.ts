@@ -3,14 +3,14 @@ import { createReadStream, existsSync, statSync } from "node:fs";
 import { extname, join, normalize, resolve } from "node:path";
 
 // The game lives at pixel/games/nangijala/client; the art domains are siblings
-// at the repo root (two levels up): characters/, tiles/, maps/, objects/.
+// at the repo root (two levels up): characters2/, tiles2/, maps2/, scenery/.
 // ASSETS_ROOT overrides it — the same env var prod (server/src/index.ts) and
 // the manifest builders already honour. Dev had no override, so an alternate
 // art tree (e.g. a PNG->WebP conversion staged before a domain commits it)
 // could not be tried in the browser.
 const REPO_ROOT = process.env.ASSETS_ROOT || resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
-  "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
+  "characters", "tiles", "maps", "scenery", "characters2", "tiles2", "maps2",
   "sounds", "music", "monsters", "items", "lore", "wiki", "live", "composer",
 ]);
 const TYPES: Record<string, string> = {

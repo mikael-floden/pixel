@@ -8,7 +8,7 @@ run in parallel — each owns one top-level domain directory:
 | Characters, 2nd gen | `characters2/` | characters2 agent |
 | Tiles/materials, 2nd gen | `tiles2/` | tiles2 agent |
 | Worlds, 2nd gen | `maps2/` | maps2 agent |
-| Animated props / map objects | `objects/` | objects agent |
+| Scenery (placeable, animatable set dressing; formerly `objects/`) | `scenery/` | scenery agent |
 | Sounds | `sounds/` | sounds agent |
 | Music (background score) | `music/` | music agent |
 | Monsters/creatures | `monsters/` | monsters agent |
@@ -115,7 +115,7 @@ below its floor:
 | Domain | Suggested floor | Rationale |
 |--------|-----------------|-----------|
 | characters | 40 | bootstrapping first; small floor |
-| objects | 2000 | reserve headroom |
+| scenery | 2000 | reserve headroom |
 | maps | 2000 | reserve headroom |
 
 Tune these to match priorities (the human decides). Every agent publishes

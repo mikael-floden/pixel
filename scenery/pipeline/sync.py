@@ -1,23 +1,28 @@
-"""Mirror PixelLab objects into the repo — the object analogue of the characters
-agent's sync, now that objects genuinely persist (create-8-direction-object).
+"""Mirror PixelLab objects into the scenery domain — the scenery analogue of the
+characters agent's sync (scenery pieces persist as PixelLab 8-direction objects).
 
-PixelLab is the live source of truth for an object's `pixellab_object_id`. You can
-open any object in the create-object web tool and press **regenerate**; this
+PixelLab is the live source of truth for a piece's `pixellab_object_id`. You can
+open any of them in the create-object web tool and press **regenerate**; this
 pulls the new art down into the repo — and, like the characters agent, it only
 re-downloads frames whose `Last-Modified` changed (`If-Modified-Since` -> 304
-skip), so an unchanged object costs almost nothing.
+skip), so an unchanged piece costs almost nothing.
 
 It also keeps the two ends consistent:
   - **Deletion parity:** an object deleted on PixelLab (or gone 404) is removed
-    from the repo; a tracked object missing locally is re-mirrored.
+    from the repo; a tracked piece missing locally is re-mirrored.
   - **No loose pointers:** manifest/viewer references to missing files are pruned.
 
 Costs ZERO generations (download only).
 
+⚠️ Writes `.png` — the repo's shipped art is lossless WebP. After any real
+re-sync run `python3 games2/scripts/to-webp.py --write --replace scenery/` and
+re-run `pipeline/viewer_build.py` (see scenery/README.md; untestable without the
+PixelLab API, so the gap is documented rather than blind-patched).
+
 Usage:
-  python objects/pipeline/sync.py                 # mirror everything, push
-  python objects/pipeline/sync.py --no-push
-  python objects/pipeline/sync.py --dry-run       # report only
+  python scenery/pipeline/sync.py                 # mirror everything, push
+  python scenery/pipeline/sync.py --no-push
+  python scenery/pipeline/sync.py --dry-run       # report only
 """
 
 from __future__ import annotations
@@ -94,7 +99,7 @@ def _best_groups(detail):
 # --- mirror one object ------------------------------------------------------
 
 def mirror_object(client, oid, meta, dry_run=False):
-    """Pull rotations + animations for one tracked object from PixelLab into the
+    """Pull rotations + animations for one tracked piece from PixelLab into the
     repo, skipping unchanged art. Returns 'deleted' if it vanished on PixelLab."""
     pid = meta.get("pixellab_object_id")
     if not pid:
@@ -212,7 +217,7 @@ def reconcile_light(client, push=True, quiet=False):
     removed, pruned = prune_loose_pointers(dry_run=False)
     if deleted or removed or pruned:
         viewer_build.build()
-        loop.commit_push(f"objects reconcile: -{len(deleted)} deleted, "
+        loop.commit_push(f"scenery reconcile: -{len(deleted)} deleted, "
                          f"-{len(removed)} missing, {len(pruned)} pruned", push=push)
     if not quiet:
         print(f"reconcile: {len(live_ids)} on PixelLab; deleted {len(deleted)}, "
@@ -244,13 +249,13 @@ def sync_all(client, push=True, quiet=False, dry_run=False):
               f"deleted {len(deleted)} (removed on PixelLab), pruned {len(pruned)} dead ref(s)")
     if not dry_run:
         viewer_build.build()
-        loop.commit_push("objects sync: mirror PixelLab objects (regenerations + deletions)",
+        loop.commit_push("scenery sync: mirror PixelLab objects (regenerations + deletions)",
                          push=push)
     return {"synced": synced, "deleted": deleted, "pruned": pruned, "live": len(live_ids)}
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Mirror PixelLab objects into the repo.")
+    ap = argparse.ArgumentParser(description="Mirror PixelLab objects into scenery/.")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()

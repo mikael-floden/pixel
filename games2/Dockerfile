@@ -20,7 +20,7 @@ COPY games2/client/package.json client/
 RUN npm ci
 
 # Art assets (sibling domains) baked in under a fixed ASSETS_ROOT.
-COPY objects/ /assets/objects/
+COPY scenery/ /assets/scenery/
 COPY characters2/ /assets/characters2/
 COPY tiles2/ /assets/tiles2/
 COPY maps2/ /assets/maps2/

@@ -5,8 +5,8 @@ this one is organised around a curated list of **specifically-named ground
 types**, generated in a loop, with a raw→normalised pipeline so every tile of a
 type looks like it belongs, and first-class **transitions** between types.
 
-Part of the multi-domain `pixel` repo (alongside `characters/`, `objects/`,
-`maps/`). Everything for this domain lives under `tiles2/`.
+Part of the multi-domain `pixel` repo (alongside `characters2/`, `scenery/`,
+`maps2/`). Everything for this domain lives under `tiles2/`.
 
 > **Map / game designers:** start with **[`docs/DESIGNER_GUIDE.md`](docs/DESIGNER_GUIDE.md)**
 > — what `base`/`base_x_2…5` give you, colour normalization, the fixed render

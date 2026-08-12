@@ -1,7 +1,7 @@
-"""Build the objects viewer manifest (objects/viewer_data.json) from the tree.
+"""Build the scenery viewer manifest (scenery/viewer_data.json) from the tree.
 
-The static `objects/index.html` reads this file and lets you browse every object —
-its 8 rotations and its 3 animations (each across 8 directions) — from a phone.
+The static `scenery/index.html` reads this file and lets you browse every piece —
+its 8 rotations and its animations (each across 8 directions) — from a phone.
 Paths are repo-relative so it works on GitHub Pages and locally. Animation GIFs
 play directly in the GitHub mobile app.
 """
@@ -17,7 +17,7 @@ ROOT = factory.ROOT
 DATA_PATH = os.path.join(ROOT, "viewer_data.json")
 
 
-def _list_objects():
+def _list_scenery():
     out = []
     for name in sorted(os.listdir(ROOT)):
         if name in factory.RESERVED_DIRS or name.startswith("."):
@@ -30,8 +30,8 @@ def _list_objects():
 
 def build():
     cfg = factory.load_config()
-    objects, categories = [], {}
-    for meta in _list_objects():
+    scenery, categories = [], {}
+    for meta in _list_scenery():
         oid = meta["id"]
         rotations = meta.get("rotations") or {}
         anims = []
@@ -48,7 +48,7 @@ def build():
             })
         cat = meta.get("category", "misc")
         categories[cat] = categories.get(cat, 0) + 1
-        objects.append({
+        scenery.append({
             "id": oid,
             "name": meta.get("name", oid),
             "category": cat,
@@ -64,12 +64,12 @@ def build():
         })
 
     data = {
-        "title": "Pixel Object Factory",
-        "object_count": len(objects),
-        "target_count": cfg["targets"]["num_objects"],
+        "title": "Nangijala Scenery",
+        "scenery_count": len(scenery),
+        "target_count": cfg["targets"]["num_scenery"],
         "scale": cfg.get("scale"),
         "categories": categories,
-        "objects": objects,
+        "scenery": scenery,
     }
     with open(DATA_PATH, "w") as f:
         json.dump(data, f, indent=2)
@@ -78,4 +78,4 @@ def build():
 
 if __name__ == "__main__":
     d = build()
-    print(f"viewer_data.json: {d['object_count']} object(s)")
+    print(f"viewer_data.json: {d['scenery_count']} piece(s)")

@@ -1,23 +1,26 @@
-"""Object factory: persistent 8-direction PixelLab objects + fitting animations.
+"""Scenery factory: persistent 8-direction PixelLab objects + fitting animations.
 
-Every object is a real PixelLab **object** (create-8-direction-object): it shows
-in the PixelLab "create-object" web tool, can be regenerated/edited there, is
-animatable, and is syncable back into this repo (see sync.py). This is the object
-analogue of the character system — the repo mirrors PixelLab, which is the live
-source of truth for an object's `pixellab_object_id`.
+Every scenery piece is a real PixelLab **object** (create-8-direction-object): it
+shows in the PixelLab "create-object" web tool, can be regenerated/edited there,
+is animatable, and is syncable back into this repo (see sync.py). This is the
+scenery analogue of the character system — the repo mirrors PixelLab, which is
+the live source of truth for a piece's `pixellab_object_id`. ("Object" below is
+PixelLab's product term for the store entity; in this repo the domain is
+**scenery**: freely placeable, optionally animated set dressing that doesn't
+follow the tile grid.)
 
 Each operation is small and resumable: it writes its result to disk and updates
-`object.json`, so the loop can stop/restart and pick up the next missing unit by
+`scenery.json`, so the loop can stop/restart and pick up the next missing unit by
 reading the filesystem.
 
-One OBJECT = one self-contained folder `objects/<id>/`:
-  objects/<id>/object.json                       manifest (params + asset index)
-  objects/<id>/sprite.png                        the canonical sprite (south view)
-  objects/<id>/rotations/<dir>.png               all 8 rotations
-  objects/<id>/animations/<key>/<dir>/NN.png     per-direction animation frames
-  objects/<id>/animations/<key>__<dir>.png       per-direction sprite-sheet strip
-  objects/<id>/animations/<key>__<dir>.gif       per-direction looping preview
-Every object has 8 directions; every animation is generated for all 8 directions.
+One SCENERY PIECE = one self-contained folder `scenery/<id>/`:
+  scenery/<id>/scenery.json                      manifest (params + asset index)
+  scenery/<id>/sprite.png                        the canonical sprite (south view)
+  scenery/<id>/rotations/<dir>.png               all 8 rotations
+  scenery/<id>/animations/<key>/<dir>/NN.png     per-direction animation frames
+  scenery/<id>/animations/<key>__<dir>.png       per-direction sprite-sheet strip
+  scenery/<id>/animations/<key>__<dir>.gif       per-direction looping preview
+Every piece has 8 directions; every animation is generated for all 8 directions.
 """
 
 from __future__ import annotations
@@ -34,9 +37,13 @@ from PIL import Image
 from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
-CONFIG = os.path.join(ROOT, "config", "objects.json")
-# Reserved top-level names in objects/ that are tooling, not objects. (The loop
-# also skips any dir without an object.json, so this is just belt-and-braces.)
+# NB "factory.json", NOT "scenery.json": a per-piece manifest is scenery.json,
+# and consumers discover pieces by scanning `scenery/*/scenery.json` — a config
+# file with the manifest's name would read as a phantom piece (the lore builder
+# proved it). Same naming as the characters domain's config/factory.json.
+CONFIG = os.path.join(ROOT, "config", "factory.json")
+# Reserved top-level names in scenery/ that are tooling, not scenery. (The loop
+# also skips any dir without a scenery.json, so this is just belt-and-braces.)
 RESERVED_DIRS = {"pipeline", "config", "spec"}
 PREVIEW_MS = 140
 
@@ -130,9 +137,9 @@ def _procedural_spec(cfg, index):
 
 
 def object_specs(cfg):
-    """The full ordered list of objects: explicit catalog then procedural fill."""
+    """The full ordered list of scenery pieces: explicit catalog, procedural fill."""
     specs = [_finalize_spec(cfg, o, i) for i, o in enumerate(cfg["catalog"])]
-    target = cfg["targets"]["num_objects"]
+    target = cfg["targets"]["num_scenery"]
     for i in range(len(specs), max(target, len(specs))):
         specs.append(_procedural_spec(cfg, i))
     return specs
@@ -149,7 +156,7 @@ def object_dir(oid):
 
 
 def manifest_path(oid):
-    return os.path.join(object_dir(oid), "object.json")
+    return os.path.join(object_dir(oid), "scenery.json")
 
 
 def _rel(p):

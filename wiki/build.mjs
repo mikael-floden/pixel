@@ -500,12 +500,15 @@ function buildTiles() {
 
 // ----------------------------------------------------------------- objects
 function buildObjects() {
-  const base = join(ROOT, "objects");
+  // The scenery domain (renamed from objects/ 2026-08-12 — scenery agent). The
+  // wiki's INTERNAL domain key stays "objects" (route slugs are URLs and
+  // feedback ids ride on them); only the disk paths moved.
+  const base = join(ROOT, "scenery");
   if (!isDir(base)) return null;
   const objects = [];
   for (const id of listDirs(base)) {
-    if (["config", "pipeline"].includes(id)) continue;
-    const oj = readJson(join(base, id, "object.json"));
+    if (["config", "pipeline", "spec"].includes(id)) continue;
+    const oj = readJson(join(base, id, "scenery.json"));
     if (!oj) continue;
     const anims = {};
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
@@ -514,9 +517,9 @@ function buildObjects() {
         const d = a.directions?.[dir];
         if (!d) continue;
         const stripRel = d.strip ?? `${id}/animations/${key}__${dir}.png`;
-        const declared = `objects/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
-        // object.json names the file, and it may still say ".png" for a while
-        // after the objects domain converts. Resolve against the DISK, so the
+        const declared = `scenery/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
+        // scenery.json names the file, and it may still say ".png" for a while
+        // after the scenery domain converts. Resolve against the DISK, so the
         // wiki doesn't go blank waiting for another agent's metadata edit.
         const strip = art(declared.replace(/\.(png|webp)$/i, ""));
         const frames = d.frames ?? a.frame_count ?? 0;
@@ -531,8 +534,8 @@ function buildObjects() {
       name: oj.name ?? titleCase(id),
       category: oj.category ?? "misc",
       description: oj.description ?? "",
-      path: `objects/${id}`,
-      preview: art(`objects/${id}/sprite`),
+      path: `scenery/${id}`,
+      preview: art(`scenery/${id}/sprite`),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,

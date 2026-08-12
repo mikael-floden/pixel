@@ -299,7 +299,7 @@ def _d(a, b):
 
 # THE SPAWN CAMPFIRE — an object I cannot see in my own data.
 # The game draws one animated campfire at every world's arrival point. It is the
-# only objects/ asset it draws and it is canon (lore/RED_LINE.md §2: "there is a
+# only scenery/ asset it draws and it is canon (lore/RED_LINE.md §2: "there is a
 # campfire burning at the place where you arrive"), but it is NOT a prop in
 # world.json — nothing in the terrain says it exists. So the first cast stood a
 # commoner directly in the flames, which the maintainer spotted in-game with

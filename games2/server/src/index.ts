@@ -25,7 +25,7 @@ const SRC_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SRC_DIR, "..", "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 const ASSET_DOMAINS = [
-  "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
+  "characters", "tiles", "maps", "scenery", "characters2", "tiles2", "maps2",
   "sounds", "music", "monsters", "items", "lore", "wiki", "live",
 ];
 

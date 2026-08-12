@@ -291,7 +291,7 @@ HOUSE_WATER_GAP = 6                 # keep this many cells of land between the w
 # compare it to the other bonfire on that exact map)."
 #
 # The two things being compared are NOT the same kind of object: the one already
-# there is the game's ANIMATED spawn campfire (objects/campfire, drawn by
+# there is the game's ANIMATED spawn campfire (scenery/campfire, drawn by
 # WorldScene at the arrival point, absent from world.json), and this is a STATIC
 # tiles2 prop — the one circled in prop_demo at (30,18).
 #

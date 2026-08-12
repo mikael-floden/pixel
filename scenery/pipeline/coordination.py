@@ -1,11 +1,11 @@
-"""Cross-agent coordination for the objects domain (see coordination/PROTOCOL.md).
+"""Cross-agent coordination for the scenery domain (see coordination/PROTOCOL.md).
 
-Three agents (characters / objects / maps) share one repo, one `main`, and one
-PixelLab account. The protocol keeps them conflict-free with **one writer per
-file**: this domain writes only `coordination/objects.json` and *reads* the
-others. This module is that writer + reader.
+The fleet's agents share one repo, one `main`, and one PixelLab account. The
+protocol keeps them conflict-free with **one writer per file**: this domain
+writes only `coordination/scenery.json` and *reads* the others. This module is
+that writer + reader.
 
-Only the objects loop imports this. It never touches another domain's files.
+Only the scenery loop imports this. It never touches another domain's files.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ import factory
 # coordination/ lives at the repo root, one level above this domain dir.
 REPO_ROOT = os.path.dirname(factory.ROOT)
 COORD_DIR = os.path.join(REPO_ROOT, "coordination")
-DOMAIN = "objects"
+DOMAIN = "scenery"
 STATUS_PATH = os.path.join(COORD_DIR, f"{DOMAIN}.json")
 
 
@@ -46,10 +46,10 @@ def read_peers():
 
 
 def _default_notes():
-    return ["objects domain: props/tools/items (chest, coin, tree, sword...). "
-            "Each object = one folder objects/<id>/ with sprite + optional "
-            "rotations + animations. Repo is the source of truth (stateless "
-            "PixelLab image tools; nothing to sync back)."]
+    return ["scenery domain (formerly objects/): freely placeable, optionally "
+            "animated set dressing — campfires, grave crosses, street lamps... "
+            "Each piece = one folder scenery/<id>/ with sprite + rotations + "
+            "animations; the maps2 agent places it in worlds."]
 
 
 def publish(current, progress, budget_remaining, health="running", add_notes=None,
@@ -96,14 +96,14 @@ def progress_snapshot(cfg):
     complete = sum(1 for s in specs
                    if (factory.read_manifest(s["id"]) or {}).get("status") == "complete")
     started = sum(1 for s in specs if factory.has_base(s["id"]))
-    return {"objects_complete": complete, "objects_started": started,
-            "objects_target": len(specs)}
+    return {"scenery_complete": complete, "scenery_started": started,
+            "scenery_target": len(specs)}
 
 
 def peer_summary(peers):
     """One-line-per-peer human summary for run startup."""
     if not peers:
-        return "no peer status files yet (objects may be first on this branch)."
+        return "no peer status files yet (scenery may be first on this branch)."
     out = []
     for dom, s in peers.items():
         out.append(f"{dom}: {s.get('health','?')} — {s.get('current','?')} "

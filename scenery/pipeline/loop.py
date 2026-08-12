@@ -1,17 +1,17 @@
-"""The objects loop.
+"""The scenery loop.
 
 Each "unit" of work is one PixelLab generation: create a persistent
 8-direction object, or generate one of its animations (all 8 directions). The
 loop figures out the next missing unit purely by reading the filesystem (so it's
 fully resumable), does it, rebuilds the viewer manifest, and commits + pushes.
 
-Per object, in order: create the 8-dir object -> each of its 3 animations. Then
-the next object. The object list is the curated catalog followed by procedural
-fill up to targets.num_objects. Each pass first syncs PixelLab-side regenerations
-/ deletions into the repo (zero generations).
+Per scenery piece, in order: create the 8-dir object -> each of its animations.
+Then the next piece. The list is the curated catalog followed by procedural
+fill up to targets.num_scenery. Each pass first syncs PixelLab-side
+regenerations / deletions into the repo (zero generations).
 
 Run a bounded chunk (intended for a scheduled Routine / GitHub Action):
-  python objects/pipeline/loop.py --max-minutes 50 --min-balance 20
+  python scenery/pipeline/loop.py --max-minutes 50 --min-balance 20
 Other flags: --max-units N, --once, --no-push.
 """
 
@@ -39,14 +39,14 @@ def _current_branch():
 
 
 def commit_push(message, push=True):
-    """Commit only the objects/ domain (disjoint from characters/ and maps/, so
+    """Commit only the scenery/ domain (disjoint from the other domains, so
     concurrent pushes to the same branch rebase cleanly) and push to the current
-    branch with backoff. Git runs with cwd=factory.ROOT (the objects/ dir), so
-    '.' stages this domain's subtree and '../coordination/objects.json' stages
+    branch with backoff. Git runs with cwd=factory.ROOT (the scenery/ dir), so
+    '.' stages this domain's subtree and '../coordination/scenery.json' stages
     our own heartbeat — the one file we may write outside the domain dir."""
     _git("add", "-A", ".")
-    _git("add", "--", "../coordination/objects.json", check=False)
-    status = _git("status", "--porcelain", "--", ".", "../coordination/objects.json").stdout.strip()
+    _git("add", "--", "../coordination/scenery.json", check=False)
+    status = _git("status", "--porcelain", "--", ".", "../coordination/scenery.json").stdout.strip()
     if not status:
         return False
     _git("commit", "-m", message)
@@ -68,10 +68,10 @@ def commit_push(message, push=True):
 # --- planning ---------------------------------------------------------------
 
 def next_action(cfg):
-    """The next missing unit across all objects, derived from the filesystem.
+    """The next missing unit across all scenery, derived from the filesystem.
 
-    For each object in order: create the persistent 8-direction object (base),
-    then generate each of its 3 animations (all 8 directions). Returns an action
+    For each piece in order: create the persistent 8-direction object (base),
+    then generate each of its animations (all 8 directions). Returns an action
     tuple or ('all_complete',)."""
     for spec in factory.object_specs(cfg):
         oid = spec["id"]
@@ -100,14 +100,14 @@ def advance(client, cfg, push=True):
         factory.generate_animation(client, cfg, spec, adef)
         desc = f"{spec['id']}: animation '{adef['key']}' — {adef['description']} (8 dirs)"
     elif kind == "all_complete":
-        print("== all objects complete ==")
+        print("== all scenery complete ==")
         return None
     else:
         raise RuntimeError(f"unknown action {kind}")
 
     factory.mark_complete_if_done(cfg, action[1])
     viewer_build.build()
-    # Refresh our coordination heartbeat so the other agents can see objects'
+    # Refresh our coordination heartbeat so the other agents can see scenery's
     # health, progress, and how much of the shared budget we've drawn.
     coordination.publish(current=desc, progress=coordination.progress_snapshot(cfg),
                          budget_remaining=client.generations_remaining())
@@ -119,7 +119,7 @@ def advance(client, cfg, push=True):
 # --- main -------------------------------------------------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="Run the pixel-objects factory loop.")
+    ap = argparse.ArgumentParser(description="Run the scenery factory loop.")
     ap.add_argument("--max-units", type=int, default=0, help="0 = unlimited")
     ap.add_argument("--max-minutes", type=float, default=0, help="0 = unlimited")
     ap.add_argument("--min-balance", type=int, default=None,
@@ -127,8 +127,8 @@ def main():
     ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--restyle", action="store_true",
-                    help="Delete objects made under an older style_version so they "
-                         "regenerate in the current style (re-spends generations).")
+                    help="Delete scenery made under an older style_version so it "
+                         "regenerates in the current style (re-spends generations).")
     ap.add_argument("--no-sync", action="store_true",
                     help="Skip the pre-run repo<->PixelLab reconcile (loose-pointer "
                          "prune, deletion parity, UI-object mirror).")
@@ -153,24 +153,24 @@ def main():
         except Exception as e:
             print(f"pre-run reconcile skipped ({e})")
 
-    # Restyle: drop objects made under an older style so they regenerate in the
+    # Restyle: drop scenery made under an older style so it regenerates in the
     # current look. Commit the removals up front, then the normal loop refills.
     if args.restyle:
         removed = factory.restyle_stale(cfg, client)
         if removed:
             viewer_build.build()
-            commit_push(f"objects: restyle — regenerating {len(removed)} object(s) "
+            commit_push(f"scenery: restyle — regenerating {len(removed)} piece(s) "
                         f"in style v{cfg.get('style_version', 1)}", push=not args.no_push)
-            print(f"restyle: cleared {len(removed)} stale object(s): {', '.join(removed)}")
+            print(f"restyle: cleared {len(removed)} stale piece(s): {', '.join(removed)}")
 
     # Keep in-world sizing current: propagate any scale-rule / world-height change
-    # to existing objects (zero PixelLab cost) so nothing is unrealistically sized.
+    # to existing scenery (zero PixelLab cost) so nothing is unrealistically sized.
     moved = factory.refresh_placement(cfg)
     if moved:
         viewer_build.build()
-        commit_push(f"objects: refresh world-scale placement on {moved} object(s)",
+        commit_push(f"scenery: refresh world-scale placement on {moved} piece(s)",
                     push=not args.no_push)
-        print(f"refreshed placement on {moved} object(s)")
+        print(f"refreshed placement on {moved} piece(s)")
 
     # Fleet awareness: read the other domains' heartbeats and honour any request
     # addressed to us (per the protocol), then publish our own starting status.
@@ -184,7 +184,7 @@ def main():
     start = time.monotonic()
     units = 0
     rem = client.generations_remaining()
-    print(f"objects loop starting — {rem:.0f} generations remaining (floor {min_balance})")
+    print(f"scenery loop starting — {rem:.0f} generations remaining (floor {min_balance})")
     coordination.publish(current="startup", progress=coordination.progress_snapshot(cfg),
                          budget_remaining=rem, health="running")
 
@@ -214,7 +214,7 @@ def main():
     coordination.publish(current=f"idle after {units} unit(s) this pass",
                          progress=coordination.progress_snapshot(cfg),
                          budget_remaining=rem, health=health)
-    commit_push(f"objects heartbeat: {health} ({units} unit(s) this pass)", push=not args.no_push)
+    commit_push(f"scenery heartbeat: {health} ({units} unit(s) this pass)", push=not args.no_push)
     print(f"done — {units} unit(s), {rem:.0f} generations left")
 
 

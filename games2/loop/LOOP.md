@@ -7,7 +7,7 @@ better, then pushes to `main`. The next run resumes from the repo state.
 The game lives at **`games/nangijala`** inside the **`mikael-floden/pixel`**
 monorepo (Node/TS + Colyseus server, Phaser + Vite client). Art comes from the
 sibling agent domains at the repo root (`characters/`, `tiles/`, `maps/`,
-`objects/`) — no submodule. See `CLAUDE.md` and `coordination/PROTOCOL.md`.
+`scenery/`) — no submodule. See `CLAUDE.md` and `coordination/PROTOCOL.md`.
 **Run everything from `games/nangijala/`.**
 
 ## Guardrails
@@ -16,7 +16,7 @@ sibling agent domains at the repo root (`characters/`, `tiles/`, `maps/`,
   `npm test` and `npm run typecheck` must pass first. On push rejection,
   `git fetch && git rebase origin/main` and retry (disjoint paths merge cleanly).
 - **Stay inside `games/`.** Never create/edit/delete files under another agent's
-  domain (`characters/`, `tiles/`, `maps/`, `objects/`, other `coordination/*`).
+  domain (`characters2/`, `tiles2/`, `maps2/`, `scenery/`, other `coordination/*`).
   The only file you write outside `games/` is your own `coordination/games.json`.
 - **MAP/WORLD ART is the maps/tiles agents' domain** — never redesign or
   hand-author it. You MAY improve the tile **renderer** (occlusion, collision,
