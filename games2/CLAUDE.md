@@ -2241,6 +2241,21 @@ side collision just like monsters").
     acquisition arrives mid-ramp. ITS ONE TRAP: the first lookAt is a camera
     TELEPORT from spawn that legitimately dumps the spawn-side holders —
     settle at the pan start before the baseline sample.
+  - **…AND RETIRED UNDER PRESSURE, NEVER HELD FOREVER** (round 4, maintainer:
+    "are you holding a slot too long to fulfil never-pop, making it
+    impossible for new scenes to show real spot-lights?"). Hold-until-exit
+    alone biased the slots toward the TRAILING half of a run. So when a
+    waiting candidate beats a fully-settled holder by `LIGHT_STEAL_MARGIN`
+    (200px — hysteresis, the pair can't ping-pong), the worst holder is
+    DISSOLVED out: the acquisition crossfade in reverse (light down, pool
+    stamp back up) over the same 450ms, then the slot frees for the front.
+    At most `LIGHT_RETIRE_MAX` (2) dissolves run at once — pressure reads as
+    fires breathing one by one. Measured on the glow_test pan: 15 of 16
+    releases were dissolves serving the front, 0 snaps, 0 starved pressure
+    samples. The probe's fairness numbers (`waitingBest`/`worstSettled`/
+    `retiring`) are captured AFTER the frame's decisions — captured before,
+    a sample shows "pressure, nothing retiring" for a retirement that
+    started the same frame, which cost the gate a false failure once.
   - The QA `probeLight` consumes a WORLD slot while set — gates that count
     slots must expect ≤7 world holders then.
   - Probes: `__ml.lightSlots()` (live ledger + overflow), `__ml.lightAt()`

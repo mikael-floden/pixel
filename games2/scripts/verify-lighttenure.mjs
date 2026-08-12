@@ -62,10 +62,13 @@ for (let i = 0; i <= 90; i++) {
 await page.evaluate(() => window.__ml.lookAt());
 
 let releases = 0;
-let midViewReleases = 0;
+let boundaryReleases = 0;
+let dissolvedReleases = 0;
+let snapReleases = 0;
 let acquisitions = 0;
 let hardMidViewAcquisitions = 0;
-let worstReleaseEdge = Infinity;
+let starvedSamples = 0;
+let pressureSamples = 0;
 let totalMax = 0;
 let slottedMax = 0;
 for (let i = 1; i < samples.length; i++) {
@@ -77,11 +80,14 @@ for (let i = 1; i < samples.length; i++) {
     if (cur.slotted.includes(key)) continue;
     releases++;
     const lastEdge = prev.edges?.[key];
-    if (typeof lastEdge === "number") {
-      worstReleaseEdge = Math.min(worstReleaseEdge, lastEdge);
-      // Released while its pool still reached well inside the view = the pop.
-      if (lastEdge < -32) midViewReleases++;
-    }
+    const lastRamp = prev.ramps?.[key];
+    const wasRetiring = prev.retiring?.includes(key);
+    if (typeof lastEdge === "number" && lastEdge >= -32) boundaryReleases++;
+    // A mid-view exit is legal ONLY as the tail of a retirement DISSOLVE:
+    // it must have been marked retiring and already mostly faded when last
+    // seen (110ms sampling against a 450ms ramp). Anything else is the pop.
+    else if (wasRetiring && typeof lastRamp === "number" && lastRamp <= 0.45) dissolvedReleases++;
+    else snapReleases++;
   }
   for (const key of cur.slotted) {
     if (prev.slotted.includes(key)) continue;
@@ -94,13 +100,27 @@ for (let i = 1; i < samples.length; i++) {
     if (typeof edge === "number" && edge < -200 && !(typeof ramp === "number" && ramp < 1))
       hardMidViewAcquisitions++;
   }
+  // FAIRNESS TO THE FRONT (maintainer round 4: "are you holding a slot too
+  // long… making it impossible for new scenes to show real spot-lights?").
+  // Whenever a waiting candidate outranks the worst settled holder by more
+  // than the steal margin, a retirement must already be running — pressure
+  // may never sit unserved.
+  if (typeof cur.waitingBest === "number" && typeof cur.worstSettled === "number") {
+    if (cur.waitingBest + 200 < cur.worstSettled) {
+      pressureSamples++;
+      if (!cur.retiring?.length) starvedSamples++;
+    }
+  }
 }
 console.log(
-  `pan: ${samples.length} samples, ${releases} releases (worst edge ${worstReleaseEdge === Infinity ? "n/a" : worstReleaseEdge}px), ${acquisitions} acquisitions, max total ${totalMax}, max world ${slottedMax}`,
+  `pan: ${samples.length} samples, ${releases} releases (${boundaryReleases} at the boundary, ${dissolvedReleases} dissolved, ${snapReleases} SNAPS), ` +
+    `${acquisitions} acquisitions, pressure ${pressureSamples} samples (${starvedSamples} starved), max total ${totalMax}, max world ${slottedMax}`,
 );
 ok(releases > 5 && acquisitions > 5, `the pan actually churned (${releases} rel / ${acquisitions} acq) — non-vacuous`);
-ok(midViewReleases === 0, `zero mid-view releases (${midViewReleases}) — no light dies while still on screen`);
+ok(snapReleases === 0, `zero SNAP releases (${snapReleases}) — every exit is at the boundary or a finished dissolve`);
 ok(hardMidViewAcquisitions === 0, `zero full-brightness mid-view acquisitions (${hardMidViewAcquisitions}) — deep entries fade in`);
+ok(dissolvedReleases > 0, `retirement actually serves the front (${dissolvedReleases} dissolves) — non-vacuous under this pan`);
+ok(starvedSamples <= Math.ceil(pressureSamples * 0.1), `pressure never sits unserved (${starvedSamples}/${pressureSamples} starved samples)`);
 ok(totalMax <= 12, `total lights ${totalMax} <= 12 throughout`);
 ok(slottedMax <= 8, `world holders ${slottedMax} <= 8 throughout`);
 

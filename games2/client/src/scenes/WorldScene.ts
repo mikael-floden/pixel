@@ -366,8 +366,15 @@ const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
 // view; a source holding a slot keeps it until a competitor is meaningfully
 // closer (hysteresis), so walking a boundary can't strobe a light on and off.
 // A newly acquired light ramps in over this long, its pool stamp crossfading
-// out underneath — a mid-view acquisition is a fade, never a pop.
+// out underneath — a mid-view acquisition is a fade, never a pop. Retirement
+// dissolves at the same speed, in reverse.
 const LIGHT_RAMP_MS = 450;
+// A waiting candidate must be this much CLOSER to the camera than a settled
+// holder to start its retirement (hysteresis — the pair can never ping-pong),
+// and at most this many dissolves run at once (pressure reads as fires
+// breathing one by one, never a wave).
+const LIGHT_STEAL_MARGIN = 200;
+const LIGHT_RETIRE_MAX = 2;
 // Exit margin past the pool's own reach before a HELD light is released — a
 // pool sitting exactly on the view boundary must not flicker candidacy.
 const LIGHT_EXIT_PX = 96;
@@ -1322,12 +1329,19 @@ export class WorldScene extends Phaser.Scene {
   // TENURE: who holds a world slot and how far their fade-in has come. A
   // holder keeps its slot until its pool stops touching the view — see
   // pickWorldLights.
-  private slotTenure = new Map<string, { ramp: number }>();
+  // ramp 0..1 (smoothstepped into the light's brightness), dir +1 fading in /
+  // -1 retiring (dissolving out under slot pressure).
+  private slotTenure = new Map<string, { ramp: number; dir: 1 | -1 }>();
   // Each holder's measured px-past-view edge this frame (negative = the pool
   // touches the screen). QA only: the churn gate proves releases happen at the
   // boundary, never mid-view, and it can only do that from the same numbers
   // the release rule reads.
   private slotEdges: Record<string, number> = {};
+  private lastTenureStats: { waitingBest: number | null; worstSettled: number | null; retiring: string[] } = {
+    waitingBest: null,
+    worstSettled: null,
+    retiring: [],
+  };
   private lightOverflow = 0; // in-view candidates that did NOT fit the budget
   private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
   // Cells of emissive props standing inside a sealed room (indoor-only light).
@@ -2424,6 +2438,7 @@ export class WorldScene extends Phaser.Scene {
         // fading in over its crossfading pool stamp.
         ramps: Object.fromEntries([...this.slotTenure].map(([k, t]) => [k, +t.ramp.toFixed(3)])),
         edges: this.slotEdges,
+        ...this.lastTenureStats,
         overflow: this.lightOverflow,
         sources: this.emissiveSources.length,
         probe: !!this.probeLight,
@@ -10830,11 +10845,11 @@ export class WorldScene extends Phaser.Scene {
     // Release: a holder leaves tenure only when its pool is a full
     // LIGHT_EXIT_PX beyond touching the view (it fell out of `cands`), or its
     // candidacy died (sealed room left — which faded itself to zero via
-    // `gain` first). Acquisition below requires edge < 0 (actually touching),
-    // so entry is strictly TIGHTER than release: a pool hovering on the
-    // boundary can neither flicker in nor flicker out.
-    for (const key of this.slotTenure.keys()) {
-      if (!cands.has(key)) this.slotTenure.delete(key);
+    // `gain` first), or its RETIREMENT dissolve below reached zero.
+    // Acquisition requires edge < 0 (actually touching), so entry is strictly
+    // TIGHTER than release: a boundary hoverer can neither flicker in nor out.
+    for (const [key, t] of this.slotTenure) {
+      if (!cands.has(key) || (t.dir < 0 && t.ramp <= 0)) this.slotTenure.delete(key);
     }
     // Probe shrinks the room (QA): evict the farthest holders to fit.
     while (this.slotTenure.size > room) {
@@ -10850,18 +10865,70 @@ export class WorldScene extends Phaser.Scene {
       if (worst === null) break;
       this.slotTenure.delete(worst);
     }
+    // GRACEFUL RETIREMENT (round 4, maintainer 2026-08-12: "are you holding a
+    // slot too long to fulfil never-pop, making it impossible for new scenes
+    // to show real spot-lights?"). Hold-until-exit alone biases the slots
+    // toward the TRAILING half of a run — the scene you are running INTO
+    // stays stamp-only while lights you are leaving hog their slots. So under
+    // pressure a clearly-outranked holder is DISSOLVED out: the same 450ms
+    // crossfade an acquisition uses, in reverse — light down, pool stamp back
+    // up — then its slot frees for the front. Rules that keep it calm: only
+    // fully-faded-in holders retire (a mid-fade flip would wobble), a waiting
+    // candidate must beat the holder by LIGHT_STEAL_MARGIN (hysteresis — the
+    // pair can't ping-pong), and at most LIGHT_RETIRE_MAX dissolves run at
+    // once, so heavy pressure reads as fires breathing one by one, never a
+    // wave. NOTHING here snaps: this trades "held too long" for a second
+    // dissolve, not for the pop the tenure rule exists to prevent.
+    const waiting = [...cands.values()]
+      .filter((c) => c.edge < 0 && !this.slotTenure.has(c.key))
+      .sort((a, b) => a.dist - b.dist);
+    let retiring = 0;
+    for (const t of this.slotTenure.values()) if (t.dir < 0) retiring++;
+    if (waiting.length && this.slotTenure.size >= room) {
+      let wi = 0;
+      while (retiring < LIGHT_RETIRE_MAX && wi < waiting.length) {
+        // The worst SETTLED holder (full ramp, not already retiring).
+        let worst: string | null = null;
+        let worstDist = -1;
+        for (const [key, t] of this.slotTenure) {
+          if (t.dir < 0 || t.ramp < 1) continue;
+          const d = cands.get(key)?.dist ?? Infinity;
+          if (d > worstDist) {
+            worstDist = d;
+            worst = key;
+          }
+        }
+        if (worst === null || waiting[wi].dist + LIGHT_STEAL_MARGIN >= worstDist) break;
+        this.slotTenure.get(worst)!.dir = -1;
+        retiring++;
+        wi++;
+      }
+    }
     // Free slots go to the nearest unslotted candidates. Most acquisitions
     // happen as a pool ENTERS the view (edge ≈ 0) where the ramp is invisible;
     // a mid-view acquisition (a slot freed while a fire is centre screen)
     // fades in instead of popping on.
     if (this.slotTenure.size < room) {
-      const free = [...cands.values()]
-        .filter((c) => c.edge < 0 && !this.slotTenure.has(c.key))
-        .sort((a, b) => a.dist - b.dist);
-      for (const c of free) {
+      for (const c of waiting) {
         if (this.slotTenure.size >= room) break;
-        this.slotTenure.set(c.key, { ramp: 0 });
+        this.slotTenure.set(c.key, { ramp: 0, dir: 1 });
       }
+    }
+    // QA: the fairness numbers the tenure gate asserts on — captured AFTER
+    // this frame's decisions, or a sample can show "pressure, nothing
+    // retiring" for a retirement that started the same frame.
+    {
+      let worstSettled = -1;
+      for (const [key, t] of this.slotTenure) {
+        if (t.dir < 0 || t.ramp < 1) continue;
+        worstSettled = Math.max(worstSettled, cands.get(key)?.dist ?? -1);
+      }
+      const stillWaiting = waiting.filter((c) => !this.slotTenure.has(c.key));
+      this.lastTenureStats = {
+        waitingBest: stillWaiting.length ? Math.round(stillWaiting[0].dist) : null,
+        worstSettled: worstSettled < 0 ? null : Math.round(worstSettled),
+        retiring: [...this.slotTenure.entries()].filter(([, t]) => t.dir < 0).map(([k]) => k),
+      };
     }
     this.lightOverflow = Math.max(0, cands.size - this.slotTenure.size);
     this.slotLit.clear();
@@ -10876,7 +10943,7 @@ export class WorldScene extends Phaser.Scene {
       const t = this.slotTenure.get(key)!;
       if (!c) continue;
       this.slotEdges[key] = Math.round(c.edge);
-      t.ramp = Math.min(1, t.ramp + dtMs / LIGHT_RAMP_MS);
+      t.ramp = Math.max(0, Math.min(1, t.ramp + (t.dir * dtMs) / LIGHT_RAMP_MS));
       const k = t.ramp * t.ramp * (3 - 2 * t.ramp); // smoothstep — no snap at either end
       if (sl.length >= MAX_SHADER_LIGHTS) break;
       sl.push(
