@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 24,
+  "scenery_count": 25,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 8,
@@ -717,6 +717,7 @@
     "graves": 1,
     "lantern_posts": 1,
     "stones": 16,
+    "torch_posts": 1,
     "trees": 1,
     "waystones": 1
   },
@@ -1253,6 +1254,28 @@
       "status": "complete",
       "pixellab_object_id": "2aa163dc-442c-4b8a-a7fb-d71aa5470644",
       "sprite": "stones/stone_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_001",
+      "rel": "torch_posts/torch_post_001",
+      "name": "Tar-dipped pine torch 001",
+      "category": "torch_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, tar-dipped pine torch, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.61,
+        "world_px_height": 61,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fafd487e-8aad-4b6a-95b9-6765b77380db",
+      "sprite": "torch_posts/torch_post_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
