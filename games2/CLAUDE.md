@@ -1465,6 +1465,26 @@ theme in SCREEN space at 40% of the game view — as world-space Phaser text the
 3x zoom magnified it into a banner — and it is what ARMS the press: a tap
 during the fade is swallowed, and the server refuses one before the clip ends.
 
+THE TORCH IS WHAT PICKS THE CORPSE OUT OF THE DARK (maintainer 2026-08-12). My
+own torch is exempt from BOTH of its gates while I am dead — the day fade
+(`curTorchF`, 0 at full Day) and the on/off switch — and it KINDLES on the same
+eased curve as the zoom and the veil, so a torch that was out fades in with the
+sequence instead of popping on at the first dead frame. One expression does it:
+`tf = max(lit ? base : 0, mine ? deathRamp : 0)` — alive, `deathRamp` is 0 and it
+reduces exactly to the two gates it replaced; already burning, `max` can only
+raise it, so nothing changes at night. My body is also pushed to the FRONT of the
+light loop while dead: the slot array is capped at `MAX_SHADER_LIGHTS`, and a
+crowded street must not be the thing that leaves the corpse unlit. This also gets
+the corpse's own lit copy brighter for free — `lightAt` sums the same point
+lights — which is a real part of the "lighter than the world" job below, done
+where lighting actually lives.
+
+THE PUSH AIMS AT THE BODY ON THE GROUND, not at where a standing character's
+chest would be (`DEATH_AIM_FRAC`, 0.12 of the frame above the foot anchor). The
+die clip lays the figure out, so its mass sits at the bottom of the frame around
+the anchor; the original 0.35 lift centred the whole 10s zoom on the empty air
+above it.
+
 OPEN, and the reason it is open: the corpse should stay LIGHTER than the world.
 A second copy of the body drawn above the veil did that and shipped briefly,
 but a body drawn twice is a body outside the depth sort and it covered things it
@@ -1476,7 +1496,9 @@ ambient, so they must be scaled too or a torch stays bright in a black world —
 and that is the pipeline every day/night/indoor/weather look rides on, so it
 needs a browser pass across all of them.
 
-Probe: `__ml.deathInfo()` (armed / zoom progress / veil alpha / prompt), and the
+Probe: `__ml.deathInfo()` (armed / zoom progress / veil alpha / prompt / the
+MEASURED light on my own corpse — `torch.l`, so a gate asserts the effect and
+not the switch), and the
 DEBUG-only `dbgkill` room message (same standing as `teleport`) runs the real
 hurtPlayer kill path — dying to a predator on demand is too slow and too flaky
 to verify a mood with.

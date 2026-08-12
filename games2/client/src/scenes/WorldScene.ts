@@ -256,6 +256,7 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 const DEATH_DARK = 0.14; // brightness left at the end (0 would be a black screen)
+const DEATH_AIM_FRAC = 0.12; // how far above the foot anchor the push aims — a lying body
 const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
 const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
@@ -2283,6 +2284,17 @@ export class WorldScene extends Phaser.Scene {
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
           veil: +(d.veil?.style.opacity || 0),
           prompt: d.el ? +(d.el.style.opacity || 0) : 0,
+          // The MEASURED light on my own corpse — the death torch's whole
+          // point. `on` is the switch, which the death light deliberately
+          // ignores; `l` is what actually reaches the body, so a gate asserts
+          // the effect and not the intent.
+          torch: (() => {
+            const id = this.room?.sessionId;
+            const a = id ? this.avatars.get(id) : undefined;
+            if (!a || !this.night) return null;
+            const l = this.night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, this.litLevelOf(a), false);
+            return { on: this.torchOn, l: l.map((v) => +v.toFixed(3)) };
+          })(),
         };
       },
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -6426,10 +6438,28 @@ export class WorldScene extends Phaser.Scene {
         // a fast falloff into the ember-red rim).
         sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 });
       }
+      // MY TORCH IS THE DEATH LIGHT (maintainer 2026-08-12: "the players torch
+      // will be the thing that highlights the player being dead"). It rides the
+      // SAME eased curve as the zoom and the veil, so a torch that was out —
+      // because it is broad daylight, or because I switched it off — kindles as
+      // the world goes dark instead of popping on at the first dead frame. A
+      // torch already burning is untouched: max() below can only ever raise it.
+      const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
+      const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
       // (Filtered to my own room at the end of this block while indoors.)
-      for (const [id, a] of this.avatars.entries()) {
+      // While dead MY body is registered FIRST: the slot array is capped at
+      // MAX_SHADER_LIGHTS and a crowded street must not be the thing that
+      // leaves the corpse in the dark.
+      const bodies: Iterable<[string, Avatar]> =
+        deathTorch > 0 && myId && this.avatars.has(myId)
+          ? [
+              [myId, this.avatars.get(myId)!] as [string, Avatar],
+              ...[...this.avatars.entries()].filter(([k]) => k !== myId),
+            ]
+          : this.avatars.entries();
+      for (const [id, a] of bodies) {
         // The day gate is now PER BODY: "re-enable the player's torch even if
         // it's day outside" (maintainer) — but only for bodies sharing MY room,
         // which is an O(1) Set lookup into the space I already have, not a
@@ -6440,9 +6470,14 @@ export class WorldScene extends Phaser.Scene {
         // torch behind it. max() is the right combiner — it never dims a torch
         // daylight already allows, and it is continuous in both arguments, so
         // the day fade and the doorway fade compose without a step.
-        const tf = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
+        //
+        // The lit gate and the day/doorway fade are ONE expression now, so the
+        // death ramp can join them as a third term: an unlit torch contributes
+        // 0, and mine while dead contributes the ramp. Alive, deathTorch is 0
+        // and this reduces exactly to the two `continue`s it replaced.
+        const base = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
+        const tf = Math.max(this.torchLit(id, myId, state) ? base : 0, id === myId ? deathTorch : 0);
         if (tf <= 0.01) continue; // full Day, outdoors: torches have no impact
-        if (!this.torchLit(id, myId, state)) continue;
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
@@ -6654,11 +6689,15 @@ export class WorldScene extends Phaser.Scene {
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
     if (!shaderNight) {
+      const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
+      const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
       for (const [id, a] of this.avatars.entries()) {
         // Same per-body gate as the shader path, same `continue`-not-`break`
-        // reason (the scalar is no longer loop-invariant).
-        if (Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0) <= 0.5) continue;
-        if (!this.torchLit(id, myId, this.room?.state as any)) continue;
+        // reason (the scalar is no longer loop-invariant), and the same death
+        // term so the corpse is lit on the Canvas renderer too.
+        const base = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
+        const tf = Math.max(this.torchLit(id, myId, this.room?.state as any) ? base : 0, id === myId ? deathTorch : 0);
+        if (tf <= 0.5) continue;
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
@@ -9418,7 +9457,13 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(d.from.zoom + (base * DEATH_ZOOM - d.from.zoom) * ease);
     if (av) {
       const tx = av.sprite.x;
-      const ty = av.sprite.y - av.sprite.displayHeight * 0.35;
+      // AIM AT THE CORPSE, NOT AT WHERE A STANDING BODY'S CHEST WOULD BE. The
+      // die clip lays the character out on the ground, so its mass sits at the
+      // bottom of the frame, around the foot anchor — a 0.35-frame lift centred
+      // the push on the empty air above it (maintainer 2026-08-12: "you zoom in
+      // a bit too high up. The player falls to the ground so you should zoom in
+      // a bit further down").
+      const ty = av.sprite.y - av.sprite.displayHeight * DEATH_AIM_FRAC;
       cam.centerOn(d.from.x + (tx - d.from.x) * ease, d.from.y + (ty - d.from.y) * ease);
     }
     if (d.veil) d.veil.style.opacity = String((1 - DEATH_DARK) * ease);
