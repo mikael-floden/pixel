@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 557,
+  "scenery_count": 558,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -293,7 +293,7 @@
       "id": "ivy_posts",
       "name": "Ivy Post",
       "quota": 20,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 42,
@@ -837,7 +837,7 @@
     "hedges": 8,
     "hop_poles": 2,
     "house_clutter": 7,
-    "ivy_posts": 7,
+    "ivy_posts": 8,
     "lantern_posts": 8,
     "lantern_stands": 7,
     "letter_boxes": 2,
@@ -7124,6 +7124,28 @@
       "status": "complete",
       "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
       "sprite": "ivy_posts/ivy_post_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ivy_post_009",
+      "rel": "ivy_posts/ivy_post_009",
+      "name": "White-edged variegated ivy 009",
+      "category": "ivy_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, white-edged variegated ivy, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f8f23640-eb94-4965-8af6-3dd23024185d",
+      "sprite": "ivy_posts/ivy_post_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
