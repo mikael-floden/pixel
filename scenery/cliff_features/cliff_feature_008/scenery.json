@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cliff_feature_008",
+  "group": "cliff_features",
+  "rank": 102,
+  "index": 8,
+  "name": "Clay swallow nests under an overhang 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "clay swallow nests under an overhang",
+  "glow_concept": "warm light spilling from a deep crevice",
+  "prompt": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, clay swallow nests under an overhang, large, twice human height, self-emissive at night, softly radiating light: warm light spilling from a deep crevice",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_features/cliff_feature_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.9,
+    "world_px_height": 109,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b8c4441b-c0da-493a-b650-853f55607852",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
