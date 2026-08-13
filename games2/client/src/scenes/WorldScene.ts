@@ -800,6 +800,15 @@ const IN_WALL = 2; // the building itself: any solid cell of the enclosure
  * way in 1s — an eye adapting, and finished before you have walked one cell in.
  * The weather roll's 4s is far too slow for a doorway. */
 const INDOOR_TAU = 0.35;
+// The transition's two speeds, as multiples of the eased indoor mix. The
+// GEOMETRY crossfade (debris) runs hot — hiding the repaint seams is its whole
+// job, and they hide better the less time they get (maintainer: 2× was not
+// enough, 3×). The LIGHT grade (darkening, light gains, fog) is "a bit
+// faster" than the raw roll and deliberately NOT roof-fast (maintainer
+// 2026-08-13: a first cut that ran everything at 3× read as one big snap —
+// "the roof fade is intended to be faster to hide bugs").
+const INDOOR_DEBRIS_RATE = 3;
+const INDOOR_GRADE_RATE = 1.5;
 
 /** Minimum wall-clock between APPLIED indoor transitions. Layers 1 and 2 of the
  * hysteresis (the relaxed leave bar and the space identity, see
@@ -1182,13 +1191,13 @@ export class WorldScene extends Phaser.Scene {
    * "pops on a single frame... I want this to feel more fade in/fade out").
    * The art the cut REMOVES — my roof slab, the wall bands above each cell's
    * cut, the covering cone's tops — re-issued as world-anchored images at the
-   * occluder depths, alpha = 1 − indoorGrade. Entering: the world repaints to
-   * the cut state on the flip frame, but the debris is OPAQUE on that frame,
-   * so the picture is unchanged — then it dissolves on the same 3× grade
-   * the light rides. Leaving: the world KEEPS drawing the cut state, the
-   * debris fades back IN over it, and the real repaint happens when the
-   * GRADE lands (mix ⅔) — opaque debris equals the real geometry, so the
-   * swap is invisible. Per-image depths keep bodies sorting correctly through the
+   * occluder depths, alpha = debrisAlpha() (3× curves). Entering: the world
+   * repaints to the cut state on the flip frame, but the debris is OPAQUE on
+   * that frame, so the picture is unchanged — then it dissolves by mix ⅓,
+   * while the light grade keeps rolling to ⅔. Leaving: the world KEEPS
+   * drawing the cut state, the debris fades back IN over it, and the real
+   * repaint happens when the light GRADE lands (mix ⅓) — the debris has been
+   * opaque since mix ⅔, so the swap is invisible. Per-image depths keep bodies sorting correctly through the
    * whole fade (a body under the returning roof is covered by it, exactly as
    * outdoors). Null between transitions; never built for the kill-switch's
    * legacy scalar cut (QA wants instant frames). */
@@ -6921,11 +6930,11 @@ export class WorldScene extends Phaser.Scene {
         // are entering lights as a room immediately.
         this.night.indoor = this.indoorInside && !!this.indoorMask;
         this.night.indoorTop = this.indoorTop;
-        // The LIGHT half of the same state rides the GRADE: the outside fades
-        // to black on the same 3× ramp the debris dissolves on, so the roof
-        // disappearing and the world darkening finish together (maintainer
-        // 2026-08-13: the darkening used to trail the roof by the rest of the
-        // roll).
+        // The LIGHT half of the same state rides the GRADE — 1.5×, its own
+        // clip: a bit faster than the raw roll (maintainer 2026-08-13: the
+        // darkening trailed the roof by the rest of the roll), deliberately
+        // slower than the debris' 3× (same day: everything at 3× read as one
+        // big snap — "the roof fade is intended to be faster to hide bugs").
         this.night.indoorMix = this.indoorGrade();
         // What the OUTSIDE is fading between: black and this, never the
         // interior grade. Set every frame — the outdoor phase keeps moving
@@ -9232,9 +9241,9 @@ export class WorldScene extends Phaser.Scene {
     }
     // THE EXIT FADE, the same crossfade run backward: keep drawing the CUT
     // world (mask, cuts and the shader clamp all stay), let the removed art
-    // fade back IN on the grade, and do the real repaint only when the GRADE
-    // lands (mix ⅔, ~0.14s) — at that moment the opaque debris IS the real
-    // geometry, so the swap cannot be seen (easeIndoorMix's landing branch).
+    // fade back IN at 3×, and do the real repaint only when the light GRADE
+    // lands (mix ⅓, ~0.39s) — by then the debris has been opaque for most of
+    // the roll, so the swap cannot be seen (easeIndoorMix's landing branch).
     if (wasDrawn && this.indoorCut && this.world && this.terrain) {
       this.buildIndoorDebris();
       return;
@@ -9261,31 +9270,38 @@ export class WorldScene extends Phaser.Scene {
     this.indoorDebris = null;
   }
 
-  /** THE TRANSITION'S ONE RAMP — the eased mix at triple speed, clamped to
-   * [0,1]. Every VISIBLE half of a doorway crossing rides this single value:
-   * the shader's indoor blend (outside-to-black, room un-dim, fog gate), every
-   * CPU light gain (torch enable, outside lights dying, sealed fires), and the
-   * debris crossfade (alpha = 1 − grade). One ramp means the parts cannot
-   * trail each other: entering, the outside finishes darkening WITH the roof
-   * dissolve at mix ⅓ instead of dragging on for the rest of the roll
-   * (maintainer 2026-08-13: "darken the outside world fades a bit too slow");
-   * leaving, everything is back by mix ⅔ — which is exactly when
-   * easeIndoorMix runs the repaint swap, because past that point the roll's
-   * long exponential tail drives nothing the eye can see. The raw indoorMix
-   * stays the easing SUBSTRATE (and the QA pin's target); consumers take the
-   * grade. */
+  /** THE LIGHT GRADE — the eased mix at INDOOR_GRADE_RATE, clamped to [0,1].
+   * Every LIGHT half of a doorway crossing rides this single value: the
+   * shader's indoor blend (outside-to-black, room un-dim, fog gate) and every
+   * CPU light gain (torch enable, outside lights dying, sealed fires,
+   * ambEff/sunIn/fogScale). One value means those parts cannot trail each
+   * other — but it is deliberately NOT the debris' 3× (maintainer 2026-08-13:
+   * "I wanted the darkening a bit faster... the roof fade is intended to be
+   * faster to hide bugs", after a first cut that ran everything at 3× read as
+   * one big snap). At 1.5× the darkening lands at mix ⅔ entering / mix ⅓
+   * leaving — ~0.39s, half the raw roll's perceived length, ~3× the roof
+   * crossfade's — and the leaving landing is when easeIndoorMix runs the
+   * repaint swap (past it the roll's exponential tail drives nothing
+   * visible). The raw indoorMix stays the easing SUBSTRATE (and the QA pin's
+   * target); consumers take the grade. */
   private indoorGrade(): number {
+    const R = INDOOR_GRADE_RATE;
     return this.indoorInside
-      ? Math.min(1, 3 * this.indoorMix)
-      : Math.max(0, 3 * this.indoorMix - 2);
+      ? Math.min(1, R * this.indoorMix)
+      : Math.max(0, R * this.indoorMix - (R - 1));
   }
 
-  /** The debris layer's opacity — the grade's exact complement, which keeps
-   * the curves the maintainer approved (2026-08-13, "3×, both directions"):
+  /** The debris layer's opacity — its own 3× curves, the speed the maintainer
+   * tuned by eye (2026-08-13: 2× was not enough, then "3×, both directions"):
    * entering, opaque at the flip and dissolved by mix ⅓; leaving, complete by
-   * the roll's first third and then held at 1 through the swap. */
+   * the roll's first third and then held at 1 through the swap. Runs HOTTER
+   * than the light grade on purpose — the crossfade's whole job is hiding
+   * repaint seams, and seams hide better the less time they get. */
   private debrisAlpha(): number {
-    return 1 - this.indoorGrade();
+    const D = INDOOR_DEBRIS_RATE;
+    return this.indoorInside
+      ? Math.max(0, 1 - D * this.indoorMix)
+      : Math.min(1, D * (1 - this.indoorMix));
   }
 
   /** Build the TRANSITION DEBRIS: every piece of art the current cut removes,
@@ -9598,16 +9614,17 @@ export class WorldScene extends Phaser.Scene {
     // At 3× the debris crosses its whole alpha range inside one or two
     // STARVED harness frames (a single ~180ms delta carries the mix past ⅓),
     // so no wall-clock sampling can catch the blend there — while a real
-    // 60fps device renders ~8 blended frames. NOTE a pin at mix ≤ ⅔ on the
-    // way out IS the landed grade — the swap below fires under it.
+    // 60fps device renders ~8 blended frames. NOTE a pin at mix ≤ ⅓ on the
+    // way out IS the landed light grade — the swap below fires under it.
     if (this.indoorMixPinV !== null) this.indoorMix = this.indoorMixPinV;
-    // THE TRANSITION DEBRIS is the grade's complement (maintainer 2026-08-13:
+    // THE TRANSITION DEBRIS rides its own 3× curves (maintainer 2026-08-13:
     // "the fade should go faster so no user notices any glitch" — first 2×,
     // then "twice as fast is not enough, 3×", both directions). Entering, the
     // debris is gone by mix ⅓; leaving, it is fully opaque by mix ⅔ — and
-    // held there only for the frames until the landing branch below swaps the
-    // real geometry in. Turning around mid-doorway reverses the same curve
-    // (the mix is the state; the debris has none of its own).
+    // held there while the slower light grade finishes, until the landing
+    // branch below swaps the real geometry in. Turning around mid-doorway
+    // reverses the same curve (the mix is the state; the debris has none of
+    // its own).
     if (this.indoorDebris) {
       const a = this.debrisAlpha();
       if (this.indoorInside && a <= 0.004) this.destroyIndoorDebris();
@@ -9623,10 +9640,11 @@ export class WorldScene extends Phaser.Scene {
     // exponential tail after the flip — a walking player drags the camera a
     // few hundred px by then, past the cull box, exposing cut-state cells
     // that then popped at the swap (maintainer 2026-08-13: "all black/dark
-    // → grey areas at the top of the wall after the fade") — the grade lands
-    // ~0.14s in, before the camera can outrun OCC_CULL_PAD. The swap frame
-    // itself changes nothing: cut world + opaque debris and the full repaint
-    // are pixel-identical under a locked camera (measured, exitsnap probe).
+    // → grey areas at the top of the wall after the fade") — the 1.5× grade
+    // lands ~0.39s in, ≤~60px of camera drift against OCC_CULL_PAD's ~360.
+    // The swap frame itself changes nothing: cut world + opaque debris and
+    // the full repaint are pixel-identical under a locked camera (measured,
+    // exitsnap probe).
     if (this.indoorGrade() === 0 && !this.indoorInside) {
       if (this.roomMask) {
         this.roomMask = null;

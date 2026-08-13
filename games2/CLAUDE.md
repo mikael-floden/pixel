@@ -2697,33 +2697,39 @@ side collision just like monsters").
     the new room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art
     — accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
     REFINEMENTS the maintainer asked for the same day, with screenshots:
-    - **ONE RAMP — `indoorGrade()` — FOR EVERYTHING VISIBLE** ("darken the
-      outside world fades a bit too slow"): the eased mix at 3× clamped to
-      [0,1] (entering `min(1, 3·mix)`, leaving `max(0, 3·mix − 2)`). He asked
-      for 2×, then "twice as fast is not enough, 3×" for the debris; the
-      darkening then visibly TRAILED the roof fade for the rest of the roll,
-      so the whole crossing now rides the grade: `night.indoorMix` (outside→
-      black, room un-dim, fog gate), every CPU light gain (fireRoomK, torch
-      enable, outside-light fade, sealed fires, ambEff/sunIn/fogScale) and
-      the debris (`debrisAlpha = 1 − grade` — same curves as before). The
-      raw `indoorMix` stays the 0.35s easing SUBSTRATE (and what `indoor().
-      mix` reports / the pin targets); consumers take the grade. Everything
-      finishes together at mix ⅓ (~0.14s), both directions. At 60fps that is
-      ~7 blended frames; the starved headless harness renders ~1-2, which is
+    - **TWO SPEEDS: DEBRIS AT 3×, LIGHT GRADE AT 1.5×** (`INDOOR_DEBRIS_RATE`
+      / `INDOOR_GRADE_RATE`). He tuned the debris by eye (2×, then "twice as
+      fast is not enough, 3×") — its job is hiding repaint seams, and seams
+      hide better the less time they get. The darkening is the opposite: he
+      asked for "a bit faster" than the raw roll, and when a first cut ran
+      EVERYTHING at the debris' 3× he sent it back ("the roof fade is
+      intended to be faster to hide bugs... I still said a bit faster"). So:
+      `debrisAlpha()` keeps its own 3× curves (entry gone by mix ⅓; exit
+      complete by mix ⅔, then held), while `indoorGrade()` — the eased mix
+      at 1.5×, clamped — is what every LIGHT half rides: `night.indoorMix`
+      (outside→black, room un-dim, fog gate) and every CPU light gain
+      (fireRoomK, torch enable, outside-light fade, sealed fires, ambEff/
+      sunIn/fogScale). The grade lands at mix ⅔ entering / ⅓ leaving —
+      ~0.39s, about half the raw roll's perceived length, ~3× the roof's.
+      The raw `indoorMix` stays the 0.35s easing SUBSTRATE (what
+      `indoor().mix` reports and the pin targets); consumers take the grade
+      or the alpha, never the raw mix. At 60fps the debris crossfade is ~7
+      blended frames; the starved headless harness renders ~1-2, which is
       why the gate needs the pin below.
-    - **THE EXIT SWAP LANDS WITH THE GRADE (mix ⅔), NOT AT MIX 0** ("the
-      roof can suddenly change from all black/dark to having grey areas at
-      the top of the wall after the fade has completed"). The debris is
-      built ONCE at the flip and view-culled to THAT camera; the old mix-0
-      landing sat ~1.9s of exponential tail later, and a walking player
-      drags the camera a few hundred px by then — past the build-time cull
-      box, exposing cut-state cells (roofless, dark) that popped at the
-      swap. The grade lands ~0.14s in, before the camera can outrun
-      OCC_CULL_PAD. The swap frame itself is pixel-identical under a locked
-      camera (measured with the exitsnap probe: ~80 stray pixels of
-      sparkle/fire flicker on a 384k-px frame; the first, unlocked run's
-      "differences" were camera glide between shots — lock the camera before
-      trusting any screenshot diff).
+    - **THE EXIT SWAP LANDS WITH THE LIGHT GRADE (mix ⅓), NOT AT MIX 0**
+      ("the roof can suddenly change from all black/dark to having grey
+      areas at the top of the wall after the fade has completed"). The
+      debris is built ONCE at the flip and view-culled to THAT camera; the
+      old mix-0 landing sat ~1.9s of exponential tail later, and a walking
+      player drags the camera a few hundred px by then — past the build-time
+      cull box, exposing cut-state cells (roofless, dark) that popped at the
+      swap. The grade lands ~0.39s in (≤~60px of drift against
+      OCC_CULL_PAD's ~360), and by then the lights outside are back to their
+      settled gains, so dropping `roomMask` steps nothing. The swap frame
+      itself is pixel-identical under a locked camera (measured with the
+      exitsnap probe: ~80 stray pixels of sparkle/fire flicker on a 384k-px
+      frame; the first, unlocked run's "differences" were camera glide
+      between shots — lock the camera before trusting any screenshot diff).
     - **THE EXIT UNCLAMPS THE RESOLVE AT THE FLIP, NOT AT THE END** ("the
       top of the roof completely changes color" at the fade's end). The end
       swap was only art-invisible: with the resolve still clamped to the cut
@@ -2743,16 +2749,17 @@ side collision just like monsters").
       instrument that lets the starved harness photograph the 3× crossfade
       mid-blend deterministically (pin BEFORE the teleport, shoot at
       leisure, release; same probe family as timeOfDay's phaseT override).
-      NOTE an exit pin at mix ≤ ⅔ IS the landed grade — the swap fires
-      under it; pin above ⅔ to hold the pre-swap frame.
+      NOTE an exit pin at mix ≤ ⅓ IS the landed light grade — the swap
+      fires under it; pin above ⅓ to hold the pre-swap frame.
     Gate: verify-indoorscope sections 4-5 — the PINNED mid frame is a real
     rendered blend distinct from both endpoints (>8 luma), debris gone at
-    settle, the darkening is DONE once the grade saturates (4b: pinned mix
-    0.34 entering, outdoor `lightAtCell` exactly zero), and the late-exit
-    frame (pinned mix 0.67: debris at alpha 0.99, one step above the swap)
-    matches the settled outdoor roof within a tight drift bar — the
-    colour-snap regression test (currently reads 0.0 drift over an 80-luma
-    span).
+    settle, the TWO SPEEDS are real (4b: entering pinned at mix 0.34 the
+    roof crossfade is done but outdoor `lightAtCell` still reads >0 — the
+    darkening must NOT have collapsed into the roof's clip — while pinned
+    at 0.68 it is exactly zero), and the late-exit frame (pinned mix 0.35:
+    debris opaque, grade 0.025, one step above the swap) matches the
+    settled outdoor roof within a tight drift bar — the colour-snap
+    regression test (currently 0.7 drift over an 81-luma span).
   - **THE DIAL IS A MINIMUM — WALLS RISE PER CELL UNTIL THEY'D COVER A FLOOR**
     (maintainer 2026-08-13: "make the current wall height a minimum setting...
     draw the walls all the way to the roof on sides where it's possible; some
