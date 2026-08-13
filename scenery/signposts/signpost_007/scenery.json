@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_007",
+  "group": "signposts",
+  "rank": 8,
+  "index": 7,
+  "name": "White-painted village signpost 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "white-painted village signpost",
+  "glow_concept": null,
+  "prompt": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, white-painted village signpost, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.0,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "927458d8-d62c-4533-a8d9-dac4814caea1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
