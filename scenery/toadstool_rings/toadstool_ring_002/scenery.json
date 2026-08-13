@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "toadstool_ring_002",
+  "group": "toadstool_rings",
+  "rank": 39,
+  "index": 2,
+  "name": "Ring in flowering meadow grass 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ring in flowering meadow grass",
+  "glow_concept": "low glowing spore mist pooled in the center",
+  "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, ring in flowering meadow grass, small, knee-high to an adult person, self-emissive at night, softly radiating light: low glowing spore mist pooled in the center",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "toadstool_rings/toadstool_ring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.38,
+    "world_px_height": 14,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fdcb8559-ba8c-4615-82d6-60c970b6fe33",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
