@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 31,
+  "scenery_count": 32,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 15,
@@ -710,6 +710,7 @@
     }
   ],
   "categories": {
+    "bell_posts": 1,
     "effect": 1,
     "braziers": 1,
     "briar_thickets": 1,
@@ -728,6 +729,28 @@
     "wells": 1
   },
   "scenery": [
+    {
+      "id": "bell_post_001",
+      "rel": "bell_posts/bell_post_001",
+      "name": "Wind-chime cluster post 001",
+      "category": "bell_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, wind-chime cluster post, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.24,
+        "world_px_height": 84,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "46edeaf4-16bc-4a60-a359-e91f73bd25ac",
+      "sprite": "bell_posts/bell_post_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
     {
       "id": "blood_spatter",
       "rel": "blood_spatter",
