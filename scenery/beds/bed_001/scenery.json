@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bed_001",
+  "group": "beds",
+  "rank": 105,
+  "index": 1,
+  "name": "Sturdy iron-frame bed with brass knobs 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "sturdy iron-frame bed with brass knobs",
+  "glow_concept": null,
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, sturdy iron-frame bed with brass knobs, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b4a5d405-3d00-4ffc-a125-197229985c88",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

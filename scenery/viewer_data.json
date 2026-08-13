@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 296,
+  "scenery_count": 297,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -741,7 +741,7 @@
       "id": "beds",
       "name": "Bed",
       "quota": 30,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 106,
@@ -790,7 +790,7 @@
     "beacons": 3,
     "beast_skulls": 2,
     "beaver_lodges": 2,
-    "beds": 1,
+    "beds": 2,
     "beehives": 3,
     "bell_posts": 2,
     "effect": 1,
@@ -1398,6 +1398,28 @@
       "status": "complete",
       "pixellab_object_id": "9828d94a-b5ed-4d18-a428-7dfbdf0953a4",
       "sprite": "beaver_lodges/beaver_lodge_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bed_001",
+      "rel": "beds/bed_001",
+      "name": "Sturdy iron-frame bed with brass knobs 001",
+      "category": "beds",
+      "lights": "LIGHTS_OFF",
+      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, sturdy iron-frame bed with brass knobs, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b4a5d405-3d00-4ffc-a125-197229985c88",
+      "sprite": "beds/bed_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
