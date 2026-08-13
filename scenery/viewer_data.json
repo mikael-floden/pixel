@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 32,
+  "scenery_count": 33,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 16,
@@ -723,6 +723,7 @@
     "lantern_posts": 1,
     "signposts": 1,
     "stones": 16,
+    "streetlights": 1,
     "torch_posts": 1,
     "trees": 1,
     "waystones": 1,
@@ -1393,6 +1394,28 @@
       "status": "complete",
       "pixellab_object_id": "2aa163dc-442c-4b8a-a7fb-d71aa5470644",
       "sprite": "stones/stone_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_001",
+      "rel": "streetlights/streetlight_001",
+      "name": "Black wrought iron with scrollwork 001",
+      "category": "streetlights",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, black wrought iron with scrollwork, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.09,
+        "world_px_height": 154,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9a66d000-9b44-41f9-88fd-9e41dc5d9384",
+      "sprite": "streetlights/streetlight_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
