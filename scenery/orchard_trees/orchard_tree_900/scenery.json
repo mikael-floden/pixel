@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "orchard_tree_900",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 900,
+  "name": "Young staked fruit tree 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "young staked fruit tree",
+  "glow_concept": "ripe fruit glowing like warm paper lanterns",
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, young staked fruit tree, large, well above head height of a person, self-emissive at night, softly radiating light: ripe fruit glowing like warm paper lanterns",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_900/sprite.webp",
+  "placement": {
+    "world_height_m": 2.99,
+    "world_px_height": 113,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "157aaa18-94cf-4cbe-83b1-7d40465705af",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

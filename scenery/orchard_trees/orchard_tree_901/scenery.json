@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "orchard_tree_901",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 901,
+  "name": "Orchard Tree 901",
+  "lights": "LIGHTS_OFF",
+  "variety": null,
+  "glow_concept": null,
+  "prompt": "a gnarled old fruit tree with ",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_901/sprite.webp",
+  "placement": {
+    "world_height_m": 2.85,
+    "world_px_height": 107,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6eec81d9-4f38-4676-b24c-ee7828fcf17b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "run 6's only piece (old planner, checkout 01ee42be-era state); full spec unrecoverable \u2014 lights confirmed UNLIT by visual inspection (no emission), height set to group midpoint"
+}

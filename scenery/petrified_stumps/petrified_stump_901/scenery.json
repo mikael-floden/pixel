@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "petrified_stump_901",
+  "group": "petrified_stumps",
+  "rank": 65,
+  "index": 901,
+  "name": "Rainbow silica stump 901",
+  "lights": "LIGHTS_OFF",
+  "variety": "rainbow silica stump",
+  "glow_concept": null,
+  "prompt": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral, rainbow silica stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "petrified_stumps/petrified_stump_901/sprite.webp",
+  "placement": {
+    "world_height_m": 0.62,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0051ae84-6e77-4d57-bc77-33adfea7e361",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

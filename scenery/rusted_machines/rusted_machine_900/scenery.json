@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rusted_machine_900",
+  "group": "rusted_machines",
+  "rank": 68,
+  "index": 900,
+  "name": "Hand-crank water pump 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hand-crank water pump",
+  "glow_concept": "copper coils holding a faint galvanic glow",
+  "prompt": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, hand-crank water pump, about as tall as an adult person, self-emissive at night, softly radiating light: copper coils holding a faint galvanic glow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "rusted_machines/rusted_machine_900/sprite.webp",
+  "placement": {
+    "world_height_m": 1.85,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "74048d51-d7b6-4b8d-a696-f14515db43b4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

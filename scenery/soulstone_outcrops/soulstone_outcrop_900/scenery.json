@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_900",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 900,
+  "name": "Purple amethyst cluster 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "purple amethyst cluster",
+  "glow_concept": "deep violet heart-light pulsing slowly",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, purple amethyst cluster, about as tall as an adult person, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_900/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d63e1598-0c3e-40fa-a158-db40b7116046",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

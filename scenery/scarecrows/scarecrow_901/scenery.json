@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_901",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 901,
+  "name": "Tall thin twin-pole scarecrow 901",
+  "lights": "LIGHTS_OFF",
+  "variety": "tall thin twin-pole scarecrow",
+  "glow_concept": null,
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, tall thin twin-pole scarecrow, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_901/sprite.webp",
+  "placement": {
+    "world_height_m": 2.12,
+    "world_px_height": 80,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "be81d895-de21-4ff0-804b-43d9d6263135",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

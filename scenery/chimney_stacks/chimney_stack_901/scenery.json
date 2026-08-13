@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chimney_stack_901",
+  "group": "chimney_stacks",
+  "rank": 50,
+  "index": 901,
+  "name": "Red brick chimney 901",
+  "lights": "LIGHTS_OFF",
+  "variety": "red brick chimney",
+  "glow_concept": null,
+  "prompt": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown, red brick chimney, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "chimney_stacks/chimney_stack_901/sprite.webp",
+  "placement": {
+    "world_height_m": 3.59,
+    "world_px_height": 135,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9e1a9b07-a0b4-47f4-972f-ed514f4be114",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

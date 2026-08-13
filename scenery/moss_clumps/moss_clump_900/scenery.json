@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "moss_clump_900",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 900,
+  "name": "Moss-swallowed stump 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-swallowed stump",
+  "glow_concept": "moss veined with glowing soulstone seams",
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-swallowed stump, small, knee-high to an adult person, self-emissive at night, softly radiating light: moss veined with glowing soulstone seams",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_900/sprite.webp",
+  "placement": {
+    "world_height_m": 0.6,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d5d79a1e-ba0d-42fc-862f-f3e2021ad1ac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

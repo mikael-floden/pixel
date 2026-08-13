@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "haystack_900",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 900,
+  "name": "Storm-leaning tousled stack 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "storm-leaning tousled stack",
+  "glow_concept": "luminous seed-heads threaded through the hay",
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, storm-leaning tousled stack, large, well above head height of a person, self-emissive at night, softly radiating light: luminous seed-heads threaded through the hay",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_900/sprite.webp",
+  "placement": {
+    "world_height_m": 2.51,
+    "world_px_height": 94,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7fdb7cd2-10dd-427b-94de-5d0223bbfc59",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}

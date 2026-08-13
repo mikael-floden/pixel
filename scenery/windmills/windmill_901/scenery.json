@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_901",
+  "group": "windmills",
+  "rank": 47,
+  "index": 901,
+  "name": "Weathered gray coastal mill 901",
+  "lights": "LIGHTS_OFF",
+  "variety": "weathered gray coastal mill",
+  "glow_concept": null,
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, weathered gray coastal mill, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_901/sprite.webp",
+  "placement": {
+    "world_height_m": 4.33,
+    "world_px_height": 163,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6a58c6a2-1aa8-47a2-aec6-53bca7e4847d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly"
+}
