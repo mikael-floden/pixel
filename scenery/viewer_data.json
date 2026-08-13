@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 492,
+  "scenery_count": 493,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -230,7 +230,7 @@
       "id": "reed_beds",
       "name": "Reed Bed",
       "quota": 38,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 33,
@@ -852,7 +852,7 @@
     "owl_snags": 2,
     "petrified_stumps": 2,
     "puffballs": 2,
-    "reed_beds": 6,
+    "reed_beds": 7,
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
@@ -7872,6 +7872,28 @@
       "status": "complete",
       "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
       "sprite": "reed_beds/reed_bed_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "reed_bed_012",
+      "rel": "reed_beds/reed_bed_012",
+      "name": "Snow-dusted broken reeds 012 \u00b7 lit",
+      "category": "reed_beds",
+      "lights": "LIGHTS_ON",
+      "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, snow-dusted broken reeds, large, twice human height, self-emissive at night, softly radiating light: fireflies drifting between the stalks",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.03,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "461ae220-6ddc-4672-898b-6ac381ce8b6a",
+      "sprite": "reed_beds/reed_bed_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
