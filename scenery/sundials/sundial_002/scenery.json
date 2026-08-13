@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sundial_002",
+  "group": "sundials",
+  "rank": 93,
+  "index": 2,
+  "name": "Slate dial, gold numerals 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "slate dial, gold numerals",
+  "glow_concept": "dial numerals lit like small windows",
+  "prompt": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon, slate dial, gold numerals, about as tall as an adult person, self-emissive at night, softly radiating light: dial numerals lit like small windows",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "sundials/sundial_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.25,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a3e345ff-60e1-4f4c-8256-b0a69a47c9c1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
