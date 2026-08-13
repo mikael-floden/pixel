@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 269,
+  "scenery_count": 261,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 14,
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 22,
@@ -384,7 +384,7 @@
       "id": "soulstone_plinths",
       "name": "Soulstone Plinth",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 55,
@@ -419,7 +419,7 @@
       "id": "waterwheels",
       "name": "Waterwheel",
       "quota": 2,
-      "done": 2
+      "done": 0
     },
     {
       "rank": 60,
@@ -461,7 +461,7 @@
       "id": "petrified_stumps",
       "name": "Petrified Stump",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 66,
@@ -503,7 +503,7 @@
       "id": "rail_carts",
       "name": "Rail Cart",
       "quota": 2,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 72,
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 105,
@@ -796,14 +796,13 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
-    "briar_thickets": 2,
+    "briar_thickets": 1,
     "broken_columns": 2,
     "bushes": 3,
     "cairns": 2,
     "light": 1,
     "carts": 3,
     "cattail_clumps": 4,
-    "chairs_and_benches": 1,
     "charcoal_kilns": 1,
     "chimney_stacks": 2,
     "cliff_features": 1,
@@ -850,9 +849,8 @@
     "orchard_trees": 3,
     "overgrown_archways": 2,
     "owl_snags": 2,
-    "petrified_stumps": 2,
+    "petrified_stumps": 1,
     "puffballs": 2,
-    "rail_carts": 1,
     "reed_beds": 5,
     "rock_spires": 2,
     "rocking_horses": 1,
@@ -864,13 +862,13 @@
     "sheaf_poles": 1,
     "signposts": 2,
     "soulstone_outcrops": 2,
-    "soulstone_plinths": 2,
+    "soulstone_plinths": 1,
     "spring_basins": 1,
     "standing_stones": 3,
     "statues": 1,
     "stone_fountains": 1,
     "stones": 14,
-    "story_posts": 2,
+    "story_posts": 1,
     "streetlights": 3,
     "stumps": 5,
     "sundials": 1,
@@ -885,7 +883,6 @@
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
-    "waterwheels": 2,
     "wayside_shrines": 2,
     "waystones": 2,
     "web_frames": 1,
@@ -1696,28 +1693,6 @@
       "animations": []
     },
     {
-      "id": "briar_thicket_900",
-      "rel": "briar_thickets/briar_thicket_900",
-      "name": "White briar roses 900 \u00b7 lit",
-      "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
-      "description": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses, white briar roses, about as tall as an adult person, self-emissive at night, softly radiating light: rose hips burning like strung embers",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.2,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "691fdd49-0177-4ba2-81b8-a1014627dcdb",
-      "sprite": "briar_thickets/briar_thicket_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "broken_column_001",
       "rel": "broken_columns/broken_column_001",
       "name": "Granite column stump 001",
@@ -2070,28 +2045,6 @@
       "status": "complete",
       "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "chair_002",
-      "rel": "chairs_and_benches/chair_002",
-      "name": "Blue-painted farm chair 002 \u00b7 lit",
-      "category": "chairs_and_benches",
-      "lights": "LIGHTS_ON",
-      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, blue-painted farm chair, small, knee-high, self-emissive at night, softly radiating light: an ember-warm seat cushion glowing softly",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.64,
-        "world_px_height": 24,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f637d9f3-3c4a-4bff-92cb-0252daa569d9",
-      "sprite": "chairs_and_benches/chair_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4687,28 +4640,6 @@
       "animations": []
     },
     {
-      "id": "petrified_stump_901",
-      "rel": "petrified_stumps/petrified_stump_901",
-      "name": "Rainbow silica stump 901",
-      "category": "petrified_stumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral, rainbow silica stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.62,
-        "world_px_height": 23,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "0051ae84-6e77-4d57-bc77-33adfea7e361",
-      "sprite": "petrified_stumps/petrified_stump_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "puffball_001",
       "rel": "puffballs/puffball_001",
       "name": "Cracked leathery earthball 001",
@@ -4749,28 +4680,6 @@
       "status": "complete",
       "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
       "sprite": "puffballs/puffball_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "rail_cart_900",
-      "rel": "rail_carts/rail_cart_900",
-      "name": "Cart on buckled rails 900 \u00b7 lit",
-      "category": "rail_carts",
-      "lights": "LIGHTS_ON",
-      "description": "a heavy wooden mine cart with thick iron-banded wheels standing on a short section of rail track, seen from the side, solid chunky body, cart on buckled rails, waist-high to an adult person, self-emissive at night, softly radiating light: faint glowing coal dust in the empty bed",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.02,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "476454d8-bb4f-4b10-8746-d4ca1df16e9d",
-      "sprite": "rail_carts/rail_cart_900/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5281,28 +5190,6 @@
       "animations": []
     },
     {
-      "id": "soulstone_plinth_900",
-      "rel": "soulstone_plinths/soulstone_plinth_900",
-      "name": "Blue stone, carved column 900 \u00b7 lit",
-      "category": "soulstone_plinths",
-      "lights": "LIGHTS_ON",
-      "description": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, blue stone, carved column, about as tall as an adult person, self-emissive at night, softly radiating light: carved word on the plinth glowing",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.2,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2d87e33c-c8ea-4267-960d-410a6de13ff3",
-      "sprite": "soulstone_plinths/soulstone_plinth_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "spring_basin_003",
       "rel": "spring_basins/spring_basin_003",
       "name": "Moss-rimmed old basin 003",
@@ -5765,28 +5652,6 @@
       "animations": []
     },
     {
-      "id": "story_post_900",
-      "rel": "story_posts/story_post_900",
-      "name": "Weathervane-bird finial post 900 \u00b7 lit",
-      "category": "story_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, weathervane-bird finial post, about as tall as an adult person, self-emissive at night, softly radiating light: oil lantern hooked below the finial",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.73,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e4cab8b9-2d90-465a-8a57-7273b920fd60",
-      "sprite": "story_posts/story_post_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "streetlight_002",
       "rel": "streetlights/streetlight_002",
       "name": "White-painted village lamp 002 \u00b7 lit",
@@ -5985,24 +5850,24 @@
       "animations": []
     },
     {
-      "id": "table_002",
-      "rel": "tables/table_002",
-      "name": "Bare scrubbed pine table 002 \u00b7 lit",
+      "id": "table_004",
+      "rel": "tables/table_004",
+      "name": "Round pedestal table 004 \u00b7 lit",
       "category": "tables",
       "lights": "LIGHTS_ON",
-      "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, bare scrubbed pine table, small, knee-high, self-emissive at night, softly radiating light: a bowl of ember-warm coals",
+      "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, round pedestal table, waist-high, self-emissive at night, softly radiating light: a small glass-hooded oil lamp glowing at its center",
       "view": "low top-down",
       "size": 96,
       "placement": {
-        "world_height_m": 0.73,
-        "world_px_height": 27,
+        "world_height_m": 0.94,
+        "world_px_height": 35,
         "character_height_px": 64,
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "973a4a42-39af-4a11-a746-939d4b56db28",
-      "sprite": "tables/table_002/sprite.webp",
+      "pixellab_object_id": "acdf7418-bc17-47b7-b582-21f004117d76",
+      "sprite": "tables/table_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6575,50 +6440,6 @@
       "status": "complete",
       "pixellab_object_id": "065ab574-1351-49d1-8899-463b57ee75f4",
       "sprite": "water_pumps/water_pump_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waterwheel_004",
-      "rel": "waterwheels/waterwheel_004",
-      "name": "Abandoned mill, dry channel 004 \u00b7 lit",
-      "category": "waterwheels",
-      "lights": "LIGHTS_ON",
-      "description": "a small stone watermill house with a big wooden waterwheel on its side, a millpond and a wooden sluice channel feeding water onto the wheel, the whole mill sitting on its stream bank, abandoned mill, dry channel, towering, many times human height, self-emissive at night, softly radiating light: foxfire fungus glowing on the rotten paddles",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 4.62,
-        "world_px_height": 174,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "21ce85f9-dcab-433f-935a-35410cca3fef",
-      "sprite": "waterwheels/waterwheel_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waterwheel_900",
-      "rel": "waterwheels/waterwheel_900",
-      "name": "Rotted gap-toothed wheel 900 \u00b7 lit",
-      "category": "waterwheels",
-      "lights": "LIGHTS_ON",
-      "description": "a large wooden waterwheel with thick heavy spokes and broad paddles mounted against a solid stone mill wall, water pouring over it, rotted gap-toothed wheel, large, well above head height of a person, self-emissive at night, softly radiating light: millrace water at the base shining pale blue",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 2.73,
-        "world_px_height": 103,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "173e185b-7d3f-4530-80b5-e9d3e7c515dc",
-      "sprite": "waterwheels/waterwheel_900/sprite.webp",
       "rotations": {},
       "animations": []
     },
