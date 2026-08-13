@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 320,
+  "scenery_count": 321,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -720,7 +720,7 @@
       "id": "cliff_features",
       "name": "Cliff Feature",
       "quota": 30,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 103,
@@ -806,7 +806,7 @@
     "chairs_and_benches": 2,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
-    "cliff_features": 2,
+    "cliff_features": 3,
     "cliff_fragments": 2,
     "cliff_vines": 3,
     "crystals": 3,
@@ -2444,6 +2444,28 @@
       "status": "complete",
       "pixellab_object_id": "a7c6e716-a4af-465e-b747-e480f706f54f",
       "sprite": "cliff_features/cliff_feature_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_feature_004",
+      "rel": "cliff_features/cliff_feature_004",
+      "name": "Lichen shelf colony 004 \u00b7 lit",
+      "category": "cliff_features",
+      "lights": "LIGHTS_ON",
+      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, lichen shelf colony, large, twice human height, self-emissive at night, softly radiating light: fireflies drifting around the ledge",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.8,
+        "world_px_height": 105,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "39fcfcbb-f7dd-4067-bb3b-83485dc769a5",
+      "sprite": "cliff_features/cliff_feature_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
