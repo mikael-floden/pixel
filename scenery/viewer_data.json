@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 538,
+  "scenery_count": 539,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -146,7 +146,7 @@
       "id": "fallen_logs",
       "name": "Fallen Log",
       "quota": 62,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 21,
@@ -816,7 +816,7 @@
     "dovecotes": 2,
     "driftwood_logs": 2,
     "fading_relics": 2,
-    "fallen_logs": 7,
+    "fallen_logs": 8,
     "fences": 8,
     "ferns": 7,
     "fish_drying_racks": 7,
@@ -4577,6 +4577,28 @@
       "status": "complete",
       "pixellab_object_id": "918fcefb-9715-4aa0-a7b9-d9525f7abf31",
       "sprite": "fallen_logs/fallen_log_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_008",
+      "rel": "fallen_logs/fallen_log_008",
+      "name": "Fern-flanked damp log 008 \u00b7 lit",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_ON",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fern-flanked damp log, small, knee-high, self-emissive at night, softly radiating light: rows of shelf fungi glowing pale green",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.69,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
+      "sprite": "fallen_logs/fallen_log_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:52:24+00:00",
+  "id": "fallen_log_008",
+  "group": "fallen_logs",
+  "rank": 20,
+  "index": 8,
+  "name": "Fern-flanked damp log 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fern-flanked damp log",
+  "glow_concept": "rows of shelf fungi glowing pale green",
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fern-flanked damp log, small, knee-high, self-emissive at night, softly radiating light: rows of shelf fungi glowing pale green",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.69,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
