@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dovecote_004",
+  "group": "dovecotes",
+  "rank": 96,
+  "index": 4,
+  "name": "Dovecote with perched doves 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dovecote with perched doves",
+  "glow_concept": "warm straw light spilling from the arched openings",
+  "prompt": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, dovecote with perched doves, large, twice human height, self-emissive at night, softly radiating light: warm straw light spilling from the arched openings",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "dovecotes/dovecote_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.14,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "12358c0b-c30c-46c6-af9b-3015d08d6783",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
