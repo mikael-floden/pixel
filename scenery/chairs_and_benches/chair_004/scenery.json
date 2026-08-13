@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_004",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 4,
+  "name": "Cushioned fireside chair 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cushioned fireside chair",
+  "glow_concept": "a small candle lantern hung on the chair back",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, cushioned fireside chair, waist-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.06,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cc3fdf97-7dc8-4426-af28-c9b2591f9d50",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
