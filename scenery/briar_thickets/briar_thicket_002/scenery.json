@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_002",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 2,
+  "name": "White briar roses 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white briar roses",
+  "glow_concept": "rose hips burning like strung embers",
+  "prompt": "an arching mound of thorny briar canes dotted with open wild roses, white briar roses, about as tall as an adult person, self-emissive at night, softly radiating light: rose hips burning like strung embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.2,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "484a2e0c-009c-4b3c-82f6-2ea58b32def0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
