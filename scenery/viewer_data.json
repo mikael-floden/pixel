@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 272,
+  "scenery_count": 273,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -545,7 +545,7 @@
       "id": "trailing_planters",
       "name": "Trailing Planter",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 78,
@@ -878,7 +878,7 @@
     "telegraph_poles": 3,
     "toadstool_rings": 3,
     "torch_posts": 4,
-    "trailing_planters": 1,
+    "trailing_planters": 2,
     "trees": 6,
     "wall_hangings": 1,
     "washing_lines": 2,
@@ -6311,6 +6311,28 @@
       "status": "complete",
       "pixellab_object_id": "76dcc926-13c3-4169-9fcf-8a521a520436",
       "sprite": "trailing_planters/trailing_planter_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "trailing_planter_004",
+      "rel": "trailing_planters/trailing_planter_004",
+      "name": "Rope-bound barrel, morning glories 004 \u00b7 lit",
+      "category": "trailing_planters",
+      "lights": "LIGHTS_ON",
+      "description": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, rope-bound barrel, morning glories, waist-high, self-emissive at night, softly radiating light: light leaking through cracks between the staves",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.91,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
+      "sprite": "trailing_planters/trailing_planter_004/sprite.webp",
       "rotations": {},
       "animations": []
     },

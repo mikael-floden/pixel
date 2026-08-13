@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "trailing_planter_004",
+  "group": "trailing_planters",
+  "rank": 77,
+  "index": 4,
+  "name": "Rope-bound barrel, morning glories 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rope-bound barrel, morning glories",
+  "glow_concept": "light leaking through cracks between the staves",
+  "prompt": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, rope-bound barrel, morning glories, waist-high, self-emissive at night, softly radiating light: light leaking through cracks between the staves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "trailing_planters/trailing_planter_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
