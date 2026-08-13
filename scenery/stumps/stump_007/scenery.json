@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stump_007",
+  "group": "stumps",
+  "rank": 24,
+  "index": 7,
+  "name": "Old rotting stump 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "old rotting stump",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, old rotting stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
