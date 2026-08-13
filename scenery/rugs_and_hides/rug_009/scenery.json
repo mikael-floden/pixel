@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:59:03+00:00",
+  "id": "rug_009",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 9,
+  "name": "Long woven runner rug 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "long woven runner rug",
+  "glow_concept": null,
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, long woven runner rug, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d2c5e5b0-b4f8-4a2f-a2ce-5ba9b25782ba",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
