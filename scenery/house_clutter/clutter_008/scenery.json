@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:45:51+00:00",
+  "id": "clutter_008",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 8,
+  "name": "Butter churn with milk pails 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "butter churn with milk pails",
+  "glow_concept": "a little oil lamp burning beside the basket",
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, butter churn with milk pails, small, knee-high, self-emissive at night, softly radiating light: a little oil lamp burning beside the basket",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.73,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "63cc528e-9398-4444-a73e-f0dbd4003ec4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
