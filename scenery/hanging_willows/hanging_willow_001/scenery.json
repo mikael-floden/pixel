@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hanging_willow_001",
+  "group": "hanging_willows",
+  "rank": 52,
+  "index": 1,
+  "name": "Bare winter willow strands 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "bare winter willow strands",
+  "glow_concept": null,
+  "prompt": "a weeping willow tree with long curtain-like branches trailing all the way to the ground, bare winter willow strands, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
+  "placement": {
+    "world_height_m": 5.62,
+    "world_px_height": 212,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bc058401-ac27-4f9b-938d-0b913fcdef2d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

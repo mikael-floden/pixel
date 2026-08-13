@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 69,
+  "scenery_count": 70,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -370,7 +370,7 @@
       "id": "hanging_willows",
       "name": "Hanging Willow",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 53,
@@ -734,6 +734,7 @@
     "grass_tufts": 1,
     "decor": 1,
     "graves": 1,
+    "hanging_willows": 1,
     "haystacks": 1,
     "hedges": 1,
     "ivy_posts": 1,
@@ -1342,6 +1343,28 @@
       "status": "complete",
       "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
       "sprite": "graves/grave_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hanging_willow_001",
+      "rel": "hanging_willows/hanging_willow_001",
+      "name": "Bare winter willow strands 001",
+      "category": "hanging_willows",
+      "lights": "LIGHTS_OFF",
+      "description": "a weeping willow tree with long curtain-like branches trailing all the way to the ground, bare winter willow strands, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 5.62,
+        "world_px_height": 212,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bc058401-ac27-4f9b-938d-0b913fcdef2d",
+      "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
