@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 498,
+  "scenery_count": 496,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 9,
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 15,
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 18,
@@ -286,7 +286,7 @@
       "id": "washing_lines",
       "name": "Washing Line",
       "quota": 22,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 41,
@@ -792,7 +792,7 @@
     "beaver_lodges": 2,
     "beds": 6,
     "beehives": 7,
-    "bell_posts": 7,
+    "bell_posts": 6,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
@@ -832,7 +832,7 @@
     "graves": 7,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 7,
+    "haystacks": 6,
     "hearths": 6,
     "hedges": 7,
     "hop_poles": 2,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 7,
     "sheaf_poles": 2,
-    "signposts": 7,
+    "signposts": 6,
     "soulstone_outcrops": 7,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -880,7 +880,7 @@
     "trailing_planters": 2,
     "trees": 7,
     "wall_hangings": 6,
-    "washing_lines": 6,
+    "washing_lines": 7,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
@@ -1947,28 +1947,6 @@
       "status": "complete",
       "pixellab_object_id": "29c79ac2-b82f-447b-ab57-9114e8189b7a",
       "sprite": "bell_posts/bell_post_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_014",
-      "rel": "bell_posts/bell_post_014",
-      "name": "Single oak post, bronze bell 014 \u00b7 lit",
-      "category": "bell_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, single oak post, bronze bell, large, twice human height, self-emissive at night, softly radiating light: rune-carved crossbeam shining amber",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.82,
-        "world_px_height": 106,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "def794bb-17e7-4b7e-91eb-0ec573b1d9a1",
-      "sprite": "bell_posts/bell_post_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5830,28 +5808,6 @@
       "animations": []
     },
     {
-      "id": "haystack_012",
-      "rel": "haystacks/haystack_012",
-      "name": "Wildflower-flecked meadow stack 012 \u00b7 lit",
-      "category": "haystacks",
-      "lights": "LIGHTS_ON",
-      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, wildflower-flecked meadow stack, large, twice human height, self-emissive at night, softly radiating light: shielded lantern hung on the center pole",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.45,
-        "world_px_height": 92,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "df8f7bcd-45e6-4454-85f0-022b190b9be3",
-      "sprite": "haystacks/haystack_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "haystack_013",
       "rel": "haystacks/haystack_013",
       "name": "Twin small hillock stacks 013",
@@ -8646,28 +8602,6 @@
       "animations": []
     },
     {
-      "id": "signpost_016",
-      "rel": "signposts/signpost_016",
-      "name": "Single-armed old milepost 016 \u00b7 lit",
-      "category": "signposts",
-      "lights": "LIGHTS_ON",
-      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, single-armed old milepost, large, twice human height, self-emissive at night, softly radiating light: painted place-names glowing like embers",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.98,
-        "world_px_height": 75,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1605f1ba-a55d-408d-b32e-ff0f379d4728",
-      "sprite": "signposts/signpost_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "signpost_017",
       "rel": "signposts/signpost_017",
       "name": "Cast-iron city signpost 017",
@@ -10996,6 +10930,28 @@
       "status": "complete",
       "pixellab_object_id": "c81a181d-01a1-4a98-918e-1dd358941f57",
       "sprite": "washing_lines/washing_line_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "washing_line_014",
+      "rel": "washing_lines/washing_line_014",
+      "name": "Dye-stained craftsman's cloths 014 \u00b7 lit",
+      "category": "washing_lines",
+      "lights": "LIGHTS_ON",
+      "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, dye-stained craftsman's cloths, large, twice human height, self-emissive at night, softly radiating light: glowworm-dotted rope like strung beads",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.04,
+        "world_px_height": 77,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "59c71798-01f2-4d49-86ae-68a729a7fc8b",
+      "sprite": "washing_lines/washing_line_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
