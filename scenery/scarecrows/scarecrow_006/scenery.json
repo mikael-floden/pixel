@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_006",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 6,
+  "name": "Crow-feather trimmed hat 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "crow-feather trimmed hat",
+  "glow_concept": "lantern hung from an outstretched arm",
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, crow-feather trimmed hat, large, well above head height of a person, self-emissive at night, softly radiating light: lantern hung from an outstretched arm",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.22,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c20769b4-53a9-4d22-aeec-1c29177e0518",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
