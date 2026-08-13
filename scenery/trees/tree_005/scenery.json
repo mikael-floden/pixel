@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "tree_005",
+  "group": "trees",
+  "rank": 1,
+  "index": 5,
+  "name": "White-blossomed hawthorn 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "white-blossomed hawthorn",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, white-blossomed hawthorn, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_005/sprite.webp",
+  "placement": {
+    "world_height_m": 4.31,
+    "world_px_height": 162,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "19758807-2707-48aa-866b-4effbf1ef9b4",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
