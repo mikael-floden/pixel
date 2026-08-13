@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "brazier_005",
+  "group": "braziers",
+  "rank": 4,
+  "index": 5,
+  "name": "Squat clay pot brazier 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "squat clay pot brazier",
+  "glow_concept": null,
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, squat clay pot brazier, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.95,
+    "world_px_height": 36,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "26c3cad8-f3be-4dd5-9955-c6237ae6148b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
