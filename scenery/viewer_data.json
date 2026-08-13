@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 300,
+  "scenery_count": 301,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -650,7 +650,7 @@
       "id": "anchors",
       "name": "Anchor",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 93,
@@ -780,7 +780,7 @@
     }
   ],
   "categories": {
-    "anchors": 1,
+    "anchors": 2,
     "ancient_trees": 2,
     "ant_hills": 2,
     "anvils": 2,
@@ -913,6 +913,28 @@
       "status": "complete",
       "pixellab_object_id": "57f27b0e-262c-4695-983e-9b0742f93746",
       "sprite": "anchors/anchor_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "anchor_006",
+      "rel": "anchors/anchor_006",
+      "name": "Tarred black anchor 006 \u00b7 lit",
+      "category": "anchors",
+      "lights": "LIGHTS_ON",
+      "description": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, tarred black anchor, roughly six feet tall, human height, self-emissive at night, softly radiating light: ship's name on the stock shining softly",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.72,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a9e1d481-9d40-4333-8b1f-ade49363b79e",
+      "sprite": "anchors/anchor_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
