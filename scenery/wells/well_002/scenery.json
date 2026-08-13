@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_002",
+  "group": "wells",
+  "rank": 11,
+  "index": 2,
+  "name": "Open stone ring, no roof 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "open stone ring, no roof",
+  "glow_concept": "soft blue soul-light rising from the water below",
+  "prompt": "a round fieldstone well with a peaked wooden roof on two posts, a windlass crank and a rope-hung bucket, open stone ring, no roof, about as tall as an adult person, self-emissive at night, softly radiating light: soft blue soul-light rising from the water below",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.61,
+    "world_px_height": 61,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e8b8bd16-6610-4728-bc74-b658a4e56932",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
