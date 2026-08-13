@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fish_drying_rack_002",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 2,
+  "name": "Rack with net draped over 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rack with net draped over",
+  "glow_concept": "a tallow lamp hanging from the crossbar",
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with net draped over, about as tall as an adult person, self-emissive at night, softly radiating light: a tallow lamp hanging from the crossbar",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fish_drying_racks/fish_drying_rack_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.77,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7a1fc934-df2d-4b1e-874b-337f4acb7c40",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
