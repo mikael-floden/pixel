@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 371,
+  "scenery_count": 372,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 1
+      "done": 2
     }
   ],
   "categories": {
@@ -879,7 +879,7 @@
     "torch_posts": 6,
     "trailing_planters": 2,
     "trees": 7,
-    "wall_hangings": 1,
+    "wall_hangings": 2,
     "washing_lines": 5,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -8224,6 +8224,28 @@
       "status": "complete",
       "pixellab_object_id": "e5363015-a21b-479b-907b-da80c829a6ac",
       "sprite": "trees/tree_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wall_hanging_009",
+      "rel": "wall_hangings/wall_hanging_009",
+      "name": "Small mounted shelf of jars on brackets 009",
+      "category": "wall_hangings",
+      "lights": "LIGHTS_OFF",
+      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, small mounted shelf of jars on brackets, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.87,
+        "world_px_height": 33,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "13853458-bfea-4922-8164-fbf64fbbb547",
+      "sprite": "wall_hangings/wall_hanging_009/sprite.webp",
       "rotations": {},
       "animations": []
     },

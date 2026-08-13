@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:59:45+00:00",
+  "id": "wall_hanging_009",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 9,
+  "name": "Small mounted shelf of jars on brackets 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "small mounted shelf of jars on brackets",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, small mounted shelf of jars on brackets, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_009/sprite.webp",
+  "placement": {
+    "world_height_m": 0.87,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "13853458-bfea-4922-8164-fbf64fbbb547",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
