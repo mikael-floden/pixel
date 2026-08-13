@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 277,
+  "scenery_count": 278,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -573,7 +573,7 @@
       "id": "web_frames",
       "name": "Web Frame",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 82,
@@ -888,7 +888,7 @@
     "waterwheels": 2,
     "wayside_shrines": 2,
     "waystones": 2,
-    "web_frames": 1,
+    "web_frames": 2,
     "wells": 2,
     "windmills": 2,
     "wisteria_snags": 2,
@@ -6883,6 +6883,28 @@
       "status": "complete",
       "pixellab_object_id": "294fe0ec-4218-4a1a-847f-d94b86248191",
       "sprite": "web_frames/web_frame_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "web_frame_004",
+      "rel": "web_frames/web_frame_004",
+      "name": "Dew-beaded morning web 004 \u00b7 lit",
+      "category": "web_frames",
+      "lights": "LIGHTS_ON",
+      "description": "a dense heavy spiderweb spun across the gap between two thick weathered leaning posts, sagging with dew, dew-beaded morning web, large, twice human height, self-emissive at night, softly radiating light: wrapped prey bundles glowing like paper lanterns",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.06,
+        "world_px_height": 78,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "84cce9d0-fbde-44ec-8a7b-5f8772608aff",
+      "sprite": "web_frames/web_frame_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
