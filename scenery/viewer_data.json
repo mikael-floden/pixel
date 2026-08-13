@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 274,
+  "scenery_count": 275,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -531,7 +531,7 @@
       "id": "stone_fountains",
       "name": "Stone Fountain",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 76,
@@ -868,7 +868,7 @@
     "spring_basins": 1,
     "standing_stones": 3,
     "statues": 1,
-    "stone_fountains": 1,
+    "stone_fountains": 2,
     "stones": 14,
     "story_posts": 2,
     "streetlights": 3,
@@ -5519,6 +5519,28 @@
       "status": "complete",
       "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
       "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_fountain_004",
+      "rel": "stone_fountains/stone_fountain_004",
+      "name": "Fountain with carved child figure 004 \u00b7 lit",
+      "category": "stone_fountains",
+      "lights": "LIGHTS_ON",
+      "description": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, fountain with carved child figure, large, twice human height, self-emissive at night, softly radiating light: carved memorial runes shining on the stone",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.13,
+        "world_px_height": 80,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
+      "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
