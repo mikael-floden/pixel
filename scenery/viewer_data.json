@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 268,
+  "scenery_count": 269,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -139,7 +139,7 @@
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 20,
@@ -886,7 +886,7 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 1,
+    "wayside_shrines": 2,
     "waystones": 2,
     "web_frames": 1,
     "wells": 2,
@@ -6619,6 +6619,28 @@
       "status": "complete",
       "pixellab_object_id": "173e185b-7d3f-4530-80b5-e9d3e7c515dc",
       "sprite": "waterwheels/waterwheel_900/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wayside_shrine_011",
+      "rel": "wayside_shrines/wayside_shrine_011",
+      "name": "Birch-bark roofed shrine 011",
+      "category": "wayside_shrines",
+      "lights": "LIGHTS_OFF",
+      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, birch-bark roofed shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
+      "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
