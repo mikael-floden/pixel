@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 230,
+  "scenery_count": 231,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -664,7 +664,7 @@
       "id": "spring_basins",
       "name": "Spring Basin",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 95,
@@ -783,6 +783,7 @@
     "signposts": 1,
     "soulstone_outcrops": 1,
     "soulstone_plinths": 1,
+    "spring_basins": 1,
     "standing_stones": 3,
     "statues": 1,
     "stone_fountains": 1,
@@ -4532,6 +4533,28 @@
       "status": "complete",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "spring_basin_001",
+      "rel": "spring_basins/spring_basin_001",
+      "name": "Moss-rimmed old basin 001",
+      "category": "spring_basins",
+      "lights": "LIGHTS_OFF",
+      "description": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework, moss-rimmed old basin, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.0,
+        "world_px_height": 38,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "38de4942-59b4-4a97-8ffb-b5aa7b6c8ddc",
+      "sprite": "spring_basins/spring_basin_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
