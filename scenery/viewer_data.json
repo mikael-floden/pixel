@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 543,
+  "scenery_count": 544,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 32,
@@ -844,7 +844,7 @@
     "market_stalls": 4,
     "maypoles": 6,
     "moss_clumps": 7,
-    "mushrooms": 7,
+    "mushrooms": 8,
     "nest_posts": 2,
     "offering_tables": 8,
     "orchard_trees": 8,
@@ -7850,6 +7850,28 @@
       "status": "complete",
       "pixellab_object_id": "398058ea-2dc5-4f4b-9e9d-61b57fc7228b",
       "sprite": "mushrooms/mushroom_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_010",
+      "rel": "mushrooms/mushroom_010",
+      "name": "Rosy russula pair 010 \u00b7 lit",
+      "category": "mushrooms",
+      "lights": "LIGHTS_ON",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, rosy russula pair, tiny, only ankle-high, self-emissive at night, softly radiating light: dewdrops on the caps lit like tiny lamps",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.3,
+        "world_px_height": 11,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
+      "sprite": "mushrooms/mushroom_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:54:30+00:00",
+  "id": "mushroom_010",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 10,
+  "name": "Rosy russula pair 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rosy russula pair",
+  "glow_concept": "dewdrops on the caps lit like tiny lamps",
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, rosy russula pair, tiny, only ankle-high, self-emissive at night, softly radiating light: dewdrops on the caps lit like tiny lamps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.3,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
