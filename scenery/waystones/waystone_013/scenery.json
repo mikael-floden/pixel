@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_013",
+  "group": "waystones",
+  "rank": 6,
+  "index": 13,
+  "name": "Half-sunken meadow stone 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-sunken meadow stone",
+  "glow_concept": null,
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, half-sunken meadow stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.67,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "35ff9adf-a1bd-4764-8427-b25673fd0e92",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
