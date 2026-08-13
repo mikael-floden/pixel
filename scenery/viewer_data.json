@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 123,
+  "scenery_count": 124,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 8,
@@ -798,7 +798,7 @@
     "sundials": 1,
     "telegraph_poles": 1,
     "toadstool_rings": 1,
-    "torch_posts": 1,
+    "torch_posts": 2,
     "trailing_planters": 1,
     "trees": 2,
     "washing_lines": 1,
@@ -3217,6 +3217,28 @@
       "status": "complete",
       "pixellab_object_id": "fafd487e-8aad-4b6a-95b9-6765b77380db",
       "sprite": "torch_posts/torch_post_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_002",
+      "rel": "torch_posts/torch_post_002",
+      "name": "Double-torch crossarm post 002 \u00b7 lit",
+      "category": "torch_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, double-torch crossarm post, about as tall as an adult person, self-emissive at night, softly radiating light: ember-crusted head glowing without open flame",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.75,
+        "world_px_height": 66,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9e10c3c5-3e94-48b5-b84f-9ebcf7fab175",
+      "sprite": "torch_posts/torch_post_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
