@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_010",
+  "group": "hedges",
+  "rank": 12,
+  "index": 10,
+  "name": "Flowering hawthorn hedge 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flowering hawthorn hedge",
+  "glow_concept": "luminous white briar roses threaded through",
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, flowering hawthorn hedge, roughly six feet tall, human height, self-emissive at night, softly radiating light: luminous white briar roses threaded through",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.73,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ef09c73d-aa5b-4048-aa52-9e89a61553f7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
