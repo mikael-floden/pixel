@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_007",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 7,
+  "name": "Soulstone with inscribed word 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "soulstone with inscribed word",
+  "glow_concept": null,
+  "prompt": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, soulstone with inscribed word, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.63,
+    "world_px_height": 24,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ea7d8cd5-843e-48da-a3a2-c32295eae8d6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
