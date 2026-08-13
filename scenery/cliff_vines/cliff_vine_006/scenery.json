@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:14:46+00:00",
+  "id": "cliff_vine_006",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 6,
+  "name": "Broad double-width ivy curtain 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "broad double-width ivy curtain",
+  "glow_concept": "pale blue soul-flowers dotted down the fall",
+  "prompt": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, broad double-width ivy curtain, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "cliff_vines/cliff_vine_006/sprite.webp",
+  "placement": {
+    "world_height_m": 4.7,
+    "world_px_height": 177,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "67deaeb5-06f8-43ef-af35-52fd6a7609f0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
