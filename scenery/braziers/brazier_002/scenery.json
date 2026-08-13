@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "brazier_002",
+  "group": "braziers",
+  "rank": 4,
+  "index": 2,
+  "name": "Riveted copper bowl 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "riveted copper bowl",
+  "glow_concept": "deep red coal bed breathing light",
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, riveted copper bowl, waist-high to an adult person, self-emissive at night, softly radiating light: deep red coal bed breathing light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.9,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "58b343d7-d4eb-4c45-a251-c489c399889c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
