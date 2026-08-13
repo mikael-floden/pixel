@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wasp_nest_tree_001",
+  "group": "wasp_nest_trees",
+  "rank": 86,
+  "index": 1,
+  "name": "Aspen with tiered nest 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "aspen with tiered nest",
+  "glow_concept": null,
+  "prompt": "a small gnarled tree with a large gray paper wasp nest hanging from a branch, layered papery swirls around a round entrance hole, aspen with tiered nest, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "wasp_nest_trees/wasp_nest_tree_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.82,
+    "world_px_height": 144,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a6c1f6ee-0fb0-470f-9aa9-9275fd491818",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
