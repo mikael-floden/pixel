@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 145,
+  "scenery_count": 146,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -209,7 +209,7 @@
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 30,
@@ -762,7 +762,7 @@
     "hop_poles": 1,
     "ivy_posts": 1,
     "lantern_posts": 2,
-    "lantern_stands": 1,
+    "lantern_stands": 2,
     "letter_boxes": 1,
     "market_stalls": 1,
     "maypoles": 1,
@@ -2337,6 +2337,28 @@
       "status": "complete",
       "pixellab_object_id": "443f5c33-5d81-4fcf-82d5-95d046916cc5",
       "sprite": "lantern_stands/lantern_stand_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_002",
+      "rel": "lantern_stands/lantern_stand_002",
+      "name": "Festival stand with ribbons 002 \u00b7 lit",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, festival stand with ribbons, about as tall as an adult person, self-emissive at night, softly radiating light: paper lantern glowing through painted panes",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.82,
+        "world_px_height": 69,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c88046b0-23d2-43c2-8525-2b3480135bb6",
+      "sprite": "lantern_stands/lantern_stand_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
