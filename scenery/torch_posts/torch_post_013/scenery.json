@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:47:35+00:00",
+  "id": "torch_post_013",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 13,
+  "name": "Tar-dipped pine torch 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "tar-dipped pine torch",
+  "glow_concept": null,
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, tar-dipped pine torch, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "torch_posts/torch_post_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.84,
+    "world_px_height": 69,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e6b112ee-4cd8-4634-9357-d0ab18ae5dbc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
