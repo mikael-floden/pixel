@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 303,
+  "scenery_count": 304,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 10,
@@ -799,7 +799,7 @@
     "briar_thickets": 2,
     "broken_columns": 2,
     "bushes": 3,
-    "cairns": 2,
+    "cairns": 3,
     "light": 1,
     "carts": 3,
     "cattail_clumps": 4,
@@ -1956,6 +1956,28 @@
       "status": "complete",
       "pixellab_object_id": "1eb1bf17-2f79-4b68-b0fd-1f62b4513187",
       "sprite": "cairns/cairn_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_008",
+      "rel": "cairns/cairn_008",
+      "name": "Waist-high dome cairn 008 \u00b7 lit",
+      "category": "cairns",
+      "lights": "LIGHTS_ON",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, waist-high dome cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: chalk name-marks shining white on each stone",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.29,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6387ed57-cf0d-4fdb-ad5d-1be71c6e638e",
+      "sprite": "cairns/cairn_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
