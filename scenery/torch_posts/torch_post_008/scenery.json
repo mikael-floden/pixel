@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "torch_post_008",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 8,
+  "name": "Brass-cupped torch post 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "brass-cupped torch post",
+  "glow_concept": "ragged orange flame trailing black smoke",
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, brass-cupped torch post, large, twice human height, self-emissive at night, softly radiating light: ragged orange flame trailing black smoke",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "torch_posts/torch_post_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.92,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cea940e5-5b55-4d56-abf0-15df993cadd9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
