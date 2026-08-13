@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:51:11+00:00",
+  "id": "orchard_tree_021",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 21,
+  "name": "Cherry in full blossom 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "cherry in full blossom",
+  "glow_concept": null,
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, cherry in full blossom, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_021/sprite.webp",
+  "placement": {
+    "world_height_m": 3.17,
+    "world_px_height": 119,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "aac9c3af-eb64-47fb-87dd-ecf73b7689c8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
