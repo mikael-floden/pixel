@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:24:43+00:00",
+  "id": "windmill_009",
+  "group": "windmills",
+  "rank": 47,
+  "index": 9,
+  "name": "Whitewashed smock mill 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "whitewashed smock mill",
+  "glow_concept": null,
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, whitewashed smock mill, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_009/sprite.webp",
+  "placement": {
+    "world_height_m": 4.13,
+    "world_px_height": 155,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
