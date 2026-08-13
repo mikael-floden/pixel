@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 407,
+  "scenery_count": 408,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 2,
@@ -800,7 +800,7 @@
     "toadstool_rings": 6,
     "torch_posts": 6,
     "trailing_planters": 2,
-    "trees": 6,
+    "trees": 7,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -8849,6 +8849,28 @@
       "status": "complete",
       "pixellab_object_id": "5386df0b-f8a3-4e91-b8fc-91bd3a0806b4",
       "sprite": "trees/tree_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_007",
+      "rel": "trees/tree_007",
+      "name": "Lightning-split trunk 007",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, lightning-split trunk, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.79,
+        "world_px_height": 143,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dc463976-a9d9-4903-9008-844c57067bf0",
+      "sprite": "trees/tree_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
