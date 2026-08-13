@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fish_drying_rack_005",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 5,
+  "name": "Winter rack with frozen fish 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "winter rack with frozen fish",
+  "glow_concept": null,
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, winter rack with frozen fish, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fish_drying_racks/fish_drying_rack_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.76,
+    "world_px_height": 66,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3a5aa1a3-a783-420b-adcf-ad2fbf89ec3f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
