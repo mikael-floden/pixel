@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:57:09+00:00",
+  "id": "woodpile_008",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 8,
+  "name": "Fresh pale split-pine stack 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fresh pale split-pine stack",
+  "glow_concept": "sparks of light drifting off fresh-split wood",
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, fresh pale split-pine stack, waist-high, self-emissive at night, softly radiating light: sparks of light drifting off fresh-split wood",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.13,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5dd55055-68b8-4ed1-9249-3d261a8c13dc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
