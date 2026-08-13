@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_007",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 7,
+  "name": "Briar roses on arching canes 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "briar roses on arching canes",
+  "glow_concept": null,
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, briar roses on arching canes, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a6879a28-f045-4a1d-8f9b-9703f53b2e8a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
