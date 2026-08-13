@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cupboard_004",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 4,
+  "name": "Heavy china cabinet 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "heavy china cabinet",
+  "glow_concept": "a glowing kettle resting on the sideboard",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, heavy china cabinet, roughly six feet tall, human height, self-emissive at night, softly radiating light: a glowing kettle resting on the sideboard",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.33,
+    "world_px_height": 50,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
