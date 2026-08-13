@@ -96,7 +96,7 @@ def can_spend(cfg, state):
 
 # --- one piece ---------------------------------------------------------------
 
-PUSH_EVERY = 8   # commit per piece, push (-> deploy) every N pieces + at exit
+PUSH_EVERY = 20  # commit per piece, push (-> deploy) every N pieces + at exit
 
 
 def run_piece(client, cfg, group, spec, push=True):

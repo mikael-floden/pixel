@@ -50,6 +50,28 @@ def _gcd(a, b):
     return a
 
 
+def _scale_phrase(height_m: float) -> str:
+    """Human-anchored size cue baked into every prompt. The ONE deletion-worthy
+    sin here is broken scale vs the player (maintainer 2026-08-13: "compare
+    your work against a human to understand if your scale is reasonable"), so
+    every piece tells the model how big it is IN HUMAN TERMS, not metres —
+    image models know knees and shoulders far better than SI units. The
+    manifest's placement (64px = 1.7m) stays the authoritative render size."""
+    if height_m < 0.35:
+        return "tiny, ankle-height to an adult person"
+    if height_m < 0.75:
+        return "small, knee-high to an adult person"
+    if height_m < 1.2:
+        return "waist-high to an adult person"
+    if height_m < 1.9:
+        return "about as tall as an adult person"
+    if height_m < 3.0:
+        return "large, well above head height of a person"
+    if height_m < 4.5:
+        return "tall, about two people high"
+    return "towering, several times the height of a person"
+
+
 def quota_for(rank: int, rule: dict) -> int:
     return max(int(rule.get("floor", 2)),
                int(rule.get("base", 102)) + int(rule.get("step", -2)) * rank)
@@ -89,10 +111,11 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
 
     off_clause = cfg["lights"]["off_clause"]
     on_clause = cfg["lights"]["on_clause"]
+    scale = _scale_phrase(height)
     if lights_on:
-        prompt = f"{group['description']}, {variety}, {on_clause}: {glow}"
+        prompt = f"{group['description']}, {variety}, {scale}, {on_clause}: {glow}"
     else:
-        prompt = f"{group['description']}, {variety}, {off_clause}"
+        prompt = f"{group['description']}, {variety}, {scale}, {off_clause}"
 
     nice = variety.strip().rstrip(".")
     name = f"{nice[:1].upper()}{nice[1:]} {index:03d}" + (" · lit" if lights_on else "")
