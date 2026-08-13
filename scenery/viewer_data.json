@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 280,
+  "scenery_count": 281,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -622,7 +622,7 @@
       "id": "letter_boxes",
       "name": "Letter Box",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 89,
@@ -840,7 +840,7 @@
     "ivy_posts": 3,
     "lantern_posts": 4,
     "lantern_stands": 3,
-    "letter_boxes": 1,
+    "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 4,
     "moss_clumps": 3,
@@ -4111,6 +4111,28 @@
       "status": "complete",
       "pixellab_object_id": "0b076865-875e-4228-9fd5-9c31c131b18b",
       "sprite": "letter_boxes/letter_box_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "letter_box_004",
+      "rel": "letter_boxes/letter_box_004",
+      "name": "Red-painted tin box 004 \u00b7 lit",
+      "category": "letter_boxes",
+      "lights": "LIGHTS_ON",
+      "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base, red-painted tin box, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted name on the box shining softly",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a2618c90-0797-4bf0-a602-98a282f782f1",
+      "sprite": "letter_boxes/letter_box_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
