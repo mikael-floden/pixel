@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:56:34+00:00",
+  "id": "crystal_011",
+  "group": "crystals",
+  "rank": 37,
+  "index": 11,
+  "name": "Dark violet night cluster 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "dark violet night cluster",
+  "glow_concept": null,
+  "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, dark violet night cluster, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "crystals/crystal_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.57,
+    "world_px_height": 59,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "843a7822-b976-4c6e-8957-5b26d61c5a4d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
