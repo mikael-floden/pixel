@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beehive_004",
+  "group": "beehives",
+  "rank": 30,
+  "index": 4,
+  "name": "Tall four-coil skep 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tall four-coil skep",
+  "glow_concept": "shining amber honey seeping down the coils",
+  "prompt": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, tall four-coil skep, waist-high to an adult person, self-emissive at night, softly radiating light: shining amber honey seeping down the coils",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beehives/beehive_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.02,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "56bbc68d-4f77-4ce7-b9a7-329e98a532f1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
