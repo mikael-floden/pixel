@@ -352,9 +352,9 @@
             "magma_wolf/animations/die/south-east/02.webp",
             "magma_wolf/animations/die/south-east/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:58 GMT",
+          "lm": "Thu, 13 Aug 2026 15:22:35 GMT",
           "src_frames": 4,
-          "sub": "45bbad7d-6503-4f7d-8a1d-fdcb3692704b"
+          "sub": "d98eeafd-56ec-40dd-96ca-7321c899abac"
         },
         "south-west": {
           "frames": 4,
@@ -518,16 +518,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-faints and fades away",
-      "key": "die",
-      "direction": "south-east",
-      "takes": [
-        "45bbad7d-6503-4f7d-8a1d-fdcb3692704b",
-        "5406a85b-f44f-4d37-8eb0-ba6b3efc5870"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }
