@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_trellis_001",
+  "group": "flower_trellises",
+  "rank": 64,
+  "index": 1,
+  "name": "Mixed pastel sweet peas 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "mixed pastel sweet peas",
+  "glow_concept": null,
+  "prompt": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines, mixed pastel sweet peas, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.98,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
