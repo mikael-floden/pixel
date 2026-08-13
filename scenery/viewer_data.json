@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 365,
+  "scenery_count": 366,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -762,7 +762,7 @@
       "id": "rugs_and_hides",
       "name": "Rug",
       "quota": 30,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 109,
@@ -856,7 +856,7 @@
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
-    "rugs_and_hides": 3,
+    "rugs_and_hides": 4,
     "ruined_arches": 2,
     "rusted_machines": 2,
     "scarecrows": 4,
@@ -6266,6 +6266,28 @@
       "status": "complete",
       "pixellab_object_id": "fcb52f67-405e-4f62-b755-5f6cbf766817",
       "sprite": "rugs_and_hides/rug_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rug_005",
+      "rel": "rugs_and_hides/rug_005",
+      "name": "Cream sheepskin hide rug 005",
+      "category": "rugs_and_hides",
+      "lights": "LIGHTS_OFF",
+      "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, cream sheepskin hide rug, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.09,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ac2cd710-f72d-4a10-b10b-42592288b31d",
+      "sprite": "rugs_and_hides/rug_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
