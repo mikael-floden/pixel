@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sundial_003",
+  "group": "sundials",
+  "rank": 93,
+  "index": 3,
+  "name": "Ivy-wrapped old sundial 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "ivy-wrapped old sundial",
+  "glow_concept": null,
+  "prompt": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon, ivy-wrapped old sundial, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "sundials/sundial_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.08,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

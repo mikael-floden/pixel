@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 284,
+  "scenery_count": 285,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -657,7 +657,7 @@
       "id": "sundials",
       "name": "Sundial",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 94,
@@ -873,7 +873,7 @@
     "story_posts": 2,
     "streetlights": 3,
     "stumps": 5,
-    "sundials": 1,
+    "sundials": 2,
     "tables": 1,
     "telegraph_poles": 3,
     "toadstool_rings": 3,
@@ -6223,6 +6223,28 @@
       "status": "complete",
       "pixellab_object_id": "a3e345ff-60e1-4f4c-8256-b0a69a47c9c1",
       "sprite": "sundials/sundial_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sundial_003",
+      "rel": "sundials/sundial_003",
+      "name": "Ivy-wrapped old sundial 003",
+      "category": "sundials",
+      "lights": "LIGHTS_OFF",
+      "description": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon, ivy-wrapped old sundial, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
+      "sprite": "sundials/sundial_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
