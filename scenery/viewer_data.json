@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 313,
+  "scenery_count": 314,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -139,7 +139,7 @@
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 20,
@@ -885,7 +885,7 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 2,
+    "wayside_shrines": 3,
     "waystones": 3,
     "web_frames": 2,
     "wells": 3,
@@ -7498,6 +7498,28 @@
       "status": "complete",
       "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
       "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wayside_shrine_012",
+      "rel": "wayside_shrines/wayside_shrine_012",
+      "name": "Turf-roofed squat shrine 012 \u00b7 lit",
+      "category": "wayside_shrines",
+      "lights": "LIGHTS_ON",
+      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, turf-roofed squat shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm interior light spilling from the doorway",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.33,
+        "world_px_height": 50,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2aabfc49-4c0a-4089-b444-890d4cff4155",
+      "sprite": "wayside_shrines/wayside_shrine_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
