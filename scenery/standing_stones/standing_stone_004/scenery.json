@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "standing_stone_004",
+  "group": "standing_stones",
+  "rank": 38,
+  "index": 4,
+  "name": "Moss-hooded ancient stone 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-hooded ancient stone",
+  "glow_concept": "the central name shining bright white",
+  "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, moss-hooded ancient stone, large, well above head height of a person, self-emissive at night, softly radiating light: the central name shining bright white",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "standing_stones/standing_stone_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.98,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3fcc7049-dad3-4153-9ebf-c3f0836aeab8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
