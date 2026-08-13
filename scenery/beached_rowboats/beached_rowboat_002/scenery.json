@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beached_rowboat_002",
+  "group": "beached_rowboats",
+  "rank": 84,
+  "index": 2,
+  "name": "Faded red painted hull 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "faded red painted hull",
+  "glow_concept": "a candle stub burning on the rowing thwart",
+  "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, faded red painted hull, waist-high to an adult person, self-emissive at night, softly radiating light: a candle stub burning on the rowing thwart",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "beached_rowboats/beached_rowboat_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.02,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8c1a6061-09f6-40a9-be87-9e444c5734f7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
