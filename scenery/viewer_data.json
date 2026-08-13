@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 422,
+  "scenery_count": 423,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 15,
@@ -792,7 +792,7 @@
     "beaver_lodges": 2,
     "beds": 5,
     "beehives": 5,
-    "bell_posts": 5,
+    "bell_posts": 6,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
@@ -1771,6 +1771,28 @@
       "status": "complete",
       "pixellab_object_id": "d7a2ade0-c58c-4607-8808-3033be8ff8c1",
       "sprite": "bell_posts/bell_post_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_011",
+      "rel": "bell_posts/bell_post_011",
+      "name": "Rune-carved post, patina bell 011",
+      "category": "bell_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, rune-carved post, patina bell, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.37,
+        "world_px_height": 89,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5bd43c96-e1ab-4c66-916c-95c95dd6d75f",
+      "sprite": "bell_posts/bell_post_011/sprite.webp",
       "rotations": {},
       "animations": []
     },

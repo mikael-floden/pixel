@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_011",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 11,
+  "name": "Rune-carved post, patina bell 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "rune-carved post, patina bell",
+  "glow_concept": null,
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, rune-carved post, patina bell, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.37,
+    "world_px_height": 89,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5bd43c96-e1ab-4c66-916c-95c95dd6d75f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
