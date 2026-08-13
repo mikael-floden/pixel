@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "clutter_003",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 3,
+  "name": "Flour sack leaning on a crock 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "flour sack leaning on a crock",
+  "glow_concept": null,
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, flour sack leaning on a crock, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_003/sprite.webp",
+  "placement": {
+    "world_height_m": 0.7,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0ab664bf-5a94-451d-8efa-282fbb0d2d98",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
