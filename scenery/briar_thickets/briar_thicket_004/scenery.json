@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_004",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 4,
+  "name": "Garden rose gone wild, double blooms 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "garden rose gone wild, double blooms",
+  "glow_concept": "a warm heart of light buried deep inside",
+  "prompt": "an arching mound of thorny briar canes dotted with open wild roses, garden rose gone wild, double blooms, about as tall as an adult person, self-emissive at night, softly radiating light: a warm heart of light buried deep inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.42,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1e41cbae-6a70-4ca3-ad88-77ba2e78cc79",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
