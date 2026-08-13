@@ -307,7 +307,7 @@ function makePlayer(entity, kind) {
         const d = g.getImageData(0, 0, fw, fh).data;
         for (let y = 0; y < fh; y++)
           for (let x = 0; x < fw; x++)
-            if (d[(y * fw + x) * 4 + 3] > 8) {          // same alpha cut as art-bounds.py
+            if (d[(y * fw + x) * 4 + 3] > 8) {          // same alpha cut as the build's
               if (x < x0) x0 = x;
               if (x > x1) x1 = x;
               if (y < y0) y0 = y;
@@ -360,7 +360,7 @@ function makePlayer(entity, kind) {
   // Salamander II are the same 30x35 creature but ship 78x48 and 48x48
   // frames, so they rendered 1.67x apart — and the 32x23 frog came out 2.5x
   // wider than the 77x121 mammoth. The padding is cropped away with each
-  // clip's measured content box (wiki/tools/art-bounds.py) and everyone
+  // clip's measured content box (build.mjs + wiki/tools/webp-pixels.mjs) and everyone
   // draws at data.artScale: same creature = same size, bigger creature =
   // bigger. The crop is PER CLIP, so it stays put while a clip plays and the
   // animation's motion still shows. Zoom buttons override the scale.

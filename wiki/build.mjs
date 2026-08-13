@@ -20,6 +20,7 @@ import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import { contentBounds } from "./tools/webp-pixels.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -1712,32 +1713,119 @@ const music = buildMusic();
 const items = buildItems();
 const lore = buildLore();
 const constants = buildConstants();
-// Real creature bounds inside each frame (wiki/tools/art-bounds.py): lets the
-// viewer crop away transparent padding and draw everyone at ONE scale, so the
-// same creature is always the same size on screen. Missing file → the viewer
-// falls back to whole-frame scaling.
-const artBounds = readJson(join(ROOT, "wiki", "art_bounds.json"));
-const artScale = artBounds?.scale ?? 2;
-const artBox = artBounds?.boxes ?? null;
-// Entities the measurement never saw. art-bounds.py reads THIS build's
-// data.json, so a domain that grows between the two runs leaves the new
-// entities unmeasured — and an unmeasured clip draws at whole-FRAME size,
-// padding included, which is 512px of stage for a 414px creature. That is
-// how the 33 monsters imported on 2026-08-13 came to overflow the animation
-// viewer while Diretusk and Rimeshard, measured back on 07-30, sat inside it.
-// Never silent: the fix is one command and this names it.
-const artUnmeasured = [];
+// Real creature bounds inside each frame: the viewer crops away transparent
+// padding and draws everyone at ONE scale, so the same creature is always the
+// same size on screen.
+//
+// THE BUILD MEASURES THE ART ITSELF (maintainer 2026-08-13: "It should just
+// work when someone pushes"). This used to be a separate Python tool reading
+// this build's own data.json — a circular two-pass dance, and art pushed
+// between the passes shipped unmeasured: that is how 33 monsters overflowed
+// the animation viewer while Diretusk, measured weeks earlier, sat inside it.
+// Now every clip is measured right here (wiki/tools/webp-pixels.mjs, a VP8L
+// decoder proven md5-identical to Pillow over all 24,103 art files), and
+// because this build already runs inside every deploy's image build, art is
+// measured in the same breath it ships. art_bounds.json is only a CACHE keyed
+// by content hash — with it stale, missing, or deleted the build still
+// produces identical numbers, just a few seconds slower.
+const artBoundsPath = join(ROOT, "wiki", "art_bounds.json");
+const artPrior = readJson(artBoundsPath);
+const artClips = {}, artHashes = {};
+const artFailed = [];
+let artCachedN = 0, artMeasuredN = 0;
+const artBoxes = {}, artOpens = [];
+const bankers = (v) => { const f = Math.floor(v); const d = v - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : f % 2 ? f + 1 : f; };
 for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
   for (const e of list ?? []) {
-    let seen = 0, total = 0;
+    const sh = e.shadow ?? {}, foot = e.artBottom ?? 1, hover = e.hoverPx ?? 0;
     for (const [sname, st] of Object.entries(e.animations ?? {})) {
       for (const [dname, clip] of Object.entries(st.dirs ?? {})) {
-        const bb = artBounds?.clips?.[`${e.path}|${sname}|${dname}`];
-        total++;
-        if (bb) { clip.bb = bb; seen++; }
+        const key = `${e.path}|${sname}|${dname}`;
+        const cw = clip.fw ?? e.frameW, ch = clip.fh ?? e.frameH;
+        if (!cw || !ch) continue;
+        // Per-frame files (characters2) or one strip (everyone else). The
+        // hash covers the bytes AND the slicing, so editing a declared frame
+        // size without touching the file still re-measures.
+        const files = clip.strip
+          ? [join(ROOT, clip.strip)]
+          : clip.framesDir
+            ? Array.from({ length: clip.frames ?? 0 }, (_, i) =>
+                join(ROOT, clip.framesDir, `${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`))
+            : [];
+        if (!files.length) continue;
+        const hasher = createHash("md5");
+        let readable = 0;
+        const bufs = [];
+        for (const f of files) {
+          try { const b = readFileSync(f); hasher.update(b); bufs.push(b); readable++; }
+          catch { hasher.update("missing"); bufs.push(null); }
+        }
+        if (!readable) { artFailed.push(`${key}: no frames on disk`); continue; }
+        hasher.update(`|${cw}x${ch}x${clip.frames ?? 1}`);
+        const digest = hasher.digest("hex");
+        let bb;
+        if (artPrior?.hashes?.[key] === digest) {
+          bb = artPrior.clips?.[key] ?? null;            // null = measured, empty
+          artCachedN++;
+        } else {
+          try {
+            if (clip.strip) bb = contentBounds(bufs[0], cw, clip.frames ?? 1)?.bb ?? null;
+            else {
+              // Union of the frames; a frame whose height disagrees with the
+              // first is skipped, exactly as the Python tool did.
+              let firstH = null; bb = null;
+              for (const b of bufs) {
+                if (!b) continue;
+                const r = contentBounds(b, cw, 1);
+                if (!r) continue;
+                if (firstH === null) firstH = r.h;
+                else if (r.h !== firstH) continue;
+                bb = bb ? [Math.min(bb[0], r.bb[0]), Math.min(bb[1], r.bb[1]), Math.max(bb[2], r.bb[2]), Math.max(bb[3], r.bb[3])] : r.bb;
+              }
+            }
+            artMeasuredN++;
+          } catch (err) {
+            // NO hash recorded: the next build retries instead of trusting a
+            // failure. The viewer self-measures these in the browser meanwhile.
+            artFailed.push(`${key}: ${err.message}`);
+            continue;
+          }
+        }
+        artHashes[key] = digest;
+        if (bb) {
+          artClips[key] = bb;
+          clip.bb = bb;
+          // What this pose needs on stage — shadow and hover included — grows
+          // the domain's shared box; the idle/south view every page opens on
+          // decides the shared scale.
+          const w = bb[2] - bb[0], h = bb[3] - bb[1];
+          const box = artBoxes[dom] ?? (artBoxes[dom] = [0, 0]);
+          box[0] = Math.max(box[0], bankers(Math.max(w, sh.w ?? 0)));
+          box[1] = Math.max(box[1], bankers(Math.max(h, (foot * ch - bb[1]) + hover + (sh.h ?? 0) / 2 + 1)));
+          if (sname === "idle" && dname === "south" && dom !== "objects") artOpens.push(Math.max(w, h));
+        }
       }
     }
-    if (artBounds && total && !seen) artUnmeasured.push(`${dom}/${e.id}`);
+  }
+}
+const artOpenMax = Math.max(...artOpens, 64);
+const artScale = Math.max(1, Math.min(6, Math.floor(300 / artOpenMax) || 1));
+const artBox = Object.keys(artBoxes).length ? artBoxes : null;
+// Rewrite the cache only when the measurements moved — a no-change build must
+// not churn generated_at.
+{
+  const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
+  const same = artPrior && JSON.stringify({ s: artPrior.scale, b: artPrior.boxes, c: artPrior.clips, h: artPrior.hashes })
+    === JSON.stringify({ s: artScale, b: artBoxes, c: sorted(artClips), h: sorted(artHashes) });
+  if (!same) {
+    try {
+      writeFileSync(artBoundsPath, JSON.stringify({
+        format: "pixel-wiki-art-bounds@3",
+        generated_at: new Date().toISOString(),
+        note: "content-hash cache of build.mjs's own measurements — safe to delete, the build remeasures",
+        scale: artScale, boxes: artBoxes, clips: sorted(artClips), hashes: sorted(artHashes),
+      }) + "\n");
+    } catch { /* read-only fs (Docker image build) is fine — the numbers are already in data.json */ }
   }
 }
 const world = buildWorldUsage();
@@ -1748,7 +1836,7 @@ const sfx = buildSfx(sounds, {
   objects: new Set(objects.map((o) => o.id)),
 });
 markMusicUsage(music);
-const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
+const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, { clips: artClips }));
 // Both directions of "who drops what", precomputed from the SEEDED tuning so
 // a monster added this run is already joined.
 const drops = joinDrops(items, tuning);
@@ -1827,16 +1915,17 @@ const data = {
 writeFileSync(OUT, JSON.stringify(data));
 console.log(`[wiki] wrote ${OUT}`);
 console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}${levelled ? ` — backfilled ${levelled} monster level(s)` : ""}`);
+console.log(`[wiki] art: ${Object.keys(artHashes).length} clips — measured ${artMeasuredN} now, ${artCachedN} from cache${artFailed.length ? `, ${artFailed.length} FAILED` : ""}; stage ${Object.entries(artBoxes).map(([d, b]) => `${d} ${b[0]}x${b[1]}`).join(", ")} at ${artScale}x`);
 // The build carries on regardless — resolving keeps every page correct — but a
 // stale sidecar is a real fault at its SOURCE, and silence is what let the last
 // one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
-if (artUnmeasured.length) {
-  console.warn(`[wiki] WARNING: ${artUnmeasured.length} entit(ies) have NO measured art bounds — they will draw at`);
-  console.warn("       whole-frame size (transparent padding included) and overflow the viewer:");
-  for (const x of artUnmeasured.slice(0, 8)) console.warn(`         ${x}`);
-  if (artUnmeasured.length > 8) console.warn(`         … and ${artUnmeasured.length - 8} more`);
-  console.warn("       Fix: bash wiki/tools/rebuild.sh   (build → measure → build; art_bounds.json");
-  console.warn("       is measured FROM this data.json, so new art needs the second pass).");
+if (artFailed.length) {
+  console.warn(`[wiki] WARNING: ${artFailed.length} clip(s) could not be measured — they will draw at whole-frame`);
+  console.warn("       size until the viewer's in-browser self-measure kicks in:");
+  for (const x of artFailed.slice(0, 8)) console.warn(`         ${x}`);
+  if (artFailed.length > 8) console.warn(`         … and ${artFailed.length - 8} more`);
+  console.warn("       A decode error here usually means art that is not lossless WebP —");
+  console.warn("       convert it with games2/scripts/to-webp.py (repo policy, CLAUDE.md).");
 }
 if (sfxDrift.length) {
   console.warn(`[wiki] WARNING: ${sfxDrift.length} sfx-parse miss(es) — the composer's engine moved; the event table may be stale:`);

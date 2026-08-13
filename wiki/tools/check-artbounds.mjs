@@ -4,16 +4,23 @@
 // Maintainer, 2026-08-13: "Diretusk and Rimeshard are also big monsters, but
 // they fit inside the animation viewer, while the new big monsters doesn't fit
 // in it (see a scrollar). Is this a task for you or the monster-agent?" — mine.
-// The monster agent shipped 33 monsters and rebuilt data.json; art_bounds.json
-// is measured FROM that data.json, so it still described the 24 that existed in
-// July. An unmeasured clip falls back to `[0,0,fw,fh]` in the player — the
-// whole padded FRAME — so Cragback asked for a 472x472 canvas to draw a 402x350
-// creature and the stage grew a scrollbar. The two he named were measured, so
-// they cropped correctly and fit. The stage BOX was stale for the same reason:
-// 207x189, measured before the big ones existed, against a real need of 213x202.
+// The monster agent shipped 33 monsters and rebuilt data.json; the measurement
+// then lived in a separate Python pass reading that data.json, so it still
+// described the 24 monsters that existed in July. An unmeasured clip falls
+// back to `[0,0,fw,fh]` in the player — the whole padded FRAME — so Cragback
+// asked for a 472x472 canvas to draw a 402x350 creature and the stage grew a
+// scrollbar. The two he named were measured, so they cropped correctly and
+// fit. Since then build.mjs measures the art ITSELF (webp-pixels.mjs), inside
+// every deploy's image build, with art_bounds.json as a content-hash cache —
+// so what this file now guards is that the measurement really covers every
+// clip, that the cache really is only a cache (delete an entry, the build
+// restores the identical numbers), and that the numbers still hold on screen.
 //
 // Data checks run always; the browser pass runs when a wiki server answers.
-import { readFileSync } from "node:fs";
+// The cache-delta section runs two real builds, which refresh data.json's
+// timestamp — that is what the build does, not damage.
+import { readFileSync, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { createRequire } from "node:module";
 
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
@@ -44,9 +51,30 @@ ok(unmeasured.length === 0,
 ok(partial.length === 0,
   `and every single CLIP is measured, not just the entity${partial.length ? ` — ${partial.length} missing, e.g. ${partial.slice(0, 3).join(", ")}` : ""}`);
 
+// 1b. THE CACHE IS ONLY A CACHE. Remove a measured entry and its hash, run
+//     the real build, and the identical numbers must come back — this is the
+//     "art measures itself on deploy" property, exercised end to end. Then a
+//     second build must measure nothing (idempotence).
+{
+  const boundsPath = new URL("../art_bounds.json", import.meta.url);
+  const doc = JSON.parse(readFileSync(boundsPath, "utf8"));
+  const key = Object.keys(doc.clips).find((k) => k.startsWith("monsters/"));
+  const wantBB = doc.clips[key].join(",");
+  delete doc.clips[key]; delete doc.hashes[key];
+  writeFileSync(boundsPath, JSON.stringify(doc));
+  const ROOT = new URL("../..", import.meta.url).pathname;
+  const out1 = execSync("node wiki/build.mjs --games2 games2", { cwd: ROOT, encoding: "utf8" });
+  const m1 = out1.match(/art: \d+ clips — measured (\d+) now/);
+  const after = JSON.parse(readFileSync(boundsPath, "utf8"));
+  ok(m1 && Number(m1[1]) === 1, `a clip dropped from the cache is re-measured by the next build (measured ${m1?.[1]})`);
+  ok((after.clips[key] ?? []).join(",") === wantBB, `and comes back with the identical numbers (${key} → ${after.clips[key]})`);
+  const out2 = execSync("node wiki/build.mjs --games2 games2", { cwd: ROOT, encoding: "utf8" });
+  const m2 = out2.match(/art: \d+ clips — measured (\d+) now/);
+  ok(m2 && Number(m2[1]) === 0, `and the build after that measures nothing (${m2?.[1]})`);
+}
+
 // 2. THE BOX FITS EVERYONE. This is the box's whole definition, so a failure
-//    here means art_bounds.json was written against a different entity list
-//    than data.json — exactly the two-pass drift.
+//    here means the measurement missed part of the roster.
 const box = D.artBox ?? {};
 for (const [dom, kind] of Object.entries(STAGE_KIND)) {
   const list = D.domains[dom] ?? [];
@@ -66,7 +94,7 @@ for (const [dom, kind] of Object.entries(STAGE_KIND)) {
     `${dom}: the ${bx[0]}x${bx[1]} stage holds every pose (worst: ${worst?.id} ${worst?.w}x${worst?.h}, ${worst?.over > 0 ? `${worst.over}px OVER` : `${-worst?.over}px spare`})`);
 }
 
-// 3. NO PAGE OPENS ON A SCROLLBAR. art-bounds.py picks the shared scale so the
+// 3. NO PAGE OPENS ON A SCROLLBAR. The build picks the shared scale so the
 //    view every page opens on — idle facing south — fits. A wide side-on pose
 //    of a giant may still scroll at 4x zoom; that is documented and fine.
 for (const dom of ["monsters", "characters"]) {
@@ -156,7 +184,7 @@ if (!up) {
   // stranded these 33. Serve a data.json with every `bb` stripped, i.e. exactly
   // what a fresh import looks like, and the player must measure the sprite
   // itself and land on the SAME numbers the Python did. Equal, not merely
-  // "smaller than the frame": that also pins the alpha cut to art-bounds.py's.
+  // "smaller than the frame": that also pins the alpha cut to the build's.
   // Re-serving with `response: r` would carry the original content-encoding
   // and content-length over a shorter body and the browser discards it, so the
   // response is rebuilt plainly. `hits` matters just as much: data.json is

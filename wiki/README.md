@@ -95,10 +95,12 @@ Three things had to move, and they are the ones to remember:
 - **Feedback ids stay extension-free.** `stripExt()` removes `.png` *or*
   `.webp`. A `.png`-only strip would rename every tile id the day tiles2
   converts and orphan every star, note and rejection the maintainer has filed.
-- **`art-bounds.py` exits non-zero on art it cannot read.** A clip it fails to
-  measure drops out of `art_bounds.json`, and the viewer's fallback — scale by
-  frame size — is scaling by transparent padding, the exact bug artScale exists
-  to fix. Silent wrong numbers are worse than a stopped build.
+- **The build WARNS loudly, by name, on art it cannot measure.** A clip the
+  VP8L decoder rejects gets no `bb`, and the viewer's fallback — scale by
+  frame size — is scaling by transparent padding, the exact bug artScale
+  exists to fix (the in-browser self-measure then papers over the display,
+  but the committed numbers stay honest). Silent wrong numbers are worse
+  than a noisy build.
 
 `wiki/tools/to-webp.py` converts and **proves each file bit-exact** (decodes the
 result back and compares every pixel, fully transparent ones included) before
@@ -222,10 +224,10 @@ in 78×48 and 48×48 frames. Scaling by frame size therefore rendered them
 1.67× apart and drew the 32×23 frog 2.5× wider than the 77×121 mammoth
 (maintainer 2026-07-30; the flaw shipped in the first version of the site).
 
-`python3 wiki/tools/art-bounds.py` measures the union of opaque pixels for
-every clip → `wiki/art_bounds.json`, and picks one `scale` for the whole
-roster (so the view a page OPENS on — idle facing south — fits a 300px
-stage). `build.mjs` folds the per-clip box in as `clip.bb` and publishes
+`build.mjs` measures the union of opaque pixels for every clip (decoding the
+WebP itself — `wiki/tools/webp-pixels.mjs`), and picks one `scale` for the
+whole roster (so the view a page OPENS on — idle facing south — fits a 300px
+stage). It folds the per-clip box in as `clip.bb` and publishes
 `data.artScale`; the viewer crops the padding and draws everyone at that one
 scale. Same creature ⇒ same size on screen; bigger creature ⇒ bigger.
 
@@ -262,45 +264,47 @@ empty checkerboard around the small pieces. Seven clips of 385 (the ancient
 oaks and hanging willows) exceed a 393px phone at the default 2×, and scroll
 inside their own stage — "1×" is one tap away.
 
-### Re-run it with `bash wiki/tools/rebuild.sh`, never on its own
+### The build measures the art itself — pushes are self-measuring
 
-The dependency is **circular**, and one pass is never enough when a domain
-grows:
+There is no separate measurement step. `build.mjs` decodes every clip's
+pixels with **`wiki/tools/webp-pixels.mjs`** — a zero-dependency VP8L (WebP
+lossless) decoder — and computes the content boxes, the per-domain stage
+boxes and the shared scale in the same run that writes `data.json`. Since
+the Dockerfile already reruns this build inside **every deploy's image
+build**, any agent's art push deploys with its art measured, atomically.
+No timers, no second pipeline, nothing for other agents to remember
+(maintainer 2026-08-13: "It should just work when someone pushes").
 
-```
-build.mjs      reads monsters/, characters2/, scenery/ …  AND art_bounds.json
-art-bounds.py  reads wiki/site/data.json  ← which build.mjs writes
-```
+`wiki/art_bounds.json` is only a **content-hash cache** of those
+measurements: a clip whose file bytes (and declared slicing) are unchanged
+is not re-decoded. Delete the file and the build re-measures everything in
+~6s; with a warm cache the whole measurement pass is ~0.6s, and a deploy
+that brings N new pieces pays only for those N. `rebuild.sh` refreshes the
+committed cache and runs the proofs — one pass, idempotent.
 
-Run the build alone and the measurement still describes yesterday's roster;
-run the measurement alone and the build still folds in yesterday's boxes.
-`rebuild.sh` does build → measure → build → verify, and is idempotent.
+The decoder earns its trust by comparison, not review:
+`check-pixels.mjs` decodes art with both this decoder and Pillow and
+compares the **md5 of the full RGBA buffer** — the bring-up run on
+2026-08-13 covered all 24,103 files in the three viewer domains,
+byte-identical (and caught a real sign bug in the LZ77 distance table on
+the way, which is the point). `check-artbounds.mjs` additionally proves
+the cache is only a cache: it deletes an entry, runs the real build, and
+asserts the identical numbers come back.
 
-This is not hypothetical. On 2026-08-13 the monsters agent imported 33
-monsters and rebuilt `data.json` — correctly — without the second pass. None
-of the 33 got a measured `bb`, so the player fell back to the whole **frame**,
-transparent padding and all: Cragback asked for a 472×472 canvas to draw a
-402×350 creature on a 432px stage and grew a scrollbar, while Diretusk and
-Rimeshard, measured back in July, sat neatly inside it (maintainer: "the new
-big monsters doesn't fit in it (see a scrollar)"). The shared stage box was
-stale for the same reason — 207×189 against a real need of 213×202. The same
-zero also fed `seedMonsterLevels`, where a missing measurement read as *area
-0*, "smallest creature alive", so the biggest new monsters seeded at the
-bottom of the level ladder and a rabbit out-ranked a bear.
-
-Three things now stand between that and the maintainer:
-
-- `build.mjs` **names** every entity with no measured bounds and prints the
-  command that fixes it, instead of shipping a silently padded viewer.
-- `seedMonsterLevels` scores an **unmeasured** creature mid-field rather than
-  as area 0 — the same treatment an unspawned one already got. A missing
-  measurement is not a measurement of zero.
-- the player **measures the sprite itself** when `clip.bb` is absent (union of
-  opaque frames on an offscreen canvas, same alpha cut as the Python), so art
-  that lands between the two passes still crops correctly. The build can only
-  ever be as fresh as whoever last ran it, and here that was another agent.
-  `check-artbounds.mjs` serves a `bb`-stripped `data.json` and asserts the
-  self-measurement equals what the Python found, exactly.
+Why all this exists: the measurement used to be a separate Python/numpy
+pass reading this build's own `data.json` — circular, so a growing domain
+needed two runs in the right order, and art pushed between them shipped
+unmeasured. On 2026-08-13 the monsters agent imported 33 monsters and
+rebuilt `data.json` correctly, but nobody ran the second pass: none of the
+33 got a measured `bb`, the player fell back to the whole padded frame —
+Cragback asked for a 472×472 canvas to draw a 402×350 creature on a 432px
+stage and grew a scrollbar while Diretusk, measured in July, sat inside it
+— and `seedMonsterLevels` read the missing measurements as *area 0*, so a
+rabbit out-ranked a bear. Two of that day's defences remain because they
+cost nothing and cover the build being unable to read a file:
+`seedMonsterLevels` scores an unmeasured creature mid-field, and the
+player **self-measures** any clip that reaches it without a `bb` (same
+alpha cut, proven equal by `check-artbounds.mjs`).
 
 The **stage** is fixed per domain (`data.artBox`, e.g. monsters 207×189 art
 px): the widest and tallest pose any of them needs, shadow and hover
