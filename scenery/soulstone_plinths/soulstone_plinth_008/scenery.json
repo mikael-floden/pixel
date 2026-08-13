@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:55:19+00:00",
+  "id": "soulstone_plinth_008",
+  "group": "soulstone_plinths",
+  "rank": 54,
+  "index": 8,
+  "name": "Green stone, iron cradle 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "green stone, iron cradle",
+  "glow_concept": "thin column of light rising from the stone",
+  "prompt": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, green stone, iron cradle, roughly six feet tall, human height, self-emissive at night, softly radiating light: thin column of light rising from the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_plinths/soulstone_plinth_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.43,
+    "world_px_height": 54,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f2e3ef81-127c-4fd4-bfce-e3081b15c3b7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
