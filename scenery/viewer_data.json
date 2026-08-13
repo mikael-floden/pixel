@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 290,
+  "scenery_count": 291,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -706,7 +706,7 @@
       "id": "beaver_lodges",
       "name": "Beaver Lodge",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 101,
@@ -789,7 +789,7 @@
     "beached_rowboats": 2,
     "beacons": 3,
     "beast_skulls": 2,
-    "beaver_lodges": 1,
+    "beaver_lodges": 2,
     "beds": 1,
     "beehives": 3,
     "bell_posts": 2,
@@ -1376,6 +1376,28 @@
       "status": "complete",
       "pixellab_object_id": "c2d60240-9adf-4326-92dc-c95a8e546f2d",
       "sprite": "beaver_lodges/beaver_lodge_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beaver_lodge_004",
+      "rel": "beaver_lodges/beaver_lodge_004",
+      "name": "Grass-grown ancient lodge 004 \u00b7 lit",
+      "category": "beaver_lodges",
+      "lights": "LIGHTS_ON",
+      "description": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, grass-grown ancient lodge, roughly six feet tall, human height, self-emissive at night, softly radiating light: lodge-light glowing through gaps between the sticks",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.29,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9828d94a-b5ed-4d18-a428-7dfbdf0953a4",
+      "sprite": "beaver_lodges/beaver_lodge_004/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beaver_lodge_004",
+  "group": "beaver_lodges",
+  "rank": 100,
+  "index": 4,
+  "name": "Grass-grown ancient lodge 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "grass-grown ancient lodge",
+  "glow_concept": "lodge-light glowing through gaps between the sticks",
+  "prompt": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, grass-grown ancient lodge, roughly six feet tall, human height, self-emissive at night, softly radiating light: lodge-light glowing through gaps between the sticks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beaver_lodges/beaver_lodge_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9828d94a-b5ed-4d18-a428-7dfbdf0953a4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
