@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sundial_001",
+  "group": "sundials",
+  "rank": 93,
+  "index": 1,
+  "name": "Armillary ring sundial 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "armillary ring sundial",
+  "glow_concept": null,
+  "prompt": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon, armillary ring sundial, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "sundials/sundial_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.15,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "642a6c0e-1cb4-4005-8d4c-94cac32b2f6a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
