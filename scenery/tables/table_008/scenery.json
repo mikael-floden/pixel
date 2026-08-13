@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "table_008",
+  "group": "tables",
+  "rank": 103,
+  "index": 8,
+  "name": "Small bedside table 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "small bedside table",
+  "glow_concept": "a lit candle stub in a brass holder on the tabletop",
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, small bedside table, waist-high, self-emissive at night, softly radiating light: a lit candle stub in a brass holder on the tabletop",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.96,
+    "world_px_height": 36,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4596bf64-013d-4521-9ccb-7bc1579676dd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
