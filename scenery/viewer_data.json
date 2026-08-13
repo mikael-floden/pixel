@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 80,
+  "scenery_count": 81,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -447,7 +447,7 @@
       "id": "water_lily_clumps",
       "name": "Water Lily Clump",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 64,
@@ -770,6 +770,7 @@
     "torch_posts": 1,
     "trees": 1,
     "washing_lines": 1,
+    "water_lily_clumps": 1,
     "waterwheels": 1,
     "wayside_shrines": 1,
     "waystones": 1,
@@ -2475,6 +2476,28 @@
       "status": "complete",
       "pixellab_object_id": "d1a46fc9-45c2-4fae-b0e1-c416635ac639",
       "sprite": "washing_lines/washing_line_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "water_lily_clump_001",
+      "rel": "water_lily_clumps/water_lily_clump_001",
+      "name": "Frost-edged late pads 001",
+      "category": "water_lily_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, frost-edged late pads, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.26,
+        "world_px_height": 10,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
+      "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
