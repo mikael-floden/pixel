@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_008",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 8,
+  "name": "Ivy-wrapped pole 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ivy-wrapped pole",
+  "glow_concept": "ceramic insulators glowing like small lanterns",
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, ivy-wrapped pole, towering, many times human height, self-emissive at night, softly radiating light: ceramic insulators glowing like small lanterns",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_008/sprite.webp",
+  "placement": {
+    "world_height_m": 6.19,
+    "world_px_height": 233,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7b44c1f1-46e0-453d-8f0d-ca04ecc68302",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
