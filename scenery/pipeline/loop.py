@@ -119,15 +119,17 @@ def can_spend(cfg, state):
 # ~180 concurrent image builds an hour, and an older build finishing last can
 # briefly regress the live site.
 #
-# His rule (2026-08-13): "It's ok to batch 5 scenery objects, but if it takes
-# long you should commit without waiting." So: flush when 5 pieces are pending
-# OR PUSH_MAX_WAIT_S has passed since the last push, whichever comes first —
-# at ~3 pieces/min a batch fills in well under two minutes. The per-piece
-# COMMIT is unconditional, so a killed runner can lose at most the pushes,
-# never the work.
+# His rule (2026-08-13), raised to ten after seeing the deploy load — "batch 10
+# scenery objects/push. This will make the builder more sane": flush when 10
+# pieces are pending OR PUSH_MAX_WAIT_S has passed, whichever comes first. At
+# ~3 pieces/min a full batch takes ~3.5 minutes, so the timer only fires when
+# generation itself is slow (end of a run, a burst of failures) — art never
+# sits, and the builder runs roughly one deploy at a time instead of nine. The
+# per-piece COMMIT is unconditional, so a killed runner can lose at most the
+# pushes, never the work.
 PUSH_EVERY = 1          # legacy serial path (--once) pushes immediately
-PUSH_BATCH = 5          # pieces per push in the parallel pipeline
-PUSH_MAX_WAIT_S = 100   # ...or this long, whichever comes first
+PUSH_BATCH = 10         # pieces per push in the parallel pipeline
+PUSH_MAX_WAIT_S = 240   # ...or this long, whichever comes first
 
 
 def submit_piece(client, cfg, group, spec):
