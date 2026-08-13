@@ -10,9 +10,11 @@
 
 1. **100 ranked types**, each a group folder `scenery/<group>/`. Rank means
    placement FREQUENCY (how often a world-builder drops one), which is why it
-   also decides quantity.
-2. **Quota** `= max(2, 102 - 2*rank)`: trees 100, stones 98, … floor 2 so
-   every type ships both light versions. 2,650 pieces total.
+   also decides quantity. Groups 101+ (indoor/house detail, mountain-wall
+   decor, wall hangings — added 2026-08-13) carry an explicit `quota` field
+   that overrides the rank formula; current total 3,030 pieces.
+2. **Quota** `= max(2, 102 - 2*rank)` unless the group sets `quota`: trees
+   100, stones 98, … floor 2 so every type ships both light versions.
 3. **Two versions of every type**: LIGHTS_OFF (no self-emission) and LIGHTS_ON
    (self-emissive), half/half, interleaved odd/even so both exist from the
    first pair. Each type carries 4–8 curated, visually distinct

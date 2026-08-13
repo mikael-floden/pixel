@@ -86,6 +86,34 @@ wrong, not the dice — fix `config/factory.json` before the slots refill
 columns, anvils fused floating tools, dovecotes read as birdhouses,
 fading_relics forgot to be ghosts).
 
+### Pixel-perfect QA is the agent's own duty (maintainer, 2026-08-13)
+
+PixelLab sometimes fails to draw clean deliberate pixels — an "absolute no
+go" the agent removes on its own, without waiting for the maintainer's
+review. `pipeline/pixel_qa.py` builds zoomed contact sheets of every piece
+no one's eyes have cleared (`--sheet`), the agent LOOKS at them, condemns
+broken pieces (`--condemn` → deleted from store + repo, slot re-rolls) and
+stamps the rest (`--pass-rest`, log in `config/qa_log.json`). This is
+deliberately visual: six statistical metrics were calibrated against 213
+approved pieces, the 16 known-mush graves and 225 rejected sprites from git
+— all overlapped completely (the painterly style is legitimately
+gradient-dense), while zoomed inspection separates them every time. Wiki
+verdicts count as checked by the maintainer's own eyes (with the same
+staleness guard as feedback.py).
+
+### The catalog beyond the first 100 (maintainer, 2026-08-13)
+
+Groups 101–110 carry an explicit `quota` (the rank formula would floor them
+at 2): **mountain-wall decor** (`cliff_vines`, `cliff_features` — freely
+placeable over the repeating wall tiles), **indoor/house detail** so a house
+feels lived in (`tables`, `chairs_and_benches`, `beds`,
+`cupboards_and_shelves`, `hearths`, `rugs_and_hides`, `house_clutter`), and
+**`wall_hangings`** for the coming mechanic where a room's top walls stay
+visible (bottom walls hide to unveil the player) — those pieces render
+face-on, pinned to interior walls. Regional identity is the zoom-out goal:
+trees/stones variety axes were deepened so maps2 can theme AREAS with
+coherent subsets — one region's trees are not another's.
+
 ## What a piece is, on disk
 
 ```

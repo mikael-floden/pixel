@@ -78,6 +78,10 @@ def quota_for(rank: int, rule: dict) -> int:
 
 
 def group_quota(group: dict, cfg: dict) -> int:
+    # Groups added beyond the original 100 (indoor/house detail, mountain-wall
+    # decor) carry an explicit `quota` — the rank formula would floor them at 2.
+    if group.get("quota"):
+        return int(group["quota"])
     return quota_for(int(group["rank"]), cfg.get("quota_rule", {}))
 
 
