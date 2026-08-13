@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 302,
+  "scenery_count": 303,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -685,7 +685,7 @@
       "id": "rocking_horses",
       "name": "Rocking Horse",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 98,
@@ -854,7 +854,7 @@
     "puffballs": 2,
     "reed_beds": 5,
     "rock_spires": 2,
-    "rocking_horses": 1,
+    "rocking_horses": 2,
     "rope_swings": 2,
     "rugs_and_hides": 1,
     "ruined_arches": 2,
@@ -5342,6 +5342,28 @@
       "status": "complete",
       "pixellab_object_id": "25e9ef1b-f238-40b9-a34a-fba53cd90d78",
       "sprite": "rocking_horses/rocking_horse_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rocking_horse_007",
+      "rel": "rocking_horses/rocking_horse_007",
+      "name": "Ribbon-braided festival horse 007",
+      "category": "rocking_horses",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers, ribbon-braided festival horse, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.94,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e4810b93-392f-4051-8c25-49501ec9651d",
+      "sprite": "rocking_horses/rocking_horse_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

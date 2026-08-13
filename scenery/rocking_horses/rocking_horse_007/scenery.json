@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rocking_horse_007",
+  "group": "rocking_horses",
+  "rank": 97,
+  "index": 7,
+  "name": "Ribbon-braided festival horse 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "ribbon-braided festival horse",
+  "glow_concept": null,
+  "prompt": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers, ribbon-braided festival horse, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "rocking_horses/rocking_horse_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e4810b93-392f-4051-8c25-49501ec9651d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
