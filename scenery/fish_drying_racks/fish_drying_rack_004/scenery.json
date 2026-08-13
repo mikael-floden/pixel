@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fish_drying_rack_004",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 4,
+  "name": "Fresh birch-pole rack 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fresh birch-pole rack",
+  "glow_concept": "fish scales shimmering with pale soul-light",
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, fresh birch-pole rack, large, well above head height of a person, self-emissive at night, softly radiating light: fish scales shimmering with pale soul-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fish_drying_racks/fish_drying_rack_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.99,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cab5ce98-778e-4085-a8d1-2efc29cfa64e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
