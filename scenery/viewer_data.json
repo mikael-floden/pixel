@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 195,
+  "scenery_count": 196,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -559,7 +559,7 @@
       "id": "giant_mushrooms",
       "name": "Giant Mushroom",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 80,
@@ -750,7 +750,7 @@
     "flower_stands": 2,
     "flower_trellises": 2,
     "geodes": 1,
-    "giant_mushrooms": 1,
+    "giant_mushrooms": 2,
     "grass_tufts": 2,
     "decor": 1,
     "gravel_piles": 2,
@@ -2386,6 +2386,28 @@
       "status": "complete",
       "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
       "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "giant_mushroom_002",
+      "rel": "giant_mushrooms/giant_mushroom_002",
+      "name": "Drooping wavy-brimmed cap 002 \u00b7 lit",
+      "category": "giant_mushrooms",
+      "lights": "LIGHTS_ON",
+      "description": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, drooping wavy-brimmed cap, tall, about two people high, self-emissive at night, softly radiating light: band of foxfire ringing the stalk base",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.04,
+        "world_px_height": 152,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "699c17a8-1cdd-432b-8c8e-6e544d08e8dd",
+      "sprite": "giant_mushrooms/giant_mushroom_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

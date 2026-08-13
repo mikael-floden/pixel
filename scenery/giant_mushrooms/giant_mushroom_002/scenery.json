@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "giant_mushroom_002",
+  "group": "giant_mushrooms",
+  "rank": 79,
+  "index": 2,
+  "name": "Drooping wavy-brimmed cap 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "drooping wavy-brimmed cap",
+  "glow_concept": "band of foxfire ringing the stalk base",
+  "prompt": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, drooping wavy-brimmed cap, tall, about two people high, self-emissive at night, softly radiating light: band of foxfire ringing the stalk base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "giant_mushrooms/giant_mushroom_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.04,
+    "world_px_height": 152,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "699c17a8-1cdd-432b-8c8e-6e544d08e8dd",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
