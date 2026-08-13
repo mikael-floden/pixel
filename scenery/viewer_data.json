@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 313,
+  "scenery_count": 314,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 27,
@@ -860,7 +860,7 @@
     "rugs_and_hides": 2,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 2,
+    "scarecrows": 3,
     "sheaf_poles": 2,
     "signposts": 3,
     "soulstone_outcrops": 2,
@@ -5717,6 +5717,28 @@
       "status": "complete",
       "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_008",
+      "rel": "scarecrows/scarecrow_008",
+      "name": "Dress-and-shawl scarecrow 008 \u00b7 lit",
+      "category": "scarecrows",
+      "lights": "LIGHTS_ON",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, dress-and-shawl scarecrow, large, twice human height, self-emissive at night, softly radiating light: twin ember-orange eyes in the sack face",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.09,
+        "world_px_height": 79,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b4e0f621-e9de-401d-9885-ee7cb030ee8e",
+      "sprite": "scarecrows/scarecrow_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_008",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 8,
+  "name": "Dress-and-shawl scarecrow 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dress-and-shawl scarecrow",
+  "glow_concept": "twin ember-orange eyes in the sack face",
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, dress-and-shawl scarecrow, large, twice human height, self-emissive at night, softly radiating light: twin ember-orange eyes in the sack face",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.09,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b4e0f621-e9de-401d-9885-ee7cb030ee8e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
