@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 404,
+  "scenery_count": 405,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 47,
@@ -717,7 +717,7 @@
     "aqueduct_fragments": 2,
     "barrels": 6,
     "beached_rowboats": 2,
-    "beacons": 5,
+    "beacons": 6,
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 6,
@@ -1318,6 +1318,28 @@
       "status": "complete",
       "pixellab_object_id": "a85fc63d-08ab-44ff-a352-967f2afc2099",
       "sprite": "beacons/beacon_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_006",
+      "rel": "beacons/beacon_006",
+      "name": "Rune-carved warning beacon 006 \u00b7 lit",
+      "category": "beacons",
+      "lights": "LIGHTS_ON",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, rune-carved warning beacon, towering, several times the height of a person, self-emissive at night, softly radiating light: slow red ember eye pulsing in the cage",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.63,
+        "world_px_height": 174,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8635123a-7599-47df-87c5-bd127b33f7b0",
+      "sprite": "beacons/beacon_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

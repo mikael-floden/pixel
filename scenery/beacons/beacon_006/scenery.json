@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_006",
+  "group": "beacons",
+  "rank": 46,
+  "index": 6,
+  "name": "Rune-carved warning beacon 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rune-carved warning beacon",
+  "glow_concept": "slow red ember eye pulsing in the cage",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, rune-carved warning beacon, towering, several times the height of a person, self-emissive at night, softly radiating light: slow red ember eye pulsing in the cage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_006/sprite.webp",
+  "placement": {
+    "world_height_m": 4.63,
+    "world_px_height": 174,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8635123a-7599-47df-87c5-bd127b33f7b0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
