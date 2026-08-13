@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:07:33+00:00",
+  "id": "wall_hanging_011",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 11,
+  "name": "Braided garlic strings 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "braided garlic strings",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, braided garlic strings, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.78,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

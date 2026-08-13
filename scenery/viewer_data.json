@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 396,
+  "scenery_count": 397,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 3
+      "done": 4
     }
   ],
   "categories": {
@@ -879,7 +879,7 @@
     "torch_posts": 6,
     "trailing_planters": 2,
     "trees": 7,
-    "wall_hangings": 3,
+    "wall_hangings": 4,
     "washing_lines": 5,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -8730,6 +8730,28 @@
       "status": "complete",
       "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
       "sprite": "wall_hangings/wall_hanging_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wall_hanging_011",
+      "rel": "wall_hangings/wall_hanging_011",
+      "name": "Braided garlic strings 011",
+      "category": "wall_hangings",
+      "lights": "LIGHTS_OFF",
+      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, braided garlic strings, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.78,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
+      "sprite": "wall_hangings/wall_hanging_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
