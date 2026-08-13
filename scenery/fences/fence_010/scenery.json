@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:31:21+00:00",
+  "id": "fence_010",
+  "group": "fences",
+  "rank": 10,
+  "index": 10,
+  "name": "Briar rose climbing one post 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "briar rose climbing one post",
+  "glow_concept": "carved farm-mark rune shining on a post",
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, briar rose climbing one post, waist-high, self-emissive at night, softly radiating light: carved farm-mark rune shining on a post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.79,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "210d6a5e-227a-45c2-95ea-0d8bc036133e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
