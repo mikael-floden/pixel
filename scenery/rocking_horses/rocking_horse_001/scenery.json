@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rocking_horse_001",
+  "group": "rocking_horses",
+  "rank": 97,
+  "index": 1,
+  "name": "Rope-tailed simple horse 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "rope-tailed simple horse",
+  "glow_concept": null,
+  "prompt": "a weathered wooden rocking horse on curved rockers standing in meadow grass, with a carved mane, leather tack and worn paint, rope-tailed simple horse, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "rocking_horses/rocking_horse_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.62,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a3b51587-7428-4799-99f9-47034189dc9a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
