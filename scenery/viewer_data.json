@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 229,
+  "scenery_count": 230,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 15,
@@ -721,7 +721,7 @@
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 2,
-    "bell_posts": 2,
+    "bell_posts": 3,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 3,
@@ -1340,6 +1340,28 @@
       "status": "complete",
       "pixellab_object_id": "4219aea6-a134-4e2b-b40d-5f997a4c9572",
       "sprite": "bell_posts/bell_post_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_003",
+      "rel": "bell_posts/bell_post_003",
+      "name": "Snow-capped winter post 003",
+      "category": "bell_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, snow-capped winter post, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.12,
+        "world_px_height": 117,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "44c92c91-9552-4fa4-95a0-52cf5b5aff54",
+      "sprite": "bell_posts/bell_post_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
