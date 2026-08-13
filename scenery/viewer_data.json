@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 406,
+  "scenery_count": 407,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -741,7 +741,7 @@
       "id": "beds",
       "name": "Bed",
       "quota": 30,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 106,
@@ -790,7 +790,7 @@
     "beacons": 5,
     "beast_skulls": 2,
     "beaver_lodges": 2,
-    "beds": 4,
+    "beds": 5,
     "beehives": 5,
     "bell_posts": 5,
     "effect": 1,
@@ -1551,6 +1551,28 @@
       "status": "complete",
       "pixellab_object_id": "8dd80347-6f07-40ca-bb3a-be6f91356623",
       "sprite": "beds/bed_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bed_006",
+      "rel": "beds/bed_006",
+      "name": "Canopy bed with heavy curtains 006 \u00b7 lit",
+      "category": "beds",
+      "lights": "LIGHTS_ON",
+      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, canopy bed with heavy curtains, waist-high, self-emissive at night, softly radiating light: a little nightlight lantern beside the pillow",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.16,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
+      "sprite": "beds/bed_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

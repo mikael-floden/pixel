@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bed_006",
+  "group": "beds",
+  "rank": 105,
+  "index": 6,
+  "name": "Canopy bed with heavy curtains 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "canopy bed with heavy curtains",
+  "glow_concept": "a little nightlight lantern beside the pillow",
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, canopy bed with heavy curtains, waist-high, self-emissive at night, softly radiating light: a little nightlight lantern beside the pillow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.16,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
