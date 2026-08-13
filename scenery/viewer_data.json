@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 422,
+  "scenery_count": 423,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 18,
@@ -757,7 +757,7 @@
     "graves": 7,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 6,
+    "haystacks": 7,
     "hedges": 7,
     "hop_poles": 2,
     "ivy_posts": 6,
@@ -4911,6 +4911,28 @@
       "status": "complete",
       "pixellab_object_id": "219e1491-b892-4932-bc07-f87a29a66fa5",
       "sprite": "haystacks/haystack_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_007",
+      "rel": "haystacks/haystack_007",
+      "name": "Grey weathered old stack 007",
+      "category": "haystacks",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base, grey weathered old stack, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.55,
+        "world_px_height": 58,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d7162c7f-4d18-4cc6-ac67-a54dd3af96be",
+      "sprite": "haystacks/haystack_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

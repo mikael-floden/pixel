@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "haystack_007",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 7,
+  "name": "Grey weathered old stack 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "grey weathered old stack",
+  "glow_concept": null,
+  "prompt": "a tall rounded haystack raked up around a center pole, flared wide at the base, grey weathered old stack, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.55,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d7162c7f-4d18-4cc6-ac67-a54dd3af96be",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
