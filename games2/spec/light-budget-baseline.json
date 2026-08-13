@@ -1,9 +1,9 @@
 {
-  "_note": "RATCHET for check-light-budget.mjs (2026-08-12). Worlds listed here already exceeded the 8-light window when the light ledger shipped; they degrade gracefully (overflow keeps the glow-stamp look) and fail the gate only if they get WORSE. Burn these down when touched \u2014 the budget for new work is 8. glow_test is the deliberate every-material showcase and stays.",
-  "demo_isle": 10,
-  "demo_lost": 13,
-  "glow_test": 181,
-  "occlusion_test": 20,
-  "prop_demo": 142,
-  "the_island": 12
+  "_note": "RATCHET for check-light-budget.mjs (re-measured 2026-08-13 after the campfire-anchored radii \u2014 pool reach grew, so the pins did too). Worlds listed here already exceeded the 8-light window when the light ledger shipped; they degrade gracefully (overflow keeps the glow-stamp look) and fail the gate only if they get WORSE. Burn these down when touched \u2014 the budget for new work is 8. glow_test is the deliberate every-material showcase and stays.",
+  "demo_isle": 12,
+  "demo_lost": 15,
+  "glow_test": 218,
+  "occlusion_test": 22,
+  "prop_demo": 168,
+  "the_island": 14
 }

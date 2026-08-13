@@ -81,8 +81,15 @@ for (const name of readdirSync(worldsDir)) {
     const cfg = lightsCfg[stem(path)] !== undefined ? lightsCfg[stem(path)] : lightsCfg[path.split("/")[1]];
     if (cfg === null) continue; // stamp-only: costs no slot
     const mat = path.split("/")[1];
-    const em = emission.materials?.[mat];
-    const radius = Math.max(1, cfg?.radius ?? Math.min(5, (em?.radius ?? 2) + 1.5));
+    // MIRROR of WorldScene.buildEmissiveSources' derived default (campfire-
+    // anchored, 2026-08-13): radius grows with the art's own strength toward
+    // the campfire's 7. Drifting from the client's formula makes the audit
+    // count a different set of pools than the renderer lights.
+    const srcs = emission.sources[path] ?? [];
+    let sw = 0;
+    for (const g of srcs) sw += g.s;
+    const avgS = srcs.length ? sw / srcs.length : 0;
+    const radius = Math.max(1, cfg?.radius ?? Math.min(7, 4 + avgS * 4));
     sources.push({
       x: (p.x - p.y) * 32,
       y: (p.x + p.y) * 15 - lvl(p.x, p.y) * 16,

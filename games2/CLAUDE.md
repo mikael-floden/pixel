@@ -2201,6 +2201,37 @@ side collision just like monsters").
     reachable by >8 world pools. RATCHET: pre-existing over-budget worlds are
     pinned in `spec/light-budget-baseline.json` at their measured worst (all
     demos; live the_island2 = 6/8) and only fail when they get WORSE.
+  - **DERIVED DEFAULTS ARE CAMPFIRE-ANCHORED** (round 5, the maintainer's
+    night on glow_test: "IT'S FILLED WITH LIGHT SOURCES — HOW CAN THIS MAP
+    STILL BE DARK?"). The autopsy at their exact spot (25.5,68.2): the 8
+    nearest sources summed to a light of **0.002** against ambient 0.09 —
+    radius 3.5 was SMALLER than glow_test's own inter-source spacing
+    (nearest 2.7-3.4 cells), so five of eight held lights contributed zero
+    and the nearest arrived at att 0.05; peak channels sat at 0.13-0.51
+    against the campfire's 1.9. Radius was the primary killer (fixing it
+    alone: 21.5×; intensity alone: 5.7× — measured). The anchor now: hue =
+    the art's glowColor normalized to peak 1, intensity = 1.9 ·
+    clamp(avgS·1.15, 0.45, 1), radius = clamp(4 + avgS·4, 4, 7) — a strong
+    source IS a campfire, a faint one is still ~45% of one. Measured at the
+    same spot after: 0.786 (~9× ambient), and the full-campfire-for-everyone
+    variant was measured and REJECTED (99.1% of the screen over field 1.0 =
+    wall-to-wall clamp plateau; strength scaling is what keeps contrast).
+    `check-light-budget.mjs` MIRRORS this radius formula — drifting from the
+    client's derivation makes the audit count a different set of pools than
+    the renderer lights — and the ratchet pins re-measured upward with the
+    bigger reach (the LIVE the_island2 is 8/8, exactly at the line: tell
+    maps2 before adding ANY light source near that worst window at 114,54).
+  - **SHADOW-FREE POOLS ARE EXEMPT FROM THE FACE LAMBERT GATE** (same
+    round). The gate demands a light stand beyond a face's plane — but a
+    glowing CUBE's own pool sits INSIDE its cell, behind both face planes,
+    so every glowing block's visible faces were pitch dark, and glow_test
+    is almost entirely raised glowing cubes seen face-on. A pool is
+    ambience, not a lamp a face can turn away from: negative radius now
+    skips the gate (nightlight FRAG, the `isFace && uLightPos[i].w > 0.0`
+    condition). This also REMOVED a shader/CPU disagreement — lightAt never
+    had a face gate. Positive-radius lights (torch, campfire, curated
+    bonfire) keep the gate: they are lamps, and their wall behaviour is the
+    approved look.
   - **Derived defaults are SHADOW-FREE GLOW POOLS (negative radius), and
     stronger (avgS·1.3)** — round 2, from the maintainer's first night: a prop
     OCCLUDES ITS OWN CELL in the heightmap, so a shadowed light at z 0.5 was

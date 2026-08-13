@@ -845,7 +845,17 @@ void main() {
     // only catches light that stands beyond ITS OWN plane (in cells), so a
     // torch on the right lights the right face but never wraps onto the
     // left one, and a torch on top (behind both planes) lights neither.
-    if (isFace) {
+    // NEGATIVE-radius GLOW POOLS are EXEMPT (2026-08-13): a pool is ambience,
+    // not a lamp with a position a face can turn away from, so a TERRAIN face
+    // beside a glowing tile takes the pool's light like the ground does — and
+    // the CPU twin lightAt has never had a face gate, so this also removes a
+    // shader/CPU disagreement on face cells. (Note for the curious: this is
+    // NOT what darkened glow_test — its glowing cubes are prop BILLBOARDS on
+    // flat terrain, and the heightmap is terrain-only, so isFace never fired
+    // there at all; that night was the derived defaults' radius/intensity,
+    // fixed in buildEmissiveSources. Measured: 0% of glow_test's prop pixels
+    // classify as faces.)
+    if (isFace && uLightPos[i].w > 0.0) {
       float frontL = lp.y - (baseF.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (baseF.x + 1.0); // beyond the +col (right) face
       // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.

@@ -10715,11 +10715,23 @@ export class WorldScene extends Phaser.Scene {
       const avgS = srcs.length ? sw / srcs.length : 0;
       const lvl = this.world.rows[p.row]?.[p.col]?.l ?? 0;
       const pj = this.project((p.col + 0.5) * CELL_WU, (p.row + 0.5) * CELL_WU);
-      // Derived default intensity. 0.9 was too quiet ON BODIES (maintainer
-      // 2026-08-12, screenshots: "the surrounding is lit up more than the
-      // player") — the pool stamp this replaces tinted a body ~avgS*0.7 at
-      // its core, and the light must at least match it where you stand.
-      const k = avgS * 1.3;
+      // CAMPFIRE-ANCHORED intensity (round 5, the maintainer's night on
+      // glow_test: "IT'S FILLED WITH LIGHT SOURCES — HOW CAN THIS MAP STILL
+      // BE DARK?… a tile light source should aim to look as bright and lit
+      // up as the good old campfire"). Two earlier deriveds (avgS*0.9, then
+      // *1.3) produced peak channels of ~0.2-0.5 against the campfire's 1.9
+      // OVERBRIGHT at twice the radius — a 4-10x intensity gap; eight of
+      // those cannot light a night, and that is the whole answer to "why
+      // isn't 8 point lights making the night bright". The anchor: take the
+      // art's HUE (normalized so its strongest channel is 1) and give it
+      // CAMPFIRE-CLASS punch scaled by the art's own strength — a blazing
+      // source reaches the campfire's 1.9 peak, a faint one still lands at
+      // ~45% of it, and radius grows with strength toward the campfire's 7.
+      // "Some objects will be way brighter and some less" — the s values in
+      // emission.json are that dial, and tiles2's curated `lights` entries
+      // can still override either way.
+      const peak = Math.max(glowColor[0], glowColor[1], glowColor[2], 0.001);
+      const inten = 1.9 * Math.min(1, Math.max(0.45, avgS * 1.15));
       // SEALED-ROOM test: the prop's own cell is blocked (never in a room's
       // roof set), so ask the 4-neighbours — the floor around a fire in a
       // room IS the room. A fire under a bridge stays unsealed (a bridge is
@@ -10739,8 +10751,10 @@ export class WorldScene extends Phaser.Scene {
         col: p.col + 0.5,
         row: p.row + 0.5,
         z: lvl + (cfg?.z ?? 0.5),
-        radius: Math.max(1, cfg?.radius ?? Math.min(5, (em?.radius ?? 2) + 1.5)),
-        color: cfg?.color ?? [glowColor[0] * k, glowColor[1] * k, glowColor[2] * k],
+        radius: Math.max(1, cfg?.radius ?? Math.min(7, 4 + avgS * 4)),
+        color:
+          cfg?.color ??
+          [(glowColor[0] / peak) * inten, (glowColor[1] / peak) * inten, (glowColor[2] / peak) * inten],
         flicker: cfg?.flicker ?? (em?.anim === "flicker" ? 0.5 : em?.anim === "pulse" ? 0.15 : 0),
         // Derived defaults are SHADOW-FREE GLOW POOLS (negative radius) — the
         // path built for tile emission. Two reasons, both from the maintainer's

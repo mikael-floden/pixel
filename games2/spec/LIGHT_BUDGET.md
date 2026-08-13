@@ -70,12 +70,16 @@ stamp-only. Fields (all optional):
 | `shadows` | `false` = the shader's shadow-free glow pool (soft ambience, no LOS geometry) |
 | `z` | levels above the cell surface (default 0.5, the campfire's flame height) |
 
-Absent an entry, games2 derives a **quiet** default from the material + the
-tile's extracted glow sources (same colour the stamp pool uses, radius
-material+1.5 capped at 5). Curate entries for tiles that should LEAD a scene
-— the bonfire tile is pinned to the campfire's exact numbers — not for every
-glowing pebble. **The tile art itself doesn't have to change**; this is purely
-the light it casts.
+Absent an entry, games2 derives a **campfire-anchored** default (2026-08-13 —
+"a tile light source should aim to look as bright and lit up as the good old
+campfire"): hue = the tile's extracted glow colour normalized to peak 1,
+intensity = 1.9 · clamp(avgS·1.15, 0.45, 1), radius = clamp(4 + avgS·4, 4, 7)
+— a strong source IS a campfire, a faint one is still ~45% of one, scaled by
+the art's own cluster strengths. Curate entries to make a tile LEAD a scene
+**or to dim one down** — with defaults this bright, quieting a decorative
+glow (`radius`/`color` down, or `null` for stamp-only) is now the more common
+edit. **The tile art itself doesn't have to change**; this is purely the
+light it casts.
 
 ## What the game does with it (games2 internals)
 
