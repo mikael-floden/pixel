@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 499,
+  "scenery_count": 500,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 46,
@@ -843,7 +843,7 @@
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 6,
-    "moss_clumps": 6,
+    "moss_clumps": 7,
     "mushrooms": 7,
     "nest_posts": 2,
     "offering_tables": 7,
@@ -7124,6 +7124,28 @@
       "status": "complete",
       "pixellab_object_id": "11e9bbf4-0c22-4ef6-a491-442489bedf30",
       "sprite": "moss_clumps/moss_clump_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_014",
+      "rel": "moss_clumps/moss_clump_014",
+      "name": "Frost-rimed moss flat spread 014 \u00b7 lit",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, frost-rimed moss flat spread, tiny, only ankle-high, self-emissive at night, softly radiating light: moss veined with glowing soulstone seams",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.28,
+        "world_px_height": 11,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "523add5c-8f2d-4269-9f59-66d88817562c",
+      "sprite": "moss_clumps/moss_clump_014/sprite.webp",
       "rotations": {},
       "animations": []
     },

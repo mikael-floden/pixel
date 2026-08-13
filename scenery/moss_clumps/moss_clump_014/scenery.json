@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:40:18+00:00",
+  "id": "moss_clump_014",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 14,
+  "name": "Frost-rimed moss flat spread 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "frost-rimed moss flat spread",
+  "glow_concept": "moss veined with glowing soulstone seams",
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, frost-rimed moss flat spread, tiny, only ankle-high, self-emissive at night, softly radiating light: moss veined with glowing soulstone seams",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.28,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "523add5c-8f2d-4269-9f59-66d88817562c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
