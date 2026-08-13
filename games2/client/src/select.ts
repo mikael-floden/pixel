@@ -17,7 +17,7 @@ const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "
  * and never needs the art regenerated — which is the whole point, since every
  * regeneration of that art loses quality.
  *
- * The maintainer chose these twelve from a page of thirty-five: the land as
+ * The maintainer chose these eleven from a page of thirty-five: the land as
  * something older and awake, no arrival imagery, no daylight, no cheer.
  * ONE IS PICKED PER TITLE-SCREEN LOAD ("rotate between the survivors, not in
  * realtime, but every time the screen is loaded"), never the same one twice
@@ -33,7 +33,6 @@ const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "
  */
 export const TAGLINES = [
   "THE LAND ON THE OTHER SIDE.",
-  "NO ONE ARRIVES BY ACCIDENT.",
   "WANDER FAR. HOME BY DARK.",
   "SOMETHING OUT THERE WAKES.",
   "THE WILDS REMEMBER YOU.",

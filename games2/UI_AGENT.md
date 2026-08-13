@@ -77,7 +77,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   orientations; the SERVER's count clamp is unit-tested in
   `server/test/combat.review.test.ts` instead),
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
-  `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art).
+  `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
+  `scripts/verify-wikibtn.mjs` (the in-game Wiki button + the wiki's
+  remembered reading spot).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -173,6 +175,20 @@ from the games agent), #18 (title/landing screen).
 - Suppress `contextmenu` on roots containing `<img>` (Android long-press).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
+- **THE WIKI BUTTON LIVES WITH THE CLOCK PILL** (`wikibtn.ts`, maintainer
+  2026-08-13, placements from his three red-circled shots): pill-sized
+  (80x32+border), same right edge, stacked one PILL_STEP (34+10px) on the
+  pill's OPEN side — above it in portrait and left-handed landscape, below
+  it in right-handed landscape where the pill parks under the XP chip. Every
+  rule mirrors `.ml-clock` plus one step, including the `:root.ml-kb-up`
+  keyboard lift, so the two always move as a stack; change the pill's
+  anchoring and this file changes in the same commit. It is in hud's
+  `ml-noanim` list (rotation snaps). The drawer it opens REMEMBERS the
+  reading spot (`wikipanel.ts`, the wiki agent's module, edited on the
+  maintainer's ask + board note): {hash, scroll} in `ml-wiki-spot`, saved on
+  close and pagehide, applied on the next open — the hash rides the iframe
+  src, the scroll waits for the page to be tall enough (the wiki fetches
+  data.json before it renders).
 - **To TIME a DOM animation on this harness, drop the WebGL context first.**
   The software GL renders the world at ~5fps (measured at every viewport and
   on the lightest worlds), and WAAPI clocks run on the document timeline — at

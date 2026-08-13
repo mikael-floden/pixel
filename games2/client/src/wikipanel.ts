@@ -60,6 +60,44 @@ const PANEL_FRAC = 0.88;      // leave ≥~45 physical px of game visible
 const PANEL_MAX_CSS = 1200;   // cap on big desktops — a wall of wiki looks broken
 const ANIM_MS = 280;
 
+// ── THE SPOT STORE (maintainer 2026-08-13: "the player comes back to where
+// in the wiki the player was when the player closes the wiki and opens it
+// again"). The wiki is hash-routed (#/monsters/…) with window scroll, so a
+// spot is exactly {hash, scroll}. Saved when the drawer CLOSES and on
+// pagehide (a logout reload while reading must not lose the place); applied
+// on the next open — the hash goes into the iframe src so the wiki boots
+// straight onto the page, and the scroll is restored once the page is tall
+// enough to hold it (the wiki fetches data.json before it renders, so the
+// document is short for a beat and an immediate scrollTo would be clamped
+// to nothing).
+const SPOT_KEY = "ml-wiki-spot";
+const WIKI_BASE = "/assets/wiki/site/index.html";
+let openFrame: HTMLIFrameElement | null = null;
+
+function readSpot(): { hash: string; scroll: number } | null {
+  try {
+    const raw = localStorage.getItem(SPOT_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw) as { hash?: unknown; scroll?: unknown };
+    // The hash reaches an iframe src — accept only a plain wiki route.
+    if (typeof s.hash !== "string" || !/^(#[\w\-/%.~]*)?$/.test(s.hash)) return null;
+    return { hash: s.hash, scroll: Math.max(0, Number(s.scroll) || 0) };
+  } catch {
+    return null;
+  }
+}
+
+function saveSpot(): void {
+  const cw = openFrame?.contentWindow;
+  try {
+    if (!cw || !cw.location.pathname.startsWith("/assets/wiki/")) return;
+    localStorage.setItem(
+      SPOT_KEY,
+      JSON.stringify({ hash: cw.location.hash || "", scroll: Math.round(cw.scrollY || 0) }),
+    );
+  } catch {}
+}
+
 function ensureCss(): void {
   if (document.getElementById("ml-wikipanel-css")) return;
   const s = document.createElement("style");
@@ -113,8 +151,11 @@ export function openWikiPanel(): void {
   const panel = document.createElement("div");
   panel.className = "ml-wikipanel";
   const frame = document.createElement("iframe");
-  frame.src = "/assets/wiki/site/index.html";
+  const spot = readSpot();
+  frame.src = WIKI_BASE + (spot?.hash ?? "");
   frame.title = "Nangijala Wiki";
+  openFrame = frame;
+  window.addEventListener("pagehide", saveSpot);
   panel.appendChild(frame);
   root.append(back, panel);
   document.body.appendChild(root);
@@ -162,7 +203,26 @@ export function openWikiPanel(): void {
     else delete doc.documentElement.dataset.theme;
   };
   window.addEventListener("ml-theme", onTheme);
-  frame.addEventListener("load", () => onTheme?.());
+  // Restore the reading position on the FIRST load only — an in-wiki
+  // navigation afterwards must land at ITS page top, not the old offset.
+  let scrollRestored = false;
+  frame.addEventListener("load", () => {
+    onTheme?.();
+    const want = spot?.scroll ?? 0;
+    if (scrollRestored || want <= 0) return;
+    scrollRestored = true;
+    const cw = frame.contentWindow;
+    if (!cw) return;
+    const t0 = performance.now();
+    const tryScroll = () => {
+      const doc = cw.document;
+      if (!doc) return;
+      const tall = (doc.scrollingElement?.scrollHeight ?? 0) >= want + cw.innerHeight;
+      if (tall || performance.now() - t0 > 2500) cw.scrollTo(0, want);
+      else requestAnimationFrame(tryScroll);
+    };
+    tryScroll();
+  });
 
   // Two frames so the initial transform/opacity commit before animating in.
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -173,6 +233,9 @@ export function openWikiPanel(): void {
 
 export function closeWikiPanel(): void {
   if (!root) return;
+  saveSpot(); // remember the page + scroll for the next open
+  openFrame = null;
+  window.removeEventListener("pagehide", saveSpot);
   const r = root;
   root = null;
   if (onResize) { window.removeEventListener("resize", onResize); onResize = null; }

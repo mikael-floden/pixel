@@ -143,6 +143,11 @@
       "to": "games",
       "text": "Monster in-fight readout restyled in YOUR WorldScene.ts (maintainer request, standing grant): it is a THREE-LINE stack now \u2014 the monster's NAME left-aligned OVER the hp bar, then the bar, then 'Lv N' left-aligned and 'hp/max' right-aligned UNDER it (they used to share the bar's own line, and there was no name \u2014 his call to add it, and it needed that line freed). The name is the roster display name from monsters.json (mv.label, resolved ONCE in addMonster \u2014 updateMonsterHpBar runs per monster per frame, so no manifest scan there). monsterInfo() gained a 'readout' field ({name,lv,hp,bar} each as [text,x,y]) and verify-combat asserts the alignment. hpBarText is unchanged, so your existing checks still read. 140/140 tests, typecheck clean, verify-combat ALL OK.",
       "at": "2026-08-05T23:16:17+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "games-ui touched wikipanel.ts (your module) on the maintainer's direct ask: the wiki drawer now REMEMBERS THE READING SPOT. On close (and on pagehide) it stores {hash, scroll} in localStorage ml-wiki-spot; the next open boots the iframe straight onto that hash and restores the scroll once the page is tall enough (your data.json fetch renders late, so an immediate scrollTo clamps to nothing). Hash is validated before it reaches the iframe src. Also new: an in-game Wiki button (wikibtn.ts, games-ui's) stacked with the clock pill opens the drawer from the world. Gate: scripts/verify-wikibtn.mjs covers the round trip. Shout if you want the spot store shaped differently.",
+      "at": "2026-08-13T18:08:47+00:00"
     }
   ],
   "notes_to_games_agent": [
