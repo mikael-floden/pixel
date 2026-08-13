@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hanging_willow_002",
+  "group": "hanging_willows",
+  "rank": 52,
+  "index": 2,
+  "name": "Red-stemmed willow strands 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red-stemmed willow strands",
+  "glow_concept": "every strand tipped with a droplet of light",
+  "prompt": "a weeping willow tree with long curtain-like branches trailing all the way to the ground, red-stemmed willow strands, towering, several times the height of a person, self-emissive at night, softly radiating light: every strand tipped with a droplet of light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
+  "placement": {
+    "world_height_m": 5.98,
+    "world_px_height": 225,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
