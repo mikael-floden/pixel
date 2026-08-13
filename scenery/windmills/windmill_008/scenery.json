@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_008",
+  "group": "windmills",
+  "rank": 47,
+  "index": 8,
+  "name": "Tarred timber mill 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tarred timber mill",
+  "glow_concept": "sail edges rimmed with pale spirit-light",
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, tarred timber mill, tall, about three times human height, self-emissive at night, softly radiating light: sail edges rimmed with pale spirit-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_008/sprite.webp",
+  "placement": {
+    "world_height_m": 3.55,
+    "world_px_height": 134,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c97c142b-6113-4adb-bf44-f058f7884077",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
