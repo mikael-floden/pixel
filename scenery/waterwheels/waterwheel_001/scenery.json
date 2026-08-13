@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waterwheel_001",
+  "group": "waterwheels",
+  "rank": 59,
+  "index": 1,
+  "name": "Undershot paddle wheel 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "undershot paddle wheel",
+  "glow_concept": null,
+  "prompt": "a large wooden waterwheel with thick heavy spokes and broad paddles mounted against a solid stone mill wall, water pouring over it, undershot paddle wheel, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "waterwheels/waterwheel_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.44,
+    "world_px_height": 92,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e1668908-e635-4ae5-b622-48cb1a543122",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
