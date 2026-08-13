@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cupboard_002",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 2,
+  "name": "Painted folk-art cupboard 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "painted folk-art cupboard",
+  "glow_concept": "jars of glowing preserves on the shelves",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, painted folk-art cupboard, large, twice human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.15,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "16132f0f-b737-4e4c-90ca-00a639454660",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
