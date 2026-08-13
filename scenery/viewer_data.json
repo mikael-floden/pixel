@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 463,
+  "scenery_count": 464,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 2,
@@ -878,7 +878,7 @@
     "toadstool_rings": 6,
     "torch_posts": 6,
     "trailing_planters": 2,
-    "trees": 6,
+    "trees": 7,
     "wall_hangings": 5,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
@@ -10050,6 +10050,28 @@
       "status": "complete",
       "pixellab_object_id": "dc463976-a9d9-4903-9008-844c57067bf0",
       "sprite": "trees/tree_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_008",
+      "rel": "trees/tree_008",
+      "name": "Slender silver birch 008 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, slender silver birch, tall, about three times human height, self-emissive at night, softly radiating light: blue-white soul-light spilling from a knot hole",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.51,
+        "world_px_height": 132,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e5363015-a21b-479b-907b-da80c829a6ac",
+      "sprite": "trees/tree_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
