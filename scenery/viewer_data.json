@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 275,
+  "scenery_count": 276,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -587,7 +587,7 @@
       "id": "ant_hills",
       "name": "Ant Hill",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 84,
@@ -782,7 +782,7 @@
   "categories": {
     "anchors": 1,
     "ancient_trees": 2,
-    "ant_hills": 1,
+    "ant_hills": 2,
     "anvils": 1,
     "aqueduct_fragments": 2,
     "barrels": 5,
@@ -980,6 +980,28 @@
       "status": "complete",
       "pixellab_object_id": "3cf24983-766f-4b5b-bdf7-ad8505a26f89",
       "sprite": "ant_hills/ant_hill_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ant_hill_004",
+      "rel": "ant_hills/ant_hill_004",
+      "name": "Mound around stump 004 \u00b7 lit",
+      "category": "ant_hills",
+      "lights": "LIGHTS_ON",
+      "description": "a mounded anthill of soil and pine needles rising from the grass, dotted with small dark entrance holes and tiny crawling ants, mound around stump, small, knee-high, self-emissive at night, softly radiating light: soulstone grains sparkling through the dirt",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.71,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8c12049b-5e09-4f3c-ad34-13e84267514d",
+      "sprite": "ant_hills/ant_hill_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
