@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 271,
+  "scenery_count": 272,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -503,7 +503,7 @@
       "id": "rail_carts",
       "name": "Rail Cart",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 72,
@@ -852,7 +852,7 @@
     "owl_snags": 2,
     "petrified_stumps": 2,
     "puffballs": 2,
-    "rail_carts": 1,
+    "rail_carts": 2,
     "reed_beds": 5,
     "rock_spires": 2,
     "rocking_horses": 1,
@@ -4815,6 +4815,28 @@
       "status": "complete",
       "pixellab_object_id": "96a3e727-0627-44d5-9f09-10713ac4fb6b",
       "sprite": "rail_carts/rail_cart_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rail_cart_005",
+      "rel": "rail_carts/rail_cart_005",
+      "name": "Half-buried sideways cart 005",
+      "category": "rail_carts",
+      "lights": "LIGHTS_OFF",
+      "description": "a derelict abandoned wooden mine cart, weathered and rusted, tipped beside a short piece of broken track half-buried in grass and weeds, long out of use, half-buried sideways cart, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.14,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8608880d-cd9a-4909-a993-3e1091165c92",
+      "sprite": "rail_carts/rail_cart_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
