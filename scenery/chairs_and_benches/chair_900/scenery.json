@@ -1,0 +1,34 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:26:04+00:00",
+  "id": "chair_900",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 900,
+  "name": "Carved high-back chair 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "carved high-back chair",
+  "glow_concept": "a small candle lantern hung on the chair back",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, carved high-back chair, waist-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_900/sprite.webp",
+  "placement": {
+    "world_height_m": 1.09,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f651649f-b699-43e5-9729-90c633135d3a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "chair_008",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
+}

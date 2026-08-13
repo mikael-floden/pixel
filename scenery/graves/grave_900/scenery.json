@@ -1,0 +1,34 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:28:51+00:00",
+  "id": "grave_900",
+  "group": "graves",
+  "rank": 3,
+  "index": 900,
+  "name": "Toppled half-sunk stone 900 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "toppled half-sunk stone",
+  "glow_concept": "single votive candle flickering at the base",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, waist-high, self-emissive at night, softly radiating light: single votive candle flickering at the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_900/sprite.webp",
+  "placement": {
+    "world_height_m": 0.93,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cfb62270-5d68-437d-9e13-d6337abefbdc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "grave_018",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
+}

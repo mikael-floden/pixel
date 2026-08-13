@@ -1,0 +1,34 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:21:05+00:00",
+  "id": "beehive_901",
+  "group": "beehives",
+  "rank": 30,
+  "index": 901,
+  "name": "Twin skeps on shared bench 901",
+  "lights": "LIGHTS_OFF",
+  "variety": "twin skeps on shared bench",
+  "glow_concept": null,
+  "prompt": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, twin skeps on shared bench, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beehives/beehive_901/sprite.webp",
+  "placement": {
+    "world_height_m": 0.88,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8909a1d8-4556-4bcd-97ce-631f406f4393",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "beehive_009",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
+}

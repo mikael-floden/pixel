@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:59:18+00:00",
+  "id": "standing_stone_011",
+  "group": "standing_stones",
+  "rank": 38,
+  "index": 11,
+  "name": "Rose-wrapped stone 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "rose-wrapped stone",
+  "glow_concept": null,
+  "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, rose-wrapped stone, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "standing_stones/standing_stone_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.39,
+    "world_px_height": 90,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d9368742-1b9d-4bd9-817a-ce337b7cd22e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
