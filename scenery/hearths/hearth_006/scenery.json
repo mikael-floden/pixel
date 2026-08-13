@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:14:48+00:00",
+  "id": "hearth_006",
+  "group": "hearths",
+  "rank": 107,
+  "index": 6,
+  "name": "Hearth with copper pans hung beside it 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hearth with copper pans hung beside it",
+  "glow_concept": "coals banked for the night glowing low",
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with copper pans hung beside it, waist-high, self-emissive at night, softly radiating light: coals banked for the night glowing low",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.14,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 421,
+  "scenery_count": 422,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -755,7 +755,7 @@
       "id": "hearths",
       "name": "Hearth",
       "quota": 30,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 108,
@@ -833,7 +833,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 5,
-    "hearths": 4,
+    "hearths": 5,
     "hedges": 5,
     "hop_poles": 2,
     "house_clutter": 5,
@@ -5188,6 +5188,28 @@
       "status": "complete",
       "pixellab_object_id": "e18ab340-1a8f-4b57-bd76-99b5dbbad040",
       "sprite": "hearths/hearth_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hearth_006",
+      "rel": "hearths/hearth_006",
+      "name": "Hearth with copper pans hung beside it 006 \u00b7 lit",
+      "category": "hearths",
+      "lights": "LIGHTS_ON",
+      "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with copper pans hung beside it, waist-high, self-emissive at night, softly radiating light: coals banked for the night glowing low",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.14,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
+      "sprite": "hearths/hearth_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
