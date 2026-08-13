@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 92,
+  "scenery_count": 93,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -531,7 +531,7 @@
       "id": "stone_fountains",
       "name": "Stone Fountain",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 76,
@@ -772,6 +772,7 @@
     "soulstone_outcrops": 1,
     "soulstone_plinths": 1,
     "standing_stones": 1,
+    "stone_fountains": 1,
     "stones": 16,
     "story_posts": 1,
     "streetlights": 1,
@@ -2201,6 +2202,28 @@
       "status": "complete",
       "pixellab_object_id": "b8059594-b225-46e7-84ec-8d4e6640ef95",
       "sprite": "standing_stones/standing_stone_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_fountain_001",
+      "rel": "stone_fountains/stone_fountain_001",
+      "name": "Square basin with lion-head spout 001",
+      "category": "stone_fountains",
+      "lights": "LIGHTS_OFF",
+      "description": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, square basin with lion-head spout, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
+      "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

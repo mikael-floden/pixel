@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_fountain_001",
+  "group": "stone_fountains",
+  "rank": 75,
+  "index": 1,
+  "name": "Square basin with lion-head spout 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "square basin with lion-head spout",
+  "glow_concept": null,
+  "prompt": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, square basin with lion-head spout, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
