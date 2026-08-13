@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 510,
+  "scenery_count": 511,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 7,
     "sheaf_poles": 2,
-    "signposts": 6,
+    "signposts": 7,
     "soulstone_outcrops": 7,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -8840,6 +8840,28 @@
       "status": "complete",
       "pixellab_object_id": "4562db45-a83e-4f3f-94dd-134abc61f6ad",
       "sprite": "signposts/signpost_017/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_018",
+      "rel": "signposts/signpost_018",
+      "name": "Pale birch fingerpost 018 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, pale birch fingerpost, large, twice human height, self-emissive at night, softly radiating light: gilded lettering lit from within",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.57,
+        "world_px_height": 97,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0b47fdc5-645d-4d3c-9299-34cdf8d7030e",
+      "sprite": "signposts/signpost_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
