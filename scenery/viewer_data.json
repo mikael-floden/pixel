@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 482,
+  "scenery_count": 483,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 24,
@@ -862,7 +862,7 @@
     "scarecrows": 6,
     "sheaf_poles": 2,
     "signposts": 7,
-    "soulstone_outcrops": 6,
+    "soulstone_outcrops": 7,
     "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 6,
@@ -8488,6 +8488,28 @@
       "status": "complete",
       "pixellab_object_id": "ad0a1960-bd29-4714-902c-5f53cce53a81",
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_016",
+      "rel": "soulstone_outcrops/soulstone_outcrop_016",
+      "name": "Deep violet crystalline outcrop 016 \u00b7 lit",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_ON",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, deep violet crystalline outcrop, waist-high, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.95,
+        "world_px_height": 36,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "75312e49-aa40-4d79-a1dc-8a9f35945f52",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/sprite.webp",
       "rotations": {},
       "animations": []
     },

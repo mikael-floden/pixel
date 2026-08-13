@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:34:02+00:00",
+  "id": "soulstone_outcrop_016",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 16,
+  "name": "Deep violet crystalline outcrop 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "deep violet crystalline outcrop",
+  "glow_concept": "deep violet heart-light pulsing slowly",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, deep violet crystalline outcrop, waist-high, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.95,
+    "world_px_height": 36,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75312e49-aa40-4d79-a1dc-8a9f35945f52",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
