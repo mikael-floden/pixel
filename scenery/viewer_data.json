@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 312,
+  "scenery_count": 313,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -349,7 +349,7 @@
       "id": "market_stalls",
       "name": "Market Stall",
       "quota": 4,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 50,
@@ -764,7 +764,7 @@
     "lantern_posts": 4,
     "lantern_stands": 4,
     "letter_boxes": 2,
-    "market_stalls": 3,
+    "market_stalls": 4,
     "maypoles": 4,
     "moss_clumps": 4,
     "mushrooms": 4,
@@ -4339,6 +4339,28 @@
       "status": "complete",
       "pixellab_object_id": "67278bf1-2766-44e0-9df1-d6fb20952dd7",
       "sprite": "market_stalls/market_stall_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "market_stall_004",
+      "rel": "market_stalls/market_stall_004",
+      "name": "Baker's stall, stacked loaves 004 \u00b7 lit",
+      "category": "market_stalls",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, baker's stall, stacked loaves, large, well above head height of a person, self-emissive at night, softly radiating light: counter of glowing honey jars and lit candles",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.4,
+        "world_px_height": 90,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d464941a-d025-45b2-a98a-8155229e8ffd",
+      "sprite": "market_stalls/market_stall_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
