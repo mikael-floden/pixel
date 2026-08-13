@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 370,
+  "scenery_count": 371,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 13,
@@ -758,7 +758,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 5,
-    "hedges": 5,
+    "hedges": 6,
     "hop_poles": 2,
     "ivy_posts": 5,
     "lantern_posts": 6,
@@ -4493,6 +4493,28 @@
       "status": "complete",
       "pixellab_object_id": "8681ccd7-5e14-457c-bc16-a87c3e63c77f",
       "sprite": "hedges/hedge_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_006",
+      "rel": "hedges/hedge_006",
+      "name": "Briar rose hedge in bloom 006 \u00b7 lit",
+      "category": "hedges",
+      "lights": "LIGHTS_ON",
+      "description": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground, briar rose hedge in bloom, about as tall as an adult person, self-emissive at night, softly radiating light: new-growth tips glowing soft green along the trim",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.31,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7a76a265-5e3c-4b90-946b-007f1892bd65",
+      "sprite": "hedges/hedge_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
