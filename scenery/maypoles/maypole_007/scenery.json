@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "maypole_007",
+  "group": "maypoles",
+  "rank": 48,
+  "index": 7,
+  "name": "Rose-and-daisy garlanded pole 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "rose-and-daisy garlanded pole",
+  "glow_concept": null,
+  "prompt": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, rose-and-daisy garlanded pole, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "maypoles/maypole_007/sprite.webp",
+  "placement": {
+    "world_height_m": 4.44,
+    "world_px_height": 167,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
