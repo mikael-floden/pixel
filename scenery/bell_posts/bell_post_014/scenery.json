@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:32:11+00:00",
+  "id": "bell_post_014",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 14,
+  "name": "Single oak post, bronze bell 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single oak post, bronze bell",
+  "glow_concept": "rune-carved crossbeam shining amber",
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, single oak post, bronze bell, large, twice human height, self-emissive at night, softly radiating light: rune-carved crossbeam shining amber",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_014/sprite.webp",
+  "placement": {
+    "world_height_m": 2.82,
+    "world_px_height": 106,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "def794bb-17e7-4b7e-91eb-0ec573b1d9a1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
