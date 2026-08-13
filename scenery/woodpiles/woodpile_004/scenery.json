@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "woodpile_004",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 4,
+  "name": "Neat birch cordwood stack 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "neat birch cordwood stack",
+  "glow_concept": "axe blade shining with cold soul-light",
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, neat birch cordwood stack, waist-high, self-emissive at night, softly radiating light: axe blade shining with cold soul-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.09,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4e08b143-825d-429d-bac0-8be8f6ee76eb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
