@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 85,
+  "scenery_count": 86,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -482,7 +482,7 @@
       "id": "rusted_machines",
       "name": "Rusted Machine",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 69,
@@ -760,6 +760,7 @@
     "puffballs": 1,
     "reed_beds": 1,
     "ruined_arches": 1,
+    "rusted_machines": 1,
     "scarecrows": 1,
     "signposts": 1,
     "soulstone_outcrops": 1,
@@ -1930,6 +1931,28 @@
       "status": "complete",
       "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
       "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rusted_machine_001",
+      "rel": "rusted_machines/rusted_machine_001",
+      "name": "Exposed gear-train frame 001",
+      "category": "rusted_machines",
+      "lights": "LIGHTS_OFF",
+      "description": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, exposed gear-train frame, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.58,
+        "world_px_height": 59,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bb4a74aa-c67c-4858-bf1b-71bbbc94330c",
+      "sprite": "rusted_machines/rusted_machine_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

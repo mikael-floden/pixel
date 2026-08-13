@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rusted_machine_001",
+  "group": "rusted_machines",
+  "rank": 68,
+  "index": 1,
+  "name": "Exposed gear-train frame 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "exposed gear-train frame",
+  "glow_concept": null,
+  "prompt": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, exposed gear-train frame, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "rusted_machines/rusted_machine_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.58,
+    "world_px_height": 59,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bb4a74aa-c67c-4858-bf1b-71bbbc94330c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
