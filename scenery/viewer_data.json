@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 336,
+  "scenery_count": 337,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -181,7 +181,7 @@
       "id": "bushes",
       "name": "Bush",
       "quota": 52,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 26,
@@ -727,7 +727,7 @@
     "braziers": 5,
     "briar_thickets": 5,
     "broken_columns": 2,
-    "bushes": 4,
+    "bushes": 5,
     "cairns": 5,
     "light": 1,
     "carts": 4,
@@ -1964,6 +1964,28 @@
       "status": "complete",
       "pixellab_object_id": "80b615ff-e3d5-43f9-ab70-39b76bd96ae1",
       "sprite": "bushes/bush_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bush_005",
+      "rel": "bushes/bush_005",
+      "name": "Hazel with dangling catkins 005",
+      "category": "bushes",
+      "lights": "LIGHTS_OFF",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, hazel with dangling catkins, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.52,
+        "world_px_height": 57,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "baae933a-d0de-4b99-a3f8-c16c0047817f",
+      "sprite": "bushes/bush_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
