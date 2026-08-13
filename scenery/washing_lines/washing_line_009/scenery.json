@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "washing_line_009",
+  "group": "washing_lines",
+  "rank": 40,
+  "index": 9,
+  "name": "Quilts and woven blankets 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "quilts and woven blankets",
+  "glow_concept": null,
+  "prompt": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, quilts and woven blankets, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "washing_lines/washing_line_009/sprite.webp",
+  "placement": {
+    "world_height_m": 2.03,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9c5dd823-6c2e-4564-9e69-36c367855465",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
