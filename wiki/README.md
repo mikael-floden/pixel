@@ -264,6 +264,31 @@ empty checkerboard around the small pieces. Seven clips of 385 (the ancient
 oaks and hanging willows) exceed a 393px phone at the default 2×, and scroll
 inside their own stage — "1×" is one tap away.
 
+### The scenery review queue (admin)
+
+The overview carries a sort row (**by group** / **newest first**) and a filter
+row (**all** / **unreviewed** / **approved** / **rejected**), admin-only and
+remembered in `localStorage`. `objectQueue()` is the single place that decides
+the order and the membership, and **both** the overview grid and the entity
+page's ‹ › pager read it — that is the entire mechanism behind "the filter
+holds when I press next next next" (maintainer 2026-08-13). Every filtered
+page shows a banner saying which filter is on and how much of the domain it
+covers, so a Next that skips 200 pieces explains itself; a piece reached from
+search or a link while a filter is on keeps a working pager and is labelled as
+outside it, rather than silently losing its ‹ ›.
+
+"Newest first" needs a date, and nothing in `scenery.json` carries one, so
+`build.mjs` uses the commit that ADDED each piece — one `git log
+--diff-filter=A` pass, cached in the committed `wiki/first_seen.json`. The
+deploy image has no `.git` (the `.dockerignore` allowlist keeps it out), so
+there the cache answers instead; a piece the cache does not know landed after
+it was committed, i.e. is newer than everything in it, and gets stamped with
+the build's own time — which sorts it exactly where a reviewer wants it,
+first. Self-seeding, correct in both places, no cross-domain dependency. The
+better long-term source is the scenery agent stamping `generated_at` into its
+own manifest (asked for on the board 2026-08-13); this switches to it the day
+it appears.
+
 ### The build measures the art itself — pushes are self-measuring
 
 There is no separate measurement step. `build.mjs` decodes every clip's

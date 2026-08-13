@@ -853,6 +853,14 @@ input[type="range"] { accent-color: var(--accent); }
   position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 2;
   background-repeat: no-repeat; image-rendering: pixelated; pointer-events: none;
 }
+/* "You are inside a filtered walk" — sits between the crumb row and the piece,
+   so the reason ‹ › skips most of the domain is on screen, not remembered. */
+.queue-note {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: -4px 0 12px; padding: 7px 10px; border-radius: 9px;
+  background: var(--accent-soft); color: var(--accent-ink);
+  font-size: 12.5px; text-decoration: none;
+}
 .human-toggle { margin-left: auto; padding: 2px 10px; font-size: 12.5px; font-weight: 400; }
 .human-toggle.on { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
 /* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any

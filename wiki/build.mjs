@@ -179,6 +179,47 @@ function gitSha() {
   } catch { return null; }
 }
 
+// WHEN A PIECE ARRIVED (maintainer 2026-08-13: "As an admin I should be able
+// to sort the Scenery on the latest generated content first … to make it
+// easier to review"). Nothing in scenery.json carries a date, so the date is
+// the commit that ADDED the piece — read once for the whole domain, cached in
+// wiki/first_seen.json, which is committed.
+//
+// Inside the deploy image there is no .git (the .dockerignore allowlist keeps
+// it out), so `git log` yields nothing there and the cache carries the answer
+// instead. A piece the cache does not know is one that landed after the cache
+// was last committed — i.e. newer than everything in it — so it is stamped
+// with the build's own time, which sorts it exactly where the maintainer
+// wants it: first. That makes this self-seeding and correct in both places,
+// with no cross-domain dependency. The long-term fix is the scenery agent
+// stamping `generated_at` into its own manifest; a board request is out.
+let gitAddDates = null;
+function addDatesFor(prefix) {
+  if (gitAddDates) return gitAddDates;
+  gitAddDates = new Map();
+  try {
+    const out = execSync(`git log --diff-filter=A --format=C%cI --name-only -- ${prefix}`,
+      { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 }).toString();
+    let when = null;
+    for (const line of out.split("\n")) {
+      if (line.startsWith("C")) when = line.slice(1);
+      else if (line.endsWith("/scenery.json") && when) {
+        const dir = line.slice(0, -"/scenery.json".length);
+        // --diff-filter=A walks newest-first, so the FIRST time a path is
+        // seen is its most recent add; keep going and the last write wins the
+        // oldest one, which is the true birth of the piece.
+        gitAddDates.set(dir, when);
+      }
+    }
+  } catch { /* no git (deploy image) — the committed cache answers instead */ }
+  return gitAddDates;
+}
+function loadFirstSeen() {
+  const path = join(ROOT, "wiki", "first_seen.json");
+  const doc = readJson(path) ?? {};
+  return { path, seen: doc.entries ?? {} };
+}
+
 // ---------------------------------------------------------------- monsters
 function buildMonsters() {
   // NO GIF PATHS. The viewer draws every animation onto a canvas from the
@@ -509,6 +550,16 @@ function buildObjects() {
   // scenery.json is a legacy piece; one whose children carry it is a group.
   const base = join(ROOT, "scenery");
   if (!isDir(base)) return null;
+  const dates = addDatesFor("scenery/");
+  const { path: seenPath, seen } = loadFirstSeen();
+  const stamp = new Date().toISOString();
+  let seenGrew = 0;
+  const firstSeenOf = (rel) => {
+    const known = seen[rel] ?? dates.get(rel);
+    if (known) { if (seen[rel] !== known) { seen[rel] = known; seenGrew++; } return known; }
+    seen[rel] = stamp; seenGrew++;
+    return stamp;
+  };
   const entries = [];
   for (const top of listDirs(base)) {
     if (["config", "pipeline", "spec"].includes(top)) continue;
@@ -572,10 +623,20 @@ function buildObjects() {
       // So the page can say "Still" rather than claim an animation, and the
       // list can keep calling these "static".
       stillOnly: stillOnly && !!anims.still,
+      added: firstSeenOf(`scenery/${rel}`),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,
     });
+  }
+  if (seenGrew) {
+    try {
+      writeFileSync(seenPath, JSON.stringify({
+        format: "pixel-wiki-first-seen@1",
+        note: "when each piece first reached the wiki — the commit that added it, or the build that first saw it",
+        entries: Object.fromEntries(Object.entries(seen).sort(([a], [b]) => a.localeCompare(b))),
+      }, null, 0) + "\n");
+    } catch { /* read-only fs — data.json already carries the dates */ }
   }
   return objects;
 }

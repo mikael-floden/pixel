@@ -1966,22 +1966,67 @@ function viewTileInstance(typeId, rel) {
 }
 
 /* --- objects --- */
+// THE REVIEW QUEUE (maintainer 2026-08-13: "As an admin I should be able to
+// sort the Scenery on the latest generated content first or/and with a
+// approved/unapproved filter … If I put a filter at the overview that filter
+// should hold when clicking on a Scenery and press next next next").
+//
+// ONE function decides the order and the membership, and BOTH the overview
+// grid and the ‹ › pager on the entity page read it — that is the whole
+// mechanism behind "the filter holds". The choice lives in localStorage, so
+// it also survives a reload and the trip in and out of a piece. Public
+// visitors always get the full domain in its natural order.
+const OBJ_SORT_KEY = "wiki-obj-sort";
+const OBJ_FILTER_KEY = "wiki-obj-filter";
+const OBJ_FILTERS = {
+  all: { label: "all", title: "Every piece", match: () => true },
+  unreviewed: { label: "unreviewed", title: "Not yet approved or rejected — the review queue", match: (st) => !st },
+  approved: { label: "approved", title: "Approved pieces", match: (st) => st === "approved" },
+  rejected: { label: "rejected", title: "Slated for removal by the scenery agent", match: (st) => st === "rejected" },
+};
+const OBJ_SORTS = {
+  group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
+  newest: { label: "newest first", title: "Latest generated content first" },
+};
+function objectQueue() {
+  const all = state.data.domains.objects;
+  const read = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
+  if (!state.admin) return { list: all, sort: "group", filter: "all", active: false, total: all.length };
+  const sort = OBJ_SORTS[read(OBJ_SORT_KEY, "group")] ? read(OBJ_SORT_KEY, "group") : "group";
+  const filter = OBJ_FILTERS[read(OBJ_FILTER_KEY, "all")] ? read(OBJ_FILTER_KEY, "all") : "all";
+  let list = all;
+  if (filter !== "all") list = all.filter((o) => OBJ_FILTERS[filter].match(fb("objects", o.path).status));
+  // `added` is the commit that introduced the piece (build.mjs). Undated art
+  // sorts last rather than first — a missing date is not a claim of newness.
+  if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
+  return { list, sort, filter, active: filter !== "all" || sort !== "group", total: all.length };
+}
 function viewObjects() {
-  const list = state.data.domains.objects.filter((o) => matches(state.query, o.id, o.name, o.category, o.description));
+  const q = objectQueue();
+  const list = q.list.filter((o) => matches(state.query, o.id, o.name, o.category, o.description));
   const cats = [...new Set(list.map((o) => o.category))].sort();
+  const card = (o) => h("a", { class: "card", href: `#/objects/${o.id}` },
+    h("div", { class: "thumb checker" }, h("img", { src: assetUrl(o.preview), alt: o.name, loading: "lazy" })),
+    h("div", { class: "card-name" }, o.name),
+    // The synthesised `still` must not read as an animation here — the
+    // list is where you scan for what actually moves.
+    h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
+    h("div", { class: "card-badges" }, ...entityBadge("objects", o.path)));
   return h("div", {},
     sectionHead("objects"),
     h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
-    ...cats.map((cat) => h("div", {},
-      h("h2", {}, cat),
-      h("div", { class: "grid" }, ...list.filter((o) => o.category === cat).map((o) =>
-        h("a", { class: "card", href: `#/objects/${o.id}` },
-          h("div", { class: "thumb checker" }, h("img", { src: assetUrl(o.preview), alt: o.name, loading: "lazy" })),
-          h("div", { class: "card-name" }, o.name),
-          // The synthesised `still` must not read as an animation here — the
-          // list is where you scan for what actually moves.
-          h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
-          h("div", { class: "card-badges" }, ...entityBadge("objects", o.path))))))));
+    state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
+    state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) => [id, f.label, f.title]), q.filter, () => route()) : null,
+    state.admin && q.filter !== "all"
+      ? h("p", { class: "muted", style: "margin:-6px 0 12px" }, `${list.length} of ${q.total} pieces — ‹ › inside a piece walks this set only.`)
+      : null,
+    // Newest-first cuts ACROSS groups, so the group headings would be noise —
+    // one flat grid in the chosen order instead.
+    ...(q.sort === "newest"
+      ? [h("div", { class: "grid" }, ...list.map(card))]
+      : cats.map((cat) => h("div", {},
+          h("h2", {}, cat),
+          h("div", { class: "grid" }, ...list.filter((o) => o.category === cat).map(card))))));
 }
 // THE HEADER MUST BE ONE HEIGHT FOR EVERY PIECE (maintainer 2026-08-13: "The
 // scenery title and text is so big the animation viewer is pushed down
@@ -2062,8 +2107,24 @@ function viewObject(id) {
       humanBtn.classList.toggle("on", on);
     },
   }, "🧍 vs human") : null;
+  // The overview's filter/sort decides what ‹ › walks here. A piece reached
+  // from search or a link may sit OUTSIDE the current filter — it goes in
+  // front rather than losing its pager, and the banner says so, because a
+  // disappearing Next with no explanation is exactly the confusion the
+  // maintainer asked to avoid.
+  const q = objectQueue();
+  const inQueue = q.list.some((x) => x.id === o.id);
+  const navList = inQueue ? q.list : [o, ...q.list];
   return h("div", {},
-    crumbRow("#/objects", `← ${label("objects")}`, "objects", state.data.domains.objects, o.id),
+    crumbRow("#/objects", `← ${label("objects")}`, "objects", navList, o.id),
+    q.active ? h("a", {
+      class: "queue-note", href: "#/objects",
+      title: "The Scenery overview sets this — click to go there and change it",
+    },
+      h("span", { class: "pill warn" }, "filtered"),
+      q.filter === "all" ? `${OBJ_SORTS[q.sort].label} · all ${q.total}`
+        : `${OBJ_FILTERS[q.filter].label} only · ${q.list.length} of ${q.total}`,
+      inQueue ? null : h("span", { class: "pill err" }, "this one is outside the filter")) : null,
     objectHead(o),
     hasAnims
       ? h("div", { class: "panel" },
