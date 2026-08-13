@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "broken_column_001",
+  "group": "broken_columns",
+  "rank": 61,
+  "index": 1,
+  "name": "Granite column stump 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "granite column stump",
+  "glow_concept": null,
+  "prompt": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle, granite column stump, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "broken_columns/broken_column_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.51,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0f3ddcb9-682f-4453-b6bb-d49e28365579",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
