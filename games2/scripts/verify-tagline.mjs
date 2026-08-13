@@ -100,12 +100,15 @@ try {
     ? ok(`both flourishes survived the erase (gold ${Math.round(art.leftOrn.max)} / ${Math.round(art.rightOrn.max)})`)
     : fail(`an ornament was erased with the text (left ${Math.round(art.leftOrn.max)}, right ${Math.round(art.rightOrn.max)}) — the erase box reached too far`);
 
-  // ── 3. every line in the pool fits the plate ───────────────────────────
+  // ── 3. every line fits the plate, none of them squeezed hard ───────────
+  // A long line is scaled down to the arms rather than running under them, so
+  // the question is not "does it fit" but "how much did it have to give".
   const info = await page.evaluate(() => window.__mlSelect.tagline());
-  const over = info.pool.filter((p) => p.cells > info.max);
-  over.length === 0
-    ? ok(`all ${info.pool.length} lines fit (widest ${Math.max(...info.pool.map((p) => p.cells))} of ${info.max} cells)`)
-    : fail(`too wide for the plate: ${over.map((p) => `"${p.text}" (${p.cells})`).join(", ")}`);
+  const squeezed = info.pool.filter((p) => p.fit < info.minFit);
+  const worst = info.pool.reduce((a, p) => (p.fit < a.fit ? p : a));
+  squeezed.length === 0
+    ? ok(`all ${info.pool.length} lines sit on the ${info.maxPx}px plate; the tightest ("${worst.text}") gives ${((1 - worst.fit) * 100).toFixed(1)}%`)
+    : fail(`squeezed past ${info.minFit}: ${squeezed.map((p) => `"${p.text}" (${p.fit.toFixed(3)})`).join(", ")}`);
 
   // ── 4. it is drawn, on the plate, at the size the art used ─────────────
   const geo = await page.evaluate(() => {

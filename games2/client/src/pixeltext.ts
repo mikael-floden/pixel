@@ -36,7 +36,14 @@ type Glyph = string[];
 const W = 5; // the normal glyph box, in cells
 export const FONT_ROWS = 7; // cap height, in cells
 export const FONT_GAP = 1; // cells between glyphs
-export const FONT_SPACE = 3; // cells a word space adds beyond a normal advance
+/**
+ * Cells a word space adds beyond a normal advance. The artwork's own value is
+ * 3 (its word advances measure 17-18 art-px against a 12px normal one); this
+ * is 2 because the maintainer needed a long line to fit and the difference is
+ * ONE art pixel per word gap — 0.3 css px on a phone, invisible, and it buys
+ * 4-6 cells on every line.
+ */
+export const FONT_SPACE = 2;
 
 // prettier-ignore
 const FONT: Record<string, Glyph> = {

@@ -205,6 +205,10 @@ from the games agent), #18 (title/landing screen).
   - **THE PLATE'S LIMIT IS THE FLOURISHES, NOT THE BANNER.** The gold arms
     reach in over the cap rows and leave 293px clear, not the rule's 352 — the
     first limit passed a line whose S and full stop sat on top of the gold.
+    A long line is now SCALED DOWN to the arms rather than rejected (the
+    canvas is already downscaled ~3.5x on a phone, so a few percent costs
+    nothing visible), and the word space is 2 cells rather than the art's 3 —
+    one art pixel per gap, which buys 4-6 cells on every line.
   When ERASING baked text from art, inpaint by diffusion (blur, restore the
   known pixels, repeat) so any glow behind the letters survives, and keep the
   box off the ornaments: the first pass smeared a flourish into a brown blur.

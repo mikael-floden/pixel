@@ -43,7 +43,7 @@ export const TAGLINES = [
   "SOME PATHS DO NOT RETURN.",
   "THE NIGHT KNOWS YOUR NAME.",
   "NO MAP SHOWS EVERYTHING.",
-  "WHERE ONLY OLD ROADS EXIST.",
+  "WHERE OLD ROADS STILL EXISTS.",
 ];
 
 /**
@@ -52,14 +52,30 @@ export const TAGLINES = [
  * rule's span (x 349..700) rather than on the image — the banner is not
  * centred in the artwork, and centring on the image put the words 21px off.
  */
-const PLATE = { imgW: 1091, imgH: 634, centreX: (349 + 700) / 2, capTop: 557, capRows: 14 };
+const PLATE = {
+  imgW: 1091,
+  imgH: 634,
+  centreX: (349 + 700) / 2,
+  capTop: 557,
+  capRows: 14,
+  // What actually bounds the words: the flourish arms reach IN over the cap
+  // rows and leave this much clear, well inside the gold rule's 349..700.
+  clearL: 379,
+  clearR: 671,
+  air: 4, // never let a letter kiss the gold
+};
+
+/** Widest the line may draw, in art pixels. */
+const MAX_PX = PLATE.clearR - PLATE.clearL - PLATE.air * 2;
 
 /**
- * Widest line the plate takes, in font cells. The flourish arms leave 293
- * art-px clear over the cap rows; at 2px per cell that is 146, and 142 keeps
- * 4px of air on each side so a letter never kisses the gold.
+ * How far a line may be SHRUNK to fit the plate before the pool starts looking
+ * ragged. mountTagline scales an over-long line down uniformly rather than
+ * letting it run under the flourishes, which is what makes a new line safe to
+ * add; this is the limit on how much of that is acceptable, and the gate fails
+ * a pool entry that needs more.
  */
-export const TAGLINE_MAX_CELLS = 142;
+export const TAGLINE_MIN_FIT = 0.94;
 
 /** The line for THIS load: random, but never a repeat of the last one. */
 export function pickTagline(pool: readonly string[] = TAGLINES): string {
@@ -87,22 +103,34 @@ export function mountTagline(cv: HTMLCanvasElement, text = pickTagline()): strin
   cv.width = art.width;
   cv.height = art.height;
   if (ctx) ctx.drawImage(art, 0, 0);
+  // FIT TO THE PLATE. The canvas is already being scaled down ~3.5x on a
+  // phone, so trimming a long line by a few percent costs nothing visible and
+  // is far better than letting it run under the gold arms. Uniform, so the
+  // letters keep their proportions; most lines are under the limit and draw
+  // at exactly 1.
+  const fit = Math.min(1, MAX_PX / art.width);
+  const w = art.width * fit;
+  const h = art.height * fit;
   const pct = (v: number, of: number) => `${(v / of) * 100}%`;
-  // drawPixelText pads 1px for the shoulder ring — pull that back out so the
-  // cap lands on the same rows the baked letters used.
-  cv.style.left = pct(PLATE.centreX - art.width / 2, PLATE.imgW);
-  cv.style.top = pct(PLATE.capTop - (art.height - PLATE.capRows) / 2, PLATE.imgH);
-  cv.style.width = pct(art.width, PLATE.imgW);
-  cv.style.height = pct(art.height, PLATE.imgH);
+  cv.style.left = pct(PLATE.centreX - w / 2, PLATE.imgW);
+  // Centre the cap on the rows the baked letters used (drawPixelText pads 1px
+  // for the shoulder ring, and a fitted line is shorter than the cap band).
+  cv.style.top = pct(PLATE.capTop + PLATE.capRows / 2 - h / 2, PLATE.imgH);
+  cv.style.width = pct(w, PLATE.imgW);
+  cv.style.height = pct(h, PLATE.imgH);
   return text;
 }
 
-/** QA: the pool, its measured widths, and the line currently on screen. */
+/** QA: the pool with the shrink each line needs, and the line on screen. */
 export function taglineInfo() {
   const cv = document.querySelector<HTMLCanvasElement>(".ml-tagline");
   return {
-    pool: TAGLINES.map((t) => ({ text: t, cells: measurePixelText(t) })),
-    max: TAGLINE_MAX_CELLS,
+    pool: TAGLINES.map((t) => {
+      const cells = measurePixelText(t);
+      return { text: t, cells, fit: Math.min(1, MAX_PX / (cells * 2 + 2)) };
+    }),
+    minFit: TAGLINE_MIN_FIT,
+    maxPx: MAX_PX,
     shown: cv ? { w: cv.width, h: cv.height, css: cv.getBoundingClientRect() } : null,
   };
 }
