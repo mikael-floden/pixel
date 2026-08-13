@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_010",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 10,
+  "name": "Red-painted shrine box 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red-painted shrine box",
+  "glow_concept": "wisps sheltering under the roof",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, red-painted shrine box, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps sheltering under the roof",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.53,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fdf0cb2b-d62a-424a-b58c-cc6d52ff26c7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
