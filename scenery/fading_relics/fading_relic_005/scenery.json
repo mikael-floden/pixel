@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fading_relic_005",
+  "group": "fading_relics",
+  "rank": 62,
+  "index": 5,
+  "name": "Half-erased upright piano 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-erased upright piano",
+  "glow_concept": null,
+  "prompt": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, half-erased upright piano, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fading_relics/fading_relic_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.76,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "eec7d408-1100-402b-a5af-77175463da0c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
