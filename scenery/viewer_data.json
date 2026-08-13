@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 383,
+  "scenery_count": 384,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 24,
@@ -862,7 +862,7 @@
     "scarecrows": 5,
     "sheaf_poles": 2,
     "signposts": 5,
-    "soulstone_outcrops": 4,
+    "soulstone_outcrops": 5,
     "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 4,
@@ -6948,6 +6948,28 @@
       "status": "complete",
       "pixellab_object_id": "a12270c6-6a51-4470-9f8d-80d2fe369d73",
       "sprite": "soulstone_outcrops/soulstone_outcrop_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_012",
+      "rel": "soulstone_outcrops/soulstone_outcrop_012",
+      "name": "Single facet-smooth soulstone 012 \u00b7 lit",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_ON",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, single facet-smooth soulstone, waist-high, self-emissive at night, softly radiating light: hairline cracks bleeding golden light",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.99,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fc303a44-0eb7-4a07-b31b-d713e570761f",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
