@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ivy_post_005",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 5,
+  "name": "Pale spring ivy shoots 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "pale spring ivy shoots",
+  "glow_concept": null,
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, pale spring ivy shoots, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.65,
+    "world_px_height": 62,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "93fa63a1-d080-4605-b740-451e84efe95b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
