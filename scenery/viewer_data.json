@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 269,
+  "scenery_count": 270,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 7,
@@ -807,7 +807,7 @@
     "water_pumps": 2,
     "waterwheels": 2,
     "wayside_shrines": 3,
-    "waystones": 3,
+    "waystones": 4,
     "web_frames": 2,
     "wells": 3,
     "windmills": 3,
@@ -6517,6 +6517,28 @@
       "status": "complete",
       "pixellab_object_id": "b2cbc3b5-144b-41e5-89a1-17f3d447c4b6",
       "sprite": "waystones/waystone_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_004",
+      "rel": "waystones/waystone_004",
+      "name": "Lichen-ringed old stone 004 \u00b7 lit",
+      "category": "waystones",
+      "lights": "LIGHTS_ON",
+      "description": "a standing roadside stone waymarker with a carved direction mark and worn lettering, lichen-ringed old stone, waist-high to an adult person, self-emissive at night, softly radiating light: engraved pointing hand lit like a signpost",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.83,
+        "world_px_height": 31,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0059fe80-beaa-4ae8-9705-5290a6e65107",
+      "sprite": "waystones/waystone_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
