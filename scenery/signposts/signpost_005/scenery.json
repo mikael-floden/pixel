@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_005",
+  "group": "signposts",
+  "rank": 8,
+  "index": 5,
+  "name": "Pale birch fingerpost 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "pale birch fingerpost",
+  "glow_concept": null,
+  "prompt": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, pale birch fingerpost, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.29,
+    "world_px_height": 86,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "83a3b58b-1e9e-46af-a5d7-031539ce9e1e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
