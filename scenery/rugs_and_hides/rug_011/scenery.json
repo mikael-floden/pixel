@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:05:52+00:00",
+  "id": "rug_011",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 11,
+  "name": "Round braided rug 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "round braided rug",
+  "glow_concept": null,
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, round braided rug, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.33,
+    "world_px_height": 50,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3e6be4d6-4711-4910-9d02-94ffe33e52a7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
