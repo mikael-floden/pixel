@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "haystack_013",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 13,
+  "name": "Twin small hillock stacks 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "twin small hillock stacks",
+  "glow_concept": null,
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, twin small hillock stacks, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.72,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d359b86d-e62b-4e2a-9d7a-54e6588d0683",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
