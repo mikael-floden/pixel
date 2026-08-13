@@ -226,6 +226,16 @@ def main():
     start = time.monotonic()
     pieces = 0
     batches = 0
+    # A failed piece is SKIPPED for the rest of this run, never fatal: PixelLab
+    # jobs fail flakily (measured 2026-08-13: a content-policy false positive on
+    # an innocent moss-mound prompt, $0.00 charged, killed a 330-minute window
+    # after 59 pieces under the old run-fatal rule). The skipped piece simply
+    # retries on the NEXT run — nothing was written, so the deterministic
+    # planner offers it again. Only a STREAK of failures (a real outage, an
+    # exhausted account) stops the run.
+    skipped: dict[str, set] = {}
+    consec_fail = 0
+    MAX_CONSEC_FAIL = 5
     stop_reason = "nothing left to generate"
     while True:
         state = budget_state(client)
@@ -233,9 +243,12 @@ def main():
             stop_reason = (f"budget floor (subscription {state['generations']:.0f} gens, "
                            f"${state['usd']:.2f})")
             break
-        nxt = catalog.next_batch(cfg, factory.done_by_group())
+        done = factory.done_by_group()
+        for gid, ids in skipped.items():
+            done.setdefault(gid, set()).update(ids)
+        nxt = catalog.next_batch(cfg, done)
         if nxt is None:
-            stop_reason = "catalog complete"
+            stop_reason = "catalog complete" if not skipped else                 f"catalog complete except {sum(len(v) for v in skipped.values())} skipped piece(s)"
             break
         group, specs = nxt
         room = max_pieces - pieces
@@ -246,10 +259,18 @@ def main():
         try:
             push_now = (not args.no_push) and ((pieces + 1) % PUSH_EVERY == 0)
             run_piece(client, cfg, group, specs[0], push=push_now)
+            consec_fail = 0
         except PixelLabError as e:
-            print(f"  ! piece failed: {e}")
-            stop_reason = f"piece error: {str(e)[:120]}"
-            break
+            consec_fail += 1
+            skipped.setdefault(group["id"], set()).add(specs[0]["id"])
+            print(f"  ! piece {group['id']}/{specs[0]['id']} failed "
+                  f"({consec_fail} in a row) — skipped for this run, retries next run: "
+                  f"{str(e)[:160]}")
+            if consec_fail >= MAX_CONSEC_FAIL:
+                stop_reason = (f"{MAX_CONSEC_FAIL} consecutive failures — likely an "
+                               f"outage; last: {str(e)[:100]}")
+                break
+            continue
         pieces += 1
         batches += 1
         print(f"  = {pieces} piece(s) this run")
