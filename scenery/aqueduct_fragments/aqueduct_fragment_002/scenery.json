@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "aqueduct_fragment_002",
+  "group": "aqueduct_fragments",
+  "rank": 56,
+  "index": 2,
+  "name": "Moss-blackened arch 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-blackened arch",
+  "glow_concept": "glowing drips falling from the underside of the arch",
+  "prompt": "a freestanding fragment of a stone aqueduct, one arch on weathered piers with a broken water channel on top, moss-blackened arch, tall, about two people high, self-emissive at night, softly radiating light: glowing drips falling from the underside of the arch",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "aqueduct_fragments/aqueduct_fragment_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.28,
+    "world_px_height": 161,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3811e1ac-df34-4ec7-b395-528cfced77ad",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
