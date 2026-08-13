@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_006",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 6,
+  "name": "Speckled tawny grisettes 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "speckled tawny grisettes",
+  "glow_concept": "soft foxfire halo hugging the whole cluster",
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, speckled tawny grisettes, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soft foxfire halo hugging the whole cluster",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.26,
+    "world_px_height": 10,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2e6ecde4-d56e-4f71-a695-ea393982dbbf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

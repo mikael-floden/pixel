@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 389,
+  "scenery_count": 390,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 32,
@@ -767,7 +767,7 @@
     "market_stalls": 4,
     "maypoles": 5,
     "moss_clumps": 5,
-    "mushrooms": 5,
+    "mushrooms": 6,
     "nest_posts": 2,
     "offering_tables": 6,
     "orchard_trees": 6,
@@ -5593,6 +5593,28 @@
       "status": "complete",
       "pixellab_object_id": "ed99c40c-58da-4f5b-a123-214b1d54283d",
       "sprite": "mushrooms/mushroom_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_006",
+      "rel": "mushrooms/mushroom_006",
+      "name": "Speckled tawny grisettes 006 \u00b7 lit",
+      "category": "mushrooms",
+      "lights": "LIGHTS_ON",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, speckled tawny grisettes, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soft foxfire halo hugging the whole cluster",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.26,
+        "world_px_height": 10,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2e6ecde4-d56e-4f71-a695-ea393982dbbf",
+      "sprite": "mushrooms/mushroom_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
