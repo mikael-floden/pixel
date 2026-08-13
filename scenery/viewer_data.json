@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 446,
+  "scenery_count": 447,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -195,7 +195,7 @@
       "id": "carts",
       "name": "Cart",
       "quota": 48,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 28,
@@ -801,7 +801,7 @@
     "bushes": 6,
     "cairns": 7,
     "light": 1,
-    "carts": 5,
+    "carts": 6,
     "cattail_clumps": 6,
     "chairs_and_benches": 5,
     "charcoal_kilns": 2,
@@ -2707,6 +2707,28 @@
       "status": "complete",
       "pixellab_object_id": "74c82fd8-230c-4b84-9ac0-2a6d90138e09",
       "sprite": "carts/cart_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cart_009",
+      "rel": "carts/cart_009",
+      "name": "Firewood-stacked cart 009",
+      "category": "carts",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, firewood-stacked cart, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.96,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "92d8bb37-78a8-4e52-94d7-7c7940430128",
+      "sprite": "carts/cart_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
