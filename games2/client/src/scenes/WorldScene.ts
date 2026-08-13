@@ -2055,6 +2055,20 @@ export class WorldScene extends Phaser.Scene {
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
       }),
+      // The debris pieces standing on ONE cell, as (level, textureKey) pairs —
+      // the instrument behind the lap-rule gate: a cell must never carry two
+      // pieces at the same level (the deck stamped over its own equal-height
+      // column was exactly that — the island hall's "roof suddenly changes
+      // look", 2026-08-13).
+      debrisAt: (c: number, r: number) => {
+        if (!this.indoorDebris || !this.world) return null;
+        const { dx, dy, lh } = MAP_GEOMETRY;
+        const bx = this.iso.ox + (c - r) * dx;
+        const by = this.iso.oy + (c + r) * dy;
+        return this.indoorDebris
+          .filter((img) => img.x === bx && img.y <= by && (by - img.y) % lh === 0)
+          .map((img) => ({ lvl: (by - img.y) / lh, key: img.texture.key }));
+      },
       // Park the indoor blend anywhere in (0,1) — a number pins it, no arg /
       // null releases it. The instrument that lets a starved headless gate
       // photograph the 3× crossfade mid-blend (see easeIndoorMix).
@@ -9361,9 +9375,18 @@ export class WorldScene extends Phaser.Scene {
         }
       }
       // The deck a constrained cell no longer draws — my own roof, or a slab
-      // that would lid my floor. Exposed faces + top, the outdoor rule.
+      // that would lid my floor. Exposed faces + top, the outdoor rule —
+      // INCLUDING the lap rule: where the deck coincides with its own
+      // equal-height column (deck.level == cell.l — the roof lapping its
+      // walls, or the pillars of a hypostyle hall), the real renderers draw
+      // the COLUMN's baked top and skip the deck (rebuildOccluders /
+      // redrawGround), so the debris must too. Without this the fade stamped
+      // the dark deck tile over every pale wall-top and pillar-top, and the
+      // swap popped the real mixed-tile roof back in (maintainer 2026-08-13,
+      // the island hall: "the roof suddenly changes look... something to do
+      // with the walls having a different tile than the roof").
       const dk = this.deckIndex.get(idx);
-      if (dk && dk.cell.path) {
+      if (dk && dk.cell.path && dk.deck.level > cell.l) {
         const dTop0 = pathTileKey(dk.cell.path);
         if (this.textures.exists(dTop0)) {
           const dFace = this.deckFaceKey(dk.deck, dTop0);

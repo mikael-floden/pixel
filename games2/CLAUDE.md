@@ -2696,6 +2696,21 @@ side collision just like monsters").
     QA toggle. Room-to-room flips inside one building rebuild the debris for
     the new room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art
     — accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
+    THE DEBRIS OBEYS THE LAP RULE (2026-08-13, the island hall: "the roof
+    suddenly changes look... something to do with the walls having a
+    different tile than the roof"): where a deck coincides with its own
+    equal-height column (deck.level == cell.l — a roof lapping its walls, or
+    the pillars of a hypostyle hall), the real renderers draw the COLUMN's
+    baked top and skip the deck; buildIndoorDebris did not, stamping the
+    dark deck tile over every pale wall-top and pillar-top so the fade
+    showed a solid dark slab that popped to the real mixed-tile roof at the
+    swap. Same `dk.deck.level > cell.l` guard as rebuildOccluders /
+    redrawGround (measured on the_island2's hall: swap diff 13,822 px → the
+    NPC/sparkle floor, debris 370 → 306 = exactly its 64 lap cells).
+    `__ml.debrisAt(c,r)` lists a cell's debris pieces as (lvl, key) pairs;
+    the gate holds a lap cell to ONE piece per level with the wall's own
+    top at deck level — the tone-independent regression (house_demo's roof
+    and wall-top tiles read alike, so a pixel bar alone cannot see this).
     REFINEMENTS the maintainer asked for the same day, with screenshots:
     - **TWO SPEEDS: DEBRIS AT 3×, LIGHT GRADE AT 1.5×** (`INDOOR_DEBRIS_RATE`
       / `INDOOR_GRADE_RATE`). He tuned the debris by eye (2×, then "twice as

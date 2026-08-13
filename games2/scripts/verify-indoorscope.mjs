@@ -66,9 +66,21 @@ const bRows = B.cells.filter(([c]) => c === bCol).map(([, r]) => r).sort((a, b) 
 const bRow = bRows[bRows.length >> 1];
 // Outside spot: south of house_a, clear of every roof.
 const OUT_SPOT = [aC + 0.5, A.y1 + 2.5];
+// A LAP cell: the deck coincides with its own equal-height wall column
+// (lvl == deck.level), where the renderers draw the COLUMN's pale top and
+// skip the deck. The debris must honour the same rule — it once stamped the
+// dark deck tile over every lap cell, so the whole wall-top ring flipped at
+// the swap (maintainer 2026-08-13, the island hall: "the roof suddenly
+// changes look... the walls having a different tile than the roof"). Take
+// the south-ring lap cell nearest the fade anchor so it shares the frame.
+const laps = A.cells.filter(([c, r]) => lvl(c, r) >= A.d.level);
+if (!laps.length) fail("house_a has no lap cells — the wall-ring fixture is gone");
+const LAP = laps.slice().sort((p, q) =>
+  Math.hypot(p[0] - aC, p[1] - A.y1) - Math.hypot(q[0] - aC, q[1] - A.y1))[0];
 console.log(
   `house_a roof (${A.x0},${A.y0})-(${A.x1},${A.y1}) interior ${A.floor.length}, centre ${aC},${aR}; ` +
-  `house_b (${B.x0},${B.y0})-(${B.x1},${B.y1}), sample cell ${bCol},${bRow}; outside ${OUT_SPOT}`,
+  `house_b (${B.x0},${B.y0})-(${B.x1},${B.y1}), sample cell ${bCol},${bRow}; outside ${OUT_SPOT}; ` +
+  `lap cell ${LAP} of ${laps.length}`,
 );
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
@@ -241,10 +253,10 @@ try {
   // the south edge the near wall stays at the dial, so entry ends in true
   // void: bright roof art -> black, a span a median can measure.
   const fadeCell = [aC, A.y1 - 1];
-  const roofMed = async (name) => {
-    const p = await roofPoint(fadeCell[0], fadeCell[1], A.d.level);
+  const roofMed = async (name, cell = fadeCell) => {
+    const p = await roofPoint(cell[0], cell[1], A.d.level);
     const v = patch(await shoot(name), p.x, p.y, 4);
-    if (!v) fail(`house_a roof point off screen for ${name} (${Math.round(p.x)},${Math.round(p.y)})`);
+    if (!v) fail(`house_a roof point ${cell} off screen for ${name} (${Math.round(p.x)},${Math.round(p.y)})`);
     return v.med;
   };
   // THE PIN IS THE INSTRUMENT. At 3× the debris crosses its whole alpha range
@@ -282,23 +294,28 @@ try {
     // Exit only: re-pin just ABOVE the light grade's landing (the swap fires
     // at mix ⅓, under any pin at or below it) — debris opaque since mix ⅔,
     // light grade at 0.025: the last stretch before the repaint swap, which
-    // is where a colour snap would live.
-    let late = null;
+    // is where a colour snap would live. Sampled at TWO anchors: the roof
+    // plane over a floor cell (the deck's own tile) and over the LAP cell
+    // (the wall's pale top, which the debris must NOT stamp with the deck).
+    let late = null, lapLate = null, lapPieces = null;
     if (!goIn) {
       await page.evaluate(() => window.__ml.indoorMixPin(0.35));
       await page.waitForTimeout(700);
       late = await roofMed(`${label}-late`);
+      lapLate = await roofMed(`${label}-late-lap`, LAP);
+      lapPieces = await page.evaluate(([c, r]) => window.__ml.debrisAt(c, r), LAP);
     }
     await page.evaluate(() => window.__ml.indoorMixPin(null));
     if (!(await settle(goIn, 45000))) return null;
     await page.waitForTimeout(400);
     const after = await roofMed(`${label}-after`);
+    const lapAfter = goIn ? null : await roofMed(`${label}-after-lap`, LAP);
     const fadeEnd = await page.evaluate(() => window.__ml.indoorFade());
     if (!(mid.debris > 0 && mid.alpha > 0.01 && mid.alpha < 0.99)) {
       console.log(`  [${label}] pinned frame not blended: ${JSON.stringify(mid)}`);
       return null;
     }
-    return { before, midVal, late, after, mid, sawExiting: mid.exiting, fadeEnd };
+    return { before, midVal, late, lapLate, lapPieces, after, lapAfter, mid, sawExiting: mid.exiting, fadeEnd };
   };
   // "Not a pop" = the transition really rendered a BLENDED state (the
   // recorder caught the debris at an intermediate alpha — at 3× on a starved
@@ -387,6 +404,26 @@ try {
         `(drift ${drift.toFixed(1)} over a ${span.toFixed(1)} span) — the resolve is being clamped through the fade again`);
     ok(`no colour snap at the exit's end: late-fade roof ${exit.late.toFixed(1)} ≈ settled ${exit.after.toFixed(1)} ` +
       `(drift ${drift.toFixed(1)}, transition span ${span.toFixed(1)})`);
+    // The LAP anchor (the wall's pale top under the deck's own level): the
+    // debris must not stamp the deck tile over it — the island regression.
+    const lapDrift = Math.abs(exit.lapLate - exit.lapAfter);
+    if (!(lapDrift <= Math.max(14, span * 0.35)))
+      fail(`the WALL-TOP ring still flips at the exit's end: lap cell late ${exit.lapLate.toFixed(1)} vs ` +
+        `settled ${exit.lapAfter.toFixed(1)} (drift ${lapDrift.toFixed(1)}) — the debris is stamping the deck ` +
+        `tile over its own equal-height column again (the island hall's "roof suddenly changes look")`);
+    ok(`the wall-top ring holds through the swap: lap cell late ${exit.lapLate.toFixed(1)} ≈ settled ${exit.lapAfter.toFixed(1)} ` +
+      `(drift ${lapDrift.toFixed(1)})`);
+    // Structural half of the same rule (tone-independent — house_demo's roof
+    // and wall-top tiles happen to read alike): ONE piece per level on the
+    // lap cell. The deck stamped over its own equal-height column was two
+    // pieces at deck level; and the column's own pale top must be there.
+    if (!Array.isArray(exit.lapPieces) || !exit.lapPieces.length)
+      fail(`no debris pieces reported at the lap cell ${LAP} — debrisAt broke or the cell left the constrained set`);
+    const atDeck = exit.lapPieces.filter((p) => p.lvl === A.d.level);
+    if (atDeck.length !== 1)
+      fail(`lap cell ${LAP} carries ${atDeck.length} debris pieces at deck level ${A.d.level} ` +
+        `(${JSON.stringify(exit.lapPieces)}) — the deck is stamped over its own wall again`);
+    ok(`one piece per level on the lap cell: ${exit.lapPieces.length} pieces, exactly 1 at deck level (${atDeck[0].key})`);
   }
 
   // ---- 6. the zero-ambient mechanism itself, one data pin ------------------
