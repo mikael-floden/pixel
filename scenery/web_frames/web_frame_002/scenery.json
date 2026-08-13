@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "web_frame_002",
+  "group": "web_frames",
+  "rank": 81,
+  "index": 2,
+  "name": "Ladder with rung webs 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ladder with rung webs",
+  "glow_concept": "dewdrops on the web lit like strung lanterns",
+  "prompt": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners, ladder with rung webs, about as tall as an adult person, self-emissive at night, softly radiating light: dewdrops on the web lit like strung lanterns",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "web_frames/web_frame_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.88,
+    "world_px_height": 71,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "07c202e7-65cc-48a3-b7bc-c516f8574160",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 197,
+  "scenery_count": 198,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -573,7 +573,7 @@
       "id": "web_frames",
       "name": "Web Frame",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 82,
@@ -808,7 +808,7 @@
     "waterwheels": 2,
     "wayside_shrines": 2,
     "waystones": 2,
-    "web_frames": 1,
+    "web_frames": 2,
     "wells": 2,
     "windmills": 2,
     "wisteria_snags": 2,
@@ -5043,6 +5043,28 @@
       "status": "complete",
       "pixellab_object_id": "91ef57ab-7046-4e21-a4af-939734acfeea",
       "sprite": "web_frames/web_frame_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "web_frame_002",
+      "rel": "web_frames/web_frame_002",
+      "name": "Ladder with rung webs 002 \u00b7 lit",
+      "category": "web_frames",
+      "lights": "LIGHTS_ON",
+      "description": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners, ladder with rung webs, about as tall as an adult person, self-emissive at night, softly radiating light: dewdrops on the web lit like strung lanterns",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.88,
+        "world_px_height": 71,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "07c202e7-65cc-48a3-b7bc-c516f8574160",
+      "sprite": "web_frames/web_frame_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
