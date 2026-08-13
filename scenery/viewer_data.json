@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 474,
+  "scenery_count": 475,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 13,
@@ -834,7 +834,7 @@
     "hanging_willows": 2,
     "haystacks": 6,
     "hearths": 6,
-    "hedges": 6,
+    "hedges": 7,
     "hop_poles": 2,
     "house_clutter": 6,
     "ivy_posts": 6,
@@ -5870,6 +5870,28 @@
       "status": "complete",
       "pixellab_object_id": "78c1618a-ac9c-4958-999f-cbb395e8a89b",
       "sprite": "hedges/hedge_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_014",
+      "rel": "hedges/hedge_014",
+      "name": "Snow-topped winter hedge 014 \u00b7 lit",
+      "category": "hedges",
+      "lights": "LIGHTS_ON",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, snow-topped winter hedge, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing sap threads veining the twigs",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.72,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "846211ba-73b6-4537-b166-4b815248ea2a",
+      "sprite": "hedges/hedge_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
