@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_003",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 3,
+  "name": "Slumped collapsing scarecrow 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "slumped collapsing scarecrow",
+  "glow_concept": null,
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, slumped collapsing scarecrow, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.0,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ee8ac1dc-9d4f-4782-8330-24ccdf816cd6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

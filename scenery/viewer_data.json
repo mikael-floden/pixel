@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 241,
+  "scenery_count": 242,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 27,
@@ -782,7 +782,7 @@
     "rope_swings": 2,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 2,
+    "scarecrows": 3,
     "sheaf_poles": 2,
     "signposts": 3,
     "soulstone_outcrops": 3,
@@ -4317,6 +4317,28 @@
       "status": "complete",
       "pixellab_object_id": "f8a2d59b-3be4-4302-ad1e-49ff974c501b",
       "sprite": "scarecrows/scarecrow_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_003",
+      "rel": "scarecrows/scarecrow_003",
+      "name": "Slumped collapsing scarecrow 003",
+      "category": "scarecrows",
+      "lights": "LIGHTS_OFF",
+      "description": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, slumped collapsing scarecrow, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.0,
+        "world_px_height": 75,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ee8ac1dc-9d4f-4782-8330-24ccdf816cd6",
+      "sprite": "scarecrows/scarecrow_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
