@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 97,
+  "scenery_count": 98,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -566,7 +566,7 @@
       "id": "nest_posts",
       "name": "Nest Post",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 81,
@@ -758,6 +758,7 @@
     "maypoles": 1,
     "moss_clumps": 1,
     "mushrooms": 1,
+    "nest_posts": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
     "overgrown_archways": 1,
@@ -1898,6 +1899,28 @@
       "status": "complete",
       "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
       "sprite": "mushrooms/mushroom_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "nest_post_001",
+      "rel": "nest_posts/nest_post_001",
+      "name": "Telegraph pole crossarm nest 001",
+      "category": "nest_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered wooden post with a woven twig bird nest built on top, straw and moss sticking out of the rounded nest cup, telegraph pole crossarm nest, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.87,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9a073a53-c6cc-4e30-bb55-4eac667e30de",
+      "sprite": "nest_posts/nest_post_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
