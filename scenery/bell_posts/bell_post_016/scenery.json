@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:42:32+00:00",
+  "id": "bell_post_016",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 16,
+  "name": "Post with a small lantern hook beside the bell 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "post with a small lantern hook beside the bell",
+  "glow_concept": "the bronze bell glowing furnace-warm",
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, post with a small lantern hook beside the bell, large, twice human height, self-emissive at night, softly radiating light: the bronze bell glowing furnace-warm",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_016/sprite.webp",
+  "placement": {
+    "world_height_m": 2.54,
+    "world_px_height": 96,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "692e9d8d-b61e-4000-b468-96cb0653114d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
