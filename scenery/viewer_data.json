@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 399,
+  "scenery_count": 400,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 46,
@@ -843,7 +843,7 @@
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 4,
-    "moss_clumps": 4,
+    "moss_clumps": 5,
     "mushrooms": 6,
     "nest_posts": 2,
     "offering_tables": 5,
@@ -5826,6 +5826,28 @@
       "status": "complete",
       "pixellab_object_id": "fe646f50-0367-49c1-b35b-2a01590c272e",
       "sprite": "moss_clumps/moss_clump_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_010",
+      "rel": "moss_clumps/moss_clump_010",
+      "name": "Sphagnum bog flat spread 010 \u00b7 lit",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, sphagnum bog flat spread, tiny, only ankle-high, self-emissive at night, softly radiating light: rune-shaped bare patch glowing on the mound",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.29,
+        "world_px_height": 11,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "375c509f-8880-4e9b-ac78-3b43c59c9ad3",
+      "sprite": "moss_clumps/moss_clump_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
