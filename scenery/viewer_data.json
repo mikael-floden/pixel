@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 445,
+  "scenery_count": 446,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -244,7 +244,7 @@
       "id": "flower_stands",
       "name": "Flower Stand",
       "quota": 34,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 35,
@@ -822,7 +822,7 @@
     "fish_drying_racks": 5,
     "flame_niches": 6,
     "flower_garlands": 2,
-    "flower_stands": 5,
+    "flower_stands": 6,
     "flower_trellises": 2,
     "geodes": 2,
     "giant_mushrooms": 2,
@@ -4643,6 +4643,28 @@
       "status": "complete",
       "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
       "sprite": "flower_stands/flower_stand_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flower_stand_009",
+      "rel": "flower_stands/flower_stand_009",
+      "name": "Midsummer wildflower mix 009",
+      "category": "flower_stands",
+      "lights": "LIGHTS_OFF",
+      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, midsummer wildflower mix, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.97,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bc6ee861-82dd-4f9b-9f32-e403a5aec500",
+      "sprite": "flower_stands/flower_stand_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
