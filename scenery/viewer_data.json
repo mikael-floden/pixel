@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 178,
+  "scenery_count": 179,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 63,
@@ -740,7 +740,7 @@
     "dock_pilings": 2,
     "dovecotes": 1,
     "driftwood_logs": 2,
-    "fading_relics": 1,
+    "fading_relics": 2,
     "fallen_logs": 2,
     "fences": 2,
     "ferns": 2,
@@ -1924,6 +1924,28 @@
       "status": "complete",
       "pixellab_object_id": "b764cf54-a11f-4cf7-bea9-e8c3c7c31a2d",
       "sprite": "fading_relics/fading_relic_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fading_relic_002",
+      "rel": "fading_relics/fading_relic_002",
+      "name": "Ghost-outline wardrobe 002 \u00b7 lit",
+      "category": "fading_relics",
+      "lights": "LIGHTS_ON",
+      "description": "a single piece of old household furniture standing alone outdoors on grass, one side solid and detailed, the other side dissolving into a faint transparent outline, ghost-outline wardrobe, waist-high to an adult person, self-emissive at night, softly radiating light: soulstone crystallizing at the dissolved corner",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "287d3eea-bf0c-40a2-abf8-e256d909d212",
+      "sprite": "fading_relics/fading_relic_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

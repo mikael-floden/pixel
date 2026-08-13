@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fading_relic_002",
+  "group": "fading_relics",
+  "rank": 62,
+  "index": 2,
+  "name": "Ghost-outline wardrobe 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ghost-outline wardrobe",
+  "glow_concept": "soulstone crystallizing at the dissolved corner",
+  "prompt": "a single piece of old household furniture standing alone outdoors on grass, one side solid and detailed, the other side dissolving into a faint transparent outline, ghost-outline wardrobe, waist-high to an adult person, self-emissive at night, softly radiating light: soulstone crystallizing at the dissolved corner",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fading_relics/fading_relic_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.98,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "287d3eea-bf0c-40a2-abf8-e256d909d212",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
