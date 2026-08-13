@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "anchor_002",
+  "group": "anchors",
+  "rank": 92,
+  "index": 2,
+  "name": "Anchor with wooden stock 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "anchor with wooden stock",
+  "glow_concept": "rust cracks glowing furnace-orange",
+  "prompt": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, anchor with wooden stock, about as tall as an adult person, self-emissive at night, softly radiating light: rust cracks glowing furnace-orange",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "anchors/anchor_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.72,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9b75117b-4267-410d-a11c-15e3baee9174",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
