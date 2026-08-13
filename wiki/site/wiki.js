@@ -1944,6 +1944,39 @@ function viewObjects() {
           h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
           h("div", { class: "card-badges" }, ...entityBadge("objects", o.path))))))));
 }
+// THE HEADER MUST BE ONE HEIGHT FOR EVERY PIECE (maintainer 2026-08-13: "The
+// scenery title and text is so big the animation viewer is pushed down
+// differently when I press next next next"). Scenery names run long and their
+// descriptions are whole generation prompts, so the old header — full name as
+// the H1, blurb ghost-stacked to the tallest prompt in the domain — was both
+// tall and variable. Now: the name's " · lit"-style suffixes become pills, the
+// title clamps to a fixed two-line box (the full name is in its tooltip), and
+// the prompt sits behind "Read more…". Expanding is the reader's own action;
+// paging re-renders, so every page arrives collapsed and the viewer below
+// never moves. The ghost reservation is gone with the text it reserved for.
+function objectHead(o) {
+  const [title, ...nameTags] = String(o.name).split(" · ");
+  const desc = objectBlurb(o);
+  const descP = h("p", { class: "muted obj-desc" }, desc);
+  const moreBtn = desc ? h("button", {
+    class: "ghost-btn obj-more",
+    onclick: () => {
+      const open = descP.classList.toggle("open");
+      moreBtn.textContent = open ? "Read less" : "Read more…";
+    },
+  }, "Read more…") : null;
+  return h("div", { class: "detail-head" },
+    h("div", { class: "portrait checker" }, h("img", { src: assetUrl(o.preview), alt: o.name })),
+    h("div", { class: "meta" },
+      h("h1", { class: "obj-title", title: o.name }, title),
+      // One unconditional row — pills when the name carries tags, the button
+      // when there is text — so its height never depends on the piece.
+      h("div", { class: "obj-sub" },
+        ...nameTags.map((t) => h("span", { class: "pill" }, t)),
+        moreBtn),
+      descP,
+      feedbackRow("objects", o.path)));
+}
 function viewObject(id) {
   const o = state.data.domains.objects.find((x) => x.id === id);
   if (!o) return h("p", {}, "Unknown object.");
@@ -1962,12 +1995,7 @@ function viewObject(id) {
   }
   return h("div", {},
     crumbRow("#/objects", `← ${label("objects")}`, "objects", state.data.domains.objects, o.id),
-    h("div", { class: "detail-head" },
-      h("div", { class: "portrait checker" }, h("img", { src: assetUrl(o.preview), alt: o.name })),
-      h("div", { class: "meta" },
-        h("h1", {}, o.name),
-        loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
-        feedbackRow("objects", o.path))),
+    objectHead(o),
     hasAnims
       ? h("div", { class: "panel" },
           h("div", { class: "panel-title" }, o.stillOnly ? "Still" : "Animations"),

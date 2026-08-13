@@ -121,6 +121,59 @@ ok(list.still === 0, "no card claims a “still” animation");
 ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
 ok(list.other.length > 0 && list.other.every((s) => !/still/i.test(s)), `and the animated ones name their real states (${list.other.join(", ")})`);
 
+// PAGING ‹ › MUST NOT MOVE THE VIEWER (maintainer 2026-08-13: "The scenery
+// title and text is so big the animation viewer is pushed down differently
+// when I press next next next"). The name's suffixes are pills, the title is
+// a fixed two-line box, and the prompt hides behind "Read more…" — collapsed
+// again on every page change, so expansion is always the reader's own act.
+// The walk starts a few pieces before the campfire so it crosses stills AND
+// an animated legacy piece, long names and short.
+const objIds = D.domains.objects.map((o) => o.id);
+const start = Math.max(0, objIds.indexOf("campfire") - 4);
+await p.goto(`${W}#/objects/${objIds[start]}`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const pmeasure = () => p.evaluate(() => {
+  const pan = [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+  const t = document.querySelector(".obj-title"), s = document.querySelector(".obj-sub");
+  return { top: pan ? Math.round(pan.getBoundingClientRect().top) : -1,
+    titleH: Math.round(t?.getBoundingClientRect().height ?? -1),
+    subH: Math.round(s?.getBoundingClientRect().height ?? -1),
+    open: !!document.querySelector(".obj-desc.open"),
+    title: t?.textContent ?? "", full: t?.getAttribute("title") ?? "" };
+});
+const pwalk = [await pmeasure()];
+for (let i = 0; i < 11; i++) {
+  await p.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await p.waitForTimeout(380);
+  pwalk.push(await pmeasure());
+}
+const ptops = [...new Set(pwalk.map((r) => r.top))];
+console.log("paging:", JSON.stringify({ ptops, titleHs: [...new Set(pwalk.map((r) => r.titleH))], first: pwalk[0].title }));
+ok(ptops.length === 1 && ptops[0] > 0, `the viewer panel never moves while paging ‹ › (tops: ${ptops.join(", ")})`);
+ok(new Set(pwalk.map((r) => r.titleH)).size === 1, `the title box is one fixed height whatever the name (${pwalk[0].titleH}px)`);
+ok(new Set(pwalk.map((r) => r.subH)).size === 1, `and so is the pill/Read-more row (${pwalk[0].subH}px)`);
+ok(pwalk.every((r) => !r.open), "every page arrives with the description collapsed");
+ok(pwalk.every((r) => !/ · /.test(r.title)), "no title still carries a “ · ” suffix — those are pills now");
+ok(pwalk.some((r) => r.full.includes(" · ")), "and the full name survives in the title tooltip");
+// Read more: expands below the row, relabels, pushes the viewer only while
+// open — and the panel returns to its exact spot on collapse.
+const toggled = await p.evaluate(async () => {
+  const pan = () => [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+  const btn = document.querySelector(".obj-more");
+  const before = Math.round(pan().getBoundingClientRect().top);
+  btn.click(); await new Promise((r) => setTimeout(r, 150));
+  const openTop = Math.round(pan().getBoundingClientRect().top);
+  const openText = document.querySelector(".obj-desc.open")?.textContent?.length ?? 0;
+  const label = btn.textContent;
+  btn.click(); await new Promise((r) => setTimeout(r, 150));
+  return { before, openTop, openText, label, after: Math.round(pan().getBoundingClientRect().top), closedLabel: btn.textContent };
+});
+console.log("readmore:", JSON.stringify(toggled));
+ok(toggled.openText > 40, `Read more really shows the description (${toggled.openText} chars)`);
+ok(toggled.openTop > toggled.before, "expanding pushes the viewer down — the reader asked for that");
+ok(toggled.after === toggled.before, `collapsing puts it back to the pixel (${toggled.before} → ${toggled.after})`);
+ok(toggled.label === "Read less" && toggled.closedLabel === "Read more…", "the button relabels both ways");
+
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

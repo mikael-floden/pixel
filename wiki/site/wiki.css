@@ -828,6 +828,21 @@ input[type="range"] { accent-color: var(--accent); }
 .picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
 /* Card pill row: replaces the habitat line, so it keeps that line's rhythm. */
 .card-pills { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+/* Scenery header at ONE height per piece (maintainer 2026-08-13: paging must
+   not move the animation viewer). The title box is EXACTLY two lines whatever
+   the name does — clamp caps it, min-height pads it — and the sub row keeps
+   one height whether it holds pills, the Read more button, both, or neither.
+   The description costs no height until its button opens it. */
+.obj-title {
+  font-size: 1.3rem; line-height: 1.3; margin: 0 0 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; min-height: 2.6em;
+}
+.obj-sub { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; min-height: 30px; margin: 0 0 4px; }
+.obj-sub .pill { flex: none; }
+.obj-more { padding: 3px 10px; font-size: 13px; }
+.obj-desc { display: none; margin: 6px 0; }
+.obj-desc.open { display: block; }
 /* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
    height change here shifts every control — Next must be where it was after
    you press Next. */
