@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 407,
+  "scenery_count": 408,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 4
+      "done": 5
     }
   ],
   "categories": {
@@ -879,7 +879,7 @@
     "torch_posts": 5,
     "trailing_planters": 2,
     "trees": 6,
-    "wall_hangings": 4,
+    "wall_hangings": 5,
     "washing_lines": 5,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -9038,6 +9038,28 @@
       "status": "complete",
       "pixellab_object_id": "4487d256-e008-4378-8e8a-ca94c22b9d74",
       "sprite": "wall_hangings/wall_hanging_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wall_hanging_008",
+      "rel": "wall_hangings/wall_hanging_008",
+      "name": "Iron candle sconce 008 \u00b7 lit",
+      "category": "wall_hangings",
+      "lights": "LIGHTS_ON",
+      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, iron candle sconce, small, knee-high, self-emissive at night, softly radiating light: the candle sconce lit warm",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e2109682-4ecb-40f1-b888-53f1034c650b",
+      "sprite": "wall_hangings/wall_hanging_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
