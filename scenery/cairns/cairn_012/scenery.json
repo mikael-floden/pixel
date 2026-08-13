@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_012",
+  "group": "cairns",
+  "rank": 9,
+  "index": 12,
+  "name": "Cairn ringed with small offerings 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cairn ringed with small offerings",
+  "glow_concept": "cold blue soul-light seeping from under the base",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, cairn ringed with small offerings, waist-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.88,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ef45a715-1e05-4e5d-a524-cebdabe43aac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
