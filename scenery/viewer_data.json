@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 285,
+  "scenery_count": 286,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -671,7 +671,7 @@
       "id": "sheaf_poles",
       "name": "Sheaf Pole",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 96,
@@ -861,7 +861,7 @@
     "ruined_arches": 2,
     "rusted_machines": 2,
     "scarecrows": 2,
-    "sheaf_poles": 1,
+    "sheaf_poles": 2,
     "signposts": 2,
     "soulstone_outcrops": 2,
     "soulstone_plinths": 2,
@@ -5365,6 +5365,28 @@
       "status": "complete",
       "pixellab_object_id": "8cf6e732-ff2e-4fea-9b79-f8835a030cd3",
       "sprite": "sheaf_poles/sheaf_pole_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sheaf_pole_003",
+      "rel": "sheaf_poles/sheaf_pole_003",
+      "name": "Double-sheaf crossarm pole 003",
+      "category": "sheaf_poles",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, double-sheaf crossarm pole, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.31,
+        "world_px_height": 87,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b8e13b4a-b3f1-48a0-bcf2-2d8b724d9f1c",
+      "sprite": "sheaf_poles/sheaf_pole_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
