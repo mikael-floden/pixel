@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "woodpile_002",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 2,
+  "name": "Bound kindling bundle stack 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "bound kindling bundle stack",
+  "glow_concept": "warm hearthlight leaking between the split logs",
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, bound kindling bundle stack, about as tall as an adult person, self-emissive at night, softly radiating light: warm hearthlight leaking between the split logs",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.31,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e4a4e750-cec1-40f0-a179-fb362d0601c0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
