@@ -6,6 +6,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createRequire } from "node:module";
+// STRIPS READ THROUGH imagelib (2026-08-13): the art is lossless WebP since
+// 2026-07-31 and this tool was the last raw-pngjs reader — it silently rotted
+// the day the monsters converted, and nobody noticed until 33 new monsters
+// needed their shadows verified. resolveImg also forgives a stale extension
+// in the manifest, same as the game. The SHEET itself still writes PNG.
+import { imgRGBA, resolveImg } from "./imagelib.mjs";
 const { PNG } = createRequire(import.meta.url)("pngjs");
 
 const MON = new URL("../../monsters", import.meta.url).pathname;
@@ -28,7 +34,7 @@ for (const id of IDS) {
   const pngs = {};
   for (const k of dirs) {
     const rel = d.strips[anim][k].replace("/assets/monsters/", "");
-    pngs[k] = PNG.sync.read(readFileSync(join(MON, rel)));
+    pngs[k] = imgRGBA(resolveImg(join(MON, rel)));
     fws[k] = d.stripDims[anim][k].w;
     fhs[k] = d.stripDims[anim][k].h;
   }

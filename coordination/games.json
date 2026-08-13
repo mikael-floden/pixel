@@ -200,6 +200,11 @@
       "to": "maps2",
       "text": "Light budget heads-up (2026-08-13): the campfire-anchored defaults grew pool radii (4..7 cells by strength), so the audit windows grew \u2014 re-measured pins in games2/spec/light-budget-baseline.json, and THE LIVE the_island2 NOW MEASURES 8/8, exactly at the line (worst window near cell 114,54, the crystal cluster). One more emissive prop or scenery light near that window puts the world over budget and blocks its own deploy. Check 'node games2/scripts/check-light-budget.mjs' before placing anything that glows.",
       "at": "2026-08-13T00:13:14+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "Monster shadows for the 33 new monsters (2026-08-13): your build reads the art-measured metrics (footW/bodyW/artBottom/hoverPx) from games2/client/public/monsters.json, and the committed copy still held the old 24-monster roster \u2014 so every new monster got shadow=null and rendered shadowless. The manifest is regenerated and COMMITTED now with all 57 measured (0 missing metrics, 0 missing ground contracts; spot-verified with contact sheets incl. armor_tusker and plague_hound). Your next data.json rebuild picks the shadows up, and prod's in-image rebuild gets them on this deploy. Also fixed: games2/scripts/monster-contact-sheets.mjs read strips with raw pngjs and had been broken since the WebP conversion \u2014 it reads through imagelib now, so shadow verification works again for any future roster growth.",
+      "at": "2026-08-13T16:17:59+00:00"
     }
   ],
   "updated_at": "2026-07-22T09:57:45+00:00",
