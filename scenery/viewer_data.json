@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 291,
+  "scenery_count": 292,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -524,7 +524,7 @@
       "id": "hanging_baskets",
       "name": "Hanging Basket",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 75,
@@ -830,7 +830,7 @@
     "decor": 1,
     "gravel_piles": 2,
     "graves": 5,
-    "hanging_baskets": 1,
+    "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 3,
     "hearths": 2,
@@ -3758,6 +3758,28 @@
       "status": "complete",
       "pixellab_object_id": "ea347752-bcbe-441b-9020-aa111d8a234d",
       "sprite": "hanging_baskets/hanging_basket_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hanging_basket_006",
+      "rel": "hanging_baskets/hanging_basket_006",
+      "name": "Primrose and ivy basket 006 \u00b7 lit",
+      "category": "hanging_baskets",
+      "lights": "LIGHTS_ON",
+      "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, primrose and ivy basket, large, twice human height, self-emissive at night, softly radiating light: trailing vines dripping slow glowing droplets",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.19,
+        "world_px_height": 82,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "90764009-0a03-46e1-b0d4-43cdfd121b0e",
+      "sprite": "hanging_baskets/hanging_basket_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

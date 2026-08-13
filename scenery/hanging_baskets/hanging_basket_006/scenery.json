@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hanging_basket_006",
+  "group": "hanging_baskets",
+  "rank": 74,
+  "index": 6,
+  "name": "Primrose and ivy basket 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "primrose and ivy basket",
+  "glow_concept": "trailing vines dripping slow glowing droplets",
+  "prompt": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, primrose and ivy basket, large, twice human height, self-emissive at night, softly radiating light: trailing vines dripping slow glowing droplets",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "hanging_baskets/hanging_basket_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.19,
+    "world_px_height": 82,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "90764009-0a03-46e1-b0d4-43cdfd121b0e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
