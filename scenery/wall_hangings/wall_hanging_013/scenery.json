@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:30:25+00:00",
+  "id": "wall_hanging_013",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 13,
+  "name": "Small framed landscape painting 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "small framed landscape painting",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, small framed landscape painting, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.69,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a2d76882-65f6-4393-a0a3-af3d9a5fb9ce",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
