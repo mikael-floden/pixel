@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cliff_fragment_001",
+  "group": "cliff_fragments",
+  "rank": 82,
+  "index": 1,
+  "name": "Glacial erratic boulder 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "glacial erratic boulder",
+  "glow_concept": null,
+  "prompt": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, glacial erratic boulder, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_fragments/cliff_fragment_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.92,
+    "world_px_height": 110,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "553afc47-0a33-47aa-ad8c-2d70917c9074",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
