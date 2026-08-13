@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rug_002",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 2,
+  "name": "Brown bearskin hide rug 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "brown bearskin hide rug",
+  "glow_concept": "warm hearthlight reflected across the pile",
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, brown bearskin hide rug, waist-high, self-emissive at night, softly radiating light: warm hearthlight reflected across the pile",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "rugs_and_hides/rug_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.92,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e517b371-d217-46ab-8932-1fca6fd10f2a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
