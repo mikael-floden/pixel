@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 156,
+  "scenery_count": 157,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -286,7 +286,7 @@
       "id": "washing_lines",
       "name": "Washing Line",
       "quota": 22,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 41,
@@ -801,7 +801,7 @@
     "torch_posts": 2,
     "trailing_planters": 1,
     "trees": 2,
-    "washing_lines": 1,
+    "washing_lines": 2,
     "wasp_nest_trees": 1,
     "water_lily_clumps": 1,
     "water_pumps": 1,
@@ -3987,6 +3987,28 @@
       "status": "complete",
       "pixellab_object_id": "d1a46fc9-45c2-4fae-b0e1-c416635ac639",
       "sprite": "washing_lines/washing_line_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "washing_line_002",
+      "rel": "washing_lines/washing_line_002",
+      "name": "Dye-stained craftsman's cloths 002 \u00b7 lit",
+      "category": "washing_lines",
+      "lights": "LIGHTS_ON",
+      "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, dye-stained craftsman's cloths, large, well above head height of a person, self-emissive at night, softly radiating light: glowworm-dotted rope like strung beads",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.08,
+        "world_px_height": 78,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a6f0b50c-a22e-4399-8325-0103a997d63f",
+      "sprite": "washing_lines/washing_line_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
