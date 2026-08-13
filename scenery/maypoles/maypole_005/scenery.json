@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "maypole_005",
+  "group": "maypoles",
+  "rank": 48,
+  "index": 5,
+  "name": "Freshly raised flower-bright pole 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "freshly raised flower-bright pole",
+  "glow_concept": null,
+  "prompt": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, freshly raised flower-bright pole, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "maypoles/maypole_005/sprite.webp",
+  "placement": {
+    "world_height_m": 5.79,
+    "world_px_height": 218,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "01de1983-9ac5-4ee3-b745-007df5b4ea86",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
