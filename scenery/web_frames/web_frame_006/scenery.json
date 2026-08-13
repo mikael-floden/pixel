@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "web_frame_006",
+  "group": "web_frames",
+  "rank": 81,
+  "index": 6,
+  "name": "Torn ragged web 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "torn ragged web",
+  "glow_concept": "web spun into a glowing rune pattern",
+  "prompt": "a dense heavy spiderweb spun across the gap between two thick weathered leaning posts, sagging with dew, torn ragged web, roughly six feet tall, human height, self-emissive at night, softly radiating light: web spun into a glowing rune pattern",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "web_frames/web_frame_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.86,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "34526fd6-2cee-44ea-bf1f-73e66d5ad790",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
