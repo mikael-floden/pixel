@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 412,
+  "scenery_count": 413,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -307,7 +307,7 @@
       "id": "telegraph_poles",
       "name": "Telegraph Pole",
       "quota": 16,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 44,
@@ -874,7 +874,7 @@
     "stumps": 5,
     "sundials": 2,
     "tables": 6,
-    "telegraph_poles": 4,
+    "telegraph_poles": 5,
     "toadstool_rings": 4,
     "torch_posts": 6,
     "trailing_planters": 2,
@@ -8576,6 +8576,28 @@
       "status": "complete",
       "pixellab_object_id": "7b44c1f1-46e0-453d-8f0d-ca04ecc68302",
       "sprite": "telegraph_poles/telegraph_pole_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "telegraph_pole_011",
+      "rel": "telegraph_poles/telegraph_pole_011",
+      "name": "Pole with climbing pegs 011",
+      "category": "telegraph_poles",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, pole with climbing pegs, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 5.09,
+        "world_px_height": 192,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "48f6cffe-e88a-4429-9932-6a5aeab54e41",
+      "sprite": "telegraph_poles/telegraph_pole_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
