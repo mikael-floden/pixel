@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 309,
+  "scenery_count": 310,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 14,
@@ -796,7 +796,7 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
-    "briar_thickets": 2,
+    "briar_thickets": 3,
     "broken_columns": 2,
     "bushes": 3,
     "cairns": 3,
@@ -1845,6 +1845,28 @@
       "status": "complete",
       "pixellab_object_id": "8a5204cf-0aef-41e8-92b5-bafb75ab8f22",
       "sprite": "briar_thickets/briar_thicket_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_012",
+      "rel": "briar_thickets/briar_thicket_012",
+      "name": "Scarlet rose hip clusters 012 \u00b7 lit",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_ON",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, scarlet rose hip clusters, waist-high, self-emissive at night, softly radiating light: glowworms strung along the arching canes",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.03,
+        "world_px_height": 39,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2a1b3fec-a962-447e-b52f-0a43b4817a74",
+      "sprite": "briar_thickets/briar_thicket_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
