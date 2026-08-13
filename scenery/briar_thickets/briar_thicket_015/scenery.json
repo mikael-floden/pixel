@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_015",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 15,
+  "name": "Bare winter canes, red hips 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "bare winter canes, red hips",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, bare winter canes, red hips, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_015/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7553f172-c0d7-4b84-a5dc-98c325f65ff5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
