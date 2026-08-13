@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chimney_stack_001",
+  "group": "chimney_stacks",
+  "rank": 50,
+  "index": 1,
+  "name": "Red brick chimney 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "red brick chimney",
+  "glow_concept": null,
+  "prompt": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown, red brick chimney, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "chimney_stacks/chimney_stack_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.59,
+    "world_px_height": 135,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75ddbcd4-0cb8-4afc-9925-3bec591d63c5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
