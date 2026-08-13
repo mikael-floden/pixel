@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 330,
+  "scenery_count": 331,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -139,7 +139,7 @@
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 20,
@@ -806,7 +806,7 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 4,
+    "wayside_shrines": 5,
     "waystones": 5,
     "web_frames": 2,
     "wells": 5,
@@ -7683,6 +7683,28 @@
       "status": "complete",
       "pixellab_object_id": "befd944f-94d9-4e8e-8727-48d0f8238e08",
       "sprite": "wayside_shrines/wayside_shrine_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wayside_shrine_005",
+      "rel": "wayside_shrines/wayside_shrine_005",
+      "name": "Whitewashed clay shrine 005",
+      "category": "wayside_shrines",
+      "lights": "LIGHTS_OFF",
+      "description": "a small roofed wooden shrine raised on a post, its open front holding a tiny painted icon and offerings, whitewashed clay shrine, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "df9b34ce-a9e0-4ff3-a67b-b15bfad4c03f",
+      "sprite": "wayside_shrines/wayside_shrine_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
