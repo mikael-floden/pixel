@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_post_002",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 2,
+  "name": "Rope-lashed twin post 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rope-lashed twin post",
+  "glow_concept": "raw glowing amber soulstone chunk",
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rope-lashed twin post, about as tall as an adult person, self-emissive at night, softly radiating light: raw glowing amber soulstone chunk",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "lantern_posts/lantern_post_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.74,
+    "world_px_height": 66,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6c30e95d-5b1d-42ce-9522-573a3d422842",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
