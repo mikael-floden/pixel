@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "table_003",
+  "group": "tables",
+  "rank": 103,
+  "index": 3,
+  "name": "Table set with bowls and bread 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "table set with bowls and bread",
+  "glow_concept": null,
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, table set with bowls and bread, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_003/sprite.webp",
+  "placement": {
+    "world_height_m": 0.99,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "97b7b2b1-1358-4126-a2f2-ed0b235f2dd2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
