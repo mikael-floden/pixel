@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beaver_lodge_006",
+  "group": "beaver_lodges",
+  "rank": 100,
+  "index": 6,
+  "name": "Lodge with gnawed stumps beside 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lodge with gnawed stumps beside",
+  "glow_concept": "ghostly beaver light glimpsed inside the lattice",
+  "prompt": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, lodge with gnawed stumps beside, waist-high, self-emissive at night, softly radiating light: ghostly beaver light glimpsed inside the lattice",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beaver_lodges/beaver_lodge_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.01,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75959132-4834-46bc-958c-b811d7e8bf79",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
