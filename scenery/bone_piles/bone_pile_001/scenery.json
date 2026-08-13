@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bone_pile_001",
+  "group": "bone_piles",
+  "rank": 70,
+  "index": 1,
+  "name": "Scattered leg bones 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "scattered leg bones",
+  "glow_concept": null,
+  "prompt": "sun-bleached animal bones heaped on the ground, a curved ribcage arc and scattered vertebrae with grass growing up between them, scattered leg bones, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "bone_piles/bone_pile_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e64fa895-022a-44ad-b102-baa77301cd2f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
