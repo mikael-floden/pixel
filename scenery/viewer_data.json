@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 310,
+  "scenery_count": 311,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 13,
@@ -834,7 +834,7 @@
     "hanging_willows": 2,
     "haystacks": 3,
     "hearths": 2,
-    "hedges": 2,
+    "hedges": 3,
     "hop_poles": 2,
     "house_clutter": 2,
     "ivy_posts": 3,
@@ -4110,6 +4110,28 @@
       "status": "complete",
       "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
       "sprite": "hedges/hedge_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_012",
+      "rel": "hedges/hedge_012",
+      "name": "Hedge with bird nest tuft 012 \u00b7 lit",
+      "category": "hedges",
+      "lights": "LIGHTS_ON",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, hedge with bird nest tuft, waist-high, self-emissive at night, softly radiating light: small iron lanterns set into clipped niches",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.17,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6c6d9e6a-9c93-4508-a0df-6f9853fa45eb",
+      "sprite": "hedges/hedge_012/sprite.webp",
       "rotations": {},
       "animations": []
     },

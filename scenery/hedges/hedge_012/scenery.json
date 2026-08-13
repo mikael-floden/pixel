@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_012",
+  "group": "hedges",
+  "rank": 12,
+  "index": 12,
+  "name": "Hedge with bird nest tuft 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hedge with bird nest tuft",
+  "glow_concept": "small iron lanterns set into clipped niches",
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, hedge with bird nest tuft, waist-high, self-emissive at night, softly radiating light: small iron lanterns set into clipped niches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6c6d9e6a-9c93-4508-a0df-6f9853fa45eb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
