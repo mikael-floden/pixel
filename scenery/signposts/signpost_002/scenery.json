@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_002",
+  "group": "signposts",
+  "rank": 8,
+  "index": 2,
+  "name": "Tar-lettered harbor signpost 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tar-lettered harbor signpost",
+  "glow_concept": "soft halo around one true arrow",
+  "prompt": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, tar-lettered harbor signpost, large, well above head height of a person, self-emissive at night, softly radiating light: soft halo around one true arrow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.31,
+    "world_px_height": 87,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3aa16c6f-7962-4e16-9304-97dcdccc15d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
