@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 245,
+  "scenery_count": 246,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -755,7 +755,7 @@
       "id": "hearths",
       "name": "Hearth",
       "quota": 30,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 108,
@@ -833,6 +833,7 @@
     "hanging_baskets": 1,
     "hanging_willows": 2,
     "haystacks": 1,
+    "hearths": 1,
     "hedges": 2,
     "hop_poles": 2,
     "ivy_posts": 3,
@@ -3491,6 +3492,28 @@
       "status": "complete",
       "pixellab_object_id": "60f32652-5113-4df5-b6d9-3875957ba28e",
       "sprite": "haystacks/haystack_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hearth_002",
+      "rel": "hearths/hearth_002",
+      "name": "Small cottage hearth with a kettle 002 \u00b7 lit",
+      "category": "hearths",
+      "lights": "LIGHTS_ON",
+      "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, small cottage hearth with a kettle, waist-high, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.17,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
+      "sprite": "hearths/hearth_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

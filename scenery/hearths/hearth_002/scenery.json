@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hearth_002",
+  "group": "hearths",
+  "rank": 107,
+  "index": 2,
+  "name": "Small cottage hearth with a kettle 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "small cottage hearth with a kettle",
+  "glow_concept": "fire burning warm in the hearth mouth",
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, small cottage hearth with a kettle, waist-high, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
