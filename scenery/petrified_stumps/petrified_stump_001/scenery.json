@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "petrified_stump_001",
+  "group": "petrified_stumps",
+  "rank": 65,
+  "index": 1,
+  "name": "Rainbow silica stump 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "rainbow silica stump",
+  "glow_concept": null,
+  "prompt": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral, rainbow silica stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "petrified_stumps/petrified_stump_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.62,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6908b0c1-a5bf-4b6b-8000-58ead3d0938c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

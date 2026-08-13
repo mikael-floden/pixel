@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 82,
+  "scenery_count": 83,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -461,7 +461,7 @@
       "id": "petrified_stumps",
       "name": "Petrified Stump",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 66,
@@ -754,6 +754,7 @@
     "mushrooms": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
+    "petrified_stumps": 1,
     "puffballs": 1,
     "reed_beds": 1,
     "ruined_arches": 1,
@@ -1795,6 +1796,28 @@
       "status": "complete",
       "pixellab_object_id": "10b8743a-81c4-4269-8e73-d1c4d848c431",
       "sprite": "orchard_trees/orchard_tree_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "petrified_stump_001",
+      "rel": "petrified_stumps/petrified_stump_001",
+      "name": "Rainbow silica stump 001",
+      "category": "petrified_stumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral, rainbow silica stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.62,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6908b0c1-a5bf-4b6b-8000-58ead3d0938c",
+      "sprite": "petrified_stumps/petrified_stump_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
