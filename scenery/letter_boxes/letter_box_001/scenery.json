@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "letter_box_001",
+  "group": "letter_boxes",
+  "rank": 88,
+  "index": 1,
+  "name": "Carved farmhouse name box 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved farmhouse name box",
+  "glow_concept": null,
+  "prompt": "a small wooden letterbox on a post with a slot and a hinged lid, stuffed with folded letters, a few tucked under the lid, carved farmhouse name box, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "letter_boxes/letter_box_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.2,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f6272e02-b8f0-4e07-b397-1921cce80d55",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
