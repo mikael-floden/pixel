@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:54:53+00:00",
+  "id": "barrel_012",
+  "group": "barrels",
+  "rank": 28,
+  "index": 12,
+  "name": "Snow-lidded winter barrel 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-lidded winter barrel",
+  "glow_concept": "foxfire fungus fringing the damp base",
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, snow-lidded winter barrel, waist-high, self-emissive at night, softly radiating light: foxfire fungus fringing the damp base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.13,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3434449a-db02-4231-ad22-87758303c606",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 548,
+  "scenery_count": 549,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -202,7 +202,7 @@
       "id": "barrels",
       "name": "Barrel",
       "quota": 46,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 29,
@@ -785,7 +785,7 @@
     "ant_hills": 2,
     "anvils": 2,
     "aqueduct_fragments": 2,
-    "barrels": 7,
+    "barrels": 8,
     "beached_rowboats": 2,
     "beacons": 7,
     "beast_skulls": 2,
@@ -1265,6 +1265,28 @@
       "status": "complete",
       "pixellab_object_id": "bbd23dff-c544-4ec4-8865-8fb169f4d5a6",
       "sprite": "barrels/barrel_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "barrel_012",
+      "rel": "barrels/barrel_012",
+      "name": "Snow-lidded winter barrel 012 \u00b7 lit",
+      "category": "barrels",
+      "lights": "LIGHTS_ON",
+      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, snow-lidded winter barrel, waist-high, self-emissive at night, softly radiating light: foxfire fungus fringing the damp base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.13,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3434449a-db02-4231-ad22-87758303c606",
+      "sprite": "barrels/barrel_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
