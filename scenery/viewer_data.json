@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 502,
+  "scenery_count": 503,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -335,7 +335,7 @@
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 48,
@@ -889,7 +889,7 @@
     "waystones": 7,
     "web_frames": 2,
     "wells": 7,
-    "windmills": 6,
+    "windmills": 7,
     "wisteria_snags": 2,
     "woodpiles": 2
   },
@@ -11876,6 +11876,28 @@
       "status": "complete",
       "pixellab_object_id": "20b3dde1-014b-4333-8471-e831733cd45b",
       "sprite": "windmills/windmill_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "windmill_020",
+      "rel": "windmills/windmill_020",
+      "name": "Tarred timber mill 020 \u00b7 lit",
+      "category": "windmills",
+      "lights": "LIGHTS_ON",
+      "description": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, tarred timber mill, tall, about three times human height, self-emissive at night, softly radiating light: a lantern hung beside the boarded hatch",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.27,
+        "world_px_height": 123,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1c563ded-f7f8-4ec5-8174-dabb9d8716bf",
+      "sprite": "windmills/windmill_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
