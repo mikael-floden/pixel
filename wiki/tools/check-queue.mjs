@@ -33,9 +33,13 @@ ok(new Set(objs.map((o) => o.added)).size > 5,
 // newest order so the filters cannot pass by accident of position.
 const APPROVED = [byNew[1], byNew[5], byNew[40]].map((o) => o.path);
 const REJECTED = [byNew[0], byNew[6], byNew[41], byNew[80]].map((o) => o.path);
+// Each verdict is dated AFTER the art it judges — a verdict older than its
+// piece now means "about the art that used to be here", which is a different
+// case entirely and is exercised on its own below.
 const entries = {};
-for (const p of APPROVED) entries[p] = { status: "approved", updated_at: "2026-08-13T00:00:00Z" };
-for (const p of REJECTED) entries[p] = { status: "rejected", updated_at: "2026-08-13T00:00:00Z" };
+const after = (path) => new Date(Date.parse(objs.find((o) => o.path === path).added) + 3600e3).toISOString();
+for (const p of APPROVED) entries[p] = { status: "approved", updated_at: after(p) };
+for (const p of REJECTED) entries[p] = { status: "rejected", updated_at: after(p) };
 
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const p = await (await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
@@ -51,7 +55,14 @@ await p.route("**/api/live/state", async (route) => {
 });
 await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
 
-const go = async (hash) => { await p.goto(`${W}${hash}`, { waitUntil: "load" }); await p.waitForTimeout(1600); };
+// ALWAYS reload. A hash-only goto does not re-navigate, so the live state —
+// including the verdicts injected above — is never refetched, and assertions
+// about them pass while describing a page that never saw them.
+const go = async (hash) => {
+  await p.goto(`${W}${hash}`, { waitUntil: "load" });
+  await p.reload({ waitUntil: "load" });
+  await p.waitForTimeout(1700);
+};
 const pick = async (v) => { await p.evaluate((s) => document.querySelector(`[data-sort="${s}"]`)?.click(), v); await p.waitForTimeout(800); };
 const overview = () => p.evaluate(() => ({
   bars: [...document.querySelectorAll(".sortbar")].map((r) => [...r.querySelectorAll("button")].map((x) => (x.classList.contains("sel") ? "*" : "") + x.textContent).join(" ")),
@@ -88,6 +99,43 @@ await pick("unreviewed");
 const un = await overview();
 ok(un.names.length === objs.length - APPROVED.length - REJECTED.length,
   `"unreviewed" is everything not yet judged (${un.names.length} = ${objs.length} − ${APPROVED.length + REJECTED.length})`);
+
+// --- A VERDICT BELONGS TO THE ART IT WAS GIVEN ON.
+// The scenery agent deletes rejected pieces and regenerates them AT THE SAME
+// PATH, and the feedback store is keyed by path — so new art inherited the old
+// piece's judgement and vanished from the review queue. The maintainer caught
+// it as "How can only 3 scenery items be unreviewed when the scenery-agent
+// have been working for hours on new content?" — 20 of the 237 were carrying
+// his verdict on art he had never seen.
+{
+  const victim = byNew.find((o) => !APPROVED.includes(o.path) && !REJECTED.includes(o.path) && o.added);
+  const before = new Date(Date.parse(victim.added) - 3600e3).toISOString();  // judged an HOUR before this art arrived
+  entries[victim.path] = { status: "rejected", updated_at: before };
+  await go("#/objects");
+  await pick("all");
+  const seen = await p.evaluate((id) => {
+    const card = [...document.querySelectorAll(".card")].find((c) => c.getAttribute("href") === `#/objects/${id}`);
+    return { badges: [...card.querySelectorAll(".card-badges .pill")].map((x) => x.textContent) };
+  }, victim.id);
+  ok(seen.badges.includes("re-review") && !seen.badges.includes("remove"),
+    `a verdict older than the art reads "re-review", never as a live decision (${seen.badges.join(", ") || "none"})`);
+  await pick("rejected");
+  const rej = await overview();
+  ok(!rej.names.includes(victim.name),
+    `and it is NOT counted as rejected — that call was about a piece that no longer exists (${rej.names.length} shown)`);
+  await pick("unreviewed");
+  const un2 = await overview();
+  ok(un2.names.includes(victim.name), "it is back in the review queue, which is the whole point");
+  ok(un2.names.length === objs.length - APPROVED.length - REJECTED.length,
+    `the queue counts it exactly once (${un2.names.length})`);
+  await go(`#/objects/${victim.id}`);
+  const banner = await p.evaluate(() => document.querySelector(".stale-verdict")?.textContent ?? null);
+  console.log("stale banner:", JSON.stringify(banner));
+  ok(banner && /re-review/.test(banner) && /regenerated since/.test(banner),
+    "and its own page says so above the approve/remove buttons");
+  delete entries[victim.path];
+  await go("#/objects");                   // back to a page that HAS the sort bar
+}
 
 // --- THE FILTER HOLDS INSIDE A PIECE. This is the request's core: ‹ › must
 //     walk the filtered set, in the filtered order, and say that it is.

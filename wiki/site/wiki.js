@@ -1978,11 +1978,33 @@ function viewTileInstance(typeId, rel) {
 // visitors always get the full domain in its natural order.
 const OBJ_SORT_KEY = "wiki-obj-sort";
 const OBJ_FILTER_KEY = "wiki-obj-filter";
+// A VERDICT BELONGS TO THE ART IT WAS GIVEN ON. The scenery agent deletes
+// rejected pieces and regenerates them AT THE SAME PATH, and the feedback
+// store is keyed by path — so without this, brand-new art silently inherits
+// the judgement of the piece it replaced. That is why the maintainer found
+// only 3 unreviewed pieces after hours of new content (2026-08-13): 20 of them
+// were carrying his verdict on art he had never seen. `added` is the date the
+// CURRENT sprite arrived (build.mjs, by content hash), so an older verdict is
+// a verdict about something else.
+/** Card/page badges for a scenery piece, honest about stale verdicts. */
+function objBadges(o) {
+  const v = objVerdict(o);
+  if (!v.stale) return entityBadge("objects", o.path);
+  return [h("span", {
+    class: "pill warn",
+    title: `You marked this "${v.status}" on ${String(v.at).slice(0, 16).replace("T", " ")}, but the scenery agent has regenerated the art at this path since. This is a different piece — it needs a fresh look.`,
+  }, "re-review")];
+}
+function objVerdict(o) {
+  const e = fb("objects", o.path);
+  if (!e.status) return { status: null, stale: false };
+  return { status: e.status, at: e.updated_at, stale: !!(o.added && e.updated_at && e.updated_at < o.added) };
+}
 const OBJ_FILTERS = {
   all: { label: "all", title: "Every piece", match: () => true },
-  unreviewed: { label: "unreviewed", title: "Not yet approved or rejected — the review queue", match: (st) => !st },
-  approved: { label: "approved", title: "Approved pieces", match: (st) => st === "approved" },
-  rejected: { label: "rejected", title: "Slated for removal by the scenery agent", match: (st) => st === "rejected" },
+  unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue", match: (v) => !v.status || v.stale },
+  approved: { label: "approved", title: "Approved, and the art has not changed since", match: (v) => v.status === "approved" && !v.stale },
+  rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale },
 };
 const OBJ_SORTS = {
   group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
@@ -1995,7 +2017,7 @@ function objectQueue() {
   const sort = OBJ_SORTS[read(OBJ_SORT_KEY, "group")] ? read(OBJ_SORT_KEY, "group") : "group";
   const filter = OBJ_FILTERS[read(OBJ_FILTER_KEY, "all")] ? read(OBJ_FILTER_KEY, "all") : "all";
   let list = all;
-  if (filter !== "all") list = all.filter((o) => OBJ_FILTERS[filter].match(fb("objects", o.path).status));
+  if (filter !== "all") list = all.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o)));
   // `added` is the commit that introduced the piece (build.mjs). Undated art
   // sorts last rather than first — a missing date is not a claim of newness.
   if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
@@ -2011,7 +2033,10 @@ function viewObjects() {
     // The synthesised `still` must not read as an animation here — the
     // list is where you scan for what actually moves.
     h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
-    h("div", { class: "card-badges" }, ...entityBadge("objects", o.path)));
+    // A stale verdict must not wear the badge of a live one — "remove" on a
+    // piece regenerated since that call would read as a decision about the
+    // art on screen.
+    h("div", { class: "card-badges" }, ...objBadges(o)));
   return h("div", {},
     sectionHead("objects"),
     h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
@@ -2059,6 +2084,15 @@ function objectHead(o) {
         ...nameTags.map((t) => h("span", { class: "pill" }, t)),
         moreBtn),
       descP,
+      // Loud, and above the buttons: the standing verdict is about art that no
+      // longer exists here, so approving/removing without looking would be
+      // ratifying a decision made about a different piece.
+      (() => {
+        const v = objVerdict(o);
+        return v.stale ? h("p", { class: "stale-verdict" },
+          h("span", { class: "pill warn" }, "re-review"),
+          `you marked this “${v.status}” on ${String(v.at).slice(0, 16).replace("T", " ")} — the art here has been regenerated since`) : null;
+      })(),
       feedbackRow("objects", o.path)));
 }
 // The Man's idle/south frame 0 + measured content box — everything the size

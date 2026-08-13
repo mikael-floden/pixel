@@ -853,6 +853,11 @@ input[type="range"] { accent-color: var(--accent); }
   position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 2;
   background-repeat: no-repeat; image-rendering: pixelated; pointer-events: none;
 }
+/* "Your standing verdict is about art that is no longer here." */
+.stale-verdict {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 6px 0; font-size: 12.5px; color: var(--accent-ink);
+}
 /* "You are inside a filtered walk" — sits between the crumb row and the piece,
    so the reason ‹ › skips most of the domain is on screen, not remembered. */
 .queue-note {

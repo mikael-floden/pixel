@@ -193,26 +193,38 @@ function gitSha() {
 // wants it: first. That makes this self-seeding and correct in both places,
 // with no cross-domain dependency. The long-term fix is the scenery agent
 // stamping `generated_at` into its own manifest; a board request is out.
-let gitAddDates = null;
-function addDatesFor(prefix) {
-  if (gitAddDates) return gitAddDates;
-  gitAddDates = new Map();
+// It dates the CURRENT art, not the path's first appearance. The scenery agent
+// deletes rejected pieces and regenerates them AT THE SAME PATH — 29 of them
+// in one day — so "when was this path created" answers the wrong question
+// twice over: brand-new art sorts as old, and (worse) the maintainer's verdict
+// on the art that used to live there still counts as a review of art he has
+// never seen. Both showed up the moment he sorted newest-first and found 3
+// unreviewed pieces after hours of new content.
+//
+// So the key is the sprite's CONTENT HASH. Same bytes → keep the stored date.
+// Different bytes → this is new art; date it from the commit that last touched
+// the sprite, or from now when there is no git (the deploy image). The wiki
+// then compares a verdict's timestamp against this date to tell a review of
+// THIS art from a review of whatever stood here before.
+let gitArtDates = null;
+function artChangeDates() {
+  if (gitArtDates) return gitArtDates;                 // lazy: a warm cache never shells out
+  gitArtDates = new Map();
   try {
-    const out = execSync(`git log --diff-filter=A --format=C%cI --name-only -- ${prefix}`,
-      { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024 }).toString();
+    const out = execSync("git log --format=C%cI --name-only -- scenery/",
+      { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 128 * 1024 * 1024 }).toString();
     let when = null;
     for (const line of out.split("\n")) {
       if (line.startsWith("C")) when = line.slice(1);
-      else if (line.endsWith("/scenery.json") && when) {
-        const dir = line.slice(0, -"/scenery.json".length);
-        // --diff-filter=A walks newest-first, so the FIRST time a path is
-        // seen is its most recent add; keep going and the last write wins the
-        // oldest one, which is the true birth of the piece.
-        gitAddDates.set(dir, when);
+      else if (line.endsWith("/sprite.webp") && when) {
+        const dir = line.slice(0, -"/sprite.webp".length);
+        // git log walks newest-first, so the FIRST sighting of a path is the
+        // most recent commit that touched its art. Keep that one.
+        if (!gitArtDates.has(dir)) gitArtDates.set(dir, when);
       }
     }
   } catch { /* no git (deploy image) — the committed cache answers instead */ }
-  return gitAddDates;
+  return gitArtDates;
 }
 function loadFirstSeen() {
   const path = join(ROOT, "wiki", "first_seen.json");
@@ -550,15 +562,19 @@ function buildObjects() {
   // scenery.json is a legacy piece; one whose children carry it is a group.
   const base = join(ROOT, "scenery");
   if (!isDir(base)) return null;
-  const dates = addDatesFor("scenery/");
   const { path: seenPath, seen } = loadFirstSeen();
   const stamp = new Date().toISOString();
-  let seenGrew = 0;
-  const firstSeenOf = (rel) => {
-    const known = seen[rel] ?? dates.get(rel);
-    if (known) { if (seen[rel] !== known) { seen[rel] = known; seenGrew++; } return known; }
-    seen[rel] = stamp; seenGrew++;
-    return stamp;
+  let seenGrew = 0, artChanged = 0;
+  const firstSeenOf = (rel, spritePath) => {
+    let hash = null;
+    try { hash = createHash("md5").update(readFileSync(join(ROOT, spritePath))).digest("hex").slice(0, 16); } catch { /* unreadable */ }
+    const prev = seen[rel];
+    if (prev && hash && prev.hash === hash) return prev.at;      // unchanged art keeps its date
+    const at = artChangeDates().get(rel) ?? stamp;
+    if (prev && hash && prev.hash !== hash) artChanged++;
+    seen[rel] = { at, hash };
+    seenGrew++;
+    return at;
   };
   const entries = [];
   for (const top of listDirs(base)) {
@@ -623,7 +639,9 @@ function buildObjects() {
       // So the page can say "Still" rather than claim an animation, and the
       // list can keep calling these "static".
       stillOnly: stillOnly && !!anims.still,
-      added: firstSeenOf(`scenery/${rel}`),
+      // When the art that is there NOW arrived. A verdict older than this is a
+      // verdict about art the maintainer can no longer see (wiki.js flags it).
+      added: preview ? firstSeenOf(`scenery/${rel}`, preview) : null,
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,
@@ -633,11 +651,12 @@ function buildObjects() {
     try {
       writeFileSync(seenPath, JSON.stringify({
         format: "pixel-wiki-first-seen@1",
-        note: "when each piece first reached the wiki — the commit that added it, or the build that first saw it",
+        note: "when the art now at each path arrived, keyed by its sprite hash — a changed hash means new art, and any older verdict is about a piece that no longer exists",
         entries: Object.fromEntries(Object.entries(seen).sort(([a], [b]) => a.localeCompare(b))),
       }, null, 0) + "\n");
     } catch { /* read-only fs — data.json already carries the dates */ }
   }
+  if (artChanged) console.log(`[wiki] scenery: ${artChanged} piece(s) have NEW art at an existing path — any earlier verdict on them is now flagged for re-review`);
   return objects;
 }
 

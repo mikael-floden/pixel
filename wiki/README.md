@@ -277,6 +277,17 @@ covers, so a Next that skips 200 pieces explains itself; a piece reached from
 search or a link while a filter is on keeps a working pager and is labelled as
 outside it, rather than silently losing its ‹ ›.
 
+**A verdict belongs to the art it was given on.** The scenery agent deletes
+rejected pieces and regenerates them **at the same path**, and the feedback
+store is keyed by path — so new art silently inherited the judgement of the
+piece it replaced. That is why the maintainer found 3 unreviewed pieces after
+hours of new content (2026-08-13): 20 of the 237 were carrying his verdict on
+art he had never seen, and a stale *rejection* would have had the agent delete
+the replacement too, on a loop. A verdict older than the piece's `added` date
+is therefore not a review of what is on screen: those pieces read **re-review**
+instead of approved/remove, are excluded from the approved and rejected
+filters, and are counted in the review queue.
+
 "Newest first" needs a date, and nothing in `scenery.json` carries one, so
 `build.mjs` uses the commit that ADDED each piece — one `git log
 --diff-filter=A` pass, cached in the committed `wiki/first_seen.json`. The
