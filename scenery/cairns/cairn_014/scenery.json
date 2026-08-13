@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_014",
+  "group": "cairns",
+  "rank": 9,
+  "index": 14,
+  "name": "Broad conical trail cairn 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "broad conical trail cairn",
+  "glow_concept": "topmost stone glowing like a lantern",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, broad conical trail cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: topmost stone glowing like a lantern",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.28,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f9bd69fd-16a9-4690-82c7-4e0e17b1ff45",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
