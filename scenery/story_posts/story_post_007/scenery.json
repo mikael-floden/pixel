@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_007",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 7,
+  "name": "Painted story panels 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "painted story panels",
+  "glow_concept": null,
+  "prompt": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, painted story panels, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "story_posts/story_post_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.35,
+    "world_px_height": 88,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1c05d1fb-aad9-4cbe-9d78-8af89a4607a7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

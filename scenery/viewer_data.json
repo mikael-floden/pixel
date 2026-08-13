@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 426,
+  "scenery_count": 427,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 22,
@@ -792,7 +792,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 16,
-    "story_posts": 6,
+    "story_posts": 7,
     "streetlights": 7,
     "stumps": 6,
     "sundials": 2,
@@ -8255,6 +8255,28 @@
       "status": "complete",
       "pixellab_object_id": "09fabb4b-169d-4285-b623-599bf5cfac73",
       "sprite": "story_posts/story_post_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_007",
+      "rel": "story_posts/story_post_007",
+      "name": "Painted story panels 007",
+      "category": "story_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, painted story panels, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.35,
+        "world_px_height": 88,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1c05d1fb-aad9-4cbe-9d78-8af89a4607a7",
+      "sprite": "story_posts/story_post_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
