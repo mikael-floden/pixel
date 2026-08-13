@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 295,
+  "scenery_count": 296,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -566,7 +566,7 @@
       "id": "nest_posts",
       "name": "Nest Post",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 81,
@@ -845,7 +845,7 @@
     "maypoles": 4,
     "moss_clumps": 2,
     "mushrooms": 6,
-    "nest_posts": 1,
+    "nest_posts": 2,
     "offering_tables": 5,
     "orchard_trees": 2,
     "overgrown_archways": 2,
@@ -4748,6 +4748,28 @@
       "status": "complete",
       "pixellab_object_id": "9a073a53-c6cc-4e30-bb55-4eac667e30de",
       "sprite": "nest_posts/nest_post_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "nest_post_006",
+      "rel": "nest_posts/nest_post_006",
+      "name": "Abandoned tattered nest 006 \u00b7 lit",
+      "category": "nest_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered wooden post with a woven twig bird nest built on top, straw and moss sticking out of the rounded nest cup, abandoned tattered nest, large, twice human height, self-emissive at night, softly radiating light: waymark rune on the post glowing softly",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.04,
+        "world_px_height": 77,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "58d683c1-1861-4233-b703-6970054b74e0",
+      "sprite": "nest_posts/nest_post_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
