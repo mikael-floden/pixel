@@ -74,6 +74,20 @@ def commit_push(message, push=True):
     return True
 
 
+def push_only():
+    """Push whatever is already committed (rebase-and-retry backoff)."""
+    branch = _current_branch()
+    for attempt in range(4):
+        r = _git("push", "-u", "origin", branch, check=False)
+        if r.returncode == 0:
+            return True
+        _git("fetch", "origin", branch, check=False)
+        _git("rebase", f"origin/{branch}", check=False)
+        time.sleep(2 ** (attempt + 1))
+    print("  ! push failed after retries:", r.stderr[:200])
+    return False
+
+
 # --- budget -----------------------------------------------------------------
 
 def budget_state(client):
@@ -96,12 +110,24 @@ def can_spend(cfg, state):
 
 # --- one piece ---------------------------------------------------------------
 
-# Push EVERY piece (maintainer, 2026-08-13: "GENERATE, PUSH, GENERATE, PUSH!!"
-# — he reviews live while the factory runs, and a piece that is generated but
-# unpushed is invisible work that has twice now been stranded by dying runners).
-# The deploy workflow's concurrency group collapses rapid pushes into the
-# newest, so continuous pushing costs nothing.
-PUSH_EVERY = 1
+# COMMIT every piece; PUSH in small batches, on a short timer.
+#
+# The maintainer reviews live, so art must not sit unpushed — but push-per-
+# piece was actively harmful: nangijala-deploy's concurrency group is keyed by
+# github.sha, so it collapses NOTHING (my earlier note here was wrong). Every
+# push ran its own full Docker build to completion; at 3 pieces/min that is
+# ~180 concurrent image builds an hour, and an older build finishing last can
+# briefly regress the live site.
+#
+# His rule (2026-08-13): "It's ok to batch 5 scenery objects, but if it takes
+# long you should commit without waiting." So: flush when 5 pieces are pending
+# OR PUSH_MAX_WAIT_S has passed since the last push, whichever comes first —
+# at ~3 pieces/min a batch fills in well under two minutes. The per-piece
+# COMMIT is unconditional, so a killed runner can lose at most the pushes,
+# never the work.
+PUSH_EVERY = 1          # legacy serial path (--once) pushes immediately
+PUSH_BATCH = 5          # pieces per push in the parallel pipeline
+PUSH_MAX_WAIT_S = 100   # ...or this long, whichever comes first
 
 
 def submit_piece(client, cfg, group, spec):
@@ -282,6 +308,8 @@ def main():
     POLL_S = 5
     in_flight = []        # [{spec, group, oid, dirs, at}]
     submitted = 0
+    pending_push = 0
+    last_push = time.monotonic()
     stop_reason = "nothing left to generate"
     stop_submitting = None
     last_budget = 0.0
@@ -343,9 +371,10 @@ def main():
             if st == "completed":
                 try:
                     finalize_piece(client, cfg, f["group"], f["spec"], f["oid"],
-                                   f["dirs"], o, push=not args.no_push)
+                                   f["dirs"], o, push=False)   # commit now, push in batches
                     pieces += 1
                     batches += 1
+                    pending_push += 1
                     consec_fail = 0
                     mins = (time.monotonic() - start) / 60
                     print(f"  = {pieces} done in {mins:.1f} min "
@@ -364,6 +393,14 @@ def main():
             else:
                 still.append(f)
         in_flight = still
+        # flush: 5 pieces pending, or too long since the last push
+        if pending_push and not args.no_push \
+                and (pending_push >= PUSH_BATCH
+                     or time.monotonic() - last_push >= PUSH_MAX_WAIT_S):
+            push_only()
+            print(f"  ^ pushed {pending_push} piece(s)")
+            pending_push = 0
+            last_push = time.monotonic()
         if consec_fail >= MAX_CONSEC_FAIL and stop_submitting is None:
             stop_submitting = (f"{MAX_CONSEC_FAIL} failures with no success between "
                                f"— likely an outage")
@@ -379,6 +416,9 @@ def main():
             break
         time.sleep(POLL_S)
 
+    if pending_push and not args.no_push:
+        push_only()
+        print(f"  ^ pushed final {pending_push} piece(s)")
     state = budget_state(client)
     health = "idle" if can_spend(cfg, state) or stop_reason == "catalog complete" \
         else "stopped"
