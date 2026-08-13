@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cart_007",
+  "group": "carts",
+  "rank": 27,
+  "index": 7,
+  "name": "Apple-crate laden cart 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "apple-crate laden cart",
+  "glow_concept": null,
+  "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, apple-crate laden cart, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "carts/cart_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.31,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ced7e36c-6328-43d2-a213-8dd6f4a5d62c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
