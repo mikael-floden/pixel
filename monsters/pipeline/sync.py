@@ -244,8 +244,10 @@ def verify(metas):
                                 f"(generate one on PixelLab and resync)")
         for u in meta.get("unresolved_takes") or []:
             problems.append(f"{mid}: '{u['key']}' direction '{u['direction']}' has "
-                            f"{len(u['takes'])} takes on PixelLab and no pin — mirrored a "
-                            f"guess; pin it in config/roster.json:direction_picks")
+                            f"{len(u['takes'])} takes upstream; mirrored the one the "
+                            f"PixelLab UI shows (the newest). Older take(s) are invisible "
+                            f"in the UI — no action needed unless the art looks wrong, "
+                            f"then pin in config/roster.json:direction_picks")
     return problems
 
 
