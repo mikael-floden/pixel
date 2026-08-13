@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "barrel_005",
+  "group": "barrels",
+  "rank": 28,
+  "index": 5,
+  "name": "Tar-blackened herring barrel 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "tar-blackened herring barrel",
+  "glow_concept": null,
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, tar-blackened herring barrel, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "65a19bf5-b6e5-4ea0-9741-17c65ba1987d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
