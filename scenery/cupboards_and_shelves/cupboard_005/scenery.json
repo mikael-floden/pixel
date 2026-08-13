@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cupboard_005",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 5,
+  "name": "Bookshelf of worn plain cloth-bound books with blank spines 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "bookshelf of worn plain cloth-bound books with blank spines",
+  "glow_concept": null,
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, bookshelf of worn plain cloth-bound books with blank spines, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.01,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "57b3d7e8-6ffd-45c9-9724-13ffc0d59ca4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
