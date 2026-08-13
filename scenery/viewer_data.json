@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 375,
+  "scenery_count": 376,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 18,
@@ -757,7 +757,7 @@
     "graves": 6,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 5,
+    "haystacks": 6,
     "hedges": 6,
     "hop_poles": 2,
     "ivy_posts": 5,
@@ -4449,6 +4449,28 @@
       "status": "complete",
       "pixellab_object_id": "3150f562-6634-4100-b2aa-0f2fe0da90ea",
       "sprite": "haystacks/haystack_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_006",
+      "rel": "haystacks/haystack_006",
+      "name": "Half-used stack with pitchfork 006 \u00b7 lit",
+      "category": "haystacks",
+      "lights": "LIGHTS_ON",
+      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base, half-used stack with pitchfork, large, well above head height of a person, self-emissive at night, softly radiating light: warm light leaking from a hollow inside",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.48,
+        "world_px_height": 93,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "219e1491-b892-4932-bc07-f87a29a66fa5",
+      "sprite": "haystacks/haystack_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
