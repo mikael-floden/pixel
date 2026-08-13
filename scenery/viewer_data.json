@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 403,
+  "scenery_count": 404,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 46,
@@ -766,7 +766,7 @@
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 5,
-    "moss_clumps": 5,
+    "moss_clumps": 6,
     "mushrooms": 6,
     "nest_posts": 2,
     "offering_tables": 6,
@@ -5659,6 +5659,28 @@
       "status": "complete",
       "pixellab_object_id": "2141b903-96b5-4695-996f-cb6b2a5c9800",
       "sprite": "moss_clumps/moss_clump_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_006",
+      "rel": "moss_clumps/moss_clump_006",
+      "name": "Moss mound with tiny sprouts 006 \u00b7 lit",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a rounded cushion of thick moss mounded up from the forest floor, moss mound with tiny sprouts, small, knee-high to an adult person, self-emissive at night, softly radiating light: dew beads on the moss lit like glass lanterns",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.58,
+        "world_px_height": 22,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "04bafbb3-ccb6-46cb-811d-f59642ded10e",
+      "sprite": "moss_clumps/moss_clump_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
