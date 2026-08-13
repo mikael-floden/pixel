@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 324,
+  "scenery_count": 325,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -769,7 +769,7 @@
       "id": "house_clutter",
       "name": "House Clutter",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 110,
@@ -836,7 +836,7 @@
     "hearths": 3,
     "hedges": 3,
     "hop_poles": 2,
-    "house_clutter": 2,
+    "house_clutter": 3,
     "ivy_posts": 3,
     "lantern_posts": 4,
     "lantern_stands": 3,
@@ -4418,6 +4418,28 @@
       "status": "complete",
       "pixellab_object_id": "754cb61a-0270-44cc-985f-d1f74d089cda",
       "sprite": "house_clutter/clutter_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "clutter_004",
+      "rel": "house_clutter/clutter_004",
+      "name": "Muddy boots by a doormat 004 \u00b7 lit",
+      "category": "house_clutter",
+      "lights": "LIGHTS_ON",
+      "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, muddy boots by a doormat, waist-high, self-emissive at night, softly radiating light: a covered lantern set among the things",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.77,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "466069cf-e13c-4585-9e56-9d54959f769d",
+      "sprite": "house_clutter/clutter_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
