@@ -115,8 +115,8 @@ await p.evaluate(() => document.querySelector(".ml-wikiback").click());
 await p.waitForTimeout(900);
 ok(!(await state()).panel, "the dark strip still closes the wiki");
 await back();
-const left = p.isClosed() ? { inGame: false } : await state().catch(() => ({ inGame: false }));
-ok(!left.inGame, "and the back after it leaves the game, instead of pressing a dead entry");
+const plainLeft = p.isClosed() ? { inGame: false } : await state().catch(() => ({ inGame: false }));
+ok(!plainLeft.inGame, "and the back after it leaves the game, instead of pressing a dead entry");
 
 // 4b. hand-closing AFTER browsing: the panel's entry is buried under the
 //     wiki's own navigations, so the handback must wait for the iframe to be
