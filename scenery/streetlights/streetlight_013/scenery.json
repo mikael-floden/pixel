@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:52:08+00:00",
+  "id": "streetlight_013",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 13,
+  "name": "Square-headed medieval wooden post 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "square-headed medieval wooden post",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, square-headed medieval wooden post, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "streetlights/streetlight_013/sprite.webp",
+  "placement": {
+    "world_height_m": 4.08,
+    "world_px_height": 154,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "018ee460-e63f-44ab-83d4-98f0c6b9fdb1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
