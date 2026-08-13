@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_004",
+  "group": "wells",
+  "rank": 11,
+  "index": 4,
+  "name": "Rough granite blocks, thatched roof 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rough granite blocks, thatched roof",
+  "glow_concept": "hanging tin lantern lit under the roof peak",
+  "prompt": "a round fieldstone well with a peaked wooden roof on two posts, a windlass crank and a rope-hung bucket, rough granite blocks, thatched roof, large, well above head height of a person, self-emissive at night, softly radiating light: hanging tin lantern lit under the roof peak",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.6,
+    "world_px_height": 98,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b640f7a7-eb74-4487-ab0c-4655aeb632e1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
