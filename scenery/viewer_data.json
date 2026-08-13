@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 437,
+  "scenery_count": 438,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -209,7 +209,7 @@
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 30,
@@ -839,7 +839,7 @@
     "house_clutter": 5,
     "ivy_posts": 5,
     "lantern_posts": 6,
-    "lantern_stands": 5,
+    "lantern_stands": 6,
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 5,
@@ -5980,6 +5980,28 @@
       "status": "complete",
       "pixellab_object_id": "573a3ce9-9645-4f5a-9b32-13cacb646736",
       "sprite": "lantern_stands/lantern_stand_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_009",
+      "rel": "lantern_stands/lantern_stand_009",
+      "name": "Wrought-iron crook stand 009",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_OFF",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, wrought-iron crook stand, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bcf98132-e4e1-41f0-8164-bd0e3f6f17d3",
+      "sprite": "lantern_stands/lantern_stand_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
