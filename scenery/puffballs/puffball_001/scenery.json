@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "puffball_001",
+  "group": "puffballs",
+  "rank": 53,
+  "index": 1,
+  "name": "Cracked leathery earthball 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "cracked leathery earthball",
+  "glow_concept": null,
+  "prompt": "a plump round puffball mushroom sitting directly on bare earth, cracked leathery earthball, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "puffballs/puffball_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.51,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "40d750ec-561c-4772-9913-bffa8d12b9ef",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 70,
+  "scenery_count": 71,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -377,7 +377,7 @@
       "id": "puffballs",
       "name": "Puffball",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 54,
@@ -746,6 +746,7 @@
     "mushrooms": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
+    "puffballs": 1,
     "reed_beds": 1,
     "ruined_arches": 1,
     "scarecrows": 1,
@@ -1607,6 +1608,28 @@
       "status": "complete",
       "pixellab_object_id": "10b8743a-81c4-4269-8e73-d1c4d848c431",
       "sprite": "orchard_trees/orchard_tree_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "puffball_001",
+      "rel": "puffballs/puffball_001",
+      "name": "Cracked leathery earthball 001",
+      "category": "puffballs",
+      "lights": "LIGHTS_OFF",
+      "description": "a plump round puffball mushroom sitting directly on bare earth, cracked leathery earthball, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.51,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "40d750ec-561c-4772-9913-bffa8d12b9ef",
+      "sprite": "puffballs/puffball_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
