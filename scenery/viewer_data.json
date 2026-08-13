@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 190,
+  "scenery_count": 191,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -524,7 +524,7 @@
       "id": "hanging_baskets",
       "name": "Hanging Basket",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 75,
@@ -755,7 +755,7 @@
     "decor": 1,
     "gravel_piles": 2,
     "graves": 2,
-    "hanging_baskets": 1,
+    "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 2,
     "hedges": 2,
@@ -2579,6 +2579,28 @@
       "status": "complete",
       "pixellab_object_id": "715364d4-31ae-48fc-b394-f0a4e5785dec",
       "sprite": "hanging_baskets/hanging_basket_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hanging_basket_002",
+      "rel": "hanging_baskets/hanging_basket_002",
+      "name": "Mixed cottage flowers 002 \u00b7 lit",
+      "category": "hanging_baskets",
+      "lights": "LIGHTS_ON",
+      "description": "a wrought-iron shepherd's crook post with a hanging basket overflowing with trailing flowers, mixed cottage flowers, large, well above head height of a person, self-emissive at night, softly radiating light: the basket glowing from within like a lantern",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.21,
+        "world_px_height": 83,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "127da502-c597-468f-8a07-440a4274617b",
+      "sprite": "hanging_baskets/hanging_basket_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
