@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "statue_002",
+  "group": "statues",
+  "rank": 89,
+  "index": 2,
+  "name": "Harpist mid-song 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "harpist mid-song",
+  "glow_concept": "ring of votive candles around the pedestal",
+  "prompt": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, harpist mid-song, large, well above head height of a person, self-emissive at night, softly radiating light: ring of votive candles around the pedestal",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "statues/statue_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.04,
+    "world_px_height": 77,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d99b5d4f-70bd-4990-b1d0-0791a91cafe8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
