@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waterwheel_003",
+  "group": "waterwheels",
+  "rank": 59,
+  "index": 3,
+  "name": "Lichen-crusted ancient wheel 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "lichen-crusted ancient wheel",
+  "glow_concept": null,
+  "prompt": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use, lichen-crusted ancient wheel, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "waterwheels/waterwheel_003/sprite.webp",
+  "placement": {
+    "world_height_m": 3.09,
+    "world_px_height": 116,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a7599c2d-da3d-4827-a693-a60b0e142682",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
