@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_002",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 2,
+  "name": "Sunday-coat scarecrow, brass buttons 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "Sunday-coat scarecrow, brass buttons",
+  "glow_concept": "straw cuffs shedding drifting sparks of light",
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, Sunday-coat scarecrow, brass buttons, large, well above head height of a person, self-emissive at night, softly radiating light: straw cuffs shedding drifting sparks of light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.24,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f8a2d59b-3be4-4302-ad1e-49ff974c501b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
