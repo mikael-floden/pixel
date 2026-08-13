@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 74,
+  "scenery_count": 75,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -405,7 +405,7 @@
       "id": "driftwood_logs",
       "name": "Driftwood Log",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 58,
@@ -726,6 +726,7 @@
     "chimney_stacks": 1,
     "crystals": 1,
     "dock_pilings": 1,
+    "driftwood_logs": 1,
     "fallen_logs": 1,
     "fences": 1,
     "ferns": 1,
@@ -1154,6 +1155,28 @@
       "status": "complete",
       "pixellab_object_id": "1c1df4c2-657a-4a94-9c90-b5aa081252b4",
       "sprite": "dock_pilings/dock_piling_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "driftwood_log_001",
+      "rel": "driftwood_logs/driftwood_log_001",
+      "name": "Gnarled twisted root ball 001",
+      "category": "driftwood_logs",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered silver-grey driftwood log with twisted broken branch stubs, half sunk in sand and pebbles at the shore, gnarled twisted root ball, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.46,
+        "world_px_height": 17,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3e784fc4-ca35-49b0-a313-7fb501d7e624",
+      "sprite": "driftwood_logs/driftwood_log_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
