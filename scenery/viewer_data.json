@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 454,
+  "scenery_count": 455,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 39,
@@ -865,7 +865,7 @@
     "soulstone_outcrops": 6,
     "soulstone_plinths": 2,
     "spring_basins": 2,
-    "standing_stones": 5,
+    "standing_stones": 6,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
@@ -8224,6 +8224,28 @@
       "status": "complete",
       "pixellab_object_id": "2c382de7-cab3-48da-9b33-a8703a9349aa",
       "sprite": "standing_stones/standing_stone_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "standing_stone_009",
+      "rel": "standing_stones/standing_stone_009",
+      "name": "Spiral-carved granite pillar 009",
+      "category": "standing_stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, spiral-carved granite pillar, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.14,
+        "world_px_height": 118,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "92b9214e-cc1d-4ff3-834e-cddd49104de5",
+      "sprite": "standing_stones/standing_stone_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
