@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_010",
+  "group": "cairns",
+  "rank": 9,
+  "index": 10,
+  "name": "Wide low memorial cairn 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wide low memorial cairn",
+  "glow_concept": "wisps of soul-light circling the peak",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6c3d78bd-1999-42ef-95c3-1d1dbb69c255",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 310,
+  "scenery_count": 311,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 10,
@@ -799,7 +799,7 @@
     "briar_thickets": 2,
     "broken_columns": 2,
     "bushes": 3,
-    "cairns": 2,
+    "cairns": 3,
     "light": 1,
     "carts": 3,
     "cattail_clumps": 4,
@@ -2021,6 +2021,28 @@
       "status": "complete",
       "pixellab_object_id": "dbee4c90-9c34-451b-9255-6768aa18b8c2",
       "sprite": "cairns/cairn_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_010",
+      "rel": "cairns/cairn_010",
+      "name": "Wide low memorial cairn 010 \u00b7 lit",
+      "category": "cairns",
+      "lights": "LIGHTS_ON",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6c3d78bd-1999-42ef-95c3-1d1dbb69c255",
+      "sprite": "cairns/cairn_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
