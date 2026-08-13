@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 236,
+  "scenery_count": 237,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -132,7 +132,7 @@
       "id": "orchard_trees",
       "name": "Orchard Tree",
       "quota": 66,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 19,
@@ -839,6 +839,7 @@
     "mushrooms": 6,
     "nest_posts": 1,
     "offering_tables": 5,
+    "orchard_trees": 1,
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 1,
@@ -4142,6 +4143,28 @@
       "status": "complete",
       "pixellab_object_id": "5bbda2a8-79c4-4fda-8fa1-35f58cab34e7",
       "sprite": "offering_tables/offering_table_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "orchard_tree_008",
+      "rel": "orchard_trees/orchard_tree_008",
+      "name": "Golden pear tree 008 \u00b7 lit",
+      "category": "orchard_trees",
+      "lights": "LIGHTS_ON",
+      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, golden pear tree, large, twice human height, self-emissive at night, softly radiating light: whitewashed trunk band glowing moon-pale",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.66,
+        "world_px_height": 100,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2ff3643a-0249-4ceb-85cf-cd3d0a233364",
+      "sprite": "orchard_trees/orchard_tree_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
