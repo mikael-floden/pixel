@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_007",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 7,
+  "name": "Ivy-overgrown leaning lamp 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "ivy-overgrown leaning lamp",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ivy-overgrown leaning lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_007/sprite.webp",
+  "placement": {
+    "world_height_m": 3.0,
+    "world_px_height": 113,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
