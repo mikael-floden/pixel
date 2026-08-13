@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_012",
+  "group": "waystones",
+  "rank": 6,
+  "index": 12,
+  "name": "White quartz-veined stone 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white quartz-veined stone",
+  "glow_concept": "cap of luminous blue moss",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, roughly six feet tall, human height, self-emissive at night, softly radiating light: cap of luminous blue moss",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.49,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "868180a7-e9d1-4ab0-864d-56081952ffdc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
