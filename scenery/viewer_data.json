@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 383,
+  "scenery_count": 384,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -181,7 +181,7 @@
       "id": "bushes",
       "name": "Bush",
       "quota": 52,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 26,
@@ -727,7 +727,7 @@
     "braziers": 6,
     "briar_thickets": 6,
     "broken_columns": 2,
-    "bushes": 5,
+    "bushes": 6,
     "cairns": 6,
     "light": 1,
     "carts": 5,
@@ -2118,6 +2118,28 @@
       "status": "complete",
       "pixellab_object_id": "baae933a-d0de-4b99-a3f8-c16c0047817f",
       "sprite": "bushes/bush_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bush_006",
+      "rel": "bushes/bush_006",
+      "name": "White snowberry bush 006 \u00b7 lit",
+      "category": "bushes",
+      "lights": "LIGHTS_ON",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, white snowberry bush, about as tall as an adult person, self-emissive at night, softly radiating light: berries glowing like scattered tiny lanterns",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.46,
+        "world_px_height": 55,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b2eca62d-4aaa-4fa9-aac8-8fae86e5a4cb",
+      "sprite": "bushes/bush_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
