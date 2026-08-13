@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 517,
+  "scenery_count": 518,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -748,7 +748,7 @@
       "id": "cupboards_and_shelves",
       "name": "Cupboard",
       "quota": 40,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 107,
@@ -811,7 +811,7 @@
     "cliff_vines": 7,
     "crystals": 7,
     "cup_fungi": 2,
-    "cupboards_and_shelves": 6,
+    "cupboards_and_shelves": 7,
     "dock_pilings": 7,
     "dovecotes": 2,
     "driftwood_logs": 2,
@@ -4027,6 +4027,28 @@
       "status": "complete",
       "pixellab_object_id": "6b211716-e5b9-4a6f-a582-e8215873e0f9",
       "sprite": "cupboards_and_shelves/cupboard_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cupboard_008",
+      "rel": "cupboards_and_shelves/cupboard_008",
+      "name": "Open shelf unit of jars and crocks 008 \u00b7 lit",
+      "category": "cupboards_and_shelves",
+      "lights": "LIGHTS_ON",
+      "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, open shelf unit of jars and crocks, roughly six feet tall, human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
+      "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

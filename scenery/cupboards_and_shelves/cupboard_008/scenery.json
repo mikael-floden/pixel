@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:45:49+00:00",
+  "id": "cupboard_008",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 8,
+  "name": "Open shelf unit of jars and crocks 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "open shelf unit of jars and crocks",
+  "glow_concept": "jars of glowing preserves on the shelves",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, open shelf unit of jars and crocks, roughly six feet tall, human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.4,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
