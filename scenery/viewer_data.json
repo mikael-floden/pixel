@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 473,
+  "scenery_count": 474,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 6,
     "sheaf_poles": 2,
-    "signposts": 6,
+    "signposts": 7,
     "soulstone_outcrops": 6,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -8290,6 +8290,28 @@
       "status": "complete",
       "pixellab_object_id": "fb0c613c-f937-4268-af9f-f84dc792f21c",
       "sprite": "signposts/signpost_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_014",
+      "rel": "signposts/signpost_014",
+      "name": "Rope-and-plank trail sign 014 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, large, twice human height, self-emissive at night, softly radiating light: soft halo around one true arrow",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.51,
+        "world_px_height": 94,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7fcd604a-111b-4124-a38f-6b26b631c8ce",
+      "sprite": "signposts/signpost_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
