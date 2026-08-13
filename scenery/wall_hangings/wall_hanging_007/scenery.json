@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wall_hanging_007",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 7,
+  "name": "Framed folk embroidery with pattern only 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "framed folk embroidery with pattern only",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, framed folk embroidery with pattern only, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wall_hangings/wall_hanging_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.42,
+    "world_px_height": 16,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a2fb306c-c5c7-431f-b5b3-89043c1b9fd1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
