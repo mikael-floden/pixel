@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 349,
+  "scenery_count": 350,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 39,
@@ -865,7 +865,7 @@
     "soulstone_outcrops": 4,
     "soulstone_plinths": 2,
     "spring_basins": 2,
-    "standing_stones": 3,
+    "standing_stones": 4,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
@@ -6618,6 +6618,28 @@
       "status": "complete",
       "pixellab_object_id": "2c382de7-cab3-48da-9b33-a8703a9349aa",
       "sprite": "standing_stones/standing_stone_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "standing_stone_008",
+      "rel": "standing_stones/standing_stone_008",
+      "name": "Runestone with serpent bands 008 \u00b7 lit",
+      "category": "standing_stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, runestone with serpent bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: full column of runes blazing ice-blue",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 1.85,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "eb60cc6a-d917-46e4-953c-cae192fdbd67",
+      "sprite": "standing_stones/standing_stone_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
