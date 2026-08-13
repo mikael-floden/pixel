@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "water_lily_clump_002",
+  "group": "water_lily_clumps",
+  "rank": 63,
+  "index": 2,
+  "name": "Night-closed folded blossoms 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "night-closed folded blossoms",
+  "glow_concept": "soul-light shining up through gaps between pads",
+  "prompt": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, night-closed folded blossoms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soul-light shining up through gaps between pads",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.28,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
