@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cattail_clump_004",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 4,
+  "name": "Frost-rimed cattails 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "frost-rimed cattails",
+  "glow_concept": "burst fluff drifting off as glowing motes",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, frost-rimed cattails, waist-high to an adult person, self-emissive at night, softly radiating light: burst fluff drifting off as glowing motes",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cattail_clumps/cattail_clump_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "59c1ead1-c5d7-4c5e-a7f6-9840738284d4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
