@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_001",
+  "group": "windmills",
+  "rank": 47,
+  "index": 1,
+  "name": "Weathered gray coastal mill 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "weathered gray coastal mill",
+  "glow_concept": null,
+  "prompt": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, weathered gray coastal mill, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_001/sprite.webp",
+  "placement": {
+    "world_height_m": 4.33,
+    "world_px_height": 163,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "80973184-edbb-4600-b434-07862b587cc7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

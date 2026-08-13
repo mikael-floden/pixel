@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 64,
+  "scenery_count": 65,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -335,7 +335,7 @@
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 48,
@@ -758,7 +758,8 @@
     "washing_lines": 1,
     "wayside_shrines": 1,
     "waystones": 1,
-    "wells": 1
+    "wells": 1,
+    "windmills": 1
   },
   "scenery": [
     {
@@ -2217,6 +2218,28 @@
       "status": "complete",
       "pixellab_object_id": "cb2b2e08-5a90-495f-9db1-fc14ed81749a",
       "sprite": "wells/well_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "windmill_001",
+      "rel": "windmills/windmill_001",
+      "name": "Weathered gray coastal mill 001",
+      "category": "windmills",
+      "lights": "LIGHTS_OFF",
+      "description": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, weathered gray coastal mill, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.33,
+        "world_px_height": 163,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "80973184-edbb-4600-b434-07862b587cc7",
+      "sprite": "windmills/windmill_001/sprite.webp",
       "rotations": {},
       "animations": []
     }
