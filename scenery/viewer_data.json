@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 247,
+  "scenery_count": 248,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -230,7 +230,7 @@
       "id": "reed_beds",
       "name": "Reed Bed",
       "quota": 38,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 33,
@@ -776,7 +776,7 @@
     "petrified_stumps": 2,
     "puffballs": 2,
     "rail_carts": 2,
-    "reed_beds": 2,
+    "reed_beds": 3,
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
@@ -4163,6 +4163,28 @@
       "status": "complete",
       "pixellab_object_id": "9c09f841-e217-42a5-bc11-fca2f0641228",
       "sprite": "reed_beds/reed_bed_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "reed_bed_003",
+      "rel": "reed_beds/reed_bed_003",
+      "name": "Golden autumn reeds 003",
+      "category": "reed_beds",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, golden autumn reeds, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.1,
+        "world_px_height": 79,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c6d61cce-e0cc-4cbd-89ad-5edd50d75cbc",
+      "sprite": "reed_beds/reed_bed_003/sprite.webp",
       "rotations": {},
       "animations": []
     },

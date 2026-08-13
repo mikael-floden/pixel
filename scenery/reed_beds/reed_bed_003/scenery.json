@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_003",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 3,
+  "name": "Golden autumn reeds 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "golden autumn reeds",
+  "glow_concept": null,
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, golden autumn reeds, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.1,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c6d61cce-e0cc-4cbd-89ad-5edd50d75cbc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
