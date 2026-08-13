@@ -1,7 +1,7 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py.",
-  "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, a single centered game prop on a transparent background",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not).",
+  "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, a single centered game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
   "quota_rule": {
@@ -240,7 +240,7 @@
       "id": "waystones",
       "prefix": "waystone",
       "name": "Waystone",
-      "description": "a standing roadside stone waymarker with a carved direction mark and worn lettering",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base",
       "world_height_m": [
         0.6,
         1.5
@@ -312,7 +312,7 @@
       "id": "signposts",
       "prefix": "signpost",
       "name": "Signpost",
-      "description": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base",
       "world_height_m": [
         1.8,
         2.6
@@ -422,7 +422,7 @@
       "id": "wells",
       "prefix": "well",
       "name": "Well",
-      "description": "a round fieldstone well with a peaked wooden roof on two posts, a windlass crank and a rope-hung bucket",
+      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass",
       "world_height_m": [
         1.4,
         2.6
@@ -458,7 +458,7 @@
       "id": "hedges",
       "prefix": "hedge",
       "name": "Hedge",
-      "description": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground",
       "world_height_m": [
         1.0,
         1.8
@@ -533,7 +533,7 @@
       "id": "bell_posts",
       "prefix": "bell_post",
       "name": "Bell Post",
-      "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base",
       "world_height_m": [
         2.0,
         3.2
@@ -649,7 +649,7 @@
       "id": "haystacks",
       "prefix": "haystack",
       "name": "Haystack",
-      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base",
+      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it",
       "world_height_m": [
         1.5,
         2.6
@@ -685,7 +685,7 @@
       "id": "orchard_trees",
       "prefix": "orchard_tree",
       "name": "Orchard Tree",
-      "description": "a pruned orchard fruit tree with a short trunk, low rounded crown, and visible fruit or blossom among the leaves",
+      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame",
       "world_height_m": [
         2.2,
         3.5
@@ -721,7 +721,7 @@
       "id": "wayside_shrines",
       "prefix": "wayside_shrine",
       "name": "Wayside Shrine",
-      "description": "a small roofed wooden shrine raised on a post, its open front holding a tiny painted icon and offerings",
+      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof",
       "world_height_m": [
         1.0,
         2.0
@@ -799,7 +799,7 @@
       "id": "story_posts",
       "prefix": "story_post",
       "name": "Story Post",
-      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground",
       "world_height_m": [
         1.5,
         2.5
@@ -877,7 +877,7 @@
       "id": "soulstone_outcrops",
       "prefix": "soulstone_outcrop",
       "name": "Soulstone Outcrop",
-      "description": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab",
       "world_height_m": [
         0.5,
         1.5
@@ -986,7 +986,7 @@
       "id": "scarecrows",
       "prefix": "scarecrow",
       "name": "Scarecrow",
-      "description": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post",
       "world_height_m": [
         1.8,
         2.4
@@ -1387,7 +1387,7 @@
       "id": "crystals",
       "prefix": "crystal",
       "name": "Crystal",
-      "description": "a cluster of pointed natural crystals growing up out of the ground at angles, sharp faceted spikes around one tall central shard",
+      "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms",
       "world_height_m": [
         0.4,
         1.6
@@ -1499,7 +1499,7 @@
       "id": "washing_lines",
       "prefix": "washing_line",
       "name": "Washing Line",
-      "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes",
+      "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space",
       "world_height_m": [
         1.6,
         2.1
@@ -1681,7 +1681,7 @@
       "id": "moss_clumps",
       "prefix": "moss_clump",
       "name": "Moss Clump",
-      "description": "a rounded cushion of thick moss mounded up from the forest floor",
+      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub",
       "world_height_m": [
         0.2,
         0.6
@@ -1691,13 +1691,13 @@
         "pillow moss hummock",
         "moss-capped boulder",
         "star moss dome",
-        "sphagnum bog cushion",
+        "sphagnum bog flat spread",
         "hair-cap moss tussock",
         "moss-swallowed stump",
-        "red-tinged autumn moss mound",
-        "frost-rimed moss cushion",
+        "red-tinged autumn moss patch",
+        "frost-rimed moss flat spread",
         "lichen-patched moss dome",
-        "moss mound with tiny sprouts"
+        "moss patch with tiny sprouts"
       ],
       "glow_concepts": [
         "constellation of glowing pinprick spore capsules",
@@ -1751,7 +1751,7 @@
       "id": "windmills",
       "prefix": "windmill",
       "name": "Windmill",
-      "description": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut",
+      "description": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap",
       "world_height_m": [
         3.0,
         4.8
@@ -2179,7 +2179,7 @@
       "id": "waterwheels",
       "prefix": "waterwheel",
       "name": "Waterwheel",
-      "description": "a large old wooden waterwheel with paddle blades and an iron-banded rim, standing on a mossy stone mounting",
+      "description": "a large wooden waterwheel with thick heavy spokes and broad paddles mounted against a solid stone mill wall, water pouring over it",
       "world_height_m": [
         2.0,
         3.6
@@ -2616,7 +2616,7 @@
       "id": "rail_carts",
       "prefix": "rail_cart",
       "name": "Rail Cart",
-      "description": "an abandoned wooden mine rail cart with iron wheels standing on a short stub of rusted track",
+      "description": "a heavy wooden mine cart with thick iron-banded wheels standing on a short section of rail track, seen from the side, solid chunky body",
       "world_height_m": [
         1.0,
         1.7
@@ -2689,7 +2689,7 @@
       "id": "flower_garlands",
       "prefix": "flower_garland",
       "name": "Flower Garland",
-      "description": "two short wooden posts with a swag of flowering garland strung between them",
+      "description": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms",
       "world_height_m": [
         1.2,
         1.8
@@ -2725,7 +2725,7 @@
       "id": "hanging_baskets",
       "prefix": "hanging_basket",
       "name": "Hanging Basket",
-      "description": "a wrought-iron shepherd's crook post with a hanging basket overflowing with trailing flowers",
+      "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground",
       "world_height_m": [
         1.9,
         2.4
@@ -2831,7 +2831,7 @@
       "id": "trailing_planters",
       "prefix": "trailing_planter",
       "name": "Trailing Planter",
-      "description": "a weathered barrel planter with flowering vines spilling over the rim and pooling on the ground",
+      "description": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground",
       "world_height_m": [
         0.6,
         1.0
@@ -2975,7 +2975,7 @@
       "id": "web_frames",
       "prefix": "web_frame",
       "name": "Web Frame",
-      "description": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners",
+      "description": "a dense heavy spiderweb spun across the gap between two thick weathered leaning posts, sagging with dew",
       "world_height_m": [
         1.4,
         2.4
@@ -3223,7 +3223,7 @@
       "id": "letter_boxes",
       "prefix": "letter_box",
       "name": "Letter Box",
-      "description": "a small wooden letterbox on a post with a slot and a hinged lid, stuffed with folded letters, a few tucked under the lid",
+      "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base",
       "world_height_m": [
         1.0,
         1.5
@@ -3445,7 +3445,7 @@
       "id": "spring_basins",
       "prefix": "spring_basin",
       "name": "Spring Basin",
-      "description": "a raised rustic stone basin fed by a natural spring, rough mossy masonry walls holding clear welling water, a wooden feed spout at one side",
+      "description": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework",
       "world_height_m": [
         0.8,
         1.2
@@ -3552,7 +3552,7 @@
       "id": "rocking_horses",
       "prefix": "rocking_horse",
       "name": "Rocking Horse",
-      "description": "a weathered wooden rocking horse on curved rockers standing in meadow grass, with a carved mane, leather tack and worn paint",
+      "description": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers",
       "world_height_m": [
         0.6,
         1.0
