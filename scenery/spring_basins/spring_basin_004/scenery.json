@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "spring_basin_004",
+  "group": "spring_basins",
+  "rank": 94,
+  "index": 4,
+  "name": "Fern-flanked shaded basin 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fern-flanked shaded basin",
+  "glow_concept": "moonmilk mineral crust glowing on the rim stones",
+  "prompt": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework, fern-flanked shaded basin, waist-high, self-emissive at night, softly radiating light: moonmilk mineral crust glowing on the rim stones",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "spring_basins/spring_basin_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.95,
+    "world_px_height": 36,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "391213ab-759c-47b0-9e62-bbdacd94afed",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
