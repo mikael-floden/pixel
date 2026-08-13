@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 380,
+  "scenery_count": 381,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 27,
@@ -859,7 +859,7 @@
     "rugs_and_hides": 4,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 4,
+    "scarecrows": 5,
     "sheaf_poles": 2,
     "signposts": 5,
     "soulstone_outcrops": 4,
@@ -6640,6 +6640,28 @@
       "status": "complete",
       "pixellab_object_id": "8fa2e31f-221f-4845-ba38-7a15f4de3286",
       "sprite": "scarecrows/scarecrow_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_014",
+      "rel": "scarecrows/scarecrow_014",
+      "name": "Sunday-coat scarecrow, brass buttons 014 \u00b7 lit",
+      "category": "scarecrows",
+      "lights": "LIGHTS_ON",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, Sunday-coat scarecrow, brass buttons, large, twice human height, self-emissive at night, softly radiating light: straw cuffs shedding drifting sparks of light",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.92,
+        "world_px_height": 72,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b5e56273-c5c0-4a16-8ed3-d7162fdedad7",
+      "sprite": "scarecrows/scarecrow_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
