@@ -31,9 +31,30 @@ from pixellab_client import DIRECTIONS_8
 FRAME_MS = 120
 
 
+def _union_bbox(per_dir):
+    """One crop box covering every non-transparent pixel of every frame in every
+    direction. Applied to all of them, so relative motion is untouched — it only
+    removes margin that is empty in the WHOLE animation. Full-canvas fallback
+    when an animation is entirely transparent."""
+    box = None
+    for _d, frames in per_dir:
+        for f in frames:
+            b = f.getbbox()
+            if b is None:
+                continue
+            box = b if box is None else (min(box[0], b[0]), min(box[1], b[1]),
+                                         max(box[2], b[2]), max(box[3], b[3]))
+    return box
+
+
 def build_sheet(mid, key):
     """(w, h, dir_names, dir_frame_counts, webp_bytes) for one animation —
-    a grid of frames (columns) x directions (rows, DIRECTIONS_8 order)."""
+    a grid of frames (columns) x directions (rows, DIRECTIONS_8 order).
+
+    Frames are cropped to the animation's union bounding box: the artifact is a
+    review page, so trimming margin that is empty across the entire clip costs
+    nothing visually but keeps the page under the 16 MB artifact ceiling (the
+    full 57-monster set is 17 MB uncropped, and base64 inflates it by a third)."""
     adir = os.path.join(ROOT, mid, "animations", key)
     per_dir = []
     for d in DIRECTIONS_8:
@@ -46,6 +67,9 @@ def build_sheet(mid, key):
             per_dir.append((d, frames))
     if not per_dir:
         return None
+    box = _union_bbox(per_dir)
+    if box:
+        per_dir = [(d, [f.crop(box) for f in frames]) for d, frames in per_dir]
     w, h = per_dir[0][1][0].size
     maxf = max(len(fr) for _, fr in per_dir)
     sheet = Image.new("RGBA", (w * maxf, h * len(per_dir)), (0, 0, 0, 0))
@@ -57,11 +81,15 @@ def build_sheet(mid, key):
     return w, h, [d for d, _ in per_dir], [len(fr) for _, fr in per_dir], bio.getvalue()
 
 
-def collect():
+def collect(only=None):
     """Registry of monsters + deduped animation sheets (a fallback state row
-    reuses its target animation's sheet — embedded once)."""
+    reuses its target animation's sheet — embedded once). `only` limits the page
+    to a set of monster ids: the full 57 exceed the 16 MB artifact ceiling, and
+    lossy encoding is not an option on art being reviewed for pixel defects."""
     monsters, sheets = [], {}
     for mid, meta in iter_manifests():
+        if only and mid not in only:
+            continue
         anims = meta.get("animations") or {}
         smap = meta.get("states") or {}
         for key in anims:
@@ -83,7 +111,8 @@ def collect():
                 "source": (anims.get(key) or {}).get("source_name") if key else None,
             })
         buf = io.BytesIO()
-        Image.open(os.path.join(ROOT, mid, meta["sprite"].split("/")[-1])).save(buf, "PNG")
+        Image.open(os.path.join(ROOT, mid, meta["sprite"].split("/")[-1])).save(
+            buf, "WEBP", lossless=True, method=6, exact=True)
         monsters.append({
             "id": mid,
             "name": meta.get("name") or mid,
@@ -211,7 +240,7 @@ for (const m of DATA.monsters) {
   const head = document.createElement('div');
   head.className = 'mhead';
   head.innerHTML = `
-    <div class="spritechip"><img src="data:image/png;base64,${m.sprite}" alt=""></div>
+    <div class="spritechip"><img src="data:image/webp;base64,${m.sprite}" alt=""></div>
     <div>
       <div class="mtitle">${m.name}<span class="kind">${m.kind}</span></div>
       <div class="mmeta mono">${m.id} · ${m.size.width}×${m.size.height}px ·
@@ -318,8 +347,16 @@ document.getElementById('q').addEventListener('input', e => {
 def main():
     ap = argparse.ArgumentParser(description="Emit the self-contained monster review HTML.")
     ap.add_argument("-o", "--out", default="/tmp/monster_review.html")
+    ap.add_argument("--ids", help="comma-separated monster ids to include (default: all)")
+    ap.add_argument("--kind", choices=("object", "character"),
+                    help="only monsters authored in this PixelLab store")
     args = ap.parse_args()
-    monsters, sheets = collect()
+    only = set(i.strip() for i in args.ids.split(",")) if args.ids else None
+    if args.kind:
+        by_kind = {mid for mid, m in iter_manifests()
+                   if (m.get("source") or {}).get("kind") == args.kind}
+        only = by_kind if only is None else (only & by_kind)
+    monsters, sheets = collect(only)
     data = json.dumps({"monsters": monsters, "sheets": sheets})
     html = PAGE.replace("__DATA__", data).replace("__FRAME_MS__", str(FRAME_MS))
     with open(args.out, "w") as f:
