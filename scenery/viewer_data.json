@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 48,
+  "scenery_count": 49,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 32,
@@ -729,6 +729,7 @@
     "hedges": 1,
     "lantern_posts": 1,
     "lantern_stands": 1,
+    "mushrooms": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
     "scarecrows": 1,
@@ -1211,6 +1212,28 @@
       "status": "complete",
       "pixellab_object_id": "443f5c33-5d81-4fcf-82d5-95d046916cc5",
       "sprite": "lantern_stands/lantern_stand_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_001",
+      "rel": "mushrooms/mushroom_001",
+      "name": "Frost-grey winter mushrooms 001",
+      "category": "mushrooms",
+      "lights": "LIGHTS_OFF",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, frost-grey winter mushrooms, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.31,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
+      "sprite": "mushrooms/mushroom_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

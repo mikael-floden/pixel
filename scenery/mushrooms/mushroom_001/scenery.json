@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_001",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 1,
+  "name": "Frost-grey winter mushrooms 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "frost-grey winter mushrooms",
+  "glow_concept": null,
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, frost-grey winter mushrooms, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.31,
+    "world_px_height": 12,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
