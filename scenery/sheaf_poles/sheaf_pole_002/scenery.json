@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sheaf_pole_002",
+  "group": "sheaf_poles",
+  "rank": 95,
+  "index": 2,
+  "name": "Leaning old sheaf pole 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "leaning old sheaf pole",
+  "glow_concept": "glowing birds of light perched among the grain",
+  "prompt": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, leaning old sheaf pole, about as tall as an adult person, self-emissive at night, softly radiating light: glowing birds of light perched among the grain",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "sheaf_poles/sheaf_pole_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.64,
+    "world_px_height": 62,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8cf6e732-ff2e-4fea-9b79-f8835a030cd3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
