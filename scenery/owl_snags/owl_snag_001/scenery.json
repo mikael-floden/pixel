@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "owl_snag_001",
+  "group": "owl_snags",
+  "rank": 69,
+  "index": 1,
+  "name": "Hollow birch snag 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "hollow birch snag",
+  "glow_concept": null,
+  "prompt": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk where an owl roosts, hollow birch snag, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "owl_snags/owl_snag_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.51,
+    "world_px_height": 132,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
