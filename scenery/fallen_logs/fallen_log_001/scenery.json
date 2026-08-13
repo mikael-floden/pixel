@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fallen_log_001",
+  "group": "fallen_logs",
+  "rank": 20,
+  "index": 1,
+  "name": "Ivy-wrapped ancient log 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "ivy-wrapped ancient log",
+  "glow_concept": null,
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, ivy-wrapped ancient log, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.79,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3957b845-86a0-4d17-97ca-670c92c91dff",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
