@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 448,
+  "scenery_count": 449,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -314,7 +314,7 @@
       "id": "fish_drying_racks",
       "name": "Fish Drying Rack",
       "quota": 14,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 45,
@@ -819,7 +819,7 @@
     "fallen_logs": 7,
     "fences": 6,
     "ferns": 6,
-    "fish_drying_racks": 5,
+    "fish_drying_racks": 6,
     "flame_niches": 6,
     "flower_garlands": 2,
     "flower_stands": 6,
@@ -4357,6 +4357,28 @@
       "status": "complete",
       "pixellab_object_id": "4cb9ce50-c404-4e5f-8640-53731607ee16",
       "sprite": "fish_drying_racks/fish_drying_rack_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fish_drying_rack_007",
+      "rel": "fish_drying_racks/fish_drying_rack_007",
+      "name": "Rack with salted white fillets 007",
+      "category": "fish_drying_racks",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with salted white fillets, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.86,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8bcabb43-49b2-4918-b300-b456d099e144",
+      "sprite": "fish_drying_racks/fish_drying_rack_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

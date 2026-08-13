@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fish_drying_rack_007",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 7,
+  "name": "Rack with salted white fillets 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "rack with salted white fillets",
+  "glow_concept": null,
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with salted white fillets, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fish_drying_racks/fish_drying_rack_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.86,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8bcabb43-49b2-4918-b300-b456d099e144",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
