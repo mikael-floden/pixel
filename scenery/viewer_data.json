@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 287,
+  "scenery_count": 288,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -384,7 +384,7 @@
       "id": "soulstone_plinths",
       "name": "Soulstone Plinth",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 55,
@@ -863,7 +863,7 @@
     "sheaf_poles": 1,
     "signposts": 2,
     "soulstone_outcrops": 3,
-    "soulstone_plinths": 1,
+    "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 3,
     "statues": 2,
@@ -5474,6 +5474,28 @@
       "status": "complete",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_plinth_006",
+      "rel": "soulstone_plinths/soulstone_plinth_006",
+      "name": "Half-sunk stone pedestal 006 \u00b7 lit",
+      "category": "soulstone_plinths",
+      "lights": "LIGHTS_ON",
+      "description": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, half-sunk stone pedestal, roughly six feet tall, human height, self-emissive at night, softly radiating light: glass dome scattering the stone's glow",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.22,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a3ae5a32-7fd7-49d0-a694-fd3ba38aecfc",
+      "sprite": "soulstone_plinths/soulstone_plinth_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

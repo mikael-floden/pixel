@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_plinth_006",
+  "group": "soulstone_plinths",
+  "rank": 54,
+  "index": 6,
+  "name": "Half-sunk stone pedestal 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "half-sunk stone pedestal",
+  "glow_concept": "glass dome scattering the stone's glow",
+  "prompt": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, half-sunk stone pedestal, roughly six feet tall, human height, self-emissive at night, softly radiating light: glass dome scattering the stone's glow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_plinths/soulstone_plinth_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.22,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a3ae5a32-7fd7-49d0-a694-fd3ba38aecfc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
