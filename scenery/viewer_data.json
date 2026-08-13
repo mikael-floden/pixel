@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 238,
+  "scenery_count": 239,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -419,7 +419,7 @@
       "id": "waterwheels",
       "name": "Waterwheel",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 60,
@@ -875,6 +875,7 @@
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
+    "waterwheels": 1,
     "wayside_shrines": 1,
     "waystones": 2,
     "web_frames": 1,
@@ -5970,6 +5971,28 @@
       "status": "complete",
       "pixellab_object_id": "065ab574-1351-49d1-8899-463b57ee75f4",
       "sprite": "water_pumps/water_pump_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waterwheel_004",
+      "rel": "waterwheels/waterwheel_004",
+      "name": "Abandoned mill, dry channel 004 \u00b7 lit",
+      "category": "waterwheels",
+      "lights": "LIGHTS_ON",
+      "description": "a small stone watermill house with a big wooden waterwheel on its side, a millpond and a wooden sluice channel feeding water onto the wheel, the whole mill sitting on its stream bank, abandoned mill, dry channel, towering, many times human height, self-emissive at night, softly radiating light: foxfire fungus glowing on the rotten paddles",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.62,
+        "world_px_height": 174,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "21ce85f9-dcab-433f-935a-35410cca3fef",
+      "sprite": "waterwheels/waterwheel_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
