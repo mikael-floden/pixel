@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 303,
+  "scenery_count": 304,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -286,7 +286,7 @@
       "id": "washing_lines",
       "name": "Washing Line",
       "quota": 22,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 41,
@@ -801,7 +801,7 @@
     "torch_posts": 4,
     "trailing_planters": 2,
     "trees": 4,
-    "washing_lines": 3,
+    "washing_lines": 4,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
@@ -6891,6 +6891,28 @@
       "status": "complete",
       "pixellab_object_id": "3a1a3093-34e4-406f-9aea-58ea494acf7e",
       "sprite": "washing_lines/washing_line_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "washing_line_004",
+      "rel": "washing_lines/washing_line_004",
+      "name": "Empty line, dangling pegs 004 \u00b7 lit",
+      "category": "washing_lines",
+      "lights": "LIGHTS_ON",
+      "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, empty line, dangling pegs, about as tall as an adult person, self-emissive at night, softly radiating light: one garment glowing while the rest hang dark",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.68,
+        "world_px_height": 63,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9c81d781-4452-4c84-9745-a6610a7fab77",
+      "sprite": "washing_lines/washing_line_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
