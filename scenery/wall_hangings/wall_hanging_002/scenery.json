@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wall_hanging_002",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 2,
+  "name": "Round woven basket-lid display 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "round woven basket-lid display",
+  "glow_concept": "the candle sconce lit warm",
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, round woven basket-lid display, waist-high, self-emissive at night, softly radiating light: the candle sconce lit warm",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wall_hangings/wall_hanging_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7b58168d-2488-4b5a-92a6-22ea2dfd1576",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

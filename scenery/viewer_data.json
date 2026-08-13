@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 265,
+  "scenery_count": 266,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 0
+      "done": 1
     }
   ],
   "categories": {
@@ -880,6 +880,7 @@
     "torch_posts": 4,
     "trailing_planters": 1,
     "trees": 6,
+    "wall_hangings": 1,
     "washing_lines": 2,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -6332,6 +6333,28 @@
       "status": "complete",
       "pixellab_object_id": "dc463976-a9d9-4903-9008-844c57067bf0",
       "sprite": "trees/tree_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wall_hanging_002",
+      "rel": "wall_hangings/wall_hanging_002",
+      "name": "Round woven basket-lid display 002 \u00b7 lit",
+      "category": "wall_hangings",
+      "lights": "LIGHTS_ON",
+      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, round woven basket-lid display, waist-high, self-emissive at night, softly radiating light: the candle sconce lit warm",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.94,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7b58168d-2488-4b5a-92a6-22ea2dfd1576",
+      "sprite": "wall_hangings/wall_hanging_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
