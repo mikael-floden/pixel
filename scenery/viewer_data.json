@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 488,
+  "scenery_count": 489,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -216,7 +216,7 @@
       "id": "beehives",
       "name": "Beehive",
       "quota": 42,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 31,
@@ -791,7 +791,7 @@
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beds": 6,
-    "beehives": 6,
+    "beehives": 7,
     "bell_posts": 7,
     "effect": 1,
     "bone_piles": 2,
@@ -1771,6 +1771,28 @@
       "status": "complete",
       "pixellab_object_id": "8909a1d8-4556-4bcd-97ce-631f406f4393",
       "sprite": "beehives/beehive_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beehive_010",
+      "rel": "beehives/beehive_010",
+      "name": "Flower-ringed meadow skep 010 \u00b7 lit",
+      "category": "beehives",
+      "lights": "LIGHTS_ON",
+      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, flower-ringed meadow skep, waist-high, self-emissive at night, softly radiating light: moon-pale gleaming wax drippings",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.92,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "817b1085-1e42-4ebd-ab72-dfbdcd016d6a",
+      "sprite": "beehives/beehive_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
