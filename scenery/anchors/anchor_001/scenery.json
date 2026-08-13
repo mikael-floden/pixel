@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "anchor_001",
+  "group": "anchors",
+  "rank": 92,
+  "index": 1,
+  "name": "Seaweed-draped fresh-raised anchor 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "seaweed-draped fresh-raised anchor",
+  "glow_concept": null,
+  "prompt": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, seaweed-draped fresh-raised anchor, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "anchors/anchor_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.52,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "57f27b0e-262c-4695-983e-9b0742f93746",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
