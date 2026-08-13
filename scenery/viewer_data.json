@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 366,
+  "scenery_count": 367,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -41,7 +41,7 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 6,
@@ -838,7 +838,7 @@
     "hop_poles": 2,
     "house_clutter": 4,
     "ivy_posts": 4,
-    "lantern_posts": 4,
+    "lantern_posts": 5,
     "lantern_stands": 4,
     "letter_boxes": 2,
     "market_stalls": 4,
@@ -5034,6 +5034,28 @@
       "status": "complete",
       "pixellab_object_id": "112be2d4-c5d7-4409-8d8d-f50c1ae095f4",
       "sprite": "lantern_posts/lantern_post_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_post_008",
+      "rel": "lantern_posts/lantern_post_008",
+      "name": "Moss-capped old post 008 \u00b7 lit",
+      "category": "lantern_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, moss-capped old post, large, twice human height, self-emissive at night, softly radiating light: green foxfire packed behind the panes",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.91,
+        "world_px_height": 72,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
+      "sprite": "lantern_posts/lantern_post_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
