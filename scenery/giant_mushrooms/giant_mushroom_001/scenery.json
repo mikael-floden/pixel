@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "giant_mushroom_001",
+  "group": "giant_mushrooms",
+  "rank": 79,
+  "index": 1,
+  "name": "Leaning crooked giant 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning crooked giant",
+  "glow_concept": null,
+  "prompt": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, leaning crooked giant, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
+  "placement": {
+    "world_height_m": 4.49,
+    "world_px_height": 169,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

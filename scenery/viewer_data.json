@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 96,
+  "scenery_count": 97,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -559,7 +559,7 @@
       "id": "giant_mushrooms",
       "name": "Giant Mushroom",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 80,
@@ -741,6 +741,7 @@
     "flower_garlands": 1,
     "flower_stands": 1,
     "flower_trellises": 1,
+    "giant_mushrooms": 1,
     "grass_tufts": 1,
     "decor": 1,
     "gravel_piles": 1,
@@ -1506,6 +1507,28 @@
       "status": "complete",
       "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
       "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "giant_mushroom_001",
+      "rel": "giant_mushrooms/giant_mushroom_001",
+      "name": "Leaning crooked giant 001",
+      "category": "giant_mushrooms",
+      "lights": "LIGHTS_OFF",
+      "description": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, leaning crooked giant, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.49,
+        "world_px_height": 169,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
+      "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
