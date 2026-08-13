@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 449,
+  "scenery_count": 450,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -265,7 +265,7 @@
       "id": "crystals",
       "name": "Crystal",
       "quota": 28,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 38,
@@ -809,7 +809,7 @@
     "cliff_features": 5,
     "cliff_fragments": 2,
     "cliff_vines": 5,
-    "crystals": 5,
+    "crystals": 6,
     "cup_fungi": 2,
     "cupboards_and_shelves": 5,
     "dock_pilings": 6,
@@ -3411,6 +3411,28 @@
       "status": "complete",
       "pixellab_object_id": "f75fccb0-1042-430d-948a-48549673ca12",
       "sprite": "crystals/crystal_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "crystal_009",
+      "rel": "crystals/crystal_009",
+      "name": "Ring of small crystal points 009",
+      "category": "crystals",
+      "lights": "LIGHTS_OFF",
+      "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, ring of small crystal points, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.78,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "98c05a96-c84c-41d7-9a75-a86fe041a211",
+      "sprite": "crystals/crystal_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
