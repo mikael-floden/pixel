@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_004",
+  "group": "signposts",
+  "rank": 8,
+  "index": 4,
+  "name": "Cast-iron city signpost 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cast-iron city signpost",
+  "glow_concept": "painted place-names glowing like embers",
+  "prompt": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, cast-iron city signpost, large, well above head height of a person, self-emissive at night, softly radiating light: painted place-names glowing like embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.16,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
