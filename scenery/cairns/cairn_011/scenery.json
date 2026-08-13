@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_011",
+  "group": "cairns",
+  "rank": 9,
+  "index": 11,
+  "name": "Snow-capped mountain cairn 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "snow-capped mountain cairn",
+  "glow_concept": null,
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, snow-capped mountain cairn, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.11,
+    "world_px_height": 42,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d5b66354-683c-41a3-95ba-9243daaddf1a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
