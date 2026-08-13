@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_006",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 6,
+  "name": "Briar arching over a fallen log 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "briar arching over a fallen log",
+  "glow_concept": "petals shedding slow drifting motes of light",
+  "prompt": "an arching mound of thorny briar canes dotted with open wild roses, briar arching over a fallen log, waist-high to an adult person, self-emissive at night, softly radiating light: petals shedding slow drifting motes of light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75454cf3-de58-46f5-b133-3f776080a14b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
