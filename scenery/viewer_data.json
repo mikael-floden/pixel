@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 107,
+  "scenery_count": 108,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -636,7 +636,7 @@
       "id": "rope_swings",
       "name": "Rope Swing",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 91,
@@ -773,6 +773,7 @@
     "rail_carts": 1,
     "reed_beds": 1,
     "rock_spires": 1,
+    "rope_swings": 1,
     "ruined_arches": 1,
     "rusted_machines": 1,
     "scarecrows": 1,
@@ -2238,6 +2239,28 @@
       "status": "complete",
       "pixellab_object_id": "8231a5b2-7ef5-4f5e-8cec-3185606da9a0",
       "sprite": "rock_spires/rock_spire_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rope_swing_001",
+      "rel": "rope_swings/rope_swing_001",
+      "name": "Rough timber A-frame swing 001",
+      "category": "rope_swings",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden swing hanging by two ropes from a stout timber frame, its plank seat swaying above a patch of worn bare ground, rough timber A-frame swing, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.09,
+        "world_px_height": 79,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ee75a8bb-4b98-46c6-8a83-aa49193028e0",
+      "sprite": "rope_swings/rope_swing_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
