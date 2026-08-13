@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 468,
+  "scenery_count": 469,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 10,
@@ -799,7 +799,7 @@
     "briar_thickets": 6,
     "broken_columns": 2,
     "bushes": 6,
-    "cairns": 6,
+    "cairns": 7,
     "light": 1,
     "carts": 6,
     "cattail_clumps": 6,
@@ -2571,6 +2571,28 @@
       "status": "complete",
       "pixellab_object_id": "f9bd69fd-16a9-4690-82c7-4e0e17b1ff45",
       "sprite": "cairns/cairn_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_016",
+      "rel": "cairns/cairn_016",
+      "name": "Cairn with flat capstone 016 \u00b7 lit",
+      "category": "cairns",
+      "lights": "LIGHTS_ON",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, cairn with flat capstone, waist-high, self-emissive at night, softly radiating light: warm light spilling from gaps between stones",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.85,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1814ebf2-0b71-47f6-98c0-82be021c2e60",
+      "sprite": "cairns/cairn_016/sprite.webp",
       "rotations": {},
       "animations": []
     },

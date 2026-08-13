@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_016",
+  "group": "cairns",
+  "rank": 9,
+  "index": 16,
+  "name": "Cairn with flat capstone 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cairn with flat capstone",
+  "glow_concept": "warm light spilling from gaps between stones",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, cairn with flat capstone, waist-high, self-emissive at night, softly radiating light: warm light spilling from gaps between stones",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.85,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1814ebf2-0b71-47f6-98c0-82be021c2e60",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
