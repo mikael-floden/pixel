@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:53:17+00:00",
+  "id": "stump_014",
+  "group": "stumps",
+  "rank": 24,
+  "index": 14,
+  "name": "Stump with axe embedded 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stump with axe embedded",
+  "glow_concept": "luminous green sapling sprouting from the center",
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, stump with axe embedded, waist-high, self-emissive at night, softly radiating light: luminous green sapling sprouting from the center",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "89eeeb4a-3148-488a-8091-b1d3fa831d80",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

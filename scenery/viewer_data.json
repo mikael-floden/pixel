@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 542,
+  "scenery_count": 543,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "id": "stumps",
       "name": "Stump",
       "quota": 54,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 25,
@@ -871,7 +871,7 @@
     "stones": 14,
     "story_posts": 8,
     "streetlights": 8,
-    "stumps": 7,
+    "stumps": 8,
     "sundials": 2,
     "tables": 7,
     "telegraph_poles": 7,
@@ -10666,6 +10666,28 @@
       "status": "complete",
       "pixellab_object_id": "2dd24fca-86f0-4350-86c5-13d106887dad",
       "sprite": "stumps/stump_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stump_014",
+      "rel": "stumps/stump_014",
+      "name": "Stump with axe embedded 014 \u00b7 lit",
+      "category": "stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, stump with axe embedded, waist-high, self-emissive at night, softly radiating light: luminous green sapling sprouting from the center",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.89,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "89eeeb4a-3148-488a-8091-b1d3fa831d80",
+      "sprite": "stumps/stump_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
