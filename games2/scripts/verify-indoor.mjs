@@ -482,6 +482,15 @@ try {
     await page.waitForTimeout(1200);
   };
   await setTorch(false);
+  // 2a/2b/2c run on the FLAT cut (per-wall raise OFF): they pin the scalar
+  // contract — the roof slab is gone, the outside is unlit, every enclosure
+  // cell draws at the dial — and 2a's void proof NEEDS points no drawn column
+  // reaches, which a house raised to its ceiling no longer has. The raise
+  // gets its own section (2c') against this same frame. The cuts are read
+  // FIRST, while the raise is still on, for 2c' to assert with.
+  const raise0 = await page.evaluate(() => window.__ml.indoorRaise());
+  await page.evaluate(() => window.__ml.indoorRaise(false));
+  await page.waitForTimeout(900);
   const inShot = await shoot("inside");
 
   // -- 2a. THE ROOF IS GONE -------------------------------------------------
@@ -616,8 +625,11 @@ try {
   // there was none. The fill is black now, so the mistake surfaced. Sampling
   // three x offsets across the skirt and keeping the best keeps it honest at
   // the doorway jambs, where the centre column of one cell is a real gap.
-  const capBand = (sc) => {
-    const drawn = Math.min(sc.level, inn.top);
+  // `cut` = which level this cell's cap sits at IN THE FRAME BEING MEASURED —
+  // the scalar dial for the flat frame here; 2c' re-runs this same band on the
+  // raised frame with each cell's own cut.
+  const capBand = (sc, cut) => {
+    const drawn = Math.min(sc.level, cut);
     const capTop = sc.y + (sc.level - drawn) * 16;
     return drawn < sc.level
       ? [39, 46].flatMap((dy) => [16, 32, 48].map((dx) => ({ x: sc.x + dx, y: capTop + dy })))
@@ -626,7 +638,7 @@ try {
   const bldP = [];
   for (const [c, r] of building) {
     const sc = await cellScreen(c, r);
-    const pts = capBand(sc).filter((p) => inView(p));
+    const pts = capBand(sc, inn.top).filter((p) => inView(p));
     if (pts.length) bldP.push({ c, r, pts });
   }
   if (bldP.length < building.length - 2)
@@ -644,27 +656,21 @@ try {
   ok(`the building is SOLID: all ${bldIn.length} enclosure cells — corners and T-junctions included — ` +
     `carry art at their cut top (median luminance ${Math.min(...bldIn.map((s) => s.med)).toFixed(1)}-${Math.max(...bldIn.map((s) => s.med)).toFixed(1)})`);
 
-  // -- 2d. THE DIAL IS THE CUT ---------------------------------------------
-  // The maintainer's actual requirement: "cut all walls at 'roof - 1',
-  // 'roof - 2', etc. Even making this configurable in settings so I can test
-  // what looks best." So the picture must MOVE, by exactly one level per step.
-  //
-  // MEASURED AS A WHOLE-PICTURE DIFFERENCE, not as one crown row. The obvious
-  // probe — "scan a screen column and find the topmost non-void row, it must
-  // drop 16px per step" — is not sound once every column in the world is drawn:
-  // the topmost lit pixel in any given column belongs to whatever cell the
-  // painter last put there, which is frequently a NEIGHBOUR of the wall you
-  // aimed at (its 64px art box overlaps, and a far wall is drawn before the
-  // floor and near walls that cover it). Measured on the shipped house: eight
-  // different far- and near-wall cells all report the SAME crown offset at
-  // wall 1, wall 3 and wall 5, while the frames plainly differ. The probe was
-  // wrong, not the renderer.
-  //
-  // What IS unambiguous is the frame itself. One step of the dial takes a
-  // 16px band off every wall column at once, so it must (a) change the picture,
-  // (b) change it inside the house and nowhere else, and (c) change it FURTHER
-  // at every further step — measured against the shallowest cut, so the counts
-  // are cumulative and a dial that saturated would show up as a flat run.
+  // -- 2c'. THE PER-WALL RAISE ---------------------------------------------
+  // (maintainer 2026-08-13: "make the current wall height a MINIMUM setting...
+  // draw the walls all the way to the roof on sides where it's possible...
+  // just make them as tall as they can be before they intersect with another
+  // floor.") Three claims, each measured its own way:
+  //   • REACH — some wall of this house really rises to the CEILING (data),
+  //     and the shader's copy of the cuts matches the scene's (texture).
+  //   • INK — the raise is real paint: toggling it off changes a lot of the
+  //     house picture (the 2c/2a samples above already pin WHERE the ink is).
+  //   • PROTECTION — the floor I stand on is exactly as visible either way:
+  //     the raise may never buy walls with floor pixels. Compared per floor
+  //     patch as a median shift, not pixel equality — the avatar box is
+  //     already excluded from floorP, but a stray decor layer is not.
+  // (houseBox + diffPixels live here because this section and 2d both diff
+  // whole frames over the house's own screen box.)
   const houseBox = await (async () => {
     let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
     for (const [c, r] of [...interior, ...building]) {
@@ -687,6 +693,73 @@ try {
       }
     return n;
   };
+  if (!(raise0.on && raise0.raised > 0))
+    fail(`the per-wall raise is not active in the house (on=${raise0.on}, raised=${raise0.raised})`);
+  if (Math.max(...Object.values(raise0.cuts)) !== inn.ceiling)
+    fail(`no wall reaches the roof: max cut ${Math.max(...Object.values(raise0.cuts))} vs ceiling ${inn.ceiling} — ` +
+      `"all the way to the roof on sides where it's possible" is not happening`);
+  // Back ON (2a-2c measured the flat frame) — and from here the gate runs in
+  // the raise's design state.
+  await page.evaluate(() => window.__ml.indoorRaise(true));
+  await page.waitForTimeout(900);
+  const texR = await page.evaluate(() => window.__ml.roomTex());
+  if (texR.raisedCells !== raise0.raised || texR.maxCut !== Math.max(...Object.values(raise0.cuts)))
+    fail(`the shader's room texture disagrees with the scene about the raise: texture ${texR.raisedCells} cells ` +
+      `(max ${texR.maxCut}) vs scene ${raise0.raised} — the light would truncate columns the renderer draws`);
+  const raisedShot = await shoot("raise-on");
+  const raiseInk = diffPixels(raisedShot, inShot, houseBox);
+  const floorRaised = measure(raisedShot, floorP);
+  const floorMoved = floorIn
+    .map((s, i) => {
+      const b = floorRaised[i];
+      return { c: s.c, r: s.r, d: Math.abs(s.med - b.med), flat: s.med, raised: b.med };
+    })
+    .filter((x) => x.d > 10);
+  if (raiseInk < 1500)
+    fail(`the raise only changes ${raiseInk} pixels of the house against the flat cut — walls are not visibly rising`);
+  if (floorMoved.length)
+    fail(`the raise changes the FLOOR at ${floorMoved.map((x) => `${x.c},${x.r} (median ${x.flat.toFixed(0)} -> ${x.raised.toFixed(0)})`).join("; ")} — ` +
+      `a wall bought its height with protected floor pixels`);
+  // ...and every enclosure cell still carries art AT ITS OWN CUT — the same
+  // solidity band as 2c, sampled where the raised renderer claims each cap is.
+  const cutOf = (c, r) => raise0.cuts[`${c},${r}`] ?? inn.top;
+  const raisedHoles = [];
+  for (const [c, r] of building) {
+    const sc = await cellScreen(c, r);
+    const pts = capBand(sc, cutOf(c, r)).filter((p) => inView(p));
+    if (!pts.length) continue;
+    const ss = pts.map((p) => patch(raisedShot, p.x, p.y, 2)).filter(Boolean);
+    if (!ss.length) continue;
+    const best = ss.reduce((a, s) => (s.med > a.med ? s : a), ss[0]);
+    if (best.med < 4) raisedHoles.push(`${c},${r} (cut ${cutOf(c, r)}, median ${best.med.toFixed(1)})`);
+  }
+  if (raisedHoles.length)
+    fail(`raised walls missing their claimed cap at ${raisedHoles.join("; ")} — the drawn column and the cut map disagree`);
+  ok(`the per-wall raise: ${raise0.raised} of ${building.length} wall cells rise past the dial (max = the ` +
+    `ceiling ${inn.ceiling}, texture in sync), repainting ${raiseInk}px of the house, every cap drawn at its ` +
+    `own cut, and every floor patch untouched`);
+
+  // -- 2d. THE DIAL IS THE CUT ---------------------------------------------
+  // The maintainer's actual requirement: "cut all walls at 'roof - 1',
+  // 'roof - 2', etc. Even making this configurable in settings so I can test
+  // what looks best." So the picture must MOVE, by exactly one level per step.
+  //
+  // MEASURED AS A WHOLE-PICTURE DIFFERENCE, not as one crown row. The obvious
+  // probe — "scan a screen column and find the topmost non-void row, it must
+  // drop 16px per step" — is not sound once every column in the world is drawn:
+  // the topmost lit pixel in any given column belongs to whatever cell the
+  // painter last put there, which is frequently a NEIGHBOUR of the wall you
+  // aimed at (its 64px art box overlaps, and a far wall is drawn before the
+  // floor and near walls that cover it). Measured on the shipped house: eight
+  // different far- and near-wall cells all report the SAME crown offset at
+  // wall 1, wall 3 and wall 5, while the frames plainly differ. The probe was
+  // wrong, not the renderer.
+  //
+  // What IS unambiguous is the frame itself. One step of the dial takes a
+  // 16px band off every wall column at once, so it must (a) change the picture,
+  // (b) change it inside the house and nowhere else, and (c) change it FURTHER
+  // at every further step — measured against the shallowest cut, so the counts
+  // are cumulative and a dial that saturated would show up as a flat run.
   const before = await page.evaluate(() => window.__ml.indoorWall());
   const cuts = [];
   for (const n of [1, 2, 3, 4]) {
@@ -1280,6 +1353,7 @@ try {
     // leak). If we are no longer inside, say so instead of asserting nonsense.
     const snap = await page.evaluate(() => ({
       st: window.__ml.indoor(),
+      raise: window.__ml.indoorRaise(),
       mons: window.__ml.monsterInfo().map((m) => ({
         kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
         lvl: m.surfLevel, culled: !!m.culled,
@@ -1288,7 +1362,12 @@ try {
     if (!snap.st.indoor)
       fail(`the player left the cave before the overhead-monster check (indoor=${snap.st.indoor}) — retry`);
     const mons = snap.mons;
-    const overhead = mons.filter((m) => m.lvl > snap.st.top);
+    // "Above the cut" is per CELL since the per-wall raise: a body on a raised
+    // sill the renderer draws whole (cut == its real level) stands on painted
+    // ground and is legitimately visible; everything else compares against the
+    // scalar exactly as before. Same rule as the client's aboveCut.
+    const cutAtM = (m) => snap.raise.cuts[`${Math.floor(m.c)},${Math.floor(m.r)}`] ?? snap.st.top;
+    const overhead = mons.filter((m) => m.lvl > cutAtM(m));
     if (overhead.length < 3)
       fail(`only ${overhead.length} monsters stand above the cut (level ${snap.st.top}) near this cave — the assertion would be vacuous`);
     const floating = overhead.filter((m) => !m.culled);
@@ -1299,7 +1378,7 @@ try {
     // ...and the rule is about HEIGHT, not about being outside the room: a body
     // at my own level must still be drawn, or this would just be the old
     // "hide everything outside" design coming back in through the side door.
-    const atLevel = mons.filter((m) => m.lvl <= snap.st.top && !m.culled);
+    const atLevel = mons.filter((m) => m.lvl <= cutAtM(m) && !m.culled);
     ok(`nothing stands on ground the cut removed: all ${overhead.length} monsters above level ${snap.st.top} ` +
       `(up to ${Math.max(...overhead.map((m) => m.lvl))}) are not drawn, while ${atLevel.length} at or below it still are`);
     ok(`the cut is WORLD-WIDE: standing in a cave (ceiling ${cav.ceiling}, cut to level ${cav.top}, ${cav.roof} cells under it), ` +

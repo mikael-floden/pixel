@@ -2599,6 +2599,49 @@ side collision just like monsters").
     (`ml-indoor-cut` → `ml-indoor-wall`): the same number means something
     different now, and reading the old one back would hand anyone who tuned
     the old dial twice the wall they had chosen.
+  - **THE DIAL IS A MINIMUM — WALLS RISE PER CELL UNTIL THEY'D COVER A FLOOR**
+    (maintainer 2026-08-13: "make the current wall height a minimum setting...
+    draw the walls all the way to the roof on sides where it's possible; some
+    walls might be able to be drawn higher, but not all the way, and that's ok
+    too — as tall as they can be before they intersect with another floor").
+    `computeIndoorCuts` gives each cell of MY building its own cut in
+    `indoorCut` (cell → drawn level): starting from min(realHeight, ceiling),
+    it walks the cell's up-screen cone and caps at
+    `floor(0.9375·k + floorLevel − 1)` for every PROTECTED floor k steps up
+    (odd k overlaps u±1, even k the same iso column; 0.9375 = dy/lh is the
+    same burial slope the world-wide-cut note derives; the −1 margin means a
+    wall at its cap covers ZERO pixels of the floor diamond, verified in the
+    gate). Protected floors = roof + entrance cells of every verdict-passing
+    room in the world (my own included), built as `protectedFloor` inside
+    buildCaveDepth's existing one-pass space enumeration — a bridge protects
+    nothing, exactly as it casts no cave shadow. What falls out FREE: a NEAR
+    wall has its own room's floor 1-2 steps up-screen, capping it below the
+    dial, so `cut = max(dial, cap)` keeps near walls at the dial exactly —
+    "minimum setting" with no side classification (the culling lesson: nothing
+    to classify, nothing to hole). Far/side walls rise clean to the ceiling; a
+    dungeon partition with the next room's floor right behind it stays at the
+    dial, and the maintainer's "higher but not all the way" gradient appears
+    on the diagonal runs (measured on the_island2's cave: 99 cells at the
+    ceiling 8, and 13/2/14/7 at cuts 3/4/5/7; the house: 10 of 17 at 6).
+    THE CONSUMERS ALL GO PER-CELL: redrawGround + rebuildOccluders (the
+    occluder's exposed-face start uses the front neighbours' DRAWN heights at
+    the call site — a raised wall behind an unraised one otherwise skips faces
+    the RT paints, an occluder hole at every far-run/near-run corner),
+    rebuildProps (stumps), pickGround (a raised wall drawn WHOLE is a tappable
+    sill; scan from the ceiling), aboveCut (extra fx/fy args — a body on that
+    sill stands on painted ground), and the SHADER: the per-cell cut rides the
+    room mask's R channel as `128 + cut` (0 outside; roomAt now STEP-tests the
+    top half — R is no longer 0/255) and heightAt clamps each column at its
+    own value. The cut could NOT ride the free-looking A channel: canvas
+    uploads are premultiplied, so A < 255 would scale R/G/B (the pinned-alpha
+    note in setRoom). setRoom gained a `cuts` param with its own change test —
+    the dial moves every cut while the cell set stays identical, which the
+    set-comparison alone would skip. QA: `__ml.indoorRaise(on?)` (kill switch
+    + live cuts, rebuilds like the dial), roomTex().raisedCells/maxCut;
+    verify-indoor 2a/2b/2c pin the FLAT frame (2a's void proof needs points no
+    column reaches — a house raised to its ceiling has none), 2c' pins the
+    raise (reach = ceiling, texture sync, ink vs flat, per-cell caps, floor
+    patches untouched), and section 7's overhead-monster rule is per-cell.
   - **DO NOT GO BACK TO CULLING.** The first cut drew no roof, no near walls
     and a 32px "skirt" half of each far wall, and it shipped HOLES — wall slabs
     floating disconnected in the void, black wedges through a solid roof line

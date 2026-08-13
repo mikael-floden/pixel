@@ -174,7 +174,8 @@ uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
-uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
+uniform sampler2D uRoom;  // R: 128+cut where the cell is in MY room, 0 outside
+                          // (roomAt tests the top half; heightAt reads the cut).
                           // G: depth from the nearest opening PLUS ONE (0 = not a room).
                           // B: the ceiling's UNDERSIDE level — the top of the opening.
 uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
@@ -372,7 +373,23 @@ vec2 groundCellAt(float u, float v0, float kk) {
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
+  if (uIndoor > 0.5) {
+    float h = baseTerrAt(cr);
+    // Below the scalar minimum nothing is ever truncated; and with no room
+    // texture bound there is no per-cell data to read (fail to the scalar cut,
+    // the pre-raise behaviour — same guard family as uRoomOn in roomAt).
+    if (h <= uIndoorTop || uRoomOn < 0.5) return min(h, uIndoorTop);
+    // THE PER-CELL RAISE (2026-08-13): walls that cover no protected floor
+    // draw PAST the scalar minimum, up to the room ceiling — so the drawn cut
+    // is per CELL now, packed into the room mask's own R channel (128 + cut
+    // levels, see setRoom). The resolve must follow it column for column: a
+    // wall drawn to level 6 but clamped here at 2 would hand its upper face
+    // pixels to whatever column lies behind — the same class of bug as the
+    // roof-in-the-heightmap one this clamp exists to prevent. Cells outside
+    // the mask (R < 128) keep the scalar cut: only my building raises.
+    float rr = texture2D(uRoom, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0;
+    return min(h, rr > 127.5 ? max(uIndoorTop, rr - 128.0) : uIndoorTop);
+  }
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
@@ -409,7 +426,11 @@ float roomAt(vec2 cr) {
   if (uRoomOn < 0.5) return 1.0;
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uRoom, uv).r;
+  // R carries the per-cell CUT beside the membership bit (128 + cut inside, 0
+  // outside — see setRoom), so membership is the top half of the byte, not the
+  // raw value: returning r itself would hand a 128/255 ambient to every room
+  // cell whose wall keeps the scalar cut.
+  return step(0.5, texture2D(uRoom, uv).r);
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -1545,6 +1566,9 @@ export class NightLights {
    * ground under it can never disagree about which side of a wall they are on.
    * Empty while outdoors, where roomAt() short-circuits to 1 anyway. */
   private roomCells = new Set<number>();
+  /** Last published per-cell cut map (the wall raise) — kept so setRoom can
+   * tell a dial turn (same cells, new cuts) from a no-op republish. */
+  private roomCuts: Map<number, number> | null = null;
   /** The room mask's pixel buffer, kept across calls so publishing a room is
    * one full-grid rewrite + one upload. See setRoom(). */
   private roomImg: ImageData | null = null;
@@ -1914,28 +1938,49 @@ export class NightLights {
    * pushing once is O(1) in room size and lands around 0.3 ms — on a doorway
    * crossing or a turn of the cut dial, never on a frame.
    *
-   * R = 255 inside, 0 outside; A pinned at 255 everywhere because canvas
-   * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
-   * an A below 255 would scale the R the shader reads.
+   * R = 128 + the cell's CUT inside (the level its column stops drawing at —
+   * the per-wall raise, 0 meaning "the scalar minimum"; heightAt takes
+   * max(uIndoorTop, R−128) so the two encodings agree), 0 outside; roomAt
+   * tests the 128 bit. A pinned at 255 everywhere because canvas uploads are
+   * PREMULTIPLIED (the same reason the heightmap pins its alpha) — an A below
+   * 255 would scale the R the shader reads, which is also why the cut could
+   * NOT ride the A channel.
    */
-  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>, under?: Map<number, number>) {
+  setRoom(
+    cells: Iterable<number> | null,
+    depth?: Map<number, number>,
+    under?: Map<number, number>,
+    cuts?: Map<number, number> | null,
+  ) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
     if (!t || !src) return;
     const next = new Set<number>(cells ?? []);
+    const nextCuts = cuts ?? null;
     // Two latches, not one: the first publish of a world carried DEPTH but no
     // ceiling map, and a single flag meant the ceiling could never be written
     // afterwards — measured as 940 cells in the scene and 0 in the texture,
     // which is exactly why the shader gate compared against zero and nothing
     // ever darkened.
     const needDepth = (depth !== undefined && !this.depthWritten) || (under !== undefined && !this.underWritten);
+    // The CUTS can change while the cell set does not — the wall-height dial
+    // moves every per-cell value without moving the room — so they get their
+    // own change test beside the set's.
+    const sameCuts = (() => {
+      const a = this.roomCuts;
+      if (!a && !nextCuts) return true;
+      if (!a || !nextCuts || a.size !== nextCuts.size) return false;
+      for (const [i, v] of nextCuts) if (a.get(i) !== v) return false;
+      return true;
+    })();
     // Nothing to do if the room did not actually change (the scene guards this
     // too, but the mask is also rebuilt for the CUT, which does not move it) —
     // unless the DEPTH channel has never been written, which happens on the
     // first publish of a world and whenever that publish is `null` (outdoors,
     // which is exactly when you are looking into someone else's cave).
-    if (!needDepth && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
+    if (!needDepth && sameCuts && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i)))
+      return;
     const ctx = t.getContext();
     const w = this.world.width;
     const h = this.world.height;
@@ -1945,7 +1990,12 @@ export class NightLights {
     }
     const d = this.roomImg.data;
     for (const i of this.roomCells) d[i * 4] = 0;
-    for (const i of next) if (i >= 0 && i < w * h) d[i * 4] = 255;
+    // 128 = in my room at the scalar cut; 128+n = this column draws to level n
+    // (n ≤ 126 — a level 40 is the tallest shipped world, so the clamp is a
+    // formality that keeps a corrupt input from flipping the membership bit).
+    for (const i of next)
+      if (i >= 0 && i < w * h) d[i * 4] = 128 + Math.max(0, Math.min(126, nextCuts?.get(i) ?? 0));
+    this.roomCuts = nextCuts ? new Map(nextCuts) : null;
     // GREEN = DEPTH FROM DAYLIGHT, in cells, 0 at an opening. Static for a
     // world, so it is written once: the geometry of a cave does not move.
     if (needDepth) {
@@ -1996,8 +2046,15 @@ export class NightLights {
     let maxDep = 0;
     let und = 0;
     let maxUnd = 0;
+    // The per-cell CUT rides R's low half (128+cut) — count the cells raised
+    // past the scalar minimum (R > 128) so a gate can tell "the raise did
+    // nothing" from "the raise was never published", which look identical on
+    // screen when the room happens to have no raisable wall.
+    let raised = 0;
+    let maxCut = 0;
     for (let i = 0; i < d.length; i += 4) {
       if (d[i] > 127) on++;
+      if (d[i] > 128) { raised++; maxCut = Math.max(maxCut, d[i] - 128); }
       if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
       if (d[i + 2] > 0) { und++; maxUnd = Math.max(maxUnd, d[i + 2]); }
     }
@@ -2006,6 +2063,8 @@ export class NightLights {
       w: src.width,
       h: src.height,
       lit: on,
+      raisedCells: raised,
+      maxCut,
       depthCells: deep,
       depthMax: maxDep,
       underCells: und,

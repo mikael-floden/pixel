@@ -1158,6 +1158,28 @@ export class WorldScene extends Phaser.Scene {
    * decides what counts as being IN the room, while THIS decides what is
    * painted. */
   private indoorTop = 0;
+  /** THE PER-WALL RAISE (maintainer 2026-08-13: "make the current wall height
+   * a MINIMUM setting... draw the walls all the way to the roof on sides where
+   * it's possible; some walls might be able to be drawn higher, but not all
+   * the way, and that's ok too — as tall as they can be before they intersect
+   * with another floor"). cell → the level that cell's column draws to, for
+   * exactly the cells of MY building that may rise PAST the scalar `indoorTop`
+   * — a wall rises until one more level would start covering a protected
+   * floor (any verdict-passing room's floor or entrance, my own included) that
+   * lies up-screen of it. Near walls stay at the dial (their own room's floor
+   * is right behind them — the dial is the minimum, never reduced); far and
+   * side walls rise to the ceiling clamp. null = no raise anywhere (the flat
+   * scalar cut — also the QA kill switch's state). Every consumer of
+   * `indoorTop` goes through `cutAt`. */
+  private indoorCut: Map<number, number> | null = null;
+  /** QA kill switch (`__ml.indoorRaise(false)`) — flat scalar cut everywhere,
+   * so a gate can diff raise-on/raise-off frames. Not persisted: the raise is
+   * the design, not a preference. */
+  private indoorRaiseOn = true;
+  /** Floor + entrance cells of EVERY verdict-passing room in the world →
+   * their terrain level: what a raised wall must never cover. Built beside
+   * caveDepth in the same one-pass space enumeration; null until then. */
+  private protectedFloor: Map<number, number> | null = null;
   private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
   private indoorAtRow = NaN;
   private indoorAtElev = NaN;
@@ -1439,6 +1461,8 @@ export class WorldScene extends Phaser.Scene {
       this.roomMask = null; // no fade to finish — this world is gone
       this.roomCellMemo.clear();
       this.caveDepth = null;
+      this.protectedFloor = null;
+      this.indoorCut = null;
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -1954,6 +1978,33 @@ export class WorldScene extends Phaser.Scene {
           max: INDOOR_WALL_MAX,
           ceiling: this.indoorCeil,
           top: this.indoorTop,
+        };
+      },
+      // THE PER-WALL RAISE's QA switch + live state. No arg reads; a boolean
+      // flips it (false = the flat scalar cut everywhere, the pre-raise
+      // picture) and rebuilds the mask the way the wall dial does, so a gate
+      // can diff the two renderings of the same room from the same camera.
+      // `cuts` maps "col,row" → the level that column draws to (raised cells
+      // only — everything else is at `top`).
+      indoorRaise: (on?: boolean) => {
+        if (typeof on === "boolean" && on !== this.indoorRaiseOn) {
+          this.indoorRaiseOn = on;
+          if (this.indoorInside) {
+            this.indoorMaskSig = "";
+            if (this.refreshIndoorMask()) this.repaintWorld();
+          }
+        }
+        const w = this.world;
+        const cuts: Record<string, number> = {};
+        if (w && this.indoorCut)
+          for (const [ci, cut] of this.indoorCut) cuts[`${ci % w.width},${(ci - (ci % w.width)) / w.width}`] = cut;
+        return {
+          on: this.indoorRaiseOn,
+          raised: this.indoorCut?.size ?? 0,
+          top: this.indoorTop,
+          ceiling: this.indoorCeil,
+          protectedFloors: this.protectedFloor?.size ?? 0,
+          cuts,
         };
       },
       // Is the room mask really reaching the shader? The one failure this
@@ -4789,7 +4840,7 @@ export class WorldScene extends Phaser.Scene {
             Math.floor(rec.wy / CELL_WU) * this.terrain.width + Math.floor(rec.wx / CELL_WU)
           ] ?? 0
         : 0;
-      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl);
+      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl, rec.wx, rec.wy);
       rec.img.setVisible(!out);
       rec.shadow.setVisible(!out);
       const left = DROP_TTL_MS - (now - rec.bornAt);
@@ -5456,7 +5507,7 @@ export class WorldScene extends Phaser.Scene {
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
         npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
-        !this.aboveCut(npc.surfLevel ?? 0);
+        !this.aboveCut(npc.surfLevel ?? 0, npc.fx, npc.fy);
       // The indoor test is ONLY about height (see aboveCut). A villager on the
       // street outside my room is drawn and lit like the street is — black,
       // until my torch finds them. One standing on a rooftop is not drawn at
@@ -6288,7 +6339,7 @@ export class WorldScene extends Phaser.Scene {
       // ABOVE THE CUT the body goes too, not just its name tag: it would be
       // standing on terrain that is not drawn. I am never above my own cut —
       // the room is resolved from where I stand.
-      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0);
+      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0, av.fx, av.fy);
       av.sprite.setVisible(!overhead);
       av.label.setVisible(!away && !overhead);
       av.shadow.setVisible(!av.swimming && !overhead);
@@ -6402,7 +6453,7 @@ export class WorldScene extends Phaser.Scene {
           g.x - halfW <= vR &&
           ay + mv.shadowH >= vT &&
           ay - sp.displayHeight <= vB &&
-          !this.aboveCut(m.elev ?? g.lvl);
+          !this.aboveCut(m.elev ?? g.lvl, m.x, m.y);
         // The indoor test is ONLY about height. A monster outside my room but
         // at my level is drawn and lit like the ground under it — that is the
         // whole zero-ambient design. One ABOVE the cut is different: the
@@ -7470,7 +7521,13 @@ export class WorldScene extends Phaser.Scene {
     // character in length under the spot I actually clicked on. This makes it
     // really hard to point and click navigate indoors").
     const cut = this.indoorInside && this.indoorMask ? this.indoorTop : -1;
-    for (let l = cut >= 0 ? cut : this.maxLevel; l >= 0; l--) {
+    // With per-wall raises the drawn world can reach the CEILING, not just the
+    // scalar cut — a raised sill (a wall the raise left fully drawn) is a real
+    // tappable top and must be scanned. Per cell the test below still asks
+    // "is this column truncated?", now against ITS OWN cut.
+    const cuts = cut >= 0 ? this.indoorCut : null;
+    const scanTop = cut < 0 ? this.maxLevel : cuts ? Math.min(this.maxLevel, this.indoorCeil) : cut;
+    for (let l = scanTop; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
@@ -7496,8 +7553,10 @@ export class WorldScene extends Phaser.Scene {
       // top is a real sill, and it is drawn exactly where it is.
       // Every column in the world is truncated indoors, not just my building's
       // (see redrawGround), so this asks about the CUT alone — a hillside stump
-      // out on the grass is exactly as unstandable as a parapet.
-      if (cut >= 0 && cell.l > cut) continue;
+      // out on the grass is exactly as unstandable as a parapet. The cut is
+      // per CELL now (the per-wall raise): a raised wall drawn whole is a
+      // sill, one still truncated is not.
+      if (cut >= 0 && cell.l > (cuts?.get(ri * this.world.width + ci) ?? cut)) continue;
       if (cell.l !== l) continue;
       // Re-resolve mode: this surface is the one we are looking UNDER.
       if (ignoreAtOrAbove !== undefined && l >= ignoreAtOrAbove) continue;
@@ -9140,6 +9199,7 @@ export class WorldScene extends Phaser.Scene {
     if (!this.indoorInside || !s || !g) {
       const had = !!this.indoorMask;
       this.indoorMask = null;
+      this.indoorCut = null;
       this.indoorMaskSig = "";
       // NOTE the LIGHT mask (`roomMask` / night.setRoom) is deliberately NOT
       // cleared here. Geometry snaps — the roof and every truncated column come
@@ -9173,7 +9233,9 @@ export class WorldScene extends Phaser.Scene {
     // All three numbers go in the signature: turning the Settings slider must
     // rebuild the mask exactly the way walking into a different room does.
     const top = Math.max(0, Math.min(ceil, floor + indoorWall()));
-    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}`;
+    // The raise flag is part of the signature: flipping the QA switch must
+    // rebuild the mask exactly the way a dial turn does.
+    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}:${this.indoorRaiseOn ? "r" : "f"}`;
     if (sig === this.indoorMaskSig && this.indoorMask) return false;
     this.indoorMaskSig = sig;
     this.indoorCeil = ceil;
@@ -9188,12 +9250,90 @@ export class WorldScene extends Phaser.Scene {
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
     this.roomMask = m;
+    // THE PER-WALL RAISE needs the world's protected floors, which are built
+    // beside caveDepth — ensure both exist before the cuts are derived (the
+    // setRoom call used to be what lazily built caveDepth).
+    this.caveDepth ??= this.buildCaveDepth();
+    this.indoorCut = this.indoorRaiseOn ? this.computeIndoorCuts(m, ceil, top) : null;
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
-    // reach it (the torch through the doorway) while the sky cannot.
-    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
+    // reach it (the torch through the doorway) while the sky cannot. The cuts
+    // go with it: the shader's surface resolve must truncate every column at
+    // the level the renderer draws it to, per cell (see nightlight heightAt).
+    this.night?.setRoom(m.keys(), this.caveDepth, this.caveUnder, this.indoorCut);
     return true;
+  }
+
+  /** For each cell of MY building, how high its column may draw: from the
+   * scalar minimum (`top`, the dial) up toward the room's ceiling, stopping
+   * one margin short of covering any PROTECTED floor (see protectedFloor).
+   *
+   * THE GEOMETRY, from the painter order this whole renderer sorts by: a
+   * column at (u = col−row, v = col+row) drawn to level L covers the cell k
+   * steps up-screen (v−k) once its art top rises past that cell's floor
+   * diamond — L ≥ (dy/lh)·k + floorLevel, the same ~0.9375·k slope the
+   * world-wide truncation note derives. Horizontally its 64px tile overlaps
+   * the SAME iso column (u, even k) fully and the two half-step neighbours
+   * (u±1, odd k) by half a tile — u±2 only touches at the edge and never
+   * covers. So the cap from one protected floor at (k, L') is
+   * floor(0.9375·k + L' − MARGIN), and the cell's cut is the minimum cap over
+   * every protected floor in its up-screen cone, clamped to [top, ceil].
+   *
+   * MARGIN = 1 level (16px): at the cap, the wall's top edge stays a level
+   * below the burial line, leaving roughly half the floor diamond visible —
+   * "some walls might be able to be drawn higher, but not all the way to the
+   * roof, and that's ok too". Note what falls out for free: a NEAR wall has
+   * its own room's floor one step up-screen (k=1 caps at L'−0, i.e. below the
+   * dial), so near walls never rise — the dial stays their height, exactly
+   * the "minimum setting" the maintainer asked for — while a far wall has
+   * floor only DOWN-screen and rises clean to the ceiling.
+   *
+   * Cost: |mask| × kMax ≈ 700 × 11 lookups, on mask rebuilds only. */
+  private computeIndoorCuts(
+    mask: Map<number, number>,
+    ceil: number,
+    top: number,
+  ): Map<number, number> | null {
+    const g = this.terrain;
+    const w = this.world;
+    const pf = this.protectedFloor;
+    if (!g || !w || !pf || !pf.size) return null;
+    const { dy, lh } = MAP_GEOMETRY;
+    const cover = dy / lh; // levels of height per up-screen step (0.9375)
+    const MARGIN = 1; // levels the wall top stays below the burial line
+    const cuts = new Map<number, number>();
+    for (const ci of mask.keys()) {
+      const h = g.level[ci];
+      if (h <= top) continue; // shorter than the minimum — never truncated
+      let cand = Math.min(h, ceil); // the ceiling clamp: a wall taller than
+      if (cand <= top) continue; //   its own room would seal the box again
+      const c = ci % w.width;
+      const r = (ci - c) / w.width;
+      const u = c - r;
+      const v = c + r;
+      // Farther than this, even a ceiling-high wall cannot reach a level-0
+      // floor's burial line — nothing out there can constrain the cut.
+      const kMax = Math.ceil((cand + MARGIN + 1) / cover);
+      for (let k = 1; k <= kMax && cand > top; k++) {
+        const vv = v - k;
+        if (vv < 0) break;
+        for (const uu of (k & 1) === 1 ? [u - 1, u + 1] : [u]) {
+          const cc = (uu + vv) / 2;
+          const rr = (vv - uu) / 2;
+          if (cc < 0 || rr < 0 || cc >= w.width || rr >= w.height) continue;
+          const fl = pf.get(rr * w.width + cc);
+          if (fl === undefined) continue;
+          const cap = Math.floor(cover * k + fl - MARGIN);
+          if (cap < cand) cand = cap;
+        }
+      }
+      // 126 = the room texture's encoding budget (R = 128 + cut, membership in
+      // the top bit); no shipped world is within a factor of three of it.
+      const cut = Math.max(top, Math.min(cand, 126));
+      if (cut > top) cuts.set(ci, cut);
+    }
+    return cuts.size ? cuts : null;
   }
 
   /** Ease the LIGHT blend toward the current geometric state. Exponential roll
@@ -9261,8 +9401,29 @@ export class WorldScene extends Phaser.Scene {
    * house door is outside the room but at my own level (drawn, and lit by a
    * torch through the doorway). The threshold is the CUT, not the ceiling: the
    * cut is what decides what is painted. */
-  private aboveCut(z: number): boolean {
-    return this.indoorInside && !!this.indoorMask && z > this.indoorTop;
+  private aboveCut(z: number, fx?: number, fy?: number): boolean {
+    if (!this.indoorInside || !this.indoorMask) return false;
+    if (z <= this.indoorTop) return false;
+    // Above the scalar minimum the answer is per CELL now: a raised wall may
+    // draw clear to the ceiling, and a body on a sill the raise left fully
+    // drawn (cut == its real level) is standing on real painted ground.
+    // Callers with no position keep the scalar answer — the conservative
+    // direction (hide), and today every body caller passes its fx/fy.
+    if (fx === undefined || fy === undefined || !this.indoorCut) return true;
+    return z > this.cutAt(fx / CELL_WU, fy / CELL_WU);
+  }
+
+  /** The level the column at this cell draws to while indoors: its per-wall
+   * raise if it has one, else the scalar minimum. Coords in CELLS (fractions
+   * floored). Outdoors this is meaningless — callers gate on the indoor pair
+   * first, exactly like aboveCut. */
+  private cutAt(col: number, row: number): number {
+    const w = this.world;
+    if (!this.indoorCut || !w) return this.indoorTop;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return this.indoorTop;
+    return this.indoorCut.get(r * w.width + c) ?? this.indoorTop;
   }
 
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
@@ -9294,6 +9455,13 @@ export class WorldScene extends Phaser.Scene {
   private buildCaveDepth(): Map<number, number> {
     const out = new Map<number, number>();
     this.caveUnder = new Map<number, number>();
+    // PROTECTED FLOORS ride the same one-pass enumeration: every floor (and
+    // entrance) of every space the indoor verdict calls a room, with its
+    // terrain level — what the per-wall raise must never cover ("a dungeon
+    // might have several rooms and every room must have a visible floor").
+    // A bridge or an arch fails the verdict and protects nothing, exactly as
+    // it acquires no cave shadow.
+    const pf = (this.protectedFloor = new Map<number, number>());
     const g = this.terrain;
     const w = this.world;
     if (!g || !w) return out;
@@ -9306,6 +9474,10 @@ export class WorldScene extends Phaser.Scene {
         if (!space) { seen[i] = 1; continue; }
         for (const ci of space.roof) seen[ci] = 1;
         if (!this.indoorVerdict(space, INDOOR_DEPTH)) continue;
+        for (const ci of space.roof) pf.set(ci, g.level[ci]);
+        // The doorway too: a raised wall stump down-screen of an entrance
+        // would hide the one opening that tells you the room HAS a way in.
+        for (const e of space.entrances) pf.set(e, g.level[e]);
         // THE CEILING'S UNDERSIDE, which is where the OPENING stops. The slab's
         // own face runs from here up to its top, and that face is the mountain
         // — darkening it is what blackened the whole mountain three times. Below
@@ -9538,6 +9710,7 @@ export class WorldScene extends Phaser.Scene {
     rt.clear();
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
+    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
     // The colour behind everything. Outdoors the usual night-navy; INDOORS
     // BLACK, because indoors this fill is what shows through the sky band
     // above the cut-away and in genuine void cells — and navy times the indoor
@@ -9605,7 +9778,13 @@ export class WorldScene extends Phaser.Scene {
             // which is the floor (level 0, its top IS the floor art) and any
             // wall shorter than the cut, whose top is a genuine sill you look
             // down on.
-            const hi = Math.min(cell.l, top);
+            //
+            // THE CUT IS PER CELL (2026-08-13): the dial is the MINIMUM, and a
+            // wall of MY building rises past it — clear to the ceiling where
+            // it covers no protected floor, partway where the slack runs out
+            // (computeIndoorCuts). Cells outside the building have no entry
+            // and keep the scalar cut, world-wide, exactly as before.
+            const hi = Math.min(cell.l, cuts?.get(row * world.width + col) ?? top);
             if (hi >= 0) {
               for (let lvl = 0; lvl < hi; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
               rt.batchDraw(hi === cell.l ? topKey : fk, bx, by - hi * lh);
@@ -10040,6 +10219,7 @@ export class WorldScene extends Phaser.Scene {
     // reason — they fire on different thresholds.)
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
+    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
@@ -10175,7 +10355,10 @@ export class WorldScene extends Phaser.Scene {
           // above the cut. `topL < cell.l` means the column was cut, and the
           // surviving top is a FACE tile — the baked top diamond is the outdoor
           // grass/rock surface and would read as a lid on a wall stump.
-          const topL = mask ? Math.min(cell.l, top) : cell.l;
+          // Same per-cell cut as the RT (the per-wall raise) — ONE mask, one
+          // cut map, two consumers, or the raised wall comes back as a
+          // difference-sprite exactly as the comment above warns.
+          const topL = mask ? Math.min(cell.l, cuts?.get(row * this.world.width + col) ?? top) : cell.l;
           if (topL < 0) continue;
           // Draw only the EXPOSED cliff faces (from the lowest front neighbour
           // up). The ground RT already bakes every cell's full face stack with
@@ -10183,7 +10366,22 @@ export class WorldScene extends Phaser.Scene {
           // faces here — on top of the RT at a high depth — re-exposed them,
           // painting the front cell's ground back into a wall (the "half-tile"
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          for (let lvl = this.stackFrom(col, row, topL, false); lvl < topL; lvl++) {
+          // INDOORS the front neighbours' cover is their DRAWN height, not the
+          // terrain's: per-cell cuts mean a raised wall can stand behind an
+          // unraised one whose real column is far taller than what is painted
+          // (the corner where the far run meets the capped near run), and
+          // trusting the real level there skips faces the RT plainly shows —
+          // an occluder hole a body behind the wall would draw straight
+          // through.
+          const cutL = (c: number, r: number): number => {
+            const n = this.world?.rows[r]?.[c];
+            if (!n) return -1;
+            return Math.min(n.l, cuts?.get(r * (this.world?.width ?? 0) + c) ?? top);
+          };
+          const from = mask
+            ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
+            : this.stackFrom(col, row, topL, false);
+          for (let lvl = from; lvl < topL; lvl++) {
             if (!shows(bx, by - lvl * lh)) {
               culled++;
               continue;
@@ -10421,8 +10619,9 @@ export class WorldScene extends Phaser.Scene {
       // Indoors every column in the world is drawn truncated at the cut, so a
       // prop rides its stump instead of hanging where the vanished hilltop
       // used to be. Its own art is never shortened — it is one object, like a
-      // tree, and the occluder pass treats it the same way.
-      const lvl = mask ? Math.min(cell?.l ?? 0, top) : cell?.l ?? 0;
+      // tree, and the occluder pass treats it the same way. Per-cell cut, same
+      // as the ground RT: a prop on a raised wall rides the raised stump.
+      const lvl = mask ? Math.min(cell?.l ?? 0, this.indoorCut?.get(propIdx) ?? top) : cell?.l ?? 0;
       const u = p.col - p.row;
       const v = p.col + p.row;
       const bx = this.iso.ox + u * dx;
