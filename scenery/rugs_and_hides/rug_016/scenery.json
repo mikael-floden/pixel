@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:44:46+00:00",
+  "id": "rug_016",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 16,
+  "name": "Patch-sewn quilt rug 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "patch-sewn quilt rug",
+  "glow_concept": "pattern threads shimmering with woven memory-light",
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, patch-sewn quilt rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: pattern threads shimmering with woven memory-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_016/sprite.webp",
+  "placement": {
+    "world_height_m": 1.47,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "32164f92-a753-413e-9d25-ef7b65c498d2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
