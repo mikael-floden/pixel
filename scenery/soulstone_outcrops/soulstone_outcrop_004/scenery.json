@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_004",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 4,
+  "name": "Soulstone fused to granite base 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soulstone fused to granite base",
+  "glow_concept": "cold white star point buried deep inside",
+  "prompt": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, soulstone fused to granite base, small, knee-high to an adult person, self-emissive at night, softly radiating light: cold white star point buried deep inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.56,
+    "world_px_height": 21,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "167f0281-49c6-45e2-9619-9db19ca8f4b9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
