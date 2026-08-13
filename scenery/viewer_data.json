@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 292,
+  "scenery_count": 293,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 105,
@@ -803,7 +803,7 @@
     "light": 1,
     "carts": 3,
     "cattail_clumps": 4,
-    "chairs_and_benches": 1,
+    "chairs_and_benches": 2,
     "charcoal_kilns": 1,
     "chimney_stacks": 2,
     "cliff_features": 1,
@@ -2158,6 +2158,28 @@
       "status": "complete",
       "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_001",
+      "rel": "chairs_and_benches/chair_001",
+      "name": "Short deacon's bench 001",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_OFF",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, short deacon's bench, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.54,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d2ea5ccf-d38d-4c9a-8174-a32b946f2c52",
+      "sprite": "chairs_and_benches/chair_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_001",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 1,
+  "name": "Short deacon's bench 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "short deacon's bench",
+  "glow_concept": null,
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, short deacon's bench, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.54,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d2ea5ccf-d38d-4c9a-8174-a32b946f2c52",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
