@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hop_pole_001",
+  "group": "hop_poles",
+  "rank": 66,
+  "index": 1,
+  "name": "Pole with crossbar arm 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "pole with crossbar arm",
+  "glow_concept": null,
+  "prompt": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones, pole with crossbar arm, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "hop_poles/hop_pole_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.79,
+    "world_px_height": 143,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6dc5fc53-e670-4e95-a0ea-875f598e5c10",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
