@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cattail_clump_010",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 10,
+  "name": "Single stately tall cattail 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single stately tall cattail",
+  "glow_concept": "a soulstone pebble shining among the roots",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, single stately tall cattail, roughly six feet tall, human height, self-emissive at night, softly radiating light: a soulstone pebble shining among the roots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cattail_clumps/cattail_clump_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.59,
+    "world_px_height": 60,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "31130998-1edf-461a-a38c-2ee67d954c29",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

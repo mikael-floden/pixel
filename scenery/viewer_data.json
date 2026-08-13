@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 440,
+  "scenery_count": 441,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 34,
@@ -802,7 +802,7 @@
     "cairns": 6,
     "light": 1,
     "carts": 6,
-    "cattail_clumps": 5,
+    "cattail_clumps": 6,
     "chairs_and_benches": 5,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
@@ -2817,6 +2817,28 @@
       "status": "complete",
       "pixellab_object_id": "fd93d199-4be8-4ee4-9b55-f16a24b2ca21",
       "sprite": "cattail_clumps/cattail_clump_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cattail_clump_010",
+      "rel": "cattail_clumps/cattail_clump_010",
+      "name": "Single stately tall cattail 010 \u00b7 lit",
+      "category": "cattail_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, single stately tall cattail, roughly six feet tall, human height, self-emissive at night, softly radiating light: a soulstone pebble shining among the roots",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.59,
+        "world_px_height": 60,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "31130998-1edf-461a-a38c-2ee67d954c29",
+      "sprite": "cattail_clumps/cattail_clump_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
