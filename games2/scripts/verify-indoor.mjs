@@ -695,17 +695,19 @@ try {
   };
   if (!(raise0.on && raise0.raised > 0))
     fail(`the per-wall raise is not active in the house (on=${raise0.on}, raised=${raise0.raised})`);
-  if (Math.max(...Object.values(raise0.cuts)) !== inn.ceiling)
-    fail(`no wall reaches the roof: max cut ${Math.max(...Object.values(raise0.cuts))} vs ceiling ${inn.ceiling} — ` +
+  // maxWallCut, not the max over the whole constrained set: the covering CONE
+  // (scoped-cut era) can carry caps above the ceiling out on the terrain.
+  if (raise0.maxWallCut !== inn.ceiling)
+    fail(`no wall reaches the roof: max wall cut ${raise0.maxWallCut} vs ceiling ${inn.ceiling} — ` +
       `"all the way to the roof on sides where it's possible" is not happening`);
   // Back ON (2a-2c measured the flat frame) — and from here the gate runs in
   // the raise's design state.
   await page.evaluate(() => window.__ml.indoorRaise(true));
   await page.waitForTimeout(900);
   const texR = await page.evaluate(() => window.__ml.roomTex());
-  if (texR.raisedCells !== raise0.raised || texR.maxCut !== Math.max(...Object.values(raise0.cuts)))
+  if (texR.raisedCells !== raise0.raised || texR.maxCut !== raise0.maxWallCut)
     fail(`the shader's room texture disagrees with the scene about the raise: texture ${texR.raisedCells} cells ` +
-      `(max ${texR.maxCut}) vs scene ${raise0.raised} — the light would truncate columns the renderer draws`);
+      `(max ${texR.maxCut}) vs scene ${raise0.raised} (max ${raise0.maxWallCut}) — the light would truncate columns the renderer draws`);
   const raisedShot = await shoot("raise-on");
   const raiseInk = diffPixels(raisedShot, inShot, houseBox);
   const floorRaised = measure(raisedShot, floorP);
@@ -1362,14 +1364,21 @@ try {
     if (!snap.st.indoor)
       fail(`the player left the cave before the overhead-monster check (indoor=${snap.st.indoor}) — retry`);
     const mons = snap.mons;
-    // "Above the cut" is per CELL since the per-wall raise: a body on a raised
-    // sill the renderer draws whole (cut == its real level) stands on painted
-    // ground and is legitimately visible; everything else compares against the
-    // scalar exactly as before. Same rule as the client's aboveCut.
-    const cutAtM = (m) => snap.raise.cuts[`${Math.floor(m.c)},${Math.floor(m.r)}`] ?? snap.st.top;
+    // "Above the cut" is per CELL, and since the SCOPED cut an UNCONSTRAINED
+    // cell (no entry) is drawn WHOLE — a monster on the up-screen mountain
+    // stands on real painted rock now, black at zero ambient like the street,
+    // and is legitimately visible. Only bodies on CONSTRAINED columns
+    // (my building + the covering cone between the camera and my floor) can
+    // stand above their cut. Same rule as the client's aboveCut.
+    const cutAtM = (m) => snap.raise.cuts[`${Math.floor(m.c)},${Math.floor(m.r)}`] ?? Infinity;
     const overhead = mons.filter((m) => m.lvl > cutAtM(m));
-    if (overhead.length < 3)
-      fail(`only ${overhead.length} monsters stand above the cut (level ${snap.st.top}) near this cave — the assertion would be vacuous`);
+    // The scoped cut shrank the constrained set to the covering cone, so far
+    // fewer monsters can be "above the cut" than under the world-wide rule —
+    // but the cone in front of a cave is exactly the populated down-screen
+    // rock, so at least one roamer should be standing in it.
+    if (overhead.length < 1)
+      fail(`no monster stands above a constrained cell's cut near this cave — the assertion would be vacuous ` +
+        `(${mons.length} monsters, ${Object.keys(snap.raise.cuts).length} constrained cells)`);
     const floating = overhead.filter((m) => !m.culled);
     if (floating.length)
       fail(`${floating.length} monsters are DRAWN above the cut while indoors: ` +

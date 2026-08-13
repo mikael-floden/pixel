@@ -373,24 +373,27 @@ vec2 groundCellAt(float u, float v0, float kk) {
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  if (uIndoor > 0.5) {
-    float h = baseTerrAt(cr);
-    // Below the scalar minimum nothing is ever truncated; and with no room
-    // texture bound there is no per-cell data to read (fail to the scalar cut,
-    // the pre-raise behaviour — same guard family as uRoomOn in roomAt).
-    if (h <= uIndoorTop || uRoomOn < 0.5) return min(h, uIndoorTop);
-    // THE PER-CELL RAISE (2026-08-13): walls that cover no protected floor
-    // draw PAST the scalar minimum, up to the room ceiling — so the drawn cut
-    // is per CELL now, packed into the room mask's own R channel (128 + cut
-    // levels, see setRoom). The resolve must follow it column for column: a
-    // wall drawn to level 6 but clamped here at 2 would hand its upper face
-    // pixels to whatever column lies behind — the same class of bug as the
-    // roof-in-the-heightmap one this clamp exists to prevent. Cells outside
-    // the mask (R < 128) keep the scalar cut: only my building raises.
-    float rr = texture2D(uRoom, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0;
-    return min(h, rr > 127.5 ? max(uIndoorTop, rr - 128.0) : uIndoorTop);
-  }
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  if (uIndoor > 0.5) {
+    // With no room texture bound there is no per-cell data to read — fail to
+    // the scalar cut, the legacy behaviour (same guard family as uRoomOn in
+    // roomAt: a phone with the bind missing must not black out the room).
+    if (uRoomOn < 0.5) return min(baseTerrAt(cr), uIndoorTop);
+    // THE CONSTRAINED-SET RESOLVE (2026-08-13): the drawn world indoors is
+    // per CELL — my building at its per-wall raise, the covering cone at its
+    // cap, and EVERYTHING ELSE WHOLE, deck included (the neighbour's house
+    // keeps its roof; the up-screen mountain keeps its mass, black at zero
+    // ambient). The cut rides the room mask's R channel — 128+cut in my room,
+    // cut alone for a constrained outside cell, 127 = unconstrained (see
+    // setRoom). The resolve must follow the renderer column for column: a
+    // column clamped shorter than it is drawn hands its upper pixels to
+    // whatever lies behind, and one clamped taller lights art that is not
+    // there — both the roof-in-the-heightmap bug in a new coat.
+    float rr = texture2D(uRoom, uv).r * 255.0;
+    float low = rr - step(127.5, rr) * 128.0;
+    if (low > 126.5) return texture2D(uHeight, uv).r * 255.0 / uHScale; // whole, deck-inflated
+    return min(baseTerrAt(cr), low);
+  }
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
 
@@ -1200,6 +1203,9 @@ uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) sampling
+uniform sampler2D uRoom;    // the room mask (membership in the 128 bit — see setRoom)
+uniform float uRoomOn;      // 1 when uRoom is bound (unbound sampler = unit 0!)
+uniform float uIndoorMix;   // the eased indoor blend — fog outside MY room fades with it
 
 // Tunables (named consts). CEL-SHADED DEPTH FOG whose JOB is to HIGHLIGHT CLIFF EDGES
 // (maintainer: "see the exact edge where the cliff starts / the ground ends"). TWO
@@ -1417,6 +1423,18 @@ void main() {
   float deep = overflow > 0.0 ? (1.0 - exp(-overflow * FOG_DEEP_RATE)) : 0.0;
   float density = mix(bf * FOG_MAX, FOG_DEEP_MAX, deep); // == bf*FOG_MAX where deep==0
   float a = density * uFog * levelFade;
+  // INDOORS THE FOG BELONGS TO MY ROOM ALONE (the scoped-cut era exposed
+  // this: with the neighbourhood drawn again, the pale far bands painted a
+  // GLOWING RING over the zero-ambient blackness beyond ~11 cells — daylight
+  // haze over a world that, from in here, has no daylight). Fade fog on
+  // cells outside my room exactly as their ambient fades, on the same eased
+  // mix; fail OPEN when the mask is not bound (the pre-existing look).
+  if (uIndoorMix > 0.001 && uRoomOn > 0.5) {
+    float inR = 0.0;
+    if (cell.x >= 0.0 && cell.y >= 0.0 && cell.x < uIsoB.y && cell.y < uIsoB.z)
+      inR = step(0.5, texture2D(uRoom, (floor(cell) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r);
+    a *= mix(1.0, inR, uIndoorMix);
+  }
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
   vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions
   // Dim with the night, but keep a floor so the tones still read in the dark.
@@ -1566,15 +1584,20 @@ export class NightLights {
    * ground under it can never disagree about which side of a wall they are on.
    * Empty while outdoors, where roomAt() short-circuits to 1 anyway. */
   private roomCells = new Set<number>();
-  /** Last published per-cell cut map (the wall raise) — kept so setRoom can
-   * tell a dial turn (same cells, new cuts) from a no-op republish. */
+  /** Last published per-cell cut map (the constrained set) — kept so setRoom
+   * can tell a dial turn (same cells, new cuts) from a no-op republish, and so
+   * the CPU seam twin can clamp against the same per-cell heights the shader
+   * does. Null = the legacy scalar cut. */
   private roomCuts: Map<number, number> | null = null;
+  private roomTop = 0; // the scalar dial the last publish carried
   /** The room mask's pixel buffer, kept across calls so publishing a room is
    * one full-grid rewrite + one upload. See setRoom(). */
   private roomImg: ImageData | null = null;
   /** Did buildShader actually bind uRoom on the CURRENT shader? Re-derived on
    * every rebuild (a resize builds a new shader object). Drives uRoomOn. */
   private roomBound = false;
+  /** Same, for the depth-fog pass's own program (bound in buildDepthFogShader). */
+  private fogRoomBound = false;
   /** The mask's GREEN channel (cave depth) is world-static — written once. */
   private depthWritten = false;
   private underWritten = false;
@@ -1652,9 +1675,13 @@ export class NightLights {
       uFog: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
+      // The room gate (the uSun lesson: DECLARED or it never reaches a phone).
+      uRoomOn: { type: "1f", value: 0 },
+      uIndoorMix: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
+      uRoom: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -1848,6 +1875,11 @@ export class NightLights {
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("world-heightmap-ground"))
       s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
+    // The room mask, for the indoor gate — same eager-create-then-bind pattern
+    // as the main shader's uRoom.
+    this.ensureRoomTexture();
+    this.fogRoomBound = this.scene.textures.exists(ROOM_KEY);
+    if (this.fogRoomBound) s.setSampler2D("uRoom", ROOM_KEY, 2);
     s.setRenderToTexture(key);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
@@ -1938,19 +1970,28 @@ export class NightLights {
    * pushing once is O(1) in room size and lands around 0.3 ms — on a doorway
    * crossing or a turn of the cut dial, never on a frame.
    *
-   * R = 128 + the cell's CUT inside (the level its column stops drawing at —
-   * the per-wall raise, 0 meaning "the scalar minimum"; heightAt takes
-   * max(uIndoorTop, R−128) so the two encodings agree), 0 outside; roomAt
-   * tests the 128 bit. A pinned at 255 everywhere because canvas uploads are
-   * PREMULTIPLIED (the same reason the heightmap pins its alpha) — an A below
-   * 255 would scale the R the shader reads, which is also why the cut could
-   * NOT ride the A channel.
+   * R packs MEMBERSHIP and the PER-CELL CUT into one byte, because indoors the
+   * surface resolve needs an answer for EVERY cell of the world:
+   *
+   *     128 + cut   — a cell of MY room, its column drawn to `cut`
+   *     cut (0-126) — a CONSTRAINED outside cell (the covering cone)
+   *     127         — UNCONSTRAINED: drawn whole, deck included (the
+   *                   neighbour's roof, the up-screen mountain)
+   *     0 everywhere on the outdoor publish (never read — uIndoor gates)
+   *
+   * roomAt tests the 128 bit; heightAt reads the low half (see both). With the
+   * legacy kill-switch cut (cuts null) every cell is constrained at the scalar
+   * dial, so the low half is `top` world-wide. A pinned at 255 everywhere
+   * because canvas uploads are PREMULTIPLIED (the same reason the heightmap
+   * pins its alpha) — an A below 255 would scale the R the shader reads, which
+   * is also why the cut could NOT ride the A channel.
    */
   setRoom(
     cells: Iterable<number> | null,
     depth?: Map<number, number>,
     under?: Map<number, number>,
     cuts?: Map<number, number> | null,
+    top = 0,
   ) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
@@ -1966,8 +2007,10 @@ export class NightLights {
     const needDepth = (depth !== undefined && !this.depthWritten) || (under !== undefined && !this.underWritten);
     // The CUTS can change while the cell set does not — the wall-height dial
     // moves every per-cell value without moving the room — so they get their
-    // own change test beside the set's.
+    // own change test beside the set's, and the scalar top is part of it (the
+    // legacy encoding writes it into every cell).
     const sameCuts = (() => {
+      if (top !== this.roomTop) return false;
       const a = this.roomCuts;
       if (!a && !nextCuts) return true;
       if (!a || !nextCuts || a.size !== nextCuts.size) return false;
@@ -1989,13 +2032,17 @@ export class NightLights {
       for (let p = 3; p < this.roomImg.data.length; p += 4) this.roomImg.data[p] = 255;
     }
     const d = this.roomImg.data;
-    for (const i of this.roomCells) d[i * 4] = 0;
-    // 128 = in my room at the scalar cut; 128+n = this column draws to level n
-    // (n ≤ 126 — a level 40 is the tallest shipped world, so the clamp is a
-    // formality that keeps a corrupt input from flipping the membership bit).
+    const clamp7 = (v: number) => Math.max(0, Math.min(126, Math.round(v)));
+    // Full-grid R baseline: 127 (unconstrained) in the per-cell world, the
+    // scalar dial in the legacy one, 0 on the outdoor publish.
+    const base = cells === null ? 0 : nextCuts ? 127 : clamp7(top);
+    for (let i = 0; i < w * h; i++) d[i * 4] = base;
+    if (nextCuts)
+      for (const [i, cut] of nextCuts) if (i >= 0 && i < w * h) d[i * 4] = clamp7(cut);
     for (const i of next)
-      if (i >= 0 && i < w * h) d[i * 4] = 128 + Math.max(0, Math.min(126, nextCuts?.get(i) ?? 0));
+      if (i >= 0 && i < w * h) d[i * 4] = 128 + clamp7(nextCuts?.get(i) ?? top);
     this.roomCuts = nextCuts ? new Map(nextCuts) : null;
+    this.roomTop = top;
     // GREEN = DEPTH FROM DAYLIGHT, in cells, 0 at an opening. Static for a
     // world, so it is written once: the geometry of a cave does not move.
     if (needDepth) {
@@ -2046,15 +2093,19 @@ export class NightLights {
     let maxDep = 0;
     let und = 0;
     let maxUnd = 0;
-    // The per-cell CUT rides R's low half (128+cut) — count the cells raised
-    // past the scalar minimum (R > 128) so a gate can tell "the raise did
-    // nothing" from "the raise was never published", which look identical on
-    // screen when the room happens to have no raisable wall.
+    // The per-cell CUT rides R's low half — count my-room cells raised past
+    // the scalar dial and the outside sentinels, so a gate can tell "the
+    // raise/scope did nothing" from "it was never published", which look
+    // identical on screen when a room happens to have no raisable wall or no
+    // unconstrained neighbour.
     let raised = 0;
     let maxCut = 0;
+    let uncut = 0;
+    const topB = Math.max(0, Math.min(126, Math.round(this.indoorTop)));
     for (let i = 0; i < d.length; i += 4) {
       if (d[i] > 127) on++;
-      if (d[i] > 128) { raised++; maxCut = Math.max(maxCut, d[i] - 128); }
+      if (d[i] > 127 && d[i] - 128 > topB) { raised++; maxCut = Math.max(maxCut, d[i] - 128); }
+      if (d[i] === 127) uncut++;
       if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
       if (d[i + 2] > 0) { und++; maxUnd = Math.max(maxUnd, d[i + 2]); }
     }
@@ -2065,6 +2116,7 @@ export class NightLights {
       lit: on,
       raisedCells: raised,
       maxCut,
+      uncut,
       depthCells: deep,
       depthMax: maxDep,
       underCells: und,
@@ -2511,11 +2563,17 @@ export class NightLights {
       const H2 = this.world.height;
       // Clamped to the cut-away indoors, for the same reason heightAt is: the
       // seam is between a body and the wall AS DRAWN, and a wall truncated to
-      // level 3 must not cast a level-6 wall's shading onto the floor beside it.
+      // level 3 must not cast a level-6 wall's shading onto the floor beside
+      // it. Per CELL like the shader — an unconstrained column (no entry) is
+      // drawn whole and seams at its real height; the legacy cut (roomCuts
+      // null) clamps everything at the scalar dial.
       const tAt = (ci: number, ri: number) => {
         if (ci < 0 || ri < 0 || ci >= W2 || ri >= H2) return 99;
         const b = this.bArr[ri * W2 + ci];
-        return this.indoor ? Math.min(b, this.indoorTop) : b;
+        if (!this.indoor) return b;
+        if (!this.roomCuts) return Math.min(b, this.indoorTop);
+        const e = this.roomCuts.get(ri * W2 + ci);
+        return e === undefined ? b : Math.min(b, e);
       };
       const ci = Math.floor(col);
       const ri = Math.floor(row);
@@ -2802,6 +2860,8 @@ export class NightLights {
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);
       f.setUniform("uAmbient.value.z", ambient[2]);
+      f.setUniform("uRoomOn.value", this.fogRoomBound ? 1 : 0);
+      f.setUniform("uIndoorMix.value", this.indoorMix);
     }
   }
 

@@ -2572,7 +2572,9 @@ side collision just like monsters").
   become a low parapet you look over. **Nothing is hidden, nothing is
   transparent, nothing is half a tile.** The dial is
   `client/src/indoorwall.ts` ("Indoor wall height" in Settings, 1…6 levels,
-  default **2**); brightness is the separate `indoorlight.ts` dial, default
+  default **1** — lowered from 2 on 2026-08-13, the day the dial became a
+  minimum: the raised walls carry the room-reading now, so the near parapet
+  can be knee-high); brightness is the separate `indoorlight.ts` dial, default
   **40%**. Both defaults are the maintainer's own picks — do not "restore"
   either. Probes `__ml.indoorWall(v?)` / `__ml.indoor()`.
   - **MEASURED UP FROM THE FLOOR, NOT DOWN FROM THE ROOF.** The first cut of
@@ -2599,6 +2601,66 @@ side collision just like monsters").
     (`ml-indoor-cut` → `ml-indoor-wall`): the same number means something
     different now, and reading the old one back would hand anyone who tuned
     the old dial twice the wall they had chosen.
+  - **THE CUT IS SCOPED TO THE COVERING CONE — THE NEIGHBOUR'S HOUSE KEEPS
+    ITS ROOF** (maintainer 2026-08-13, hard task #2: "I walked into house_a so
+    now I can see inside house_a. You don't want to (during the fade) also see
+    into house_b"). The truncation is no longer world-wide: `indoorCut` is the
+    complete CONSTRAINED SET — my building (per-wall raise) plus every other
+    column whose full-height art would bury one of MY floors/entrances (the
+    down-screen cone, capped per cell by the same 0.9375·k burial slope, never
+    below the dial — so the mountain in front of a cave cuts exactly as
+    before). EVERYTHING ELSE DRAWS WHOLE, deck included: house_b renders
+    closed and simply goes black under zero ambient, torch-findable like the
+    street (probe-lit 41 vs unlit 0 in the gate). Consequences threaded
+    everywhere: absent-from-the-map = full height (redrawGround falls through
+    to the outdoor draw; occluders build the neighbour's deck again; a body on
+    unconstrained ground is DRAWN — aboveCut's per-cell answer is `entry ??
+    Infinity`); the shader's R channel gained the 127 "unconstrained" sentinel
+    (127 = resolve full/deck-inflated; 0-126 = constrained cut; 128+cut = my
+    room; setRoom writes the full grid and takes `top`). The kill switch
+    (`__ml.indoorRaise(false)`, cuts null) still means the LEGACY world-wide
+    scalar cut — the gates' flat frames depend on it. Other rooms' floors need
+    no protection any more: a room that is not mine draws its own roof, so its
+    floor is invisible either way (protectedFloor and its buildCaveDepth pass
+    are gone; the raise constrains against MY space only — a dungeon's
+    connected chambers are ONE space, so their floors are all mine).
+    THE DEPTH FOG IS ROOM-GATED WITH IT (`DEPTHFOG_FRAG` uRoom/uRoomOn/
+    uIndoorMix): the scope exposed that the fog's pale far bands painted a
+    GLOWING RING over the zero-ambient blackness beyond ~11 cells — daylight
+    haze over a world that, from indoors, has no daylight. Fog on cells
+    outside my room now fades on the same mix as their ambient; outdoors
+    byte-identical (the gate skips at mix 0). The MIST pass (weather 2) still
+    paints indoors-outside — pre-existing, rare, noted for a future round.
+    Gate: `scripts/verify-indoorscope.mjs` (house_demo, six roofed houses —
+    the city fixture): no constrained cell inside house_b, sentinels
+    published, the probe-light instrument on the neighbour's roof, kill-switch
+    flat world, and the transition fade below.
+  - **THE TRANSITION IS A DEBRIS CROSSFADE, NOT A POP** (maintainer
+    2026-08-13, hard task #1: "the sudden roof/level pop is dominating the
+    transition and makes everything look binary"). On the indoor flip the
+    REMOVED art — my roof slab, the wall bands above each constrained cut,
+    the cone's tops — is rebuilt as ordinary world-anchored images at the
+    occluder depths (`buildIndoorDebris`, iterating the constrained set with
+    view culling) wearing `alpha = 1 − indoorMix`. ENTRY: the world repaints
+    to the cut state on the flip frame, but the debris is OPAQUE that frame —
+    the picture is unchanged — then it dissolves on the light's own 0.35s
+    roll. EXIT: commitIndoor(false) does NOT clear or repaint; the cut world
+    stays drawn (mask, cuts, `night.indoor = !!indoorMask`, aboveCut and
+    pickGround all follow the DRAWN state, not the verdict) while the debris
+    fades back in, and easeIndoorMix's landing branch does the real repaint at
+    mix 0 — opaque debris equals the real geometry, so the swap is invisible.
+    Turning around mid-doorway just reverses the same fade (the mix IS the
+    state; the debris has none). Per-image depths keep bodies sorting
+    correctly through the fade. Instant paths stay instant: the kill-switch's
+    legacy cut (no per-cell map to fade), world unload, and the QA toggle.
+    Room-to-room flips inside one building rebuild the debris for the new
+    room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art —
+    accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
+    Gate: verify-indoorscope sections 4-5 — a DISTINCT intermediate frame
+    exists both ways (mid ≠ either endpoint by >8 luma at the anchor; NOT a
+    luminance corridor — the debris composites over a background whose own
+    light is still easing, so the anchor legitimately dips non-monotonically),
+    debris present at mid-range alpha, gone at settle.
   - **THE DIAL IS A MINIMUM — WALLS RISE PER CELL UNTIL THEY'D COVER A FLOOR**
     (maintainer 2026-08-13: "make the current wall height a minimum setting...
     draw the walls all the way to the roof on sides where it's possible; some
@@ -2623,6 +2685,10 @@ side collision just like monsters").
     dial, and the maintainer's "higher but not all the way" gradient appears
     on the diagonal runs (measured on the_island2's cave: 99 cells at the
     ceiling 8, and 13/2/14/7 at cuts 3/4/5/7; the house: 10 of 17 at 6).
+    SUPERSEDED DETAILS (2026-08-13, the scoped-cut round — see the bullet
+    above): protection is against MY OWN space's floors/entrances only, the
+    world-wide protectedFloor pass is gone, non-building cells are cut only
+    inside the covering cone, and the R encoding gained the 127 sentinel.
     THE CONSUMERS ALL GO PER-CELL: redrawGround + rebuildOccluders (the
     occluder's exposed-face start uses the front neighbours' DRAWN heights at
     the call site — a raised wall behind an unraised one otherwise skips faces

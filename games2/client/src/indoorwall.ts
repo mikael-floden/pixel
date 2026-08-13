@@ -49,14 +49,14 @@ const KEY = "ml-indoor-wall";
 export const INDOOR_WALL_MIN = 1;
 export const INDOOR_WALL_MAX = 6;
 
-/** Default = 2 levels — the height the maintainer settled on for the house
- * (2026-08-07: "I want the cave to have the same wall height I was happy with
- * (I think it was 2)"). It is the same look his roof−4 gave that room; the
- * change is that it is now that look in EVERY room. A level is 16px
- * (MAP_GEOMETRY.lh) and a character is ~64px, so a 2-level parapet sits about
- * chest-high on a body standing behind it — low enough to read over, high
- * enough to read as a wall. */
-export const INDOOR_WALL_DEFAULT = 2;
+/** Default = 1 level — lowered from 2 the day the dial became a MINIMUM
+ * (maintainer 2026-08-13: "with this new change it looks better if the default
+ * is 1 level and not 2"). Since the per-wall raise, only the walls that would
+ * hide the room stay at this height — everything else rises to the ceiling —
+ * so the near parapet can afford to be knee-high: the tall raised walls carry
+ * the "this is a room" reading now. (2 was his pick while ALL walls stood at
+ * the dial; that context is gone.) A level is 16px, a body ~64px. */
+export const INDOOR_WALL_DEFAULT = 1;
 
 let value = load();
 
