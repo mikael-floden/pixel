@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 169,
+  "scenery_count": 170,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -377,7 +377,7 @@
       "id": "puffballs",
       "name": "Puffball",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 54,
@@ -774,7 +774,7 @@
     "overgrown_archways": 1,
     "owl_snags": 1,
     "petrified_stumps": 1,
-    "puffballs": 1,
+    "puffballs": 2,
     "rail_carts": 1,
     "reed_beds": 2,
     "rock_spires": 1,
@@ -3019,6 +3019,28 @@
       "status": "complete",
       "pixellab_object_id": "40d750ec-561c-4772-9913-bffa8d12b9ef",
       "sprite": "puffballs/puffball_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "puffball_002",
+      "rel": "puffballs/puffball_002",
+      "name": "Giant white puffball 002 \u00b7 lit",
+      "category": "puffballs",
+      "lights": "LIGHTS_ON",
+      "description": "a plump round puffball mushroom sitting directly on bare earth, giant white puffball, small, knee-high to an adult person, self-emissive at night, softly radiating light: burst husk spilling a pile of glowing spores",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.54,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0370ada2-a792-4249-8a92-f3ded53cb837",
+      "sprite": "puffballs/puffball_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

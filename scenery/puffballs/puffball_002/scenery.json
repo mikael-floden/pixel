@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "puffball_002",
+  "group": "puffballs",
+  "rank": 53,
+  "index": 2,
+  "name": "Giant white puffball 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "giant white puffball",
+  "glow_concept": "burst husk spilling a pile of glowing spores",
+  "prompt": "a plump round puffball mushroom sitting directly on bare earth, giant white puffball, small, knee-high to an adult person, self-emissive at night, softly radiating light: burst husk spilling a pile of glowing spores",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "puffballs/puffball_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.54,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0370ada2-a792-4249-8a92-f3ded53cb837",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
