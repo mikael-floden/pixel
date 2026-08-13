@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_010",
+  "group": "beacons",
+  "rank": 46,
+  "index": 10,
+  "name": "Tarred timber mast beacon 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tarred timber mast beacon",
+  "glow_concept": "great orange signal blaze in the cage",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, tarred timber mast beacon, tall, about three times human height, self-emissive at night, softly radiating light: great orange signal blaze in the cage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_010/sprite.webp",
+  "placement": {
+    "world_height_m": 3.61,
+    "world_px_height": 136,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "348db063-dd77-459b-9ce7-b1f6bc798358",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
