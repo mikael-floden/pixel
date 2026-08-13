@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:34:44+00:00",
+  "id": "stump_012",
+  "group": "stumps",
+  "rank": 24,
+  "index": 12,
+  "name": "Split stump with lion's mane 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "split stump with lion's mane",
+  "glow_concept": "foxfire seeping from gaps in the bark",
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, split stump with lion's mane, small, knee-high, self-emissive at night, softly radiating light: foxfire seeping from gaps in the bark",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.4,
+    "world_px_height": 15,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2dd24fca-86f0-4350-86c5-13d106887dad",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
