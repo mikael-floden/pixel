@@ -25,6 +25,14 @@ at it, condemns mush (deleted from store + repo, slot re-rolls next run) and
 stamps the rest. The log (config/qa_log.json) records every verdict so a
 piece is inspected exactly once; pieces the maintainer already approved on
 the wiki count as checked by his eyes.
+
+Calibration (2026-08-13, after table_002 passed this gate and the maintainer
+called it broken): WHEN IN DOUBT, CONDEMN. A re-roll costs $0.09; the
+maintainer's review time is the expensive resource. Judge each piece at 3x+
+zoom against the best approved art of the same canvas size — braziers and
+fallen_logs are the reference bar — and kill anything with warped geometry,
+smeared gradients standing in for edges, or detail finer than the pixel
+grid, even when the thumbnail reads fine.
 """
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings).",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -2194,34 +2194,29 @@
       "id": "waterwheels",
       "prefix": "waterwheel",
       "name": "Waterwheel",
-      "description": "a stone watermill beside a stream, one big wooden waterwheel mounted on its gable wall, water falling onto the wheel from a simple wooden chute, bold simple shapes",
+      "description": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use",
       "world_height_m": [
-        4.0,
-        6.0
+        2.0,
+        3.8
       ],
-      "art_size": 256,
+      "art_size": 128,
       "variety": [
-        "moss-covered old millhouse",
-        "red-roofed working mill",
-        "ruined mill with a broken wheel",
-        "snow-capped winter mill",
-        "timber-framed mill on stilts",
-        "stone mill with a full millpond",
-        "abandoned mill, dry channel",
-        "ivy-swallowed forgotten mill",
-        "thatched cottage mill",
-        "twin-wheel grain mill"
+        "moss-swallowed leaning wheel",
+        "half-collapsed broken wheel",
+        "ivy-wound upright wheel",
+        "grey sun-bleached old wheel",
+        "wheel sunk to its axle in grass",
+        "lichen-crusted ancient wheel",
+        "snow-dusted winter wheel",
+        "wheel with missing paddles"
       ],
       "glow_concepts": [
-        "glowing droplets flung from the turning paddles",
-        "bioluminescent algae coating the wet lower half",
-        "millrace water at the base shining pale blue",
-        "foxfire fungus glowing on the rotten paddles",
-        "iron hub glowing forge-red at the axle",
-        "a slow halo of soul-light between the spokes"
+        "glow-moss padding the old spokes",
+        "fireflies drifting through the broken paddles",
+        "soul-light seeping from the axle hollow"
       ],
-      "animation_idea": "the wheel creaking through a slow turn, water dripping from the paddles",
-      "lore_fit": "A mill is a whole small world: the pond, the race, the wheel and the room where the flour lands \u2014 the dead keep all four or none."
+      "animation_idea": "the wheel creaking a few degrees and settling back",
+      "lore_fit": "Somebody remembers the mill fondly but not exactly, so only its wheel endures, leaning wherever the meadow will hold it."
     },
     {
       "rank": 60,
@@ -2629,36 +2624,29 @@
       "id": "rail_carts",
       "prefix": "rail_cart",
       "name": "Rail Cart",
-      "description": "a heavy wooden mine cart with thick iron-banded wheels standing on a short section of rail track, seen from the side, solid chunky body",
+      "description": "a derelict abandoned wooden mine cart, weathered and rusted, tipped beside a short piece of broken track half-buried in grass and weeds, long out of use",
       "world_height_m": [
         1.0,
         1.7
       ],
       "art_size": 96,
       "variety": [
-        "wooden ore cart",
-        "iron mine cart",
-        "tipped-over empty cart",
-        "cart heaped with ore",
-        "rust-red flatbed cart",
-        "hand-pump rail trolley",
-        "cart with broken wheel",
-        "moss-filled abandoned cart",
-        "cart on buckled rails",
-        "coal-dusted black cart",
-        "cart overgrown with weeds",
-        "snow-filled winter cart"
+        "tipped-over spilled-ore cart",
+        "upright cart full of rainwater",
+        "moss-filled planted cart",
+        "rusted cart sunk to its axles",
+        "cart with a broken wheel leaning beside it",
+        "snow-filled winter cart",
+        "cart overgrown with brambles",
+        "half-buried sideways cart"
       ],
       "glow_concepts": [
-        "heaped soulstone ore glowing in the bed",
-        "a lit brake lantern hanging from the rim",
-        "wheel hubs glowing ember-red",
-        "faint glowing coal dust in the empty bed",
-        "the rail stub beneath shining softly",
-        "glowing handprints on the push bar"
+        "glowing ore chunks left in the bed",
+        "soul-light pooling under the cart",
+        "glow-moss lining the rotted planks"
       ],
       "animation_idea": "the cart rocking slightly on its rails with a settling creak",
-      "lore_fit": "The mine and the line are gone quiet, but the cart a miner pushed every day for thirty years still waits exactly where he left it."
+      "lore_fit": "The mines are stories now, but a cart that once mattered to someone still sits where the story left it."
     },
     {
       "rank": 72,
