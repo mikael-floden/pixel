@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 385,
+  "scenery_count": 386,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -195,7 +195,7 @@
       "id": "carts",
       "name": "Cart",
       "quota": 48,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 28,
@@ -730,7 +730,7 @@
     "bushes": 6,
     "cairns": 6,
     "light": 1,
-    "carts": 5,
+    "carts": 6,
     "cattail_clumps": 5,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
@@ -2430,6 +2430,28 @@
       "status": "complete",
       "pixellab_object_id": "5db52d7a-39ca-41cf-89cc-d2f1a7aca8cb",
       "sprite": "carts/cart_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cart_006",
+      "rel": "carts/cart_006",
+      "name": "Empty cart, shafts down 006 \u00b7 lit",
+      "category": "carts",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, empty cart, shafts down, about as tall as an adult person, self-emissive at night, softly radiating light: candle lantern swinging from the cart shaft",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.85,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "952e47f1-5bb3-4668-ae40-f082847e563e",
+      "sprite": "carts/cart_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
