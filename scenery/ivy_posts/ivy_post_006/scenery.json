@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ivy_post_006",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 6,
+  "name": "Dense overgrown ivy mound 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dense overgrown ivy mound",
+  "glow_concept": "leaf veins glowing warm lamplight amber",
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, dense overgrown ivy mound, about as tall as an adult person, self-emissive at night, softly radiating light: leaf veins glowing warm lamplight amber",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.85,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "51d0bced-a2e1-44d7-a808-7816109c523a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
