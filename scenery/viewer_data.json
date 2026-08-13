@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 248,
+  "scenery_count": 249,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 34,
@@ -731,7 +731,7 @@
     "cairns": 3,
     "light": 1,
     "carts": 3,
-    "cattail_clumps": 2,
+    "cattail_clumps": 3,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
     "cliff_fragments": 2,
@@ -1946,6 +1946,28 @@
       "status": "complete",
       "pixellab_object_id": "da02f7ef-c9a4-423d-8416-5fe33b283eaf",
       "sprite": "cattail_clumps/cattail_clump_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cattail_clump_003",
+      "rel": "cattail_clumps/cattail_clump_003",
+      "name": "Cattails among grass tufts 003",
+      "category": "cattail_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, cattails among grass tufts, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.17,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8f8078e0-e7f4-40b4-8b6e-293a786d72f2",
+      "sprite": "cattail_clumps/cattail_clump_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
