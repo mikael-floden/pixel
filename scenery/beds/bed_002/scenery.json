@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bed_002",
+  "group": "beds",
+  "rank": 105,
+  "index": 2,
+  "name": "Patchwork quilt bed 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "patchwork quilt bed",
+  "glow_concept": "a candle on the headboard shelf",
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, patchwork quilt bed, waist-high, self-emissive at night, softly radiating light: a candle on the headboard shelf",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.13,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cde51337-d881-430c-aab7-d286a3c00630",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
