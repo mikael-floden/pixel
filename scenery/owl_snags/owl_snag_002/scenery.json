@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "owl_snag_002",
+  "group": "owl_snags",
+  "rank": 69,
+  "index": 2,
+  "name": "Twisted pine snag 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "twisted pine snag",
+  "glow_concept": "owl eyes glowing from the dark hollow",
+  "prompt": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk where an owl roosts, twisted pine snag, tall, about two people high, self-emissive at night, softly radiating light: owl eyes glowing from the dark hollow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "owl_snags/owl_snag_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.9,
+    "world_px_height": 147,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

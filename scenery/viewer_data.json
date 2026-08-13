@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 185,
+  "scenery_count": 186,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -489,7 +489,7 @@
       "id": "owl_snags",
       "name": "Owl Snag",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 70,
@@ -772,7 +772,7 @@
     "offering_tables": 2,
     "orchard_trees": 2,
     "overgrown_archways": 1,
-    "owl_snags": 1,
+    "owl_snags": 2,
     "petrified_stumps": 2,
     "puffballs": 2,
     "rail_carts": 1,
@@ -3195,6 +3195,28 @@
       "status": "complete",
       "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
       "sprite": "owl_snags/owl_snag_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "owl_snag_002",
+      "rel": "owl_snags/owl_snag_002",
+      "name": "Twisted pine snag 002 \u00b7 lit",
+      "category": "owl_snags",
+      "lights": "LIGHTS_ON",
+      "description": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk where an owl roosts, twisted pine snag, tall, about two people high, self-emissive at night, softly radiating light: owl eyes glowing from the dark hollow",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.9,
+        "world_px_height": 147,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
+      "sprite": "owl_snags/owl_snag_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
