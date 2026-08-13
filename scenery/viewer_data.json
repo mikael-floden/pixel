@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 345,
+  "scenery_count": 346,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -265,7 +265,7 @@
       "id": "crystals",
       "name": "Crystal",
       "quota": 28,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 38,
@@ -809,7 +809,7 @@
     "cliff_features": 3,
     "cliff_fragments": 2,
     "cliff_vines": 3,
-    "crystals": 3,
+    "crystals": 4,
     "cup_fungi": 2,
     "cupboards_and_shelves": 3,
     "dock_pilings": 4,
@@ -2795,6 +2795,28 @@
       "status": "complete",
       "pixellab_object_id": "300323e5-9ca6-4756-8fea-2ed8604dcb5f",
       "sprite": "crystals/crystal_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "crystal_007",
+      "rel": "crystals/crystal_007",
+      "name": "Twin crossed shards 007",
+      "category": "crystals",
+      "lights": "LIGHTS_OFF",
+      "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, twin crossed shards, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.14,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c24af7d6-dd78-4915-90d3-0b635c965bc6",
+      "sprite": "crystals/crystal_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
