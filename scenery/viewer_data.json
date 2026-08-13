@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 131,
+  "scenery_count": 132,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 16,
@@ -793,7 +793,7 @@
     "stone_fountains": 1,
     "stones": 16,
     "story_posts": 1,
-    "streetlights": 1,
+    "streetlights": 2,
     "stumps": 1,
     "sundials": 1,
     "telegraph_poles": 1,
@@ -3239,6 +3239,28 @@
       "status": "complete",
       "pixellab_object_id": "9a66d000-9b44-41f9-88fd-9e41dc5d9384",
       "sprite": "streetlights/streetlight_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_002",
+      "rel": "streetlights/streetlight_002",
+      "name": "White-painted village lamp 002 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, white-painted village lamp, tall, about two people high, self-emissive at night, softly radiating light: cluster of dripping candles behind the panes",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.0,
+        "world_px_height": 151,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "72713de8-17b1-407c-b42a-2068a8b6806c",
+      "sprite": "streetlights/streetlight_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
