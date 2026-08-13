@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dock_piling_006",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 6,
+  "name": "Pilings with green algae skirts 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pilings with green algae skirts",
+  "glow_concept": "the rope coil glowing like a slow fuse",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pilings with green algae skirts, about as tall as an adult person, self-emissive at night, softly radiating light: the rope coil glowing like a slow fuse",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "dock_pilings/dock_piling_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.33,
+    "world_px_height": 50,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f01f85a7-ab7c-4cd4-829f-40f7bff3f44b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
