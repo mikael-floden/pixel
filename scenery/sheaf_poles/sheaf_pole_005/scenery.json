@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sheaf_pole_005",
+  "group": "sheaf_poles",
+  "rank": 95,
+  "index": 5,
+  "name": "Small child-raised sheaf 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "small child-raised sheaf",
+  "glow_concept": null,
+  "prompt": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, small child-raised sheaf, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.75,
+    "world_px_height": 66,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
