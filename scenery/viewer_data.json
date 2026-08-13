@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 514,
+  "scenery_count": 515,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -755,7 +755,7 @@
       "id": "hearths",
       "name": "Hearth",
       "quota": 30,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 108,
@@ -833,7 +833,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 7,
-    "hearths": 6,
+    "hearths": 7,
     "hedges": 7,
     "hop_poles": 2,
     "house_clutter": 6,
@@ -6178,6 +6178,28 @@
       "status": "complete",
       "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
       "sprite": "hearths/hearth_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hearth_008",
+      "rel": "hearths/hearth_008",
+      "name": "Hearth with drying herbs on the mantel 008 \u00b7 lit",
+      "category": "hearths",
+      "lights": "LIGHTS_ON",
+      "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with drying herbs on the mantel, large, twice human height, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.92,
+        "world_px_height": 72,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8f5817fb-0fd0-4219-8f8a-f7509cabe654",
+      "sprite": "hearths/hearth_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

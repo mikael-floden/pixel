@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:45:32+00:00",
+  "id": "hearth_008",
+  "group": "hearths",
+  "rank": 107,
+  "index": 8,
+  "name": "Hearth with drying herbs on the mantel 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hearth with drying herbs on the mantel",
+  "glow_concept": "fire burning warm in the hearth mouth",
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with drying herbs on the mantel, large, twice human height, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.92,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8f5817fb-0fd0-4219-8f8a-f7509cabe654",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
