@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "barrel_002",
+  "group": "barrels",
+  "rank": 28,
+  "index": 2,
+  "name": "Flour-dusted pale barrel 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flour-dusted pale barrel",
+  "glow_concept": "bunghole leaking warm amber light",
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, flour-dusted pale barrel, small, knee-high to an adult person, self-emissive at night, softly radiating light: bunghole leaking warm amber light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.7,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "99b7aae3-bafc-4621-bd94-3d7bd851728a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
