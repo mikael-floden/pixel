@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sheaf_pole_001",
+  "group": "sheaf_poles",
+  "rank": 95,
+  "index": 1,
+  "name": "Ribbon-tied festival sheaf 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "ribbon-tied festival sheaf",
+  "glow_concept": null,
+  "prompt": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, ribbon-tied festival sheaf, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "sheaf_poles/sheaf_pole_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.8,
+    "world_px_height": 68,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b8b4f9ba-48d3-4416-a0c0-fb6b8d4f4556",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
