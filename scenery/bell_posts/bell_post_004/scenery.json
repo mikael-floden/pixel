@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_004",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 4,
+  "name": "Stone pillar, bell arm 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stone pillar, bell arm",
+  "glow_concept": "small oil lamp hung beside the bell",
+  "prompt": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, stone pillar, bell arm, large, well above head height of a person, self-emissive at night, softly radiating light: small oil lamp hung beside the bell",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.99,
+    "world_px_height": 113,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

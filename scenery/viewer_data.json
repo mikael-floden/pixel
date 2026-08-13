@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 277,
+  "scenery_count": 278,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 15,
@@ -721,7 +721,7 @@
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 3,
-    "bell_posts": 3,
+    "bell_posts": 4,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 4,
@@ -1428,6 +1428,28 @@
       "status": "complete",
       "pixellab_object_id": "44c92c91-9552-4fa4-95a0-52cf5b5aff54",
       "sprite": "bell_posts/bell_post_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_004",
+      "rel": "bell_posts/bell_post_004",
+      "name": "Stone pillar, bell arm 004 \u00b7 lit",
+      "category": "bell_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, stone pillar, bell arm, large, well above head height of a person, self-emissive at night, softly radiating light: small oil lamp hung beside the bell",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.99,
+        "world_px_height": 113,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
+      "sprite": "bell_posts/bell_post_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
