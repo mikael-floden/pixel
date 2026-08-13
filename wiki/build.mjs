@@ -540,6 +540,26 @@ function buildObjects() {
       }
       if (Object.keys(dirs).length) anims[key] = { description: a.description ?? "", dirs };
     }
+    // A STILL IS A ONE-FRAME ANIMATION (maintainer 2026-08-13: "a lot of
+    // scenery will not have any animation — or you can think of the image
+    // itself as a 'still' animation with only 1 frame … the animation viewer
+    // shows the object in its true scale and is a good tool for me to look at
+    // the object. We only need this if no real animation exist"). 368 of the
+    // 371 pieces are static, so without this the viewer — the one place the
+    // wiki draws scenery at its measured size next to everything else — was
+    // unreachable for all but three of them. Synthesised only when nothing
+    // real exists, and never overwriting a generated animation.
+    const preview = art(`scenery/${rel}/sprite`);
+    const stillOnly = !Object.keys(anims).length && !!preview;
+    if (stillOnly) {
+      const dims = imageSize(join(ROOT, preview));
+      if (dims) {
+        anims.still = {
+          description: "No animation was generated for this piece — this is the sprite as it is placed in the world.",
+          dirs: { south: { frames: 1, strip: preview, fw: dims.w, fh: dims.h } },
+        };
+      }
+    }
     objects.push({
       id,
       name: oj.name ?? titleCase(id),
@@ -547,7 +567,10 @@ function buildObjects() {
       lights: oj.lights ?? null,
       description: oj.description ?? oj.prompt ?? "",
       path: `scenery/${rel}`,
-      preview: art(`scenery/${rel}/sprite`),
+      preview,
+      // So the page can say "Still" rather than claim an animation, and the
+      // list can keep calling these "static".
+      stillOnly: stillOnly && !!anims.still,
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,

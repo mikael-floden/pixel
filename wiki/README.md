@@ -235,6 +235,33 @@ describing the creature (measured: an entity union made one salamander 74px
 and the other 48px again). Within a clip the box is fixed, so the animation
 still moves inside it.
 
+### A still is a one-frame animation
+
+368 of the 371 scenery pieces ship no animation, and their page used to say
+"No animations." and stop — true, and useless, because the viewer is the only
+place the wiki draws a piece cropped free of padding at a known scale with a
+zoom control (maintainer 2026-08-13: "the animation viewer shows the object in
+its true scale and is a good tool for me to look at the object … We only need
+this if no real animation exist"). `buildObjects()` gives a piece with no
+animation a one-frame `still` clip pointing at its own `sprite.webp`, and flags
+it `stillOnly`.
+
+`stillOnly` is what keeps the synthesis honest everywhere else: the heading
+reads *Still* rather than *Animations*, the list keeps calling the piece
+"static" (that list is where you scan for what moves), and it is never offered
+as a sound event to assign — nothing in the game fires `objects.<id>.still`.
+The viewer drops the controls a single frame cannot use — play/pause, frame
+step, speed, the frame counter, a state row with one button, a direction pad
+with one direction — and keeps zoom, which is the whole point.
+
+This grew the shared objects stage from 70×87 to 246×255 art px, because the
+stage is sized to the largest thing in its domain. That is the same deal the
+32×34 mystical frog already gets on the 213×202 monster stage: a fixed stage
+per domain is what stops the layout moving while you page ‹ ›, and the cost is
+empty checkerboard around the small pieces. Seven clips of 385 (the ancient
+oaks and hanging willows) exceed a 393px phone at the default 2×, and scroll
+inside their own stage — "1×" is one tap away.
+
 ### Re-run it with `bash wiki/tools/rebuild.sh`, never on its own
 
 The dependency is **circular**, and one pass is never enough when a domain

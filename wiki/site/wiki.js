@@ -473,11 +473,22 @@ function makePlayer(entity, kind) {
     ...[["same", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
     h("button", { class: i === 0 ? "on" : "", onclick: (e) => { cur.zoom = z; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); draw(); } }, lbl)));
 
+  // A STILL has nothing to transport. One state, one direction, one frame —
+  // the shape a static scenery piece takes once the builder gives it a `still`
+  // clip — so play/pause, frame-step, speed, the frame counter and a state row
+  // holding a single button are all controls that cannot do anything. Zoom
+  // stays, because looking at the piece at a known scale is the entire reason
+  // the maintainer wanted the viewer here.
+  const singleStill = stateNames.length === 1
+    && Object.keys(anims[stateNames[0]]?.dirs ?? {}).length === 1
+    && (Object.values(anims[stateNames[0]]?.dirs ?? {})[0]?.frames ?? 1) <= 1;
   const controls2 = h("div", { class: "player-controls" },
-    playBtn,
-    h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
-    h("button", { class: "ghost-btn", title: "Next frame", onclick: () => step(1) }, "⏭"),
-    frameNo, speedSeg, zoomSeg,
+    singleStill ? null : playBtn,
+    singleStill ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
+    singleStill ? null : h("button", { class: "ghost-btn", title: "Next frame", onclick: () => step(1) }, "⏭"),
+    singleStill ? null : frameNo,
+    singleStill ? null : speedSeg,
+    zoomSeg,
     entity.shadow ? h("label", { class: "chk" },
       Object.assign(h("input", { type: "checkbox" }), { checked: cur.shadow, onchange: (e) => { cur.shadow = e.target.checked; draw(); } }),
       "Show shadow") : null,
@@ -490,8 +501,8 @@ function makePlayer(entity, kind) {
   }
   loadClip();
   const rootEl = h("div", { class: "player" },
-    h("div", { class: "player-controls" }, stateSeg),
-    h("div", { class: "player-controls" }, dirPad),
+    singleStill ? null : h("div", { class: "player-controls" }, stateSeg),
+    singleStill ? null : h("div", { class: "player-controls" }, dirPad),
     stage, controls2);
   return {
     el: rootEl,
@@ -1928,12 +1939,20 @@ function viewObjects() {
         h("a", { class: "card", href: `#/objects/${o.id}` },
           h("div", { class: "thumb checker" }, h("img", { src: assetUrl(o.preview), alt: o.name, loading: "lazy" })),
           h("div", { class: "card-name" }, o.name),
-          h("div", { class: "card-sub" }, `${Object.keys(o.animations).length ? Object.keys(o.animations).join(", ") : "static"}`),
+          // The synthesised `still` must not read as an animation here — the
+          // list is where you scan for what actually moves.
+          h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
           h("div", { class: "card-badges" }, ...entityBadge("objects", o.path))))))));
 }
 function viewObject(id) {
   const o = state.data.domains.objects.find((x) => x.id === id);
   if (!o) return h("p", {}, "Unknown object.");
+  // 368 of the 371 scenery pieces ship no animation, and the page used to just
+  // say "No animations." and stop — which was true, and useless: the viewer is
+  // the only place the wiki draws a piece at its measured size, cropped free of
+  // padding, next to a zoom control. The builder gives a static piece a
+  // one-frame `still` clip, so the viewer opens for everything now; only the
+  // heading distinguishes them (maintainer 2026-08-13).
   const hasAnims = Object.keys(o.animations).length > 0;
   let playerEl = null;
   if (hasAnims) {
@@ -1949,7 +1968,12 @@ function viewObject(id) {
         h("h1", {}, o.name),
         loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
-    hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."),
+    hasAnims
+      ? h("div", { class: "panel" },
+          h("div", { class: "panel-title" }, o.stillOnly ? "Still" : "Animations"),
+          o.stillOnly ? h("p", { class: "muted", style: "margin:0 0 8px" }, "This piece has no animation — shown at its true size, padding cropped away.") : null,
+          playerEl)
+      : h("p", { class: "muted" }, "No animations."),
     entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last
 }
@@ -2694,7 +2718,11 @@ function sfxAllSounds() {
    character in the game); a monster or prop with no sound yet shows nothing
    to players and an assign card to the Game Master. */
 function entityAddCard(domain, ent) {
-  const actions = Object.keys(ent.animations ?? {});
+  // A synthesised `still` is not an action — nothing in the game ever fires
+  // `objects.<id>.still`, so it must not appear as something to hang a sound
+  // on. Static scenery has no actions at all, exactly as before it gained a
+  // viewer.
+  const actions = ent.stillOnly ? [] : Object.keys(ent.animations ?? {});
   if (!actions.length) return null;
   const evId = () => `${domain}.${ent.id}.${act.value}`;
   const act = h("select", { class: "sfx-pick" }, ...actions.map((a2) => h("option", { value: a2 }, stateLabel(a2))));
