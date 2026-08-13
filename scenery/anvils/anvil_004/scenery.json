@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "anvil_004",
+  "group": "anvils",
+  "rank": 98,
+  "index": 4,
+  "name": "Anvil with coiled chain 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "anvil with coiled chain",
+  "glow_concept": "a cooling horseshoe shining ember-red on top",
+  "prompt": "a heavy black iron blacksmith's anvil mounted on a broad oak stump, its top face bare and empty, anvil with coiled chain, waist-high, self-emissive at night, softly radiating light: a cooling horseshoe shining ember-red on top",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "anvils/anvil_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "90bbbe00-df7f-414f-9946-14c7d76be1f0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
