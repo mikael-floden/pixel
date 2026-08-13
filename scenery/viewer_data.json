@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 525,
+  "scenery_count": 526,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 11,
@@ -817,7 +817,7 @@
     "driftwood_logs": 2,
     "fading_relics": 2,
     "fallen_logs": 7,
-    "fences": 7,
+    "fences": 8,
     "ferns": 7,
     "fish_drying_racks": 7,
     "flame_niches": 7,
@@ -4665,6 +4665,28 @@
       "status": "complete",
       "pixellab_object_id": "210d6a5e-227a-45c2-95ea-0d8bc036133e",
       "sprite": "fences/fence_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_011",
+      "rel": "fences/fence_011",
+      "name": "Split-rail birch, bark on 011",
+      "category": "fences",
+      "lights": "LIGHTS_OFF",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, split-rail birch, bark on, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.17,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c1df7277-3199-4869-9aa2-0d4c5dd605de",
+      "sprite": "fences/fence_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
