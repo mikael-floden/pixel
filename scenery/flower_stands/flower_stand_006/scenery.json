@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_006",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 6,
+  "name": "Yellow tansy stand 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "yellow tansy stand",
+  "glow_concept": "luminous golden pollen motes drifting upward",
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, yellow tansy stand, waist-high to an adult person, self-emissive at night, softly radiating light: luminous golden pollen motes drifting upward",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.87,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "acd716cf-88cf-4c7c-b7dc-8494e97a21d9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
