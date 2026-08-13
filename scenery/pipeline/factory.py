@@ -179,6 +179,46 @@ def done_by_group():
     return done
 
 
+# --- wiki first-seen (cross-domain, deliberate) ------------------------------
+
+FIRST_SEEN = os.path.join(os.path.dirname(ROOT), "wiki", "first_seen.json")
+
+
+def record_first_seen(rel_id):
+    """Stamp a just-written piece into the wiki's committed first-seen store.
+
+    The wiki flags any verdict older than a piece's 'added' date for
+    re-review. That store can only stay truthful if it is committed WITH the
+    art: the deploy image has no git, so a piece missing from the store gets
+    're-stamped arrived-now' on every deploy and the maintainer's verdict on
+    it bounces back to needs-review forever (measured 2026-08-13: his whole
+    evening review round). The factory creates the pieces, so the factory
+    ships each piece's entry in the same commit — the wiki agent owns the
+    format (md5[:16] of the sprite, compact JSON, sorted keys)."""
+    import hashlib
+    from datetime import datetime, timezone
+    try:
+        with open(FIRST_SEEN) as f:
+            doc = json.load(f)
+    except (OSError, ValueError):
+        return
+    sprite = os.path.join(ROOT, rel_id, "sprite.webp")
+    try:
+        h = hashlib.md5(open(sprite, "rb").read()).hexdigest()[:16]
+    except OSError:
+        return
+    entries = doc.get("entries", {})
+    key = f"scenery/{rel_id}"
+    if (entries.get(key) or {}).get("hash") == h:
+        return
+    entries[key] = {"at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    "hash": h}
+    doc["entries"] = dict(sorted(entries.items()))
+    with open(FIRST_SEEN, "w") as f:
+        json.dump(doc, f, separators=(",", ":"))
+        f.write("\n")
+
+
 # --- packaging --------------------------------------------------------------
 
 def save_webp(img, path):

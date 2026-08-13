@@ -55,8 +55,9 @@ def commit_push(message, push=True):
     rebase-and-retry backoff (disjoint domain paths rebase cleanly)."""
     _git("add", "-A", ".")
     _git("add", "--", "../coordination/scenery.json", check=False)
+    _git("add", "--", "../wiki/first_seen.json", check=False)
     status = _git("status", "--porcelain", "--", ".",
-                  "../coordination/scenery.json").stdout.strip()
+                  "../coordination/scenery.json", "../wiki/first_seen.json").stdout.strip()
     if not status:
         return False
     _git("commit", "-m", message)
@@ -198,6 +199,7 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
                    "pixellab.ai create-1-direction-object (single, S-only)"),
     })
 
+    factory.record_first_seen(rel)
     viewer_build.build()
     coordination.publish(
         current=f"generated {rel}",
