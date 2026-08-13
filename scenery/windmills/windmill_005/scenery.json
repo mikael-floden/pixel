@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_005",
+  "group": "windmills",
+  "rank": 47,
+  "index": 5,
+  "name": "Red-roofed mill 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "red-roofed mill",
+  "glow_concept": null,
+  "prompt": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, red-roofed mill, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_005/sprite.webp",
+  "placement": {
+    "world_height_m": 4.26,
+    "world_px_height": 160,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a0b69167-ac94-4d7f-bc86-a51036d4f37d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
