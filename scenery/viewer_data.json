@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 377,
+  "scenery_count": 378,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -335,7 +335,7 @@
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 48,
@@ -889,7 +889,7 @@
     "waystones": 7,
     "web_frames": 2,
     "wells": 7,
-    "windmills": 2,
+    "windmills": 3,
     "wisteria_snags": 2,
     "woodpiles": 2
   },
@@ -9126,6 +9126,28 @@
       "status": "complete",
       "pixellab_object_id": "88cbcc60-86e0-4bdb-8494-4b1225fbdc86",
       "sprite": "windmills/windmill_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "windmill_014",
+      "rel": "windmills/windmill_014",
+      "name": "Snow-dusted winter mill 014 \u00b7 lit",
+      "category": "windmills",
+      "lights": "LIGHTS_ON",
+      "description": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, snow-dusted winter mill, tall, about three times human height, self-emissive at night, softly radiating light: faint light leaking between the cap shingles",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.89,
+        "world_px_height": 146,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7051c72b-ed19-4870-9a4c-8634144793f4",
+      "sprite": "windmills/windmill_014/sprite.webp",
       "rotations": {},
       "animations": []
     },

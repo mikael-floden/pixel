@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:00:58+00:00",
+  "id": "windmill_014",
+  "group": "windmills",
+  "rank": 47,
+  "index": 14,
+  "name": "Snow-dusted winter mill 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-dusted winter mill",
+  "glow_concept": "faint light leaking between the cap shingles",
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, snow-dusted winter mill, tall, about three times human height, self-emissive at night, softly radiating light: faint light leaking between the cap shingles",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_014/sprite.webp",
+  "placement": {
+    "world_height_m": 3.89,
+    "world_px_height": 146,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7051c72b-ed19-4870-9a4c-8634144793f4",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
