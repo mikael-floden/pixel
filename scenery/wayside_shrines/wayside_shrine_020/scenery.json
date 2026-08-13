@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:33:08+00:00",
+  "id": "wayside_shrine_020",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 20,
+  "name": "Open-front stone hut shrine 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "open-front stone hut shrine",
+  "glow_concept": "pale white soul-candles that never shorten",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, open-front stone hut shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: pale white soul-candles that never shorten",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.87,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2af41c85-eea9-46bb-a274-77116922dd70",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
