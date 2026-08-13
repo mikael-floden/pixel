@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 354,
+  "scenery_count": 355,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -678,7 +678,7 @@
       "id": "dovecotes",
       "name": "Dovecote",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 97,
@@ -813,6 +813,7 @@
     "cup_fungi": 2,
     "cupboards_and_shelves": 5,
     "dock_pilings": 5,
+    "dovecotes": 1,
     "driftwood_logs": 2,
     "fading_relics": 1,
     "fallen_logs": 7,
@@ -3100,6 +3101,28 @@
       "status": "complete",
       "pixellab_object_id": "ccbb52d9-34eb-4e85-a73e-c9699aa94b3c",
       "sprite": "dock_pilings/dock_piling_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dovecote_006",
+      "rel": "dovecotes/dovecote_006",
+      "name": "Whitewashed round dovecote tower 006 \u00b7 lit",
+      "category": "dovecotes",
+      "lights": "LIGHTS_ON",
+      "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, whitewashed round dovecote tower, large, twice human height, self-emissive at night, softly radiating light: white doves glowing faintly as they roost",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.97,
+        "world_px_height": 112,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "30fe7611-ba67-49ce-bfb4-172aeff9468e",
+      "sprite": "dovecotes/dovecote_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
