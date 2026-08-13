@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_010",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 10,
+  "name": "Soulstone half-swallowed by turf 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soulstone half-swallowed by turf",
+  "glow_concept": "tips glowing like small candle flames",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone half-swallowed by turf, waist-high, self-emissive at night, softly radiating light: tips glowing like small candle flames",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.13,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 308,
+  "scenery_count": 309,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 24,
@@ -862,7 +862,7 @@
     "scarecrows": 2,
     "sheaf_poles": 2,
     "signposts": 3,
-    "soulstone_outcrops": 2,
+    "soulstone_outcrops": 3,
     "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 3,
@@ -5738,6 +5738,28 @@
       "status": "complete",
       "pixellab_object_id": "e37c6b1c-83e2-4a54-804d-7e902aac2638",
       "sprite": "soulstone_outcrops/soulstone_outcrop_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_010",
+      "rel": "soulstone_outcrops/soulstone_outcrop_010",
+      "name": "Soulstone half-swallowed by turf 010 \u00b7 lit",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_ON",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone half-swallowed by turf, waist-high, self-emissive at night, softly radiating light: tips glowing like small candle flames",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.13,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
