@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 337,
+  "scenery_count": 338,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 27,
@@ -782,7 +782,7 @@
     "rope_swings": 2,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 4,
+    "scarecrows": 5,
     "sheaf_poles": 2,
     "signposts": 5,
     "soulstone_outcrops": 5,
@@ -5769,6 +5769,28 @@
       "status": "complete",
       "pixellab_object_id": "c88ec679-4ac5-4cef-bfea-aa1fe2b141dd",
       "sprite": "scarecrows/scarecrow_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_005",
+      "rel": "scarecrows/scarecrow_005",
+      "name": "Fresh straw, bright kerchief 005",
+      "category": "scarecrows",
+      "lights": "LIGHTS_OFF",
+      "description": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, fresh straw, bright kerchief, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.11,
+        "world_px_height": 79,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
+      "sprite": "scarecrows/scarecrow_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_005",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 5,
+  "name": "Fresh straw, bright kerchief 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "fresh straw, bright kerchief",
+  "glow_concept": null,
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, fresh straw, bright kerchief, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.11,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
