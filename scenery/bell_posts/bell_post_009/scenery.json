@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_009",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 9,
+  "name": "Tall post, rope and tassel 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "tall post, rope and tassel",
+  "glow_concept": null,
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, tall post, rope and tassel, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_009/sprite.webp",
+  "placement": {
+    "world_height_m": 2.22,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "64174c0f-5652-435e-b5fc-ff917e958f12",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
