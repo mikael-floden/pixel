@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_005",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 5,
+  "name": "Dark bog reeds 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "dark bog reeds",
+  "glow_concept": null,
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, dark bog reeds, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.8,
+    "world_px_height": 68,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
