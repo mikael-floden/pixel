@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 175,
+  "scenery_count": 176,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -419,7 +419,7 @@
       "id": "waterwheels",
       "name": "Waterwheel",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 60,
@@ -805,7 +805,7 @@
     "wasp_nest_trees": 1,
     "water_lily_clumps": 1,
     "water_pumps": 1,
-    "waterwheels": 1,
+    "waterwheels": 2,
     "wayside_shrines": 2,
     "waystones": 2,
     "web_frames": 1,
@@ -4471,6 +4471,28 @@
       "status": "complete",
       "pixellab_object_id": "bc42ba8f-6718-42c0-bb6a-8bd1a14de440",
       "sprite": "waterwheels/waterwheel_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waterwheel_002",
+      "rel": "waterwheels/waterwheel_002",
+      "name": "Rotted gap-toothed wheel 002 \u00b7 lit",
+      "category": "waterwheels",
+      "lights": "LIGHTS_ON",
+      "description": "a large old wooden waterwheel with paddle blades and an iron-banded rim, standing on a mossy stone mounting, rotted gap-toothed wheel, large, well above head height of a person, self-emissive at night, softly radiating light: millrace water at the base shining pale blue",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.73,
+        "world_px_height": 103,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ad45d95d-283c-4c7b-b562-0c83f7527876",
+      "sprite": "waterwheels/waterwheel_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

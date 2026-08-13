@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waterwheel_002",
+  "group": "waterwheels",
+  "rank": 59,
+  "index": 2,
+  "name": "Rotted gap-toothed wheel 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rotted gap-toothed wheel",
+  "glow_concept": "millrace water at the base shining pale blue",
+  "prompt": "a large old wooden waterwheel with paddle blades and an iron-banded rim, standing on a mossy stone mounting, rotted gap-toothed wheel, large, well above head height of a person, self-emissive at night, softly radiating light: millrace water at the base shining pale blue",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "waterwheels/waterwheel_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.73,
+    "world_px_height": 103,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ad45d95d-283c-4c7b-b562-0c83f7527876",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
