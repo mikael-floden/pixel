@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_006",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 6,
+  "name": "Layered many-memory outcrop 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "layered many-memory outcrop",
+  "glow_concept": "a single word glowing in the surface",
+  "prompt": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, layered many-memory outcrop, about as tall as an adult person, self-emissive at night, softly radiating light: a single word glowing in the surface",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0d5062e2-039f-4e2a-af6a-8e6a199f6a59",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
