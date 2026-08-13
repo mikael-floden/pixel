@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 119,
+  "scenery_count": 120,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 4,
@@ -754,7 +754,7 @@
     "grass_tufts": 1,
     "decor": 1,
     "gravel_piles": 1,
-    "graves": 1,
+    "graves": 2,
     "hanging_baskets": 1,
     "hanging_willows": 1,
     "haystacks": 1,
@@ -1853,6 +1853,28 @@
       "status": "complete",
       "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
       "sprite": "graves/grave_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_002",
+      "rel": "graves/grave_002",
+      "name": "Snow-capped winter headstone 002 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, snow-capped winter headstone, waist-high to an adult person, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.75,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a4bde7fb-1726-4c8e-b2d4-99a3c4670b5d",
+      "sprite": "graves/grave_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
