@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dovecote_007",
+  "group": "dovecotes",
+  "rank": 96,
+  "index": 7,
+  "name": "Snow-capped winter dovecote 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "snow-capped winter dovecote",
+  "glow_concept": null,
+  "prompt": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, snow-capped winter dovecote, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "dovecotes/dovecote_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.09,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "160378b4-cc42-458d-9bc9-69b2030403ec",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

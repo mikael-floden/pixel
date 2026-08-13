@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 304,
+  "scenery_count": 305,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -678,7 +678,7 @@
       "id": "dovecotes",
       "name": "Dovecote",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 97,
@@ -813,7 +813,7 @@
     "cup_fungi": 2,
     "cupboards_and_shelves": 3,
     "dock_pilings": 4,
-    "dovecotes": 1,
+    "dovecotes": 2,
     "driftwood_logs": 2,
     "fading_relics": 2,
     "fallen_logs": 7,
@@ -2707,6 +2707,28 @@
       "status": "complete",
       "pixellab_object_id": "12358c0b-c30c-46c6-af9b-3015d08d6783",
       "sprite": "dovecotes/dovecote_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dovecote_007",
+      "rel": "dovecotes/dovecote_007",
+      "name": "Snow-capped winter dovecote 007",
+      "category": "dovecotes",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, snow-capped winter dovecote, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.09,
+        "world_px_height": 79,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "160378b4-cc42-458d-9bc9-69b2030403ec",
+      "sprite": "dovecotes/dovecote_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
