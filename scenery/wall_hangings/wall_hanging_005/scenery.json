@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wall_hanging_005",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 5,
+  "name": "Row of hanging copper pans 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "row of hanging copper pans",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, row of hanging copper pans, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wall_hangings/wall_hanging_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.9,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "51015073-ab5c-4aab-8334-780beecbe8c7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
