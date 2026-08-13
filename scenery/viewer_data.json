@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 390,
+  "scenery_count": 391,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -195,7 +195,7 @@
       "id": "carts",
       "name": "Cart",
       "quota": 48,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 28,
@@ -801,7 +801,7 @@
     "bushes": 5,
     "cairns": 5,
     "light": 1,
-    "carts": 4,
+    "carts": 5,
     "cattail_clumps": 5,
     "chairs_and_benches": 4,
     "charcoal_kilns": 2,
@@ -2487,6 +2487,28 @@
       "status": "complete",
       "pixellab_object_id": "916a0523-6aea-487a-886d-3aa7d8baed16",
       "sprite": "carts/cart_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cart_010",
+      "rel": "carts/cart_010",
+      "name": "Broken wheel, propped on stones 010 \u00b7 lit",
+      "category": "carts",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, broken wheel, propped on stones, large, twice human height, self-emissive at night, softly radiating light: glowing chalk waymarks scrawled on the sideboards",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.97,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b162d1bc-3fe7-45c3-a2d6-8b6d1e5aaf73",
+      "sprite": "carts/cart_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
