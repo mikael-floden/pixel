@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cart_005",
+  "group": "carts",
+  "rank": 27,
+  "index": 5,
+  "name": "Hay-heaped harvest cart 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "hay-heaped harvest cart",
+  "glow_concept": null,
+  "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, hay-heaped harvest cart, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "carts/cart_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.92,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5db52d7a-39ca-41cf-89cc-d2f1a7aca8cb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
