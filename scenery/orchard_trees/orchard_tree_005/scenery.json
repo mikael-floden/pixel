@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "orchard_tree_005",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 5,
+  "name": "Whitewashed-trunk apple 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "whitewashed-trunk apple",
+  "glow_concept": null,
+  "prompt": "a pruned orchard fruit tree with a short trunk, low rounded crown, and visible fruit or blossom among the leaves, whitewashed-trunk apple, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_005/sprite.webp",
+  "placement": {
+    "world_height_m": 3.05,
+    "world_px_height": 115,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "63bbffd2-65c6-4060-afd9-06200022bc03",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
