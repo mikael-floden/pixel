@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 331,
+  "scenery_count": 332,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -146,7 +146,7 @@
       "id": "fallen_logs",
       "name": "Fallen Log",
       "quota": 62,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 21,
@@ -741,7 +741,7 @@
     "dovecotes": 2,
     "driftwood_logs": 2,
     "fading_relics": 2,
-    "fallen_logs": 4,
+    "fallen_logs": 5,
     "fences": 5,
     "ferns": 4,
     "fish_drying_racks": 4,
@@ -2870,6 +2870,28 @@
       "status": "complete",
       "pixellab_object_id": "88520ebe-aa8e-42d1-b1df-8a9beb63766a",
       "sprite": "fallen_logs/fallen_log_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_005",
+      "rel": "fallen_logs/fallen_log_005",
+      "name": "Fungus-shelved beech log 005",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_OFF",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fungus-shelved beech log, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.81,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3a86f8e1-2fa3-49e2-b61f-d6e78f0e252a",
+      "sprite": "fallen_logs/fallen_log_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

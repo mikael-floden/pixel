@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fallen_log_005",
+  "group": "fallen_logs",
+  "rank": 20,
+  "index": 5,
+  "name": "Fungus-shelved beech log 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "fungus-shelved beech log",
+  "glow_concept": null,
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fungus-shelved beech log, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.81,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3a86f8e1-2fa3-49e2-b61f-d6e78f0e252a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
