@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rock_spire_001",
+  "group": "rock_spires",
+  "rank": 76,
+  "index": 1,
+  "name": "Window-pierced eroded spire 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "window-pierced eroded spire",
+  "glow_concept": null,
+  "prompt": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy, window-pierced eroded spire, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "rock_spires/rock_spire_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.91,
+    "world_px_height": 147,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8231a5b2-7ef5-4f5e-8cec-3185606da9a0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
