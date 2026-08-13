@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 320,
+  "scenery_count": 321,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -720,7 +720,7 @@
       "id": "cliff_features",
       "name": "Cliff Feature",
       "quota": 30,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 103,
@@ -806,7 +806,7 @@
     "chairs_and_benches": 3,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
-    "cliff_features": 2,
+    "cliff_features": 3,
     "cliff_fragments": 2,
     "cliff_vines": 3,
     "crystals": 3,
@@ -2465,6 +2465,28 @@
       "status": "complete",
       "pixellab_object_id": "831aeba4-432c-428d-866f-cd6b1bf6a440",
       "sprite": "cliff_features/cliff_feature_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_feature_006",
+      "rel": "cliff_features/cliff_feature_006",
+      "name": "Jutting mossy stone ledge 006 \u00b7 lit",
+      "category": "cliff_features",
+      "lights": "LIGHTS_ON",
+      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, jutting mossy stone ledge, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-lichen shelf shining pale green",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.64,
+        "world_px_height": 62,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "24fafba9-9b87-4b85-9b46-46d614c38daf",
+      "sprite": "cliff_features/cliff_feature_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
