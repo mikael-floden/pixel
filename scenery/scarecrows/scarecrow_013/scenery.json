@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:53:02+00:00",
+  "id": "scarecrow_013",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 13,
+  "name": "Tall thin twin-pole scarecrow 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "tall thin twin-pole scarecrow",
+  "glow_concept": null,
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, tall thin twin-pole scarecrow, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "scarecrows/scarecrow_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.83,
+    "world_px_height": 69,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "16c8112f-c7a9-4224-a872-4bf18f1aace8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
