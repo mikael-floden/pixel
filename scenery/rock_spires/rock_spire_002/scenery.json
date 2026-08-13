@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rock_spire_002",
+  "group": "rock_spires",
+  "rank": 76,
+  "index": 2,
+  "name": "Twisted basalt spire 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "twisted basalt spire",
+  "glow_concept": "banded strata glowing in warm layers",
+  "prompt": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy, twisted basalt spire, tall, about two people high, self-emissive at night, softly radiating light: banded strata glowing in warm layers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "rock_spires/rock_spire_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.45,
+    "world_px_height": 168,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "526a994f-242c-4a7c-985d-9fb4645621b2",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
