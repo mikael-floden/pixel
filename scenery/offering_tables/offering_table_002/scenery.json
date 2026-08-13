@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "offering_table_002",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 2,
+  "name": "Rough plank table, bread 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rough plank table, bread",
+  "glow_concept": "small wisps gathered over the food",
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, rough plank table, bread, waist-high to an adult person, self-emissive at night, softly radiating light: small wisps gathered over the food",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "20a8ae58-befb-426d-8019-83e08c843da9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
