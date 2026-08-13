@@ -190,7 +190,12 @@ def _key_for(name, renames, taken):
 def resolve_states(anim_keys):
     """The state->animation-key map for a monster. Identity where the canonical
     key exists; the maintainer's rule 'no angry -> use idle for both' applied;
-    missing states resolve to None (surfaced by sync's verify)."""
+    missing states resolve to None (surfaced by sync's verify).
+
+    A monster with no angry animation is FINISHED, not incomplete: some
+    creatures already look angry standing still, so their idle serves both and
+    no separate clip is wanted (maintainer, 2026-08-13). Never report that as a
+    gap — the only real gaps are states that resolve to None."""
     states = {}
     for s in STATES:
         if s in anim_keys:
