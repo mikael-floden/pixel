@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_012",
+  "group": "windmills",
+  "rank": 47,
+  "index": 12,
+  "name": "Mill with furled sails 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "mill with furled sails",
+  "glow_concept": "glowing grain dust drifting from the loading door",
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, mill with furled sails, tall, about three times human height, self-emissive at night, softly radiating light: glowing grain dust drifting from the loading door",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_012/sprite.webp",
+  "placement": {
+    "world_height_m": 4.21,
+    "world_px_height": 158,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c2a502c4-2576-4151-877f-d342f3f09ee5",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
