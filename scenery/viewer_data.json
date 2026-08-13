@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 439,
+  "scenery_count": 440,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "id": "stumps",
       "name": "Stump",
       "quota": 54,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 25,
@@ -871,7 +871,7 @@
     "stones": 14,
     "story_posts": 6,
     "streetlights": 6,
-    "stumps": 5,
+    "stumps": 6,
     "sundials": 2,
     "tables": 6,
     "telegraph_poles": 5,
@@ -8796,6 +8796,28 @@
       "status": "complete",
       "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
       "sprite": "stumps/stump_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stump_010",
+      "rel": "stumps/stump_010",
+      "name": "Tall snapped snag 010 \u00b7 lit",
+      "category": "stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, tall snapped snag, waist-high, self-emissive at night, softly radiating light: soulstone core shining in the heartwood",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.87,
+        "world_px_height": 33,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "82ee60a0-e940-4c59-8952-24ca4207903c",
+      "sprite": "stumps/stump_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

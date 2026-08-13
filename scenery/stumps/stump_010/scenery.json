@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:19:31+00:00",
+  "id": "stump_010",
+  "group": "stumps",
+  "rank": 24,
+  "index": 10,
+  "name": "Tall snapped snag 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tall snapped snag",
+  "glow_concept": "soulstone core shining in the heartwood",
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, tall snapped snag, waist-high, self-emissive at night, softly radiating light: soulstone core shining in the heartwood",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.87,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "82ee60a0-e940-4c59-8952-24ca4207903c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
