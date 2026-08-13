@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 532,
+  "scenery_count": 533,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 18,
@@ -832,7 +832,7 @@
     "graves": 8,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 7,
+    "haystacks": 8,
     "hearths": 7,
     "hedges": 8,
     "hop_poles": 2,
@@ -6200,6 +6200,28 @@
       "status": "complete",
       "pixellab_object_id": "407329fa-b8c1-4bed-b59a-88e4faf7e0be",
       "sprite": "haystacks/haystack_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_015",
+      "rel": "haystacks/haystack_015",
+      "name": "Snow-dusted winter stack 015",
+      "category": "haystacks",
+      "lights": "LIGHTS_OFF",
+      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, snow-dusted winter stack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.46,
+        "world_px_height": 93,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f5c992d5-614d-4d66-8476-5d398429b8c0",
+      "sprite": "haystacks/haystack_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
