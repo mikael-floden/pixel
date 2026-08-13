@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cart_004",
+  "group": "carts",
+  "rank": 27,
+  "index": 4,
+  "name": "Barrel-laden cooper's cart 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "barrel-laden cooper's cart",
+  "glow_concept": "phosphorescent moss blanketing a wrecked cart",
+  "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, barrel-laden cooper's cart, waist-high to an adult person, self-emissive at night, softly radiating light: phosphorescent moss blanketing a wrecked cart",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "carts/cart_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.13,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a8c19c5d-5ddd-48a4-895e-b2b9dfbdd4a1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
