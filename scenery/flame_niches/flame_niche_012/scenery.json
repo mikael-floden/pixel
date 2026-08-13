@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:32:33+00:00",
+  "id": "flame_niche_012",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 12,
+  "name": "Niche with offering sill 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "niche with offering sill",
+  "glow_concept": "row of tealights along the sill",
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, niche with offering sill, waist-high, self-emissive at night, softly radiating light: row of tealights along the sill",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flame_niches/flame_niche_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.83,
+    "world_px_height": 31,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "15e46c75-896f-4938-92ab-99b9b4f91763",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
