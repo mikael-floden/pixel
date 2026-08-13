@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hearth_004",
+  "group": "hearths",
+  "rank": 107,
+  "index": 4,
+  "name": "Fieldstone hearth with an iron cook pot 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fieldstone hearth with an iron cook pot",
+  "glow_concept": "embers breathing orange under the cook pot",
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, fieldstone hearth with an iron cook pot, large, twice human height, self-emissive at night, softly radiating light: embers breathing orange under the cook pot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.97,
+    "world_px_height": 74,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e18ab340-1a8f-4b57-bd76-99b5dbbad040",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
