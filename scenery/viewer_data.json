@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 240,
+  "scenery_count": 241,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -181,7 +181,7 @@
       "id": "bushes",
       "name": "Bush",
       "quota": 52,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 26,
@@ -727,7 +727,7 @@
     "braziers": 3,
     "briar_thickets": 3,
     "broken_columns": 2,
-    "bushes": 2,
+    "bushes": 3,
     "cairns": 3,
     "light": 1,
     "carts": 2,
@@ -1656,6 +1656,28 @@
       "status": "complete",
       "pixellab_object_id": "9a01e4a8-984d-4794-aed8-234b4143da58",
       "sprite": "bushes/bush_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bush_003",
+      "rel": "bushes/bush_003",
+      "name": "Spiky juniper shrub 003",
+      "category": "bushes",
+      "lights": "LIGHTS_OFF",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, spiky juniper shrub, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.9,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d980f105-afd9-45f3-9428-e3db228acc29",
+      "sprite": "bushes/bush_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
