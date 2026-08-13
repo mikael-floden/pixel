@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "broken_column_002",
+  "group": "broken_columns",
+  "rank": 61,
+  "index": 2,
+  "name": "Weathered sandstone column 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "weathered sandstone column",
+  "glow_concept": "bioluminescent ivy spiraling up the stump",
+  "prompt": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle, weathered sandstone column, about as tall as an adult person, self-emissive at night, softly radiating light: bioluminescent ivy spiraling up the stump",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "broken_columns/broken_column_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.87,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "093a44c8-7422-4a1c-9e84-26d6eda69721",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
