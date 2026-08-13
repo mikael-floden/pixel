@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 137,
+  "scenery_count": 138,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 22,
@@ -792,7 +792,7 @@
     "statues": 1,
     "stone_fountains": 1,
     "stones": 16,
-    "story_posts": 1,
+    "story_posts": 2,
     "streetlights": 2,
     "stumps": 1,
     "sundials": 1,
@@ -3305,6 +3305,28 @@
       "status": "complete",
       "pixellab_object_id": "c253194a-e0b4-4d96-86bc-1d5d2584c24a",
       "sprite": "story_posts/story_post_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_002",
+      "rel": "story_posts/story_post_002",
+      "name": "Weathervane-bird finial post 002 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, weathervane-bird finial post, about as tall as an adult person, self-emissive at night, softly radiating light: oil lantern hooked below the finial",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "327418fb-e106-427d-b73f-be8f4680a703",
+      "sprite": "story_posts/story_post_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
