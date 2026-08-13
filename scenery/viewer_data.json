@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 378,
+  "scenery_count": 379,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -265,7 +265,7 @@
       "id": "crystals",
       "name": "Crystal",
       "quota": 28,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 38,
@@ -809,7 +809,7 @@
     "cliff_features": 2,
     "cliff_fragments": 2,
     "cliff_vines": 3,
-    "crystals": 2,
+    "crystals": 3,
     "cup_fungi": 2,
     "cupboards_and_shelves": 5,
     "dock_pilings": 5,
@@ -2949,6 +2949,28 @@
       "status": "complete",
       "pixellab_object_id": "300323e5-9ca6-4756-8fea-2ed8604dcb5f",
       "sprite": "crystals/crystal_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "crystal_010",
+      "rel": "crystals/crystal_010",
+      "name": "Frost-rimed pale cluster 010 \u00b7 lit",
+      "category": "crystals",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, frost-rimed pale cluster, small, knee-high, self-emissive at night, softly radiating light: sparks of light drifting off the points",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.51,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "51470201-9d2a-42a6-aba8-c725739e8d38",
+      "sprite": "crystals/crystal_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
