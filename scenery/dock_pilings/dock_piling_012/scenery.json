@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:37:47+00:00",
+  "id": "dock_piling_012",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 12,
+  "name": "Ice-sheathed winter pilings 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ice-sheathed winter pilings",
+  "glow_concept": "a wisp of soul-light perched on the tallest post",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, ice-sheathed winter pilings, roughly six feet tall, human height, self-emissive at night, softly radiating light: a wisp of soul-light perched on the tallest post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.2,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9627f9af-33c6-4938-812e-d24f0482037d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
