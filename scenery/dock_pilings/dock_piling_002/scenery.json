@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dock_piling_002",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 2,
+  "name": "Pilings with iron mooring cleat 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pilings with iron mooring cleat",
+  "glow_concept": "ghost-blue barnacle rings glowing at the waterline",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pilings with iron mooring cleat, about as tall as an adult person, self-emissive at night, softly radiating light: ghost-blue barnacle rings glowing at the waterline",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "dock_pilings/dock_piling_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.36,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "54aa5eeb-ae36-4902-93e2-585d81094adc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
