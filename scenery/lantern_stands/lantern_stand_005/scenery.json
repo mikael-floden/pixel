@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_stand_005",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 5,
+  "name": "Antler-shaped forked stand 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "antler-shaped forked stand",
+  "glow_concept": null,
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, antler-shaped forked stand, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.78,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e90b70ce-22f1-4bad-b33c-13bc9d7b68d6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
