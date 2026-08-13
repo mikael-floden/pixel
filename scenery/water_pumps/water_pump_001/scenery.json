@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "water_pump_001",
+  "group": "water_pumps",
+  "rank": 91,
+  "index": 1,
+  "name": "Pump with hanging tin cup 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "pump with hanging tin cup",
+  "glow_concept": null,
+  "prompt": "a cast-iron village hand pump with a long curved handle and a spout hanging over a small stone splash slab, pump with hanging tin cup, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_pumps/water_pump_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e0d8ca70-4e92-4dc3-aa4c-e5fcd3837906",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
