@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beast_skull_002",
+  "group": "beast_skulls",
+  "rank": 67,
+  "index": 2,
+  "name": "Stag skull one antler broken 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stag skull one antler broken",
+  "glow_concept": "soulstone crystal budding from a cracked socket",
+  "prompt": "a large weathered animal skull resting on grassy ground, bleached bone with empty eye sockets, cracked surfaces and a heavy jaw, stag skull one antler broken, small, knee-high to an adult person, self-emissive at night, softly radiating light: soulstone crystal budding from a cracked socket",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beast_skulls/beast_skull_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.6,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bdd81821-b7f9-4a9e-9805-164927de068c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
