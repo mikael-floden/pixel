@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 308,
+  "scenery_count": 309,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 46,
@@ -766,7 +766,7 @@
     "letter_boxes": 2,
     "market_stalls": 3,
     "maypoles": 3,
-    "moss_clumps": 3,
+    "moss_clumps": 4,
     "mushrooms": 4,
     "nest_posts": 2,
     "offering_tables": 4,
@@ -4449,6 +4449,28 @@
       "status": "complete",
       "pixellab_object_id": "5063897a-fcf7-4f52-88b5-3a8e50a58261",
       "sprite": "moss_clumps/moss_clump_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_004",
+      "rel": "moss_clumps/moss_clump_004",
+      "name": "Frost-rimed moss cushion 004 \u00b7 lit",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a rounded cushion of thick moss mounded up from the forest floor, frost-rimed moss cushion, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: gently pulsing green glow deep inside the clump",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.27,
+        "world_px_height": 10,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "997601cb-3a1c-4728-a0ff-dfb1f798f5cc",
+      "sprite": "moss_clumps/moss_clump_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
