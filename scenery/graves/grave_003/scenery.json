@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grave_003",
+  "group": "graves",
+  "rank": 3,
+  "index": 3,
+  "name": "Marble stone, gilded name 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "marble stone, gilded name",
+  "glow_concept": null,
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.1,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0f313687-f3a4-453e-b5c5-8143607b618d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
