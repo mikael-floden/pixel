@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:19:00+00:00",
+  "id": "haystack_011",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 11,
+  "name": "Thatch-capped rain-hooded stack 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "thatch-capped rain-hooded stack",
+  "glow_concept": null,
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, thatch-capped rain-hooded stack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.53,
+    "world_px_height": 95,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e2c93f35-87de-4ff3-9a69-4dace469e4a8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 436,
+  "scenery_count": 437,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 18,
@@ -832,7 +832,7 @@
     "graves": 6,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 5,
+    "haystacks": 6,
     "hearths": 5,
     "hedges": 6,
     "hop_poles": 2,
@@ -5188,6 +5188,28 @@
       "status": "complete",
       "pixellab_object_id": "5e18c1bc-c3d8-4f1e-990e-5f341cccaee4",
       "sprite": "haystacks/haystack_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_011",
+      "rel": "haystacks/haystack_011",
+      "name": "Thatch-capped rain-hooded stack 011",
+      "category": "haystacks",
+      "lights": "LIGHTS_OFF",
+      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, thatch-capped rain-hooded stack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.53,
+        "world_px_height": 95,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e2c93f35-87de-4ff3-9a69-4dace469e4a8",
+      "sprite": "haystacks/haystack_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
