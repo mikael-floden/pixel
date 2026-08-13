@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_005",
+  "group": "hedges",
+  "rank": 12,
+  "index": 5,
+  "name": "Gap-toothed old hedge 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "gap-toothed old hedge",
+  "glow_concept": null,
+  "prompt": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground, gap-toothed old hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8681ccd7-5e14-457c-bc16-a87c3e63c77f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
