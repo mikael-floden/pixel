@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 519,
+  "scenery_count": 520,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 5,
@@ -795,7 +795,7 @@
     "bell_posts": 7,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 7,
+    "braziers": 8,
     "briar_thickets": 7,
     "broken_columns": 2,
     "bushes": 7,
@@ -2241,6 +2241,28 @@
       "status": "complete",
       "pixellab_object_id": "067fb3cc-bd07-4730-8edc-a2d9e2e057cd",
       "sprite": "braziers/brazier_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "brazier_008",
+      "rel": "braziers/brazier_008",
+      "name": "Antlered iron brazier 008 \u00b7 lit",
+      "category": "braziers",
+      "lights": "LIGHTS_ON",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, antlered iron brazier, waist-high, self-emissive at night, softly radiating light: roaring orange wood flame above the bowl",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.05,
+        "world_px_height": 40,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a7275c53-c269-4aae-9f69-bac7e899c506",
+      "sprite": "braziers/brazier_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

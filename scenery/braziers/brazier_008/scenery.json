@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:46:22+00:00",
+  "id": "brazier_008",
+  "group": "braziers",
+  "rank": 4,
+  "index": 8,
+  "name": "Antlered iron brazier 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "antlered iron brazier",
+  "glow_concept": "roaring orange wood flame above the bowl",
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, antlered iron brazier, waist-high, self-emissive at night, softly radiating light: roaring orange wood flame above the bowl",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.05,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a7275c53-c269-4aae-9f69-bac7e899c506",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
