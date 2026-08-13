@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 319,
+  "scenery_count": 320,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 102,
@@ -808,7 +808,7 @@
     "chimney_stacks": 2,
     "cliff_features": 2,
     "cliff_fragments": 2,
-    "cliff_vines": 2,
+    "cliff_vines": 3,
     "crystals": 3,
     "cup_fungi": 2,
     "cupboards_and_shelves": 3,
@@ -2531,6 +2531,28 @@
       "status": "complete",
       "pixellab_object_id": "f1bfc479-0e74-4697-b366-0f8f1eebf97b",
       "sprite": "cliff_vines/cliff_vine_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_003",
+      "rel": "cliff_vines/cliff_vine_003",
+      "name": "Fern-mixed green cascade 003",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, fern-mixed green cascade, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 5.08,
+        "world_px_height": 191,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6025f33d-86f1-41ae-9649-056250c3ed89",
+      "sprite": "cliff_vines/cliff_vine_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
