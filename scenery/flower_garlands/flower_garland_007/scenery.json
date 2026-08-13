@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:56:03+00:00",
+  "id": "flower_garland_007",
+  "group": "flower_garlands",
+  "rank": 73,
+  "index": 7,
+  "name": "Red rowan-berry garland 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "red rowan-berry garland",
+  "glow_concept": null,
+  "prompt": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, red rowan-berry garland, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_garlands/flower_garland_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.49,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "af7fafda-c686-4e89-b623-e20ee5e97fe8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
