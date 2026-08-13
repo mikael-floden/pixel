@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 401,
+  "scenery_count": 402,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -293,7 +293,7 @@
       "id": "ivy_posts",
       "name": "Ivy Post",
       "quota": 20,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 42,
@@ -837,7 +837,7 @@
     "hedges": 5,
     "hop_poles": 2,
     "house_clutter": 4,
-    "ivy_posts": 4,
+    "ivy_posts": 5,
     "lantern_posts": 5,
     "lantern_stands": 5,
     "letter_boxes": 2,
@@ -5320,6 +5320,28 @@
       "status": "complete",
       "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
       "sprite": "ivy_posts/ivy_post_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ivy_post_010",
+      "rel": "ivy_posts/ivy_post_010",
+      "name": "Frost-dusted winter ivy 010 \u00b7 lit",
+      "category": "ivy_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, frost-dusted winter ivy, large, twice human height, self-emissive at night, softly radiating light: green foxfire seeping from the rotten post core",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.34,
+        "world_px_height": 88,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "486a4507-e8c9-4377-9de0-3740511971cf",
+      "sprite": "ivy_posts/ivy_post_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
