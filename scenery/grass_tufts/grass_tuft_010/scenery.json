@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:38:23+00:00",
+  "id": "grass_tuft_010",
+  "group": "grass_tufts",
+  "rank": 36,
+  "index": 10,
+  "name": "Lush green spring tuft 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lush green spring tuft",
+  "glow_concept": "fireflies resting low between the blades",
+  "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, lush green spring tuft, small, knee-high, self-emissive at night, softly radiating light: fireflies resting low between the blades",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "grass_tufts/grass_tuft_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "75bc818a-4a4e-44e9-9c57-a66c29638c29",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
