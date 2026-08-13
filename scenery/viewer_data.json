@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 220,
+  "scenery_count": 221,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -41,7 +41,7 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 6,
@@ -761,7 +761,7 @@
     "hedges": 2,
     "hop_poles": 2,
     "ivy_posts": 2,
-    "lantern_posts": 2,
+    "lantern_posts": 3,
     "lantern_stands": 2,
     "letter_boxes": 2,
     "market_stalls": 2,
@@ -3129,6 +3129,28 @@
       "status": "complete",
       "pixellab_object_id": "6c30e95d-5b1d-42ce-9522-573a3d422842",
       "sprite": "lantern_posts/lantern_post_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_post_003",
+      "rel": "lantern_posts/lantern_post_003",
+      "name": "Leaning crooked post 003",
+      "category": "lantern_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, leaning crooked post, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.01,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f637f6e7-8e29-4da5-a77f-79118a78d065",
+      "sprite": "lantern_posts/lantern_post_003/sprite.webp",
       "rotations": {},
       "animations": []
     },

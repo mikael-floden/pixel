@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_post_003",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 3,
+  "name": "Leaning crooked post 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning crooked post",
+  "glow_concept": null,
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, leaning crooked post, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "lantern_posts/lantern_post_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.01,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f637f6e7-8e29-4da5-a77f-79118a78d065",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
