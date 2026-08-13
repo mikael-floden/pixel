@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_011",
+  "group": "waystones",
+  "rank": 6,
+  "index": 11,
+  "name": "Sea-smoothed coastal stone 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "sea-smoothed coastal stone",
+  "glow_concept": null,
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.33,
+    "world_px_height": 50,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 325,
+  "scenery_count": 326,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 7,
@@ -886,7 +886,7 @@
     "water_pumps": 2,
     "waterwheels": 2,
     "wayside_shrines": 3,
-    "waystones": 3,
+    "waystones": 4,
     "web_frames": 2,
     "wells": 3,
     "windmills": 3,
@@ -7828,6 +7828,28 @@
       "status": "complete",
       "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
       "sprite": "waystones/waystone_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_011",
+      "rel": "waystones/waystone_011",
+      "name": "Sea-smoothed coastal stone 011",
+      "category": "waystones",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.33,
+        "world_px_height": 50,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
+      "sprite": "waystones/waystone_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
