@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ancient_tree_001",
+  "group": "ancient_trees",
+  "rank": 60,
+  "index": 1,
+  "name": "Half-fallen leaning giant 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-fallen leaning giant",
+  "glow_concept": null,
+  "prompt": "an enormous ancient tree with a gnarled hollow trunk, sprawling surface roots, and a vast twisted crown, half-fallen leaning giant, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
+  "placement": {
+    "world_height_m": 6.1,
+    "world_px_height": 230,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3108a036-f421-4028-8ff8-9d1229ada84b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

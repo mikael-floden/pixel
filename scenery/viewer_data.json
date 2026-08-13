@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 77,
+  "scenery_count": 78,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -426,7 +426,7 @@
       "id": "ancient_trees",
       "name": "Ancient Tree",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 61,
@@ -710,6 +710,7 @@
     }
   ],
   "categories": {
+    "ancient_trees": 1,
     "aqueduct_fragments": 1,
     "barrels": 1,
     "beacons": 1,
@@ -774,6 +775,28 @@
     "windmills": 1
   },
   "scenery": [
+    {
+      "id": "ancient_tree_001",
+      "rel": "ancient_trees/ancient_tree_001",
+      "name": "Half-fallen leaning giant 001",
+      "category": "ancient_trees",
+      "lights": "LIGHTS_OFF",
+      "description": "an enormous ancient tree with a gnarled hollow trunk, sprawling surface roots, and a vast twisted crown, half-fallen leaning giant, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 6.1,
+        "world_px_height": 230,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3108a036-f421-4028-8ff8-9d1229ada84b",
+      "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
     {
       "id": "aqueduct_fragment_001",
       "rel": "aqueduct_fragments/aqueduct_fragment_001",
