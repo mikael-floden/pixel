@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 309,
+  "scenery_count": 310,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 18,
@@ -832,7 +832,7 @@
     "graves": 5,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 2,
+    "haystacks": 3,
     "hearths": 2,
     "hedges": 3,
     "hop_poles": 2,
@@ -3935,6 +3935,28 @@
       "status": "complete",
       "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
       "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_008",
+      "rel": "haystacks/haystack_008",
+      "name": "Fresh golden domed stack 008 \u00b7 lit",
+      "category": "haystacks",
+      "lights": "LIGHTS_ON",
+      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, fresh golden domed stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: stray straws glinting like spun gold",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.69,
+        "world_px_height": 64,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3eec8add-8744-4bf4-b22b-08aa05c44b3b",
+      "sprite": "haystacks/haystack_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

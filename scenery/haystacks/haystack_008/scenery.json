@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "haystack_008",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 8,
+  "name": "Fresh golden domed stack 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fresh golden domed stack",
+  "glow_concept": "stray straws glinting like spun gold",
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, fresh golden domed stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: stray straws glinting like spun gold",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.69,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3eec8add-8744-4bf4-b22b-08aa05c44b3b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
