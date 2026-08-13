@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 278,
+  "scenery_count": 279,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -601,7 +601,7 @@
       "id": "geodes",
       "name": "Geode",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 86,
@@ -824,7 +824,7 @@
     "flower_garlands": 2,
     "flower_stands": 4,
     "flower_trellises": 2,
-    "geodes": 1,
+    "geodes": 2,
     "giant_mushrooms": 2,
     "grass_tufts": 4,
     "decor": 1,
@@ -3258,6 +3258,28 @@
       "status": "complete",
       "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
       "sprite": "geodes/geode_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "geode_004",
+      "rel": "geodes/geode_004",
+      "name": "Halved citrine geode 004 \u00b7 lit",
+      "category": "geodes",
+      "lights": "LIGHTS_ON",
+      "description": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals, halved citrine geode, small, knee-high, self-emissive at night, softly radiating light: opening rimmed in soft ember light",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.58,
+        "world_px_height": 22,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f9f93219-74c2-4a4d-b906-61d078f859e6",
+      "sprite": "geodes/geode_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
