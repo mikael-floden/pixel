@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fence_006",
+  "group": "fences",
+  "rank": 10,
+  "index": 6,
+  "name": "Stone-footed post and rail 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stone-footed post and rail",
+  "glow_concept": "small tin lantern hung on the end post",
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, stone-footed post and rail, waist-high to an adult person, self-emissive at night, softly radiating light: small tin lantern hung on the end post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
