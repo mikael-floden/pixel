@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cattail_clump_007",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 7,
+  "name": "Burst fluffy seed heads 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "burst fluffy seed heads",
+  "glow_concept": null,
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, burst fluffy seed heads, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
