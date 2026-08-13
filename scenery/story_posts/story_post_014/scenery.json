@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_014",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 14,
+  "name": "Ancient split banded post 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ancient split banded post",
+  "glow_concept": "carved bird topper glowing softly",
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, ancient split banded post, large, twice human height, self-emissive at night, softly radiating light: carved bird topper glowing softly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "story_posts/story_post_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.9,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
