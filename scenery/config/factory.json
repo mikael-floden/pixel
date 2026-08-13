@@ -24,7 +24,8 @@
     "min_generations_remaining": 2000,
     "min_usd": 2.0,
     "daily_pieces": 100,
-    "_comment": "A batch may run while the subscription pool sits above the fleet's shared floor (coordination/PROTOCOL.md) OR usd credits sit above min_usd. The loop stops cleanly at the floor and simply resumes next day."
+    "_comment": "A batch may run while the subscription pool sits above the fleet's shared floor (coordination/PROTOCOL.md) OR usd credits sit above min_usd. The loop stops cleanly at the floor and simply resumes next day.",
+    "parallel_jobs": 8
   },
   "legacy_pieces": [
     "campfire",

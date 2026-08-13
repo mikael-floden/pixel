@@ -282,6 +282,17 @@ class PixelLabClient:
                 raise PixelLabError(f"job {job_id} timed out after {timeout}s")
             time.sleep(interval)
 
+    def submit_object(self, description, size=64, view="low top-down"):
+        """Submit an 8-direction create WITHOUT waiting for the job — the
+        parallel loop keeps many of these in flight and polls get_object().
+        Returns the object_id immediately."""
+        payload = {"description": description, "size": int(size), "view": view}
+        resp = self._request("POST", f"{V2_BASE}/create-8-direction-object", json=payload)
+        oid = resp.get("object_id") or resp.get("id")
+        if not oid:
+            raise PixelLabError(f"create returned no object_id: {str(resp)[:200]}")
+        return oid
+
     def create_object(self, description, size=64, view="low top-down",
                       style_image=None, reference_image=None, job_timeout=900):
         """Create a persistent 8-direction object (shows in the create-object UI,

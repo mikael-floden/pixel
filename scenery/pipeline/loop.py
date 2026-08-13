@@ -96,33 +96,45 @@ def can_spend(cfg, state):
 
 # --- one piece ---------------------------------------------------------------
 
-# Commit per piece; push (-> deploy -> reviewable in the wiki) every N pieces.
-# 10, not 20: the maintainer reviews WHILE the loop generates (2026-08-13), and
-# at ~2.6 min/piece a 20-piece batch left him waiting ~50 minutes for anything
-# new to appear. Ten keeps fresh art flowing without a deploy per sprite; the
-# deploy workflow's concurrency group collapses rapid pushes anyway.
-PUSH_EVERY = 10
+# Push EVERY piece (maintainer, 2026-08-13: "GENERATE, PUSH, GENERATE, PUSH!!"
+# — he reviews live while the factory runs, and a piece that is generated but
+# unpushed is invisible work that has twice now been stranded by dying runners).
+# The deploy workflow's concurrency group collapses rapid pushes into the
+# newest, so continuous pushing costs nothing.
+PUSH_EVERY = 1
+
+
+def submit_piece(client, cfg, group, spec):
+    """Queue ONE piece's PixelLab job; return (object_id, directions). The
+    parallel loop keeps several of these in flight — PixelLab generates
+    concurrently, so the loop must never wait on one job before submitting
+    the next (maintainer: "you are the bottleneck", 2026-08-13)."""
+    size = int(spec["size"])
+    desc = f"{spec['prompt']}, {cfg['style_base']}"
+    if size <= 168:
+        return client.submit_object(desc, size=size,
+                                    view=cfg.get("view", "low top-down")), 8
+    resp = client.create_1d_batch(desc, size)       # single candidate, auto-kept
+    oid = resp.get("object_id") or resp.get("id")
+    if not oid:
+        raise PixelLabError(f"create returned no object_id: {str(resp)[:200]}")
+    return oid, 1
 
 
 def run_piece(client, cfg, group, spec, push=True):
-    """Generate ONE piece end-to-end. Returns the piece id (or raises)."""
+    """Generate ONE piece end-to-end (serial path: --once). Returns piece id."""
+    print(f"piece: {group['id']}/{spec['id']} ({int(spec['size'])}px, {spec['lights']})")
+    oid, pixellab_directions = submit_piece(client, cfg, group, spec)
+    detail = client.wait_object(oid, want=("completed",))
+    return finalize_piece(client, cfg, group, spec, oid, pixellab_directions,
+                          detail, push=push)
+
+
+def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
+                   push=True):
+    """Tag, download SOUTH, save, manifest, viewer, heartbeat, commit+push."""
     tag = (cfg.get("tag") or "SCENERY").upper()
     size = int(spec["size"])
-    desc = f"{spec['prompt']}, {cfg['style_base']}"
-    print(f"piece: {group['id']}/{spec['id']} ({size}px, {spec['lights']})")
-
-    if size <= 168:
-        oid = client.create_object(desc, size=size,
-                                   view=cfg.get("view", "low top-down"))
-        pixellab_directions = 8
-    else:
-        resp = client.create_1d_batch(desc, size)   # single candidate, auto-kept
-        oid = resp.get("object_id") or resp.get("id")
-        if not oid:
-            raise PixelLabError(f"create returned no object_id: {str(resp)[:200]}")
-        pixellab_directions = 1
-
-    detail = client.wait_object(oid, want=("completed",))
     client.set_tags(oid, [tag])
     url = (detail.get("rotation_urls") or {}).get("south") or client.sprite_url(detail)
     img = client._download(url) if url else None
@@ -182,6 +194,9 @@ def main():
                     help="Print the next batches without calling PixelLab.")
     ap.add_argument("--no-sync", action="store_true",
                     help="Skip the pre-run repo<->PixelLab reconcile.")
+    ap.add_argument("--parallel", type=int, default=0,
+                    help="PixelLab jobs in flight at once (default: config "
+                         "budget.parallel_jobs, 8).")
     args = ap.parse_args()
 
     cfg = factory.load_config()
@@ -245,61 +260,124 @@ def main():
     start = time.monotonic()
     pieces = 0
     batches = 0
-    # A failed piece is SKIPPED for the rest of this run, never fatal: PixelLab
-    # jobs fail flakily (measured 2026-08-13: a content-policy false positive on
-    # an innocent moss-mound prompt, $0.00 charged, killed a 330-minute window
-    # after 59 pieces under the old run-fatal rule). The skipped piece simply
-    # retries on the NEXT run — nothing was written, so the deterministic
-    # planner offers it again. Only a STREAK of failures (a real outage, an
-    # exhausted account) stops the run.
+    # THE PARALLEL PIPELINE (maintainer, 2026-08-13: "don't wait for one object
+    # until you ask PixelLab to generate more... You are the bottleneck").
+    # PixelLab generates jobs concurrently, so the loop keeps up to
+    # budget.parallel_jobs creates in flight at once and finalizes each the
+    # moment it completes — submit, poll, finalize, push, forever. Serial
+    # completion order is NOT preserved (nor needed: every piece is
+    # independent and ids are assigned at submit time).
+    #
+    # A failed piece is SKIPPED for this run, never fatal: PixelLab fails
+    # flakily (measured: a content-filter false positive on an innocent
+    # moss-mound prompt once killed a 330-minute window). The planner offers
+    # the slot again next run. Only a STREAK of failures with no successes
+    # in between (a real outage) stops the run.
     skipped: dict[str, set] = {}
     consec_fail = 0
-    MAX_CONSEC_FAIL = 5
+    MAX_CONSEC_FAIL = 6
+    PARALLEL = max(1, int(args.parallel or cfg.get("budget", {}).get("parallel_jobs", 8)))
+    if args.once:
+        PARALLEL = 1
+    POLL_S = 5
+    in_flight = []        # [{spec, group, oid, dirs, at}]
+    submitted = 0
     stop_reason = "nothing left to generate"
+    stop_submitting = None
+    last_budget = 0.0
+    print(f"parallel pipeline: up to {PARALLEL} PixelLab jobs in flight")
     while True:
-        state = budget_state(client)
-        if not can_spend(cfg, state):
-            stop_reason = (f"budget floor (subscription {state['generations']:.0f} gens, "
-                           f"${state['usd']:.2f})")
-            break
-        done = factory.done_by_group()
-        for gid, ids in skipped.items():
-            done.setdefault(gid, set()).update(ids)
-        retired = factory.load_retired()
-        nxt = catalog.next_batch(cfg, done, retired)
-        if nxt is None:
-            stop_reason = "catalog complete" if not skipped else                 f"catalog complete except {sum(len(v) for v in skipped.values())} skipped piece(s)"
-            break
-        group, specs = nxt
-        room = max_pieces - pieces
-        if room <= 0:
-            stop_reason = f"piece cap ({max_pieces})"
-            break
-        specs = specs[:room]
-        try:
-            push_now = (not args.no_push) and ((pieces + 1) % PUSH_EVERY == 0)
-            run_piece(client, cfg, group, specs[0], push=push_now)
-            consec_fail = 0
-        except PixelLabError as e:
-            consec_fail += 1
-            skipped.setdefault(group["id"], set()).add(specs[0]["id"])
-            print(f"  ! piece {group['id']}/{specs[0]['id']} failed "
-                  f"({consec_fail} in a row) — skipped for this run, retries next run: "
-                  f"{str(e)[:160]}")
-            if consec_fail >= MAX_CONSEC_FAIL:
-                stop_reason = (f"{MAX_CONSEC_FAIL} consecutive failures — likely an "
-                               f"outage; last: {str(e)[:100]}")
+        # --- budget gate (rechecked at most every 60s, not per cycle) -------
+        if stop_submitting is None and time.monotonic() - last_budget > 60:
+            last_budget = time.monotonic()
+            state = budget_state(client)
+            if not can_spend(cfg, state):
+                stop_submitting = (f"budget floor (subscription "
+                                   f"{state['generations']:.0f} gens, ${state['usd']:.2f})")
+        # --- time / cap gates ----------------------------------------------
+        if stop_submitting is None and args.max_minutes \
+                and (time.monotonic() - start) / 60 >= args.max_minutes:
+            stop_submitting = "time budget"
+        if stop_submitting is None and submitted >= max_pieces:
+            stop_submitting = f"piece cap ({max_pieces})"
+        # --- keep the pipeline full ----------------------------------------
+        while stop_submitting is None and len(in_flight) < PARALLEL \
+                and submitted < max_pieces:
+            done = factory.done_by_group()
+            for gid, ids in skipped.items():
+                done.setdefault(gid, set()).update(ids)
+            for f in in_flight:
+                done.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])
+            nxt = catalog.next_batch(cfg, done, factory.load_retired())
+            if nxt is None:
+                stop_submitting = "catalog complete"
                 break
-            continue
-        pieces += 1
-        batches += 1
-        print(f"  = {pieces} piece(s) this run")
-        if args.once or (args.max_batches and batches >= args.max_batches):
+            group, specs = nxt
+            spec = specs[0]
+            try:
+                oid, dirs = submit_piece(client, cfg, group, spec)
+            except PixelLabError as e:
+                consec_fail += 1
+                skipped.setdefault(group["id"], set()).add(spec["id"])
+                print(f"  ! submit {group['id']}/{spec['id']} failed "
+                      f"({consec_fail} since last success): {str(e)[:140]}")
+                if consec_fail >= MAX_CONSEC_FAIL:
+                    stop_submitting = f"{MAX_CONSEC_FAIL} failures in a row on submit"
+                break
+            submitted += 1
+            in_flight.append({"spec": spec, "group": group, "oid": oid,
+                              "dirs": dirs, "at": time.monotonic()})
+            print(f"» {group['id']}/{spec['id']} submitted "
+                  f"({len(in_flight)} in flight, {submitted} total)")
+        # --- drain: poll everything in flight ------------------------------
+        still = []
+        for f in in_flight:
+            try:
+                o = client.get_object(f["oid"])
+                st = o.get("status")
+            except PixelLabError as e:
+                st = None
+                o = {}
+                if time.monotonic() - f["at"] > 1500:
+                    st = "failed"
+            if st == "completed":
+                try:
+                    finalize_piece(client, cfg, f["group"], f["spec"], f["oid"],
+                                   f["dirs"], o, push=not args.no_push)
+                    pieces += 1
+                    batches += 1
+                    consec_fail = 0
+                    mins = (time.monotonic() - start) / 60
+                    print(f"  = {pieces} done in {mins:.1f} min "
+                          f"({pieces / mins if mins else 0:.1f}/min)")
+                except PixelLabError as e:
+                    consec_fail += 1
+                    skipped.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])
+                    print(f"  ! finalize {f['group']['id']}/{f['spec']['id']} failed: "
+                          f"{str(e)[:140]}")
+            elif st == "failed" or (time.monotonic() - f["at"]) > 1500:
+                consec_fail += 1
+                skipped.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])
+                print(f"  ! {f['group']['id']}/{f['spec']['id']} "
+                      f"{'failed' if st == 'failed' else 'timed out'} "
+                      f"({consec_fail} since last success)")
+            else:
+                still.append(f)
+        in_flight = still
+        if consec_fail >= MAX_CONSEC_FAIL and stop_submitting is None:
+            stop_submitting = (f"{MAX_CONSEC_FAIL} failures with no success between "
+                               f"— likely an outage")
+        # --- exit when the pipeline is empty and nothing more may enter ----
+        if stop_submitting is not None and not in_flight:
+            stop_reason = stop_submitting
+            break
+        if args.once and pieces >= 1:
             stop_reason = "batch cap"
             break
-        if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
-            stop_reason = "time budget"
+        if args.max_batches and batches >= args.max_batches:
+            stop_reason = "batch cap"
             break
+        time.sleep(POLL_S)
 
     state = budget_state(client)
     health = "idle" if can_spend(cfg, state) or stop_reason == "catalog complete" \
