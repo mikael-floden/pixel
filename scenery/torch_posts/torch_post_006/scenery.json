@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "torch_post_006",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 6,
+  "name": "Stone-socketed torch post 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stone-socketed torch post",
+  "glow_concept": "smokeless pale-blue soul-flame",
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, stone-socketed torch post, about as tall as an adult person, self-emissive at night, softly radiating light: smokeless pale-blue soul-flame",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "torch_posts/torch_post_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.71,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "539bd21f-b7ff-48ac-8126-adb82410704e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
