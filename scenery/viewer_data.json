@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 133,
+  "scenery_count": 134,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 18,
@@ -757,7 +757,7 @@
     "graves": 2,
     "hanging_baskets": 1,
     "hanging_willows": 1,
-    "haystacks": 1,
+    "haystacks": 2,
     "hedges": 2,
     "hop_poles": 1,
     "ivy_posts": 1,
@@ -2073,6 +2073,28 @@
       "status": "complete",
       "pixellab_object_id": "2eccb1b8-0610-42ab-a5c8-9b67b8544486",
       "sprite": "haystacks/haystack_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_002",
+      "rel": "haystacks/haystack_002",
+      "name": "Storm-leaning tousled stack 002 \u00b7 lit",
+      "category": "haystacks",
+      "lights": "LIGHTS_ON",
+      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base, storm-leaning tousled stack, large, well above head height of a person, self-emissive at night, softly radiating light: luminous seed-heads threaded through the hay",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.51,
+        "world_px_height": 94,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0fc99a54-2cb4-4604-98e6-be2f75c14221",
+      "sprite": "haystacks/haystack_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
