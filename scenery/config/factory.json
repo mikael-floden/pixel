@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings).",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -225,7 +225,7 @@
         1.5,
         2.2
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "weathered oak post",
         "birch pole with bark",
@@ -297,7 +297,7 @@
         1.4,
         2.1
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "rag-wrapped ash stake",
         "iron sconce on oak post",
@@ -513,7 +513,7 @@
         0.9,
         1.6
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "pale pink dog roses",
         "deep crimson wild roses",
@@ -593,7 +593,7 @@
         2.6,
         4.2
       ],
-      "art_size": 160,
+      "art_size": 128,
       "variety": [
         "ornate cast-iron gas lamp",
         "square-headed medieval wooden post",
@@ -631,7 +631,7 @@
         0.8,
         1.7
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "fieldstone arch niche",
         "brick niche, iron grate",
@@ -898,7 +898,7 @@
         0.5,
         1.5
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "single facet-smooth soulstone",
         "cluster of pressed soulstones",
@@ -974,7 +974,7 @@
         0.7,
         1.6
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "red-berried currant bush",
         "low blueberry shrub",
@@ -1007,7 +1007,7 @@
         1.8,
         2.4
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "sack-head, patched brown coat",
         "turnip-head with felt hat",
@@ -1225,7 +1225,7 @@
         1.4,
         2.4
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "tall green summer reeds",
         "golden autumn reeds",
@@ -1264,7 +1264,7 @@
         1.0,
         1.8
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "green summer cattails",
         "autumn gold cattails",
@@ -1336,7 +1336,7 @@
         1.0,
         2.0
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "three posts bound together",
         "single tall barnacled piling",
@@ -1408,7 +1408,7 @@
         0.4,
         1.6
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "purple amethyst cluster",
         "clear white quartz spikes",
@@ -1485,7 +1485,7 @@
         0.2,
         0.4
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "small ring of red-white toadstools",
         "wide ring of pale caps",
@@ -1666,7 +1666,7 @@
         1.5,
         2.2
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "rack full of split herring",
         "rack with few large fish",
@@ -2130,7 +2130,7 @@
         0.4,
         1.0
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "long silver-grey log",
         "gnarled twisted root ball",
@@ -2301,7 +2301,7 @@
         0.7,
         2.0
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "half-faded armchair",
         "ghost-outline wardrobe",
@@ -2593,7 +2593,7 @@
         0.4,
         1.8
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "elk ribcage half-buried",
         "whale rib arch",
@@ -2630,7 +2630,7 @@
         1.0,
         1.7
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "tipped-over spilled-ore cart",
         "upright cart full of rainwater",
@@ -3454,7 +3454,7 @@
         0.8,
         1.2
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "rough fieldstone basin",
         "moss-rimmed old basin",
@@ -3940,7 +3940,7 @@
         0.9,
         1.7
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "striped rag rug",
         "round braided rug",
@@ -4005,7 +4005,7 @@
         0.4,
         1.0
       ],
-      "art_size": 96,
+      "art_size": 64,
       "variety": [
         "mounted deer antlers on a wooden plaque",
         "row of hanging copper pans",
