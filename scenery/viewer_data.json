@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 415,
+  "scenery_count": 416,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 11,
@@ -742,7 +742,7 @@
     "driftwood_logs": 2,
     "fading_relics": 2,
     "fallen_logs": 6,
-    "fences": 6,
+    "fences": 7,
     "ferns": 6,
     "fish_drying_racks": 6,
     "flame_niches": 6,
@@ -3530,6 +3530,28 @@
       "status": "complete",
       "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
       "sprite": "fences/fence_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_007",
+      "rel": "fences/fence_007",
+      "name": "White-painted pickets, peeling 007",
+      "category": "fences",
+      "lights": "LIGHTS_OFF",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, white-painted pickets, peeling, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.27,
+        "world_px_height": 48,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8663bbc4-dc64-43cc-8ee8-472a39767198",
+      "sprite": "fences/fence_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fence_007",
+  "group": "fences",
+  "rank": 10,
+  "index": 7,
+  "name": "White-painted pickets, peeling 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "white-painted pickets, peeling",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, white-painted pickets, peeling, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8663bbc4-dc64-43cc-8ee8-472a39767198",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
