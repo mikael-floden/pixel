@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_002",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 2,
+  "name": "Tarred black pole 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tarred black pole",
+  "glow_concept": "carved initials in the wood glowing ember-orange",
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, tarred black pole, towering, several times the height of a person, self-emissive at night, softly radiating light: carved initials in the wood glowing ember-orange",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.7,
+    "world_px_height": 177,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8f910cbc-b82d-4d41-98cb-897f0e32c6c5",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
