@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 556,
+  "scenery_count": 557,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -300,7 +300,7 @@
       "id": "ferns",
       "name": "Fern",
       "quota": 18,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 43,
@@ -818,7 +818,7 @@
     "fading_relics": 2,
     "fallen_logs": 8,
     "fences": 8,
-    "ferns": 7,
+    "ferns": 8,
     "fish_drying_racks": 7,
     "flame_niches": 8,
     "flower_garlands": 2,
@@ -5039,6 +5039,28 @@
       "status": "complete",
       "pixellab_object_id": "13dc0449-9cf3-4962-96d3-60ae6a4fc429",
       "sprite": "ferns/fern_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fern_007",
+      "rel": "ferns/fern_007",
+      "name": "Frost-silvered fern 007",
+      "category": "ferns",
+      "lights": "LIGHTS_OFF",
+      "description": "a bushy clump of arching ferns rising from a shaggy root crown, frost-silvered fern, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.94,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "62ce896a-06c0-45c5-baa1-09461b200315",
+      "sprite": "ferns/fern_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
