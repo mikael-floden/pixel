@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hearth_003",
+  "group": "hearths",
+  "rank": 107,
+  "index": 3,
+  "name": "Whitewashed hearth with tile trim 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "whitewashed hearth with tile trim",
+  "glow_concept": null,
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, whitewashed hearth with tile trim, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.77,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c2dad202-9832-4f75-be28-f6fee8a6ba86",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
