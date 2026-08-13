@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 357,
+  "scenery_count": 358,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 47,
@@ -717,7 +717,7 @@
     "aqueduct_fragments": 2,
     "barrels": 5,
     "beached_rowboats": 2,
-    "beacons": 4,
+    "beacons": 5,
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 5,
@@ -1274,6 +1274,28 @@
       "status": "complete",
       "pixellab_object_id": "dc45cc09-b4b6-43ee-94f0-cb7b39ab1a81",
       "sprite": "beacons/beacon_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_005",
+      "rel": "beacons/beacon_005",
+      "name": "Whitewashed harbor beacon 005",
+      "category": "beacons",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, whitewashed harbor beacon, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.54,
+        "world_px_height": 171,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a85fc63d-08ab-44ff-a352-967f2afc2099",
+      "sprite": "beacons/beacon_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
