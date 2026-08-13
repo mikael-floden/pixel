@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 553,
+  "scenery_count": 554,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -279,7 +279,7 @@
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
       "quota": 24,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 40,
@@ -875,7 +875,7 @@
     "sundials": 2,
     "tables": 7,
     "telegraph_poles": 7,
-    "toadstool_rings": 7,
+    "toadstool_rings": 8,
     "torch_posts": 8,
     "trailing_planters": 2,
     "trees": 8,
@@ -11370,6 +11370,28 @@
       "status": "complete",
       "pixellab_object_id": "711fbc50-2177-4317-bd41-d28aedd41ca1",
       "sprite": "toadstool_rings/toadstool_ring_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "toadstool_ring_011",
+      "rel": "toadstool_rings/toadstool_ring_011",
+      "name": "Double concentric ring 011",
+      "category": "toadstool_rings",
+      "lights": "LIGHTS_OFF",
+      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, double concentric ring, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.22,
+        "world_px_height": 8,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d6b7a981-fc04-47a0-a5b6-0b00a77cab70",
+      "sprite": "toadstool_rings/toadstool_ring_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
