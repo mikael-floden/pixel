@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:17:57+00:00",
+  "id": "streetlight_011",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 11,
+  "name": "Hexagonal glass head lamp 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "hexagonal glass head lamp",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, hexagonal glass head lamp, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "streetlights/streetlight_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.91,
+    "world_px_height": 110,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "43987415-b040-4400-85f0-65a334edfa3c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
