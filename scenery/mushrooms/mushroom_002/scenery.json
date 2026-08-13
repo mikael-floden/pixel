@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_002",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 2,
+  "name": "Pale ivory field mushrooms 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale ivory field mushrooms",
+  "glow_concept": "bioluminescent gills casting light from under the caps",
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, pale ivory field mushrooms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: bioluminescent gills casting light from under the caps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.24,
+    "world_px_height": 9,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8c414a6a-ca82-4b5c-b38b-d098892cd7c9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

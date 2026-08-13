@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 147,
+  "scenery_count": 148,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 32,
@@ -767,7 +767,7 @@
     "market_stalls": 1,
     "maypoles": 1,
     "moss_clumps": 1,
-    "mushrooms": 1,
+    "mushrooms": 2,
     "nest_posts": 1,
     "offering_tables": 2,
     "orchard_trees": 2,
@@ -2491,6 +2491,28 @@
       "status": "complete",
       "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
       "sprite": "mushrooms/mushroom_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_002",
+      "rel": "mushrooms/mushroom_002",
+      "name": "Pale ivory field mushrooms 002 \u00b7 lit",
+      "category": "mushrooms",
+      "lights": "LIGHTS_ON",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, pale ivory field mushrooms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: bioluminescent gills casting light from under the caps",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.24,
+        "world_px_height": 9,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8c414a6a-ca82-4b5c-b38b-d098892cd7c9",
+      "sprite": "mushrooms/mushroom_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
