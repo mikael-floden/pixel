@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 349,
+  "scenery_count": 350,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 39,
@@ -788,7 +788,7 @@
     "soulstone_outcrops": 5,
     "soulstone_plinths": 2,
     "spring_basins": 2,
-    "standing_stones": 4,
+    "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 16,
@@ -6473,6 +6473,28 @@
       "status": "complete",
       "pixellab_object_id": "3fcc7049-dad3-4153-9ebf-c3f0836aeab8",
       "sprite": "standing_stones/standing_stone_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "standing_stone_005",
+      "rel": "standing_stones/standing_stone_005",
+      "name": "Plain grey menhir 005",
+      "category": "standing_stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, plain grey menhir, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.24,
+        "world_px_height": 122,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cc7295de-3f50-46fc-bbb2-4f77849355a1",
+      "sprite": "standing_stones/standing_stone_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
