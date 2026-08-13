@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 344,
+  "scenery_count": 345,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 34,
@@ -731,7 +731,7 @@
     "cairns": 5,
     "light": 1,
     "carts": 5,
-    "cattail_clumps": 4,
+    "cattail_clumps": 5,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
     "cliff_fragments": 2,
@@ -2386,6 +2386,28 @@
       "status": "complete",
       "pixellab_object_id": "59c1ead1-c5d7-4c5e-a7f6-9840738284d4",
       "sprite": "cattail_clumps/cattail_clump_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cattail_clump_005",
+      "rel": "cattail_clumps/cattail_clump_005",
+      "name": "Green summer cattails 005",
+      "category": "cattail_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, green summer cattails, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.72,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
+      "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

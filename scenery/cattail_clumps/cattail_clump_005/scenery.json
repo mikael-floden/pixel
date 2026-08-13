@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cattail_clump_005",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 5,
+  "name": "Green summer cattails 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "green summer cattails",
+  "glow_concept": null,
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, green summer cattails, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.72,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
