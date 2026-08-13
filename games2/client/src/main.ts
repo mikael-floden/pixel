@@ -9,6 +9,7 @@ import { loadWorld, loadWorldsList } from "./maps";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
+import { registerGame } from "./gamefreeze";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 
@@ -348,6 +349,10 @@ async function boot() {
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 
   (window as any).__mlGame = game; // debug handle (scale-manager QA)
+  // The wiki drawer freezes the loop while it is open — a second document in
+  // an iframe and a running game loop fight over the same main thread, and
+  // the wiki lost (maintainer 2026-08-13). gamefreeze.ts is the seam.
+  registerGame(game);
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("npcManifest", npcManifest);

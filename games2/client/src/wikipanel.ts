@@ -23,6 +23,7 @@
 // call it from a menu button — nothing here is select-screen specific.
 
 import { gameAudio } from "../../composer/index";
+import { freezeGame, thawGame } from "./gamefreeze";
 
 let root: HTMLDivElement | null = null;
 let onResize: (() => void) | null = null;
@@ -142,6 +143,13 @@ function layout(panel: HTMLDivElement, frame: HTMLIFrameElement): void {
 
 export function openWikiPanel(): void {
   if (root) return; // already open
+  // FREEZE THE WORLD FIRST (maintainer 2026-08-13: "the wiki lags a bit when
+  // opened on top of the game — can you freeze or pause the game rendering
+  // when the wiki is open?"). Before the iframe is even created, so the
+  // heaviest moment — the wiki's own load and first layout — has the main
+  // thread to itself. No-op on the select screen, where there is no game.
+  // See gamefreeze.ts for what a sleeping loop does and does not stop.
+  freezeGame();
   ensureCss();
   root = document.createElement("div");
   root.className = "ml-wikiroot";
@@ -233,6 +241,11 @@ export function openWikiPanel(): void {
 
 export function closeWikiPanel(): void {
   if (!root) return;
+  // Back to the world — and BEFORE the slide-out, not after it: wake() ticks a
+  // frame synchronously, so the game is already repainted (and reading live
+  // state again) while the drawer is still moving off, instead of a frozen
+  // 280ms-old frame appearing behind it.
+  thawGame();
   saveSpot(); // remember the page + scroll for the next open
   openFrame = null;
   window.removeEventListener("pagehide", saveSpot);

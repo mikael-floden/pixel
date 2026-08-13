@@ -2357,6 +2357,31 @@ side collision just like monsters").
   CSS (uiscale.ts survives only for loading.ts + WorldScene's reconnect
   toast). Gates: verify-bars/-hudtabs/-clockflip/-chatpage/-gamepad/
   -select all assert the new DOM.
+- **THE WIKI DRAWER SLEEPS THE GAME LOOP** (`client/src/gamefreeze.ts`,
+  games-ui, maintainer 2026-08-13: "the wiki lags a bit when opened on top
+  of the game — can you freeze or pause the game rendering when the wiki is
+  open?"). The drawer hosts a whole second document in an iframe, laid out
+  and painted on the SAME main thread as the loop, and 88% of the world is
+  behind it. So `openWikiPanel` calls `freezeGame()` before the iframe even
+  exists — `TimeStep.sleep()`, the rAF cancelled outright — and
+  `closeWikiPanel` calls `thawGame()`. Measured on the dev harness: the
+  wiki's own document went from 3.5fps with 367ms stalls to 60fps with a
+  17ms worst gap, with the game advancing 0 frames while asleep. (The ratio
+  is this harness's — software GL renders the world at ~3fps here, so it
+  exaggerates; what is device-independent is that the game's per-frame cost
+  goes to zero.) Nothing that must keep working is on that loop: the
+  Colyseus socket is event-driven (state keeps arriving, a drop still
+  rejoins, the room does not notice — verified across a 30s freeze), the
+  composer schedules against the WebAudio clock, the HUD is DOM. Input
+  DOES stop, which is correct: `WorldRoom` integrates only what it
+  receives, so a frozen client stands still rather than coasting, and
+  bodies that moved more than two cells snap on the way back under
+  WorldScene's own teleport rule. `main.ts` registers the game (one line);
+  the select screen has no game and every call is a no-op there. **Waking is
+  not `TimeStep.resume()`** — see the entry in `UI_AGENT.md`: it arms
+  Phaser's 120-frame panic cooldown and the world runs in visible slow
+  motion. Gate: section 3 of `scripts/verify-wikibtn.mjs`; probe
+  `__mlFreeze` (its own namespace — WorldScene assigns `__ml` wholesale).
 - **HUD (golden-ratio split)**: the game viewport is the TOP 61.8% of the
   page (index.html `#game` = `--hud-h-inv`); the bottom 38.2% (`--hud-h`)
   is the DOM HUD (`client/src/hud.ts`): a tab row of 6 wiki buttons

@@ -48,6 +48,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   side the analog stick lives on, and in landscape which side the whole menu
   column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
   hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
+- `client/src/gamefreeze.ts` — puts the Phaser loop to sleep while a
+  full-screen reader is over the world (today: the wiki drawer). The seam
+  between `wikipanel.ts`, which asks, and `main.ts`, which registers the
+  game — neither has to know about the other. Probe `__mlFreeze`.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -78,8 +82,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `server/test/combat.review.test.ts` instead),
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
   `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
-  `scripts/verify-wikibtn.mjs` (the in-game Wiki button + the wiki's
-  remembered reading spot).
+  `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
+  remembered reading spot, and the game-loop freeze while it is open).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -189,6 +193,25 @@ from the games agent), #18 (title/landing screen).
   close and pagehide, applied on the next open — the hash rides the iframe
   src, the scroll waits for the page to be tall enough (the wiki fetches
   data.json before it renders).
+- **A FULL-SCREEN READER OVER THE WORLD PUTS THE LOOP TO SLEEP** — and waking
+  it is NOT `TimeStep.resume()` (`gamefreeze.ts`, maintainer 2026-08-13: "the
+  wiki lags a bit when opened on top of the game — can you freeze or pause the
+  game rendering when the wiki is open?"). The wiki drawer is a second document
+  painted on the same main thread, so `loop.sleep()` cancels the rAF outright
+  for as long as it is up. Nothing that has to keep working is on that loop:
+  the socket is event-driven, WebAudio schedules itself, the HUD is DOM. What
+  DOES stop is input, which is the behaviour you want — the server integrates
+  only what it receives, so a frozen client stands still instead of coasting.
+  THE TRAP is the wake: `resume()` is the obvious partner and it arms Phaser's
+  BACKGROUNDED-TAB recovery, `_coolDown = panicMax` (120), which clamps every
+  delta to the 16.7ms target for the next 120 FRAMES. Measured: 16.7ms of game
+  time per 167ms of real time, and a thawed player walked 20wu where an
+  unfrozen one walked 151 — visible slow motion on anything under 60fps. Move
+  `lastTime` to now instead and the first frame back is a ~0ms frame with no
+  cooldown behind it. (Phaser arms the SAME cooldown from its own window-focus
+  handler, so tapping inside the iframe and back out already does this with or
+  without the freeze — verified against the unfrozen baseline. Do not
+  re-diagnose that one as a freeze bug.)
 - **To TIME a DOM animation on this harness, drop the WebGL context first.**
   The software GL renders the world at ~5fps (measured at every viewport and
   on the lightest worlds), and WAAPI clocks run on the document timeline — at
