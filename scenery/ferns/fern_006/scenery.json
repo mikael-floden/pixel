@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_006",
+  "group": "ferns",
+  "rank": 42,
+  "index": 6,
+  "name": "Copper autumn bracken 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "copper autumn bracken",
+  "glow_concept": "veins of light tracing every frond",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, copper autumn bracken, small, knee-high to an adult person, self-emissive at night, softly radiating light: veins of light tracing every frond",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.51,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "13dc0449-9cf3-4962-96d3-60ae6a4fc429",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
