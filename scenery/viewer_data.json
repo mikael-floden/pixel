@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 437,
+  "scenery_count": 438,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -230,7 +230,7 @@
       "id": "reed_beds",
       "name": "Reed Bed",
       "quota": 38,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 33,
@@ -776,7 +776,7 @@
     "petrified_stumps": 2,
     "puffballs": 2,
     "rail_carts": 2,
-    "reed_beds": 6,
+    "reed_beds": 7,
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
@@ -6935,6 +6935,28 @@
       "status": "complete",
       "pixellab_object_id": "2fdfad09-4e8a-4162-bfc3-cf7885abb7da",
       "sprite": "reed_beds/reed_bed_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "reed_bed_007",
+      "rel": "reed_beds/reed_bed_007",
+      "name": "Winter-bleached pale reeds 007",
+      "category": "reed_beds",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, winter-bleached pale reeds, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.13,
+        "world_px_height": 80,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
+      "sprite": "reed_beds/reed_bed_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

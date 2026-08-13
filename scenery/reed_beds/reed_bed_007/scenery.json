@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_007",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 7,
+  "name": "Winter-bleached pale reeds 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "winter-bleached pale reeds",
+  "glow_concept": null,
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, winter-bleached pale reeds, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.13,
+    "world_px_height": 80,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
