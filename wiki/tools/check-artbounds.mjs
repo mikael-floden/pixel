@@ -66,7 +66,11 @@ ok(partial.length === 0,
   const out1 = execSync("node wiki/build.mjs --games2 games2", { cwd: ROOT, encoding: "utf8" });
   const m1 = out1.match(/art: \d+ clips — measured (\d+) now/);
   const after = JSON.parse(readFileSync(boundsPath, "utf8"));
-  ok(m1 && Number(m1[1]) === 1, `a clip dropped from the cache is re-measured by the next build (measured ${m1?.[1]})`);
+  // ">= 1", never "=== 1": the scenery loop lands ~100 pieces a day, so a
+  // build routinely measures NEW art alongside the entry this test dropped —
+  // that is the feature, not noise (a literal 1 here went red the first time
+  // the loop out-ran the committed cache, 20 minutes after it was written).
+  ok(m1 && Number(m1[1]) >= 1, `a clip dropped from the cache is re-measured by the next build (measured ${m1?.[1]})`);
   ok((after.clips[key] ?? []).join(",") === wantBB, `and comes back with the identical numbers (${key} → ${after.clips[key]})`);
   const out2 = execSync("node wiki/build.mjs --games2 games2", { cwd: ROOT, encoding: "utf8" });
   const m2 = out2.match(/art: \d+ clips — measured (\d+) now/);
