@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 405,
+  "scenery_count": 406,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -335,7 +335,7 @@
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 48,
@@ -810,7 +810,7 @@
     "waystones": 6,
     "web_frames": 2,
     "wells": 6,
-    "windmills": 5,
+    "windmills": 6,
     "wisteria_snags": 2,
     "woodpiles": 2
   },
@@ -9685,6 +9685,28 @@
       "status": "complete",
       "pixellab_object_id": "a0b69167-ac94-4d7f-bc86-a51036d4f37d",
       "sprite": "windmills/windmill_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "windmill_006",
+      "rel": "windmills/windmill_006",
+      "name": "Mill missing one sail 006 \u00b7 lit",
+      "category": "windmills",
+      "lights": "LIGHTS_ON",
+      "description": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, mill missing one sail, tall, about two people high, self-emissive at night, softly radiating light: ember-red glow at the hub of the sails",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.91,
+        "world_px_height": 147,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "64b579b8-1028-4e20-b91c-17e0d27c1450",
+      "sprite": "windmills/windmill_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
