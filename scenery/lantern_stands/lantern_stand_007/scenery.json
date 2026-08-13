@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_stand_007",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 7,
+  "name": "Leaning overgrown stand 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning overgrown stand",
+  "glow_concept": null,
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, leaning overgrown stand, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.32,
+    "world_px_height": 87,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "075f17ac-28c8-45a6-a00e-0fafea347db1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
