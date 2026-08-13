@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 342,
+  "scenery_count": 343,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 32,
@@ -767,7 +767,7 @@
     "market_stalls": 4,
     "maypoles": 4,
     "moss_clumps": 4,
-    "mushrooms": 4,
+    "mushrooms": 5,
     "nest_posts": 2,
     "offering_tables": 5,
     "orchard_trees": 5,
@@ -4977,6 +4977,28 @@
       "status": "complete",
       "pixellab_object_id": "2dd7ed4f-9c3b-4227-b2e5-2acb31b8cbad",
       "sprite": "mushrooms/mushroom_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_005",
+      "rel": "mushrooms/mushroom_005",
+      "name": "Violet amethyst deceivers 005",
+      "category": "mushrooms",
+      "lights": "LIGHTS_OFF",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, violet amethyst deceivers, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.32,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ed99c40c-58da-4f5b-a123-214b1d54283d",
+      "sprite": "mushrooms/mushroom_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

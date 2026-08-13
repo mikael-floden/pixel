@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_005",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 5,
+  "name": "Violet amethyst deceivers 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "violet amethyst deceivers",
+  "glow_concept": null,
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, violet amethyst deceivers, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.32,
+    "world_px_height": 12,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ed99c40c-58da-4f5b-a123-214b1d54283d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
