@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 225,
+  "scenery_count": 226,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -517,7 +517,7 @@
       "id": "flower_garlands",
       "name": "Flower Garland",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 74,
@@ -744,6 +744,7 @@
     "ferns": 5,
     "fish_drying_racks": 4,
     "flame_niches": 3,
+    "flower_garlands": 1,
     "flower_stands": 4,
     "flower_trellises": 1,
     "geodes": 1,
@@ -2662,6 +2663,28 @@
       "status": "complete",
       "pixellab_object_id": "94d4e807-7eb1-485d-94c9-f7ab29ed1d6e",
       "sprite": "flame_niches/flame_niche_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flower_garland_001",
+      "rel": "flower_garlands/flower_garland_001",
+      "name": "Ribbon-woven midsummer garland 001",
+      "category": "flower_garlands",
+      "lights": "LIGHTS_OFF",
+      "description": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, ribbon-woven midsummer garland, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.61,
+        "world_px_height": 61,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2998c510-5b8d-457f-b41e-eb16981141f3",
+      "sprite": "flower_garlands/flower_garland_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
