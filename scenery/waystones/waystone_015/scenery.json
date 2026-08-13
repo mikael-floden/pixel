@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:47:06+00:00",
+  "id": "waystone_015",
+  "group": "waystones",
+  "rank": 6,
+  "index": 15,
+  "name": "Leaning cracked stone 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning cracked stone",
+  "glow_concept": null,
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, leaning cracked stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_015/sprite.webp",
+  "placement": {
+    "world_height_m": 1.28,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "27dc6ee1-860f-400a-8db8-fc9fb2d5c785",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
