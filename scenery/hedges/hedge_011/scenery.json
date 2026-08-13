@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_011",
+  "group": "hedges",
+  "rank": 12,
+  "index": 11,
+  "name": "Neat boxwood hedge 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "neat boxwood hedge",
+  "glow_concept": null,
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.02,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "187f2382-6cb2-4607-9a86-cd0ab7be3e97",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

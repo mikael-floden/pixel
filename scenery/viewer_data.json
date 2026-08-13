@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 334,
+  "scenery_count": 335,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 13,
@@ -834,7 +834,7 @@
     "hanging_willows": 2,
     "haystacks": 3,
     "hearths": 3,
-    "hedges": 3,
+    "hedges": 4,
     "hop_poles": 2,
     "house_clutter": 3,
     "ivy_posts": 3,
@@ -4396,6 +4396,28 @@
       "status": "complete",
       "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
       "sprite": "hedges/hedge_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_011",
+      "rel": "hedges/hedge_011",
+      "name": "Neat boxwood hedge 011",
+      "category": "hedges",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.02,
+        "world_px_height": 38,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "187f2382-6cb2-4607-9a86-cd0ab7be3e97",
+      "sprite": "hedges/hedge_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
