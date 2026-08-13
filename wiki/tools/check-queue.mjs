@@ -134,6 +134,49 @@ ok(un.names.length === objs.length - APPROVED.length - REJECTED.length,
   ok(banner && /re-review/.test(banner) && /regenerated since/.test(banner),
     "and its own page says so above the approve/remove buttons");
   delete entries[victim.path];
+
+  // A VERDICT IS ABOUT BYTES, NOT ABOUT A DATE (maintainer 2026-08-14: "Why
+  // do I have to see and review items I have already reviewed?" — 129 pieces
+  // re-queued because each deploy INVENTED dates for pieces its committed
+  // cache had not met, post-dating them past his fresh verdicts). New
+  // verdicts record the sprite hash they judged; the hash outranks any date,
+  // and a guessed date is never allowed to call a legacy verdict stale.
+  const v2 = byNew.find((o) => !APPROVED.includes(o.path) && !REJECTED.includes(o.path) && o.artHash);
+  const v3 = byNew.find((o) => o !== v2 && !APPROVED.includes(o.path) && !REJECTED.includes(o.path) && o.artHash);
+  const hourBefore = (o) => new Date(Date.parse(o.added) - 3600e3).toISOString();
+  entries[v2.path] = { status: "approved", updated_at: hourBefore(v2), art: v2.artHash };   // "older" date, SAME bytes
+  entries[v3.path] = { status: "approved", updated_at: after(v3.path), art: "0000deadbeef0000" }; // newer date, DIFFERENT bytes
+  await go("#/objects");
+  await pick("all");
+  const hashSeen = await p.evaluate(([a, b]) => {
+    const badge = (id) => [...(document.querySelector(`[href="#/objects/${id}"]`)?.querySelectorAll(".card-badges .pill") ?? [])].map((x) => x.textContent);
+    return { same: badge(a), changed: badge(b) };
+  }, [v2.id, v3.id]);
+  console.log("hash rule:", JSON.stringify(hashSeen));
+  ok(hashSeen.same.includes("approved") && !hashSeen.same.includes("re-review"),
+    "a verdict whose recorded hash still matches is NEVER re-review, whatever the dates say");
+  ok(hashSeen.changed.includes("re-review") && !hashSeen.changed.includes("approved"),
+    "and one whose recorded hash differs IS re-review, even with a newer date");
+  delete entries[v2.path]; delete entries[v3.path];
+
+  // An INVENTED date (addedGuess — the deploy image has no git) proves
+  // nothing: a legacy hashless verdict older than it must not re-queue.
+  const v4 = byNew.find((o) => !APPROVED.includes(o.path) && !REJECTED.includes(o.path));
+  entries[v4.path] = { status: "approved", updated_at: "2026-08-01T00:00:00Z" };  // far before any date
+  await p.route("**/wiki/site/data.json", async (route) => {
+    const j = JSON.parse(await (await route.fetch()).text());
+    const t = j.domains.objects.find((x) => x.id === v4.id);
+    t.addedGuess = true; delete t.artHash;                       // exactly what a deploy-stamped piece looks like
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(j) });
+  });
+  await go("#/objects");
+  const g = await p.evaluate((id) =>
+    [...(document.querySelector(`[href="#/objects/${id}"]`)?.querySelectorAll(".card-badges .pill") ?? [])].map((x) => x.textContent), v4.id);
+  console.log("guessed date:", JSON.stringify(g));
+  ok(g.includes("approved") && !g.includes("re-review"),
+    "a guessed date never overrules a verdict — the deploy-restamp bug stays dead");
+  await p.unroute("**/wiki/site/data.json");
+  delete entries[v4.path];
   await go("#/objects");                   // back to a page that HAS the sort bar
 }
 
