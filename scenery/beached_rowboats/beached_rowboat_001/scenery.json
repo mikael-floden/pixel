@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beached_rowboat_001",
+  "group": "beached_rowboats",
+  "rank": 84,
+  "index": 1,
+  "name": "Small dinghy with rope coil 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "small dinghy with rope coil",
+  "glow_concept": null,
+  "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, small dinghy with rope coil, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "beached_rowboats/beached_rowboat_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.1,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a9d52ab0-bbb4-407e-b3b6-75ca621574d1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
