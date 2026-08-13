@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:01:47+00:00",
+  "id": "wall_hanging_012",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 12,
+  "name": "Herb bundles drying on a rail 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "herb bundles drying on a rail",
+  "glow_concept": "jars glowing on the mounted shelf",
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, herb bundles drying on a rail, small, knee-high, self-emissive at night, softly radiating light: jars glowing on the mounted shelf",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.74,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a627fc98-2043-4994-84eb-980edf1629ef",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

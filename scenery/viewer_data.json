@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 380,
+  "scenery_count": 381,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 2
+      "done": 3
     }
   ],
   "categories": {
@@ -879,7 +879,7 @@
     "torch_posts": 6,
     "trailing_planters": 2,
     "trees": 7,
-    "wall_hangings": 2,
+    "wall_hangings": 3,
     "washing_lines": 5,
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
@@ -8422,6 +8422,28 @@
       "status": "complete",
       "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
       "sprite": "wall_hangings/wall_hanging_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wall_hanging_012",
+      "rel": "wall_hangings/wall_hanging_012",
+      "name": "Herb bundles drying on a rail 012 \u00b7 lit",
+      "category": "wall_hangings",
+      "lights": "LIGHTS_ON",
+      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, herb bundles drying on a rail, small, knee-high, self-emissive at night, softly radiating light: jars glowing on the mounted shelf",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.74,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a627fc98-2043-4994-84eb-980edf1629ef",
+      "sprite": "wall_hangings/wall_hanging_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
