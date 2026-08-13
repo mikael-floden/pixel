@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 307,
+  "scenery_count": 308,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 22,
@@ -870,7 +870,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
-    "story_posts": 2,
+    "story_posts": 3,
     "streetlights": 3,
     "stumps": 5,
     "sundials": 2,
@@ -6399,6 +6399,28 @@
       "status": "complete",
       "pixellab_object_id": "65163a70-fddc-4adc-83e6-554463a46aca",
       "sprite": "story_posts/story_post_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_010",
+      "rel": "story_posts/story_post_010",
+      "name": "Wave-carved sea-tale post 010 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wave-carved sea-tale post, large, twice human height, self-emissive at night, softly radiating light: luminous ribbons streaming from the top",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.91,
+        "world_px_height": 72,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
+      "sprite": "story_posts/story_post_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

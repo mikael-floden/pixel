@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_010",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 10,
+  "name": "Wave-carved sea-tale post 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wave-carved sea-tale post",
+  "glow_concept": "luminous ribbons streaming from the top",
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wave-carved sea-tale post, large, twice human height, self-emissive at night, softly radiating light: luminous ribbons streaming from the top",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "story_posts/story_post_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.91,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
