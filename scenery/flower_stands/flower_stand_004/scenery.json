@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_004",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 4,
+  "name": "Red poppy cluster 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red poppy cluster",
+  "glow_concept": "petals edged with soft white light",
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, red poppy cluster, waist-high to an adult person, self-emissive at night, softly radiating light: petals edged with soft white light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6f9efeab-84c2-4128-9f30-0b8e8ee9ceab",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
