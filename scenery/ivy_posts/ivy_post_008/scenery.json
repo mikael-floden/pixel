@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ivy_post_008",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 8,
+  "name": "Ivy with black berry clusters 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ivy with black berry clusters",
+  "glow_concept": "fireflies nested deep among the leaves",
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, ivy with black berry clusters, large, twice human height, self-emissive at night, softly radiating light: fireflies nested deep among the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.14,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
