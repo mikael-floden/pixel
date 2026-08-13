@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 526,
+  "scenery_count": 527,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 7,
     "sheaf_poles": 2,
-    "signposts": 7,
+    "signposts": 8,
     "soulstone_outcrops": 7,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -9104,6 +9104,28 @@
       "status": "complete",
       "pixellab_object_id": "0b47fdc5-645d-4d3c-9299-34cdf8d7030e",
       "sprite": "signposts/signpost_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_019",
+      "rel": "signposts/signpost_019",
+      "name": "Arrow-cluster crossroads post 019",
+      "category": "signposts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, arrow-cluster crossroads post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.88,
+        "world_px_height": 71,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "10a2ff85-da4b-4f90-bb4d-04368b0a3196",
+      "sprite": "signposts/signpost_019/sprite.webp",
       "rotations": {},
       "animations": []
     },
