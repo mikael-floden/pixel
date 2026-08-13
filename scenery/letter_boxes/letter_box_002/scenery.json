@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "letter_box_002",
+  "group": "letter_boxes",
+  "rank": 88,
+  "index": 2,
+  "name": "Iron city box, fluted post 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "iron city box, fluted post",
+  "glow_concept": "letters glowing warm gold through the slot",
+  "prompt": "a small wooden letterbox on a post with a slot and a hinged lid, stuffed with folded letters, a few tucked under the lid, iron city box, fluted post, waist-high to an adult person, self-emissive at night, softly radiating light: letters glowing warm gold through the slot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "letter_boxes/letter_box_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f2945de2-a2ba-430f-b4bd-e266162b809b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
