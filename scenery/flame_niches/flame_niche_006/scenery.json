@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flame_niche_006",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 6,
+  "name": "Copper-hooded niche 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "copper-hooded niche",
+  "glow_concept": "cold blue flame burning without fuel",
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, copper-hooded niche, about as tall as an adult person, self-emissive at night, softly radiating light: cold blue flame burning without fuel",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "flame_niches/flame_niche_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.42,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9f925512-13b6-42a5-8237-ac3c0469d631",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
