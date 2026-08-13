@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 458,
+  "scenery_count": 459,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -342,7 +342,7 @@
       "id": "maypoles",
       "name": "Maypole",
       "quota": 6,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 49,
@@ -842,7 +842,7 @@
     "lantern_stands": 5,
     "letter_boxes": 2,
     "market_stalls": 4,
-    "maypoles": 5,
+    "maypoles": 6,
     "moss_clumps": 6,
     "mushrooms": 6,
     "nest_posts": 2,
@@ -6464,6 +6464,28 @@
       "status": "complete",
       "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
       "sprite": "maypoles/maypole_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "maypole_008",
+      "rel": "maypoles/maypole_008",
+      "name": "Pole topped with small flag 008 \u00b7 lit",
+      "category": "maypoles",
+      "lights": "LIGHTS_ON",
+      "description": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, pole topped with small flag, tall, about three times human height, self-emissive at night, softly radiating light: ghost-pale ring of dancers' light in the grass below",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 4.2,
+        "world_px_height": 158,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8407f2db-bb34-47f7-936a-943e95fb249d",
+      "sprite": "maypoles/maypole_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
