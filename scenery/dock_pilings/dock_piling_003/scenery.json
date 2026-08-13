@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dock_piling_003",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 3,
+  "name": "Pilings with old plank fragment 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "pilings with old plank fragment",
+  "glow_concept": null,
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pilings with old plank fragment, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "dock_pilings/dock_piling_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.71,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "eaaaa147-b40f-44c4-bb48-a01b5c54b4ff",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
