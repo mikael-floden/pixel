@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 328,
+  "scenery_count": 329,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 18,
@@ -757,7 +757,7 @@
     "graves": 5,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 4,
+    "haystacks": 5,
     "hedges": 5,
     "hop_poles": 2,
     "ivy_posts": 4,
@@ -3987,6 +3987,28 @@
       "status": "complete",
       "pixellab_object_id": "3f1a3feb-5fb3-4100-a104-3d95e7ab47ed",
       "sprite": "haystacks/haystack_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_005",
+      "rel": "haystacks/haystack_005",
+      "name": "Short hay-drying rack row 005",
+      "category": "haystacks",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall rounded haystack raked up around a center pole, flared wide at the base, short hay-drying rack row, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.42,
+        "world_px_height": 91,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3150f562-6634-4100-b2aa-0f2fe0da90ea",
+      "sprite": "haystacks/haystack_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
