@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_008",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 8,
+  "name": "Fireweed in magenta bloom 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fireweed in magenta bloom",
+  "glow_concept": "foxglove bells glowing like hanging lamps",
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, fireweed in magenta bloom, waist-high, self-emissive at night, softly radiating light: foxglove bells glowing like hanging lamps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.08,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
