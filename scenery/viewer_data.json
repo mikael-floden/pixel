@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 422,
+  "scenery_count": 423,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -762,7 +762,7 @@
       "id": "rugs_and_hides",
       "name": "Rug",
       "quota": 30,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 109,
@@ -856,7 +856,7 @@
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
-    "rugs_and_hides": 4,
+    "rugs_and_hides": 5,
     "ruined_arches": 2,
     "rusted_machines": 2,
     "scarecrows": 5,
@@ -7080,6 +7080,28 @@
       "status": "complete",
       "pixellab_object_id": "c1fd5055-8f22-4adc-9198-2cc444d7d47d",
       "sprite": "rugs_and_hides/rug_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rug_014",
+      "rel": "rugs_and_hides/rug_014",
+      "name": "Striped rag rug 014 \u00b7 lit",
+      "category": "rugs_and_hides",
+      "lights": "LIGHTS_ON",
+      "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, striped rag rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm hearthlight reflected across the pile",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.23,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3db3c876-a704-41c2-94b3-4c1e7a176d74",
+      "sprite": "rugs_and_hides/rug_014/sprite.webp",
       "rotations": {},
       "animations": []
     },

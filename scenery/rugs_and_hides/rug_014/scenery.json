@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:14:49+00:00",
+  "id": "rug_014",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 14,
+  "name": "Striped rag rug 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "striped rag rug",
+  "glow_concept": "warm hearthlight reflected across the pile",
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, striped rag rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm hearthlight reflected across the pile",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.23,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3db3c876-a704-41c2-94b3-4c1e7a176d74",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
