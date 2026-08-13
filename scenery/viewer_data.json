@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 456,
+  "scenery_count": 457,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -293,7 +293,7 @@
       "id": "ivy_posts",
       "name": "Ivy Post",
       "quota": 20,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 42,
@@ -837,7 +837,7 @@
     "hedges": 6,
     "hop_poles": 2,
     "house_clutter": 5,
-    "ivy_posts": 5,
+    "ivy_posts": 6,
     "lantern_posts": 6,
     "lantern_stands": 5,
     "letter_boxes": 2,
@@ -5914,6 +5914,28 @@
       "status": "complete",
       "pixellab_object_id": "93fa63a1-d080-4605-b740-451e84efe95b",
       "sprite": "ivy_posts/ivy_post_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ivy_post_007",
+      "rel": "ivy_posts/ivy_post_007",
+      "name": "Common green ivy, oak post 007",
+      "category": "ivy_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, common green ivy, oak post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.01,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "66753264-56a4-4b36-ab90-974368606bfa",
+      "sprite": "ivy_posts/ivy_post_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
