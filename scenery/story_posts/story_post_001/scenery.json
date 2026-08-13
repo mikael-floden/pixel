@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_001",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 1,
+  "name": "Oak post, spiral scenes 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "oak post, spiral scenes",
+  "glow_concept": null,
+  "prompt": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, oak post, spiral scenes, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "story_posts/story_post_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.55,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c253194a-e0b4-4d96-86bc-1d5d2584c24a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
