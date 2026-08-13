@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "maypole_003",
+  "group": "maypoles",
+  "rank": 48,
+  "index": 3,
+  "name": "Ribbonless plain leafy pole 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "ribbonless plain leafy pole",
+  "glow_concept": null,
+  "prompt": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, ribbonless plain leafy pole, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "maypoles/maypole_003/sprite.webp",
+  "placement": {
+    "world_height_m": 4.42,
+    "world_px_height": 166,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c0438659-1efd-43a6-bc18-763a123f156a",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
