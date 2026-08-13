@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "offering_table_001",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 1,
+  "name": "Table with drinking horns 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "table with drinking horns",
+  "glow_concept": null,
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, table with drinking horns, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f3f92c53-b7df-439e-9209-f1b8effb8b77",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
