@@ -260,9 +260,9 @@
             "saber_toothed_tiger/animations/attack/west/02.webp",
             "saber_toothed_tiger/animations/attack/west/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:22:05 GMT",
+          "lm": "Thu, 13 Aug 2026 15:14:23 GMT",
           "src_frames": 4,
-          "sub": "24f95a89-ac6b-4e7b-a769-570a122a4133"
+          "sub": "a135716e-fc04-4184-84a3-af2c5b6c1652"
         }
       }
     },
@@ -284,9 +284,9 @@
             "saber_toothed_tiger/animations/idle/east/07.webp",
             "saber_toothed_tiger/animations/idle/east/08.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:22:06 GMT",
+          "lm": "Thu, 13 Aug 2026 15:14:24 GMT",
           "src_frames": 9,
-          "sub": "12fe36a0-38ad-4284-ab40-ebadef932609"
+          "sub": "8fcfd2bd-b027-46a9-9072-f1782bd4d591"
         },
         "north": {
           "frames": 9,
@@ -302,9 +302,9 @@
             "saber_toothed_tiger/animations/idle/north/07.webp",
             "saber_toothed_tiger/animations/idle/north/08.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:22:08 GMT",
+          "lm": "Thu, 13 Aug 2026 15:14:25 GMT",
           "src_frames": 9,
-          "sub": "d39d6b58-a891-46e7-8add-f397065ae10b"
+          "sub": "26396c79-2a74-4145-9afe-a3a88e6587fa"
         },
         "north-east": {
           "frames": 9,
@@ -684,43 +684,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Big bite attack",
-      "key": "attack",
-      "direction": "west",
-      "takes": [
-        "24f95a89-ac6b-4e7b-a769-570a122a4133",
-        "e722b9b1-ed11-4cd3-a510-b6e88f48452c"
-      ]
-    },
-    {
-      "animation": "custom-Calm idle. Peaceful.",
-      "key": "idle",
-      "direction": "east",
-      "takes": [
-        "12fe36a0-38ad-4284-ab40-ebadef932609",
-        "f635b078-d651-4e11-b16c-5bb1c9be7369"
-      ]
-    },
-    {
-      "animation": "custom-Calm idle. Peaceful.",
-      "key": "idle",
-      "direction": "north",
-      "takes": [
-        "08bebb10-66de-4e64-9b79-83b3f6cc048d",
-        "d39d6b58-a891-46e7-8add-f397065ae10b"
-      ]
-    },
-    {
-      "animation": "custom-Calm idle. Peaceful.",
-      "key": "idle",
-      "direction": "north-west",
-      "takes": [
-        "5af39b22-2e4f-4fc8-b550-6ea50bdd71c6",
-        "addbccef-e02a-4435-97fb-91cdd9387492"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

@@ -72,9 +72,9 @@
             "mammoth/animations/angry/north/02.webp",
             "mammoth/animations/angry/north/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:23:24 GMT",
+          "lm": "Thu, 13 Aug 2026 10:23:23 GMT",
           "src_frames": 4,
-          "sub": "802d8b58-859b-4bb1-a955-c03c795f4b46"
+          "sub": "2dd2bdc8-9757-4a49-8b0f-27bb79a25a02"
         },
         "north-east": {
           "frames": 4,
@@ -604,16 +604,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Angry idle",
-      "key": "angry",
-      "direction": "north",
-      "takes": [
-        "2dd2bdc8-9757-4a49-8b0f-27bb79a25a02",
-        "802d8b58-859b-4bb1-a955-c03c795f4b46"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

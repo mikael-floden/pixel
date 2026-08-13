@@ -203,9 +203,9 @@
             "hellhound/animations/attack/north-east/02.webp",
             "hellhound/animations/attack/north-east/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:53 GMT",
+          "lm": "Thu, 13 Aug 2026 15:08:58 GMT",
           "src_frames": 4,
-          "sub": "f59fbdc0-281c-4830-a093-3071a6b20ed8"
+          "sub": "2c0084ae-6820-4137-8a26-3d1cde5059bf"
         },
         "north-west": {
           "frames": 4,
@@ -462,9 +462,9 @@
             "hellhound/animations/die/south-east/02.webp",
             "hellhound/animations/die/south-east/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 09:59:49 GMT",
+          "lm": "Thu, 13 Aug 2026 15:09:02 GMT",
           "src_frames": 4,
-          "sub": "791f4f14-fa28-4580-8be5-7bd1e71262ed"
+          "sub": "1e1e50f8-2af5-47d8-ad43-079aff525e84"
         },
         "south-west": {
           "frames": 4,
@@ -475,9 +475,9 @@
             "hellhound/animations/die/south-west/02.webp",
             "hellhound/animations/die/south-west/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 09:59:55 GMT",
+          "lm": "Thu, 13 Aug 2026 15:09:03 GMT",
           "src_frames": 4,
-          "sub": "01ef5247-e80c-4d91-80c8-22a7f67f46cf"
+          "sub": "3b18426a-4737-4a61-b566-b495f0e0306c"
         },
         "west": {
           "frames": 4,
@@ -628,16 +628,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Fast flame attack",
-      "key": "attack",
-      "direction": "north-east",
-      "takes": [
-        "0a20e276-1152-4df5-8bab-fc70a276a8b9",
-        "f59fbdc0-281c-4830-a093-3071a6b20ed8"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

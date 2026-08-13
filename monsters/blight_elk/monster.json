@@ -177,9 +177,9 @@
             "blight_elk/animations/attack/east/02.webp",
             "blight_elk/animations/attack/east/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 09:46:15 GMT",
+          "lm": "Thu, 13 Aug 2026 15:06:04 GMT",
           "src_frames": 4,
-          "sub": "2bb03d6b-532c-4618-8dc6-a89ab59caa3e"
+          "sub": "62a52b4e-8e2b-423f-8246-bb8a6b952c0d"
         },
         "north": {
           "frames": 4,
@@ -229,9 +229,9 @@
             "blight_elk/animations/attack/south/02.webp",
             "blight_elk/animations/attack/south/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:45 GMT",
+          "lm": "Thu, 13 Aug 2026 15:06:05 GMT",
           "src_frames": 4,
-          "sub": "3c915f4a-638b-4258-81f7-2a647407a78e"
+          "sub": "409ac951-b742-40a7-89cf-a8e4c86ac187"
         },
         "south-east": {
           "frames": 4,
@@ -268,9 +268,9 @@
             "blight_elk/animations/attack/west/02.webp",
             "blight_elk/animations/attack/west/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 09:46:23 GMT",
+          "lm": "Thu, 13 Aug 2026 15:06:07 GMT",
           "src_frames": 4,
-          "sub": "a01caca6-7648-4bdc-8970-0c4c43676124"
+          "sub": "b5a1dfb3-9060-4c5e-b78e-4d1337804a95"
         }
       }
     },
@@ -397,7 +397,7 @@
             "blight_elk/animations/die/east/02.webp",
             "blight_elk/animations/die/east/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 09:46:35 GMT",
+          "lm": "Thu, 13 Aug 2026 15:06:09 GMT",
           "src_frames": 4,
           "sub": "eb9792dc-41cd-4c53-b393-412580e6447b"
         },
@@ -628,16 +628,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Horn Strike - Lowers head and quickly thrusts horn",
-      "key": "attack",
-      "direction": "south",
-      "takes": [
-        "65fc0e06-e81f-4df5-aae4-2c7a2bbc1411",
-        "3c915f4a-638b-4258-81f7-2a647407a78e"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

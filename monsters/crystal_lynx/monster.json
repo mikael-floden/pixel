@@ -289,7 +289,7 @@
           ],
           "lm": "Wed, 12 Aug 2026 22:37:48 GMT",
           "src_frames": 4,
-          "sub": "027cff41-9930-4b99-b19a-7e5436979e93"
+          "sub": "1e6c2854-af53-4d96-8971-1236d3d03882"
         },
         "north": {
           "frames": 4,
@@ -300,9 +300,9 @@
             "crystal_lynx/animations/angry/north/02.webp",
             "crystal_lynx/animations/angry/north/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:47 GMT",
+          "lm": "Thu, 13 Aug 2026 15:08:25 GMT",
           "src_frames": 4,
-          "sub": "0daef3f7-c50b-469d-8508-a7c319593635"
+          "sub": "63a59836-d8d6-4583-9769-9d1283f7123e"
         },
         "north-east": {
           "frames": 4,
@@ -326,9 +326,9 @@
             "crystal_lynx/animations/angry/north-west/02.webp",
             "crystal_lynx/animations/angry/north-west/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:50 GMT",
+          "lm": "Thu, 13 Aug 2026 15:08:26 GMT",
           "src_frames": 4,
-          "sub": "722fda14-4aef-4ef1-972a-c52b59c3e76e"
+          "sub": "87b4f587-2a86-46d0-9049-5f7d398b03b1"
         },
         "south": {
           "frames": 4,
@@ -628,34 +628,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-angry but calm idle",
-      "key": "angry",
-      "direction": "north",
-      "takes": [
-        "0daef3f7-c50b-469d-8508-a7c319593635",
-        "72906282-9bf9-4c59-9e9d-c0653be7a83e"
-      ]
-    },
-    {
-      "animation": "custom-angry but calm idle",
-      "key": "angry",
-      "direction": "east",
-      "takes": [
-        "027cff41-9930-4b99-b19a-7e5436979e93",
-        "1e6c2854-af53-4d96-8971-1236d3d03882"
-      ]
-    },
-    {
-      "animation": "custom-angry but calm idle",
-      "key": "angry",
-      "direction": "north-west",
-      "takes": [
-        "3b058752-965c-4d39-9634-89abade2da5e",
-        "722fda14-4aef-4ef1-972a-c52b59c3e76e"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

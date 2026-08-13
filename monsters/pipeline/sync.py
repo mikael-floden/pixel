@@ -149,6 +149,45 @@ def discover_roster(client, verbose=True, allow_mass_prune=False):
     return roster, {"added": [e["id"] for e in added], "dropped": dropped, "flagged": flagged}
 
 
+def adopt_new_animations(roster, metas, verbose=True):
+    """Map animations added to an ALREADY-KNOWN monster onto the states they fill.
+
+    Auto-renaming used to happen only for brand-new monsters, so when the
+    maintainer generated a missing animation for an existing one it mirrored as
+    an unmapped extra with a slugged key — the art sat on disk while verify kept
+    reporting the state as missing (plague_hound's attack, 2026-08-13). Here a
+    monster with an unmapped state adopts an extra animation whose name
+    classifies to exactly that state. Deliberately narrow: it only ever FILLS a
+    hole, never re-points a state the roster already pins.
+    """
+    by_id = {m["id"]: m for m in roster}
+    adopted = []
+    for meta in metas:
+        entry = by_id.get(meta["id"])
+        if not entry:
+            continue
+        unmapped = {s for s, k in (meta.get("states") or {}).items() if k is None}
+        if not unmapped:
+            continue
+        renames = dict(entry.get("renames") or {})
+        for key, a in (meta.get("animations") or {}).items():
+            if key in STATES:
+                continue
+            src = a.get("source_name")
+            guess = states_mod.classify(src)
+            if src and guess in unmapped and src not in renames:
+                renames[src] = guess
+                unmapped.discard(guess)
+                adopted.append({"id": meta["id"], "name": src, "state": guess})
+        if renames != (entry.get("renames") or {}):
+            entry["renames"] = renames
+    if verbose:
+        for a in adopted:
+            print(f"  ADOPT {a['id']}: {a['name']!r} -> {a['state']} "
+                  f"(new animation filling a missing state)")
+    return adopted
+
+
 # --- animation_map.json (the game-facing contract) ---------------------------
 
 def build_animation_map(metas):
@@ -254,6 +293,27 @@ def sync(client, fresh=False, dry_run=False, only=None, allow_mass_prune=False):
     if dry_run:
         print("\n(dry run: nothing written)")
         return {"pruned": pruned, **report}
+
+    # An animation the maintainer added to an existing monster arrives as an
+    # unmapped extra; adopt it into the state it fills, then re-mirror that
+    # monster so the art lands under the canonical key (frames are unchanged,
+    # so this is 304s plus a re-save).
+    adopted = adopt_new_animations(roster, metas)
+    if adopted:
+        write_roster(roster)
+        by_id = {m["id"]: m for m in roster}
+        for mid in sorted({a["id"] for a in adopted}):
+            m = by_id[mid]
+            print(f"\nre-mirror {mid} (adopted "
+                  f"{', '.join(a['state'] for a in adopted if a['id'] == mid)})")
+            shutil.rmtree(monster_dir(mid), ignore_errors=True)
+            mirror.mirror(client, mid, m["kind"], m["pixellab_id"],
+                          renames=m.get("renames"), name=m.get("name"),
+                          direction_picks=m.get("direction_picks"),
+                          lore=m.get("lore"))
+            postprocess.process_monster(mid)
+            postprocess.trim_die_tails(mid)
+            metas = [read_manifest(mid) if x["id"] == mid else x for x in metas]
 
     build_animation_map(metas)
     problems = verify(metas)

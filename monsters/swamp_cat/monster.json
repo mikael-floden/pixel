@@ -287,9 +287,9 @@
             "swamp_cat/animations/angry/east/02.webp",
             "swamp_cat/animations/angry/east/03.webp"
           ],
-          "lm": "Wed, 12 Aug 2026 22:37:51 GMT",
+          "lm": "Thu, 13 Aug 2026 15:08:39 GMT",
           "src_frames": 4,
-          "sub": "ddac05ae-1f04-487a-9210-fb5bfc7b4f7b"
+          "sub": "8a251e13-dc90-4ca3-9985-da8330f8cb6b"
         },
         "north": {
           "frames": 4,
@@ -628,16 +628,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-angry combat idle, frustrated",
-      "key": "angry",
-      "direction": "east",
-      "takes": [
-        "ddac05ae-1f04-487a-9210-fb5bfc7b4f7b",
-        "d76617f8-1a87-4407-99f6-d54dc4c8c9dc"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

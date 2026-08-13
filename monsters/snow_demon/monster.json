@@ -161,17 +161,16 @@
       "source_name": "custom-Calm idle",
       "directions": {
         "east": {
-          "frames": 4,
+          "frames": 3,
           "strip": "snow_demon/animations/idle__east.webp",
           "frame_paths": [
             "snow_demon/animations/idle/east/00.webp",
             "snow_demon/animations/idle/east/01.webp",
-            "snow_demon/animations/idle/east/02.webp",
-            "snow_demon/animations/idle/east/03.webp"
+            "snow_demon/animations/idle/east/02.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:19:22 GMT",
+          "lm": "Thu, 13 Aug 2026 15:13:39 GMT",
           "src_frames": 4,
-          "sub": "2b1f4624-6220-41dc-9f71-1a71448d832e"
+          "sub": "75eba6e7-ac63-46e3-bcab-153c4d81750b"
         },
         "north": {
           "frames": 4,
@@ -410,9 +409,9 @@
             "snow_demon/animations/die/west/07.webp",
             "snow_demon/animations/die/west/08.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:19:23 GMT",
+          "lm": "Thu, 13 Aug 2026 10:19:22 GMT",
           "src_frames": 9,
-          "sub": "73dd54c8-0e54-4981-9616-fd9f7dbe1377"
+          "sub": "31854964-022b-4083-9031-bd2b935889c9"
         }
       }
     },
@@ -539,9 +538,9 @@
             "snow_demon/animations/walk/east/02.webp",
             "snow_demon/animations/walk/east/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:19:24 GMT",
+          "lm": "Thu, 13 Aug 2026 15:13:55 GMT",
           "src_frames": 4,
-          "sub": "4f5860cb-5010-49ac-87c7-966e8625573a"
+          "sub": "67456cdc-1bf7-4be0-b75d-a7f507a86a72"
         },
         "north": {
           "frames": 4,
@@ -630,9 +629,9 @@
             "snow_demon/animations/walk/west/02.webp",
             "snow_demon/animations/walk/west/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:19:25 GMT",
+          "lm": "Thu, 13 Aug 2026 15:13:57 GMT",
           "src_frames": 4,
-          "sub": "cced5b66-0498-4932-8e87-aa72e6436c0f"
+          "sub": "e4191a93-e074-4258-8786-7ab625f3b92f"
         }
       }
     }
@@ -644,43 +643,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Calm idle",
-      "key": "idle",
-      "direction": "east",
-      "takes": [
-        "9cc5dadd-a4d9-4200-af9d-5ae4afc2c46c",
-        "2b1f4624-6220-41dc-9f71-1a71448d832e"
-      ]
-    },
-    {
-      "animation": "custom-Cut in half\nbleeding. This\nis the die\nanimation. N",
-      "key": "die",
-      "direction": "west",
-      "takes": [
-        "31854964-022b-4083-9031-bd2b935889c9",
-        "73dd54c8-0e54-4981-9616-fd9f7dbe1377"
-      ]
-    },
-    {
-      "animation": "custom-Walk (full animation cycle), should look good in a",
-      "key": "walk",
-      "direction": "east",
-      "takes": [
-        "6900cb48-bda3-4fd0-8588-ac8a25d21c59",
-        "4f5860cb-5010-49ac-87c7-966e8625573a"
-      ]
-    },
-    {
-      "animation": "custom-Walk (full animation cycle), should look good in a",
-      "key": "walk",
-      "direction": "west",
-      "takes": [
-        "cced5b66-0498-4932-8e87-aa72e6436c0f",
-        "f77577cf-2f28-429e-a07b-c8afc9d3a20e"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }

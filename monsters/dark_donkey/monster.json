@@ -467,9 +467,9 @@
             "dark_donkey/animations/walk/south-west/02.webp",
             "dark_donkey/animations/walk/south-west/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:20:46 GMT",
+          "lm": "Thu, 13 Aug 2026 15:14:14 GMT",
           "src_frames": 4,
-          "sub": "6902eea3-52c1-438d-91b0-893331c2f241"
+          "sub": "83769b1f-0325-478a-aca3-9dae054631a6"
         },
         "west": {
           "frames": 4,
@@ -602,17 +602,7 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-Walking with all 4 legs like a horse ",
-      "key": "walk",
-      "direction": "south-west",
-      "takes": [
-        "c386840e-6a87-498b-b458-3de5dedfe6d5",
-        "6902eea3-52c1-438d-91b0-893331c2f241"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true,
   "postprocess": {
     "die_trim": {

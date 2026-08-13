@@ -287,7 +287,7 @@
             "eldritch_maw/animations/angry/east/02.webp",
             "eldritch_maw/animations/angry/east/03.webp"
           ],
-          "lm": "Thu, 13 Aug 2026 10:03:38 GMT",
+          "lm": "Thu, 13 Aug 2026 15:10:10 GMT",
           "src_frames": 4,
           "sub": "d0dbc795-06d0-454a-afd7-5a022b8d1704"
         },
@@ -628,16 +628,6 @@
     "attack": "attack",
     "die": "die"
   },
-  "unresolved_takes": [
-    {
-      "animation": "custom-angry combat idle, frustrated",
-      "key": "angry",
-      "direction": "north",
-      "takes": [
-        "7e74bd38-3455-4bb4-a091-c967bc9c9138",
-        "fe3ab448-cf74-4e23-86c0-1e61063c3a14"
-      ]
-    }
-  ],
+  "unresolved_takes": [],
   "synced_from_pixellab": true
 }
