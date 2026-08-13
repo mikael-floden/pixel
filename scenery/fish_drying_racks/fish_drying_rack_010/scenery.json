@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:40:03+00:00",
+  "id": "fish_drying_rack_010",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 10,
+  "name": "Rack full of split herring 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rack full of split herring",
+  "glow_concept": "tiny votive candles strung along the frame",
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack full of split herring, large, twice human height, self-emissive at night, softly radiating light: tiny votive candles strung along the frame",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "fish_drying_racks/fish_drying_rack_010/sprite.webp",
+  "placement": {
+    "world_height_m": 2.01,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "36189acb-ed47-4370-b839-79ad1901fabc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

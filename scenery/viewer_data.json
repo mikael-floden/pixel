@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 498,
+  "scenery_count": 499,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -314,7 +314,7 @@
       "id": "fish_drying_racks",
       "name": "Fish Drying Rack",
       "quota": 14,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 45,
@@ -819,7 +819,7 @@
     "fallen_logs": 7,
     "fences": 7,
     "ferns": 7,
-    "fish_drying_racks": 6,
+    "fish_drying_racks": 7,
     "flame_niches": 7,
     "flower_garlands": 2,
     "flower_stands": 7,
@@ -4775,6 +4775,28 @@
       "status": "complete",
       "pixellab_object_id": "d29908cb-6d1d-49d0-845b-e51f4e6c1909",
       "sprite": "fish_drying_racks/fish_drying_rack_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fish_drying_rack_010",
+      "rel": "fish_drying_racks/fish_drying_rack_010",
+      "name": "Rack full of split herring 010 \u00b7 lit",
+      "category": "fish_drying_racks",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack full of split herring, large, twice human height, self-emissive at night, softly radiating light: tiny votive candles strung along the frame",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.01,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "36189acb-ed47-4370-b839-79ad1901fabc",
+      "sprite": "fish_drying_racks/fish_drying_rack_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
