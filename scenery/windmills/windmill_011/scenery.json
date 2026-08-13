@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:58:35+00:00",
+  "id": "windmill_011",
+  "group": "windmills",
+  "rank": 47,
+  "index": 11,
+  "name": "Wooden post mill 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "wooden post mill",
+  "glow_concept": null,
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, wooden post mill, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_011/sprite.webp",
+  "placement": {
+    "world_height_m": 4.11,
+    "world_px_height": 155,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "76e7be2e-cebb-478b-9a05-cb506f426ddd",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
