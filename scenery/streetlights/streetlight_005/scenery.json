@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_005",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 5,
+  "name": "Fluted stone column lamp 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "fluted stone column lamp",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, fluted stone column lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_005/sprite.webp",
+  "placement": {
+    "world_height_m": 4.02,
+    "world_px_height": 151,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "caa04b67-56a1-4958-853f-d53d7107357f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

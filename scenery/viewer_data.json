@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 326,
+  "scenery_count": 327,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 16,
@@ -793,7 +793,7 @@
     "stone_fountains": 2,
     "stones": 16,
     "story_posts": 4,
-    "streetlights": 4,
+    "streetlights": 5,
     "stumps": 4,
     "sundials": 2,
     "telegraph_poles": 4,
@@ -6671,6 +6671,28 @@
       "status": "complete",
       "pixellab_object_id": "f36cf16e-d4ed-4be7-8290-df6bdd2c3d33",
       "sprite": "streetlights/streetlight_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_005",
+      "rel": "streetlights/streetlight_005",
+      "name": "Fluted stone column lamp 005",
+      "category": "streetlights",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, fluted stone column lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.02,
+        "world_px_height": 151,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "caa04b67-56a1-4958-853f-d53d7107357f",
+      "sprite": "streetlights/streetlight_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
