@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:54:48+00:00",
+  "id": "orchard_tree_016",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 16,
+  "name": "Autumn apple with windfalls 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "autumn apple with windfalls",
+  "glow_concept": "harvest lanterns hung among the branches",
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, autumn apple with windfalls, tall, about three times human height, self-emissive at night, softly radiating light: harvest lanterns hung among the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_016/sprite.webp",
+  "placement": {
+    "world_height_m": 3.28,
+    "world_px_height": 123,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a9640b8f-3574-4b58-b946-06c37d550667",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
