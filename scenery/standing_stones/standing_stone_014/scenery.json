@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:40:32+00:00",
+  "id": "standing_stone_014",
+  "group": "standing_stones",
+  "rank": 38,
+  "index": 14,
+  "name": "Black stone, inlaid letters 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "black stone, inlaid letters",
+  "glow_concept": "pale aurora veil rising off the stone",
+  "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, black stone, inlaid letters, large, twice human height, self-emissive at night, softly radiating light: pale aurora veil rising off the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "standing_stones/standing_stone_014/sprite.webp",
+  "placement": {
+    "world_height_m": 2.63,
+    "world_px_height": 99,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "85859f1e-ec68-4725-99a1-2689df90ec89",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

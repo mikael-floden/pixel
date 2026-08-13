@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 500,
+  "scenery_count": 501,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 39,
@@ -865,7 +865,7 @@
     "soulstone_outcrops": 7,
     "soulstone_plinths": 2,
     "spring_basins": 2,
-    "standing_stones": 6,
+    "standing_stones": 7,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
@@ -9060,6 +9060,28 @@
       "status": "complete",
       "pixellab_object_id": "674a0840-5d04-4302-8417-9778a761f1f3",
       "sprite": "standing_stones/standing_stone_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "standing_stone_014",
+      "rel": "standing_stones/standing_stone_014",
+      "name": "Black stone, inlaid letters 014 \u00b7 lit",
+      "category": "standing_stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, black stone, inlaid letters, large, twice human height, self-emissive at night, softly radiating light: pale aurora veil rising off the stone",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.63,
+        "world_px_height": 99,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "85859f1e-ec68-4725-99a1-2689df90ec89",
+      "sprite": "standing_stones/standing_stone_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
