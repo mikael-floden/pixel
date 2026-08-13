@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_stand_004",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 4,
+  "name": "Double-hook twin lantern stand 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "double-hook twin lantern stand",
+  "glow_concept": "punched-tin lantern scattering pinprick light",
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, double-hook twin lantern stand, large, well above head height of a person, self-emissive at night, softly radiating light: punched-tin lantern scattering pinprick light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.47,
+    "world_px_height": 93,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7d5fb7d7-6493-4deb-91f3-7a93c15110bc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
