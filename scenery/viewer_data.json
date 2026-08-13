@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 283,
+  "scenery_count": 284,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -650,7 +650,7 @@
       "id": "anchors",
       "name": "Anchor",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 93,
@@ -780,7 +780,7 @@
     }
   ],
   "categories": {
-    "anchors": 1,
+    "anchors": 2,
     "ancient_trees": 2,
     "ant_hills": 2,
     "anvils": 1,
@@ -914,6 +914,28 @@
       "status": "complete",
       "pixellab_object_id": "57f27b0e-262c-4695-983e-9b0742f93746",
       "sprite": "anchors/anchor_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "anchor_004",
+      "rel": "anchors/anchor_004",
+      "name": "Huge half-buried anchor 004 \u00b7 lit",
+      "category": "anchors",
+      "lights": "LIGHTS_ON",
+      "description": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, huge half-buried anchor, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light pooling where the fluke bites the ground",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "33bb0fe9-ef77-4d6c-be94-93c925e89243",
+      "sprite": "anchors/anchor_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
