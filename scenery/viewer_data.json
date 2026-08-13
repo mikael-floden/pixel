@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 414,
+  "scenery_count": 415,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -265,7 +265,7 @@
       "id": "crystals",
       "name": "Crystal",
       "quota": 28,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 38,
@@ -809,7 +809,7 @@
     "cliff_features": 4,
     "cliff_fragments": 2,
     "cliff_vines": 4,
-    "crystals": 4,
+    "crystals": 5,
     "cup_fungi": 2,
     "cupboards_and_shelves": 5,
     "dock_pilings": 5,
@@ -3235,6 +3235,28 @@
       "status": "complete",
       "pixellab_object_id": "51470201-9d2a-42a6-aba8-c725739e8d38",
       "sprite": "crystals/crystal_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "crystal_012",
+      "rel": "crystals/crystal_012",
+      "name": "Sea-glass teal cluster 012 \u00b7 lit",
+      "category": "crystals",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, sea-glass teal cluster, roughly six feet tall, human height, self-emissive at night, softly radiating light: ground around the base lit in the crystal's color",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.35,
+        "world_px_height": 51,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d3fd1b87-e437-444d-8bbb-4101d29713a9",
+      "sprite": "crystals/crystal_012/sprite.webp",
       "rotations": {},
       "animations": []
     },

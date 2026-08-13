@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:12:11+00:00",
+  "id": "crystal_012",
+  "group": "crystals",
+  "rank": 37,
+  "index": 12,
+  "name": "Sea-glass teal cluster 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "sea-glass teal cluster",
+  "glow_concept": "ground around the base lit in the crystal's color",
+  "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, sea-glass teal cluster, roughly six feet tall, human height, self-emissive at night, softly radiating light: ground around the base lit in the crystal's color",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "crystals/crystal_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.35,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d3fd1b87-e437-444d-8bbb-4101d29713a9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
