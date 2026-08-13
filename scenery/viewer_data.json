@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 361,
+  "scenery_count": 362,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -356,7 +356,7 @@
       "id": "chimney_stacks",
       "name": "Chimney Stack",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 51,
@@ -805,7 +805,7 @@
     "cattail_clumps": 4,
     "chairs_and_benches": 5,
     "charcoal_kilns": 1,
-    "chimney_stacks": 1,
+    "chimney_stacks": 2,
     "cliff_features": 2,
     "cliff_fragments": 2,
     "cliff_vines": 3,
@@ -2641,6 +2641,28 @@
       "status": "complete",
       "pixellab_object_id": "5c55e2df-28eb-4bd3-ac02-0410dd7bb250",
       "sprite": "chimney_stacks/chimney_stack_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chimney_stack_003",
+      "rel": "chimney_stacks/chimney_stack_003",
+      "name": "Cracked leaning chimney 003",
+      "category": "chimney_stacks",
+      "lights": "LIGHTS_OFF",
+      "description": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown, cracked leaning chimney, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.1,
+        "world_px_height": 117,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d5b4ee12-3bfd-4237-9d60-a766c1aff20a",
+      "sprite": "chimney_stacks/chimney_stack_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
