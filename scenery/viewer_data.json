@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 351,
+  "scenery_count": 352,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -762,7 +762,7 @@
       "id": "rugs_and_hides",
       "name": "Rug",
       "quota": 30,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 109,
@@ -852,6 +852,7 @@
     "rock_spires": 2,
     "rocking_horses": 1,
     "rope_swings": 2,
+    "rugs_and_hides": 1,
     "ruined_arches": 2,
     "rusted_machines": 2,
     "scarecrows": 2,
@@ -5996,6 +5997,28 @@
       "status": "complete",
       "pixellab_object_id": "16e67abf-8d56-4081-a32c-4796218f5a9d",
       "sprite": "rope_swings/rope_swing_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rug_010",
+      "rel": "rugs_and_hides/rug_010",
+      "name": "Worn threadbare old rug 010 \u00b7 lit",
+      "category": "rugs_and_hides",
+      "lights": "LIGHTS_ON",
+      "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, worn threadbare old rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm hearthlight reflected across the pile",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.22,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "afd2c047-17fd-43e5-a894-5c3a8c81cad4",
+      "sprite": "rugs_and_hides/rug_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
