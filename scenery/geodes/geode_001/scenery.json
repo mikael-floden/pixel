@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "geode_001",
+  "group": "geodes",
+  "rank": 85,
+  "index": 1,
+  "name": "Large hollow half geode 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "large hollow half geode",
+  "glow_concept": null,
+  "prompt": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals, large hollow half geode, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "geodes/geode_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.65,
+    "world_px_height": 24,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
