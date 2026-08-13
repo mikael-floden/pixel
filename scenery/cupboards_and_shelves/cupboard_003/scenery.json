@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cupboard_003",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 3,
+  "name": "Carved linen chest 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved linen chest",
+  "glow_concept": null,
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, carved linen chest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.31,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "93d5690c-0492-484b-9f83-a99a7cb196d3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
