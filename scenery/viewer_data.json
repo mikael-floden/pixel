@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 89,
+  "scenery_count": 90,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -510,7 +510,7 @@
       "id": "overgrown_archways",
       "name": "Overgrown Archway",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 73,
@@ -757,6 +757,7 @@
     "mushrooms": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
+    "overgrown_archways": 1,
     "owl_snags": 1,
     "petrified_stumps": 1,
     "puffballs": 1,
@@ -1868,6 +1869,28 @@
       "status": "complete",
       "pixellab_object_id": "10b8743a-81c4-4269-8e73-d1c4d848c431",
       "sprite": "orchard_trees/orchard_tree_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "overgrown_archway_001",
+      "rel": "overgrown_archways/overgrown_archway_001",
+      "name": "Gray fieldstone arch, ivy 001",
+      "category": "overgrown_archways",
+      "lights": "LIGHTS_OFF",
+      "description": "a freestanding stone garden arch swallowed by climbing vines and hanging blossom, gray fieldstone arch, ivy, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.62,
+        "world_px_height": 99,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b5e57354-d967-48b4-b842-0dae23d33d63",
+      "sprite": "overgrown_archways/overgrown_archway_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "overgrown_archway_001",
+  "group": "overgrown_archways",
+  "rank": 72,
+  "index": 1,
+  "name": "Gray fieldstone arch, ivy 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "gray fieldstone arch, ivy",
+  "glow_concept": null,
+  "prompt": "a freestanding stone garden arch swallowed by climbing vines and hanging blossom, gray fieldstone arch, ivy, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "overgrown_archways/overgrown_archway_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.62,
+    "world_px_height": 99,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b5e57354-d967-48b4-b842-0dae23d33d63",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
