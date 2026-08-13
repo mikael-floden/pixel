@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_plinth_001",
+  "group": "soulstone_plinths",
+  "rank": 54,
+  "index": 1,
+  "name": "Pale stone, driftwood stand 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "pale stone, driftwood stand",
+  "glow_concept": null,
+  "prompt": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, pale stone, driftwood stand, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
