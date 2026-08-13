@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_001",
+  "group": "beacons",
+  "rank": 46,
+  "index": 1,
+  "name": "Leaning coastal beacon 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning coastal beacon",
+  "glow_concept": null,
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, leaning coastal beacon, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_001/sprite.webp",
+  "placement": {
+    "world_height_m": 4.49,
+    "world_px_height": 169,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "de932baa-f7f8-4612-9347-ea7e30ce29bf",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
