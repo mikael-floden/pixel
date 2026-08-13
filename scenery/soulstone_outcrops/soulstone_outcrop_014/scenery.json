@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:10:03+00:00",
+  "id": "soulstone_outcrop_014",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 14,
+  "name": "Single tall quartz shard 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single tall quartz shard",
+  "glow_concept": "concentric glowing rings like tree rings",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, single tall quartz shard, waist-high, self-emissive at night, softly radiating light: concentric glowing rings like tree rings",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.19,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c7db2069-0b8c-48c0-a822-1ca1a6d4d84d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
