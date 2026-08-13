@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_006",
+  "group": "cairns",
+  "rank": 9,
+  "index": 6,
+  "name": "Moss-grown ancient cairn 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-grown ancient cairn",
+  "glow_concept": "warm light spilling from gaps between stones",
+  "prompt": "a hand-stacked pile of balanced stones tapering upward, built as a marker, with small gaps between the stones, moss-grown ancient cairn, waist-high to an adult person, self-emissive at night, softly radiating light: warm light spilling from gaps between stones",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cairns/cairn_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.92,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "08b0a0bc-4130-4210-b630-5b57dddf12a5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
