@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_003",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 3,
+  "name": "Frost-rimed winter pole 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "frost-rimed winter pole",
+  "glow_concept": null,
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, frost-rimed winter pole, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_003/sprite.webp",
+  "placement": {
+    "world_height_m": 6.43,
+    "world_px_height": 242,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a944e349-7895-4b5b-b672-1738e8707cf4",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
