@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cattail_clump_001",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 1,
+  "name": "Cattails with drooping leaves 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "cattails with drooping leaves",
+  "glow_concept": null,
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, cattails with drooping leaves, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cattail_clumps/cattail_clump_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.74,
+    "world_px_height": 66,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fb095a00-83a7-47a6-9fbf-d21f4dca6d40",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

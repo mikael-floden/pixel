@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 50,
+  "scenery_count": 51,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 34,
@@ -720,6 +720,7 @@
     "cairns": 1,
     "light": 1,
     "carts": 1,
+    "cattail_clumps": 1,
     "fallen_logs": 1,
     "fences": 1,
     "flame_niches": 1,
@@ -998,6 +999,28 @@
       "status": "complete",
       "pixellab_object_id": "bfc4a44d-842c-4a5f-8ed0-263ef4d241d1",
       "sprite": "carts/cart_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cattail_clump_001",
+      "rel": "cattail_clumps/cattail_clump_001",
+      "name": "Cattails with drooping leaves 001",
+      "category": "cattail_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, cattails with drooping leaves, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.74,
+        "world_px_height": 66,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fb095a00-83a7-47a6-9fbf-d21f4dca6d40",
+      "sprite": "cattail_clumps/cattail_clump_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
