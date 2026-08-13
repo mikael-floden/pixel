@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_002",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 2,
+  "name": "Tiny painted icon shrine 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tiny painted icon shrine",
+  "glow_concept": "votive glasses glowing red and gold",
+  "prompt": "a small roofed wooden shrine raised on a post, its open front holding a tiny painted icon and offerings, tiny painted icon shrine, about as tall as an adult person, self-emissive at night, softly radiating light: votive glasses glowing red and gold",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wayside_shrines/wayside_shrine_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.35,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "83ce3746-4a06-4f81-a3cf-6a19dcc3c9d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
