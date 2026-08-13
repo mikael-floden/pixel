@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 231,
+  "scenery_count": 232,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -118,7 +118,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 70,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 17,
@@ -745,7 +745,7 @@
     "fences": 3,
     "ferns": 2,
     "fish_drying_racks": 2,
-    "flame_niches": 2,
+    "flame_niches": 3,
     "flower_garlands": 2,
     "flower_stands": 2,
     "flower_trellises": 2,
@@ -2496,6 +2496,28 @@
       "status": "complete",
       "pixellab_object_id": "faaea0a2-10b8-4306-b11d-a45c1e16da35",
       "sprite": "flame_niches/flame_niche_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flame_niche_003",
+      "rel": "flame_niches/flame_niche_003",
+      "name": "Fieldstone arch niche 003",
+      "category": "flame_niches",
+      "lights": "LIGHTS_OFF",
+      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, fieldstone arch niche, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "09bff3ee-eb6f-40aa-8db8-0e237f151212",
+      "sprite": "flame_niches/flame_niche_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
