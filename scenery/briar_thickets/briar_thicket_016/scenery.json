@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:31:10+00:00",
+  "id": "briar_thicket_016",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 16,
+  "name": "Low creeping briar patch 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "low creeping briar patch",
+  "glow_concept": "rose hips burning like strung embers",
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, low creeping briar patch, waist-high, self-emissive at night, softly radiating light: rose hips burning like strung embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_016/sprite.webp",
+  "placement": {
+    "world_height_m": 1.07,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "33920291-ff33-4607-8f1d-bd0cb0c06855",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
