@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "haystack_010",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 10,
+  "name": "Burrow-holed hollow old stack 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "burrow-holed hollow old stack",
+  "glow_concept": "pale foxfire crust on the rotting side",
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, burrow-holed hollow old stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: pale foxfire crust on the rotting side",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.5,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5e18c1bc-c3d8-4f1e-990e-5f341cccaee4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
