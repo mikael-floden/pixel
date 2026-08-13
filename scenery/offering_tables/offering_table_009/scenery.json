@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:52:11+00:00",
+  "id": "offering_table_009",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 9,
+  "name": "Cloth-draped embroidered table 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "cloth-draped embroidered table",
+  "glow_concept": null,
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, cloth-draped embroidered table, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_009/sprite.webp",
+  "placement": {
+    "world_height_m": 0.88,
+    "world_px_height": 33,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "45e176bf-4a2d-44e3-925a-9acd70e82d03",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
