@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 455,
+  "scenery_count": 456,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 105,
@@ -803,7 +803,7 @@
     "light": 1,
     "carts": 6,
     "cattail_clumps": 6,
-    "chairs_and_benches": 5,
+    "chairs_and_benches": 6,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
     "cliff_features": 5,
@@ -2905,6 +2905,28 @@
       "status": "complete",
       "pixellab_object_id": "197ee104-9710-4ffc-bc25-29a116fd62d9",
       "sprite": "chairs_and_benches/chair_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_005",
+      "rel": "chairs_and_benches/chair_005",
+      "name": "Worn footstool 005",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_OFF",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, worn footstool, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fd20db30-0ca6-46de-9419-324a351f8c44",
+      "sprite": "chairs_and_benches/chair_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

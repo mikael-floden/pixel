@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_005",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 5,
+  "name": "Worn footstool 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "worn footstool",
+  "glow_concept": null,
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, worn footstool, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fd20db30-0ca6-46de-9419-324a351f8c44",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
