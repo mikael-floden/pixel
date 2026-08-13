@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waterwheel_006",
+  "group": "waterwheels",
+  "rank": 59,
+  "index": 6,
+  "name": "Snow-dusted winter wheel 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-dusted winter wheel",
+  "glow_concept": "fireflies drifting through the broken paddles",
+  "prompt": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use, snow-dusted winter wheel, large, twice human height, self-emissive at night, softly radiating light: fireflies drifting through the broken paddles",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "waterwheels/waterwheel_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.86,
+    "world_px_height": 108,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "93157317-13e1-4be5-b515-72241cd70aa1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

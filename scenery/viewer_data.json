@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 265,
+  "scenery_count": 266,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -419,7 +419,7 @@
       "id": "waterwheels",
       "name": "Waterwheel",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 60,
@@ -885,6 +885,7 @@
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
+    "waterwheels": 1,
     "wayside_shrines": 2,
     "waystones": 2,
     "web_frames": 1,
@@ -6530,6 +6531,28 @@
       "status": "complete",
       "pixellab_object_id": "065ab574-1351-49d1-8899-463b57ee75f4",
       "sprite": "water_pumps/water_pump_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waterwheel_006",
+      "rel": "waterwheels/waterwheel_006",
+      "name": "Snow-dusted winter wheel 006 \u00b7 lit",
+      "category": "waterwheels",
+      "lights": "LIGHTS_ON",
+      "description": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use, snow-dusted winter wheel, large, twice human height, self-emissive at night, softly radiating light: fireflies drifting through the broken paddles",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.86,
+        "world_px_height": 108,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "93157317-13e1-4be5-b515-72241cd70aa1",
+      "sprite": "waterwheels/waterwheel_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
