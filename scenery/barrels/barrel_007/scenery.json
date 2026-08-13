@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "barrel_007",
+  "group": "barrels",
+  "rank": 28,
+  "index": 7,
+  "name": "Tipped barrel spilling apples 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "tipped barrel spilling apples",
+  "glow_concept": null,
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, tipped barrel spilling apples, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.4,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dc4c736b-7267-4f25-9705-cc8045884a54",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
