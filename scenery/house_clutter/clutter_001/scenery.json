@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "clutter_001",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 1,
+  "name": "Basket of wool with knitting needles 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "basket of wool with knitting needles",
+  "glow_concept": null,
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, basket of wool with knitting needles, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.29,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e1e908a6-c31c-43fa-b205-676d6964d2d6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
