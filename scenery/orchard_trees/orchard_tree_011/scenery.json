@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "orchard_tree_011",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 11,
+  "name": "Apple in white blossom 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "apple in white blossom",
+  "glow_concept": null,
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, apple in white blossom, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_011/sprite.webp",
+  "placement": {
+    "world_height_m": 3.39,
+    "world_px_height": 128,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fabab83e-2870-406d-a5ca-77a1623cc2ed",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

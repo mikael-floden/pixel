@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 342,
+  "scenery_count": 343,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -132,7 +132,7 @@
       "id": "orchard_trees",
       "name": "Orchard Tree",
       "quota": 66,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 19,
@@ -847,7 +847,7 @@
     "mushrooms": 6,
     "nest_posts": 2,
     "offering_tables": 5,
-    "orchard_trees": 3,
+    "orchard_trees": 4,
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 2,
@@ -5452,6 +5452,28 @@
       "status": "complete",
       "pixellab_object_id": "012973ca-4c09-49df-91ee-436076f2f314",
       "sprite": "orchard_trees/orchard_tree_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "orchard_tree_011",
+      "rel": "orchard_trees/orchard_tree_011",
+      "name": "Apple in white blossom 011",
+      "category": "orchard_trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, apple in white blossom, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.39,
+        "world_px_height": 128,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fabab83e-2870-406d-a5ca-77a1623cc2ed",
+      "sprite": "orchard_trees/orchard_tree_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
