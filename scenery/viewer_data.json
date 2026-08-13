@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 62,
+  "scenery_count": 63,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 46,
@@ -737,6 +737,7 @@
     "ivy_posts": 1,
     "lantern_posts": 1,
     "lantern_stands": 1,
+    "moss_clumps": 1,
     "mushrooms": 1,
     "offering_tables": 1,
     "orchard_trees": 1,
@@ -1401,6 +1402,28 @@
       "status": "complete",
       "pixellab_object_id": "443f5c33-5d81-4fcf-82d5-95d046916cc5",
       "sprite": "lantern_stands/lantern_stand_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_001",
+      "rel": "moss_clumps/moss_clump_001",
+      "name": "Hair-cap moss tussock 001",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a rounded cushion of thick moss mounded up from the forest floor, hair-cap moss tussock, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.52,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a7fe7a84-bb8f-41e6-b587-32357f89f420",
+      "sprite": "moss_clumps/moss_clump_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
