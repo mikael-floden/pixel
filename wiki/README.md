@@ -264,6 +264,31 @@ empty checkerboard around the small pieces. Seven clips of 385 (the ancient
 oaks and hanging willows) exceed a 393px phone at the default 2×, and scroll
 inside their own stage — "1×" is one tap away.
 
+### The back gesture peels one layer at a time
+
+The wiki is an in-game drawer (`games2/client/src/wikipanel.ts`), not a page,
+so the phone's back gesture had nothing of ours to pop and left the game
+outright (maintainer 2026-08-13: "Opening the wiki and swipe back doesn't close
+the wiki. It exits the game"). The panel now owns **one history entry per
+visible layer** — one for itself, one more while the wiki's own side menu is
+open — and back peels them in the order the dark strip and Escape already used:
+
+```
+menu open → back → wiki (menu closed) → back → game → back → quit
+```
+
+The subtle half is the *other* way out. Closing a layer by tapping the strip,
+pressing Escape or using the wiki's own control hands its entry **back**
+(`dropLayers`), or the player is left pressing back on entries that do nothing;
+and a close that CAME from a back gesture must not touch history at all, since
+the browser has already popped it. `selfPop` keeps those two paths from
+handling the same event. An in-wiki walk is the player's own history and is
+walked first, then the drawer closes — the same order the wiki's ← crumb uses.
+
+`check-backgesture.mjs` covers all of it, including both hand-close paths. It
+needs the game client (`npm run dev:client` in `games2/`) and SKIPs cleanly
+without it, since every other wiki gate needs only the assets server.
+
 ### The scenery review queue (admin)
 
 The overview carries a sort row (**by group** / **newest first**) and a filter

@@ -28,6 +28,35 @@ import { freezeGame, thawGame } from "./gamefreeze";
 let root: HTMLDivElement | null = null;
 let onResize: (() => void) | null = null;
 let onKey: ((e: KeyboardEvent) => void) | null = null;
+let onPop: (() => void) | null = null;
+
+// THE PHONE'S BACK GESTURE (maintainer 2026-08-13: "Opening the wiki and
+// swipe back doesn't close the wiki. It exits the game").
+//
+// The drawer is not a page, so back had nothing of ours to pop and left the
+// game outright. It now owns one history entry per layer it puts on screen —
+// one for the panel, one more while the wiki's own menu is open — and pops
+// them in the same order the dark strip and Escape already used: menu first,
+// then the wiki, and only then is the game itself allowed to go.
+//
+// `owned` is how many of those entries are still on the stack; `selfPop`
+// counts the popstates WE cause when the player closes a layer some other way
+// (tap, Escape, the wiki's own close button) and we hand the entry back. Both
+// paths end at the same place, so the two must never handle the same event.
+let owned = 0;
+let selfPop = 0;
+function pushLayer(): void {
+  owned++;
+  history.pushState({ mlWikiLayer: owned }, "");
+}
+/** Hand back n entries we pushed, without letting our own popstate close a
+ *  layer the player already closed by hand. */
+function dropLayers(n: number): void {
+  if (n <= 0) return;
+  selfPop += n;
+  owned -= n;
+  history.go(-n);
+}
 let onMsg: ((e: MessageEvent) => void) | null = null;
 let onTheme: (() => void) | null = null;
 let menuOpen = false; // the wiki's OWN nav drawer inside the iframe
@@ -180,8 +209,15 @@ export function openWikiPanel(): void {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data as { type?: string; open?: boolean; on?: boolean };
     if (data?.type === "wiki:menu") {
+      const was = menuOpen;
       menuOpen = !!data.open;
       back.classList.toggle("deep", menuOpen);
+      // The menu is a layer with no URL of its own, so give it one: opening it
+      // pushes an entry, closing it by hand gives that entry back. Without
+      // this, back from an open menu would skip straight past it and shut the
+      // whole wiki.
+      if (menuOpen && !was) pushLayer();
+      else if (!menuOpen && was && owned > 1) dropLayers(1);
     } else if (data?.type === "wiki:muteGame") {
       setGameMuted(!!data.on);
     }
@@ -194,6 +230,26 @@ export function openWikiPanel(): void {
   onKey = (e) => { if (e.key === "Escape") backOut(); };
   window.addEventListener("keydown", onKey);
   back.addEventListener("click", backOut);
+  // A real back gesture landed on one of our entries: the browser has already
+  // popped it, so peel one layer and never call history.go() here — that would
+  // fight the player's own navigation.
+  onPop = () => {
+    if (selfPop > 0) { selfPop--; return; }   // our own doing; the layer is already closed
+    if (owned <= 0) return;                   // not ours — let it through
+    owned--;
+    if (menuOpen) {
+      menuOpen = false;                       // the entry is gone; only the UI is left to close
+      back.classList.remove("deep");
+      frame.contentWindow?.postMessage({ type: "wiki:closeMenu" }, location.origin);
+    } else {
+      closeWikiPanel({ keepHistory: true });  // the entry popped itself
+    }
+  };
+  window.addEventListener("popstate", onPop);
+  // One entry for the panel itself, pushed LAST so it sits directly above the
+  // game: everything the wiki pushes while the player browses stacks on top of
+  // it, and back walks those wiki pages first, then this, then the game.
+  pushLayer();
 
   // THEME LIVE-SYNC (maintainer 2026-07-30: one dark-theme choice flips both
   // the wiki and the game). The wiki reads localStorage["wiki-theme"] only at
@@ -239,8 +295,15 @@ export function openWikiPanel(): void {
   }));
 }
 
-export function closeWikiPanel(): void {
+export function closeWikiPanel(opts?: { keepHistory?: boolean }): void {
   if (!root) return;
+  // Closing by hand hands back every entry the drawer still owns, so the game
+  // is one back away again rather than several dead ones deep. When the close
+  // CAME from a back gesture the browser has already popped it — touching
+  // history there would take the player somewhere they never asked to go.
+  if (opts?.keepHistory) owned = Math.max(0, owned);
+  else dropLayers(owned);
+  if (onPop) { window.removeEventListener("popstate", onPop); onPop = null; }
   // Back to the world — and BEFORE the slide-out, not after it: wake() ticks a
   // frame synchronously, so the game is already repainted (and reading live
   // state again) while the drawer is still moving off, instead of a frozen
