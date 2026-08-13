@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_005",
+  "group": "waystones",
+  "rank": 6,
+  "index": 5,
+  "name": "Leaning cracked stone 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning cracked stone",
+  "glow_concept": null,
+  "prompt": "a standing roadside stone waymarker with a carved direction mark and worn lettering, leaning cracked stone, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.21,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e146cf46-3b28-4ba7-be75-88021a67d2e5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
