@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:33:54+00:00",
+  "id": "offering_table_012",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 12,
+  "name": "Table with wooden toys 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "table with wooden toys",
+  "glow_concept": "embroidered cloth threads woven with light",
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, table with wooden toys, waist-high, self-emissive at night, softly radiating light: embroidered cloth threads woven with light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.99,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

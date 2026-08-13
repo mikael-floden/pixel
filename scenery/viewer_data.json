@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 481,
+  "scenery_count": 482,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -160,7 +160,7 @@
       "id": "offering_tables",
       "name": "Offering Table",
       "quota": 58,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 23,
@@ -846,7 +846,7 @@
     "moss_clumps": 6,
     "mushrooms": 6,
     "nest_posts": 2,
-    "offering_tables": 6,
+    "offering_tables": 7,
     "orchard_trees": 6,
     "overgrown_archways": 2,
     "owl_snags": 2,
@@ -7256,6 +7256,28 @@
       "status": "complete",
       "pixellab_object_id": "d25e326d-2e88-42b5-beb8-23e013d1d413",
       "sprite": "offering_tables/offering_table_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "offering_table_012",
+      "rel": "offering_tables/offering_table_012",
+      "name": "Table with wooden toys 012 \u00b7 lit",
+      "category": "offering_tables",
+      "lights": "LIGHTS_ON",
+      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, table with wooden toys, waist-high, self-emissive at night, softly radiating light: embroidered cloth threads woven with light",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.99,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
+      "sprite": "offering_tables/offering_table_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
