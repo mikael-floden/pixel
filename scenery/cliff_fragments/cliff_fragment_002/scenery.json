@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cliff_fragment_002",
+  "group": "cliff_fragments",
+  "rank": 82,
+  "index": 2,
+  "name": "Overhanging tilted fragment 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "overhanging tilted fragment",
+  "glow_concept": "warm light from a sheltered hollow beneath",
+  "prompt": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, overhanging tilted fragment, tall, about two people high, self-emissive at night, softly radiating light: warm light from a sheltered hollow beneath",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.04,
+    "world_px_height": 114,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
