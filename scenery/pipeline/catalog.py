@@ -56,20 +56,26 @@ def _scale_phrase(height_m: float) -> str:
     your work against a human to understand if your scale is reasonable"), so
     every piece tells the model how big it is IN HUMAN TERMS, not metres —
     image models know knees and shoulders far better than SI units. The
-    manifest's placement (64px = 1.7m) stays the authoritative render size."""
+    manifest's placement (64px = 1.7m) stays the authoritative render size.
+
+    NEVER name a person as a NOUN here. The first phrasing ended every prompt
+    with "...to an adult person", and moss_clump_001 (48px) came back as a
+    pixel-art BOY: given a vague subject and a small canvas the model drew the
+    measuring stick instead of the thing. Height is now purely adjectival
+    ("knee-high", "twice human height") — same anchor, nothing to render."""
     if height_m < 0.35:
-        return "tiny, ankle-height to an adult person"
+        return "tiny, only ankle-high"
     if height_m < 0.75:
-        return "small, knee-high to an adult person"
+        return "small, knee-high"
     if height_m < 1.2:
-        return "waist-high to an adult person"
+        return "waist-high"
     if height_m < 1.9:
-        return "about as tall as an adult person"
+        return "roughly six feet tall, human height"
     if height_m < 3.0:
-        return "large, well above head height of a person"
+        return "large, twice human height"
     if height_m < 4.5:
-        return "tall, about two people high"
-    return "towering, several times the height of a person"
+        return "tall, about three times human height"
+    return "towering, many times human height"
 
 
 def quota_for(rank: int, rule: dict) -> int:
