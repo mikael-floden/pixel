@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 550,
+  "scenery_count": 551,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -258,7 +258,7 @@
       "id": "grass_tufts",
       "name": "Grass Tuft",
       "quota": 30,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 37,
@@ -826,7 +826,7 @@
     "flower_trellises": 2,
     "geodes": 2,
     "giant_mushrooms": 2,
-    "grass_tufts": 7,
+    "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
     "graves": 8,
@@ -5831,6 +5831,28 @@
       "status": "complete",
       "pixellab_object_id": "d2283caf-5287-4a47-827e-1776ccb3386d",
       "sprite": "grass_tufts/grass_tuft_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grass_tuft_009",
+      "rel": "grass_tufts/grass_tuft_009",
+      "name": "Wind-flattened leaning tuft 009",
+      "category": "grass_tufts",
+      "lights": "LIGHTS_OFF",
+      "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, wind-flattened leaning tuft, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.66,
+        "world_px_height": 25,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "78bcc653-cce8-4ceb-8789-27ffe209b2fa",
+      "sprite": "grass_tufts/grass_tuft_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
