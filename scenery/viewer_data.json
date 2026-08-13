@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 470,
+  "scenery_count": 471,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 11,
@@ -817,7 +817,7 @@
     "driftwood_logs": 2,
     "fading_relics": 2,
     "fallen_logs": 7,
-    "fences": 6,
+    "fences": 7,
     "ferns": 6,
     "fish_drying_racks": 6,
     "flame_niches": 6,
@@ -4291,6 +4291,28 @@
       "status": "complete",
       "pixellab_object_id": "2e3269ba-6776-4999-87c0-4cb1c9e658b0",
       "sprite": "fences/fence_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_012",
+      "rel": "fences/fence_012",
+      "name": "Run with small wicket gate 012 \u00b7 lit",
+      "category": "fences",
+      "lights": "LIGHTS_ON",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, run with small wicket gate, roughly six feet tall, human height, self-emissive at night, softly radiating light: golden glow where hands wore the top rail smooth",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.29,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a837802a-173e-4e46-b118-eed10c708db5",
+      "sprite": "fences/fence_012/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fence_012",
+  "group": "fences",
+  "rank": 10,
+  "index": 12,
+  "name": "Run with small wicket gate 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "run with small wicket gate",
+  "glow_concept": "golden glow where hands wore the top rail smooth",
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, run with small wicket gate, roughly six feet tall, human height, self-emissive at night, softly radiating light: golden glow where hands wore the top rail smooth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a837802a-173e-4e46-b118-eed10c708db5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
