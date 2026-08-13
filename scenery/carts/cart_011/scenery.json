@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:57:13+00:00",
+  "id": "cart_011",
+  "group": "carts",
+  "rank": 27,
+  "index": 11,
+  "name": "Roped tarpaulin-covered load 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "roped tarpaulin-covered load",
+  "glow_concept": null,
+  "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, roped tarpaulin-covered load, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "carts/cart_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.19,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1efb1c12-22b6-4733-afc3-ca34f24e5a46",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
