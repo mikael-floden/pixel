@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 332,
+  "scenery_count": 333,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 22,
@@ -792,7 +792,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 16,
-    "story_posts": 4,
+    "story_posts": 5,
     "streetlights": 5,
     "stumps": 4,
     "sundials": 2,
@@ -6671,6 +6671,28 @@
       "status": "complete",
       "pixellab_object_id": "c98ed19c-64a7-4693-9129-b99eeeac7b31",
       "sprite": "story_posts/story_post_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_005",
+      "rel": "story_posts/story_post_005",
+      "name": "Carved fox topper post 005",
+      "category": "story_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, carved fox topper post, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.52,
+        "world_px_height": 57,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4a2c024d-f174-4075-9ad8-0225b253c635",
+      "sprite": "story_posts/story_post_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
