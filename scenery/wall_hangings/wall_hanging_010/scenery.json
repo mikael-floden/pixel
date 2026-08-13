@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:53:34+00:00",
+  "id": "wall_hanging_010",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 10,
+  "name": "Mounted deer antlers on a wooden plaque 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "mounted deer antlers on a wooden plaque",
+  "glow_concept": "embroidery threads shimmering with memory-light",
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, mounted deer antlers on a wooden plaque, small, knee-high, self-emissive at night, softly radiating light: embroidery threads shimmering with memory-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.59,
+    "world_px_height": 22,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
