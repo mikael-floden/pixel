@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_008",
+  "group": "wells",
+  "rank": 11,
+  "index": 8,
+  "name": "Rune-carved rim stones 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rune-carved rim stones",
+  "glow_concept": "raised bucket brimming with luminous water",
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, rune-carved rim stones, large, twice human height, self-emissive at night, softly radiating light: raised bucket brimming with luminous water",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.51,
+    "world_px_height": 94,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4bbe8cc3-3b70-4ac4-9acf-35c91d1ba062",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
