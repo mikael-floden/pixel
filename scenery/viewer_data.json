@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 366,
+  "scenery_count": 367,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 9,
@@ -784,7 +784,7 @@
     "rusted_machines": 2,
     "scarecrows": 5,
     "sheaf_poles": 2,
-    "signposts": 5,
+    "signposts": 6,
     "soulstone_outcrops": 5,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -6385,6 +6385,28 @@
       "status": "complete",
       "pixellab_object_id": "83a3b58b-1e9e-46af-a5d7-031539ce9e1e",
       "sprite": "signposts/signpost_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_006",
+      "rel": "signposts/signpost_006",
+      "name": "Arrow-cluster crossroads post 006 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, arrow-cluster crossroads post, large, well above head height of a person, self-emissive at night, softly radiating light: gilded lettering lit from within",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.35,
+        "world_px_height": 88,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "77a244b8-de79-4599-a05d-304d3396bcf3",
+      "sprite": "signposts/signpost_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
