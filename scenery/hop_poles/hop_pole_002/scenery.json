@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hop_pole_002",
+  "group": "hop_poles",
+  "rank": 66,
+  "index": 2,
+  "name": "Single pole, dense cones 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single pole, dense cones",
+  "glow_concept": "cones dusted with luminous golden pollen",
+  "prompt": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones, single pole, dense cones, tall, about two people high, self-emissive at night, softly radiating light: cones dusted with luminous golden pollen",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "hop_poles/hop_pole_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.9,
+    "world_px_height": 147,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f68bdc30-f41b-499b-85c2-64e4c1a4455d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
