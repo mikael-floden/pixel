@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 301,
+  "scenery_count": 302,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -755,7 +755,7 @@
       "id": "hearths",
       "name": "Hearth",
       "quota": 30,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 108,
@@ -833,7 +833,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 2,
-    "hearths": 1,
+    "hearths": 2,
     "hedges": 2,
     "hop_poles": 2,
     "house_clutter": 2,
@@ -3957,6 +3957,28 @@
       "status": "complete",
       "pixellab_object_id": "7fdb7cd2-10dd-427b-94de-5d0223bbfc59",
       "sprite": "haystacks/haystack_900/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hearth_001",
+      "rel": "hearths/hearth_001",
+      "name": "Brick hearth with a baking oven 001",
+      "category": "hearths",
+      "lights": "LIGHTS_OFF",
+      "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, brick hearth with a baking oven, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.1,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7ced2af6-92e8-444f-9f67-6d8d462f18c6",
+      "sprite": "hearths/hearth_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

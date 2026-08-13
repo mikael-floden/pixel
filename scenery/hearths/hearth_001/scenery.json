@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hearth_001",
+  "group": "hearths",
+  "rank": 107,
+  "index": 1,
+  "name": "Brick hearth with a baking oven 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "brick hearth with a baking oven",
+  "glow_concept": null,
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, brick hearth with a baking oven, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.1,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7ced2af6-92e8-444f-9f67-6d8d462f18c6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
