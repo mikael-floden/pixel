@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 104,
+  "scenery_count": 105,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -615,7 +615,7 @@
       "id": "woodpiles",
       "name": "Woodpile",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 88,
@@ -798,7 +798,8 @@
     "web_frames": 1,
     "wells": 1,
     "windmills": 1,
-    "wisteria_snags": 1
+    "wisteria_snags": 1,
+    "woodpiles": 1
   },
   "scenery": [
     {
@@ -3137,6 +3138,28 @@
       "status": "complete",
       "pixellab_object_id": "1a894063-b8ae-458b-b7d8-867e4f2c7b3f",
       "sprite": "wisteria_snags/wisteria_snag_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "woodpile_001",
+      "rel": "woodpiles/woodpile_001",
+      "name": "Half-used leaning stack 001",
+      "category": "woodpiles",
+      "lights": "LIGHTS_OFF",
+      "description": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, half-used leaning stack, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.18,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1ee7f880-7d3e-48cc-89cd-2de989bc8ae2",
+      "sprite": "woodpiles/woodpile_001/sprite.webp",
       "rotations": {},
       "animations": []
     }

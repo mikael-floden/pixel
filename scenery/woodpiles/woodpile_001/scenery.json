@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "woodpile_001",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 1,
+  "name": "Half-used leaning stack 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-used leaning stack",
+  "glow_concept": null,
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, half-used leaning stack, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1ee7f880-7d3e-48cc-89cd-2de989bc8ae2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
