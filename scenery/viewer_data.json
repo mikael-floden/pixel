@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 139,
+  "scenery_count": 140,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 24,
@@ -785,7 +785,7 @@
     "scarecrows": 1,
     "sheaf_poles": 1,
     "signposts": 2,
-    "soulstone_outcrops": 1,
+    "soulstone_outcrops": 2,
     "soulstone_plinths": 1,
     "spring_basins": 1,
     "standing_stones": 1,
@@ -2843,6 +2843,28 @@
       "status": "complete",
       "pixellab_object_id": "1aca6152-a41d-4b7f-a078-af055ff12a6f",
       "sprite": "soulstone_outcrops/soulstone_outcrop_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_002",
+      "rel": "soulstone_outcrops/soulstone_outcrop_002",
+      "name": "Purple amethyst cluster 002 \u00b7 lit",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_ON",
+      "description": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, purple amethyst cluster, about as tall as an adult person, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d0e3feb6-89e2-4d74-b016-37cba458425a",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

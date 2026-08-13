@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_002",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 2,
+  "name": "Purple amethyst cluster 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "purple amethyst cluster",
+  "glow_concept": "deep violet heart-light pulsing slowly",
+  "prompt": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, purple amethyst cluster, about as tall as an adult person, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.26,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d0e3feb6-89e2-4d74-b016-37cba458425a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
