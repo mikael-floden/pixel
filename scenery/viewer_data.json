@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 425,
+  "scenery_count": 426,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 22,
@@ -869,7 +869,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
-    "story_posts": 5,
+    "story_posts": 6,
     "streetlights": 6,
     "stumps": 5,
     "sundials": 2,
@@ -8290,6 +8290,28 @@
       "status": "complete",
       "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
       "sprite": "story_posts/story_post_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_011",
+      "rel": "story_posts/story_post_011",
+      "name": "Stacked carved faces post 011",
+      "category": "story_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, stacked carved faces post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.02,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8e2c919f-0a1f-445b-99c0-daa8fe48f2bb",
+      "sprite": "story_posts/story_post_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
