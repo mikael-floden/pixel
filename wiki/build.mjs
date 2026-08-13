@@ -1632,12 +1632,17 @@ function seedMonsterLevels(monsters, world, artBounds) {
     const sorted = [...vals].sort((a, b) => a - b);
     return (v) => (sorted.length < 2 ? 0 : sorted.filter((x) => x < v).length / (sorted.length - 1));
   };
-  const pSize = pctOf(ids.map((i) => area[i] ?? 0));
+  const pSize = pctOf(Object.values(area));
   const pDist = pctOf(Object.values(dist));
   const ranked = ids
     // An unspawned monster has no habitat to measure — score it mid-field
-    // rather than pretending it lives on top of the bonfire.
-    .map((id) => ({ id, score: 0.7 * pSize(area[id] ?? 0) + 0.3 * (id in dist ? pDist(dist[id]) : 0.5) }))
+    // rather than pretending it lives on top of the bonfire. UNMEASURED art
+    // gets the same treatment: `area[id] ?? 0` used to read "smallest creature
+    // alive", so the 33 monsters imported while art_bounds.json was stale
+    // (2026-08-13) seeded at the bottom of the ladder — Cragback, the second
+    // largest creature in the game, came out level 4 while a rabbit was 5.
+    // A missing measurement is not a measurement of zero.
+    .map((id) => ({ id, score: 0.7 * (id in area ? pSize(area[id]) : 0.5) + 0.3 * (id in dist ? pDist(dist[id]) : 0.5) }))
     .sort((a, b) => a.score - b.score || a.id.localeCompare(b.id));
   const out = {};
   ranked.forEach((r, i) => { out[r.id] = Math.round(1 + (19 * i) / Math.max(1, ranked.length - 1)); });
@@ -1659,7 +1664,10 @@ function seedMonsterTuning(monsters, levels) {
     if (!tuned[m.id]) { tuned[m.id] = { level: lvl, ...defaults, loot: [] }; tuned[m.id].level = lvl; added++; }
     // Backfill entries seeded before levels existed. An entry the maintainer
     // has already levelled keeps its number — this is a seed, not a rewrite.
-    else if (tuned[m.id].level == null) { tuned[m.id] = { level: lvl, ...tuned[m.id] }; levelled++; }
+    // `level` goes AFTER the spread: an entry carrying an explicit `level:
+    // null` used to have that null win over the backfilled number, so the
+    // only shape this branch could actually repair was a MISSING key.
+    else if (tuned[m.id].level == null) { tuned[m.id] = { ...tuned[m.id], level: lvl }; levelled++; }
   }
   const out = {
     format: "pixel-wiki-tuning-monsters@1",
@@ -1688,16 +1696,26 @@ const constants = buildConstants();
 const artBounds = readJson(join(ROOT, "wiki", "art_bounds.json"));
 const artScale = artBounds?.scale ?? 2;
 const artBox = artBounds?.boxes ?? null;
+// Entities the measurement never saw. art-bounds.py reads THIS build's
+// data.json, so a domain that grows between the two runs leaves the new
+// entities unmeasured — and an unmeasured clip draws at whole-FRAME size,
+// padding included, which is 512px of stage for a 414px creature. That is
+// how the 33 monsters imported on 2026-08-13 came to overflow the animation
+// viewer while Diretusk and Rimeshard, measured back on 07-30, sat inside it.
+// Never silent: the fix is one command and this names it.
+const artUnmeasured = [];
 for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
   for (const e of list ?? []) {
+    let seen = 0, total = 0;
     for (const [sname, st] of Object.entries(e.animations ?? {})) {
       for (const [dname, clip] of Object.entries(st.dirs ?? {})) {
         const bb = artBounds?.clips?.[`${e.path}|${sname}|${dname}`];
-        if (bb) clip.bb = bb;
+        total++;
+        if (bb) { clip.bb = bb; seen++; }
       }
     }
+    if (artBounds && total && !seen) artUnmeasured.push(`${dom}/${e.id}`);
   }
-  void dom;
 }
 const world = buildWorldUsage();
 markSoundUsage(sounds);
@@ -1789,6 +1807,14 @@ console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added
 // The build carries on regardless — resolving keeps every page correct — but a
 // stale sidecar is a real fault at its SOURCE, and silence is what let the last
 // one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
+if (artUnmeasured.length) {
+  console.warn(`[wiki] WARNING: ${artUnmeasured.length} entit(ies) have NO measured art bounds — they will draw at`);
+  console.warn("       whole-frame size (transparent padding included) and overflow the viewer:");
+  for (const x of artUnmeasured.slice(0, 8)) console.warn(`         ${x}`);
+  if (artUnmeasured.length > 8) console.warn(`         … and ${artUnmeasured.length - 8} more`);
+  console.warn("       Fix: bash wiki/tools/rebuild.sh   (build → measure → build; art_bounds.json");
+  console.warn("       is measured FROM this data.json, so new art needs the second pass).");
+}
 if (sfxDrift.length) {
   console.warn(`[wiki] WARNING: ${sfxDrift.length} sfx-parse miss(es) — the composer's engine moved; the event table may be stale:`);
   for (const x of sfxDrift) console.warn(`         ${x}`);

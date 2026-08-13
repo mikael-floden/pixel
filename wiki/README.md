@@ -233,7 +233,47 @@ The crop is **per clip**, never per entity: a creature sits at different
 offsets in each direction, so an entity-wide union spans that drift and stops
 describing the creature (measured: an entity union made one salamander 74px
 and the other 48px again). Within a clip the box is fixed, so the animation
-still moves inside it. Re-run the tool when art changes.
+still moves inside it.
+
+### Re-run it with `bash wiki/tools/rebuild.sh`, never on its own
+
+The dependency is **circular**, and one pass is never enough when a domain
+grows:
+
+```
+build.mjs      reads monsters/, characters2/, scenery/ …  AND art_bounds.json
+art-bounds.py  reads wiki/site/data.json  ← which build.mjs writes
+```
+
+Run the build alone and the measurement still describes yesterday's roster;
+run the measurement alone and the build still folds in yesterday's boxes.
+`rebuild.sh` does build → measure → build → verify, and is idempotent.
+
+This is not hypothetical. On 2026-08-13 the monsters agent imported 33
+monsters and rebuilt `data.json` — correctly — without the second pass. None
+of the 33 got a measured `bb`, so the player fell back to the whole **frame**,
+transparent padding and all: Cragback asked for a 472×472 canvas to draw a
+402×350 creature on a 432px stage and grew a scrollbar, while Diretusk and
+Rimeshard, measured back in July, sat neatly inside it (maintainer: "the new
+big monsters doesn't fit in it (see a scrollar)"). The shared stage box was
+stale for the same reason — 207×189 against a real need of 213×202. The same
+zero also fed `seedMonsterLevels`, where a missing measurement read as *area
+0*, "smallest creature alive", so the biggest new monsters seeded at the
+bottom of the level ladder and a rabbit out-ranked a bear.
+
+Three things now stand between that and the maintainer:
+
+- `build.mjs` **names** every entity with no measured bounds and prints the
+  command that fixes it, instead of shipping a silently padded viewer.
+- `seedMonsterLevels` scores an **unmeasured** creature mid-field rather than
+  as area 0 — the same treatment an unspawned one already got. A missing
+  measurement is not a measurement of zero.
+- the player **measures the sprite itself** when `clip.bb` is absent (union of
+  opaque frames on an offscreen canvas, same alpha cut as the Python), so art
+  that lands between the two passes still crops correctly. The build can only
+  ever be as fresh as whoever last ran it, and here that was another agent.
+  `check-artbounds.mjs` serves a `bb`-stripped `data.json` and asserts the
+  self-measurement equals what the Python found, exactly.
 
 The **stage** is fixed per domain (`data.artBox`, e.g. monsters 207×189 art
 px): the widest and tallest pose any of them needs, shadow and hover

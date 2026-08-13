@@ -281,19 +281,73 @@ function makePlayer(entity, kind) {
     const a = anims[cur.state];
     return a?.dirs?.[cur.dir] ?? null;
   }
+  // SELF-HEALING CROP (maintainer 2026-08-13: "the new big monsters doesn't
+  // fit in it (see a scrollar)"). art_bounds.json is measured FROM a data.json
+  // snapshot, so any art that lands between those two runs reaches this player
+  // with no `bb` — and the fallback below is the whole padded FRAME, which is
+  // the very "scaling by transparent padding" the crop exists to kill. 33
+  // monsters arrived that way and asked for a 472px canvas to draw a 402px
+  // creature, on a 432px stage. The builder can only ever be as fresh as
+  // whoever last ran it — and it was another agent's rebuild that stranded
+  // these — so the same measurement is available here: union of every frame's
+  // opaque pixels, frame-local, once per clip, cached on the clip. Art is
+  // same-origin, so the read-back never taints; if it ever does, we keep the
+  // old behaviour rather than blanking the viewer.
+  function selfMeasure(target, images, fw, fh) {
+    if (!target || target.bb) return;
+    try {
+      const c = document.createElement("canvas");
+      c.width = fw; c.height = fh;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      let x0 = fw, y0 = fh, x1 = -1, y1 = -1;
+      for (const [im, sx] of images) {
+        if (!im?.complete || !im.naturalWidth) continue;
+        g.clearRect(0, 0, fw, fh);
+        g.drawImage(im, sx, 0, fw, fh, 0, 0, fw, fh);
+        const d = g.getImageData(0, 0, fw, fh).data;
+        for (let y = 0; y < fh; y++)
+          for (let x = 0; x < fw; x++)
+            if (d[(y * fw + x) * 4 + 3] > 8) {          // same alpha cut as art-bounds.py
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+      }
+      if (x1 >= x0 && y1 >= y0) target.bb = [x0, y0, x1 + 1, y1 + 1];
+    } catch { /* tainted canvas — fall back to whole-frame, as before */ }
+  }
   function loadClip() {
     clip = clipFor();
     img = null; frameImgs = [];
     cur.frame = 0;
     if (!clip) { draw(); return; }
-    if (clip.strip) {
+    const target = clip;                    // the clip may change before onload
+    const fw = target.fw ?? entity.frameW ?? 64, fh = target.fh ?? entity.frameH ?? 64;
+    if (target.strip) {
       img = new Image();
-      img.onload = draw;
-      img.src = assetUrl(clip.strip);
+      img.onload = () => {
+        const n = Math.max(1, Math.min(target.frames ?? 1, Math.floor(img.naturalWidth / fw) || 1));
+        selfMeasure(target, Array.from({ length: n }, (_, i) => [img, i * fw]), fw, fh);
+        draw();
+      };
+      img.src = assetUrl(target.strip);
     } else if (clip.framesDir) {
+      let loaded = 0;
       frameImgs = Array.from({ length: clip.frames }, (_, i) => {
         const im = new Image();
-        im.onload = () => { if (i === 0) draw(); };
+        // Measured on the LAST frame — the union needs them all, the same way
+        // the Python unions a strip. The first frame still draws immediately,
+        // so nothing waits on the tail of a long animation.
+        im.onload = () => {
+          if (++loaded >= frameImgs.length) {
+            selfMeasure(target, frameImgs.map((x) => [x, 0]), fw, fh);
+            draw();
+          } else if (i === 0) draw();
+        };
+        // A frame that 404s still has to count, or one gap stalls the union
+        // for the whole clip and it never measures at all.
+        im.onerror = () => { if (++loaded >= frameImgs.length) { selfMeasure(target, frameImgs.map((x) => [x, 0]), fw, fh); draw(); } };
         // The builder measured how this domain names its frames — "0.png" or
         // "00.webp". Never assume: the two domains differ.
         im.src = assetUrl(`${clip.framesDir}/${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`);
@@ -360,7 +414,10 @@ function makePlayer(entity, kind) {
   }
   rafTimer = requestAnimationFrame(tick);
 
-  const stateSeg = h("span", { class: "seg" });
+  // `seg-states` only so this row can be told apart from the speed and zoom
+  // rows, which carry the same class and sit in the same panel. Styling still
+  // comes from `.seg`.
+  const stateSeg = h("span", { class: "seg seg-states" });
   // Keep the ACTIVE state visible inside the pannable row — scrollLeft only,
   // never scrollIntoView: that can drag the whole page along with it.
   function revealActiveState() {

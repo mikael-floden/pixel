@@ -58,17 +58,52 @@ ok(painted > 100, `the selected animation plays (${painted}px)`);
 // south-only showed eight buttons and you had to press them to find out which
 // way the art faces. Availability is PER STATE, so this walks every state of a
 // monster that genuinely ships a partial one.
+// The monster art was completed to 8 directions everywhere on 2026-08-13, so
+// no entity ships a partial state AND a full one any more — the fixture this
+// check was reading off disk simply stopped existing, and a check that can
+// only run while some art is broken is a check that quietly evaporates the day
+// it gets fixed. So the partial state is SYNTHESISED: data.json is served with
+// directions trimmed out of exactly one state, which is what a half-downloaded
+// animation looks like to this page. Behaviour under test is the UI's, not the
+// art's, and now it is tested either way.
 const partial = D.domains.monsters.find((m) =>
-  Object.values(m.animations ?? {}).some((a) => Object.keys(a.dirs ?? {}).length < 8)
-  && Object.values(m.animations ?? {}).some((a) => Object.keys(a.dirs ?? {}).length === 8));
-ok(!!partial, `a monster ships both a partial and a full state, so this proves something (${partial?.name})`);
+  Object.keys(m.animations ?? {}).length >= 3
+  && Object.values(m.animations ?? {}).every((a) => Object.keys(a.dirs ?? {}).length === 8));
+ok(!!partial, `a monster with complete art to trim down (${partial?.name})`);
+const KEEP = ["south", "east", "north-west"];
+const TRIM = partial && (Object.keys(partial.animations).find((k) => k !== "idle") ?? null);
+const wantDirs = (label) => (label === stateLabelish(TRIM) ? KEEP.length : 8);
 if (partial) {
+  // Re-serving with `response: r` carries the ORIGINAL content-encoding and
+  // content-length over a body that is now a different length, and the browser
+  // drops the response on the floor — the page boots to nothing. Send a plain
+  // one instead. `hits` is not decoration: an intercept that never fires still
+  // renders a perfectly green page, and every assertion below would be about
+  // the untrimmed art.
+  let hits = 0;
+  await p.route("**/wiki/site/data.json", async (route) => {
+    const j = JSON.parse(await (await route.fetch()).text());
+    const st = j.domains.monsters.find((x) => x.id === partial.id).animations[TRIM];
+    st.dirs = Object.fromEntries(Object.entries(st.dirs).filter(([d]) => KEEP.includes(d)));
+    hits++;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(j) });
+  });
   await p.goto(`${W}#/monsters/${partial.id}`, { waitUntil: "load" });
-  await p.waitForTimeout(2200);
-  const states = await p.evaluate(() => [...document.querySelectorAll(".seg button")].map((x) => x.textContent.trim()));
+  // RELOAD, twice over. data.json is fetched once at boot and kept in memory,
+  // so a route registered afterwards never sees it and a hash-only goto never
+  // refetches — the trim above would silently not apply. And the state row has
+  // to be the MONSTER's before it is read: reading it too early picked up the
+  // previous page's 13 states, so the walk clicked labels this page does not
+  // have and re-measured the same state nine times.
+  await p.reload({ waitUntil: "load" });
+  await p.waitForFunction((n) => document.querySelectorAll(".seg-states button").length === n,
+    Object.keys(partial.animations).length, { timeout: 15000 });
+  await p.waitForTimeout(900);
+  ok(hits > 0, `the trimmed data.json really was served (${hits}x) — otherwise this proves nothing`);
+  const states = await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent.trim()));
   const seen = [];
   for (const st of states) {
-    await p.evaluate((s) => [...document.querySelectorAll(".seg button")].find((x) => x.textContent.trim() === s)?.click(), st);
+    await p.evaluate((s) => [...document.querySelectorAll(".seg-states button")].find((x) => x.textContent.trim() === s)?.click(), st);
     await p.waitForTimeout(420);
     seen.push(await p.evaluate(() => {
       const pad = document.querySelector(".dirpad");
@@ -77,7 +112,7 @@ if (partial) {
       let painted = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) painted++;
       const dirs = [...pad.querySelectorAll("button")].map((x) => x.textContent);
       const on = [...pad.querySelectorAll("button.on")].map((x) => x.textContent);
-      return { state: [...document.querySelectorAll(".seg button")].find((x) => x.classList.contains("on"))?.textContent.trim(),
+      return { state: [...document.querySelectorAll(".seg-states button")].find((x) => x.classList.contains("on"))?.textContent.trim(),
         dirs, on, disabled: pad.querySelectorAll("button[disabled]").length,
         padH: Math.round(pad.getBoundingClientRect().height), painted };
     }));
@@ -88,10 +123,7 @@ if (partial) {
   ok(seen.some((s) => s.dirs.length < 8) && seen.some((s) => s.dirs.length === 8),
     "the walk really did cross a partial state and a full one");
   // The count must equal the DATA's own count, per state — not merely "fewer".
-  const wrong = seen.filter((s) => {
-    const key = Object.keys(partial.animations).find((k) => stateLabelish(k) === s.state);
-    return key && Object.keys(partial.animations[key].dirs ?? {}).length !== s.dirs.length;
-  });
+  const wrong = seen.filter((s) => s.dirs.length !== wantDirs(s.state));
   ok(wrong.length === 0, `and the count matches the art exactly${wrong.length ? ` — ${wrong.map((s) => `${s.state}: ${s.dirs.length}`).join(", ")}` : ""}`);
   // Selecting a direction the NEXT state lacks must not strand the selection.
   ok(seen.every((s) => s.on.length === 1 && s.dirs.includes(s.on[0])),

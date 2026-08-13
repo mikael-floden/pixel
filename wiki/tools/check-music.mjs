@@ -45,7 +45,14 @@ ok(page.panels === D.domains.music.length, `every track has a panel (${page.pane
 ok(page.heads.some((t) => /^Tracks/.test(t)) && page.heads.some((t) => /^Situation beds/.test(t)),
   `the two sources are separate sections (${page.heads.join(" | ")})`);
 ok(newOnes.every((id) => page.titles.some((t) => t?.toLowerCase() === id)), "the new songs are on the page by name");
-ok(page.routed === 5, `the five unrouted beds say so (${page.routed})`);
+// Counted from the DATA, not typed in. It was 5 when this was written; the
+// composer then shipped 8 more beds with a blank `use` line (cave2/3/4,
+// battle_day, battle_night, summit_vista/wind/triumph) and a hardcoded 5 turned
+// a games-audio backlog item into a red wiki gate. What this check is actually
+// for is that the page TELLS you which beds nothing plays — so it asserts the
+// page agrees with the data, whatever that number is today.
+const unrouted = beds.filter((t) => !t.routed).length;
+ok(page.routed === unrouted, `every bed nothing routes says so, ${unrouted} of ${beds.length} (page shows ${page.routed})`);
 ok(page.inGame === 2, `and the two the game plays today are chipped "in game" (${page.inGame})`);
 
 // ---------- they actually PLAY (the whole point)
