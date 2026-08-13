@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_015",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 15,
+  "name": "Shingle-roofed post shrine 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "shingle-roofed post shrine",
+  "glow_concept": null,
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, shingle-roofed post shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
+  "placement": {
+    "world_height_m": 1.41,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "20066dd7-c8b1-4bd1-81f5-2dc96ad3de36",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
