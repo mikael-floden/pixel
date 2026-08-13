@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:13:19+00:00",
+  "id": "moss_clump_012",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 12,
+  "name": "Moss-swallowed stump 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-swallowed stump",
+  "glow_concept": "constellation of glowing pinprick spore capsules",
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-swallowed stump, small, knee-high, self-emissive at night, softly radiating light: constellation of glowing pinprick spore capsules",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.56,
+    "world_px_height": 21,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cf4dbbc1-9582-4ddf-b3d5-ea0d73a446a8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
