@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 412,
+  "scenery_count": 413,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 4,
@@ -829,7 +829,7 @@
     "grass_tufts": 5,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 5,
+    "graves": 6,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 5,
@@ -4814,6 +4814,28 @@
       "status": "complete",
       "pixellab_object_id": "76e4cfb8-5465-410f-acba-d646ab2cf159",
       "sprite": "graves/grave_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_018",
+      "rel": "graves/grave_018",
+      "name": "Toppled half-sunk stone 018 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, waist-high, self-emissive at night, softly radiating light: single votive candle flickering at the base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.93,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "db85b1c8-2a7e-4789-aaca-e0806ea5bf67",
+      "sprite": "graves/grave_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
