@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_010",
+  "group": "waystones",
+  "rank": 6,
+  "index": 10,
+  "name": "Knot-pattern carved stone 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "knot-pattern carved stone",
+  "glow_concept": "ring of foxfire mushrooms at the base",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, knot-pattern carved stone, small, knee-high, self-emissive at night, softly radiating light: ring of foxfire mushrooms at the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.72,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 302,
+  "scenery_count": 303,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 7,
@@ -887,7 +887,7 @@
     "water_pumps": 2,
     "waterwheels": 2,
     "wayside_shrines": 2,
-    "waystones": 2,
+    "waystones": 3,
     "web_frames": 2,
     "wells": 2,
     "windmills": 2,
@@ -7367,6 +7367,28 @@
       "status": "complete",
       "pixellab_object_id": "9f9343d6-2f00-463c-973b-7e6f6e095814",
       "sprite": "waystones/waystone_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_010",
+      "rel": "waystones/waystone_010",
+      "name": "Knot-pattern carved stone 010 \u00b7 lit",
+      "category": "waystones",
+      "lights": "LIGHTS_ON",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, knot-pattern carved stone, small, knee-high, self-emissive at night, softly radiating light: ring of foxfire mushrooms at the base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.72,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
+      "sprite": "waystones/waystone_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
