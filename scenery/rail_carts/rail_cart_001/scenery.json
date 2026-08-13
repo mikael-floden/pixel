@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rail_cart_001",
+  "group": "rail_carts",
+  "rank": 71,
+  "index": 1,
+  "name": "Moss-filled abandoned cart 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-filled abandoned cart",
+  "glow_concept": null,
+  "prompt": "an abandoned wooden mine rail cart with iron wheels standing on a short stub of rusted track, moss-filled abandoned cart, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "rail_carts/rail_cart_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.16,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8f97e084-a783-4d9b-b4be-a769072e7372",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
