@@ -2681,29 +2681,49 @@ side collision just like monsters").
     REMOVED art — my roof slab, the wall bands above each constrained cut,
     the cone's tops — is rebuilt as ordinary world-anchored images at the
     occluder depths (`buildIndoorDebris`, iterating the constrained set with
-    view culling) wearing `alpha = 1 − indoorMix`. ENTRY: the world repaints
-    to the cut state on the flip frame, but the debris is OPAQUE that frame —
-    the picture is unchanged — then it dissolves on the light's own 0.35s
-    roll. EXIT: commitIndoor(false) does NOT clear or repaint; the cut world
+    view culling) wearing `alpha = 1 − indoorGrade()`. ENTRY: the world
+    repaints to the cut state on the flip frame, but the debris is OPAQUE
+    that frame — the picture is unchanged — then it dissolves on the grade.
+    EXIT: commitIndoor(false) does NOT clear or repaint; the cut world
     stays drawn (mask, cuts, `night.indoor = !!indoorMask`, aboveCut and
     pickGround all follow the DRAWN state, not the verdict) while the debris
-    fades back in, and easeIndoorMix's landing branch does the real repaint at
-    mix 0 — opaque debris equals the real geometry, so the swap is invisible.
-    Turning around mid-doorway just reverses the same fade (the mix IS the
-    state; the debris has none). Per-image depths keep bodies sorting
-    correctly through the fade. Instant paths stay instant: the kill-switch's
-    legacy cut (no per-cell map to fade), world unload, and the QA toggle.
-    Room-to-room flips inside one building rebuild the debris for the new
-    room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art —
-    accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
-    TWO REFINEMENTS the maintainer asked for the same day, with screenshots:
-    - **THE DEBRIS RUNS AT 3× THE LIGHT'S ROLL, both directions**
-      (`debrisAlpha()`: entry gone by mix ⅓; exit COMPLETE by the roll's
-      first third, then held at 1 until the mix-0 swap; he asked for 2×,
-      then "twice as fast is not enough, 3×"). The light keeps its full
-      0.35s roll — only the geometry crossfade is quick. At 60fps that is
+    fades back in, and easeIndoorMix's landing branch does the real repaint
+    when the GRADE lands — opaque debris equals the real geometry, so the
+    swap is invisible. Turning around mid-doorway just reverses the same fade
+    (the mix IS the state; the debris has none). Per-image depths keep bodies
+    sorting correctly through the fade. Instant paths stay instant: the
+    kill-switch's legacy cut (no per-cell map to fade), world unload, and the
+    QA toggle. Room-to-room flips inside one building rebuild the debris for
+    the new room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art
+    — accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
+    REFINEMENTS the maintainer asked for the same day, with screenshots:
+    - **ONE RAMP — `indoorGrade()` — FOR EVERYTHING VISIBLE** ("darken the
+      outside world fades a bit too slow"): the eased mix at 3× clamped to
+      [0,1] (entering `min(1, 3·mix)`, leaving `max(0, 3·mix − 2)`). He asked
+      for 2×, then "twice as fast is not enough, 3×" for the debris; the
+      darkening then visibly TRAILED the roof fade for the rest of the roll,
+      so the whole crossing now rides the grade: `night.indoorMix` (outside→
+      black, room un-dim, fog gate), every CPU light gain (fireRoomK, torch
+      enable, outside-light fade, sealed fires, ambEff/sunIn/fogScale) and
+      the debris (`debrisAlpha = 1 − grade` — same curves as before). The
+      raw `indoorMix` stays the 0.35s easing SUBSTRATE (and what `indoor().
+      mix` reports / the pin targets); consumers take the grade. Everything
+      finishes together at mix ⅓ (~0.14s), both directions. At 60fps that is
       ~7 blended frames; the starved headless harness renders ~1-2, which is
       why the gate needs the pin below.
+    - **THE EXIT SWAP LANDS WITH THE GRADE (mix ⅔), NOT AT MIX 0** ("the
+      roof can suddenly change from all black/dark to having grey areas at
+      the top of the wall after the fade has completed"). The debris is
+      built ONCE at the flip and view-culled to THAT camera; the old mix-0
+      landing sat ~1.9s of exponential tail later, and a walking player
+      drags the camera a few hundred px by then — past the build-time cull
+      box, exposing cut-state cells (roofless, dark) that popped at the
+      swap. The grade lands ~0.14s in, before the camera can outrun
+      OCC_CULL_PAD. The swap frame itself is pixel-identical under a locked
+      camera (measured with the exitsnap probe: ~80 stray pixels of
+      sparkle/fire flicker on a 384k-px frame; the first, unlocked run's
+      "differences" were camera glide between shots — lock the camera before
+      trusting any screenshot diff).
     - **THE EXIT UNCLAMPS THE RESOLVE AT THE FLIP, NOT AT THE END** ("the
       top of the roof completely changes color" at the fade's end). The end
       swap was only art-invisible: with the resolve still clamped to the cut
@@ -2717,17 +2737,22 @@ side collision just like monsters").
       it, under a debris layer already covering it. Entry keeps the clamp
       from its own flip (the room lights as a room immediately). Section 8
       of verify-indoor adapted: on the mid-exit frame occluder COVER cannot
-      exist (the rock is a fade layer until mix 0), so its non-vacuity is
+      exist (the rock is a fade layer until the swap), so its non-vacuity is
       "≥1 sealed monster" and the assertion is "no ring AT ALL".
     - `__ml.indoorMixPin(v?)` parks the blend anywhere in (0,1) — the
       instrument that lets the starved harness photograph the 3× crossfade
       mid-blend deterministically (pin BEFORE the teleport, shoot at
       leisure, release; same probe family as timeOfDay's phaseT override).
+      NOTE an exit pin at mix ≤ ⅔ IS the landed grade — the swap fires
+      under it; pin above ⅔ to hold the pre-swap frame.
     Gate: verify-indoorscope sections 4-5 — the PINNED mid frame is a real
     rendered blend distinct from both endpoints (>8 luma), debris gone at
-    settle, and the late-exit frame (pinned mix 0.02: debris complete, light
-    ~settled) matches the settled outdoor roof within a tight drift bar —
-    the colour-snap regression test.
+    settle, the darkening is DONE once the grade saturates (4b: pinned mix
+    0.34 entering, outdoor `lightAtCell` exactly zero), and the late-exit
+    frame (pinned mix 0.67: debris at alpha 0.99, one step above the swap)
+    matches the settled outdoor roof within a tight drift bar — the
+    colour-snap regression test (currently reads 0.0 drift over an 80-luma
+    span).
   - **THE DIAL IS A MINIMUM — WALLS RISE PER CELL UNTIL THEY'D COVER A FLOOR**
     (maintainer 2026-08-13: "make the current wall height a minimum setting...
     draw the walls all the way to the roof on sides where it's possible; some

@@ -279,11 +279,12 @@ try {
     await page.waitForTimeout(700); // a couple of stable pinned frames
     const mid = await page.evaluate(() => window.__ml.indoorFade());
     const midVal = await roofMed(`${label}-mid`);
-    // Exit only: re-pin deep into the roll's tail — debris complete, light
-    // ~settled — the frame the maintainer's colour snap lived on.
+    // Exit only: re-pin just ABOVE the grade's landing (the swap now fires at
+    // mix ⅔, under any pin at or below it) — debris at alpha 0.99, the last
+    // frame before the repaint swap, which is where a colour snap would live.
     let late = null;
     if (!goIn) {
-      await page.evaluate(() => window.__ml.indoorMixPin(0.02));
+      await page.evaluate(() => window.__ml.indoorMixPin(0.67));
       await page.waitForTimeout(700);
       late = await roofMed(`${label}-late`);
     }
@@ -323,6 +324,34 @@ try {
   for (let n = 0; n < 3 && !entry; n++) entry = await tryFade(`entry${n}`, true);
   judge(entry, "entry");
 
+  // ---- 4b. ONE RAMP: the outside is DONE darkening when the debris is gone --
+  // (maintainer 2026-08-13: "darken the outside world fades a bit too slow").
+  // Every visible half of the crossing rides indoorGrade() — at mix 0.34 the
+  // grade is saturated, so the outdoor ambient must ALREADY be exactly zero,
+  // not still easing toward it for the rest of the roll. lightAtCell is the
+  // shader's CPU twin and rides the same published grade.
+  await goTo(...OUT_SPOT);
+  if (!(await settle(false, 45000))) fail("could not step out for the grade pin");
+  await page.evaluate(([tc, tr]) => {
+    window.__ml.indoorMixPin(0.34);
+    const m = window.__ml.me();
+    if (m?.dead) window.__ml.roomSend("respawn", {});
+    window.__ml.teleport(tc, tr);
+  }, [aC + 0.5, aR + 0.5]);
+  const gradeFlip = await page.waitForFunction(
+    () => window.__ml.indoor().indoor === true,
+    null, { timeout: 20000, polling: 100 },
+  ).then(() => true).catch(() => false);
+  if (!gradeFlip) fail("grade-pin entry never flipped");
+  await page.waitForTimeout(500);
+  const midOut = await page.evaluate(([c, r]) => window.__ml.lightAtCell(c, r, 0), [OUT_SPOT[0] + 4, OUT_SPOT[1] + 4]);
+  await page.evaluate(() => window.__ml.indoorMixPin(null));
+  if (Math.max(...midOut) > 1e-6)
+    fail(`at mix 0.34 the outside is still darkening (${midOut.map((v) => v.toFixed(4)).join(",")}) — ` +
+      `the darkening is trailing the roof fade instead of riding the grade`);
+  ok("one ramp: the outside has finished darkening by mix ⅓, together with the roof dissolve");
+  if (!(await settle(true, 45000))) fail("never settled in after the grade pin");
+
   // ---- 5. THE FADE, exit: back gradually, and NO COLOUR SNAP AT THE END ----
   let exit = null;
   for (let n = 0; n < 3 && !exit; n++) exit = await tryFade(`exit${n}`, false);
@@ -331,10 +360,12 @@ try {
     fail("the exit fade never reported exiting=true — the cut world is not being held through the roll");
   // THE MAINTAINER'S SNAP (2026-08-13: "the top of the roof completely
   // changes color" at the fade's end): the late-exit frame — debris complete,
-  // mix deep in the roll's slow tail — must already match the settled outdoor
-  // roof. Clamped-resolve lighting made this a full tint pop (the roof lit as
-  // the shadowed interior behind it until the swap); the exit flip unclamps
-  // the resolve now, so the only residual is the ambient's own last easing.
+  // one pin-step above the grade's landing where the repaint swap now fires —
+  // must already match the settled outdoor roof. Clamped-resolve lighting
+  // made this a full tint pop (the roof lit as the shadowed interior behind
+  // it until the swap); the exit flip unclamps the resolve, the whole exit
+  // rides the grade, and the swap itself lands at mix ⅔ — early enough that
+  // a walking player's camera cannot outrun the debris' build-time cull.
   {
     const drift = Math.abs(exit.late - exit.after);
     const span = Math.abs(exit.before - exit.after);

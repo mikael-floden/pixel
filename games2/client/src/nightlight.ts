@@ -1569,11 +1569,14 @@ export class NightLights {
    * the SURFACE resolve clamps; the occlusion march does not (the building is
    * still solid to the sun). See heightAt(). */
   indoorTop = 0;
-  /** WorldScene.indoorMix — the eased 0..1 the indoor GRADE rides. The outside
-   * fades to black on it instead of snapping, so a doorway crossing is a fade
-   * rather than half the screen going out one frame ahead of the room. Applied
-   * to the light only, never to geometry (`indoor`/`indoorTop` stay boolean —
-   * the roof and the truncated columns flip on the same frame regardless). */
+  /** WorldScene.indoorGrade() — the transition's 3× ramp, 0..1 (the raw eased
+   * mix at triple speed, clamped; since 2026-08-13 the whole visible crossing
+   * rides ONE ramp, so the outside darkening finishes with the debris
+   * crossfade instead of trailing it). The outside fades to black on it
+   * instead of snapping, so a doorway crossing is a fade rather than half the
+   * screen going out one frame ahead of the room. Applied to the light only,
+   * never to geometry (`indoor`/`indoorTop` stay boolean — the roof and the
+   * truncated columns flip on the same frame regardless). */
   indoorMix = 0;
   /** The OUTDOOR grade — what the world outside my room is fading between (0
    * and this), never the interior dial. Written every frame while indoors; see

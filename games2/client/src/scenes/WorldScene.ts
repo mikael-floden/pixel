@@ -1182,13 +1182,13 @@ export class WorldScene extends Phaser.Scene {
    * "pops on a single frame... I want this to feel more fade in/fade out").
    * The art the cut REMOVES — my roof slab, the wall bands above each cell's
    * cut, the covering cone's tops — re-issued as world-anchored images at the
-   * occluder depths, alpha = 1 − indoorMix. Entering: the world repaints to
+   * occluder depths, alpha = 1 − indoorGrade. Entering: the world repaints to
    * the cut state on the flip frame, but the debris is OPAQUE on that frame,
-   * so the picture is unchanged — then it dissolves on the same 0.35s roll
-   * the light grade rides. Leaving: the world KEEPS drawing the cut state,
-   * the debris fades back IN over it, and the real repaint happens only when
-   * the mix lands on 0 — opaque debris equals the real geometry, so the swap
-   * is invisible. Per-image depths keep bodies sorting correctly through the
+   * so the picture is unchanged — then it dissolves on the same 3× grade
+   * the light rides. Leaving: the world KEEPS drawing the cut state, the
+   * debris fades back IN over it, and the real repaint happens when the
+   * GRADE lands (mix ⅔) — opaque debris equals the real geometry, so the
+   * swap is invisible. Per-image depths keep bodies sorting correctly through the
    * whole fade (a body under the returning roof is covered by it, exactly as
    * outdoors). Null between transitions; never built for the kill-switch's
    * legacy scalar cut (QA wants instant frames). */
@@ -6699,7 +6699,7 @@ export class WorldScene extends Phaser.Scene {
     // copy, all of which draw ABOVE the darkness overlay.
     this.fireRoomK =
       fireLit && this.campfire && !this.inMyRoom(this.campfire.col, this.campfire.row)
-        ? 1 - this.indoorMix
+        ? 1 - this.indoorGrade()
         : 1;
 
     // Night lighting (always on): per-pixel point lights with heightmap
@@ -6736,7 +6736,7 @@ export class WorldScene extends Phaser.Scene {
       if (me) {
         // Day gate + doorway override, now for one body: full Day outdoors a
         // torch has no impact; indoors the doorway fade re-enables it.
-        const base = Math.max(this.curTorchF, this.indoorContains(me.fx, me.fy) ? this.indoorMix : 0);
+        const base = Math.max(this.curTorchF, this.indoorContains(me.fx, me.fy) ? this.indoorGrade() : 0);
         const tf = Math.max(this.torchOn ? base : 0, deathTorch);
         if (tf > 0.01) {
           this.lastSlotInfo.torch = true;
@@ -6784,8 +6784,8 @@ export class WorldScene extends Phaser.Scene {
       // it" can never disagree. My torch is inside by construction, so its
       // spill through the doorway — the reveal he asked for — survives.
       //
-      // FADED on indoorMix, not switched: an outside light dies over the same
-      // 0.35s roll the outside ambient does, so nothing on screen steps.
+      // FADED on the GRADE, not switched: an outside light dies over the same
+      // quick ramp the outside ambient does, so nothing on screen steps.
       // The debug PROBE is exempt. It is the only instrument a headless gate
       // has for "the outside tiles really are drawn" — with ambient at zero a
       // drawn tile and a missing one are pixel-identical, and a light is the
@@ -6796,7 +6796,7 @@ export class WorldScene extends Phaser.Scene {
           const L = sl[i];
           if (L === this.probeLight) continue;
           if (this.inMyRoom(L.col, L.row)) continue;
-          const k = 1 - this.indoorMix;
+          const k = 1 - this.indoorGrade();
           if (k <= 0.01) sl.splice(i, 1);
           else L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
         }
@@ -6851,7 +6851,7 @@ export class WorldScene extends Phaser.Scene {
       // setTimeOfDay snapshots it as `timeFromAmbient` (writing the interior
       // grade there would ease FROM it toward the next phase and pop bright)
       // and `__ml.timeOfDay()` / verify-timecycle read it.
-      const iF = this.indoorMix;
+      const iF = this.indoorGrade();
       // The interior target is READ PER FRAME from the Settings slider — it is
       // a live tuning dial, so a drag has to show while you stand in the room.
       // Cheap: three multiplies, no allocation beyond the triple itself.
@@ -6921,10 +6921,12 @@ export class WorldScene extends Phaser.Scene {
         // are entering lights as a room immediately.
         this.night.indoor = this.indoorInside && !!this.indoorMask;
         this.night.indoorTop = this.indoorTop;
-        // The LIGHT half of the same state does ride the ease: the outside
-        // fades to black on indoorMix while the interior's own ambient rolls
-        // down on it, so the two halves of a doorway crossing move together.
-        this.night.indoorMix = this.indoorMix;
+        // The LIGHT half of the same state rides the GRADE: the outside fades
+        // to black on the same 3× ramp the debris dissolves on, so the roof
+        // disappearing and the world darkening finish together (maintainer
+        // 2026-08-13: the darkening used to trail the roof by the rest of the
+        // roll).
+        this.night.indoorMix = this.indoorGrade();
         // What the OUTSIDE is fading between: black and this, never the
         // interior grade. Set every frame — the outdoor phase keeps moving
         // while you stand indoors.
@@ -7001,7 +7003,7 @@ export class WorldScene extends Phaser.Scene {
       const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
       const meAv = myId ? this.avatars.get(myId) : undefined;
       if (meAv) {
-        const base = Math.max(this.curTorchF, this.indoorContains(meAv.fx, meAv.fy) ? this.indoorMix : 0);
+        const base = Math.max(this.curTorchF, this.indoorContains(meAv.fx, meAv.fy) ? this.indoorGrade() : 0);
         const tf = Math.max(this.torchOn ? base : 0, deathTorch);
         if (tf > 0.5) lights.push({ x: meAv.lx, y: meAv.ly - 20 }); // lantern pool
       }
@@ -9223,15 +9225,15 @@ export class WorldScene extends Phaser.Scene {
       // dominating the transition"). The world above just repainted to the
       // cut state, but the debris layer — the exact art the cut removed — is
       // built OPAQUE on this same frame, so the flip frame shows the picture
-      // you were already looking at. It then dissolves on the light's own
-      // roll (alpha = 1 − indoorMix, applied in easeIndoorMix).
+      // you were already looking at. It then dissolves on the transition
+      // grade (alpha = 1 − indoorGrade, applied in easeIndoorMix).
       this.buildIndoorDebris();
       return;
     }
     // THE EXIT FADE, the same crossfade run backward: keep drawing the CUT
     // world (mask, cuts and the shader clamp all stay), let the removed art
-    // fade back IN as the light rolls out, and do the real repaint only when
-    // the mix lands on 0 — at that moment the opaque debris IS the real
+    // fade back IN on the grade, and do the real repaint only when the GRADE
+    // lands (mix ⅔, ~0.14s) — at that moment the opaque debris IS the real
     // geometry, so the swap cannot be seen (easeIndoorMix's landing branch).
     if (wasDrawn && this.indoorCut && this.world && this.terrain) {
       this.buildIndoorDebris();
@@ -9259,17 +9261,31 @@ export class WorldScene extends Phaser.Scene {
     this.indoorDebris = null;
   }
 
-  /** The debris layer's opacity for the current mix — 3× the light's roll in
-   * both directions (maintainer 2026-08-13: twice as fast was not enough).
-   * Entering: opaque at the flip, dissolved by mix ⅓. Leaving: rising from 0
-   * at the flip, COMPLETE by the roll's first third, then held at 1 until the
-   * mix-0 swap — the swap's own frame changes nothing the eye can see. The
-   * LIGHT keeps its own full-length roll; only the geometry crossfade is
-   * quick. */
-  private debrisAlpha(): number {
+  /** THE TRANSITION'S ONE RAMP — the eased mix at triple speed, clamped to
+   * [0,1]. Every VISIBLE half of a doorway crossing rides this single value:
+   * the shader's indoor blend (outside-to-black, room un-dim, fog gate), every
+   * CPU light gain (torch enable, outside lights dying, sealed fires), and the
+   * debris crossfade (alpha = 1 − grade). One ramp means the parts cannot
+   * trail each other: entering, the outside finishes darkening WITH the roof
+   * dissolve at mix ⅓ instead of dragging on for the rest of the roll
+   * (maintainer 2026-08-13: "darken the outside world fades a bit too slow");
+   * leaving, everything is back by mix ⅔ — which is exactly when
+   * easeIndoorMix runs the repaint swap, because past that point the roll's
+   * long exponential tail drives nothing the eye can see. The raw indoorMix
+   * stays the easing SUBSTRATE (and the QA pin's target); consumers take the
+   * grade. */
+  private indoorGrade(): number {
     return this.indoorInside
-      ? Math.max(0, 1 - 3 * this.indoorMix)
-      : Math.min(1, 3 * (1 - this.indoorMix));
+      ? Math.min(1, 3 * this.indoorMix)
+      : Math.max(0, 3 * this.indoorMix - 2);
+  }
+
+  /** The debris layer's opacity — the grade's exact complement, which keeps
+   * the curves the maintainer approved (2026-08-13, "3×, both directions"):
+   * entering, opaque at the flip and dissolved by mix ⅓; leaving, complete by
+   * the roll's first third and then held at 1 through the swap. */
+  private debrisAlpha(): number {
+    return 1 - this.indoorGrade();
   }
 
   /** Build the TRANSITION DEBRIS: every piece of art the current cut removes,
@@ -9582,29 +9598,36 @@ export class WorldScene extends Phaser.Scene {
     // At 3× the debris crosses its whole alpha range inside one or two
     // STARVED harness frames (a single ~180ms delta carries the mix past ⅓),
     // so no wall-clock sampling can catch the blend there — while a real
-    // 60fps device renders ~8 blended frames. Pin strictly inside (0,1): the
-    // landing branch below fires on exact 0 only.
+    // 60fps device renders ~8 blended frames. NOTE a pin at mix ≤ ⅔ on the
+    // way out IS the landed grade — the swap below fires under it.
     if (this.indoorMixPinV !== null) this.indoorMix = this.indoorMixPinV;
-    // THE TRANSITION DEBRIS rides the light's roll AT TRIPLE SPEED (maintainer
-    // 2026-08-13: "the fade should go faster so no user notices any glitch" —
-    // first 2×, then "twice as fast is not enough, 3×", both directions).
-    // Entering, the debris is gone by mix ⅓; leaving, it is fully opaque by
-    // the roll's first third and then HOLDS while the light finishes — so the
-    // mix-0 repaint swap happens under a roof that has already been complete
-    // (and, since the resolve unclamps at the exit flip, already correctly
-    // lit) for most of the fade. Turning around mid-doorway reverses the same
-    // curve (the mix is the state; the debris has none of its own).
+    // THE TRANSITION DEBRIS is the grade's complement (maintainer 2026-08-13:
+    // "the fade should go faster so no user notices any glitch" — first 2×,
+    // then "twice as fast is not enough, 3×", both directions). Entering, the
+    // debris is gone by mix ⅓; leaving, it is fully opaque by mix ⅔ — and
+    // held there only for the frames until the landing branch below swaps the
+    // real geometry in. Turning around mid-doorway reverses the same curve
+    // (the mix is the state; the debris has none of its own).
     if (this.indoorDebris) {
       const a = this.debrisAlpha();
       if (this.indoorInside && a <= 0.004) this.destroyIndoorDebris();
       else for (const img of this.indoorDebris) img.setAlpha(a);
     }
-    // The room's LIGHT rules outlive the geometry by exactly one roll. Until
-    // this lands on 0 the outside is still fading up from black, the lights
-    // outside it are still fading in, and the chrome above the overlay is still
-    // held back — all of it keyed on `roomMask`, which is why it is dropped
-    // HERE and not the moment the verdict flipped.
-    if (this.indoorMix === 0 && !this.indoorInside) {
+    // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
+    // grade landing on 0 means the outside has finished fading up from black
+    // and the lights outside have finished fading in — everything keyed on
+    // `roomMask` is done, so it is dropped HERE and not the moment the
+    // verdict flipped. Landing on the grade rather than the raw mix matters
+    // for more than symmetry: the swap needs the debris' build-time view cull
+    // to still cover the camera, and while the OLD mix-0 landing sat ~1.9s of
+    // exponential tail after the flip — a walking player drags the camera a
+    // few hundred px by then, past the cull box, exposing cut-state cells
+    // that then popped at the swap (maintainer 2026-08-13: "all black/dark
+    // → grey areas at the top of the wall after the fade") — the grade lands
+    // ~0.14s in, before the camera can outrun OCC_CULL_PAD. The swap frame
+    // itself changes nothing: cut world + opaque debris and the full repaint
+    // are pixel-identical under a locked camera (measured, exitsnap probe).
+    if (this.indoorGrade() === 0 && !this.indoorInside) {
       if (this.roomMask) {
         this.roomMask = null;
         this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
@@ -11280,12 +11303,12 @@ export class WorldScene extends Phaser.Scene {
       // bounce floor let 22% of the indoor bonfire pour through the house
       // walls at night (maintainer 2026-08-12: "I'm outside of the house and
       // I can clearly see there is a light source inside bleeding through").
-      // Scaled by indoorMix — the same roll the room's ambient rides — so
+      // Scaled by the GRADE — the same ramp the room's ambient rides — so
       // walking out fades the fire with the room instead of popping it.
       let gain = 1;
       if (s.sealed) {
         if (!(this.roomMask && this.inMyRoom(s.col, s.row))) continue;
-        gain = this.indoorMix;
+        gain = this.indoorGrade();
         if (gain <= 0.01) continue;
       }
       cands.set(s.id, {
