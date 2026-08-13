@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 359,
+  "scenery_count": 360,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 63,
@@ -815,7 +815,7 @@
     "dock_pilings": 5,
     "dovecotes": 1,
     "driftwood_logs": 2,
-    "fading_relics": 1,
+    "fading_relics": 2,
     "fallen_logs": 7,
     "fences": 4,
     "ferns": 6,
@@ -3191,6 +3191,28 @@
       "status": "complete",
       "pixellab_object_id": "fe83ce7a-7575-42b4-882c-f6915e0f2d26",
       "sprite": "fading_relics/fading_relic_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fading_relic_009",
+      "rel": "fading_relics/fading_relic_009",
+      "name": "Fading grandfather clock 009",
+      "category": "fading_relics",
+      "lights": "LIGHTS_OFF",
+      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, fading grandfather clock, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.83,
+        "world_px_height": 31,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9520ad8b-83d7-482e-8d89-18ec69b03d9b",
+      "sprite": "fading_relics/fading_relic_009/sprite.webp",
       "rotations": {},
       "animations": []
     },

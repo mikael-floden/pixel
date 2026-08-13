@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:55:21+00:00",
+  "id": "fading_relic_009",
+  "group": "fading_relics",
+  "rank": 62,
+  "index": 9,
+  "name": "Fading grandfather clock 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "fading grandfather clock",
+  "glow_concept": null,
+  "prompt": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, fading grandfather clock, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "fading_relics/fading_relic_009/sprite.webp",
+  "placement": {
+    "world_height_m": 0.83,
+    "world_px_height": 31,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9520ad8b-83d7-482e-8d89-18ec69b03d9b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
