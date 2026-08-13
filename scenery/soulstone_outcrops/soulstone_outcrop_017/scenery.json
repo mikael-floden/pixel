@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:18:52+00:00",
+  "id": "soulstone_outcrop_017",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 17,
+  "name": "Soulstone fused to granite base 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "soulstone fused to granite base",
+  "glow_concept": null,
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone fused to granite base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.12,
+    "world_px_height": 42,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0d6e326e-d79a-450f-b36b-0048f804e15c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
