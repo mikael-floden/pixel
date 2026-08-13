@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bush_008",
+  "group": "bushes",
+  "rank": 25,
+  "index": 8,
+  "name": "Bare winter twig bush 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "bare winter twig bush",
+  "glow_concept": "fireflies nesting deep in the foliage",
+  "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, bare winter twig bush, waist-high, self-emissive at night, softly radiating light: fireflies nesting deep in the foliage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "bushes/bush_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.78,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f5f452ee-fe85-4f66-8e64-abf087faf0f9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
