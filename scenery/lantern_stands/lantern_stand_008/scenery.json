@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:05:10+00:00",
+  "id": "lantern_stand_008",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 8,
+  "name": "Brass-hooked garden stand 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "brass-hooked garden stand",
+  "glow_concept": "green foxfire fungus packed behind the glass",
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, brass-hooked garden stand, large, twice human height, self-emissive at night, softly radiating light: green foxfire fungus packed behind the glass",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.42,
+    "world_px_height": 91,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f0cf5df7-0bd7-4236-b479-2369674f115e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

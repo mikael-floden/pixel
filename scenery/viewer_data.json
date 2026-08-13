@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 392,
+  "scenery_count": 393,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -209,7 +209,7 @@
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 30,
@@ -839,7 +839,7 @@
     "house_clutter": 5,
     "ivy_posts": 5,
     "lantern_posts": 6,
-    "lantern_stands": 3,
+    "lantern_stands": 4,
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 5,
@@ -5452,6 +5452,28 @@
       "status": "complete",
       "pixellab_object_id": "075f17ac-28c8-45a6-a00e-0fafea347db1",
       "sprite": "lantern_stands/lantern_stand_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_008",
+      "rel": "lantern_stands/lantern_stand_008",
+      "name": "Brass-hooked garden stand 008 \u00b7 lit",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, brass-hooked garden stand, large, twice human height, self-emissive at night, softly radiating light: green foxfire fungus packed behind the glass",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.42,
+        "world_px_height": 91,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f0cf5df7-0bd7-4236-b479-2369674f115e",
+      "sprite": "lantern_stands/lantern_stand_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
