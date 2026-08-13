@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "standing_stone_006",
+  "group": "standing_stones",
+  "rank": 38,
+  "index": 6,
+  "name": "Rope-wrapped venerated stone 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rope-wrapped venerated stone",
+  "glow_concept": "glowing notch marks along one edge",
+  "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, rope-wrapped venerated stone, tall, about two people high, self-emissive at night, softly radiating light: glowing notch marks along one edge",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "standing_stones/standing_stone_006/sprite.webp",
+  "placement": {
+    "world_height_m": 3.37,
+    "world_px_height": 127,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2c382de7-cab3-48da-9b33-a8703a9349aa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
