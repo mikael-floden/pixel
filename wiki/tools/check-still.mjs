@@ -174,6 +174,67 @@ ok(toggled.openTop > toggled.before, "expanding pushes the viewer down — the r
 ok(toggled.after === toggled.before, `collapsing puts it back to the pixel (${toggled.before} → ${toggled.after})`);
 ok(toggled.label === "Read less" && toggled.closedLabel === "Read more…", "the button relabels both ways");
 
+// ADMIN SIZE REFERENCE (maintainer 2026-08-13: "render the human male side by
+// side with the scenery so I see how big it is in comparison … If I toggle
+// this mode on I like it to keep being on if I change to next scenery").
+// The Man draws at the viewer's OWN shared scale — the whole point of the
+// one-scale system is that this comparison needs no other math — feet on the
+// piece's baseline, hugging the stage's left edge, scenery untouched.
+ok(!(await p.evaluate(() => !!document.querySelector(".human-toggle"))), "the toggle is invisible to the public");
+const boy = D.domains.characters.find((c) => c.id === "default_boy");
+const boyBB = boy.animations.idle.dirs.south.bb;
+const artScale = D.artScale || 2;
+const boyW = (boyBB[2] - boyBB[0]) * artScale, boyH = (boyBB[3] - boyBB[1]) * artScale;
+const actx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+const pa = await actx.newPage();
+const aerrs = []; pa.on("pageerror", (e) => aerrs.push(String(e)));
+await pa.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await pa.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+const hinfo = () => pa.evaluate(() => {
+  const st = document.querySelector(".player-stage"), cv = st?.querySelector("canvas"), hu = st?.querySelector(".human-ref");
+  const r = (x) => { const q = x.getBoundingClientRect(); return { l: Math.round(q.left), b: Math.round(q.bottom), w: Math.round(q.width), h: Math.round(q.height) }; };
+  return { on: !!document.querySelector(".human-toggle")?.classList.contains("on"),
+    visible: !!hu && getComputedStyle(hu).display !== "none",
+    canvas: cv ? r(cv) : null, human: hu && getComputedStyle(hu).display !== "none" ? r(hu) : null,
+    stageL: Math.round(st.getBoundingClientRect().left) };
+});
+await pa.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
+await pa.waitForTimeout(1700);
+const h0 = await hinfo();
+ok(!h0.on && !h0.visible, "admin sees the toggle off and no Man by default");
+await pa.evaluate(() => document.querySelector(".human-toggle").click());
+await pa.waitForTimeout(300);
+const h1 = await hinfo();
+console.log("human on:", JSON.stringify(h1), `expect ${boyW}x${boyH}`);
+ok(h1.visible && h1.human.w === boyW && h1.human.h === boyH,
+  `the Man draws at the shared scale, content-cropped (${h1.human?.w}x${h1.human?.h} = ${boyW}x${boyH})`);
+ok(JSON.stringify(h0.canvas) === JSON.stringify(h1.canvas), "the scenery's own canvas is untouched by the toggle");
+ok(Math.abs(h1.human.b - h1.canvas.b) <= 1, `their feet share the baseline (Man ${h1.human.b}, piece ${h1.canvas.b})`);
+ok(h1.human.l - h1.stageL <= 3, `and he hugs the stage's left edge (${h1.human.l - h1.stageL}px in)`);
+// Sticky across ‹ › — the request verbatim.
+for (let i = 0; i < 2; i++) {
+  await pa.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await pa.waitForTimeout(450);
+}
+const h2 = await hinfo();
+ok(h2.on && h2.visible && Math.abs(h2.human.b - h2.canvas.b) <= 1,
+  `two pages later he is still there, still on the new piece's baseline (${h2.human?.b} vs ${h2.canvas?.b})`);
+// Zoom must scale BOTH bodies — 2x of him beside 4x of a mushroom is a lie.
+await pa.evaluate(() => [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "4×")?.click());
+await pa.waitForTimeout(350);
+const h4 = await hinfo();
+ok(h4.human.h === (boyBB[3] - boyBB[1]) * 4, `zoom scales the Man with the piece (4x → ${h4.human?.h}px)`);
+// And a reload keeps the choice — localStorage, not component state.
+await pa.reload({ waitUntil: "load" });
+await pa.waitForTimeout(1700);
+const hr = await hinfo();
+ok(hr.on && hr.visible, "the choice survives a reload");
+await pa.evaluate(() => document.querySelector(".human-toggle").click());
+await pa.waitForTimeout(250);
+ok(!(await hinfo()).visible, "toggling off hides him again");
+ok(aerrs.length === 0, `no admin page errors${aerrs.length ? ` — ${aerrs[0]}` : ""}`);
+await actx.close();
+
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

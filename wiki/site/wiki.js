@@ -243,7 +243,7 @@ async function discardAll() {
 // One animation player: strips (monsters/objects) or per-frame urls
 // (characters). Nearest-neighbour scaling, play/pause, frame-step, speed,
 // and the game's nadir shadow for monsters.
-function makePlayer(entity, kind) {
+function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
   let cur = {
@@ -254,6 +254,33 @@ function makePlayer(entity, kind) {
   const baseFps = 8;
   const canvas = h("canvas", { width: 64, height: 64 });
   const stage = h("div", { class: "player-stage checker" }, canvas);
+  // ADMIN SIZE REFERENCE (maintainer 2026-08-13: "render the human male side
+  // by side with the scenery so I see how big it is in comparison … as close
+  // to the screen border/edge as possible … keep rendering the scenery itself
+  // in the center"). The whole viewer draws every domain at ONE shared scale,
+  // so the comparison needs no math at all: the Man's idle/south frame,
+  // content-cropped by his measured bb like every other sprite, drawn at the
+  // SAME `s` this page is using — zoom included, or 2x of him next to 4x of a
+  // mushroom would be a lie. He hugs the stage's left edge, feet on the
+  // creature's baseline, and the entity's own canvas is never touched.
+  let human = null;
+  if (opts.humanRef) {
+    human = h("div", { class: "human-ref", title: "the Man, at this page's scale" });
+    if (!opts.humanRef.on) human.style.display = "none";
+    stage.append(human);
+  }
+  function placeHuman(s) {
+    if (!human || human.style.display === "none") return;
+    const { url, fw, fh, bb } = opts.humanRef;
+    human.style.width = `${(bb[2] - bb[0]) * s}px`;
+    human.style.height = `${(bb[3] - bb[1]) * s}px`;
+    human.style.backgroundImage = `url("${url}")`;
+    human.style.backgroundSize = `${fw * s}px ${fh * s}px`;
+    human.style.backgroundPosition = `${-bb[0] * s}px ${-bb[1] * s}px`;
+    // Same ground line as the creature: the canvas is bottom-cropped to its
+    // lowest opaque pixel, so its bottom edge IS the baseline.
+    human.style.bottom = `${Math.max(0, stage.clientHeight - canvas.offsetTop - canvas.offsetHeight)}px`;
+  }
   // FIXED STAGE (maintainer 2026-07-30): one chessboard size for the whole
   // domain — the widest and tallest pose any of its entities needs — with the
   // creature centred in it. Paging next/next/next then swaps the creature
@@ -381,6 +408,7 @@ function makePlayer(entity, kind) {
       canvas.width = wantW; canvas.height = wantH;
     }
     sizeStage();   // after the canvas is sized — the stage only grows for it
+    placeHuman(s); // and the size reference tracks the same scale + baseline
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }
@@ -509,6 +537,13 @@ function makePlayer(entity, kind) {
     destroy: () => cancelAnimationFrame(rafTimer),
     getState: () => cur.state,
     set onStateChange(fn) { onStateChange = fn; },
+    // Show/hide the admin size reference without rebuilding the page — the
+    // toggle must not reset the clip, the zoom, or the scroll.
+    humanToggle(on) {
+      if (!human) return;
+      human.style.display = on ? "" : "none";
+      draw();
+    },
   };
 }
 let activePlayers = [];
@@ -1977,6 +2012,20 @@ function objectHead(o) {
       descP,
       feedbackRow("objects", o.path)));
 }
+// The Man's idle/south frame 0 + measured content box — everything the size
+// reference needs to draw him by the viewer's own rules. Null when the
+// characters domain is missing or unmeasured, and the toggle simply never
+// renders.
+const HUMAN_REF_KEY = "wiki-obj-human";
+function humanRefData() {
+  const boy = (state.data.domains.characters ?? []).find((c) => c.id === "default_boy");
+  const clip = boy?.animations?.idle?.dirs?.south;
+  if (!clip?.bb || !clip.framesDir) return null;
+  return {
+    url: assetUrl(`${clip.framesDir}/${String(0).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`),
+    fw: clip.fw ?? boy.frameW, fh: clip.fh ?? boy.frameH, bb: clip.bb,
+  };
+}
 function viewObject(id) {
   const o = state.data.domains.objects.find((x) => x.id === id);
   if (!o) return h("p", {}, "Unknown object.");
@@ -1987,18 +2036,34 @@ function viewObject(id) {
   // one-frame `still` clip, so the viewer opens for everything now; only the
   // heading distinguishes them (maintainer 2026-08-13).
   const hasAnims = Object.keys(o.animations).length > 0;
-  let playerEl = null;
+  // The size-review toggle (admin): the Man beside the piece, same scale.
+  // Sticky by request — "if I toggle this mode on I like it to keep being on
+  // if I change to next scenery" — so the choice lives in localStorage and
+  // every page render reads it back.
+  const ref = state.admin ? humanRefData() : null;
+  const humanOn = !!ref && localStorage.getItem(HUMAN_REF_KEY) === "1";
+  let playerEl = null, player = null;
   if (hasAnims) {
-    const player = makePlayer(o, "object");
+    player = makePlayer(o, "object", ref ? { humanRef: { ...ref, on: humanOn } } : {});
     activePlayers.push(player);
     playerEl = player.el;
   }
+  const humanBtn = ref && player ? h("button", {
+    class: `ghost-btn human-toggle${humanOn ? " on" : ""}`,
+    title: "Show the Man beside this piece, at the same scale — for judging whether its size is believable",
+    onclick: () => {
+      const on = localStorage.getItem(HUMAN_REF_KEY) !== "1";
+      if (on) localStorage.setItem(HUMAN_REF_KEY, "1"); else localStorage.removeItem(HUMAN_REF_KEY);
+      player.humanToggle(on);
+      humanBtn.classList.toggle("on", on);
+    },
+  }, "🧍 vs human") : null;
   return h("div", {},
     crumbRow("#/objects", `← ${label("objects")}`, "objects", state.data.domains.objects, o.id),
     objectHead(o),
     hasAnims
       ? h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, o.stillOnly ? "Still" : "Animations"),
+          h("div", { class: "panel-title" }, o.stillOnly ? "Still" : "Animations", humanBtn),
           o.stillOnly ? h("p", { class: "muted", style: "margin:0 0 8px" }, "This piece has no animation — shown at its true size, padding cropped away.") : null,
           playerEl)
       : h("p", { class: "muted" }, "No animations."),
