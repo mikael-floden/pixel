@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 256,
+  "scenery_count": 257,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -293,7 +293,7 @@
       "id": "ivy_posts",
       "name": "Ivy Post",
       "quota": 20,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 42,
@@ -760,7 +760,7 @@
     "haystacks": 3,
     "hedges": 3,
     "hop_poles": 2,
-    "ivy_posts": 2,
+    "ivy_posts": 3,
     "lantern_posts": 3,
     "lantern_stands": 3,
     "letter_boxes": 2,
@@ -3459,6 +3459,28 @@
       "status": "complete",
       "pixellab_object_id": "c8067f2f-0df9-404c-bac5-f7a5bb40b11a",
       "sprite": "ivy_posts/ivy_post_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ivy_post_003",
+      "rel": "ivy_posts/ivy_post_003",
+      "name": "Honeysuckle threaded through ivy 003",
+      "category": "ivy_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, honeysuckle threaded through ivy, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.97,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c0cfb78b-b8b8-4b57-9144-f871c2d7e6f0",
+      "sprite": "ivy_posts/ivy_post_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
