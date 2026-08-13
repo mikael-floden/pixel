@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "statue_003",
+  "group": "statues",
+  "rank": 89,
+  "index": 3,
+  "name": "Headless torso statue 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "headless torso statue",
+  "glow_concept": null,
+  "prompt": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, headless torso statue, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "statues/statue_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.55,
+    "world_px_height": 96,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
