@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fish_drying_rack_001",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 1,
+  "name": "Rack with smoked dark fish 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "rack with smoked dark fish",
+  "glow_concept": null,
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with smoked dark fish, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fish_drying_racks/fish_drying_rack_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.72,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b64c8032-3985-47cc-838a-2a800a904c2d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
