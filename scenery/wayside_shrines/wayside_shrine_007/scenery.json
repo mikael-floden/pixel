@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_007",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 7,
+  "name": "Blue double-shutter shrine 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "blue double-shutter shrine",
+  "glow_concept": null,
+  "prompt": "a small roofed wooden shrine raised on a post, its open front holding a tiny painted icon and offerings, blue double-shutter shrine, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wayside_shrines/wayside_shrine_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.73,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "087bf55c-8302-42f0-a0db-821e2282819f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
