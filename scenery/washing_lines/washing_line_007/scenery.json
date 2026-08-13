@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "washing_line_007",
+  "group": "washing_lines",
+  "rank": 40,
+  "index": 7,
+  "name": "Fisherman's nets and oilskins 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "fisherman's nets and oilskins",
+  "glow_concept": null,
+  "prompt": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, fisherman's nets and oilskins, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "washing_lines/washing_line_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.64,
+    "world_px_height": 62,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "98579073-7272-4c7a-bcd6-e5f14d0e2e0b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
