@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:58:17+00:00",
+  "id": "fish_drying_rack_009",
+  "group": "fish_drying_racks",
+  "rank": 44,
+  "index": 9,
+  "name": "Old grey lichened rack 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "old grey lichened rack",
+  "glow_concept": null,
+  "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, old grey lichened rack, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "fish_drying_racks/fish_drying_rack_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.71,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c119283c-5368-436c-af55-129881e78c23",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

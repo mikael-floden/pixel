@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 558,
+  "scenery_count": 559,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -314,7 +314,7 @@
       "id": "fish_drying_racks",
       "name": "Fish Drying Rack",
       "quota": 14,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 45,
@@ -819,7 +819,7 @@
     "fallen_logs": 8,
     "fences": 8,
     "ferns": 8,
-    "fish_drying_racks": 7,
+    "fish_drying_racks": 8,
     "flame_niches": 8,
     "flower_garlands": 2,
     "flower_stands": 8,
@@ -5237,6 +5237,28 @@
       "status": "complete",
       "pixellab_object_id": "d29908cb-6d1d-49d0-845b-e51f4e6c1909",
       "sprite": "fish_drying_racks/fish_drying_rack_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fish_drying_rack_009",
+      "rel": "fish_drying_racks/fish_drying_rack_009",
+      "name": "Old grey lichened rack 009",
+      "category": "fish_drying_racks",
+      "lights": "LIGHTS_OFF",
+      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, old grey lichened rack, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.71,
+        "world_px_height": 64,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c119283c-5368-436c-af55-129881e78c23",
+      "sprite": "fish_drying_racks/fish_drying_rack_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
