@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wasp_nest_tree_002",
+  "group": "wasp_nest_trees",
+  "rank": 86,
+  "index": 2,
+  "name": "Elm stub swollen nest 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "elm stub swollen nest",
+  "glow_concept": "faint light bands between the papery layers",
+  "prompt": "a small gnarled tree with a large gray paper wasp nest hanging from a branch, layered papery swirls around a round entrance hole, elm stub swollen nest, tall, about two people high, self-emissive at night, softly radiating light: faint light bands between the papery layers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "wasp_nest_trees/wasp_nest_tree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.12,
+    "world_px_height": 155,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b4cef6f6-7c0a-4283-8726-b99a31b99648",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
