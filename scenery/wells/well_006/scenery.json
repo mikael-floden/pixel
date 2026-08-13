@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_006",
+  "group": "wells",
+  "rank": 11,
+  "index": 6,
+  "name": "Mossy fieldstone, cedar shingle roof 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "mossy fieldstone, cedar shingle roof",
+  "glow_concept": "glowing runes carved around the stone rim",
+  "prompt": "a round fieldstone well with a peaked wooden roof on two posts, a windlass crank and a rope-hung bucket, mossy fieldstone, cedar shingle roof, about as tall as an adult person, self-emissive at night, softly radiating light: glowing runes carved around the stone rim",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.57,
+    "world_px_height": 59,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "00f26a5f-e3a9-407a-a7b0-8c091be65339",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
