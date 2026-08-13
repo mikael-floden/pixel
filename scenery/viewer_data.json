@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 167,
+  "scenery_count": 168,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -363,7 +363,7 @@
       "id": "ruined_arches",
       "name": "Ruined Arch",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 52,
@@ -780,7 +780,7 @@
     "rock_spires": 1,
     "rocking_horses": 1,
     "rope_swings": 1,
-    "ruined_arches": 1,
+    "ruined_arches": 2,
     "rusted_machines": 1,
     "scarecrows": 2,
     "sheaf_poles": 1,
@@ -3151,6 +3151,28 @@
       "status": "complete",
       "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
       "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ruined_arch_002",
+      "rel": "ruined_arches/ruined_arch_002",
+      "name": "Round roman arch 002 \u00b7 lit",
+      "category": "ruined_arches",
+      "lights": "LIGHTS_ON",
+      "description": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, round roman arch, tall, about two people high, self-emissive at night, softly radiating light: luminous briar roses climbing one side",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.06,
+        "world_px_height": 115,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "213a34bf-7043-4230-811f-43ad108a4891",
+      "sprite": "ruined_arches/ruined_arch_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

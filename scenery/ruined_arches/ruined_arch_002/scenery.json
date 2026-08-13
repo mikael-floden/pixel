@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ruined_arch_002",
+  "group": "ruined_arches",
+  "rank": 51,
+  "index": 2,
+  "name": "Round roman arch 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "round roman arch",
+  "glow_concept": "luminous briar roses climbing one side",
+  "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, round roman arch, tall, about two people high, self-emissive at night, softly radiating light: luminous briar roses climbing one side",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "ruined_arches/ruined_arch_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.06,
+    "world_px_height": 115,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "213a34bf-7043-4230-811f-43ad108a4891",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
