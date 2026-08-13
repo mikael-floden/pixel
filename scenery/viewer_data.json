@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 471,
+  "scenery_count": 472,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 6,
     "sheaf_poles": 2,
-    "signposts": 6,
+    "signposts": 7,
     "soulstone_outcrops": 6,
     "soulstone_plinths": 2,
     "spring_basins": 2,
@@ -8202,6 +8202,28 @@
       "status": "complete",
       "pixellab_object_id": "a2dd6e63-19ba-4ec2-8011-09b216a4c805",
       "sprite": "signposts/signpost_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_016",
+      "rel": "signposts/signpost_016",
+      "name": "Single-armed old milepost 016 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, single-armed old milepost, large, twice human height, self-emissive at night, softly radiating light: painted place-names glowing like embers",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.98,
+        "world_px_height": 75,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1605f1ba-a55d-408d-b32e-ff0f379d4728",
+      "sprite": "signposts/signpost_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
