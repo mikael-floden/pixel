@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 294,
+  "scenery_count": 295,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -454,7 +454,7 @@
       "id": "flower_trellises",
       "name": "Flower Trellis",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 65,
@@ -823,7 +823,7 @@
     "flame_niches": 3,
     "flower_garlands": 2,
     "flower_stands": 4,
-    "flower_trellises": 1,
+    "flower_trellises": 2,
     "geodes": 1,
     "giant_mushrooms": 2,
     "grass_tufts": 4,
@@ -3411,6 +3411,28 @@
       "status": "complete",
       "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
       "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flower_trellis_004",
+      "rel": "flower_trellises/flower_trellis_004",
+      "name": "White-painted trellis, clematis 004 \u00b7 lit",
+      "category": "flower_trellises",
+      "lights": "LIGHTS_ON",
+      "description": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines, white-painted trellis, clematis, large, twice human height, self-emissive at night, softly radiating light: fireflies weaving through the lattice squares",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.48,
+        "world_px_height": 93,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "281d9446-194a-4ea8-8363-9e4234d700f8",
+      "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
