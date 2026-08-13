@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 388,
+  "scenery_count": 389,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -258,7 +258,7 @@
       "id": "grass_tufts",
       "name": "Grass Tuft",
       "quota": 30,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 37,
@@ -826,7 +826,7 @@
     "flower_trellises": 2,
     "geodes": 2,
     "giant_mushrooms": 2,
-    "grass_tufts": 4,
+    "grass_tufts": 5,
     "decor": 1,
     "gravel_piles": 2,
     "graves": 5,
@@ -4401,6 +4401,28 @@
       "status": "complete",
       "pixellab_object_id": "231aac9a-ff8d-4f60-b638-0c3f257c02a3",
       "sprite": "grass_tufts/grass_tuft_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grass_tuft_008",
+      "rel": "grass_tufts/grass_tuft_008",
+      "name": "Tuft with white cotton-grass 008 \u00b7 lit",
+      "category": "grass_tufts",
+      "lights": "LIGHTS_ON",
+      "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, tuft with white cotton-grass, small, knee-high, self-emissive at night, softly radiating light: seed heads glowing like tiny lamps",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.61,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "771f82a2-61d3-47c0-aafc-78e2ca2f341d",
+      "sprite": "grass_tufts/grass_tuft_008/sprite.webp",
       "rotations": {},
       "animations": []
     },

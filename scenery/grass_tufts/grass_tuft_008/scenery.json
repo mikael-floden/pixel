@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grass_tuft_008",
+  "group": "grass_tufts",
+  "rank": 36,
+  "index": 8,
+  "name": "Tuft with white cotton-grass 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tuft with white cotton-grass",
+  "glow_concept": "seed heads glowing like tiny lamps",
+  "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, tuft with white cotton-grass, small, knee-high, self-emissive at night, softly radiating light: seed heads glowing like tiny lamps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "grass_tufts/grass_tuft_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.61,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "771f82a2-61d3-47c0-aafc-78e2ca2f341d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
