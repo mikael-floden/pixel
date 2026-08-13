@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_007",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 7,
+  "name": "Pot-helmet old-soldier scarecrow 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "pot-helmet old-soldier scarecrow",
+  "glow_concept": null,
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, pot-helmet old-soldier scarecrow, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.01,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6716cd24-ca77-47dc-9e1a-043610d89a7b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
