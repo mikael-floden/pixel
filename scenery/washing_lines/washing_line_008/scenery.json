@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "washing_line_008",
+  "group": "washing_lines",
+  "rank": 40,
+  "index": 8,
+  "name": "Festival ribbons and pennants 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "festival ribbons and pennants",
+  "glow_concept": "storm lantern hooked on one post",
+  "prompt": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, festival ribbons and pennants, roughly six feet tall, human height, self-emissive at night, softly radiating light: storm lantern hooked on one post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "washing_lines/washing_line_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.7,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ec3e487d-70f2-4875-b94c-5df34b3f878a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
