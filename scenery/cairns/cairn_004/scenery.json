@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_004",
+  "group": "cairns",
+  "rank": 9,
+  "index": 4,
+  "name": "Antler-topped cairn 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "antler-topped cairn",
+  "glow_concept": "topmost stone glowing like a lantern",
+  "prompt": "a hand-stacked pile of balanced stones tapering upward, built as a marker, with small gaps between the stones, antler-topped cairn, about as tall as an adult person, self-emissive at night, softly radiating light: topmost stone glowing like a lantern",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "cairns/cairn_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.23,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9c4fe6c6-dcbb-47e5-9126-d678bf57820f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
