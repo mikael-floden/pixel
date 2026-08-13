@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 297,
+  "scenery_count": 298,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -762,7 +762,7 @@
       "id": "rugs_and_hides",
       "name": "Rug",
       "quota": 30,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 109,
@@ -857,7 +857,7 @@
     "rock_spires": 2,
     "rocking_horses": 2,
     "rope_swings": 2,
-    "rugs_and_hides": 1,
+    "rugs_and_hides": 2,
     "ruined_arches": 2,
     "rusted_machines": 2,
     "scarecrows": 2,
@@ -5387,6 +5387,28 @@
       "status": "complete",
       "pixellab_object_id": "16e67abf-8d56-4081-a32c-4796218f5a9d",
       "sprite": "rope_swings/rope_swing_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rug_001",
+      "rel": "rugs_and_hides/rug_001",
+      "name": "Round braided rug 001",
+      "category": "rugs_and_hides",
+      "lights": "LIGHTS_OFF",
+      "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, round braided rug, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.07,
+        "world_px_height": 40,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "089dda46-7cf8-4af9-9d9d-3d65fdf5556e",
+      "sprite": "rugs_and_hides/rug_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
