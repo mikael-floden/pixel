@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_013",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 13,
+  "name": "Crystal growing through split rock 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "crystal growing through split rock",
+  "glow_concept": null,
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, crystal growing through split rock, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.08,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "84aae5d5-ae56-4e34-b1d8-2ee980739ad2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

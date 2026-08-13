@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 428,
+  "scenery_count": 427,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 24,
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 2
+      "done": 0
     },
     {
       "rank": 63,
@@ -815,7 +815,6 @@
     "dock_pilings": 5,
     "dovecotes": 2,
     "driftwood_logs": 2,
-    "fading_relics": 2,
     "fallen_logs": 7,
     "fences": 6,
     "ferns": 5,
@@ -862,7 +861,7 @@
     "scarecrows": 5,
     "sheaf_poles": 2,
     "signposts": 6,
-    "soulstone_outcrops": 5,
+    "soulstone_outcrops": 6,
     "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 5,
@@ -3653,50 +3652,6 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fading_relic_004",
-      "rel": "fading_relics/fading_relic_004",
-      "name": "Half-faded armchair 004 \u00b7 lit",
-      "category": "fading_relics",
-      "lights": "LIGHTS_ON",
-      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, half-faded armchair, roughly six feet tall, human height, self-emissive at night, softly radiating light: a lit candle left beside it in remembrance",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.86,
-        "world_px_height": 70,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9598c550-cb7e-4506-9d0e-53c086f8e06f",
-      "sprite": "fading_relics/fading_relic_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fading_relic_007",
-      "rel": "fading_relics/fading_relic_007",
-      "name": "Ghost-outline bed frame 007",
-      "category": "fading_relics",
-      "lights": "LIGHTS_OFF",
-      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, ghost-outline bed frame, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.79,
-        "world_px_height": 67,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bac5e3ff-cc10-4f36-ab5c-7a5e93b29728",
-      "sprite": "fading_relics/fading_relic_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -7652,6 +7607,28 @@
       "status": "complete",
       "pixellab_object_id": "fc303a44-0eb7-4a07-b31b-d713e570761f",
       "sprite": "soulstone_outcrops/soulstone_outcrop_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_013",
+      "rel": "soulstone_outcrops/soulstone_outcrop_013",
+      "name": "Crystal growing through split rock 013",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, crystal growing through split rock, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "84aae5d5-ae56-4e34-b1d8-2ee980739ad2",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
