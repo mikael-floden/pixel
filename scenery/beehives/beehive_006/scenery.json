@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beehive_006",
+  "group": "beehives",
+  "rank": 30,
+  "index": 6,
+  "name": "Straw-wrapped snowy winter skep 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "straw-wrapped snowy winter skep",
+  "glow_concept": "luminous bees drifting around the dome like sparks",
+  "prompt": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, straw-wrapped snowy winter skep, waist-high to an adult person, self-emissive at night, softly radiating light: luminous bees drifting around the dome like sparks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beehives/beehive_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.79,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c56483dc-f964-401f-9cda-096245604e93",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
