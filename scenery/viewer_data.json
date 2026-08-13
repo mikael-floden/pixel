@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 73,
+  "scenery_count": 74,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -398,7 +398,7 @@
       "id": "aqueduct_fragments",
       "name": "Aqueduct Fragment",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 57,
@@ -710,6 +710,7 @@
     }
   ],
   "categories": {
+    "aqueduct_fragments": 1,
     "barrels": 1,
     "beacons": 1,
     "beehives": 1,
@@ -770,6 +771,28 @@
     "windmills": 1
   },
   "scenery": [
+    {
+      "id": "aqueduct_fragment_001",
+      "rel": "aqueduct_fragments/aqueduct_fragment_001",
+      "name": "Lone square pier 001",
+      "category": "aqueduct_fragments",
+      "lights": "LIGHTS_OFF",
+      "description": "a freestanding fragment of a stone aqueduct, one arch on weathered piers with a broken water channel on top, lone square pier, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.14,
+        "world_px_height": 156,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a54f4323-ce0d-4897-a339-2cd39258b9d9",
+      "sprite": "aqueduct_fragments/aqueduct_fragment_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
     {
       "id": "barrel_001",
       "rel": "barrels/barrel_001",
