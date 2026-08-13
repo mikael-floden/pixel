@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_008",
+  "group": "hedges",
+  "rank": 12,
+  "index": 8,
+  "name": "Copper autumn beech hedge 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "copper autumn beech hedge",
+  "glow_concept": "firefly colony blinking through the leaves",
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, copper autumn beech hedge, roughly six feet tall, human height, self-emissive at night, softly radiating light: firefly colony blinking through the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.54,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
