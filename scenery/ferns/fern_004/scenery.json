@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_004",
+  "group": "ferns",
+  "rank": 42,
+  "index": 4,
+  "name": "Dense shield fern mound 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dense shield fern mound",
+  "glow_concept": "central fiddlehead coil glowing as it unrolls",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, dense shield fern mound, waist-high to an adult person, self-emissive at night, softly radiating light: central fiddlehead coil glowing as it unrolls",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.07,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "29f4f094-8069-4d99-a713-59b0d884ab10",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
