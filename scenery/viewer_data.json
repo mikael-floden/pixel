@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 299,
+  "scenery_count": 300,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -622,7 +622,7 @@
       "id": "letter_boxes",
       "name": "Letter Box",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 89,
@@ -840,7 +840,7 @@
     "ivy_posts": 3,
     "lantern_posts": 4,
     "lantern_stands": 3,
-    "letter_boxes": 1,
+    "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 4,
     "moss_clumps": 2,
@@ -4396,6 +4396,28 @@
       "status": "complete",
       "pixellab_object_id": "0b076865-875e-4228-9fd5-9c31c131b18b",
       "sprite": "letter_boxes/letter_box_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "letter_box_006",
+      "rel": "letter_boxes/letter_box_006",
+      "name": "Blue enamel box, brass slot 006 \u00b7 lit",
+      "category": "letter_boxes",
+      "lights": "LIGHTS_ON",
+      "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base, blue enamel box, brass slot, waist-high, self-emissive at night, softly radiating light: wax seals glowing like small embers",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.18,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "88c02356-9c7e-4a90-b1bc-edd7af9f8088",
+      "sprite": "letter_boxes/letter_box_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
