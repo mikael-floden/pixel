@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rusted_machine_002",
+  "group": "rusted_machines",
+  "rank": 68,
+  "index": 2,
+  "name": "Hand-crank water pump 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hand-crank water pump",
+  "glow_concept": "copper coils holding a faint galvanic glow",
+  "prompt": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, hand-crank water pump, about as tall as an adult person, self-emissive at night, softly radiating light: copper coils holding a faint galvanic glow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "rusted_machines/rusted_machine_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.85,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8019655d-3739-4d74-afa6-7a8a24650132",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

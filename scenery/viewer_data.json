@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 184,
+  "scenery_count": 185,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -482,7 +482,7 @@
       "id": "rusted_machines",
       "name": "Rusted Machine",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 69,
@@ -781,7 +781,7 @@
     "rocking_horses": 1,
     "rope_swings": 1,
     "ruined_arches": 2,
-    "rusted_machines": 1,
+    "rusted_machines": 2,
     "scarecrows": 2,
     "sheaf_poles": 1,
     "signposts": 2,
@@ -3481,6 +3481,28 @@
       "status": "complete",
       "pixellab_object_id": "bb4a74aa-c67c-4858-bf1b-71bbbc94330c",
       "sprite": "rusted_machines/rusted_machine_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rusted_machine_002",
+      "rel": "rusted_machines/rusted_machine_002",
+      "name": "Hand-crank water pump 002 \u00b7 lit",
+      "category": "rusted_machines",
+      "lights": "LIGHTS_ON",
+      "description": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, hand-crank water pump, about as tall as an adult person, self-emissive at night, softly radiating light: copper coils holding a faint galvanic glow",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.85,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8019655d-3739-4d74-afa6-7a8a24650132",
+      "sprite": "rusted_machines/rusted_machine_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
