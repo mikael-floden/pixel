@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "table_012",
+  "group": "tables",
+  "rank": 103,
+  "index": 12,
+  "name": "Low child-height table 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "low child-height table",
+  "glow_concept": "memory-light pooling in the wood grain",
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, low child-height table, waist-high, self-emissive at night, softly radiating light: memory-light pooling in the wood grain",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.9,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4eee9876-7013-4f6d-981a-789ac8142365",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
