@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:10:41+00:00",
+  "id": "beehive_008",
+  "group": "beehives",
+  "rank": 30,
+  "index": 8,
+  "name": "Stone-slab roofed log hive 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stone-slab roofed log hive",
+  "glow_concept": "entrance hole glowing warm honey-gold from within",
+  "prompt": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, stone-slab roofed log hive, waist-high, self-emissive at night, softly radiating light: entrance hole glowing warm honey-gold from within",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beehives/beehive_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.98,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "84aadae7-1794-4ca1-b9d7-6d0cc15098c1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
