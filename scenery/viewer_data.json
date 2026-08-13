@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 405,
+  "scenery_count": 406,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -139,7 +139,7 @@
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 20,
@@ -885,7 +885,7 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 4,
+    "wayside_shrines": 5,
     "waystones": 7,
     "web_frames": 2,
     "wells": 7,
@@ -9324,6 +9324,28 @@
       "status": "complete",
       "pixellab_object_id": "20066dd7-c8b1-4bd1-81f5-2dc96ad3de36",
       "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wayside_shrine_016",
+      "rel": "wayside_shrines/wayside_shrine_016",
+      "name": "Tiny painted icon shrine 016 \u00b7 lit",
+      "category": "wayside_shrines",
+      "lights": "LIGHTS_ON",
+      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, tiny painted icon shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted icon inside glowing gently",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.35,
+        "world_px_height": 51,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
+      "sprite": "wayside_shrines/wayside_shrine_016/sprite.webp",
       "rotations": {},
       "animations": []
     },

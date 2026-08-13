@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:10:02+00:00",
+  "id": "wayside_shrine_016",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 16,
+  "name": "Tiny painted icon shrine 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tiny painted icon shrine",
+  "glow_concept": "painted icon inside glowing gently",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, tiny painted icon shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted icon inside glowing gently",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_016/sprite.webp",
+  "placement": {
+    "world_height_m": 1.35,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
