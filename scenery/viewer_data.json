@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 318,
+  "scenery_count": 319,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 8,
@@ -798,7 +798,7 @@
     "sundials": 2,
     "telegraph_poles": 4,
     "toadstool_rings": 4,
-    "torch_posts": 4,
+    "torch_posts": 5,
     "trailing_planters": 2,
     "trees": 5,
     "washing_lines": 4,
@@ -6935,6 +6935,28 @@
       "status": "complete",
       "pixellab_object_id": "ee0c9bd2-568f-457f-be7c-d19886449758",
       "sprite": "torch_posts/torch_post_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_005",
+      "rel": "torch_posts/torch_post_005",
+      "name": "Rope-bound triple torch 005",
+      "category": "torch_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, rope-bound triple torch, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.58,
+        "world_px_height": 59,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5ded01bb-3b95-4917-9634-61ca19aa31e8",
+      "sprite": "torch_posts/torch_post_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
