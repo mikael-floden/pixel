@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bone_pile_002",
+  "group": "bone_piles",
+  "rank": 70,
+  "index": 2,
+  "name": "Crossed tusk pair 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "crossed tusk pair",
+  "glow_concept": "spectral beast outline flickering over its bones",
+  "prompt": "sun-bleached animal bones heaped on the ground, a curved ribcage arc and scattered vertebrae with grass growing up between them, crossed tusk pair, waist-high to an adult person, self-emissive at night, softly radiating light: spectral beast outline flickering over its bones",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "bone_piles/bone_pile_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.76,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ef89d6fa-c976-4a28-aa36-d3e0f3ae5316",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

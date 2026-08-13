@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 186,
+  "scenery_count": 187,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -496,7 +496,7 @@
       "id": "bone_piles",
       "name": "Bone Pile",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 71,
@@ -723,7 +723,7 @@
     "beehives": 2,
     "bell_posts": 2,
     "effect": 1,
-    "bone_piles": 1,
+    "bone_piles": 2,
     "braziers": 2,
     "briar_thickets": 2,
     "broken_columns": 2,
@@ -1282,6 +1282,28 @@
       "status": "complete",
       "pixellab_object_id": "e64fa895-022a-44ad-b102-baa77301cd2f",
       "sprite": "bone_piles/bone_pile_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bone_pile_002",
+      "rel": "bone_piles/bone_pile_002",
+      "name": "Crossed tusk pair 002 \u00b7 lit",
+      "category": "bone_piles",
+      "lights": "LIGHTS_ON",
+      "description": "sun-bleached animal bones heaped on the ground, a curved ribcage arc and scattered vertebrae with grass growing up between them, crossed tusk pair, waist-high to an adult person, self-emissive at night, softly radiating light: spectral beast outline flickering over its bones",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.76,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ef89d6fa-c976-4a28-aa36-d3e0f3ae5316",
+      "sprite": "bone_piles/bone_pile_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
