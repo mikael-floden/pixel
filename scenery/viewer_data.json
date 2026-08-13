@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 491,
+  "scenery_count": 492,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -244,7 +244,7 @@
       "id": "flower_stands",
       "name": "Flower Stand",
       "quota": 34,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 35,
@@ -822,7 +822,7 @@
     "fish_drying_racks": 6,
     "flame_niches": 7,
     "flower_garlands": 2,
-    "flower_stands": 6,
+    "flower_stands": 7,
     "flower_trellises": 2,
     "geodes": 2,
     "giant_mushrooms": 2,
@@ -5039,6 +5039,28 @@
       "status": "complete",
       "pixellab_object_id": "bc6ee861-82dd-4f9b-9f32-e403a5aec500",
       "sprite": "flower_stands/flower_stand_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flower_stand_010",
+      "rel": "flower_stands/flower_stand_010",
+      "name": "White cow parsley stand 010 \u00b7 lit",
+      "category": "flower_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, white cow parsley stand, waist-high, self-emissive at night, softly radiating light: a glowing memorial ribbon tied among stems",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.82,
+        "world_px_height": 31,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6a202a23-21f9-4236-9685-df5a415674ac",
+      "sprite": "flower_stands/flower_stand_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
