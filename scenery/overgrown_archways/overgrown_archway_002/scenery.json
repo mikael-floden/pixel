@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "overgrown_archway_002",
+  "group": "overgrown_archways",
+  "rank": 72,
+  "index": 2,
+  "name": "Red brick arch, white roses 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red brick arch, white roses",
+  "glow_concept": "keystone carved with a softly glowing name",
+  "prompt": "a freestanding stone garden arch swallowed by climbing vines and hanging blossom, red brick arch, white roses, large, well above head height of a person, self-emissive at night, softly radiating light: keystone carved with a softly glowing name",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "overgrown_archways/overgrown_archway_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.77,
+    "world_px_height": 104,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e7246ed7-2dc3-4afa-990f-a9a200ff0ddf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
