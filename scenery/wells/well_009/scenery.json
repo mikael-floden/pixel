@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_009",
+  "group": "wells",
+  "rank": 11,
+  "index": 9,
+  "name": "Twin-bucket chain windlass well 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "twin-bucket chain windlass well",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, twin-bucket chain windlass well, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.41,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "77f73b9c-0ba4-47fb-879e-a208cdc1e591",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
