@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "petrified_stump_003",
+  "group": "petrified_stumps",
+  "rank": 65,
+  "index": 3,
+  "name": "Tall broken petrified trunk 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "tall broken petrified trunk",
+  "glow_concept": null,
+  "prompt": "a tree stump turned entirely to grey banded stone, cold mineral colors with agate rings on the cut top, clearly rock not wood, no brown bark, tall broken petrified trunk, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.4,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

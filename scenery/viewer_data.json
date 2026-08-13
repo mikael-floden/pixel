@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 268,
+  "scenery_count": 269,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -461,7 +461,7 @@
       "id": "petrified_stumps",
       "name": "Petrified Stump",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 66,
@@ -850,7 +850,7 @@
     "orchard_trees": 3,
     "overgrown_archways": 2,
     "owl_snags": 2,
-    "petrified_stumps": 1,
+    "petrified_stumps": 2,
     "puffballs": 2,
     "rail_carts": 1,
     "reed_beds": 5,
@@ -4683,6 +4683,28 @@
       "status": "complete",
       "pixellab_object_id": "f6cf3c2d-548b-494a-bccd-f649e023e61e",
       "sprite": "petrified_stumps/petrified_stump_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "petrified_stump_003",
+      "rel": "petrified_stumps/petrified_stump_003",
+      "name": "Tall broken petrified trunk 003",
+      "category": "petrified_stumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a tree stump turned entirely to grey banded stone, cold mineral colors with agate rings on the cut top, clearly rock not wood, no brown bark, tall broken petrified trunk, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
+      "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
