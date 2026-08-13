@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 262,
+  "scenery_count": 263,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -335,7 +335,7 @@
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 48,
@@ -810,7 +810,7 @@
     "waystones": 3,
     "web_frames": 2,
     "wells": 3,
-    "windmills": 2,
+    "windmills": 3,
     "wisteria_snags": 2,
     "woodpiles": 2
   },
@@ -6539,6 +6539,28 @@
       "status": "complete",
       "pixellab_object_id": "c2f5aa2c-b8ac-4b04-9293-29d20c85135a",
       "sprite": "windmills/windmill_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "windmill_003",
+      "rel": "windmills/windmill_003",
+      "name": "Ivy-grown abandoned mill 003",
+      "category": "windmills",
+      "lights": "LIGHTS_OFF",
+      "description": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, ivy-grown abandoned mill, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.68,
+        "world_px_height": 139,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "88cbcc60-86e0-4bdb-8494-4b1225fbdc86",
+      "sprite": "windmills/windmill_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
