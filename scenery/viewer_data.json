@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 486,
+  "scenery_count": 487,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 27,
@@ -859,7 +859,7 @@
     "rugs_and_hides": 6,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 6,
+    "scarecrows": 7,
     "sheaf_poles": 2,
     "signposts": 7,
     "soulstone_outcrops": 7,
@@ -8224,6 +8224,28 @@
       "status": "complete",
       "pixellab_object_id": "c91c0691-4e16-4777-8931-3e9eb32f464b",
       "sprite": "scarecrows/scarecrow_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_022",
+      "rel": "scarecrows/scarecrow_022",
+      "name": "Sack-head, patched brown coat 022 \u00b7 lit",
+      "category": "scarecrows",
+      "lights": "LIGHTS_ON",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, sack-head, patched brown coat, large, twice human height, self-emissive at night, softly radiating light: carved turnip head lit from inside",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.23,
+        "world_px_height": 84,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b505bfd1-464e-46df-bee4-a2a3a02fca3d",
+      "sprite": "scarecrows/scarecrow_022/sprite.webp",
       "rotations": {},
       "animations": []
     },
