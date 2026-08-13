@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 226,
+  "scenery_count": 227,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -524,7 +524,7 @@
       "id": "hanging_baskets",
       "name": "Hanging Basket",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 75,
@@ -753,6 +753,7 @@
     "decor": 1,
     "gravel_piles": 2,
     "graves": 5,
+    "hanging_baskets": 1,
     "hanging_willows": 2,
     "haystacks": 1,
     "hedges": 1,
@@ -3142,6 +3143,28 @@
       "status": "complete",
       "pixellab_object_id": "76e4cfb8-5465-410f-acba-d646ab2cf159",
       "sprite": "graves/grave_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hanging_basket_001",
+      "rel": "hanging_baskets/hanging_basket_001",
+      "name": "Trailing strawberry runners 001",
+      "category": "hanging_baskets",
+      "lights": "LIGHTS_OFF",
+      "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, trailing strawberry runners, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.24,
+        "world_px_height": 84,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0e66a5f6-af5c-49bb-bb4c-5c7705d0703c",
+      "sprite": "hanging_baskets/hanging_basket_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
