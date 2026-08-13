@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_008",
+  "group": "ferns",
+  "rank": 42,
+  "index": 8,
+  "name": "Small polypody tuft 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "small polypody tuft",
+  "glow_concept": "cool fog of light pooling under the fronds",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, small polypody tuft, waist-high, self-emissive at night, softly radiating light: cool fog of light pooling under the fronds",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "44c451e7-b0de-496d-9dd4-bb5422249084",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
