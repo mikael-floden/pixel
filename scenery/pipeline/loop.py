@@ -207,6 +207,19 @@ def main():
         except Exception as e:
             print(f"pre-run reconcile skipped ({e})")
 
+    # The maintainer's wiki verdicts are STANDING ORDERS (2026-08-13): every
+    # run starts by deleting whatever he rejected (store + repo), and the
+    # planner refills those slots with fresh rolls in this very pass.
+    try:
+        import feedback
+        removed = feedback.apply_rejections(client)
+        if removed:
+            viewer_build.build()
+            commit_push(f"scenery: remove {len(removed)} rejected piece(s) "
+                        f"(wiki verdicts)", push=not args.no_push)
+    except Exception as e:
+        print(f"! wiki-feedback cleanup failed ({e}) — continuing to generation")
+
     peers = coordination.read_peers()
     print("peers:", coordination.peer_summary(peers))
     for dom, s in peers.items():

@@ -349,24 +349,24 @@
       "id": "cairns",
       "prefix": "cairn",
       "name": "Cairn",
-      "description": "a hand-stacked pile of balanced stones tapering upward, built as a marker, with small gaps between the stones",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones",
       "world_height_m": [
         0.5,
         1.8
       ],
       "art_size": 96,
       "variety": [
-        "neat conical trail cairn",
-        "tall balanced stone stack",
+        "broad conical trail cairn",
+        "massive boulder-based cairn",
         "wide low memorial cairn",
         "toppled half-collapsed cairn",
         "moss-grown ancient cairn",
         "snow-capped mountain cairn",
         "cairn with flat capstone",
-        "rounded sea-pebble cairn",
+        "rounded fieldstone cairn",
         "cairn ringed with small offerings",
         "stacked slate slab cairn",
-        "tiny three-stone cairn",
+        "waist-high dome cairn",
         "red thread-wound cairn",
         "antler-topped cairn",
         "painted-names cairn"
@@ -492,7 +492,7 @@
       "id": "briar_thickets",
       "prefix": "briar_thicket",
       "name": "Briar Thicket",
-      "description": "an arching mound of thorny briar canes dotted with open wild roses",
+      "description": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses",
       "world_height_m": [
         0.9,
         1.6
@@ -505,13 +505,13 @@
         "bare winter canes, red hips",
         "scarlet rose hip clusters",
         "golden-leaved autumn briar",
-        "briar arching over a fallen log",
-        "briar climbing a mossy boulder",
+        "briar swallowing a fallen log",
+        "briar smothering a mossy boulder",
         "low creeping briar patch",
-        "tall fountain of arching canes",
+        "dense head-high thorn wall",
         "petal-strewn shedding briar",
         "yellow wild roses",
-        "garden rose gone wild, double blooms",
+        "dead grey thorn tangle",
         "blackberry bramble tangle",
         "raspberry cane thicket",
         "berry-laden bramble mound"
@@ -541,19 +541,19 @@
       "art_size": 128,
       "variety": [
         "single oak post, bronze bell",
-        "twin-post frame, iron bell",
+        "weathered oak post, green patina bell",
         "crooked birch post, small bell",
         "rune-carved post, patina bell",
         "shingle-roofed bell cap",
         "tall post, rope and tassel",
         "ship's bell on driftwood post",
         "grey post, cracked bell",
-        "painted red post, silver bell",
-        "antler-bracket bell",
+        "tar-black post, bright bronze bell",
+        "carved wooden bracket, small bell",
         "stone pillar, bell arm",
         "snow-capped winter post",
-        "double bells, one post",
-        "wind-chime cluster post"
+        "post with a small lantern hook beside the bell",
+        "storm-bent old post, heavy bell"
       ],
       "glow_concepts": [
         "the bronze bell glowing furnace-warm",
@@ -2287,7 +2287,7 @@
       "id": "fading_relics",
       "prefix": "fading_relic",
       "name": "Fading Relic",
-      "description": "a single piece of old household furniture standing alone outdoors on grass, one side solid and detailed, the other side dissolving into a faint transparent outline",
+      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow",
       "world_height_m": [
         0.7,
         2.0
@@ -3516,14 +3516,14 @@
       "id": "dovecotes",
       "prefix": "dovecote",
       "name": "Dovecote",
-      "description": "a small wooden dove tower on a stout post, with rows of arched pigeon holes, landing ledges, and a shingled roof",
+      "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof",
       "world_height_m": [
         2.0,
         3.0
       ],
       "art_size": 128,
       "variety": [
-        "white six-hole post dovecote",
+        "whitewashed round dovecote tower",
         "stone drum dovecote",
         "red-roofed farm dovecote",
         "weathered grey leaning dovecote",
@@ -3588,7 +3588,7 @@
       "id": "anvils",
       "prefix": "anvil",
       "name": "Anvil",
-      "description": "a heavy blacksmith's anvil mounted on a broad oak stump, with tongs and a hammer resting across its face",
+      "description": "a heavy black iron blacksmith's anvil mounted on a broad oak stump, its top face bare and empty",
       "world_height_m": [
         0.7,
         1.1
@@ -3600,7 +3600,7 @@
         "bright-faced working anvil",
         "double-horn forge anvil",
         "moss-footed forgotten anvil",
-        "anvil with leaning sledgehammer",
+        "oil-dark well-kept anvil",
         "anvil with horseshoe pile",
         "snow-capped winter anvil",
         "small farrier's anvil",

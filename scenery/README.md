@@ -70,6 +70,22 @@ shared 2000 floor, coordination/PROTOCOL.md) AND credits below `min_usd` —
 and simply resumes the next day. Manual pass: Actions → "Scenery factory
 loop" → Run workflow.
 
+### Wiki verdicts are standing orders (maintainer, 2026-08-13)
+
+The maintainer's approve/reject clicks in the wiki land in
+`live/feedback/objects.json` (committed by the live server — its file, never
+edited from here). **A rejection is a standing removal order**: every loop
+run starts with `pipeline/feedback.py`, which deletes each rejected piece
+from the PixelLab store AND the repo, then the planner refills the freed
+slots with fresh rolls in the same pass. Rails: the three legacy pieces are
+never auto-deleted, and a verdict older than the piece's last sprite commit
+is stale (it judged the slot's PREVIOUS occupant) — the re-roll survives
+until re-reviewed. When a whole group is rejected, the group's prompt is
+wrong, not the dice — fix `config/factory.json` before the slots refill
+(first done 2026-08-13: briar_thickets drew rose arches, cairns drew pebble
+columns, anvils fused floating tools, dovecotes read as birdhouses,
+fading_relics forgot to be ghosts).
+
 ## What a piece is, on disk
 
 ```
@@ -125,14 +141,15 @@ pip install -r ../requirements.txt
 export PIXELLAB_API_KEY=...            # gitignored .env; NEVER committed
 
 python pipeline/loop.py --dry-run                # see the plan, spend nothing
-python pipeline/loop.py --once                   # one batch
+python pipeline/loop.py --once                   # one piece
 python pipeline/loop.py --max-pieces 100         # a daily-sized pass
 python pipeline/sync.py --dry-run                # reconcile report
+python pipeline/feedback.py --dry-run            # pending wiki rejections
 ```
 
-Each **batch** (one API call) creates up to 16 pieces, downloads their
-sprites, writes manifests, rebuilds `viewer_data.json`, refreshes the
-heartbeat, commits and pushes. `sync.py` keeps PixelLab and the repo in
+Each **piece** (one API call) is generated, downloaded, manifest-written;
+the loop rebuilds `viewer_data.json`, refreshes the heartbeat, commits, and
+pushes every 20 pieces. `sync.py` keeps PixelLab and the repo in
 lockstep: deletion parity (reject-and-delete in the UI propagates here),
 loose-pointer pruning, changed-art re-mirror (If-Modified-Since), and an
 orphan report for SCENERY-tagged store objects nothing tracks. v2 sync writes

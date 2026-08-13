@@ -79,6 +79,17 @@ deleting them.
 Deletion parity (UI delete → repo delete), loose-pointer prune, changed-art
 re-mirror via If-Modified-Since, orphan report. Writes lossless WebP only.
 
+## Wiki verdicts (pipeline/feedback.py)
+
+The maintainer's wiki rejections (`live/feedback/objects.json`, the live
+server's file) are STANDING ORDERS: every loop run starts by deleting each
+rejected piece from the store and the repo; the planner refills the slots
+the same pass. Legacy pieces are never auto-deleted; a verdict older than
+the sprite's last commit is stale (it judged the previous roll) and the
+re-roll waits for re-review. A fully-rejected group means the group's
+prompt failed — fix the config before regeneration, don't re-roll the same
+mistake.
+
 ## Costs at a glance
 
 One call per piece: the full 2,650 pieces ≈ 80k generations ≈ ~$240 of USD
