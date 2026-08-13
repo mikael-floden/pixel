@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_004",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 4,
+  "name": "Dense overgrown reed wall 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dense overgrown reed wall",
+  "glow_concept": "pale blue bioluminescent stalk tips",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, dense overgrown reed wall, large, well above head height of a person, self-emissive at night, softly radiating light: pale blue bioluminescent stalk tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.93,
+    "world_px_height": 73,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5efda393-445f-40e4-b1f1-1e998017bda3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
