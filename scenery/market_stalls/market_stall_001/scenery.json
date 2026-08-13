@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "market_stall_001",
+  "group": "market_stalls",
+  "rank": 49,
+  "index": 1,
+  "name": "Honey and candle stall 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "honey and candle stall",
+  "glow_concept": null,
+  "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, honey and candle stall, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "market_stalls/market_stall_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.18,
+    "world_px_height": 82,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
