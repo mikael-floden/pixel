@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 335,
+  "scenery_count": 336,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "id": "stumps",
       "name": "Stump",
       "quota": 54,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 25,
@@ -794,7 +794,7 @@
     "stones": 16,
     "story_posts": 5,
     "streetlights": 5,
-    "stumps": 4,
+    "stumps": 5,
     "sundials": 2,
     "telegraph_poles": 4,
     "toadstool_rings": 4,
@@ -6935,6 +6935,28 @@
       "status": "complete",
       "pixellab_object_id": "5accf5f1-8053-4b6d-91cd-45eea314c933",
       "sprite": "stumps/stump_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stump_005",
+      "rel": "stumps/stump_005",
+      "name": "Sprouting stump with shoots 005",
+      "category": "stumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, sprouting stump with shoots, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.62,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c5e61e87-cab7-4451-b8b5-4a2bc9a6ea22",
+      "sprite": "stumps/stump_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

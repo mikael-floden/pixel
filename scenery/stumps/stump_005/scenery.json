@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stump_005",
+  "group": "stumps",
+  "rank": 24,
+  "index": 5,
+  "name": "Sprouting stump with shoots 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "sprouting stump with shoots",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, sprouting stump with shoots, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.62,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c5e61e87-cab7-4451-b8b5-4a2bc9a6ea22",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
