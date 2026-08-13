@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 376,
+  "scenery_count": 377,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 16,
@@ -870,7 +870,7 @@
     "stone_fountains": 2,
     "stones": 14,
     "story_posts": 4,
-    "streetlights": 4,
+    "streetlights": 5,
     "stumps": 5,
     "sundials": 2,
     "tables": 4,
@@ -7630,6 +7630,28 @@
       "status": "complete",
       "pixellab_object_id": "1d333112-b2ae-489e-a187-f401ef704c1d",
       "sprite": "streetlights/streetlight_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_010",
+      "rel": "streetlights/streetlight_010",
+      "name": "Onion-domed brass head 010 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, onion-domed brass head, tall, about three times human height, self-emissive at night, softly radiating light: fireflies swarming and filling the lamp head",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.0,
+        "world_px_height": 151,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "67b579d7-da36-402e-98c1-abf86124805e",
+      "sprite": "streetlights/streetlight_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

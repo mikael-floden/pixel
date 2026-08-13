@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_010",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 10,
+  "name": "Onion-domed brass head 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "onion-domed brass head",
+  "glow_concept": "fireflies swarming and filling the lamp head",
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, onion-domed brass head, tall, about three times human height, self-emissive at night, softly radiating light: fireflies swarming and filling the lamp head",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_010/sprite.webp",
+  "placement": {
+    "world_height_m": 4.0,
+    "world_px_height": 151,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "67b579d7-da36-402e-98c1-abf86124805e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
