@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grave_006",
+  "group": "graves",
+  "rank": 3,
+  "index": 6,
+  "name": "Rounded granite headstone 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rounded granite headstone",
+  "glow_concept": "luminous white flowers blooming against the stone",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, waist-high to an adult person, self-emissive at night, softly radiating light: luminous white flowers blooming against the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.76,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "24c0cc65-312c-4727-8478-2ac4b1374ba8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
