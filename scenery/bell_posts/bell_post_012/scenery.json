@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_012",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 12,
+  "name": "Crooked birch post, small bell 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "crooked birch post, small bell",
+  "glow_concept": "light-moths circling the bell",
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, crooked birch post, small bell, large, twice human height, self-emissive at night, softly radiating light: light-moths circling the bell",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_012/sprite.webp",
+  "placement": {
+    "world_height_m": 2.59,
+    "world_px_height": 98,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d156cffa-23b4-4817-868c-f3a97ccbe5df",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
