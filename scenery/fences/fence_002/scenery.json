@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fence_002",
+  "group": "fences",
+  "rank": 10,
+  "index": 2,
+  "name": "Woven hazel wattle hurdle 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "woven hazel wattle hurdle",
+  "glow_concept": "glowworms dotted along the lower rail",
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, woven hazel wattle hurdle, small, knee-high to an adult person, self-emissive at night, softly radiating light: glowworms dotted along the lower rail",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.74,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b52053ba-c174-4f23-8891-a6b7a0d54561",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

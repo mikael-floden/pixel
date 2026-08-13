@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 126,
+  "scenery_count": 127,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 11,
@@ -742,7 +742,7 @@
     "driftwood_logs": 1,
     "fading_relics": 1,
     "fallen_logs": 1,
-    "fences": 1,
+    "fences": 2,
     "ferns": 1,
     "fish_drying_racks": 1,
     "flame_niches": 1,
@@ -1616,6 +1616,28 @@
       "status": "complete",
       "pixellab_object_id": "6dbd0a38-80d9-47e1-b981-e125d7ebfc7d",
       "sprite": "fences/fence_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_002",
+      "rel": "fences/fence_002",
+      "name": "Woven hazel wattle hurdle 002 \u00b7 lit",
+      "category": "fences",
+      "lights": "LIGHTS_ON",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, woven hazel wattle hurdle, small, knee-high to an adult person, self-emissive at night, softly radiating light: glowworms dotted along the lower rail",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.74,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b52053ba-c174-4f23-8891-a6b7a0d54561",
+      "sprite": "fences/fence_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
