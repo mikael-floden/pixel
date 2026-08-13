@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 384,
+  "scenery_count": 385,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -216,7 +216,7 @@
       "id": "beehives",
       "name": "Beehive",
       "quota": 42,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 31,
@@ -791,7 +791,7 @@
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beds": 4,
-    "beehives": 4,
+    "beehives": 5,
     "bell_posts": 5,
     "effect": 1,
     "bone_piles": 2,
@@ -1595,6 +1595,28 @@
       "status": "complete",
       "pixellab_object_id": "c56483dc-f964-401f-9cda-096245604e93",
       "sprite": "beehives/beehive_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beehive_008",
+      "rel": "beehives/beehive_008",
+      "name": "Stone-slab roofed log hive 008 \u00b7 lit",
+      "category": "beehives",
+      "lights": "LIGHTS_ON",
+      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, stone-slab roofed log hive, waist-high, self-emissive at night, softly radiating light: entrance hole glowing warm honey-gold from within",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "228775d0-9ec5-4425-889e-029d5a14bab1",
+      "sprite": "beehives/beehive_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
