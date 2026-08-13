@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flame_niche_001",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 1,
+  "name": "Mossy ruined half-niche 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "mossy ruined half-niche",
+  "glow_concept": null,
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, mossy ruined half-niche, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "flame_niches/flame_niche_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f224db63-41c2-4066-9dde-21acdcc188e2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
