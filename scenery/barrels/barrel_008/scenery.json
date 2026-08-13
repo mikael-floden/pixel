@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "barrel_008",
+  "group": "barrels",
+  "rank": 28,
+  "index": 8,
+  "name": "Stacked pair, one tapped 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stacked pair, one tapped",
+  "glow_concept": "glowing rune brand scorched into the staves",
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, stacked pair, one tapped, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing rune brand scorched into the staves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0c9c6a46-7656-474c-9453-439258b1f121",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
