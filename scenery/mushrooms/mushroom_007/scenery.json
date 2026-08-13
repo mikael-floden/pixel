@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_007",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 7,
+  "name": "Red-capped white-spotted toadstools 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "red-capped white-spotted toadstools",
+  "glow_concept": null,
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, red-capped white-spotted toadstools, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.37,
+    "world_px_height": 14,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7362fe79-da3f-4957-8f10-0ac373460dc8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
