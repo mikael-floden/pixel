@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cup_fungus_002",
+  "group": "cup_fungi",
+  "rank": 58,
+  "index": 2,
+  "name": "Orange peel fungus patch 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "orange peel fungus patch",
+  "glow_concept": "single glowing raindrop pooled in every cup",
+  "prompt": "a cluster of small goblet-shaped cup fungi growing from mossy ground, orange peel fungus patch, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: single glowing raindrop pooled in every cup",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "cup_fungi/cup_fungus_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.16,
+    "world_px_height": 6,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bb130c61-7029-4e4a-9a8b-aa6820262e4f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

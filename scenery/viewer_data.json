@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 174,
+  "scenery_count": 175,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -412,7 +412,7 @@
       "id": "cup_fungi",
       "name": "Cup Fungus",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 59,
@@ -736,7 +736,7 @@
     "chimney_stacks": 2,
     "cliff_fragments": 1,
     "crystals": 2,
-    "cup_fungi": 1,
+    "cup_fungi": 2,
     "dock_pilings": 2,
     "dovecotes": 1,
     "driftwood_logs": 2,
@@ -1726,6 +1726,28 @@
       "status": "complete",
       "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
       "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cup_fungus_002",
+      "rel": "cup_fungi/cup_fungus_002",
+      "name": "Orange peel fungus patch 002 \u00b7 lit",
+      "category": "cup_fungi",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of small goblet-shaped cup fungi growing from mossy ground, orange peel fungus patch, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: single glowing raindrop pooled in every cup",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.16,
+        "world_px_height": 6,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bb130c61-7029-4e4a-9a8b-aa6820262e4f",
+      "sprite": "cup_fungi/cup_fungus_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
