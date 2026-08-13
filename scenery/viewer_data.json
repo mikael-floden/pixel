@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 497,
+  "scenery_count": 498,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -279,7 +279,7 @@
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
       "quota": 24,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 40,
@@ -875,7 +875,7 @@
     "sundials": 2,
     "tables": 6,
     "telegraph_poles": 6,
-    "toadstool_rings": 6,
+    "toadstool_rings": 7,
     "torch_posts": 7,
     "trailing_planters": 2,
     "trees": 7,
@@ -10358,6 +10358,28 @@
       "status": "complete",
       "pixellab_object_id": "880c1407-45dc-4f12-8a53-674e1f3d7de4",
       "sprite": "toadstool_rings/toadstool_ring_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "toadstool_ring_014",
+      "rel": "toadstool_rings/toadstool_ring_014",
+      "name": "Old ring of withered caps 014 \u00b7 lit",
+      "category": "toadstool_rings",
+      "lights": "LIGHTS_ON",
+      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, old ring of withered caps, small, knee-high, self-emissive at night, softly radiating light: low glowing spore mist pooled in the center",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.4,
+        "world_px_height": 15,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a80a91dc-8a10-4c5b-9c8b-e375213919d8",
+      "sprite": "toadstool_rings/toadstool_ring_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
