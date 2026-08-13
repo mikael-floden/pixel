@@ -1,0 +1,633 @@
+{
+  "id": "storm_shellback",
+  "name": "Voltshell",
+  "lore": "Storms nest in the crystals on its shell. It crosses a valley in a lifetime, thunder rolling in its wake.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "cd16bfab-3e9c-4177-ac30-3df35b6a8111",
+    "url": "https://www.pixellab.ai/create-character/cd16bfab-3e9c-4177-ac30-3df35b6a8111",
+    "prompt": "Gigantic elemental beast with a low heavy stance. Enormous rocky shell, thick armored legs, glowing blue crystals growing from its shell and lightning jumping between crystals.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 256,
+    "height": 256
+  },
+  "native_size": {
+    "width": 256,
+    "height": 256
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "storm_shellback/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "storm_shellback/rotations/south.webp",
+    "west": "storm_shellback/rotations/west.webp",
+    "east": "storm_shellback/rotations/east.webp",
+    "north": "storm_shellback/rotations/north.webp",
+    "south-east": "storm_shellback/rotations/south-east.webp",
+    "north-east": "storm_shellback/rotations/north-east.webp",
+    "north-west": "storm_shellback/rotations/north-west.webp",
+    "south-west": "storm_shellback/rotations/south-west.webp"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "fde7b4a0-3ae8-4e87-9f82-69e2df8475b5",
+      "source_name": "custom-Blue crystal attack. Releases ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/east/00.webp",
+            "storm_shellback/animations/attack/east/01.webp",
+            "storm_shellback/animations/attack/east/02.webp",
+            "storm_shellback/animations/attack/east/03.webp",
+            "storm_shellback/animations/attack/east/04.webp",
+            "storm_shellback/animations/attack/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:13 GMT",
+          "src_frames": 6,
+          "sub": "db71bdf9-194e-42af-8a72-79030392b96a"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__north.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/north/00.webp",
+            "storm_shellback/animations/attack/north/01.webp",
+            "storm_shellback/animations/attack/north/02.webp",
+            "storm_shellback/animations/attack/north/03.webp",
+            "storm_shellback/animations/attack/north/04.webp",
+            "storm_shellback/animations/attack/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:15 GMT",
+          "src_frames": 6,
+          "sub": "60e467ef-05ac-4a33-bbde-f8a96d84c767"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__north-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/north-east/00.webp",
+            "storm_shellback/animations/attack/north-east/01.webp",
+            "storm_shellback/animations/attack/north-east/02.webp",
+            "storm_shellback/animations/attack/north-east/03.webp",
+            "storm_shellback/animations/attack/north-east/04.webp",
+            "storm_shellback/animations/attack/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:17 GMT",
+          "src_frames": 6,
+          "sub": "12b2da25-1c89-46c9-b0e4-a7990af60ce6"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__north-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/north-west/00.webp",
+            "storm_shellback/animations/attack/north-west/01.webp",
+            "storm_shellback/animations/attack/north-west/02.webp",
+            "storm_shellback/animations/attack/north-west/03.webp",
+            "storm_shellback/animations/attack/north-west/04.webp",
+            "storm_shellback/animations/attack/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:18 GMT",
+          "src_frames": 6,
+          "sub": "687b38a8-5ae2-45a8-8724-265dddb11c24"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__south.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/south/00.webp",
+            "storm_shellback/animations/attack/south/01.webp",
+            "storm_shellback/animations/attack/south/02.webp",
+            "storm_shellback/animations/attack/south/03.webp",
+            "storm_shellback/animations/attack/south/04.webp",
+            "storm_shellback/animations/attack/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:20 GMT",
+          "src_frames": 6,
+          "sub": "aa76bafc-a790-4fe5-9814-a8dce8a98881"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__south-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/south-east/00.webp",
+            "storm_shellback/animations/attack/south-east/01.webp",
+            "storm_shellback/animations/attack/south-east/02.webp",
+            "storm_shellback/animations/attack/south-east/03.webp",
+            "storm_shellback/animations/attack/south-east/04.webp",
+            "storm_shellback/animations/attack/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:21 GMT",
+          "src_frames": 6,
+          "sub": "9b8f2eff-5ed6-4e18-8827-2f3b74d530cf"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__south-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/south-west/00.webp",
+            "storm_shellback/animations/attack/south-west/01.webp",
+            "storm_shellback/animations/attack/south-west/02.webp",
+            "storm_shellback/animations/attack/south-west/03.webp",
+            "storm_shellback/animations/attack/south-west/04.webp",
+            "storm_shellback/animations/attack/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:23 GMT",
+          "src_frames": 6,
+          "sub": "3000e8af-a759-451d-b68b-0408043d41cb"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "storm_shellback/animations/attack__west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/attack/west/00.webp",
+            "storm_shellback/animations/attack/west/01.webp",
+            "storm_shellback/animations/attack/west/02.webp",
+            "storm_shellback/animations/attack/west/03.webp",
+            "storm_shellback/animations/attack/west/04.webp",
+            "storm_shellback/animations/attack/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:25 GMT",
+          "src_frames": 6,
+          "sub": "75d0af9b-e326-4cf9-81b1-53054b1da489"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "758b619c-e823-4f43-91dc-df7a2e62f590",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/east/00.webp",
+            "storm_shellback/animations/idle/east/01.webp",
+            "storm_shellback/animations/idle/east/02.webp",
+            "storm_shellback/animations/idle/east/03.webp",
+            "storm_shellback/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:27 GMT",
+          "src_frames": 5,
+          "sub": "36215179-d1c7-44a2-afa0-2726cb0ef79e"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__north.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/north/00.webp",
+            "storm_shellback/animations/idle/north/01.webp",
+            "storm_shellback/animations/idle/north/02.webp",
+            "storm_shellback/animations/idle/north/03.webp",
+            "storm_shellback/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:28 GMT",
+          "src_frames": 5,
+          "sub": "ffd488a5-81dc-4917-89bd-6bccc30f932a"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__north-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/north-east/00.webp",
+            "storm_shellback/animations/idle/north-east/01.webp",
+            "storm_shellback/animations/idle/north-east/02.webp",
+            "storm_shellback/animations/idle/north-east/03.webp",
+            "storm_shellback/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:30 GMT",
+          "src_frames": 5,
+          "sub": "1462c62a-8bff-41ee-8ebf-da3125c28d22"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__north-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/north-west/00.webp",
+            "storm_shellback/animations/idle/north-west/01.webp",
+            "storm_shellback/animations/idle/north-west/02.webp",
+            "storm_shellback/animations/idle/north-west/03.webp",
+            "storm_shellback/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:31 GMT",
+          "src_frames": 5,
+          "sub": "82814881-f5e1-48b7-bbde-fa162346b31d"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__south.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/south/00.webp",
+            "storm_shellback/animations/idle/south/01.webp",
+            "storm_shellback/animations/idle/south/02.webp",
+            "storm_shellback/animations/idle/south/03.webp",
+            "storm_shellback/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:34 GMT",
+          "src_frames": 5,
+          "sub": "7ec02916-ef6b-4635-9ebc-e5f7b9fe1b90"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__south-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/south-east/00.webp",
+            "storm_shellback/animations/idle/south-east/01.webp",
+            "storm_shellback/animations/idle/south-east/02.webp",
+            "storm_shellback/animations/idle/south-east/03.webp",
+            "storm_shellback/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:35 GMT",
+          "src_frames": 5,
+          "sub": "f112149c-e2d3-4e1e-90f7-b2af55e46c80"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__south-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/south-west/00.webp",
+            "storm_shellback/animations/idle/south-west/01.webp",
+            "storm_shellback/animations/idle/south-west/02.webp",
+            "storm_shellback/animations/idle/south-west/03.webp",
+            "storm_shellback/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:36 GMT",
+          "src_frames": 5,
+          "sub": "a299c5ae-d6c4-4a75-969b-85d965a5e832"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "storm_shellback/animations/idle__west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/idle/west/00.webp",
+            "storm_shellback/animations/idle/west/01.webp",
+            "storm_shellback/animations/idle/west/02.webp",
+            "storm_shellback/animations/idle/west/03.webp",
+            "storm_shellback/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:38 GMT",
+          "src_frames": 5,
+          "sub": "6a17fa8b-546b-4457-beb0-cdc5a4b9b338"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "7ad1e640-1f9f-495b-a1c6-8d02b7d932d4",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/east/00.webp",
+            "storm_shellback/animations/angry/east/01.webp",
+            "storm_shellback/animations/angry/east/02.webp",
+            "storm_shellback/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:39 GMT",
+          "src_frames": 4,
+          "sub": "b04c2650-6687-4bf4-9318-024a88d75927"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__north.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/north/00.webp",
+            "storm_shellback/animations/angry/north/01.webp",
+            "storm_shellback/animations/angry/north/02.webp",
+            "storm_shellback/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:40 GMT",
+          "src_frames": 4,
+          "sub": "b539cf0a-12c9-46e0-ba38-84bf82f10671"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__north-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/north-east/00.webp",
+            "storm_shellback/animations/angry/north-east/01.webp",
+            "storm_shellback/animations/angry/north-east/02.webp",
+            "storm_shellback/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:41 GMT",
+          "src_frames": 4,
+          "sub": "a0653f54-206c-4a0c-a284-a226ca819574"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__north-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/north-west/00.webp",
+            "storm_shellback/animations/angry/north-west/01.webp",
+            "storm_shellback/animations/angry/north-west/02.webp",
+            "storm_shellback/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:44 GMT",
+          "src_frames": 4,
+          "sub": "eaca5c0b-f1f8-45e9-a967-643514605887"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__south.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/south/00.webp",
+            "storm_shellback/animations/angry/south/01.webp",
+            "storm_shellback/animations/angry/south/02.webp",
+            "storm_shellback/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:49 GMT",
+          "src_frames": 4,
+          "sub": "777b51c1-c326-4587-a1f3-9a4f2a5f34fc"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__south-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/south-east/00.webp",
+            "storm_shellback/animations/angry/south-east/01.webp",
+            "storm_shellback/animations/angry/south-east/02.webp",
+            "storm_shellback/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:50 GMT",
+          "src_frames": 4,
+          "sub": "89e1eee6-8b04-4b67-b6c1-3a11a6c3916f"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__south-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/south-west/00.webp",
+            "storm_shellback/animations/angry/south-west/01.webp",
+            "storm_shellback/animations/angry/south-west/02.webp",
+            "storm_shellback/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:52 GMT",
+          "src_frames": 4,
+          "sub": "881f2467-4abe-4d4c-897f-12a845ce2c96"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/angry__west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/angry/west/00.webp",
+            "storm_shellback/animations/angry/west/01.webp",
+            "storm_shellback/animations/angry/west/02.webp",
+            "storm_shellback/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:53 GMT",
+          "src_frames": 4,
+          "sub": "4ef5445b-f37b-4b69-9891-c2d882a74fdf"
+        }
+      }
+    },
+    "die": {
+      "group_id": "bd2ae939-9d47-495d-acee-cacfd63279b7",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/east/00.webp",
+            "storm_shellback/animations/die/east/01.webp",
+            "storm_shellback/animations/die/east/02.webp",
+            "storm_shellback/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:55 GMT",
+          "src_frames": 4,
+          "sub": "0446c439-916e-42e8-85e3-53abfc63f9e0"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__north.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/north/00.webp",
+            "storm_shellback/animations/die/north/01.webp",
+            "storm_shellback/animations/die/north/02.webp",
+            "storm_shellback/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:56 GMT",
+          "src_frames": 4,
+          "sub": "af678aed-5f8e-4f96-ad42-b9aed9f650dc"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__north-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/north-east/00.webp",
+            "storm_shellback/animations/die/north-east/01.webp",
+            "storm_shellback/animations/die/north-east/02.webp",
+            "storm_shellback/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:57 GMT",
+          "src_frames": 4,
+          "sub": "917f5d28-ede9-4e8b-a5fb-a141cb5e062d"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__north-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/north-west/00.webp",
+            "storm_shellback/animations/die/north-west/01.webp",
+            "storm_shellback/animations/die/north-west/02.webp",
+            "storm_shellback/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:59 GMT",
+          "src_frames": 4,
+          "sub": "fc508f9c-ed93-4ddc-bed2-e223035ebc4f"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__south.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/south/00.webp",
+            "storm_shellback/animations/die/south/01.webp",
+            "storm_shellback/animations/die/south/02.webp",
+            "storm_shellback/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:00 GMT",
+          "src_frames": 4,
+          "sub": "56ea49ce-2a67-46c1-94fe-28b22e1177b0"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__south-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/south-east/00.webp",
+            "storm_shellback/animations/die/south-east/01.webp",
+            "storm_shellback/animations/die/south-east/02.webp",
+            "storm_shellback/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:04 GMT",
+          "src_frames": 4,
+          "sub": "bc824535-4be8-47d5-b4ba-e0f325b49320"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__south-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/south-west/00.webp",
+            "storm_shellback/animations/die/south-west/01.webp",
+            "storm_shellback/animations/die/south-west/02.webp",
+            "storm_shellback/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:06 GMT",
+          "src_frames": 4,
+          "sub": "8f6b5ddc-e2a7-414d-be0a-c7c47ec6dfe2"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/die__west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/die/west/00.webp",
+            "storm_shellback/animations/die/west/01.webp",
+            "storm_shellback/animations/die/west/02.webp",
+            "storm_shellback/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:07 GMT",
+          "src_frames": 4,
+          "sub": "36075583-04d7-401b-b678-1ded31c3103e"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "c62e143e-d653-4497-a13e-8d9366b74eed",
+      "source_name": "custom-walk loop. full walk cycle. should look good repea",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/east/00.webp",
+            "storm_shellback/animations/walk/east/01.webp",
+            "storm_shellback/animations/walk/east/02.webp",
+            "storm_shellback/animations/walk/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:09 GMT",
+          "src_frames": 4,
+          "sub": "fb40777c-b113-41aa-9122-83c7e1739b4d"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__north.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/north/00.webp",
+            "storm_shellback/animations/walk/north/01.webp",
+            "storm_shellback/animations/walk/north/02.webp",
+            "storm_shellback/animations/walk/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:10 GMT",
+          "src_frames": 4,
+          "sub": "8cde46b6-f708-4dee-8a5f-96e7cc3d8db9"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__north-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/north-east/00.webp",
+            "storm_shellback/animations/walk/north-east/01.webp",
+            "storm_shellback/animations/walk/north-east/02.webp",
+            "storm_shellback/animations/walk/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:11 GMT",
+          "src_frames": 4,
+          "sub": "da084fcb-5702-4189-853d-f895f32bc73a"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__north-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/north-west/00.webp",
+            "storm_shellback/animations/walk/north-west/01.webp",
+            "storm_shellback/animations/walk/north-west/02.webp",
+            "storm_shellback/animations/walk/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:12 GMT",
+          "src_frames": 4,
+          "sub": "420f97cb-10a5-437c-91e9-d61deba22528"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__south.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/south/00.webp",
+            "storm_shellback/animations/walk/south/01.webp",
+            "storm_shellback/animations/walk/south/02.webp",
+            "storm_shellback/animations/walk/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:13 GMT",
+          "src_frames": 4,
+          "sub": "72a858e3-01ba-4da9-b20d-9e82a33179f2"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__south-east.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/south-east/00.webp",
+            "storm_shellback/animations/walk/south-east/01.webp",
+            "storm_shellback/animations/walk/south-east/02.webp",
+            "storm_shellback/animations/walk/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:14 GMT",
+          "src_frames": 4,
+          "sub": "d9e69be5-2b58-427c-adc9-ace06e8351f9"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__south-west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/south-west/00.webp",
+            "storm_shellback/animations/walk/south-west/01.webp",
+            "storm_shellback/animations/walk/south-west/02.webp",
+            "storm_shellback/animations/walk/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:16 GMT",
+          "src_frames": 4,
+          "sub": "1eed998e-c84e-4785-bc1a-e8badc7b05eb"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "storm_shellback/animations/walk__west.webp",
+          "frame_paths": [
+            "storm_shellback/animations/walk/west/00.webp",
+            "storm_shellback/animations/walk/west/01.webp",
+            "storm_shellback/animations/walk/west/02.webp",
+            "storm_shellback/animations/walk/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:18 GMT",
+          "src_frames": 4,
+          "sub": "c70449e7-0e16-4de0-9d35-781266b02761"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

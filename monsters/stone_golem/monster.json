@@ -64,7 +64,7 @@
             "stone_golem/animations/angry/east/07.webp",
             "stone_golem/animations/angry/east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:06 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:26 GMT",
           "src_frames": 9,
           "sub": "04d33377-f02c-4b7e-9f88-47051f9216ae"
         },
@@ -82,9 +82,27 @@
             "stone_golem/animations/angry/north/07.webp",
             "stone_golem/animations/angry/north/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:08 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:27 GMT",
           "src_frames": 9,
           "sub": "515a0d07-a205-48af-a1f3-63ec91c4b2fc"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__north-east.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/north-east/00.webp",
+            "stone_golem/animations/angry/north-east/01.webp",
+            "stone_golem/animations/angry/north-east/02.webp",
+            "stone_golem/animations/angry/north-east/03.webp",
+            "stone_golem/animations/angry/north-east/04.webp",
+            "stone_golem/animations/angry/north-east/05.webp",
+            "stone_golem/animations/angry/north-east/06.webp",
+            "stone_golem/animations/angry/north-east/07.webp",
+            "stone_golem/animations/angry/north-east/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:29:32 GMT",
+          "src_frames": 9,
+          "sub": "2f11ee12-fce8-4815-8399-682c2feccaed"
         },
         "north-west": {
           "frames": 9,
@@ -100,7 +118,7 @@
             "stone_golem/animations/angry/north-west/07.webp",
             "stone_golem/animations/angry/north-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:09 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:34 GMT",
           "src_frames": 9,
           "sub": "e1c339c7-2888-4ede-9f79-310799fffe30"
         },
@@ -118,7 +136,7 @@
             "stone_golem/animations/angry/south/07.webp",
             "stone_golem/animations/angry/south/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:11 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:35 GMT",
           "src_frames": 9,
           "sub": "c33f9c7b-82ca-4dc2-a2dd-e8a3c8fbc0d8"
         },
@@ -136,9 +154,45 @@
             "stone_golem/animations/angry/south-east/07.webp",
             "stone_golem/animations/angry/south-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:13 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:37 GMT",
           "src_frames": 9,
           "sub": "6f7d6540-ed9e-406a-8e0d-6c49b2a26756"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__south-west.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/south-west/00.webp",
+            "stone_golem/animations/angry/south-west/01.webp",
+            "stone_golem/animations/angry/south-west/02.webp",
+            "stone_golem/animations/angry/south-west/03.webp",
+            "stone_golem/animations/angry/south-west/04.webp",
+            "stone_golem/animations/angry/south-west/05.webp",
+            "stone_golem/animations/angry/south-west/06.webp",
+            "stone_golem/animations/angry/south-west/07.webp",
+            "stone_golem/animations/angry/south-west/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:29:38 GMT",
+          "src_frames": 9,
+          "sub": "38373891-d823-4cef-8c32-795664b6f3b6"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "stone_golem/animations/angry__west.webp",
+          "frame_paths": [
+            "stone_golem/animations/angry/west/00.webp",
+            "stone_golem/animations/angry/west/01.webp",
+            "stone_golem/animations/angry/west/02.webp",
+            "stone_golem/animations/angry/west/03.webp",
+            "stone_golem/animations/angry/west/04.webp",
+            "stone_golem/animations/angry/west/05.webp",
+            "stone_golem/animations/angry/west/06.webp",
+            "stone_golem/animations/angry/west/07.webp",
+            "stone_golem/animations/angry/west/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:29:42 GMT",
+          "src_frames": 9,
+          "sub": "5ff125cf-6ec1-40c2-ae7e-fd4702bac372"
         }
       }
     },
@@ -158,7 +212,7 @@
             "stone_golem/animations/die/east/05.webp",
             "stone_golem/animations/die/east/06.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:15 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:44 GMT",
           "src_frames": 9,
           "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
         },
@@ -175,7 +229,7 @@
             "stone_golem/animations/die/north/06.webp",
             "stone_golem/animations/die/north/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:16 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:46 GMT",
           "src_frames": 9,
           "sub": "26086215-254e-487e-b872-d1404fb7aab2"
         },
@@ -192,7 +246,7 @@
             "stone_golem/animations/die/north-east/06.webp",
             "stone_golem/animations/die/north-east/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:18 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:48 GMT",
           "src_frames": 9,
           "sub": "e9382763-18ee-4e6e-966d-063515b0ca4f"
         },
@@ -209,7 +263,7 @@
             "stone_golem/animations/die/north-west/06.webp",
             "stone_golem/animations/die/north-west/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:20 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:50 GMT",
           "src_frames": 9,
           "sub": "d5d2898f-14c3-44dd-be4b-3a0a4203d112"
         },
@@ -226,7 +280,7 @@
             "stone_golem/animations/die/south/06.webp",
             "stone_golem/animations/die/south/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:22 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:51 GMT",
           "src_frames": 9,
           "sub": "b1fcb1cd-c5c0-4f20-a2ee-e48bd0577d67"
         },
@@ -243,7 +297,7 @@
             "stone_golem/animations/die/south-east/06.webp",
             "stone_golem/animations/die/south-east/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:24 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:53 GMT",
           "src_frames": 9,
           "sub": "39666e07-9e26-48b9-8ead-f69b66a3c357"
         },
@@ -260,7 +314,7 @@
             "stone_golem/animations/die/south-west/06.webp",
             "stone_golem/animations/die/south-west/07.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:26 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:54 GMT",
           "src_frames": 9,
           "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
         },
@@ -276,7 +330,7 @@
             "stone_golem/animations/die/west/05.webp",
             "stone_golem/animations/die/west/06.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:27 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:56 GMT",
           "src_frames": 9,
           "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703"
         }
@@ -300,7 +354,7 @@
             "stone_golem/animations/attack/east/07.webp",
             "stone_golem/animations/attack/east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:29 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:57 GMT",
           "src_frames": 9,
           "sub": "063ee3d0-a40e-43a3-9f92-c985b08dc585"
         },
@@ -318,7 +372,7 @@
             "stone_golem/animations/attack/north/07.webp",
             "stone_golem/animations/attack/north/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:31 GMT",
+          "lm": "Thu, 13 Aug 2026 09:29:59 GMT",
           "src_frames": 9,
           "sub": "b7afdc39-c70f-4961-8cae-a7451bd780f7"
         },
@@ -336,7 +390,7 @@
             "stone_golem/animations/attack/north-east/07.webp",
             "stone_golem/animations/attack/north-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:33 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:01 GMT",
           "src_frames": 9,
           "sub": "517ee3e6-2ce9-4143-8793-9195d375579b"
         },
@@ -354,7 +408,7 @@
             "stone_golem/animations/attack/north-west/07.webp",
             "stone_golem/animations/attack/north-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:35 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:02 GMT",
           "src_frames": 9,
           "sub": "1401731e-a1c2-431a-9b66-5c4e60ec039d"
         },
@@ -372,7 +426,7 @@
             "stone_golem/animations/attack/south/07.webp",
             "stone_golem/animations/attack/south/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:38 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:03 GMT",
           "src_frames": 9,
           "sub": "1cd7e08a-a764-4498-8bee-28e9ee1a8af4"
         },
@@ -390,7 +444,7 @@
             "stone_golem/animations/attack/south-east/07.webp",
             "stone_golem/animations/attack/south-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:40 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:08 GMT",
           "src_frames": 9,
           "sub": "b5515408-db19-4f6e-846c-431ea237f885"
         },
@@ -408,7 +462,7 @@
             "stone_golem/animations/attack/south-west/07.webp",
             "stone_golem/animations/attack/south-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:42 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:13 GMT",
           "src_frames": 9,
           "sub": "6d7add88-f902-40ab-99b3-7f1f954fbedf"
         },
@@ -426,7 +480,7 @@
             "stone_golem/animations/attack/west/07.webp",
             "stone_golem/animations/attack/west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:44 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:16 GMT",
           "src_frames": 9,
           "sub": "22336e4b-83d2-4886-a53b-b2b55d3eadc6"
         }
@@ -450,7 +504,7 @@
             "stone_golem/animations/idle/east/07.webp",
             "stone_golem/animations/idle/east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:46 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:18 GMT",
           "src_frames": 9,
           "sub": "67180f55-5fbf-499e-a405-0af370876588"
         },
@@ -468,7 +522,7 @@
             "stone_golem/animations/idle/north/07.webp",
             "stone_golem/animations/idle/north/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:48 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:20 GMT",
           "src_frames": 9,
           "sub": "4ab289bc-55fc-498f-8efd-983b0097b5e5"
         },
@@ -486,7 +540,7 @@
             "stone_golem/animations/idle/north-east/07.webp",
             "stone_golem/animations/idle/north-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:49 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:21 GMT",
           "src_frames": 9,
           "sub": "9c5d0f98-d9b7-406f-b4f4-a84b9677c2ac"
         },
@@ -504,7 +558,7 @@
             "stone_golem/animations/idle/north-west/07.webp",
             "stone_golem/animations/idle/north-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:51 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:23 GMT",
           "src_frames": 9,
           "sub": "a5bbc467-b7b1-42cb-bc4f-1f678a8f5567"
         },
@@ -522,7 +576,7 @@
             "stone_golem/animations/idle/south/07.webp",
             "stone_golem/animations/idle/south/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:53 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:24 GMT",
           "src_frames": 9,
           "sub": "18366453-a031-4097-8381-0b930ca5f1e6"
         },
@@ -540,7 +594,7 @@
             "stone_golem/animations/idle/south-east/07.webp",
             "stone_golem/animations/idle/south-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:55 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:26 GMT",
           "src_frames": 9,
           "sub": "8b7dc41d-cdbe-4b3f-9ee2-9ce5f39bc08d"
         },
@@ -558,7 +612,7 @@
             "stone_golem/animations/idle/south-west/07.webp",
             "stone_golem/animations/idle/south-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:57 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:27 GMT",
           "src_frames": 9,
           "sub": "2abd2fc6-0e9b-40b8-8a71-6e2cc6edeaa9"
         },
@@ -576,7 +630,7 @@
             "stone_golem/animations/idle/west/07.webp",
             "stone_golem/animations/idle/west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:46:59 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:29 GMT",
           "src_frames": 9,
           "sub": "ab719262-3ebc-4e75-b936-2f5a698e856c"
         }
@@ -600,7 +654,7 @@
             "stone_golem/animations/walk/east/07.webp",
             "stone_golem/animations/walk/east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:01 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:30 GMT",
           "src_frames": 9,
           "sub": "c3ac7c00-cc80-4bf1-8ab3-1046850b1cf7"
         },
@@ -618,7 +672,7 @@
             "stone_golem/animations/walk/north/07.webp",
             "stone_golem/animations/walk/north/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:02 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:31 GMT",
           "src_frames": 9,
           "sub": "574a2918-b636-46c7-ae92-bca0feb2207c"
         },
@@ -636,7 +690,7 @@
             "stone_golem/animations/walk/north-east/07.webp",
             "stone_golem/animations/walk/north-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:04 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:32 GMT",
           "src_frames": 9,
           "sub": "efa5fdb0-0b13-43ed-813a-0506a6355aed"
         },
@@ -654,7 +708,7 @@
             "stone_golem/animations/walk/north-west/07.webp",
             "stone_golem/animations/walk/north-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:06 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:34 GMT",
           "src_frames": 9,
           "sub": "f3b79acd-fe44-4eea-907e-1934cfb2ff65"
         },
@@ -672,7 +726,7 @@
             "stone_golem/animations/walk/south/07.webp",
             "stone_golem/animations/walk/south/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:08 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:36 GMT",
           "src_frames": 9,
           "sub": "7a8b8757-1685-458b-be7a-add6e8f71174"
         },
@@ -690,7 +744,7 @@
             "stone_golem/animations/walk/south-east/07.webp",
             "stone_golem/animations/walk/south-east/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:10 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:37 GMT",
           "src_frames": 9,
           "sub": "603040ad-0215-4e5f-bfdf-bcb68a7c060d"
         },
@@ -708,7 +762,7 @@
             "stone_golem/animations/walk/south-west/07.webp",
             "stone_golem/animations/walk/south-west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:11 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:39 GMT",
           "src_frames": 9,
           "sub": "6f44dadd-d049-41ee-ab1d-43b80625d950"
         },
@@ -726,7 +780,7 @@
             "stone_golem/animations/walk/west/07.webp",
             "stone_golem/animations/walk/west/08.webp"
           ],
-          "lm": "Wed, 29 Jul 2026 11:47:13 GMT",
+          "lm": "Thu, 13 Aug 2026 09:30:40 GMT",
           "src_frames": 9,
           "sub": "f1feb749-b83d-474a-a2e6-75d131e63705"
         }
@@ -782,6 +836,58 @@
         "strip_px": 14,
         "ext": 3
       }
-    ]
+    ],
+    "die_trim": {
+      "east": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
+      },
+      "north": {
+        "dropped": [
+          8
+        ],
+        "sub": "26086215-254e-487e-b872-d1404fb7aab2"
+      },
+      "north-east": {
+        "dropped": [
+          8
+        ],
+        "sub": "e9382763-18ee-4e6e-966d-063515b0ca4f"
+      },
+      "north-west": {
+        "dropped": [
+          8
+        ],
+        "sub": "d5d2898f-14c3-44dd-be4b-3a0a4203d112"
+      },
+      "south": {
+        "dropped": [
+          8
+        ],
+        "sub": "b1fcb1cd-c5c0-4f20-a2ee-e48bd0577d67"
+      },
+      "south-east": {
+        "dropped": [
+          8
+        ],
+        "sub": "39666e07-9e26-48b9-8ead-f69b66a3c357"
+      },
+      "south-west": {
+        "dropped": [
+          8
+        ],
+        "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
+      },
+      "west": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703"
+      }
+    }
   }
 }

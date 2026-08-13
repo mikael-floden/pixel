@@ -1,0 +1,633 @@
+{
+  "id": "root_bear",
+  "name": "Gnarloak",
+  "lore": "Roots that dreamed of being a bear. It sleeps for whole seasons, and wakes furious at whatever an axe is.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "48402f4a-5894-45a5-b6c1-45b233104b97",
+    "url": "https://www.pixellab.ai/create-character/48402f4a-5894-45a5-b6c1-45b233104b97",
+    "prompt": "Colossal four-legged forest monster formed from intertwined ancient roots and dark bark. Massive bear-like body, tree-trunk legs, huge wooden claws, hollow glowing green eyes, enormous branch antlers, moss and mushrooms covering its back, with thick roots hanging beneath its body.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 152,
+    "height": 152
+  },
+  "native_size": {
+    "width": 152,
+    "height": 152
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "root_bear/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "root_bear/rotations/south.webp",
+    "west": "root_bear/rotations/west.webp",
+    "east": "root_bear/rotations/east.webp",
+    "north": "root_bear/rotations/north.webp",
+    "south-east": "root_bear/rotations/south-east.webp",
+    "north-east": "root_bear/rotations/north-east.webp",
+    "north-west": "root_bear/rotations/north-west.webp",
+    "south-west": "root_bear/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "fc6534a7-41f1-499a-a33e-3240a67b2477",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__east.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/east/00.webp",
+            "root_bear/animations/idle/east/01.webp",
+            "root_bear/animations/idle/east/02.webp",
+            "root_bear/animations/idle/east/03.webp",
+            "root_bear/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:37 GMT",
+          "src_frames": 5,
+          "sub": "98219a74-798b-4ef5-a20b-2a1f4cff2d7b"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__north.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/north/00.webp",
+            "root_bear/animations/idle/north/01.webp",
+            "root_bear/animations/idle/north/02.webp",
+            "root_bear/animations/idle/north/03.webp",
+            "root_bear/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:41 GMT",
+          "src_frames": 5,
+          "sub": "1eb94591-9311-444a-ad54-e179e3c707f0"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__north-east.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/north-east/00.webp",
+            "root_bear/animations/idle/north-east/01.webp",
+            "root_bear/animations/idle/north-east/02.webp",
+            "root_bear/animations/idle/north-east/03.webp",
+            "root_bear/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:42 GMT",
+          "src_frames": 5,
+          "sub": "54c58710-7a48-475c-b381-9a6d7fbed6c2"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__north-west.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/north-west/00.webp",
+            "root_bear/animations/idle/north-west/01.webp",
+            "root_bear/animations/idle/north-west/02.webp",
+            "root_bear/animations/idle/north-west/03.webp",
+            "root_bear/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:43 GMT",
+          "src_frames": 5,
+          "sub": "7c392cb7-2c5f-44a7-bf41-b983bd039b89"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__south.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/south/00.webp",
+            "root_bear/animations/idle/south/01.webp",
+            "root_bear/animations/idle/south/02.webp",
+            "root_bear/animations/idle/south/03.webp",
+            "root_bear/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:45 GMT",
+          "src_frames": 5,
+          "sub": "543942b0-7b0e-4e1e-8a38-b29852ed1d0f"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__south-east.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/south-east/00.webp",
+            "root_bear/animations/idle/south-east/01.webp",
+            "root_bear/animations/idle/south-east/02.webp",
+            "root_bear/animations/idle/south-east/03.webp",
+            "root_bear/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:47 GMT",
+          "src_frames": 5,
+          "sub": "c121d800-c562-461a-a640-5b9f54cfb325"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__south-west.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/south-west/00.webp",
+            "root_bear/animations/idle/south-west/01.webp",
+            "root_bear/animations/idle/south-west/02.webp",
+            "root_bear/animations/idle/south-west/03.webp",
+            "root_bear/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:48 GMT",
+          "src_frames": 5,
+          "sub": "df942522-bbc5-4cba-864b-f421cc5acd1f"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "root_bear/animations/idle__west.webp",
+          "frame_paths": [
+            "root_bear/animations/idle/west/00.webp",
+            "root_bear/animations/idle/west/01.webp",
+            "root_bear/animations/idle/west/02.webp",
+            "root_bear/animations/idle/west/03.webp",
+            "root_bear/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:49 GMT",
+          "src_frames": 5,
+          "sub": "4b737a8b-8224-425f-9417-babdaf417b8b"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "0ce157b2-0ab4-472e-acfa-e551db99e92b",
+      "source_name": "custom-Horn Strike - Lowers head and quickly thrusts horn",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__east.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/east/00.webp",
+            "root_bear/animations/attack/east/01.webp",
+            "root_bear/animations/attack/east/02.webp",
+            "root_bear/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:51 GMT",
+          "src_frames": 4,
+          "sub": "9ee84a6a-4cf9-4bc1-9142-e198b77ce319"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__north.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/north/00.webp",
+            "root_bear/animations/attack/north/01.webp",
+            "root_bear/animations/attack/north/02.webp",
+            "root_bear/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:53 GMT",
+          "src_frames": 4,
+          "sub": "5c86f13f-9c2f-46c9-9506-d3e08b29ec24"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__north-east.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/north-east/00.webp",
+            "root_bear/animations/attack/north-east/01.webp",
+            "root_bear/animations/attack/north-east/02.webp",
+            "root_bear/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:54 GMT",
+          "src_frames": 4,
+          "sub": "812a93db-945d-433b-be57-b1f4e8ba9ed9"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__north-west.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/north-west/00.webp",
+            "root_bear/animations/attack/north-west/01.webp",
+            "root_bear/animations/attack/north-west/02.webp",
+            "root_bear/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:57 GMT",
+          "src_frames": 4,
+          "sub": "5adec426-8ce9-4d65-bc88-9d1ddaab3052"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__south.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/south/00.webp",
+            "root_bear/animations/attack/south/01.webp",
+            "root_bear/animations/attack/south/02.webp",
+            "root_bear/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:43:59 GMT",
+          "src_frames": 4,
+          "sub": "a1fa3640-a0bc-412d-b508-14b9782e96c7"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__south-east.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/south-east/00.webp",
+            "root_bear/animations/attack/south-east/01.webp",
+            "root_bear/animations/attack/south-east/02.webp",
+            "root_bear/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:00 GMT",
+          "src_frames": 4,
+          "sub": "208f8c46-43cc-4364-b7d7-fab0d2acc868"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__south-west.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/south-west/00.webp",
+            "root_bear/animations/attack/south-west/01.webp",
+            "root_bear/animations/attack/south-west/02.webp",
+            "root_bear/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:02 GMT",
+          "src_frames": 4,
+          "sub": "688894f2-1ff7-44ca-b76d-a35e200f43a6"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "root_bear/animations/attack__west.webp",
+          "frame_paths": [
+            "root_bear/animations/attack/west/00.webp",
+            "root_bear/animations/attack/west/01.webp",
+            "root_bear/animations/attack/west/02.webp",
+            "root_bear/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:03 GMT",
+          "src_frames": 4,
+          "sub": "90810d26-ab84-4e9a-b73f-3315856bf8b9"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "5bbe75cf-b21b-4612-8aa5-7426d7143080",
+      "source_name": "custom-angry and calm, not much movement ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__east.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/east/00.webp",
+            "root_bear/animations/angry/east/01.webp",
+            "root_bear/animations/angry/east/02.webp",
+            "root_bear/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:05 GMT",
+          "src_frames": 4,
+          "sub": "15bad106-bbe9-4d12-976b-deddf76d171c"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__north.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/north/00.webp",
+            "root_bear/animations/angry/north/01.webp",
+            "root_bear/animations/angry/north/02.webp",
+            "root_bear/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:06 GMT",
+          "src_frames": 4,
+          "sub": "8f77600e-bc1e-420a-b54d-f922dbf7a186"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__north-east.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/north-east/00.webp",
+            "root_bear/animations/angry/north-east/01.webp",
+            "root_bear/animations/angry/north-east/02.webp",
+            "root_bear/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:07 GMT",
+          "src_frames": 4,
+          "sub": "bb56b781-3eb3-4f94-9173-f701d1c59a17"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__north-west.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/north-west/00.webp",
+            "root_bear/animations/angry/north-west/01.webp",
+            "root_bear/animations/angry/north-west/02.webp",
+            "root_bear/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:08 GMT",
+          "src_frames": 4,
+          "sub": "9e9a65e8-f821-4031-83b6-97955d3679a2"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__south.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/south/00.webp",
+            "root_bear/animations/angry/south/01.webp",
+            "root_bear/animations/angry/south/02.webp",
+            "root_bear/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:09 GMT",
+          "src_frames": 4,
+          "sub": "d8e56199-48ce-4663-9908-732e3a1dd02e"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__south-east.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/south-east/00.webp",
+            "root_bear/animations/angry/south-east/01.webp",
+            "root_bear/animations/angry/south-east/02.webp",
+            "root_bear/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:11 GMT",
+          "src_frames": 4,
+          "sub": "70ef485d-771a-4435-b990-a5954fe7ed37"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__south-west.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/south-west/00.webp",
+            "root_bear/animations/angry/south-west/01.webp",
+            "root_bear/animations/angry/south-west/02.webp",
+            "root_bear/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:12 GMT",
+          "src_frames": 4,
+          "sub": "046c7518-be7c-4854-a506-5de41380c41d"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "root_bear/animations/angry__west.webp",
+          "frame_paths": [
+            "root_bear/animations/angry/west/00.webp",
+            "root_bear/animations/angry/west/01.webp",
+            "root_bear/animations/angry/west/02.webp",
+            "root_bear/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:14 GMT",
+          "src_frames": 4,
+          "sub": "092f1cd4-adfa-45c4-bb30-fd24915831ff"
+        }
+      }
+    },
+    "die": {
+      "group_id": "6ed5436d-225f-415c-9915-ac417f2ec8ec",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__east.webp",
+          "frame_paths": [
+            "root_bear/animations/die/east/00.webp",
+            "root_bear/animations/die/east/01.webp",
+            "root_bear/animations/die/east/02.webp",
+            "root_bear/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:15 GMT",
+          "src_frames": 4,
+          "sub": "e9542392-f79c-491b-b5fe-952e2111598c"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__north.webp",
+          "frame_paths": [
+            "root_bear/animations/die/north/00.webp",
+            "root_bear/animations/die/north/01.webp",
+            "root_bear/animations/die/north/02.webp",
+            "root_bear/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:16 GMT",
+          "src_frames": 4,
+          "sub": "ad89f209-1ea8-4a89-8801-d2c523e72fb9"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__north-east.webp",
+          "frame_paths": [
+            "root_bear/animations/die/north-east/00.webp",
+            "root_bear/animations/die/north-east/01.webp",
+            "root_bear/animations/die/north-east/02.webp",
+            "root_bear/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:18 GMT",
+          "src_frames": 4,
+          "sub": "f5721564-bef8-4faa-9906-c868f96117a0"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__north-west.webp",
+          "frame_paths": [
+            "root_bear/animations/die/north-west/00.webp",
+            "root_bear/animations/die/north-west/01.webp",
+            "root_bear/animations/die/north-west/02.webp",
+            "root_bear/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:20 GMT",
+          "src_frames": 4,
+          "sub": "ab0fcd16-68ff-409d-bead-2a448dd6666e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__south.webp",
+          "frame_paths": [
+            "root_bear/animations/die/south/00.webp",
+            "root_bear/animations/die/south/01.webp",
+            "root_bear/animations/die/south/02.webp",
+            "root_bear/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:21 GMT",
+          "src_frames": 4,
+          "sub": "c2872f95-f091-4e0d-a3e0-6fb0483f58bb"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__south-east.webp",
+          "frame_paths": [
+            "root_bear/animations/die/south-east/00.webp",
+            "root_bear/animations/die/south-east/01.webp",
+            "root_bear/animations/die/south-east/02.webp",
+            "root_bear/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:22 GMT",
+          "src_frames": 4,
+          "sub": "6179fa53-7902-49ef-8696-5d396d07a535"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__south-west.webp",
+          "frame_paths": [
+            "root_bear/animations/die/south-west/00.webp",
+            "root_bear/animations/die/south-west/01.webp",
+            "root_bear/animations/die/south-west/02.webp",
+            "root_bear/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:23 GMT",
+          "src_frames": 4,
+          "sub": "a6498098-afe5-42b1-acba-6a4bbe6fe583"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "root_bear/animations/die__west.webp",
+          "frame_paths": [
+            "root_bear/animations/die/west/00.webp",
+            "root_bear/animations/die/west/01.webp",
+            "root_bear/animations/die/west/02.webp",
+            "root_bear/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:25 GMT",
+          "src_frames": 4,
+          "sub": "5d72133d-9097-4025-90a7-8cedf280f117"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "400160a1-7ab7-4c8d-9c05-d7d54cf0f6bb",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__east.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/east/00.webp",
+            "root_bear/animations/walk/east/01.webp",
+            "root_bear/animations/walk/east/02.webp",
+            "root_bear/animations/walk/east/03.webp",
+            "root_bear/animations/walk/east/04.webp",
+            "root_bear/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:26 GMT",
+          "src_frames": 6,
+          "sub": "bae8d0e4-33f3-4787-b46b-c88621a81e8f"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__north.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/north/00.webp",
+            "root_bear/animations/walk/north/01.webp",
+            "root_bear/animations/walk/north/02.webp",
+            "root_bear/animations/walk/north/03.webp",
+            "root_bear/animations/walk/north/04.webp",
+            "root_bear/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:27 GMT",
+          "src_frames": 6,
+          "sub": "323e73ce-e1c5-4eee-b1bc-87394027d217"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__north-east.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/north-east/00.webp",
+            "root_bear/animations/walk/north-east/01.webp",
+            "root_bear/animations/walk/north-east/02.webp",
+            "root_bear/animations/walk/north-east/03.webp",
+            "root_bear/animations/walk/north-east/04.webp",
+            "root_bear/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:29 GMT",
+          "src_frames": 6,
+          "sub": "5b7185bf-f81c-4280-9f2e-34f30fbf6fea"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__north-west.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/north-west/00.webp",
+            "root_bear/animations/walk/north-west/01.webp",
+            "root_bear/animations/walk/north-west/02.webp",
+            "root_bear/animations/walk/north-west/03.webp",
+            "root_bear/animations/walk/north-west/04.webp",
+            "root_bear/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:30 GMT",
+          "src_frames": 6,
+          "sub": "2a7f541e-6f3f-4897-b9f0-723643e7b7f6"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__south.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/south/00.webp",
+            "root_bear/animations/walk/south/01.webp",
+            "root_bear/animations/walk/south/02.webp",
+            "root_bear/animations/walk/south/03.webp",
+            "root_bear/animations/walk/south/04.webp",
+            "root_bear/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:31 GMT",
+          "src_frames": 6,
+          "sub": "789ecc15-55b8-421e-8d14-dba138158ae2"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__south-east.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/south-east/00.webp",
+            "root_bear/animations/walk/south-east/01.webp",
+            "root_bear/animations/walk/south-east/02.webp",
+            "root_bear/animations/walk/south-east/03.webp",
+            "root_bear/animations/walk/south-east/04.webp",
+            "root_bear/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:34 GMT",
+          "src_frames": 6,
+          "sub": "9a1084c7-346b-47f0-a0a6-a53808855345"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__south-west.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/south-west/00.webp",
+            "root_bear/animations/walk/south-west/01.webp",
+            "root_bear/animations/walk/south-west/02.webp",
+            "root_bear/animations/walk/south-west/03.webp",
+            "root_bear/animations/walk/south-west/04.webp",
+            "root_bear/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:36 GMT",
+          "src_frames": 6,
+          "sub": "6edf4864-1bed-456d-8cd3-ed2a16e10f37"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "root_bear/animations/walk__west.webp",
+          "frame_paths": [
+            "root_bear/animations/walk/west/00.webp",
+            "root_bear/animations/walk/west/01.webp",
+            "root_bear/animations/walk/west/02.webp",
+            "root_bear/animations/walk/west/03.webp",
+            "root_bear/animations/walk/west/04.webp",
+            "root_bear/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:39 GMT",
+          "src_frames": 6,
+          "sub": "35372d7c-e76f-4696-8abb-0cfacdc13967"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

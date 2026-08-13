@@ -1,0 +1,633 @@
+{
+  "id": "obsidian_lion",
+  "name": "Magmane",
+  "lore": "A lion poured from the volcano's throat. Its obsidian mane cools black; its roar glows through the cracks.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "c4d19561-b599-4dce-9ec7-cf0061cf8e86",
+    "url": "https://www.pixellab.ai/create-character/c4d19561-b599-4dce-9ec7-cf0061cf8e86",
+    "prompt": "Enormous four-legged lion constructed from glossy black volcanic stone. Huge angular paws, jagged obsidian mane, glowing orange eyes, magma visible through cracks between stone plates and a heavy tail ending in a sharp obsidian formation.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 252,
+    "height": 252
+  },
+  "native_size": {
+    "width": 252,
+    "height": 252
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "obsidian_lion/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "obsidian_lion/rotations/south.webp",
+    "west": "obsidian_lion/rotations/west.webp",
+    "east": "obsidian_lion/rotations/east.webp",
+    "north": "obsidian_lion/rotations/north.webp",
+    "south-east": "obsidian_lion/rotations/south-east.webp",
+    "north-east": "obsidian_lion/rotations/north-east.webp",
+    "north-west": "obsidian_lion/rotations/north-west.webp",
+    "south-west": "obsidian_lion/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "408aaa1e-9b09-4ca9-9f2f-2e3cca50e61f",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/east/00.webp",
+            "obsidian_lion/animations/idle/east/01.webp",
+            "obsidian_lion/animations/idle/east/02.webp",
+            "obsidian_lion/animations/idle/east/03.webp",
+            "obsidian_lion/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:50 GMT",
+          "src_frames": 5,
+          "sub": "0c1bc163-0daf-4956-aa77-efd922878d12"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__north.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/north/00.webp",
+            "obsidian_lion/animations/idle/north/01.webp",
+            "obsidian_lion/animations/idle/north/02.webp",
+            "obsidian_lion/animations/idle/north/03.webp",
+            "obsidian_lion/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:51 GMT",
+          "src_frames": 5,
+          "sub": "28e7102a-93cc-4a64-ad19-0ed4f6435735"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__north-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/north-east/00.webp",
+            "obsidian_lion/animations/idle/north-east/01.webp",
+            "obsidian_lion/animations/idle/north-east/02.webp",
+            "obsidian_lion/animations/idle/north-east/03.webp",
+            "obsidian_lion/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:53 GMT",
+          "src_frames": 5,
+          "sub": "2c17fe1c-bb44-42be-9fa5-9fc1f4c69fe2"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__north-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/north-west/00.webp",
+            "obsidian_lion/animations/idle/north-west/01.webp",
+            "obsidian_lion/animations/idle/north-west/02.webp",
+            "obsidian_lion/animations/idle/north-west/03.webp",
+            "obsidian_lion/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:54 GMT",
+          "src_frames": 5,
+          "sub": "92f20665-20f7-4607-9a1c-c31e339bebab"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__south.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/south/00.webp",
+            "obsidian_lion/animations/idle/south/01.webp",
+            "obsidian_lion/animations/idle/south/02.webp",
+            "obsidian_lion/animations/idle/south/03.webp",
+            "obsidian_lion/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:55 GMT",
+          "src_frames": 5,
+          "sub": "6b3c2747-1827-45d4-9b24-97ef22f987f4"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__south-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/south-east/00.webp",
+            "obsidian_lion/animations/idle/south-east/01.webp",
+            "obsidian_lion/animations/idle/south-east/02.webp",
+            "obsidian_lion/animations/idle/south-east/03.webp",
+            "obsidian_lion/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:56 GMT",
+          "src_frames": 5,
+          "sub": "0b812859-e1ca-4498-9013-d60c414b07bb"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__south-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/south-west/00.webp",
+            "obsidian_lion/animations/idle/south-west/01.webp",
+            "obsidian_lion/animations/idle/south-west/02.webp",
+            "obsidian_lion/animations/idle/south-west/03.webp",
+            "obsidian_lion/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:58 GMT",
+          "src_frames": 5,
+          "sub": "05083e1f-211a-4db6-9f49-e961e388b534"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "obsidian_lion/animations/idle__west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/idle/west/00.webp",
+            "obsidian_lion/animations/idle/west/01.webp",
+            "obsidian_lion/animations/idle/west/02.webp",
+            "obsidian_lion/animations/idle/west/03.webp",
+            "obsidian_lion/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:44:59 GMT",
+          "src_frames": 5,
+          "sub": "3b2446f9-19db-4a10-83c9-28206920758b"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "ee48b21f-6caf-44bb-a41b-3bb6c528e072",
+      "source_name": "custom-Roar Attack - Raises head, opens mouth wide and pe",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/east/00.webp",
+            "obsidian_lion/animations/attack/east/01.webp",
+            "obsidian_lion/animations/attack/east/02.webp",
+            "obsidian_lion/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:00 GMT",
+          "src_frames": 4,
+          "sub": "0d43bbc6-3cd9-49a1-b3ae-9967ab66f5d3"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__north.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/north/00.webp",
+            "obsidian_lion/animations/attack/north/01.webp",
+            "obsidian_lion/animations/attack/north/02.webp",
+            "obsidian_lion/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:01 GMT",
+          "src_frames": 4,
+          "sub": "95e13f3c-d1be-4353-a895-55527ada412a"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__north-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/north-east/00.webp",
+            "obsidian_lion/animations/attack/north-east/01.webp",
+            "obsidian_lion/animations/attack/north-east/02.webp",
+            "obsidian_lion/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:03 GMT",
+          "src_frames": 4,
+          "sub": "0ba2e3af-eb68-4c6a-b2ad-9bdb8b7cfc74"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__north-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/north-west/00.webp",
+            "obsidian_lion/animations/attack/north-west/01.webp",
+            "obsidian_lion/animations/attack/north-west/02.webp",
+            "obsidian_lion/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:04 GMT",
+          "src_frames": 4,
+          "sub": "d6229a3a-dc2a-4e9d-b445-b690e451076e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__south.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/south/00.webp",
+            "obsidian_lion/animations/attack/south/01.webp",
+            "obsidian_lion/animations/attack/south/02.webp",
+            "obsidian_lion/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:05 GMT",
+          "src_frames": 4,
+          "sub": "e82f671c-7b35-4690-8f4b-bd48dd128a91"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__south-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/south-east/00.webp",
+            "obsidian_lion/animations/attack/south-east/01.webp",
+            "obsidian_lion/animations/attack/south-east/02.webp",
+            "obsidian_lion/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:06 GMT",
+          "src_frames": 4,
+          "sub": "f0c3bf82-2e11-4a4c-b2ab-7b60ceb5d7cb"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__south-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/south-west/00.webp",
+            "obsidian_lion/animations/attack/south-west/01.webp",
+            "obsidian_lion/animations/attack/south-west/02.webp",
+            "obsidian_lion/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:07 GMT",
+          "src_frames": 4,
+          "sub": "5f079e92-b11a-4815-9206-3eb264392fd2"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/attack__west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/attack/west/00.webp",
+            "obsidian_lion/animations/attack/west/01.webp",
+            "obsidian_lion/animations/attack/west/02.webp",
+            "obsidian_lion/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:09 GMT",
+          "src_frames": 4,
+          "sub": "f98e6e79-c3d8-4787-8333-0f8cb82f822e"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "ee3af8a2-85f5-4f75-ae62-55d18d12e1a0",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/east/00.webp",
+            "obsidian_lion/animations/angry/east/01.webp",
+            "obsidian_lion/animations/angry/east/02.webp",
+            "obsidian_lion/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:10 GMT",
+          "src_frames": 4,
+          "sub": "00a42c20-04c1-449c-89f5-803ac472798d"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__north.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/north/00.webp",
+            "obsidian_lion/animations/angry/north/01.webp",
+            "obsidian_lion/animations/angry/north/02.webp",
+            "obsidian_lion/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:12 GMT",
+          "src_frames": 4,
+          "sub": "1d00bc50-4ef0-4c16-b807-1c671e9acd95"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__north-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/north-east/00.webp",
+            "obsidian_lion/animations/angry/north-east/01.webp",
+            "obsidian_lion/animations/angry/north-east/02.webp",
+            "obsidian_lion/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:13 GMT",
+          "src_frames": 4,
+          "sub": "a3e84d0a-701a-438f-8a82-a2869efaf6c2"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__north-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/north-west/00.webp",
+            "obsidian_lion/animations/angry/north-west/01.webp",
+            "obsidian_lion/animations/angry/north-west/02.webp",
+            "obsidian_lion/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:14 GMT",
+          "src_frames": 4,
+          "sub": "44a3733f-7a5a-4d85-b2af-8545aabd177d"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__south.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/south/00.webp",
+            "obsidian_lion/animations/angry/south/01.webp",
+            "obsidian_lion/animations/angry/south/02.webp",
+            "obsidian_lion/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:16 GMT",
+          "src_frames": 4,
+          "sub": "7f54dfd9-258f-4696-9739-ee7a392b81fe"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__south-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/south-east/00.webp",
+            "obsidian_lion/animations/angry/south-east/01.webp",
+            "obsidian_lion/animations/angry/south-east/02.webp",
+            "obsidian_lion/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:17 GMT",
+          "src_frames": 4,
+          "sub": "c3b32717-8ab0-4f82-b40d-bfc1e8e61582"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__south-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/south-west/00.webp",
+            "obsidian_lion/animations/angry/south-west/01.webp",
+            "obsidian_lion/animations/angry/south-west/02.webp",
+            "obsidian_lion/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:19 GMT",
+          "src_frames": 4,
+          "sub": "eb497386-d9ea-42d6-a1bd-ed655a4fb31d"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/angry__west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/angry/west/00.webp",
+            "obsidian_lion/animations/angry/west/01.webp",
+            "obsidian_lion/animations/angry/west/02.webp",
+            "obsidian_lion/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:20 GMT",
+          "src_frames": 4,
+          "sub": "ddde7bc4-4106-4cee-b42e-b8367455f56b"
+        }
+      }
+    },
+    "die": {
+      "group_id": "b1365133-067c-4ed7-a791-9342150d125a",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/east/00.webp",
+            "obsidian_lion/animations/die/east/01.webp",
+            "obsidian_lion/animations/die/east/02.webp",
+            "obsidian_lion/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:22 GMT",
+          "src_frames": 4,
+          "sub": "264ec829-5fb3-483c-bd77-456f01c0f82a"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__north.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/north/00.webp",
+            "obsidian_lion/animations/die/north/01.webp",
+            "obsidian_lion/animations/die/north/02.webp",
+            "obsidian_lion/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:24 GMT",
+          "src_frames": 4,
+          "sub": "3a2eb127-4c52-4b09-ab9a-ebf047d56c4f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__north-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/north-east/00.webp",
+            "obsidian_lion/animations/die/north-east/01.webp",
+            "obsidian_lion/animations/die/north-east/02.webp",
+            "obsidian_lion/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:26 GMT",
+          "src_frames": 4,
+          "sub": "e4297094-817c-428f-81bc-4380e3f4d640"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__north-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/north-west/00.webp",
+            "obsidian_lion/animations/die/north-west/01.webp",
+            "obsidian_lion/animations/die/north-west/02.webp",
+            "obsidian_lion/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:27 GMT",
+          "src_frames": 4,
+          "sub": "e3c09295-1e92-4606-ac59-127c533edc01"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__south.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/south/00.webp",
+            "obsidian_lion/animations/die/south/01.webp",
+            "obsidian_lion/animations/die/south/02.webp",
+            "obsidian_lion/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:28 GMT",
+          "src_frames": 4,
+          "sub": "3e0c6eb1-8074-4505-af4e-38b472aae90d"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__south-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/south-east/00.webp",
+            "obsidian_lion/animations/die/south-east/01.webp",
+            "obsidian_lion/animations/die/south-east/02.webp",
+            "obsidian_lion/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:30 GMT",
+          "src_frames": 4,
+          "sub": "a87df5ad-cf12-4b3a-964e-c31b4044e4e9"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__south-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/south-west/00.webp",
+            "obsidian_lion/animations/die/south-west/01.webp",
+            "obsidian_lion/animations/die/south-west/02.webp",
+            "obsidian_lion/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:31 GMT",
+          "src_frames": 4,
+          "sub": "30b84743-0069-4c55-9779-f2d8362d3f33"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "obsidian_lion/animations/die__west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/die/west/00.webp",
+            "obsidian_lion/animations/die/west/01.webp",
+            "obsidian_lion/animations/die/west/02.webp",
+            "obsidian_lion/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:33 GMT",
+          "src_frames": 4,
+          "sub": "e8d3b346-1df8-4ec6-9d9e-c6b4928d7d2a"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "7f686d8c-4b89-46af-bfff-fe33a612b9d3",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/east/00.webp",
+            "obsidian_lion/animations/walk/east/01.webp",
+            "obsidian_lion/animations/walk/east/02.webp",
+            "obsidian_lion/animations/walk/east/03.webp",
+            "obsidian_lion/animations/walk/east/04.webp",
+            "obsidian_lion/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:34 GMT",
+          "src_frames": 6,
+          "sub": "67defbf5-460f-44f9-8b98-da2f00504a36"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__north.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/north/00.webp",
+            "obsidian_lion/animations/walk/north/01.webp",
+            "obsidian_lion/animations/walk/north/02.webp",
+            "obsidian_lion/animations/walk/north/03.webp",
+            "obsidian_lion/animations/walk/north/04.webp",
+            "obsidian_lion/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:35 GMT",
+          "src_frames": 6,
+          "sub": "2efba270-ce4c-485c-8364-7f18de8f821d"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__north-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/north-east/00.webp",
+            "obsidian_lion/animations/walk/north-east/01.webp",
+            "obsidian_lion/animations/walk/north-east/02.webp",
+            "obsidian_lion/animations/walk/north-east/03.webp",
+            "obsidian_lion/animations/walk/north-east/04.webp",
+            "obsidian_lion/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:37 GMT",
+          "src_frames": 6,
+          "sub": "d7b8b6cf-d3cc-4f87-b64b-76263ecddf66"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__north-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/north-west/00.webp",
+            "obsidian_lion/animations/walk/north-west/01.webp",
+            "obsidian_lion/animations/walk/north-west/02.webp",
+            "obsidian_lion/animations/walk/north-west/03.webp",
+            "obsidian_lion/animations/walk/north-west/04.webp",
+            "obsidian_lion/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:39 GMT",
+          "src_frames": 6,
+          "sub": "162f5dec-f5d9-4376-9f20-bf92e5d169a6"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__south.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/south/00.webp",
+            "obsidian_lion/animations/walk/south/01.webp",
+            "obsidian_lion/animations/walk/south/02.webp",
+            "obsidian_lion/animations/walk/south/03.webp",
+            "obsidian_lion/animations/walk/south/04.webp",
+            "obsidian_lion/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:40 GMT",
+          "src_frames": 6,
+          "sub": "dd6cad6b-c4a1-4b5e-b869-baad03d062b0"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__south-east.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/south-east/00.webp",
+            "obsidian_lion/animations/walk/south-east/01.webp",
+            "obsidian_lion/animations/walk/south-east/02.webp",
+            "obsidian_lion/animations/walk/south-east/03.webp",
+            "obsidian_lion/animations/walk/south-east/04.webp",
+            "obsidian_lion/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:41 GMT",
+          "src_frames": 6,
+          "sub": "26eaeb7d-2c2a-4243-8edd-6704689aa72a"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__south-west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/south-west/00.webp",
+            "obsidian_lion/animations/walk/south-west/01.webp",
+            "obsidian_lion/animations/walk/south-west/02.webp",
+            "obsidian_lion/animations/walk/south-west/03.webp",
+            "obsidian_lion/animations/walk/south-west/04.webp",
+            "obsidian_lion/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:42 GMT",
+          "src_frames": 6,
+          "sub": "124277d6-ecbb-47c5-9e9f-3b66474927d6"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "obsidian_lion/animations/walk__west.webp",
+          "frame_paths": [
+            "obsidian_lion/animations/walk/west/00.webp",
+            "obsidian_lion/animations/walk/west/01.webp",
+            "obsidian_lion/animations/walk/west/02.webp",
+            "obsidian_lion/animations/walk/west/03.webp",
+            "obsidian_lion/animations/walk/west/04.webp",
+            "obsidian_lion/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:45:44 GMT",
+          "src_frames": 6,
+          "sub": "9509cbf3-ad9c-44d8-833f-6425200d875f"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

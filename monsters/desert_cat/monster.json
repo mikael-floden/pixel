@@ -1,0 +1,633 @@
+{
+  "id": "desert_cat",
+  "name": "Sunscale",
+  "lore": "A cat armored in noon-light. Its golden scales drink the desert sun and pay it back in blinding flashes.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "192285b2-6725-49c0-843b-802f59e2bb4f",
+    "url": "https://www.pixellab.ai/create-character/192285b2-6725-49c0-843b-802f59e2bb4f",
+    "prompt": "Sleek desert feline with golden-orange scales instead of fur, large paws, long tail, bright golden eyes, small backward-facing horns and glowing yellow markings along its sides resembling sunlight.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 124,
+    "height": 124
+  },
+  "native_size": {
+    "width": 124,
+    "height": 124
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "desert_cat/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "desert_cat/rotations/south.webp",
+    "west": "desert_cat/rotations/west.webp",
+    "east": "desert_cat/rotations/east.webp",
+    "north": "desert_cat/rotations/north.webp",
+    "south-east": "desert_cat/rotations/south-east.webp",
+    "north-east": "desert_cat/rotations/north-east.webp",
+    "north-west": "desert_cat/rotations/north-west.webp",
+    "south-west": "desert_cat/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "5adc37dd-9fa6-41e7-b6a4-78c00ba10dac",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__east.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/east/00.webp",
+            "desert_cat/animations/idle/east/01.webp",
+            "desert_cat/animations/idle/east/02.webp",
+            "desert_cat/animations/idle/east/03.webp",
+            "desert_cat/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:27 GMT",
+          "src_frames": 5,
+          "sub": "c724a283-f6c8-447a-88c5-652a3a16b03f"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__north.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/north/00.webp",
+            "desert_cat/animations/idle/north/01.webp",
+            "desert_cat/animations/idle/north/02.webp",
+            "desert_cat/animations/idle/north/03.webp",
+            "desert_cat/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:29 GMT",
+          "src_frames": 5,
+          "sub": "d1394648-7cfd-401c-bb46-7b28dbcc47ad"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__north-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/north-east/00.webp",
+            "desert_cat/animations/idle/north-east/01.webp",
+            "desert_cat/animations/idle/north-east/02.webp",
+            "desert_cat/animations/idle/north-east/03.webp",
+            "desert_cat/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:31 GMT",
+          "src_frames": 5,
+          "sub": "c8e05622-e30a-4b05-abab-5b35044fe23d"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__north-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/north-west/00.webp",
+            "desert_cat/animations/idle/north-west/01.webp",
+            "desert_cat/animations/idle/north-west/02.webp",
+            "desert_cat/animations/idle/north-west/03.webp",
+            "desert_cat/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:33 GMT",
+          "src_frames": 5,
+          "sub": "2b2b954f-d0da-4c82-95e1-c14903ef28c8"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__south.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/south/00.webp",
+            "desert_cat/animations/idle/south/01.webp",
+            "desert_cat/animations/idle/south/02.webp",
+            "desert_cat/animations/idle/south/03.webp",
+            "desert_cat/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:34 GMT",
+          "src_frames": 5,
+          "sub": "0ca5595a-cc29-479b-b264-6aac8ac50913"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__south-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/south-east/00.webp",
+            "desert_cat/animations/idle/south-east/01.webp",
+            "desert_cat/animations/idle/south-east/02.webp",
+            "desert_cat/animations/idle/south-east/03.webp",
+            "desert_cat/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:35 GMT",
+          "src_frames": 5,
+          "sub": "af82d856-366f-49b4-9935-67b43abb3dfd"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__south-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/south-west/00.webp",
+            "desert_cat/animations/idle/south-west/01.webp",
+            "desert_cat/animations/idle/south-west/02.webp",
+            "desert_cat/animations/idle/south-west/03.webp",
+            "desert_cat/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:36 GMT",
+          "src_frames": 5,
+          "sub": "89febff1-21bd-4e01-92b3-a8528d8c3ede"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "desert_cat/animations/idle__west.webp",
+          "frame_paths": [
+            "desert_cat/animations/idle/west/00.webp",
+            "desert_cat/animations/idle/west/01.webp",
+            "desert_cat/animations/idle/west/02.webp",
+            "desert_cat/animations/idle/west/03.webp",
+            "desert_cat/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:38 GMT",
+          "src_frames": 5,
+          "sub": "0eda4a0e-c647-4da8-9955-8261fce1eeda"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "24c3512d-23aa-49a7-97ea-addd209861a0",
+      "source_name": "custom-Claw Swipe - Raises one front paw and performs one",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__east.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/east/00.webp",
+            "desert_cat/animations/attack/east/01.webp",
+            "desert_cat/animations/attack/east/02.webp",
+            "desert_cat/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:40 GMT",
+          "src_frames": 4,
+          "sub": "ebedfdb5-d6ae-4ac8-97cf-6c5eafadf9c1"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__north.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/north/00.webp",
+            "desert_cat/animations/attack/north/01.webp",
+            "desert_cat/animations/attack/north/02.webp",
+            "desert_cat/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:41 GMT",
+          "src_frames": 4,
+          "sub": "1a9ac957-5f9a-4b73-b3a8-14b3435f47ca"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__north-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/north-east/00.webp",
+            "desert_cat/animations/attack/north-east/01.webp",
+            "desert_cat/animations/attack/north-east/02.webp",
+            "desert_cat/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:42 GMT",
+          "src_frames": 4,
+          "sub": "9ea5ce54-b21f-4b50-8793-38d4de736c85"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__north-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/north-west/00.webp",
+            "desert_cat/animations/attack/north-west/01.webp",
+            "desert_cat/animations/attack/north-west/02.webp",
+            "desert_cat/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:43 GMT",
+          "src_frames": 4,
+          "sub": "ae1effdf-0aca-440c-b0a2-4c0d3da30353"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__south.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/south/00.webp",
+            "desert_cat/animations/attack/south/01.webp",
+            "desert_cat/animations/attack/south/02.webp",
+            "desert_cat/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:45 GMT",
+          "src_frames": 4,
+          "sub": "b04eb1d0-8606-4cc8-89a4-0882afa47b80"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__south-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/south-east/00.webp",
+            "desert_cat/animations/attack/south-east/01.webp",
+            "desert_cat/animations/attack/south-east/02.webp",
+            "desert_cat/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:46 GMT",
+          "src_frames": 4,
+          "sub": "7cd45005-7b93-4691-957c-a54a6fff87bd"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__south-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/south-west/00.webp",
+            "desert_cat/animations/attack/south-west/01.webp",
+            "desert_cat/animations/attack/south-west/02.webp",
+            "desert_cat/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:47 GMT",
+          "src_frames": 4,
+          "sub": "f76fae44-aaf5-4f4d-8d8c-f8bc8c3b5adc"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/attack__west.webp",
+          "frame_paths": [
+            "desert_cat/animations/attack/west/00.webp",
+            "desert_cat/animations/attack/west/01.webp",
+            "desert_cat/animations/attack/west/02.webp",
+            "desert_cat/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:49 GMT",
+          "src_frames": 4,
+          "sub": "2922590c-09cf-493e-a027-03428202741e"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "12669966-3572-47a9-8dd2-dcbbb208568b",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__east.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/east/00.webp",
+            "desert_cat/animations/angry/east/01.webp",
+            "desert_cat/animations/angry/east/02.webp",
+            "desert_cat/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:50 GMT",
+          "src_frames": 4,
+          "sub": "74196d2c-bcdc-4c02-8513-7bf6cc24377e"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__north.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/north/00.webp",
+            "desert_cat/animations/angry/north/01.webp",
+            "desert_cat/animations/angry/north/02.webp",
+            "desert_cat/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:52 GMT",
+          "src_frames": 4,
+          "sub": "6aeab311-b981-4ee7-859d-6b90792bf1fb"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__north-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/north-east/00.webp",
+            "desert_cat/animations/angry/north-east/01.webp",
+            "desert_cat/animations/angry/north-east/02.webp",
+            "desert_cat/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:53 GMT",
+          "src_frames": 4,
+          "sub": "dc0b27bc-13b5-4cc0-ac38-7870d6413dc6"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__north-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/north-west/00.webp",
+            "desert_cat/animations/angry/north-west/01.webp",
+            "desert_cat/animations/angry/north-west/02.webp",
+            "desert_cat/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:54 GMT",
+          "src_frames": 4,
+          "sub": "40dbbaf4-7c24-4465-83c2-8dd30997dd2c"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__south.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/south/00.webp",
+            "desert_cat/animations/angry/south/01.webp",
+            "desert_cat/animations/angry/south/02.webp",
+            "desert_cat/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:57 GMT",
+          "src_frames": 4,
+          "sub": "a272f4a7-76d6-49da-bb8a-83516d619b34"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__south-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/south-east/00.webp",
+            "desert_cat/animations/angry/south-east/01.webp",
+            "desert_cat/animations/angry/south-east/02.webp",
+            "desert_cat/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:58 GMT",
+          "src_frames": 4,
+          "sub": "670ab246-fc46-4388-bb5c-ba05068e3c95"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__south-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/south-west/00.webp",
+            "desert_cat/animations/angry/south-west/01.webp",
+            "desert_cat/animations/angry/south-west/02.webp",
+            "desert_cat/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:00 GMT",
+          "src_frames": 4,
+          "sub": "61bfa5ff-18df-4a27-bc7a-2aeaf3c057d8"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/angry__west.webp",
+          "frame_paths": [
+            "desert_cat/animations/angry/west/00.webp",
+            "desert_cat/animations/angry/west/01.webp",
+            "desert_cat/animations/angry/west/02.webp",
+            "desert_cat/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:01 GMT",
+          "src_frames": 4,
+          "sub": "77699b1d-1a6e-4c09-b0a8-bfd81ce026a7"
+        }
+      }
+    },
+    "die": {
+      "group_id": "3c7fdda8-fd4b-41fb-ad0b-b2cb368bc64a",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__east.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/east/00.webp",
+            "desert_cat/animations/die/east/01.webp",
+            "desert_cat/animations/die/east/02.webp",
+            "desert_cat/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:02 GMT",
+          "src_frames": 4,
+          "sub": "1c97d2d5-97b0-4768-93cf-23cc967c09b5"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__north.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/north/00.webp",
+            "desert_cat/animations/die/north/01.webp",
+            "desert_cat/animations/die/north/02.webp",
+            "desert_cat/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:04 GMT",
+          "src_frames": 4,
+          "sub": "3fc90ead-0c5f-4d1b-8dc5-f918c82954ee"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__north-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/north-east/00.webp",
+            "desert_cat/animations/die/north-east/01.webp",
+            "desert_cat/animations/die/north-east/02.webp",
+            "desert_cat/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:05 GMT",
+          "src_frames": 4,
+          "sub": "a4b19e04-4460-4c9d-9aff-80a25552e35d"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__north-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/north-west/00.webp",
+            "desert_cat/animations/die/north-west/01.webp",
+            "desert_cat/animations/die/north-west/02.webp",
+            "desert_cat/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:06 GMT",
+          "src_frames": 4,
+          "sub": "51090f2a-e61e-43a2-9c8e-734387bfcc41"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__south.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/south/00.webp",
+            "desert_cat/animations/die/south/01.webp",
+            "desert_cat/animations/die/south/02.webp",
+            "desert_cat/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:07 GMT",
+          "src_frames": 4,
+          "sub": "d114b7fa-678f-43fe-a9c3-c5e240bd5b1a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__south-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/south-east/00.webp",
+            "desert_cat/animations/die/south-east/01.webp",
+            "desert_cat/animations/die/south-east/02.webp",
+            "desert_cat/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:09 GMT",
+          "src_frames": 4,
+          "sub": "ae90231f-ad1c-4231-8158-21ed51ede919"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__south-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/south-west/00.webp",
+            "desert_cat/animations/die/south-west/01.webp",
+            "desert_cat/animations/die/south-west/02.webp",
+            "desert_cat/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:10 GMT",
+          "src_frames": 4,
+          "sub": "323121b5-6e0a-4c2d-90f9-12e8c7e1507f"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "desert_cat/animations/die__west.webp",
+          "frame_paths": [
+            "desert_cat/animations/die/west/00.webp",
+            "desert_cat/animations/die/west/01.webp",
+            "desert_cat/animations/die/west/02.webp",
+            "desert_cat/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:12 GMT",
+          "src_frames": 4,
+          "sub": "65611cab-2f91-4dca-87b8-8082205bc981"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f52b1570-4750-4045-a177-fcc09d64b783",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__east.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/east/00.webp",
+            "desert_cat/animations/walk/east/01.webp",
+            "desert_cat/animations/walk/east/02.webp",
+            "desert_cat/animations/walk/east/03.webp",
+            "desert_cat/animations/walk/east/04.webp",
+            "desert_cat/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:13 GMT",
+          "src_frames": 6,
+          "sub": "542f2b07-c7b8-411e-84cb-0c2e5543ee8a"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__north.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/north/00.webp",
+            "desert_cat/animations/walk/north/01.webp",
+            "desert_cat/animations/walk/north/02.webp",
+            "desert_cat/animations/walk/north/03.webp",
+            "desert_cat/animations/walk/north/04.webp",
+            "desert_cat/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:15 GMT",
+          "src_frames": 6,
+          "sub": "e65e8e33-f709-48ff-a3e9-43fd21b6a500"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__north-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/north-east/00.webp",
+            "desert_cat/animations/walk/north-east/01.webp",
+            "desert_cat/animations/walk/north-east/02.webp",
+            "desert_cat/animations/walk/north-east/03.webp",
+            "desert_cat/animations/walk/north-east/04.webp",
+            "desert_cat/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:16 GMT",
+          "src_frames": 6,
+          "sub": "7636753f-ed7d-4a29-b750-52d474c40154"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__north-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/north-west/00.webp",
+            "desert_cat/animations/walk/north-west/01.webp",
+            "desert_cat/animations/walk/north-west/02.webp",
+            "desert_cat/animations/walk/north-west/03.webp",
+            "desert_cat/animations/walk/north-west/04.webp",
+            "desert_cat/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:19 GMT",
+          "src_frames": 6,
+          "sub": "3483a9ba-163d-4d6c-9b39-0d9a02ced735"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__south.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/south/00.webp",
+            "desert_cat/animations/walk/south/01.webp",
+            "desert_cat/animations/walk/south/02.webp",
+            "desert_cat/animations/walk/south/03.webp",
+            "desert_cat/animations/walk/south/04.webp",
+            "desert_cat/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:23 GMT",
+          "src_frames": 6,
+          "sub": "59c0c9c9-200d-4a56-9d5a-e23d0788021b"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__south-east.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/south-east/00.webp",
+            "desert_cat/animations/walk/south-east/01.webp",
+            "desert_cat/animations/walk/south-east/02.webp",
+            "desert_cat/animations/walk/south-east/03.webp",
+            "desert_cat/animations/walk/south-east/04.webp",
+            "desert_cat/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:24 GMT",
+          "src_frames": 6,
+          "sub": "15a7eb5f-d2c2-42a6-a907-73d33b5df3fc"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__south-west.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/south-west/00.webp",
+            "desert_cat/animations/walk/south-west/01.webp",
+            "desert_cat/animations/walk/south-west/02.webp",
+            "desert_cat/animations/walk/south-west/03.webp",
+            "desert_cat/animations/walk/south-west/04.webp",
+            "desert_cat/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:25 GMT",
+          "src_frames": 6,
+          "sub": "5fd5098a-cc41-42cc-8a08-9ad4960fc45e"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "desert_cat/animations/walk__west.webp",
+          "frame_paths": [
+            "desert_cat/animations/walk/west/00.webp",
+            "desert_cat/animations/walk/west/01.webp",
+            "desert_cat/animations/walk/west/02.webp",
+            "desert_cat/animations/walk/west/03.webp",
+            "desert_cat/animations/walk/west/04.webp",
+            "desert_cat/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:26 GMT",
+          "src_frames": 6,
+          "sub": "75b4f0a9-7cda-4961-9ea4-d1db5020e256"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

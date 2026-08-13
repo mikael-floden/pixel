@@ -1,0 +1,533 @@
+{
+  "id": "magma_wolf",
+  "name": "Slagfang",
+  "lore": "A wolf quenched in the caldera. Magma veins its black hide, and its bite leaves wounds already cauterized.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "b757da9a-80fe-47ef-a260-b8e7c8255af5",
+    "url": "https://www.pixellab.ai/create-character/b757da9a-80fe-47ef-a260-b8e7c8255af5",
+    "prompt": "Muscular four-legged volcanic wolf monster. Black obsidian hide with bright orange magma cracks, glowing orange eyes, large claws, jagged rocky spikes along its back, smoke and embers rising from its body. Strong readable silhouette.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 124,
+    "height": 124
+  },
+  "native_size": {
+    "width": 124,
+    "height": 124
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "magma_wolf/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "magma_wolf/rotations/south.webp",
+    "west": "magma_wolf/rotations/west.webp",
+    "east": "magma_wolf/rotations/east.webp",
+    "north": "magma_wolf/rotations/north.webp",
+    "south-east": "magma_wolf/rotations/south-east.webp",
+    "north-east": "magma_wolf/rotations/north-east.webp",
+    "north-west": "magma_wolf/rotations/north-west.webp",
+    "south-west": "magma_wolf/rotations/south-west.webp"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "46b03cbf-df4f-4f3b-b765-6eec3e0cd154",
+      "source_name": "custom-Burning claw attack",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/east/00.webp",
+            "magma_wolf/animations/attack/east/01.webp",
+            "magma_wolf/animations/attack/east/02.webp",
+            "magma_wolf/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:05 GMT",
+          "src_frames": 4,
+          "sub": "7fc308e0-3383-44bc-830f-931602231788"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__north.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/north/00.webp",
+            "magma_wolf/animations/attack/north/01.webp",
+            "magma_wolf/animations/attack/north/02.webp",
+            "magma_wolf/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:06 GMT",
+          "src_frames": 4,
+          "sub": "031e672b-0f45-4716-9204-ec4a4ab1bd6f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__north-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/north-east/00.webp",
+            "magma_wolf/animations/attack/north-east/01.webp",
+            "magma_wolf/animations/attack/north-east/02.webp",
+            "magma_wolf/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:07 GMT",
+          "src_frames": 4,
+          "sub": "66290dea-13ca-494b-a63a-5661d58cbcc0"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__north-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/north-west/00.webp",
+            "magma_wolf/animations/attack/north-west/01.webp",
+            "magma_wolf/animations/attack/north-west/02.webp",
+            "magma_wolf/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:09 GMT",
+          "src_frames": 4,
+          "sub": "c89ed9f6-7a88-4d9a-9524-86f3412dfb9d"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__south.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/south/00.webp",
+            "magma_wolf/animations/attack/south/01.webp",
+            "magma_wolf/animations/attack/south/02.webp",
+            "magma_wolf/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:11 GMT",
+          "src_frames": 4,
+          "sub": "520054b4-404e-4882-bc75-6d4d01044b3a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__south-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/south-east/00.webp",
+            "magma_wolf/animations/attack/south-east/01.webp",
+            "magma_wolf/animations/attack/south-east/02.webp",
+            "magma_wolf/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:12 GMT",
+          "src_frames": 4,
+          "sub": "ce610fbc-9918-4081-a63c-db8024571f3f"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__south-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/south-west/00.webp",
+            "magma_wolf/animations/attack/south-west/01.webp",
+            "magma_wolf/animations/attack/south-west/02.webp",
+            "magma_wolf/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:13 GMT",
+          "src_frames": 4,
+          "sub": "2df5797f-a6da-4344-a866-e6745c3ae004"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/attack__west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/attack/west/00.webp",
+            "magma_wolf/animations/attack/west/01.webp",
+            "magma_wolf/animations/attack/west/02.webp",
+            "magma_wolf/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:15 GMT",
+          "src_frames": 4,
+          "sub": "011d982e-329c-446c-abb5-0eca615d90cf"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "a67ac081-827e-49e7-9352-be1d0a413d90",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/east/00.webp",
+            "magma_wolf/animations/idle/east/01.webp",
+            "magma_wolf/animations/idle/east/02.webp",
+            "magma_wolf/animations/idle/east/03.webp",
+            "magma_wolf/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:16 GMT",
+          "src_frames": 5,
+          "sub": "9737ef95-7955-4330-8acc-9695b63ebd34"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__north.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/north/00.webp",
+            "magma_wolf/animations/idle/north/01.webp",
+            "magma_wolf/animations/idle/north/02.webp",
+            "magma_wolf/animations/idle/north/03.webp",
+            "magma_wolf/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:17 GMT",
+          "src_frames": 5,
+          "sub": "6380e417-dd82-4d00-af48-7fd6a8b6e334"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__north-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/north-east/00.webp",
+            "magma_wolf/animations/idle/north-east/01.webp",
+            "magma_wolf/animations/idle/north-east/02.webp",
+            "magma_wolf/animations/idle/north-east/03.webp",
+            "magma_wolf/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:18 GMT",
+          "src_frames": 5,
+          "sub": "c2c99a9b-28ff-4a78-856b-28931396337b"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__north-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/north-west/00.webp",
+            "magma_wolf/animations/idle/north-west/01.webp",
+            "magma_wolf/animations/idle/north-west/02.webp",
+            "magma_wolf/animations/idle/north-west/03.webp",
+            "magma_wolf/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:19 GMT",
+          "src_frames": 5,
+          "sub": "184afcd3-980b-45af-a2d0-d253a9549f66"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__south.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/south/00.webp",
+            "magma_wolf/animations/idle/south/01.webp",
+            "magma_wolf/animations/idle/south/02.webp",
+            "magma_wolf/animations/idle/south/03.webp",
+            "magma_wolf/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:21 GMT",
+          "src_frames": 5,
+          "sub": "220878c4-9eac-423d-8332-e51cb69a5b70"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__south-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/south-east/00.webp",
+            "magma_wolf/animations/idle/south-east/01.webp",
+            "magma_wolf/animations/idle/south-east/02.webp",
+            "magma_wolf/animations/idle/south-east/03.webp",
+            "magma_wolf/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:22 GMT",
+          "src_frames": 5,
+          "sub": "f49d770e-3326-4789-bf6a-1654c0b775b8"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__south-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/south-west/00.webp",
+            "magma_wolf/animations/idle/south-west/01.webp",
+            "magma_wolf/animations/idle/south-west/02.webp",
+            "magma_wolf/animations/idle/south-west/03.webp",
+            "magma_wolf/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:25 GMT",
+          "src_frames": 5,
+          "sub": "213ede8a-e369-4b38-bce1-d99543c7442e"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "magma_wolf/animations/idle__west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/idle/west/00.webp",
+            "magma_wolf/animations/idle/west/01.webp",
+            "magma_wolf/animations/idle/west/02.webp",
+            "magma_wolf/animations/idle/west/03.webp",
+            "magma_wolf/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:28 GMT",
+          "src_frames": 5,
+          "sub": "05a97531-ce14-4859-8158-6cf9ac3e07b9"
+        }
+      }
+    },
+    "die": {
+      "group_id": "28668ec1-662c-4b62-aa51-8933d7beb68e",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/east/00.webp",
+            "magma_wolf/animations/die/east/01.webp",
+            "magma_wolf/animations/die/east/02.webp",
+            "magma_wolf/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:30 GMT",
+          "src_frames": 4,
+          "sub": "2e4b2b94-de17-4d76-8ce9-38b31b0fd065"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__north.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/north/00.webp",
+            "magma_wolf/animations/die/north/01.webp",
+            "magma_wolf/animations/die/north/02.webp",
+            "magma_wolf/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:31 GMT",
+          "src_frames": 4,
+          "sub": "71c1c5e5-072c-404a-81d5-60305e23587d"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__north-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/north-east/00.webp",
+            "magma_wolf/animations/die/north-east/01.webp",
+            "magma_wolf/animations/die/north-east/02.webp",
+            "magma_wolf/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:32 GMT",
+          "src_frames": 4,
+          "sub": "f756cb79-8aa1-4922-9266-a94bb799843e"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__north-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/north-west/00.webp",
+            "magma_wolf/animations/die/north-west/01.webp",
+            "magma_wolf/animations/die/north-west/02.webp",
+            "magma_wolf/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:33 GMT",
+          "src_frames": 4,
+          "sub": "1aaa53fb-0288-4bfc-8c05-ba75b66a18af"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__south.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/south/00.webp",
+            "magma_wolf/animations/die/south/01.webp",
+            "magma_wolf/animations/die/south/02.webp",
+            "magma_wolf/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:34 GMT",
+          "src_frames": 4,
+          "sub": "e79a3f58-fb31-4faf-ab91-4a6a73a5b8af"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__south-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/south-east/00.webp",
+            "magma_wolf/animations/die/south-east/01.webp",
+            "magma_wolf/animations/die/south-east/02.webp",
+            "magma_wolf/animations/die/south-east/03.webp"
+          ],
+          "lm": "Wed, 12 Aug 2026 22:37:58 GMT",
+          "src_frames": 4,
+          "sub": "45bbad7d-6503-4f7d-8a1d-fdcb3692704b"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__south-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/south-west/00.webp",
+            "magma_wolf/animations/die/south-west/01.webp",
+            "magma_wolf/animations/die/south-west/02.webp",
+            "magma_wolf/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:37 GMT",
+          "src_frames": 4,
+          "sub": "8cd147eb-0879-41ae-87e0-e82463ca1778"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "magma_wolf/animations/die__west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/die/west/00.webp",
+            "magma_wolf/animations/die/west/01.webp",
+            "magma_wolf/animations/die/west/02.webp",
+            "magma_wolf/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:38 GMT",
+          "src_frames": 4,
+          "sub": "22d0c1e8-02d1-4182-9433-2c655bf28792"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "5c729ab4-96be-450d-b16d-5e0733a500d3",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/east/00.webp",
+            "magma_wolf/animations/walk/east/01.webp",
+            "magma_wolf/animations/walk/east/02.webp",
+            "magma_wolf/animations/walk/east/03.webp",
+            "magma_wolf/animations/walk/east/04.webp",
+            "magma_wolf/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:42 GMT",
+          "src_frames": 6,
+          "sub": "f2a6717f-1659-40f0-9a42-ab99c37fb137"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__north.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/north/00.webp",
+            "magma_wolf/animations/walk/north/01.webp",
+            "magma_wolf/animations/walk/north/02.webp",
+            "magma_wolf/animations/walk/north/03.webp",
+            "magma_wolf/animations/walk/north/04.webp",
+            "magma_wolf/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:43 GMT",
+          "src_frames": 6,
+          "sub": "18fe9337-a22f-46bb-9f6d-41d993453b9b"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__north-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/north-east/00.webp",
+            "magma_wolf/animations/walk/north-east/01.webp",
+            "magma_wolf/animations/walk/north-east/02.webp",
+            "magma_wolf/animations/walk/north-east/03.webp",
+            "magma_wolf/animations/walk/north-east/04.webp",
+            "magma_wolf/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:44 GMT",
+          "src_frames": 6,
+          "sub": "ccb247ea-7e84-4a28-9c60-843b4bb912b0"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__north-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/north-west/00.webp",
+            "magma_wolf/animations/walk/north-west/01.webp",
+            "magma_wolf/animations/walk/north-west/02.webp",
+            "magma_wolf/animations/walk/north-west/03.webp",
+            "magma_wolf/animations/walk/north-west/04.webp",
+            "magma_wolf/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:46 GMT",
+          "src_frames": 6,
+          "sub": "b2e76147-feab-4c53-b1a7-06e79ce8928e"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__south.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/south/00.webp",
+            "magma_wolf/animations/walk/south/01.webp",
+            "magma_wolf/animations/walk/south/02.webp",
+            "magma_wolf/animations/walk/south/03.webp",
+            "magma_wolf/animations/walk/south/04.webp",
+            "magma_wolf/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:51 GMT",
+          "src_frames": 6,
+          "sub": "0e0e9bfd-47d8-47d9-b2a3-83893b17e60d"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__south-east.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/south-east/00.webp",
+            "magma_wolf/animations/walk/south-east/01.webp",
+            "magma_wolf/animations/walk/south-east/02.webp",
+            "magma_wolf/animations/walk/south-east/03.webp",
+            "magma_wolf/animations/walk/south-east/04.webp",
+            "magma_wolf/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:52 GMT",
+          "src_frames": 6,
+          "sub": "a2ce2fab-467b-4298-bc07-dd59a5f7facc"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__south-west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/south-west/00.webp",
+            "magma_wolf/animations/walk/south-west/01.webp",
+            "magma_wolf/animations/walk/south-west/02.webp",
+            "magma_wolf/animations/walk/south-west/03.webp",
+            "magma_wolf/animations/walk/south-west/04.webp",
+            "magma_wolf/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:53 GMT",
+          "src_frames": 6,
+          "sub": "9743d73c-858d-448a-be94-c306b4fe55c9"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "magma_wolf/animations/walk__west.webp",
+          "frame_paths": [
+            "magma_wolf/animations/walk/west/00.webp",
+            "magma_wolf/animations/walk/west/01.webp",
+            "magma_wolf/animations/walk/west/02.webp",
+            "magma_wolf/animations/walk/west/03.webp",
+            "magma_wolf/animations/walk/west/04.webp",
+            "magma_wolf/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:17:55 GMT",
+          "src_frames": 6,
+          "sub": "54834dce-f081-4b63-b728-2673298beb8d"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "idle",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-faints and fades away",
+      "key": "die",
+      "direction": "south-east",
+      "takes": [
+        "45bbad7d-6503-4f7d-8a1d-fdcb3692704b",
+        "5406a85b-f44f-4d37-8eb0-ba6b3efc5870"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

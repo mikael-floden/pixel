@@ -1,0 +1,633 @@
+{
+  "id": "corrupt_stag",
+  "name": "Thornstag",
+  "lore": "Corruption walking on too-long legs. Thorned vines drag from its antlers, and flowers die where it browses.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "b864be4b-1da7-4c22-956b-b722128f3714",
+    "url": "https://www.pixellab.ai/create-character/b864be4b-1da7-4c22-956b-b722128f3714",
+    "prompt": "Tall corrupted stag-like monster with black coat, unusually long legs, enormous twisted antlers, glowing purple eyes, thorny vines and spreading purple corruption.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 184,
+    "height": 184
+  },
+  "native_size": {
+    "width": 184,
+    "height": 184
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "corrupt_stag/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "corrupt_stag/rotations/south.webp",
+    "west": "corrupt_stag/rotations/west.webp",
+    "east": "corrupt_stag/rotations/east.webp",
+    "north": "corrupt_stag/rotations/north.webp",
+    "south-east": "corrupt_stag/rotations/south-east.webp",
+    "north-east": "corrupt_stag/rotations/north-east.webp",
+    "north-west": "corrupt_stag/rotations/north-west.webp",
+    "south-west": "corrupt_stag/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "1e8ba0fa-27e8-42f2-afe3-4fbb5ca89801",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/east/00.webp",
+            "corrupt_stag/animations/idle/east/01.webp",
+            "corrupt_stag/animations/idle/east/02.webp",
+            "corrupt_stag/animations/idle/east/03.webp",
+            "corrupt_stag/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:53 GMT",
+          "src_frames": 5,
+          "sub": "5aef458e-fda9-48f3-9ce7-ee92b83772ab"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__north.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/north/00.webp",
+            "corrupt_stag/animations/idle/north/01.webp",
+            "corrupt_stag/animations/idle/north/02.webp",
+            "corrupt_stag/animations/idle/north/03.webp",
+            "corrupt_stag/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:54 GMT",
+          "src_frames": 5,
+          "sub": "38dfe1b4-3438-4005-aa4f-eec8b52fef16"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__north-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/north-east/00.webp",
+            "corrupt_stag/animations/idle/north-east/01.webp",
+            "corrupt_stag/animations/idle/north-east/02.webp",
+            "corrupt_stag/animations/idle/north-east/03.webp",
+            "corrupt_stag/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:56 GMT",
+          "src_frames": 5,
+          "sub": "21840619-014d-471f-a018-0b81efbb23fa"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__north-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/north-west/00.webp",
+            "corrupt_stag/animations/idle/north-west/01.webp",
+            "corrupt_stag/animations/idle/north-west/02.webp",
+            "corrupt_stag/animations/idle/north-west/03.webp",
+            "corrupt_stag/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:57 GMT",
+          "src_frames": 5,
+          "sub": "90cbdd9e-fc45-4958-923d-6bbcdbc93437"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__south.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/south/00.webp",
+            "corrupt_stag/animations/idle/south/01.webp",
+            "corrupt_stag/animations/idle/south/02.webp",
+            "corrupt_stag/animations/idle/south/03.webp",
+            "corrupt_stag/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:01:59 GMT",
+          "src_frames": 5,
+          "sub": "d2314bb3-22f4-4d54-9d10-58eb9706e723"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__south-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/south-east/00.webp",
+            "corrupt_stag/animations/idle/south-east/01.webp",
+            "corrupt_stag/animations/idle/south-east/02.webp",
+            "corrupt_stag/animations/idle/south-east/03.webp",
+            "corrupt_stag/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:01 GMT",
+          "src_frames": 5,
+          "sub": "5273f592-3c98-4c61-9487-e0e7b0ab61ad"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__south-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/south-west/00.webp",
+            "corrupt_stag/animations/idle/south-west/01.webp",
+            "corrupt_stag/animations/idle/south-west/02.webp",
+            "corrupt_stag/animations/idle/south-west/03.webp",
+            "corrupt_stag/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:02 GMT",
+          "src_frames": 5,
+          "sub": "32821edf-8562-4178-a378-77f8ad9777ad"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "corrupt_stag/animations/idle__west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/idle/west/00.webp",
+            "corrupt_stag/animations/idle/west/01.webp",
+            "corrupt_stag/animations/idle/west/02.webp",
+            "corrupt_stag/animations/idle/west/03.webp",
+            "corrupt_stag/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:04 GMT",
+          "src_frames": 5,
+          "sub": "37ffc01f-da9a-4ded-b069-baccc1df8702"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "758b091e-3db1-4ece-9e6d-23467f5184d3",
+      "source_name": "custom-Horn Strike - Lowers head and quickly thrusts horn",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/east/00.webp",
+            "corrupt_stag/animations/attack/east/01.webp",
+            "corrupt_stag/animations/attack/east/02.webp",
+            "corrupt_stag/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:05 GMT",
+          "src_frames": 4,
+          "sub": "1069ac60-c283-4270-96a8-5ab54d0abd74"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__north.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/north/00.webp",
+            "corrupt_stag/animations/attack/north/01.webp",
+            "corrupt_stag/animations/attack/north/02.webp",
+            "corrupt_stag/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:07 GMT",
+          "src_frames": 4,
+          "sub": "8a6fc9c0-33af-40c8-a0a9-0c2982eb8ae8"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__north-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/north-east/00.webp",
+            "corrupt_stag/animations/attack/north-east/01.webp",
+            "corrupt_stag/animations/attack/north-east/02.webp",
+            "corrupt_stag/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:12 GMT",
+          "src_frames": 4,
+          "sub": "3fb53206-fad7-4998-bca7-29fbf679c7c0"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__north-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/north-west/00.webp",
+            "corrupt_stag/animations/attack/north-west/01.webp",
+            "corrupt_stag/animations/attack/north-west/02.webp",
+            "corrupt_stag/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:13 GMT",
+          "src_frames": 4,
+          "sub": "6c940e0b-7be5-4e1d-9518-a18d088354de"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__south.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/south/00.webp",
+            "corrupt_stag/animations/attack/south/01.webp",
+            "corrupt_stag/animations/attack/south/02.webp",
+            "corrupt_stag/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:15 GMT",
+          "src_frames": 4,
+          "sub": "1d83669a-5386-450b-9ee4-e2d938169afb"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__south-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/south-east/00.webp",
+            "corrupt_stag/animations/attack/south-east/01.webp",
+            "corrupt_stag/animations/attack/south-east/02.webp",
+            "corrupt_stag/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:16 GMT",
+          "src_frames": 4,
+          "sub": "5b1c4e6b-dcbf-432c-a5e3-a0eb480e13a3"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__south-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/south-west/00.webp",
+            "corrupt_stag/animations/attack/south-west/01.webp",
+            "corrupt_stag/animations/attack/south-west/02.webp",
+            "corrupt_stag/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:17 GMT",
+          "src_frames": 4,
+          "sub": "0812322d-d637-470a-a55d-4bbb0ac9df5a"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/attack__west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/attack/west/00.webp",
+            "corrupt_stag/animations/attack/west/01.webp",
+            "corrupt_stag/animations/attack/west/02.webp",
+            "corrupt_stag/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:18 GMT",
+          "src_frames": 4,
+          "sub": "6424d416-e868-4297-b2d7-4aedcf273dad"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "3e29ad42-9aca-4ba2-9962-341f48552566",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/east/00.webp",
+            "corrupt_stag/animations/angry/east/01.webp",
+            "corrupt_stag/animations/angry/east/02.webp",
+            "corrupt_stag/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:19 GMT",
+          "src_frames": 4,
+          "sub": "3c71fbfc-b4c9-4f7f-af2e-c978d320fbe5"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__north.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/north/00.webp",
+            "corrupt_stag/animations/angry/north/01.webp",
+            "corrupt_stag/animations/angry/north/02.webp",
+            "corrupt_stag/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:21 GMT",
+          "src_frames": 4,
+          "sub": "a384f12b-7931-475d-9a1c-32dde556fcd1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__north-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/north-east/00.webp",
+            "corrupt_stag/animations/angry/north-east/01.webp",
+            "corrupt_stag/animations/angry/north-east/02.webp",
+            "corrupt_stag/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:22 GMT",
+          "src_frames": 4,
+          "sub": "ab3ecb33-b776-44f3-9e05-5a98d43cb9ae"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__north-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/north-west/00.webp",
+            "corrupt_stag/animations/angry/north-west/01.webp",
+            "corrupt_stag/animations/angry/north-west/02.webp",
+            "corrupt_stag/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:23 GMT",
+          "src_frames": 4,
+          "sub": "88cce0a8-b70f-466d-ba13-96268e31f20e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__south.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/south/00.webp",
+            "corrupt_stag/animations/angry/south/01.webp",
+            "corrupt_stag/animations/angry/south/02.webp",
+            "corrupt_stag/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:24 GMT",
+          "src_frames": 4,
+          "sub": "2128712b-4d60-4845-893b-0d88b7076b33"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__south-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/south-east/00.webp",
+            "corrupt_stag/animations/angry/south-east/01.webp",
+            "corrupt_stag/animations/angry/south-east/02.webp",
+            "corrupt_stag/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:26 GMT",
+          "src_frames": 4,
+          "sub": "984b1b0a-bb2a-4539-80ea-9ecbc190e639"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__south-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/south-west/00.webp",
+            "corrupt_stag/animations/angry/south-west/01.webp",
+            "corrupt_stag/animations/angry/south-west/02.webp",
+            "corrupt_stag/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:27 GMT",
+          "src_frames": 4,
+          "sub": "83b53a78-6b84-416d-9a9e-fd1128c9a292"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/angry__west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/angry/west/00.webp",
+            "corrupt_stag/animations/angry/west/01.webp",
+            "corrupt_stag/animations/angry/west/02.webp",
+            "corrupt_stag/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:30 GMT",
+          "src_frames": 4,
+          "sub": "42c7cf80-52f5-41b9-8c4c-a8daf8c93059"
+        }
+      }
+    },
+    "die": {
+      "group_id": "993fb8a4-fc8a-4731-a1f0-e5195781e6d2",
+      "source_name": "custom-falls and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/east/00.webp",
+            "corrupt_stag/animations/die/east/01.webp",
+            "corrupt_stag/animations/die/east/02.webp",
+            "corrupt_stag/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:31 GMT",
+          "src_frames": 4,
+          "sub": "dc307e30-32de-4203-8eca-a18aa530f6a5"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__north.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/north/00.webp",
+            "corrupt_stag/animations/die/north/01.webp",
+            "corrupt_stag/animations/die/north/02.webp",
+            "corrupt_stag/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:32 GMT",
+          "src_frames": 4,
+          "sub": "eeb13926-adae-448c-8457-41d306609e9f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__north-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/north-east/00.webp",
+            "corrupt_stag/animations/die/north-east/01.webp",
+            "corrupt_stag/animations/die/north-east/02.webp",
+            "corrupt_stag/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:37 GMT",
+          "src_frames": 4,
+          "sub": "b87ebc5c-eb7d-4ba9-9ea2-a0be19981de3"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__north-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/north-west/00.webp",
+            "corrupt_stag/animations/die/north-west/01.webp",
+            "corrupt_stag/animations/die/north-west/02.webp",
+            "corrupt_stag/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:43 GMT",
+          "src_frames": 4,
+          "sub": "2fcf85a2-2eca-4630-a44d-a5aa99089d82"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__south.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/south/00.webp",
+            "corrupt_stag/animations/die/south/01.webp",
+            "corrupt_stag/animations/die/south/02.webp",
+            "corrupt_stag/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:44 GMT",
+          "src_frames": 4,
+          "sub": "37f63eb1-dc2d-4fcd-8e6e-c3828a5f55aa"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__south-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/south-east/00.webp",
+            "corrupt_stag/animations/die/south-east/01.webp",
+            "corrupt_stag/animations/die/south-east/02.webp",
+            "corrupt_stag/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:45 GMT",
+          "src_frames": 4,
+          "sub": "99695fb2-f252-4d94-b99a-2bca01b17b29"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__south-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/south-west/00.webp",
+            "corrupt_stag/animations/die/south-west/01.webp",
+            "corrupt_stag/animations/die/south-west/02.webp",
+            "corrupt_stag/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:46 GMT",
+          "src_frames": 4,
+          "sub": "fd19f4c6-265f-48b1-b592-802b59b3ed1f"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "corrupt_stag/animations/die__west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/die/west/00.webp",
+            "corrupt_stag/animations/die/west/01.webp",
+            "corrupt_stag/animations/die/west/02.webp",
+            "corrupt_stag/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:48 GMT",
+          "src_frames": 4,
+          "sub": "f08a462d-8e13-426b-a729-c9543601af7b"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "596eed61-aa2f-4b12-bfce-81b7769df4d8",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/east/00.webp",
+            "corrupt_stag/animations/walk/east/01.webp",
+            "corrupt_stag/animations/walk/east/02.webp",
+            "corrupt_stag/animations/walk/east/03.webp",
+            "corrupt_stag/animations/walk/east/04.webp",
+            "corrupt_stag/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:50 GMT",
+          "src_frames": 6,
+          "sub": "c8420e83-1477-4aae-926d-0c9a5ea22aae"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__north.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/north/00.webp",
+            "corrupt_stag/animations/walk/north/01.webp",
+            "corrupt_stag/animations/walk/north/02.webp",
+            "corrupt_stag/animations/walk/north/03.webp",
+            "corrupt_stag/animations/walk/north/04.webp",
+            "corrupt_stag/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:55 GMT",
+          "src_frames": 6,
+          "sub": "30b24565-8521-4c5a-acd0-90ab6d7fdf53"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__north-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/north-east/00.webp",
+            "corrupt_stag/animations/walk/north-east/01.webp",
+            "corrupt_stag/animations/walk/north-east/02.webp",
+            "corrupt_stag/animations/walk/north-east/03.webp",
+            "corrupt_stag/animations/walk/north-east/04.webp",
+            "corrupt_stag/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:56 GMT",
+          "src_frames": 6,
+          "sub": "b38460ad-8d8c-4da4-9759-8af505f8feb3"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__north-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/north-west/00.webp",
+            "corrupt_stag/animations/walk/north-west/01.webp",
+            "corrupt_stag/animations/walk/north-west/02.webp",
+            "corrupt_stag/animations/walk/north-west/03.webp",
+            "corrupt_stag/animations/walk/north-west/04.webp",
+            "corrupt_stag/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:57 GMT",
+          "src_frames": 6,
+          "sub": "5c204b85-cde7-4f83-85eb-3eac8a8768ba"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__south.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/south/00.webp",
+            "corrupt_stag/animations/walk/south/01.webp",
+            "corrupt_stag/animations/walk/south/02.webp",
+            "corrupt_stag/animations/walk/south/03.webp",
+            "corrupt_stag/animations/walk/south/04.webp",
+            "corrupt_stag/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:02:59 GMT",
+          "src_frames": 6,
+          "sub": "0255fcf4-5824-4523-a9f6-25648401e9ca"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__south-east.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/south-east/00.webp",
+            "corrupt_stag/animations/walk/south-east/01.webp",
+            "corrupt_stag/animations/walk/south-east/02.webp",
+            "corrupt_stag/animations/walk/south-east/03.webp",
+            "corrupt_stag/animations/walk/south-east/04.webp",
+            "corrupt_stag/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:00 GMT",
+          "src_frames": 6,
+          "sub": "aab8e58e-f251-4b14-93d0-c04cfca28274"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__south-west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/south-west/00.webp",
+            "corrupt_stag/animations/walk/south-west/01.webp",
+            "corrupt_stag/animations/walk/south-west/02.webp",
+            "corrupt_stag/animations/walk/south-west/03.webp",
+            "corrupt_stag/animations/walk/south-west/04.webp",
+            "corrupt_stag/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:02 GMT",
+          "src_frames": 6,
+          "sub": "bf8e356e-6bc4-40a0-985b-8b6ecd5616f0"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "corrupt_stag/animations/walk__west.webp",
+          "frame_paths": [
+            "corrupt_stag/animations/walk/west/00.webp",
+            "corrupt_stag/animations/walk/west/01.webp",
+            "corrupt_stag/animations/walk/west/02.webp",
+            "corrupt_stag/animations/walk/west/03.webp",
+            "corrupt_stag/animations/walk/west/04.webp",
+            "corrupt_stag/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:04 GMT",
+          "src_frames": 6,
+          "sub": "fd34271b-508d-4af5-93a4-26873a7ff665"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

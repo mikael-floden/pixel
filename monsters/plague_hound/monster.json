@@ -1,0 +1,523 @@
+{
+  "id": "plague_hound",
+  "name": "Blightcur",
+  "lore": "Sickness on four legs. It survived what it carries, which is more than those it visits can say.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "8c8feb4b-e0ca-42a1-9a8b-29a399ffd59a",
+    "url": "https://www.pixellab.ai/create-character/8c8feb4b-e0ca-42a1-9a8b-29a399ffd59a",
+    "prompt": "Diseased hound with hunched body, sickly gray-green skin, exposed bone, oversized claws, toxic-green eyes, fungal growths and swollen pustules.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 96,
+    "height": 96
+  },
+  "native_size": {
+    "width": 96,
+    "height": 96
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "plague_hound/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "plague_hound/rotations/south.webp",
+    "west": "plague_hound/rotations/west.webp",
+    "east": "plague_hound/rotations/east.webp",
+    "north": "plague_hound/rotations/north.webp",
+    "south-east": "plague_hound/rotations/south-east.webp",
+    "north-east": "plague_hound/rotations/north-east.webp",
+    "north-west": "plague_hound/rotations/north-west.webp",
+    "south-west": "plague_hound/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "720a5f76-f0a2-4085-a633-fae44baf5fc5",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__east.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/east/00.webp",
+            "plague_hound/animations/idle/east/01.webp",
+            "plague_hound/animations/idle/east/02.webp",
+            "plague_hound/animations/idle/east/03.webp",
+            "plague_hound/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:32 GMT",
+          "src_frames": 5,
+          "sub": "e740d56d-f7bd-453a-985e-69accf08f186"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__north.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/north/00.webp",
+            "plague_hound/animations/idle/north/01.webp",
+            "plague_hound/animations/idle/north/02.webp",
+            "plague_hound/animations/idle/north/03.webp",
+            "plague_hound/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:36 GMT",
+          "src_frames": 5,
+          "sub": "7e7764aa-f764-4df4-aa9e-aba21d5e32c8"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__north-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/north-east/00.webp",
+            "plague_hound/animations/idle/north-east/01.webp",
+            "plague_hound/animations/idle/north-east/02.webp",
+            "plague_hound/animations/idle/north-east/03.webp",
+            "plague_hound/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:38 GMT",
+          "src_frames": 5,
+          "sub": "cdffda30-fcad-453f-a139-8c1b508f86dd"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__north-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/north-west/00.webp",
+            "plague_hound/animations/idle/north-west/01.webp",
+            "plague_hound/animations/idle/north-west/02.webp",
+            "plague_hound/animations/idle/north-west/03.webp",
+            "plague_hound/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:39 GMT",
+          "src_frames": 5,
+          "sub": "7f075d92-aaaa-48a8-9f4c-3dcd015deea5"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__south.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/south/00.webp",
+            "plague_hound/animations/idle/south/01.webp",
+            "plague_hound/animations/idle/south/02.webp",
+            "plague_hound/animations/idle/south/03.webp",
+            "plague_hound/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:42 GMT",
+          "src_frames": 5,
+          "sub": "21817786-bd8d-43c8-b573-3e5562f91443"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__south-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/south-east/00.webp",
+            "plague_hound/animations/idle/south-east/01.webp",
+            "plague_hound/animations/idle/south-east/02.webp",
+            "plague_hound/animations/idle/south-east/03.webp",
+            "plague_hound/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:43 GMT",
+          "src_frames": 5,
+          "sub": "e3eb92b5-4550-478a-9cd5-81ef5a40eb9e"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__south-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/south-west/00.webp",
+            "plague_hound/animations/idle/south-west/01.webp",
+            "plague_hound/animations/idle/south-west/02.webp",
+            "plague_hound/animations/idle/south-west/03.webp",
+            "plague_hound/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:44 GMT",
+          "src_frames": 5,
+          "sub": "589b608f-3b03-4a22-b10d-c1d5a9fe9ba8"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "plague_hound/animations/idle__west.webp",
+          "frame_paths": [
+            "plague_hound/animations/idle/west/00.webp",
+            "plague_hound/animations/idle/west/01.webp",
+            "plague_hound/animations/idle/west/02.webp",
+            "plague_hound/animations/idle/west/03.webp",
+            "plague_hound/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:46 GMT",
+          "src_frames": 5,
+          "sub": "06b8658c-2008-49da-8d87-b95c8f36ffcf"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "d67983a0-1cb7-4488-b02d-44c061bea259",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__east.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/east/00.webp",
+            "plague_hound/animations/angry/east/01.webp",
+            "plague_hound/animations/angry/east/02.webp",
+            "plague_hound/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:47 GMT",
+          "src_frames": 4,
+          "sub": "2867d83e-992c-4af2-a47e-64d8755a7a2f"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__north.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/north/00.webp",
+            "plague_hound/animations/angry/north/01.webp",
+            "plague_hound/animations/angry/north/02.webp",
+            "plague_hound/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:54 GMT",
+          "src_frames": 4,
+          "sub": "a347562f-f5df-4e6c-83a4-75a5b7502376"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__north-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/north-east/00.webp",
+            "plague_hound/animations/angry/north-east/01.webp",
+            "plague_hound/animations/angry/north-east/02.webp",
+            "plague_hound/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:56 GMT",
+          "src_frames": 4,
+          "sub": "ba2d6e63-1dab-4317-bc0c-cbfe1da521be"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__north-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/north-west/00.webp",
+            "plague_hound/animations/angry/north-west/01.webp",
+            "plague_hound/animations/angry/north-west/02.webp",
+            "plague_hound/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:58 GMT",
+          "src_frames": 4,
+          "sub": "818c9af5-80b4-4aee-9cec-b2d4ae5064ce"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__south.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/south/00.webp",
+            "plague_hound/animations/angry/south/01.webp",
+            "plague_hound/animations/angry/south/02.webp",
+            "plague_hound/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:59 GMT",
+          "src_frames": 4,
+          "sub": "dbe07d45-0620-4975-866b-3c99791b3197"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__south-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/south-east/00.webp",
+            "plague_hound/animations/angry/south-east/01.webp",
+            "plague_hound/animations/angry/south-east/02.webp",
+            "plague_hound/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:00 GMT",
+          "src_frames": 4,
+          "sub": "7be75abd-1fdd-4847-be56-c74fffb9adfb"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__south-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/south-west/00.webp",
+            "plague_hound/animations/angry/south-west/01.webp",
+            "plague_hound/animations/angry/south-west/02.webp",
+            "plague_hound/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:01 GMT",
+          "src_frames": 4,
+          "sub": "027a9f4b-7219-4735-8c23-cda3c493495a"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/angry__west.webp",
+          "frame_paths": [
+            "plague_hound/animations/angry/west/00.webp",
+            "plague_hound/animations/angry/west/01.webp",
+            "plague_hound/animations/angry/west/02.webp",
+            "plague_hound/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:07 GMT",
+          "src_frames": 4,
+          "sub": "898a57d2-8d89-415c-a0f8-aa2fd5b76d4f"
+        }
+      }
+    },
+    "die": {
+      "group_id": "01a42fea-4fe5-4a27-8d66-13b7a6fec707",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__east.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/east/00.webp",
+            "plague_hound/animations/die/east/01.webp",
+            "plague_hound/animations/die/east/02.webp",
+            "plague_hound/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:09 GMT",
+          "src_frames": 4,
+          "sub": "45d14729-5077-42b5-b2b4-86d685fd5923"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__north.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/north/00.webp",
+            "plague_hound/animations/die/north/01.webp",
+            "plague_hound/animations/die/north/02.webp",
+            "plague_hound/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:10 GMT",
+          "src_frames": 4,
+          "sub": "039d4579-f44e-4bcc-9243-dbebba0c8aad"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__north-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/north-east/00.webp",
+            "plague_hound/animations/die/north-east/01.webp",
+            "plague_hound/animations/die/north-east/02.webp",
+            "plague_hound/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:11 GMT",
+          "src_frames": 4,
+          "sub": "2303375a-dd05-44ae-a9e5-e4c7bb5a63c5"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__north-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/north-west/00.webp",
+            "plague_hound/animations/die/north-west/01.webp",
+            "plague_hound/animations/die/north-west/02.webp",
+            "plague_hound/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:12 GMT",
+          "src_frames": 4,
+          "sub": "28df7895-cd78-4d72-9dc8-80130da49dc1"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__south.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/south/00.webp",
+            "plague_hound/animations/die/south/01.webp",
+            "plague_hound/animations/die/south/02.webp",
+            "plague_hound/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:13 GMT",
+          "src_frames": 4,
+          "sub": "9a755b0c-fc69-4849-8be2-a47963fd4ffd"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__south-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/south-east/00.webp",
+            "plague_hound/animations/die/south-east/01.webp",
+            "plague_hound/animations/die/south-east/02.webp",
+            "plague_hound/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:14 GMT",
+          "src_frames": 4,
+          "sub": "640b67f2-3a67-4ad7-92a0-cb8fae7ac731"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__south-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/south-west/00.webp",
+            "plague_hound/animations/die/south-west/01.webp",
+            "plague_hound/animations/die/south-west/02.webp",
+            "plague_hound/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:16 GMT",
+          "src_frames": 4,
+          "sub": "9362dff8-d131-469f-8f92-7658ca5d6d92"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "plague_hound/animations/die__west.webp",
+          "frame_paths": [
+            "plague_hound/animations/die/west/00.webp",
+            "plague_hound/animations/die/west/01.webp",
+            "plague_hound/animations/die/west/02.webp",
+            "plague_hound/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:18 GMT",
+          "src_frames": 4,
+          "sub": "89770b2d-212d-4c72-96f5-e9bb03d13343"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "04ddea7b-c4b1-4f83-bc53-30a4930e85ff",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__east.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/east/00.webp",
+            "plague_hound/animations/walk/east/01.webp",
+            "plague_hound/animations/walk/east/02.webp",
+            "plague_hound/animations/walk/east/03.webp",
+            "plague_hound/animations/walk/east/04.webp",
+            "plague_hound/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:19 GMT",
+          "src_frames": 6,
+          "sub": "afdf38d1-9bda-471d-9a70-3419972d1ce9"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__north.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/north/00.webp",
+            "plague_hound/animations/walk/north/01.webp",
+            "plague_hound/animations/walk/north/02.webp",
+            "plague_hound/animations/walk/north/03.webp",
+            "plague_hound/animations/walk/north/04.webp",
+            "plague_hound/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:20 GMT",
+          "src_frames": 6,
+          "sub": "257eb6c0-e25d-419f-b134-883d22f6413a"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__north-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/north-east/00.webp",
+            "plague_hound/animations/walk/north-east/01.webp",
+            "plague_hound/animations/walk/north-east/02.webp",
+            "plague_hound/animations/walk/north-east/03.webp",
+            "plague_hound/animations/walk/north-east/04.webp",
+            "plague_hound/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:22 GMT",
+          "src_frames": 6,
+          "sub": "38035901-489c-453e-929c-e3c5f415c6b6"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__north-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/north-west/00.webp",
+            "plague_hound/animations/walk/north-west/01.webp",
+            "plague_hound/animations/walk/north-west/02.webp",
+            "plague_hound/animations/walk/north-west/03.webp",
+            "plague_hound/animations/walk/north-west/04.webp",
+            "plague_hound/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:24 GMT",
+          "src_frames": 6,
+          "sub": "e8e3095e-ed32-4dae-9753-8c31b82a2a46"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__south.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/south/00.webp",
+            "plague_hound/animations/walk/south/01.webp",
+            "plague_hound/animations/walk/south/02.webp",
+            "plague_hound/animations/walk/south/03.webp",
+            "plague_hound/animations/walk/south/04.webp",
+            "plague_hound/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:26 GMT",
+          "src_frames": 6,
+          "sub": "776f930e-9c76-49e4-8de5-f730d64c1b1d"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__south-east.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/south-east/00.webp",
+            "plague_hound/animations/walk/south-east/01.webp",
+            "plague_hound/animations/walk/south-east/02.webp",
+            "plague_hound/animations/walk/south-east/03.webp",
+            "plague_hound/animations/walk/south-east/04.webp",
+            "plague_hound/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:27 GMT",
+          "src_frames": 6,
+          "sub": "82ceff10-43c4-443b-9e17-e4a10133bf8b"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__south-west.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/south-west/00.webp",
+            "plague_hound/animations/walk/south-west/01.webp",
+            "plague_hound/animations/walk/south-west/02.webp",
+            "plague_hound/animations/walk/south-west/03.webp",
+            "plague_hound/animations/walk/south-west/04.webp",
+            "plague_hound/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:29 GMT",
+          "src_frames": 6,
+          "sub": "5ea667f8-37c6-47c2-98a9-ec555fe9d8d6"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "plague_hound/animations/walk__west.webp",
+          "frame_paths": [
+            "plague_hound/animations/walk/west/00.webp",
+            "plague_hound/animations/walk/west/01.webp",
+            "plague_hound/animations/walk/west/02.webp",
+            "plague_hound/animations/walk/west/03.webp",
+            "plague_hound/animations/walk/west/04.webp",
+            "plague_hound/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:30 GMT",
+          "src_frames": 6,
+          "sub": "ce27c915-ca03-4683-baf4-97473a335247"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": null,
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

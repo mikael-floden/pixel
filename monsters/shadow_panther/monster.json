@@ -1,0 +1,683 @@
+{
+  "id": "shadow_panther",
+  "name": "Gloompard",
+  "lore": "Count its violet eyes and you have already lost it. The smoke it trails is the only warning anyone gets.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "5b214959-ed87-4c44-a9bc-71acc47c7f45",
+    "url": "https://www.pixellab.ai/create-character/5b214959-ed87-4c44-a9bc-71acc47c7f45",
+    "prompt": "Sleek panther-like shadow monster. Dark purple-black body, long feline limbs, sharp claws, long tail, multiple glowing violet eyes and smoky shadow energy trailing from its body.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 108,
+    "height": 108
+  },
+  "native_size": {
+    "width": 108,
+    "height": 108
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "shadow_panther/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "shadow_panther/rotations/south.webp",
+    "west": "shadow_panther/rotations/west.webp",
+    "east": "shadow_panther/rotations/east.webp",
+    "north": "shadow_panther/rotations/north.webp",
+    "south-east": "shadow_panther/rotations/south-east.webp",
+    "north-east": "shadow_panther/rotations/north-east.webp",
+    "north-west": "shadow_panther/rotations/north-west.webp",
+    "south-west": "shadow_panther/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "d640380e-6061-475c-b824-289749469e0f",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/east/00.webp",
+            "shadow_panther/animations/idle/east/01.webp",
+            "shadow_panther/animations/idle/east/02.webp",
+            "shadow_panther/animations/idle/east/03.webp",
+            "shadow_panther/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:26 GMT",
+          "src_frames": 5,
+          "sub": "202ee241-707e-417b-8c20-33c044ba3b30"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__north.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/north/00.webp",
+            "shadow_panther/animations/idle/north/01.webp",
+            "shadow_panther/animations/idle/north/02.webp",
+            "shadow_panther/animations/idle/north/03.webp",
+            "shadow_panther/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:27 GMT",
+          "src_frames": 5,
+          "sub": "d50824ce-43e3-49cb-857f-73f677d8ac26"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__north-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/north-east/00.webp",
+            "shadow_panther/animations/idle/north-east/01.webp",
+            "shadow_panther/animations/idle/north-east/02.webp",
+            "shadow_panther/animations/idle/north-east/03.webp",
+            "shadow_panther/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:28 GMT",
+          "src_frames": 5,
+          "sub": "1630cd4c-398d-464e-9173-957cdeba0167"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__north-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/north-west/00.webp",
+            "shadow_panther/animations/idle/north-west/01.webp",
+            "shadow_panther/animations/idle/north-west/02.webp",
+            "shadow_panther/animations/idle/north-west/03.webp",
+            "shadow_panther/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:30 GMT",
+          "src_frames": 5,
+          "sub": "026ca5f2-66fb-4b23-914e-542ca5c48144"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__south.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/south/00.webp",
+            "shadow_panther/animations/idle/south/01.webp",
+            "shadow_panther/animations/idle/south/02.webp",
+            "shadow_panther/animations/idle/south/03.webp",
+            "shadow_panther/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:31 GMT",
+          "src_frames": 5,
+          "sub": "a7b07e09-886d-4af3-b26a-cf718bd7ef1a"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__south-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/south-east/00.webp",
+            "shadow_panther/animations/idle/south-east/01.webp",
+            "shadow_panther/animations/idle/south-east/02.webp",
+            "shadow_panther/animations/idle/south-east/03.webp",
+            "shadow_panther/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:33 GMT",
+          "src_frames": 5,
+          "sub": "47229ae9-8b64-48d1-a0af-99dee3dd98f1"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__south-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/south-west/00.webp",
+            "shadow_panther/animations/idle/south-west/01.webp",
+            "shadow_panther/animations/idle/south-west/02.webp",
+            "shadow_panther/animations/idle/south-west/03.webp",
+            "shadow_panther/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:34 GMT",
+          "src_frames": 5,
+          "sub": "8992f525-1b96-4ed7-a6ca-b755feea59f4"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "shadow_panther/animations/idle__west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/idle/west/00.webp",
+            "shadow_panther/animations/idle/west/01.webp",
+            "shadow_panther/animations/idle/west/02.webp",
+            "shadow_panther/animations/idle/west/03.webp",
+            "shadow_panther/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:36 GMT",
+          "src_frames": 5,
+          "sub": "745b2268-00dd-42b9-b281-6a3cb0f03ff8"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "7cadf112-24cd-4838-a60e-c99689002b90",
+      "source_name": "custom-Dark aura attack. The cat still. Only the aura spi",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/east/00.webp",
+            "shadow_panther/animations/attack/east/01.webp",
+            "shadow_panther/animations/attack/east/02.webp",
+            "shadow_panther/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:37 GMT",
+          "src_frames": 4,
+          "sub": "2d023d49-0a89-467a-a537-b1837d88984f"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__north.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/north/00.webp",
+            "shadow_panther/animations/attack/north/01.webp",
+            "shadow_panther/animations/attack/north/02.webp",
+            "shadow_panther/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:38 GMT",
+          "src_frames": 4,
+          "sub": "db06fc4d-e6a9-4d80-90bd-384a104aed6f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__north-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/north-east/00.webp",
+            "shadow_panther/animations/attack/north-east/01.webp",
+            "shadow_panther/animations/attack/north-east/02.webp",
+            "shadow_panther/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:39 GMT",
+          "src_frames": 4,
+          "sub": "8650fe6f-fbe9-4fb1-a3b0-154cb703a0da"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__north-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/north-west/00.webp",
+            "shadow_panther/animations/attack/north-west/01.webp",
+            "shadow_panther/animations/attack/north-west/02.webp",
+            "shadow_panther/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:41 GMT",
+          "src_frames": 4,
+          "sub": "df612307-7e9b-45c0-9490-cf8a72f272f2"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__south.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/south/00.webp",
+            "shadow_panther/animations/attack/south/01.webp",
+            "shadow_panther/animations/attack/south/02.webp",
+            "shadow_panther/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:42 GMT",
+          "src_frames": 4,
+          "sub": "08a3b1c3-cf22-40ef-9aab-01131080fec7"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__south-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/south-east/00.webp",
+            "shadow_panther/animations/attack/south-east/01.webp",
+            "shadow_panther/animations/attack/south-east/02.webp",
+            "shadow_panther/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:44 GMT",
+          "src_frames": 4,
+          "sub": "8ece38ce-194e-43ef-8050-d8e95a273db9"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__south-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/south-west/00.webp",
+            "shadow_panther/animations/attack/south-west/01.webp",
+            "shadow_panther/animations/attack/south-west/02.webp",
+            "shadow_panther/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:45 GMT",
+          "src_frames": 4,
+          "sub": "f4ad25e8-1cf5-452a-98eb-d7c3141d036c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/attack__west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/attack/west/00.webp",
+            "shadow_panther/animations/attack/west/01.webp",
+            "shadow_panther/animations/attack/west/02.webp",
+            "shadow_panther/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:48 GMT",
+          "src_frames": 4,
+          "sub": "8dbfe8d4-a6e9-4bfb-ad8c-f127a5398063"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "ec26f4e9-dbd9-49eb-affd-06135dc08d1f",
+      "source_name": "custom-angry eyes animation, calm still cat with angry lo",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/east/00.webp",
+            "shadow_panther/animations/angry/east/01.webp",
+            "shadow_panther/animations/angry/east/02.webp",
+            "shadow_panther/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:49 GMT",
+          "src_frames": 4,
+          "sub": "49b7883e-3759-4ffe-af21-fb7f39f12fcf"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__north.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/north/00.webp",
+            "shadow_panther/animations/angry/north/01.webp",
+            "shadow_panther/animations/angry/north/02.webp",
+            "shadow_panther/animations/angry/north/03.webp"
+          ],
+          "lm": "Wed, 12 Aug 2026 22:37:57 GMT",
+          "src_frames": 4,
+          "sub": "1cf42192-29fa-4408-a183-a9b4fd0c3ec3"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__north-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/north-east/00.webp",
+            "shadow_panther/animations/angry/north-east/01.webp",
+            "shadow_panther/animations/angry/north-east/02.webp",
+            "shadow_panther/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:51 GMT",
+          "src_frames": 4,
+          "sub": "66310960-1300-4080-b9ff-bd1fafd2e34e"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__north-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/north-west/00.webp",
+            "shadow_panther/animations/angry/north-west/01.webp",
+            "shadow_panther/animations/angry/north-west/02.webp",
+            "shadow_panther/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:52 GMT",
+          "src_frames": 4,
+          "sub": "72b06b50-f576-42d6-86e9-8622db0dbafd"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__south.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/south/00.webp",
+            "shadow_panther/animations/angry/south/01.webp",
+            "shadow_panther/animations/angry/south/02.webp",
+            "shadow_panther/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:53 GMT",
+          "src_frames": 4,
+          "sub": "0c7b2d54-c261-4e7f-9d98-9d2d78d15141"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__south-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/south-east/00.webp",
+            "shadow_panther/animations/angry/south-east/01.webp",
+            "shadow_panther/animations/angry/south-east/02.webp",
+            "shadow_panther/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:54 GMT",
+          "src_frames": 4,
+          "sub": "40701fcb-256e-4c9f-816a-3e204b3fb287"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__south-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/south-west/00.webp",
+            "shadow_panther/animations/angry/south-west/01.webp",
+            "shadow_panther/animations/angry/south-west/02.webp",
+            "shadow_panther/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:55 GMT",
+          "src_frames": 4,
+          "sub": "9c038628-a59a-43e5-875d-88282ea2da05"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "shadow_panther/animations/angry__west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/angry/west/00.webp",
+            "shadow_panther/animations/angry/west/01.webp",
+            "shadow_panther/animations/angry/west/02.webp",
+            "shadow_panther/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:56 GMT",
+          "src_frames": 4,
+          "sub": "e605a52c-3e9c-457f-a9c7-8e5eb70a3157"
+        }
+      }
+    },
+    "die": {
+      "group_id": "7a2ab6a1-36aa-4185-a83b-35b1e6f92472",
+      "source_name": "custom-dissapears in smoke. The cat is still and don't mo",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/east/00.webp",
+            "shadow_panther/animations/die/east/01.webp",
+            "shadow_panther/animations/die/east/02.webp",
+            "shadow_panther/animations/die/east/03.webp",
+            "shadow_panther/animations/die/east/04.webp",
+            "shadow_panther/animations/die/east/05.webp",
+            "shadow_panther/animations/die/east/06.webp",
+            "shadow_panther/animations/die/east/07.webp",
+            "shadow_panther/animations/die/east/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:59 GMT",
+          "src_frames": 9,
+          "sub": "a3da9f8a-c5bd-4dab-8849-a5cb962aaf8d"
+        },
+        "north": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__north.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/north/00.webp",
+            "shadow_panther/animations/die/north/01.webp",
+            "shadow_panther/animations/die/north/02.webp",
+            "shadow_panther/animations/die/north/03.webp",
+            "shadow_panther/animations/die/north/04.webp",
+            "shadow_panther/animations/die/north/05.webp",
+            "shadow_panther/animations/die/north/06.webp",
+            "shadow_panther/animations/die/north/07.webp",
+            "shadow_panther/animations/die/north/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:00 GMT",
+          "src_frames": 9,
+          "sub": "44bcc13c-0e4a-4112-99d8-480cb4a8c444"
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__north-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/north-east/00.webp",
+            "shadow_panther/animations/die/north-east/01.webp",
+            "shadow_panther/animations/die/north-east/02.webp",
+            "shadow_panther/animations/die/north-east/03.webp",
+            "shadow_panther/animations/die/north-east/04.webp",
+            "shadow_panther/animations/die/north-east/05.webp",
+            "shadow_panther/animations/die/north-east/06.webp",
+            "shadow_panther/animations/die/north-east/07.webp",
+            "shadow_panther/animations/die/north-east/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:01 GMT",
+          "src_frames": 9,
+          "sub": "4e48bbd0-6f4e-41b4-8a9f-50bbde9ebb05"
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__north-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/north-west/00.webp",
+            "shadow_panther/animations/die/north-west/01.webp",
+            "shadow_panther/animations/die/north-west/02.webp",
+            "shadow_panther/animations/die/north-west/03.webp",
+            "shadow_panther/animations/die/north-west/04.webp",
+            "shadow_panther/animations/die/north-west/05.webp",
+            "shadow_panther/animations/die/north-west/06.webp",
+            "shadow_panther/animations/die/north-west/07.webp",
+            "shadow_panther/animations/die/north-west/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:06 GMT",
+          "src_frames": 9,
+          "sub": "3cf094f5-5218-40e0-bf7b-a68fda1db9a6"
+        },
+        "south": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__south.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/south/00.webp",
+            "shadow_panther/animations/die/south/01.webp",
+            "shadow_panther/animations/die/south/02.webp",
+            "shadow_panther/animations/die/south/03.webp",
+            "shadow_panther/animations/die/south/04.webp",
+            "shadow_panther/animations/die/south/05.webp",
+            "shadow_panther/animations/die/south/06.webp",
+            "shadow_panther/animations/die/south/07.webp",
+            "shadow_panther/animations/die/south/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:07 GMT",
+          "src_frames": 9,
+          "sub": "e5bedac5-7e76-46ea-8752-623489cc5378"
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__south-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/south-east/00.webp",
+            "shadow_panther/animations/die/south-east/01.webp",
+            "shadow_panther/animations/die/south-east/02.webp",
+            "shadow_panther/animations/die/south-east/03.webp",
+            "shadow_panther/animations/die/south-east/04.webp",
+            "shadow_panther/animations/die/south-east/05.webp",
+            "shadow_panther/animations/die/south-east/06.webp",
+            "shadow_panther/animations/die/south-east/07.webp",
+            "shadow_panther/animations/die/south-east/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:09 GMT",
+          "src_frames": 9,
+          "sub": "f1280bfa-57c6-41c4-aab1-9082da00c67b"
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__south-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/south-west/00.webp",
+            "shadow_panther/animations/die/south-west/01.webp",
+            "shadow_panther/animations/die/south-west/02.webp",
+            "shadow_panther/animations/die/south-west/03.webp",
+            "shadow_panther/animations/die/south-west/04.webp",
+            "shadow_panther/animations/die/south-west/05.webp",
+            "shadow_panther/animations/die/south-west/06.webp",
+            "shadow_panther/animations/die/south-west/07.webp",
+            "shadow_panther/animations/die/south-west/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:10 GMT",
+          "src_frames": 9,
+          "sub": "ebab7315-8fb8-4d27-8714-6793fd23e378"
+        },
+        "west": {
+          "frames": 9,
+          "strip": "shadow_panther/animations/die__west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/die/west/00.webp",
+            "shadow_panther/animations/die/west/01.webp",
+            "shadow_panther/animations/die/west/02.webp",
+            "shadow_panther/animations/die/west/03.webp",
+            "shadow_panther/animations/die/west/04.webp",
+            "shadow_panther/animations/die/west/05.webp",
+            "shadow_panther/animations/die/west/06.webp",
+            "shadow_panther/animations/die/west/07.webp",
+            "shadow_panther/animations/die/west/08.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:12 GMT",
+          "src_frames": 9,
+          "sub": "54cb55b8-e8ec-4136-8363-8b0707cdfcb8"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "78308b26-d88a-47b2-8e5c-fcce0887ef4f",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/east/00.webp",
+            "shadow_panther/animations/walk/east/01.webp",
+            "shadow_panther/animations/walk/east/02.webp",
+            "shadow_panther/animations/walk/east/03.webp",
+            "shadow_panther/animations/walk/east/04.webp",
+            "shadow_panther/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:13 GMT",
+          "src_frames": 6,
+          "sub": "212ff84e-ba27-49a9-b84b-95fedb72b401"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__north.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/north/00.webp",
+            "shadow_panther/animations/walk/north/01.webp",
+            "shadow_panther/animations/walk/north/02.webp",
+            "shadow_panther/animations/walk/north/03.webp",
+            "shadow_panther/animations/walk/north/04.webp",
+            "shadow_panther/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:15 GMT",
+          "src_frames": 6,
+          "sub": "87c45a35-cb86-46b0-b047-9ccba4ea8754"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__north-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/north-east/00.webp",
+            "shadow_panther/animations/walk/north-east/01.webp",
+            "shadow_panther/animations/walk/north-east/02.webp",
+            "shadow_panther/animations/walk/north-east/03.webp",
+            "shadow_panther/animations/walk/north-east/04.webp",
+            "shadow_panther/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:16 GMT",
+          "src_frames": 6,
+          "sub": "d2461bc0-13cd-4724-9371-03d8935ff7a7"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__north-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/north-west/00.webp",
+            "shadow_panther/animations/walk/north-west/01.webp",
+            "shadow_panther/animations/walk/north-west/02.webp",
+            "shadow_panther/animations/walk/north-west/03.webp",
+            "shadow_panther/animations/walk/north-west/04.webp",
+            "shadow_panther/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:17 GMT",
+          "src_frames": 6,
+          "sub": "e71e57da-d959-4586-b5e0-4056fe0e3a1a"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__south.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/south/00.webp",
+            "shadow_panther/animations/walk/south/01.webp",
+            "shadow_panther/animations/walk/south/02.webp",
+            "shadow_panther/animations/walk/south/03.webp",
+            "shadow_panther/animations/walk/south/04.webp",
+            "shadow_panther/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:19 GMT",
+          "src_frames": 6,
+          "sub": "6ec1448e-3079-45de-9361-21493c5b4941"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__south-east.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/south-east/00.webp",
+            "shadow_panther/animations/walk/south-east/01.webp",
+            "shadow_panther/animations/walk/south-east/02.webp",
+            "shadow_panther/animations/walk/south-east/03.webp",
+            "shadow_panther/animations/walk/south-east/04.webp",
+            "shadow_panther/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:20 GMT",
+          "src_frames": 6,
+          "sub": "2bb210fe-219f-4caf-aba2-64333124fdba"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__south-west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/south-west/00.webp",
+            "shadow_panther/animations/walk/south-west/01.webp",
+            "shadow_panther/animations/walk/south-west/02.webp",
+            "shadow_panther/animations/walk/south-west/03.webp",
+            "shadow_panther/animations/walk/south-west/04.webp",
+            "shadow_panther/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:22 GMT",
+          "src_frames": 6,
+          "sub": "3d8c3940-cf10-436a-957f-be5c5dae3d1a"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "shadow_panther/animations/walk__west.webp",
+          "frame_paths": [
+            "shadow_panther/animations/walk/west/00.webp",
+            "shadow_panther/animations/walk/west/01.webp",
+            "shadow_panther/animations/walk/west/02.webp",
+            "shadow_panther/animations/walk/west/03.webp",
+            "shadow_panther/animations/walk/west/04.webp",
+            "shadow_panther/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:14:24 GMT",
+          "src_frames": 6,
+          "sub": "2b817619-2b6a-420c-9da7-c4e8ce6f2208"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-angry eyes animation, calm still cat with angry lo",
+      "key": "angry",
+      "direction": "north",
+      "takes": [
+        "d595f171-869f-4f34-b21b-c5e17d1c888d",
+        "1cf42192-29fa-4408-a183-a9b4fd0c3ec3"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

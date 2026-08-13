@@ -1,0 +1,633 @@
+{
+  "id": "armor_tusker",
+  "name": "Ironhide",
+  "lore": "Armor that grew instead of being forged. Spears skate off its plates; its tusks do not return the favor.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "5fc96a7f-26a6-4cac-896e-2bb725f6f1c9",
+    "url": "https://www.pixellab.ai/create-character/5fc96a7f-26a6-4cac-896e-2bb725f6f1c9",
+    "prompt": "Huge armored quadruped with thick gray natural armor plates, enormous curved tusks, tiny red eyes, extremely muscular shoulders, large claws and short spiked tail.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 184,
+    "height": 184
+  },
+  "native_size": {
+    "width": 184,
+    "height": 184
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "armor_tusker/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "armor_tusker/rotations/south.webp",
+    "west": "armor_tusker/rotations/west.webp",
+    "east": "armor_tusker/rotations/east.webp",
+    "north": "armor_tusker/rotations/north.webp",
+    "south-east": "armor_tusker/rotations/south-east.webp",
+    "north-east": "armor_tusker/rotations/north-east.webp",
+    "north-west": "armor_tusker/rotations/north-west.webp",
+    "south-west": "armor_tusker/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "9ed7e3c7-b805-456c-881b-7be27d2bfda8",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/east/00.webp",
+            "armor_tusker/animations/idle/east/01.webp",
+            "armor_tusker/animations/idle/east/02.webp",
+            "armor_tusker/animations/idle/east/03.webp",
+            "armor_tusker/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:05 GMT",
+          "src_frames": 5,
+          "sub": "7cc181ec-2771-4bad-98ff-ccf97dae5c68"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__north.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/north/00.webp",
+            "armor_tusker/animations/idle/north/01.webp",
+            "armor_tusker/animations/idle/north/02.webp",
+            "armor_tusker/animations/idle/north/03.webp",
+            "armor_tusker/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:12 GMT",
+          "src_frames": 5,
+          "sub": "0da4f6c3-d337-4756-a350-0c1943c26482"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__north-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/north-east/00.webp",
+            "armor_tusker/animations/idle/north-east/01.webp",
+            "armor_tusker/animations/idle/north-east/02.webp",
+            "armor_tusker/animations/idle/north-east/03.webp",
+            "armor_tusker/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:14 GMT",
+          "src_frames": 5,
+          "sub": "0372e38c-47e7-4969-bdfc-39a89ad2b741"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__north-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/north-west/00.webp",
+            "armor_tusker/animations/idle/north-west/01.webp",
+            "armor_tusker/animations/idle/north-west/02.webp",
+            "armor_tusker/animations/idle/north-west/03.webp",
+            "armor_tusker/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:15 GMT",
+          "src_frames": 5,
+          "sub": "f65704a4-ce64-46ba-b30d-e179bcb3c6d9"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__south.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/south/00.webp",
+            "armor_tusker/animations/idle/south/01.webp",
+            "armor_tusker/animations/idle/south/02.webp",
+            "armor_tusker/animations/idle/south/03.webp",
+            "armor_tusker/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:16 GMT",
+          "src_frames": 5,
+          "sub": "04f0ea7b-8478-42e9-8a89-c2287daf418c"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__south-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/south-east/00.webp",
+            "armor_tusker/animations/idle/south-east/01.webp",
+            "armor_tusker/animations/idle/south-east/02.webp",
+            "armor_tusker/animations/idle/south-east/03.webp",
+            "armor_tusker/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:17 GMT",
+          "src_frames": 5,
+          "sub": "52eefec1-1c41-43e3-accc-e420202a777b"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__south-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/south-west/00.webp",
+            "armor_tusker/animations/idle/south-west/01.webp",
+            "armor_tusker/animations/idle/south-west/02.webp",
+            "armor_tusker/animations/idle/south-west/03.webp",
+            "armor_tusker/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:19 GMT",
+          "src_frames": 5,
+          "sub": "78afb3fe-c91d-40c1-9984-624c53230d6c"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "armor_tusker/animations/idle__west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/idle/west/00.webp",
+            "armor_tusker/animations/idle/west/01.webp",
+            "armor_tusker/animations/idle/west/02.webp",
+            "armor_tusker/animations/idle/west/03.webp",
+            "armor_tusker/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:20 GMT",
+          "src_frames": 5,
+          "sub": "46ee121e-a8b9-42f3-b64c-ce7cbce7804c"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "d11f510a-d439-4fe3-9b27-6b077ae3bc35",
+      "source_name": "custom-Horn Strike - Lowers head and quickly thrusts horn",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/east/00.webp",
+            "armor_tusker/animations/attack/east/01.webp",
+            "armor_tusker/animations/attack/east/02.webp",
+            "armor_tusker/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:22 GMT",
+          "src_frames": 4,
+          "sub": "219c5c43-e331-442d-944a-e1ef7fbb0acc"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__north.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/north/00.webp",
+            "armor_tusker/animations/attack/north/01.webp",
+            "armor_tusker/animations/attack/north/02.webp",
+            "armor_tusker/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:24 GMT",
+          "src_frames": 4,
+          "sub": "c5137763-50ca-4cf0-9e66-b964277995c1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__north-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/north-east/00.webp",
+            "armor_tusker/animations/attack/north-east/01.webp",
+            "armor_tusker/animations/attack/north-east/02.webp",
+            "armor_tusker/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:25 GMT",
+          "src_frames": 4,
+          "sub": "13b98619-0593-446d-a3e8-1dee780e956f"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__north-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/north-west/00.webp",
+            "armor_tusker/animations/attack/north-west/01.webp",
+            "armor_tusker/animations/attack/north-west/02.webp",
+            "armor_tusker/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:26 GMT",
+          "src_frames": 4,
+          "sub": "711743d9-eb56-4429-a1f7-7f89b0ac498a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__south.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/south/00.webp",
+            "armor_tusker/animations/attack/south/01.webp",
+            "armor_tusker/animations/attack/south/02.webp",
+            "armor_tusker/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:28 GMT",
+          "src_frames": 4,
+          "sub": "69a9ac06-544b-4b7b-ad9f-cad062c09e4c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__south-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/south-east/00.webp",
+            "armor_tusker/animations/attack/south-east/01.webp",
+            "armor_tusker/animations/attack/south-east/02.webp",
+            "armor_tusker/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:29 GMT",
+          "src_frames": 4,
+          "sub": "7aeaa7ba-f2ab-4c71-85cb-1d2a9e63ceb6"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__south-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/south-west/00.webp",
+            "armor_tusker/animations/attack/south-west/01.webp",
+            "armor_tusker/animations/attack/south-west/02.webp",
+            "armor_tusker/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:31 GMT",
+          "src_frames": 4,
+          "sub": "9f8138e0-f8f9-4e11-b574-7adbddacee94"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/attack__west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/attack/west/00.webp",
+            "armor_tusker/animations/attack/west/01.webp",
+            "armor_tusker/animations/attack/west/02.webp",
+            "armor_tusker/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:32 GMT",
+          "src_frames": 4,
+          "sub": "200a8e0d-6d26-4670-be56-bc94fd0bfb25"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "37459e84-cdfb-4e43-bd72-e09c8ad9b8f8",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/east/00.webp",
+            "armor_tusker/animations/angry/east/01.webp",
+            "armor_tusker/animations/angry/east/02.webp",
+            "armor_tusker/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:34 GMT",
+          "src_frames": 4,
+          "sub": "dfb19731-330d-4094-97d2-510e72116457"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__north.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/north/00.webp",
+            "armor_tusker/animations/angry/north/01.webp",
+            "armor_tusker/animations/angry/north/02.webp",
+            "armor_tusker/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:37 GMT",
+          "src_frames": 4,
+          "sub": "f84239c6-c277-4aac-a85a-5dd943550522"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__north-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/north-east/00.webp",
+            "armor_tusker/animations/angry/north-east/01.webp",
+            "armor_tusker/animations/angry/north-east/02.webp",
+            "armor_tusker/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:39 GMT",
+          "src_frames": 4,
+          "sub": "7dca88a5-207a-4286-9ebc-f11c0ad428b8"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__north-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/north-west/00.webp",
+            "armor_tusker/animations/angry/north-west/01.webp",
+            "armor_tusker/animations/angry/north-west/02.webp",
+            "armor_tusker/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:41 GMT",
+          "src_frames": 4,
+          "sub": "69c5ca10-1cb1-49e6-9515-2c226af00a79"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__south.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/south/00.webp",
+            "armor_tusker/animations/angry/south/01.webp",
+            "armor_tusker/animations/angry/south/02.webp",
+            "armor_tusker/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:42 GMT",
+          "src_frames": 4,
+          "sub": "1414b87b-f490-46c9-b833-2b34e23deb3f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__south-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/south-east/00.webp",
+            "armor_tusker/animations/angry/south-east/01.webp",
+            "armor_tusker/animations/angry/south-east/02.webp",
+            "armor_tusker/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:43 GMT",
+          "src_frames": 4,
+          "sub": "228f906f-8d14-43c8-aa53-44261e8a0ef9"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__south-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/south-west/00.webp",
+            "armor_tusker/animations/angry/south-west/01.webp",
+            "armor_tusker/animations/angry/south-west/02.webp",
+            "armor_tusker/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:45 GMT",
+          "src_frames": 4,
+          "sub": "57177ec1-fbf0-4fce-9b5f-4986d962af2c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/angry__west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/angry/west/00.webp",
+            "armor_tusker/animations/angry/west/01.webp",
+            "armor_tusker/animations/angry/west/02.webp",
+            "armor_tusker/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:46 GMT",
+          "src_frames": 4,
+          "sub": "61eefd4d-9db6-4b69-a5bd-4d679ecd68bc"
+        }
+      }
+    },
+    "die": {
+      "group_id": "d49180a7-17c2-44ec-85ac-34ab3155fa7b",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/east/00.webp",
+            "armor_tusker/animations/die/east/01.webp",
+            "armor_tusker/animations/die/east/02.webp",
+            "armor_tusker/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:48 GMT",
+          "src_frames": 4,
+          "sub": "1a3eec7a-5b5f-4b76-bfa9-6511d6ef5b2b"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__north.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/north/00.webp",
+            "armor_tusker/animations/die/north/01.webp",
+            "armor_tusker/animations/die/north/02.webp",
+            "armor_tusker/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:49 GMT",
+          "src_frames": 4,
+          "sub": "42ddb8fa-a941-4d1c-af3e-19d18d56a3c1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__north-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/north-east/00.webp",
+            "armor_tusker/animations/die/north-east/01.webp",
+            "armor_tusker/animations/die/north-east/02.webp",
+            "armor_tusker/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:50 GMT",
+          "src_frames": 4,
+          "sub": "a87999e1-71f8-4754-b31d-0a495a638151"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__north-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/north-west/00.webp",
+            "armor_tusker/animations/die/north-west/01.webp",
+            "armor_tusker/animations/die/north-west/02.webp",
+            "armor_tusker/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:52 GMT",
+          "src_frames": 4,
+          "sub": "33bb4fbc-30dd-4f74-a172-f6eeecafd66d"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__south.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/south/00.webp",
+            "armor_tusker/animations/die/south/01.webp",
+            "armor_tusker/animations/die/south/02.webp",
+            "armor_tusker/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:53 GMT",
+          "src_frames": 4,
+          "sub": "f77cd881-f8a7-4eff-8ba9-f3716b6ebf07"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__south-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/south-east/00.webp",
+            "armor_tusker/animations/die/south-east/01.webp",
+            "armor_tusker/animations/die/south-east/02.webp",
+            "armor_tusker/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:55 GMT",
+          "src_frames": 4,
+          "sub": "89e82b9c-85b0-47ec-9710-e47f822a595d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__south-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/south-west/00.webp",
+            "armor_tusker/animations/die/south-west/01.webp",
+            "armor_tusker/animations/die/south-west/02.webp",
+            "armor_tusker/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:56 GMT",
+          "src_frames": 4,
+          "sub": "a5918af1-2e3f-44a8-b640-819a2efefb75"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "armor_tusker/animations/die__west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/die/west/00.webp",
+            "armor_tusker/animations/die/west/01.webp",
+            "armor_tusker/animations/die/west/02.webp",
+            "armor_tusker/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:57 GMT",
+          "src_frames": 4,
+          "sub": "ac9d06e6-12c6-478f-88b0-2c65e7456d9a"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "9b846dbc-2d72-44b5-bcd6-94d871a22db8",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/east/00.webp",
+            "armor_tusker/animations/walk/east/01.webp",
+            "armor_tusker/animations/walk/east/02.webp",
+            "armor_tusker/animations/walk/east/03.webp",
+            "armor_tusker/animations/walk/east/04.webp",
+            "armor_tusker/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:12:59 GMT",
+          "src_frames": 6,
+          "sub": "86023e0a-676e-4814-92bf-f710f75dbce8"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__north.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/north/00.webp",
+            "armor_tusker/animations/walk/north/01.webp",
+            "armor_tusker/animations/walk/north/02.webp",
+            "armor_tusker/animations/walk/north/03.webp",
+            "armor_tusker/animations/walk/north/04.webp",
+            "armor_tusker/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:00 GMT",
+          "src_frames": 6,
+          "sub": "dd476700-164d-447d-ae82-a67a83218131"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__north-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/north-east/00.webp",
+            "armor_tusker/animations/walk/north-east/01.webp",
+            "armor_tusker/animations/walk/north-east/02.webp",
+            "armor_tusker/animations/walk/north-east/03.webp",
+            "armor_tusker/animations/walk/north-east/04.webp",
+            "armor_tusker/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:02 GMT",
+          "src_frames": 6,
+          "sub": "d551b3bc-c7ac-4c96-bc49-fe8c6842afb4"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__north-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/north-west/00.webp",
+            "armor_tusker/animations/walk/north-west/01.webp",
+            "armor_tusker/animations/walk/north-west/02.webp",
+            "armor_tusker/animations/walk/north-west/03.webp",
+            "armor_tusker/animations/walk/north-west/04.webp",
+            "armor_tusker/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:04 GMT",
+          "src_frames": 6,
+          "sub": "3d02952d-d982-4e69-82f6-9b7e178804b2"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__south.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/south/00.webp",
+            "armor_tusker/animations/walk/south/01.webp",
+            "armor_tusker/animations/walk/south/02.webp",
+            "armor_tusker/animations/walk/south/03.webp",
+            "armor_tusker/animations/walk/south/04.webp",
+            "armor_tusker/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:05 GMT",
+          "src_frames": 6,
+          "sub": "5d4f0550-5535-4aae-a2fc-91f8197b74bc"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__south-east.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/south-east/00.webp",
+            "armor_tusker/animations/walk/south-east/01.webp",
+            "armor_tusker/animations/walk/south-east/02.webp",
+            "armor_tusker/animations/walk/south-east/03.webp",
+            "armor_tusker/animations/walk/south-east/04.webp",
+            "armor_tusker/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:10 GMT",
+          "src_frames": 6,
+          "sub": "1061e801-b0e6-4231-9c3d-387816654c36"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__south-west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/south-west/00.webp",
+            "armor_tusker/animations/walk/south-west/01.webp",
+            "armor_tusker/animations/walk/south-west/02.webp",
+            "armor_tusker/animations/walk/south-west/03.webp",
+            "armor_tusker/animations/walk/south-west/04.webp",
+            "armor_tusker/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:12 GMT",
+          "src_frames": 6,
+          "sub": "ea4810f3-dc49-4f56-b88c-822a0b9d1b4d"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "armor_tusker/animations/walk__west.webp",
+          "frame_paths": [
+            "armor_tusker/animations/walk/west/00.webp",
+            "armor_tusker/animations/walk/west/01.webp",
+            "armor_tusker/animations/walk/west/02.webp",
+            "armor_tusker/animations/walk/west/03.webp",
+            "armor_tusker/animations/walk/west/04.webp",
+            "armor_tusker/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:13:14 GMT",
+          "src_frames": 6,
+          "sub": "a8b4c6f8-65af-4ff8-9984-251d43ed5386"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

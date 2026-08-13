@@ -1,0 +1,633 @@
+{
+  "id": "undead_hound",
+  "name": "Rotjaw",
+  "lore": "Too stubborn to stay buried. Its crooked jaw hangs loose, grinning at a joke told before it died.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "3860f84b-290e-45b1-9dc1-b7ca4aef8ccc",
+    "url": "https://www.pixellab.ai/create-character/3860f84b-290e-45b1-9dc1-b7ca4aef8ccc",
+    "prompt": "Grotesque undead hound with patchy brown-gray fur, exposed ribs, oversized crooked jaw, rotten yellow teeth, green glowing eyes, thin legs and sickly green vapor leaking from wounds across its body.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 96,
+    "height": 96
+  },
+  "native_size": {
+    "width": 96,
+    "height": 96
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "undead_hound/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "undead_hound/rotations/south.webp",
+    "west": "undead_hound/rotations/west.webp",
+    "east": "undead_hound/rotations/east.webp",
+    "north": "undead_hound/rotations/north.webp",
+    "south-east": "undead_hound/rotations/south-east.webp",
+    "north-east": "undead_hound/rotations/north-east.webp",
+    "north-west": "undead_hound/rotations/north-west.webp",
+    "south-west": "undead_hound/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "c1f7901a-7202-4599-8335-f80a658cef6b",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__east.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/east/00.webp",
+            "undead_hound/animations/idle/east/01.webp",
+            "undead_hound/animations/idle/east/02.webp",
+            "undead_hound/animations/idle/east/03.webp",
+            "undead_hound/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:32 GMT",
+          "src_frames": 5,
+          "sub": "ac28b470-24b1-4556-9dd7-67c23f98f907"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__north.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/north/00.webp",
+            "undead_hound/animations/idle/north/01.webp",
+            "undead_hound/animations/idle/north/02.webp",
+            "undead_hound/animations/idle/north/03.webp",
+            "undead_hound/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:36 GMT",
+          "src_frames": 5,
+          "sub": "3c2064db-c8da-4c21-9782-a732d87d522a"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__north-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/north-east/00.webp",
+            "undead_hound/animations/idle/north-east/01.webp",
+            "undead_hound/animations/idle/north-east/02.webp",
+            "undead_hound/animations/idle/north-east/03.webp",
+            "undead_hound/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:37 GMT",
+          "src_frames": 5,
+          "sub": "2ad0003f-74d4-4fd6-8ac2-fe80f06e76d1"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__north-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/north-west/00.webp",
+            "undead_hound/animations/idle/north-west/01.webp",
+            "undead_hound/animations/idle/north-west/02.webp",
+            "undead_hound/animations/idle/north-west/03.webp",
+            "undead_hound/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:38 GMT",
+          "src_frames": 5,
+          "sub": "6ce26a2e-72d4-45d9-8e96-2dd291917afe"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__south.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/south/00.webp",
+            "undead_hound/animations/idle/south/01.webp",
+            "undead_hound/animations/idle/south/02.webp",
+            "undead_hound/animations/idle/south/03.webp",
+            "undead_hound/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:43 GMT",
+          "src_frames": 5,
+          "sub": "d675f615-efcb-466b-8284-d20fecf05861"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__south-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/south-east/00.webp",
+            "undead_hound/animations/idle/south-east/01.webp",
+            "undead_hound/animations/idle/south-east/02.webp",
+            "undead_hound/animations/idle/south-east/03.webp",
+            "undead_hound/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:45 GMT",
+          "src_frames": 5,
+          "sub": "11aa659f-c8c3-4bbe-b28d-96713bc7f1bc"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__south-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/south-west/00.webp",
+            "undead_hound/animations/idle/south-west/01.webp",
+            "undead_hound/animations/idle/south-west/02.webp",
+            "undead_hound/animations/idle/south-west/03.webp",
+            "undead_hound/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:46 GMT",
+          "src_frames": 5,
+          "sub": "fde1471d-d5bb-472b-aa59-8ce32b484da0"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "undead_hound/animations/idle__west.webp",
+          "frame_paths": [
+            "undead_hound/animations/idle/west/00.webp",
+            "undead_hound/animations/idle/west/01.webp",
+            "undead_hound/animations/idle/west/02.webp",
+            "undead_hound/animations/idle/west/03.webp",
+            "undead_hound/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:47 GMT",
+          "src_frames": 5,
+          "sub": "ec605d81-ad6f-4d3b-9d9e-540fddb7e2b7"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "403df4c0-0196-47e8-bb8a-af6237b116f7",
+      "source_name": "custom-Dash Attack - Makes a very short fast dash forward",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__east.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/east/00.webp",
+            "undead_hound/animations/attack/east/01.webp",
+            "undead_hound/animations/attack/east/02.webp",
+            "undead_hound/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:49 GMT",
+          "src_frames": 4,
+          "sub": "29b1f581-56de-43be-a69d-810396a3c7e3"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__north.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/north/00.webp",
+            "undead_hound/animations/attack/north/01.webp",
+            "undead_hound/animations/attack/north/02.webp",
+            "undead_hound/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:50 GMT",
+          "src_frames": 4,
+          "sub": "fe060c76-7cd4-43a9-8680-99962e826f5d"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__north-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/north-east/00.webp",
+            "undead_hound/animations/attack/north-east/01.webp",
+            "undead_hound/animations/attack/north-east/02.webp",
+            "undead_hound/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:52 GMT",
+          "src_frames": 4,
+          "sub": "7a320a5e-84f2-4059-9bb7-5a470ad1be41"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__north-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/north-west/00.webp",
+            "undead_hound/animations/attack/north-west/01.webp",
+            "undead_hound/animations/attack/north-west/02.webp",
+            "undead_hound/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:53 GMT",
+          "src_frames": 4,
+          "sub": "afe88a73-fbe9-444e-8401-e513f0223a0e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__south.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/south/00.webp",
+            "undead_hound/animations/attack/south/01.webp",
+            "undead_hound/animations/attack/south/02.webp",
+            "undead_hound/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:54 GMT",
+          "src_frames": 4,
+          "sub": "62cac13e-3d2c-4684-9b61-637bf443fa48"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__south-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/south-east/00.webp",
+            "undead_hound/animations/attack/south-east/01.webp",
+            "undead_hound/animations/attack/south-east/02.webp",
+            "undead_hound/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:55 GMT",
+          "src_frames": 4,
+          "sub": "c597ee0e-40ee-4b42-a372-1c962974050d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__south-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/south-west/00.webp",
+            "undead_hound/animations/attack/south-west/01.webp",
+            "undead_hound/animations/attack/south-west/02.webp",
+            "undead_hound/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:56 GMT",
+          "src_frames": 4,
+          "sub": "eae8705b-902f-4aad-8bdb-8f14f0917e6f"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/attack__west.webp",
+          "frame_paths": [
+            "undead_hound/animations/attack/west/00.webp",
+            "undead_hound/animations/attack/west/01.webp",
+            "undead_hound/animations/attack/west/02.webp",
+            "undead_hound/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:57 GMT",
+          "src_frames": 4,
+          "sub": "3cc28302-cb2a-4aa2-8633-449e1a34d015"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "bd940d7a-6b8b-48a8-b8d1-c0a44c9e7c39",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__east.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/east/00.webp",
+            "undead_hound/animations/angry/east/01.webp",
+            "undead_hound/animations/angry/east/02.webp",
+            "undead_hound/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:54:58 GMT",
+          "src_frames": 4,
+          "sub": "c1c2f070-c1c7-442e-9528-accea67f9d1c"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__north.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/north/00.webp",
+            "undead_hound/animations/angry/north/01.webp",
+            "undead_hound/animations/angry/north/02.webp",
+            "undead_hound/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:00 GMT",
+          "src_frames": 4,
+          "sub": "5901e199-37f2-4bfd-88ff-7c51629fc964"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__north-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/north-east/00.webp",
+            "undead_hound/animations/angry/north-east/01.webp",
+            "undead_hound/animations/angry/north-east/02.webp",
+            "undead_hound/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:01 GMT",
+          "src_frames": 4,
+          "sub": "c3f2533b-bf23-4e69-aab5-6f8211116bf8"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__north-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/north-west/00.webp",
+            "undead_hound/animations/angry/north-west/01.webp",
+            "undead_hound/animations/angry/north-west/02.webp",
+            "undead_hound/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:02 GMT",
+          "src_frames": 4,
+          "sub": "010afe8a-1c64-4741-8fda-d70315d5e51e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__south.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/south/00.webp",
+            "undead_hound/animations/angry/south/01.webp",
+            "undead_hound/animations/angry/south/02.webp",
+            "undead_hound/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:05 GMT",
+          "src_frames": 4,
+          "sub": "2c3c27a6-894e-4f40-b9b6-3a66eac0fce8"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__south-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/south-east/00.webp",
+            "undead_hound/animations/angry/south-east/01.webp",
+            "undead_hound/animations/angry/south-east/02.webp",
+            "undead_hound/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:06 GMT",
+          "src_frames": 4,
+          "sub": "1a31fb9a-bf26-4473-a69e-42fb2aa8a6ca"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__south-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/south-west/00.webp",
+            "undead_hound/animations/angry/south-west/01.webp",
+            "undead_hound/animations/angry/south-west/02.webp",
+            "undead_hound/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:08 GMT",
+          "src_frames": 4,
+          "sub": "d5996a3c-d004-41d3-be70-172b818c5f2e"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/angry__west.webp",
+          "frame_paths": [
+            "undead_hound/animations/angry/west/00.webp",
+            "undead_hound/animations/angry/west/01.webp",
+            "undead_hound/animations/angry/west/02.webp",
+            "undead_hound/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:09 GMT",
+          "src_frames": 4,
+          "sub": "7cb72ecb-cc07-4711-9efc-79e490c6a730"
+        }
+      }
+    },
+    "die": {
+      "group_id": "cf7386d3-e30d-4794-a874-266bf82406ca",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__east.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/east/00.webp",
+            "undead_hound/animations/die/east/01.webp",
+            "undead_hound/animations/die/east/02.webp",
+            "undead_hound/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:10 GMT",
+          "src_frames": 4,
+          "sub": "18c7b943-7fed-4891-b537-993704b8c2ba"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__north.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/north/00.webp",
+            "undead_hound/animations/die/north/01.webp",
+            "undead_hound/animations/die/north/02.webp",
+            "undead_hound/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:11 GMT",
+          "src_frames": 4,
+          "sub": "d512431f-c958-4e3f-be8f-23e97f7b5d0d"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__north-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/north-east/00.webp",
+            "undead_hound/animations/die/north-east/01.webp",
+            "undead_hound/animations/die/north-east/02.webp",
+            "undead_hound/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:13 GMT",
+          "src_frames": 4,
+          "sub": "3ecb930e-072f-4648-a136-537cc04d06b1"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__north-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/north-west/00.webp",
+            "undead_hound/animations/die/north-west/01.webp",
+            "undead_hound/animations/die/north-west/02.webp",
+            "undead_hound/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:14 GMT",
+          "src_frames": 4,
+          "sub": "7a1ae4ac-5f7b-41a4-9eb4-d44329571e98"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__south.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/south/00.webp",
+            "undead_hound/animations/die/south/01.webp",
+            "undead_hound/animations/die/south/02.webp",
+            "undead_hound/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:17 GMT",
+          "src_frames": 4,
+          "sub": "b1115486-8d4d-4a1f-9d8b-e1d50de3dd26"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__south-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/south-east/00.webp",
+            "undead_hound/animations/die/south-east/01.webp",
+            "undead_hound/animations/die/south-east/02.webp",
+            "undead_hound/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:19 GMT",
+          "src_frames": 4,
+          "sub": "783cfc17-15d2-4bc7-9535-17bd3a024f85"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__south-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/south-west/00.webp",
+            "undead_hound/animations/die/south-west/01.webp",
+            "undead_hound/animations/die/south-west/02.webp",
+            "undead_hound/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:20 GMT",
+          "src_frames": 4,
+          "sub": "a53d2975-f31f-4a9a-b819-bd88f265fd7b"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_hound/animations/die__west.webp",
+          "frame_paths": [
+            "undead_hound/animations/die/west/00.webp",
+            "undead_hound/animations/die/west/01.webp",
+            "undead_hound/animations/die/west/02.webp",
+            "undead_hound/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:22 GMT",
+          "src_frames": 4,
+          "sub": "e10a8bee-89e9-4bcf-9ce5-100d22946913"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "9764b1fe-c266-407a-8a73-893a0fd4c594",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__east.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/east/00.webp",
+            "undead_hound/animations/walk/east/01.webp",
+            "undead_hound/animations/walk/east/02.webp",
+            "undead_hound/animations/walk/east/03.webp",
+            "undead_hound/animations/walk/east/04.webp",
+            "undead_hound/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:23 GMT",
+          "src_frames": 6,
+          "sub": "dc3353e6-b39b-4b1d-bfcd-04ad234a71ad"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__north.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/north/00.webp",
+            "undead_hound/animations/walk/north/01.webp",
+            "undead_hound/animations/walk/north/02.webp",
+            "undead_hound/animations/walk/north/03.webp",
+            "undead_hound/animations/walk/north/04.webp",
+            "undead_hound/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:24 GMT",
+          "src_frames": 6,
+          "sub": "369198a2-e95f-4bb5-bf90-9f04437e0370"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__north-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/north-east/00.webp",
+            "undead_hound/animations/walk/north-east/01.webp",
+            "undead_hound/animations/walk/north-east/02.webp",
+            "undead_hound/animations/walk/north-east/03.webp",
+            "undead_hound/animations/walk/north-east/04.webp",
+            "undead_hound/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:26 GMT",
+          "src_frames": 6,
+          "sub": "7228ee3f-3ecc-46c6-9483-9e5971f360e0"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__north-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/north-west/00.webp",
+            "undead_hound/animations/walk/north-west/01.webp",
+            "undead_hound/animations/walk/north-west/02.webp",
+            "undead_hound/animations/walk/north-west/03.webp",
+            "undead_hound/animations/walk/north-west/04.webp",
+            "undead_hound/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:27 GMT",
+          "src_frames": 6,
+          "sub": "038cac52-b84b-48dc-b058-1150604988e8"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__south.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/south/00.webp",
+            "undead_hound/animations/walk/south/01.webp",
+            "undead_hound/animations/walk/south/02.webp",
+            "undead_hound/animations/walk/south/03.webp",
+            "undead_hound/animations/walk/south/04.webp",
+            "undead_hound/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:30 GMT",
+          "src_frames": 6,
+          "sub": "ea884fd7-3fab-4473-9a52-5cd8e4b6a194"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__south-east.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/south-east/00.webp",
+            "undead_hound/animations/walk/south-east/01.webp",
+            "undead_hound/animations/walk/south-east/02.webp",
+            "undead_hound/animations/walk/south-east/03.webp",
+            "undead_hound/animations/walk/south-east/04.webp",
+            "undead_hound/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:31 GMT",
+          "src_frames": 6,
+          "sub": "39e0f7be-c71d-4b17-b055-cd99a1696252"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__south-west.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/south-west/00.webp",
+            "undead_hound/animations/walk/south-west/01.webp",
+            "undead_hound/animations/walk/south-west/02.webp",
+            "undead_hound/animations/walk/south-west/03.webp",
+            "undead_hound/animations/walk/south-west/04.webp",
+            "undead_hound/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:33 GMT",
+          "src_frames": 6,
+          "sub": "535104a9-7ec5-4308-88f6-25a3ff8ba137"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "undead_hound/animations/walk__west.webp",
+          "frame_paths": [
+            "undead_hound/animations/walk/west/00.webp",
+            "undead_hound/animations/walk/west/01.webp",
+            "undead_hound/animations/walk/west/02.webp",
+            "undead_hound/animations/walk/west/03.webp",
+            "undead_hound/animations/walk/west/04.webp",
+            "undead_hound/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:55:34 GMT",
+          "src_frames": 6,
+          "sub": "dcd6aa8c-1e1f-4d43-ac49-f13bf7dce110"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

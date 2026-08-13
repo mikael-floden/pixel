@@ -1,0 +1,643 @@
+{
+  "id": "hellhound",
+  "name": "Cinderhowl",
+  "lore": "A hound cracked open by its own fire. Embers sift from its seams, and its howl smells of burning.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "069a5964-d8af-4415-aeb4-9a069cd8822c",
+    "url": "https://www.pixellab.ai/create-character/069a5964-d8af-4415-aeb4-9a069cd8822c",
+    "prompt": "Four-legged demonic hound with charcoal-black fur, glowing red-orange cracks across its legs and chest, pointed ears, long fangs, fiery eyes, black claws and a tail ending in smoldering embers. Compact aggressive silhouette.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 124,
+    "height": 124
+  },
+  "native_size": {
+    "width": 124,
+    "height": 124
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "hellhound/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "hellhound/rotations/south.webp",
+    "west": "hellhound/rotations/west.webp",
+    "east": "hellhound/rotations/east.webp",
+    "north": "hellhound/rotations/north.webp",
+    "south-east": "hellhound/rotations/south-east.webp",
+    "north-east": "hellhound/rotations/north-east.webp",
+    "north-west": "hellhound/rotations/north-west.webp",
+    "south-west": "hellhound/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "6173fb94-8e54-4485-a5bd-b87ed700f1e5",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__east.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/east/00.webp",
+            "hellhound/animations/idle/east/01.webp",
+            "hellhound/animations/idle/east/02.webp",
+            "hellhound/animations/idle/east/03.webp",
+            "hellhound/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:08 GMT",
+          "src_frames": 5,
+          "sub": "ca7ae89b-d5be-45a4-87ee-4217b4907961"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__north.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/north/00.webp",
+            "hellhound/animations/idle/north/01.webp",
+            "hellhound/animations/idle/north/02.webp",
+            "hellhound/animations/idle/north/03.webp",
+            "hellhound/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:09 GMT",
+          "src_frames": 5,
+          "sub": "58b86542-ea5b-43e5-b91b-bcc3703b34b6"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__north-east.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/north-east/00.webp",
+            "hellhound/animations/idle/north-east/01.webp",
+            "hellhound/animations/idle/north-east/02.webp",
+            "hellhound/animations/idle/north-east/03.webp",
+            "hellhound/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:10 GMT",
+          "src_frames": 5,
+          "sub": "60422dda-413f-493c-9f2f-8b1aadd81971"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__north-west.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/north-west/00.webp",
+            "hellhound/animations/idle/north-west/01.webp",
+            "hellhound/animations/idle/north-west/02.webp",
+            "hellhound/animations/idle/north-west/03.webp",
+            "hellhound/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:11 GMT",
+          "src_frames": 5,
+          "sub": "66af1c8c-96a6-4c1c-be28-ca61608777d0"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__south.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/south/00.webp",
+            "hellhound/animations/idle/south/01.webp",
+            "hellhound/animations/idle/south/02.webp",
+            "hellhound/animations/idle/south/03.webp",
+            "hellhound/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:13 GMT",
+          "src_frames": 5,
+          "sub": "34d3a368-c2e8-4204-a98c-2d87935c7b64"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__south-east.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/south-east/00.webp",
+            "hellhound/animations/idle/south-east/01.webp",
+            "hellhound/animations/idle/south-east/02.webp",
+            "hellhound/animations/idle/south-east/03.webp",
+            "hellhound/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:15 GMT",
+          "src_frames": 5,
+          "sub": "6cfed6bb-e186-4b57-85ce-49d580cdc282"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__south-west.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/south-west/00.webp",
+            "hellhound/animations/idle/south-west/01.webp",
+            "hellhound/animations/idle/south-west/02.webp",
+            "hellhound/animations/idle/south-west/03.webp",
+            "hellhound/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:18 GMT",
+          "src_frames": 5,
+          "sub": "839a3007-e049-44f1-aad8-491a61e4714c"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "hellhound/animations/idle__west.webp",
+          "frame_paths": [
+            "hellhound/animations/idle/west/00.webp",
+            "hellhound/animations/idle/west/01.webp",
+            "hellhound/animations/idle/west/02.webp",
+            "hellhound/animations/idle/west/03.webp",
+            "hellhound/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:20 GMT",
+          "src_frames": 5,
+          "sub": "b4b02764-a302-471f-a8cb-33b03299e6d7"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "b5c3bc7e-5482-4be7-9dd4-656d3124c190",
+      "source_name": "custom-Fast flame attack",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__east.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/east/00.webp",
+            "hellhound/animations/attack/east/01.webp",
+            "hellhound/animations/attack/east/02.webp",
+            "hellhound/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:21 GMT",
+          "src_frames": 4,
+          "sub": "1e6c0080-c709-4ad4-bc5c-b17d670ec192"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__north.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/north/00.webp",
+            "hellhound/animations/attack/north/01.webp",
+            "hellhound/animations/attack/north/02.webp",
+            "hellhound/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:22 GMT",
+          "src_frames": 4,
+          "sub": "7860d141-9418-4eb7-9e39-0ba3f03d54bd"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__north-east.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/north-east/00.webp",
+            "hellhound/animations/attack/north-east/01.webp",
+            "hellhound/animations/attack/north-east/02.webp",
+            "hellhound/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Wed, 12 Aug 2026 22:37:53 GMT",
+          "src_frames": 4,
+          "sub": "f59fbdc0-281c-4830-a093-3071a6b20ed8"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__north-west.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/north-west/00.webp",
+            "hellhound/animations/attack/north-west/01.webp",
+            "hellhound/animations/attack/north-west/02.webp",
+            "hellhound/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:25 GMT",
+          "src_frames": 4,
+          "sub": "0a4e8ba4-b310-432d-a397-a76a98eefac7"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__south.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/south/00.webp",
+            "hellhound/animations/attack/south/01.webp",
+            "hellhound/animations/attack/south/02.webp",
+            "hellhound/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:26 GMT",
+          "src_frames": 4,
+          "sub": "897d5bc8-1e3c-45f3-a525-f5c195031bcc"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__south-east.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/south-east/00.webp",
+            "hellhound/animations/attack/south-east/01.webp",
+            "hellhound/animations/attack/south-east/02.webp",
+            "hellhound/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:27 GMT",
+          "src_frames": 4,
+          "sub": "1d6836a4-5253-481e-8a3d-e70078b54260"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__south-west.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/south-west/00.webp",
+            "hellhound/animations/attack/south-west/01.webp",
+            "hellhound/animations/attack/south-west/02.webp",
+            "hellhound/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:28 GMT",
+          "src_frames": 4,
+          "sub": "9efd4027-3871-4e2b-af67-2ff25c975494"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "hellhound/animations/attack__west.webp",
+          "frame_paths": [
+            "hellhound/animations/attack/west/00.webp",
+            "hellhound/animations/attack/west/01.webp",
+            "hellhound/animations/attack/west/02.webp",
+            "hellhound/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:29 GMT",
+          "src_frames": 4,
+          "sub": "3e2d9c85-25b4-4828-bf28-c4348fcae0b6"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "dfa80214-aa8c-4a9a-992f-00ce89ce4fec",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__east.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/east/00.webp",
+            "hellhound/animations/angry/east/01.webp",
+            "hellhound/animations/angry/east/02.webp",
+            "hellhound/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:30 GMT",
+          "src_frames": 4,
+          "sub": "e6abca3e-8ee3-4a51-a920-15f7964f2cbb"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__north.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/north/00.webp",
+            "hellhound/animations/angry/north/01.webp",
+            "hellhound/animations/angry/north/02.webp",
+            "hellhound/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:33 GMT",
+          "src_frames": 4,
+          "sub": "0a0eae87-896e-435d-a16f-733343c00bfb"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__north-east.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/north-east/00.webp",
+            "hellhound/animations/angry/north-east/01.webp",
+            "hellhound/animations/angry/north-east/02.webp",
+            "hellhound/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:34 GMT",
+          "src_frames": 4,
+          "sub": "6eb18797-9fc6-4fa0-87e8-d65ed4b7def3"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__north-west.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/north-west/00.webp",
+            "hellhound/animations/angry/north-west/01.webp",
+            "hellhound/animations/angry/north-west/02.webp",
+            "hellhound/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:36 GMT",
+          "src_frames": 4,
+          "sub": "8a5d707d-09b2-401f-9276-08489bc9b770"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__south.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/south/00.webp",
+            "hellhound/animations/angry/south/01.webp",
+            "hellhound/animations/angry/south/02.webp",
+            "hellhound/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:37 GMT",
+          "src_frames": 4,
+          "sub": "6efe72c3-0ccd-424c-8347-2fc50ff516c9"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__south-east.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/south-east/00.webp",
+            "hellhound/animations/angry/south-east/01.webp",
+            "hellhound/animations/angry/south-east/02.webp",
+            "hellhound/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:38 GMT",
+          "src_frames": 4,
+          "sub": "94b9a690-4421-4e61-9bb2-3e91e17d7d7e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__south-west.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/south-west/00.webp",
+            "hellhound/animations/angry/south-west/01.webp",
+            "hellhound/animations/angry/south-west/02.webp",
+            "hellhound/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:40 GMT",
+          "src_frames": 4,
+          "sub": "8c2c12ca-119d-4ef5-b367-3213ef99e5e5"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "hellhound/animations/angry__west.webp",
+          "frame_paths": [
+            "hellhound/animations/angry/west/00.webp",
+            "hellhound/animations/angry/west/01.webp",
+            "hellhound/animations/angry/west/02.webp",
+            "hellhound/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:41 GMT",
+          "src_frames": 4,
+          "sub": "8c946f48-1522-49b5-b6f3-dc4d58c42b61"
+        }
+      }
+    },
+    "die": {
+      "group_id": "6b743d85-e4cd-4056-8f16-d979c6695e4f",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__east.webp",
+          "frame_paths": [
+            "hellhound/animations/die/east/00.webp",
+            "hellhound/animations/die/east/01.webp",
+            "hellhound/animations/die/east/02.webp",
+            "hellhound/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:42 GMT",
+          "src_frames": 4,
+          "sub": "c6ca6208-3df0-4f26-b6cb-b9723cf0c061"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__north.webp",
+          "frame_paths": [
+            "hellhound/animations/die/north/00.webp",
+            "hellhound/animations/die/north/01.webp",
+            "hellhound/animations/die/north/02.webp",
+            "hellhound/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:44 GMT",
+          "src_frames": 4,
+          "sub": "3a858de0-e9b9-4620-a33e-9f13b9c0b985"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__north-east.webp",
+          "frame_paths": [
+            "hellhound/animations/die/north-east/00.webp",
+            "hellhound/animations/die/north-east/01.webp",
+            "hellhound/animations/die/north-east/02.webp",
+            "hellhound/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:45 GMT",
+          "src_frames": 4,
+          "sub": "ac78be7f-e620-4211-9597-ad0d397841f2"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__north-west.webp",
+          "frame_paths": [
+            "hellhound/animations/die/north-west/00.webp",
+            "hellhound/animations/die/north-west/01.webp",
+            "hellhound/animations/die/north-west/02.webp",
+            "hellhound/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:46 GMT",
+          "src_frames": 4,
+          "sub": "de9358c2-7ac3-4d03-a819-ed8c19c78660"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__south.webp",
+          "frame_paths": [
+            "hellhound/animations/die/south/00.webp",
+            "hellhound/animations/die/south/01.webp",
+            "hellhound/animations/die/south/02.webp",
+            "hellhound/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:48 GMT",
+          "src_frames": 4,
+          "sub": "cb217e67-a8d8-47fa-8f4c-24d93ddd8793"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__south-east.webp",
+          "frame_paths": [
+            "hellhound/animations/die/south-east/00.webp",
+            "hellhound/animations/die/south-east/01.webp",
+            "hellhound/animations/die/south-east/02.webp",
+            "hellhound/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:49 GMT",
+          "src_frames": 4,
+          "sub": "791f4f14-fa28-4580-8be5-7bd1e71262ed"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__south-west.webp",
+          "frame_paths": [
+            "hellhound/animations/die/south-west/00.webp",
+            "hellhound/animations/die/south-west/01.webp",
+            "hellhound/animations/die/south-west/02.webp",
+            "hellhound/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:55 GMT",
+          "src_frames": 4,
+          "sub": "01ef5247-e80c-4d91-80c8-22a7f67f46cf"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "hellhound/animations/die__west.webp",
+          "frame_paths": [
+            "hellhound/animations/die/west/00.webp",
+            "hellhound/animations/die/west/01.webp",
+            "hellhound/animations/die/west/02.webp",
+            "hellhound/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:56 GMT",
+          "src_frames": 4,
+          "sub": "7c4e8906-1eaf-41dd-b70c-2201fc6f0ed8"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "4044af9a-62b3-4e56-ae7f-29641076c7c4",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__east.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/east/00.webp",
+            "hellhound/animations/walk/east/01.webp",
+            "hellhound/animations/walk/east/02.webp",
+            "hellhound/animations/walk/east/03.webp",
+            "hellhound/animations/walk/east/04.webp",
+            "hellhound/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:57 GMT",
+          "src_frames": 6,
+          "sub": "85422069-40bc-4758-b52a-5c29d3c284d8"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__north.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/north/00.webp",
+            "hellhound/animations/walk/north/01.webp",
+            "hellhound/animations/walk/north/02.webp",
+            "hellhound/animations/walk/north/03.webp",
+            "hellhound/animations/walk/north/04.webp",
+            "hellhound/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:58 GMT",
+          "src_frames": 6,
+          "sub": "df24a1c6-1961-41f1-be92-4148041e8c30"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__north-east.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/north-east/00.webp",
+            "hellhound/animations/walk/north-east/01.webp",
+            "hellhound/animations/walk/north-east/02.webp",
+            "hellhound/animations/walk/north-east/03.webp",
+            "hellhound/animations/walk/north-east/04.webp",
+            "hellhound/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:59:59 GMT",
+          "src_frames": 6,
+          "sub": "89053f26-8933-4e76-8872-0a75efe46ff7"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__north-west.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/north-west/00.webp",
+            "hellhound/animations/walk/north-west/01.webp",
+            "hellhound/animations/walk/north-west/02.webp",
+            "hellhound/animations/walk/north-west/03.webp",
+            "hellhound/animations/walk/north-west/04.webp",
+            "hellhound/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:01 GMT",
+          "src_frames": 6,
+          "sub": "2c645a33-4a68-4857-b324-92c8a4f47c9e"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__south.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/south/00.webp",
+            "hellhound/animations/walk/south/01.webp",
+            "hellhound/animations/walk/south/02.webp",
+            "hellhound/animations/walk/south/03.webp",
+            "hellhound/animations/walk/south/04.webp",
+            "hellhound/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:03 GMT",
+          "src_frames": 6,
+          "sub": "a3d2ef05-4bfe-451a-bf84-2d4205e5b22b"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__south-east.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/south-east/00.webp",
+            "hellhound/animations/walk/south-east/01.webp",
+            "hellhound/animations/walk/south-east/02.webp",
+            "hellhound/animations/walk/south-east/03.webp",
+            "hellhound/animations/walk/south-east/04.webp",
+            "hellhound/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:04 GMT",
+          "src_frames": 6,
+          "sub": "dd29cdee-bbdd-4bb8-bef2-a48bd341fd9e"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__south-west.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/south-west/00.webp",
+            "hellhound/animations/walk/south-west/01.webp",
+            "hellhound/animations/walk/south-west/02.webp",
+            "hellhound/animations/walk/south-west/03.webp",
+            "hellhound/animations/walk/south-west/04.webp",
+            "hellhound/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:05 GMT",
+          "src_frames": 6,
+          "sub": "5dd76d60-2c42-4628-945d-391ac34c321a"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "hellhound/animations/walk__west.webp",
+          "frame_paths": [
+            "hellhound/animations/walk/west/00.webp",
+            "hellhound/animations/walk/west/01.webp",
+            "hellhound/animations/walk/west/02.webp",
+            "hellhound/animations/walk/west/03.webp",
+            "hellhound/animations/walk/west/04.webp",
+            "hellhound/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:00:07 GMT",
+          "src_frames": 6,
+          "sub": "ea271a7e-5a8f-46e5-9423-c68e238b85ee"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Fast flame attack",
+      "key": "attack",
+      "direction": "north-east",
+      "takes": [
+        "0a20e276-1152-4df5-8bab-fc70a276a8b9",
+        "f59fbdc0-281c-4830-a093-3071a6b20ed8"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

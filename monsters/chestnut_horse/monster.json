@@ -1,0 +1,633 @@
+{
+  "id": "chestnut_horse",
+  "name": "Sorrel",
+  "lore": "A farm horse that outlived its farm. It still waits at the gate each dusk for a hand that never comes.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "ccfb0bd7-2e6f-4065-ad8c-f4d0d5393ce1",
+    "url": "https://www.pixellab.ai/create-character/ccfb0bd7-2e6f-4065-ad8c-f4d0d5393ce1",
+    "prompt": "Normal four-legged adult horse with rich reddish-brown chestnut coat, slightly darker legs, reddish mane and long tail, dark hooves and medium muscular build. Natural everyday horse appearance with no equipment or fantasy elements.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 128,
+    "height": 128
+  },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "chestnut_horse/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "chestnut_horse/rotations/south.webp",
+    "west": "chestnut_horse/rotations/west.webp",
+    "east": "chestnut_horse/rotations/east.webp",
+    "north": "chestnut_horse/rotations/north.webp",
+    "south-east": "chestnut_horse/rotations/south-east.webp",
+    "north-east": "chestnut_horse/rotations/north-east.webp",
+    "north-west": "chestnut_horse/rotations/north-west.webp",
+    "south-west": "chestnut_horse/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "c6050622-4bf8-4137-81b9-1d230aca71ef",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/east/00.webp",
+            "chestnut_horse/animations/idle/east/01.webp",
+            "chestnut_horse/animations/idle/east/02.webp",
+            "chestnut_horse/animations/idle/east/03.webp",
+            "chestnut_horse/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:44 GMT",
+          "src_frames": 5,
+          "sub": "4d8d30a0-b147-4665-b4c8-ab6330ad8988"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__north.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/north/00.webp",
+            "chestnut_horse/animations/idle/north/01.webp",
+            "chestnut_horse/animations/idle/north/02.webp",
+            "chestnut_horse/animations/idle/north/03.webp",
+            "chestnut_horse/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:45 GMT",
+          "src_frames": 5,
+          "sub": "f1cc8aa1-5765-4059-907a-24755041c32b"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__north-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/north-east/00.webp",
+            "chestnut_horse/animations/idle/north-east/01.webp",
+            "chestnut_horse/animations/idle/north-east/02.webp",
+            "chestnut_horse/animations/idle/north-east/03.webp",
+            "chestnut_horse/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:47 GMT",
+          "src_frames": 5,
+          "sub": "600b90b2-634f-441a-aff8-e28145a349fa"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__north-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/north-west/00.webp",
+            "chestnut_horse/animations/idle/north-west/01.webp",
+            "chestnut_horse/animations/idle/north-west/02.webp",
+            "chestnut_horse/animations/idle/north-west/03.webp",
+            "chestnut_horse/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:48 GMT",
+          "src_frames": 5,
+          "sub": "080ac3dd-7e10-4ac2-888f-bf56a81bfb47"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__south.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/south/00.webp",
+            "chestnut_horse/animations/idle/south/01.webp",
+            "chestnut_horse/animations/idle/south/02.webp",
+            "chestnut_horse/animations/idle/south/03.webp",
+            "chestnut_horse/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:49 GMT",
+          "src_frames": 5,
+          "sub": "c3d9cedc-f3cc-4057-aa08-bcb6b9590efd"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__south-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/south-east/00.webp",
+            "chestnut_horse/animations/idle/south-east/01.webp",
+            "chestnut_horse/animations/idle/south-east/02.webp",
+            "chestnut_horse/animations/idle/south-east/03.webp",
+            "chestnut_horse/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:51 GMT",
+          "src_frames": 5,
+          "sub": "ace44a51-5d52-4207-8adb-76d21b135136"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__south-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/south-west/00.webp",
+            "chestnut_horse/animations/idle/south-west/01.webp",
+            "chestnut_horse/animations/idle/south-west/02.webp",
+            "chestnut_horse/animations/idle/south-west/03.webp",
+            "chestnut_horse/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:52 GMT",
+          "src_frames": 5,
+          "sub": "94ae2710-d6a1-470c-92b1-7a59ae1f7abf"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "chestnut_horse/animations/idle__west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/idle/west/00.webp",
+            "chestnut_horse/animations/idle/west/01.webp",
+            "chestnut_horse/animations/idle/west/02.webp",
+            "chestnut_horse/animations/idle/west/03.webp",
+            "chestnut_horse/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:53 GMT",
+          "src_frames": 5,
+          "sub": "3cdfd252-72f4-460e-9086-3c594a90b35d"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "c224c201-d879-402e-aca8-1a83cf6893ec",
+      "source_name": "custom-Charge - Lowers head and quickly charges forward a",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/east/00.webp",
+            "chestnut_horse/animations/attack/east/01.webp",
+            "chestnut_horse/animations/attack/east/02.webp",
+            "chestnut_horse/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:55 GMT",
+          "src_frames": 4,
+          "sub": "02a14432-ed94-40e3-aadc-37d7027ef717"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__north.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/north/00.webp",
+            "chestnut_horse/animations/attack/north/01.webp",
+            "chestnut_horse/animations/attack/north/02.webp",
+            "chestnut_horse/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:58 GMT",
+          "src_frames": 4,
+          "sub": "db80fcb3-6d1b-4588-9ce9-0bfd26305abd"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__north-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/north-east/00.webp",
+            "chestnut_horse/animations/attack/north-east/01.webp",
+            "chestnut_horse/animations/attack/north-east/02.webp",
+            "chestnut_horse/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:59 GMT",
+          "src_frames": 4,
+          "sub": "67584bbf-4987-446a-81fc-3406fd61f869"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__north-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/north-west/00.webp",
+            "chestnut_horse/animations/attack/north-west/01.webp",
+            "chestnut_horse/animations/attack/north-west/02.webp",
+            "chestnut_horse/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:00 GMT",
+          "src_frames": 4,
+          "sub": "f4e7e015-f109-4df8-a1b5-e64b8d12171b"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__south.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/south/00.webp",
+            "chestnut_horse/animations/attack/south/01.webp",
+            "chestnut_horse/animations/attack/south/02.webp",
+            "chestnut_horse/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:01 GMT",
+          "src_frames": 4,
+          "sub": "6cf0df84-acd4-47d9-a421-2bf4585fb499"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__south-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/south-east/00.webp",
+            "chestnut_horse/animations/attack/south-east/01.webp",
+            "chestnut_horse/animations/attack/south-east/02.webp",
+            "chestnut_horse/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:03 GMT",
+          "src_frames": 4,
+          "sub": "6846fbfd-7001-4de5-afb9-6702c376fae1"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__south-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/south-west/00.webp",
+            "chestnut_horse/animations/attack/south-west/01.webp",
+            "chestnut_horse/animations/attack/south-west/02.webp",
+            "chestnut_horse/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:05 GMT",
+          "src_frames": 4,
+          "sub": "5f2bf6c5-2119-4e14-8ba1-1fd50885f6e6"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/attack__west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/attack/west/00.webp",
+            "chestnut_horse/animations/attack/west/01.webp",
+            "chestnut_horse/animations/attack/west/02.webp",
+            "chestnut_horse/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:09 GMT",
+          "src_frames": 4,
+          "sub": "b0c08676-de0d-4109-8337-419fe9bb5ab9"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "54e11478-96ce-42e5-bec2-7abe31cdbf09",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/east/00.webp",
+            "chestnut_horse/animations/angry/east/01.webp",
+            "chestnut_horse/animations/angry/east/02.webp",
+            "chestnut_horse/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:10 GMT",
+          "src_frames": 4,
+          "sub": "6500f492-6681-463e-8732-c027bceea3b5"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__north.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/north/00.webp",
+            "chestnut_horse/animations/angry/north/01.webp",
+            "chestnut_horse/animations/angry/north/02.webp",
+            "chestnut_horse/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:11 GMT",
+          "src_frames": 4,
+          "sub": "60b29c3b-2fe5-4f37-8103-26ffef25a504"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__north-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/north-east/00.webp",
+            "chestnut_horse/animations/angry/north-east/01.webp",
+            "chestnut_horse/animations/angry/north-east/02.webp",
+            "chestnut_horse/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:13 GMT",
+          "src_frames": 4,
+          "sub": "3fe7830d-f313-4f92-8d5b-674f7c8e1343"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__north-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/north-west/00.webp",
+            "chestnut_horse/animations/angry/north-west/01.webp",
+            "chestnut_horse/animations/angry/north-west/02.webp",
+            "chestnut_horse/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:14 GMT",
+          "src_frames": 4,
+          "sub": "b479fdca-83ff-4294-8c8a-83256f154f08"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__south.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/south/00.webp",
+            "chestnut_horse/animations/angry/south/01.webp",
+            "chestnut_horse/animations/angry/south/02.webp",
+            "chestnut_horse/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:15 GMT",
+          "src_frames": 4,
+          "sub": "c84545ce-1f31-4858-a1d6-1e2fd44f5b9f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__south-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/south-east/00.webp",
+            "chestnut_horse/animations/angry/south-east/01.webp",
+            "chestnut_horse/animations/angry/south-east/02.webp",
+            "chestnut_horse/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:17 GMT",
+          "src_frames": 4,
+          "sub": "34daf82e-6370-4017-a2d8-33beffc13529"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__south-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/south-west/00.webp",
+            "chestnut_horse/animations/angry/south-west/01.webp",
+            "chestnut_horse/animations/angry/south-west/02.webp",
+            "chestnut_horse/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:19 GMT",
+          "src_frames": 4,
+          "sub": "722f6b6e-31e0-4075-b150-3ba8005fce63"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/angry__west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/angry/west/00.webp",
+            "chestnut_horse/animations/angry/west/01.webp",
+            "chestnut_horse/animations/angry/west/02.webp",
+            "chestnut_horse/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:20 GMT",
+          "src_frames": 4,
+          "sub": "cd39f2c6-df6b-4ea9-95e7-d492f26791a1"
+        }
+      }
+    },
+    "die": {
+      "group_id": "8f2d6463-fea1-455a-9eea-7465bb5fdf25",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/east/00.webp",
+            "chestnut_horse/animations/die/east/01.webp",
+            "chestnut_horse/animations/die/east/02.webp",
+            "chestnut_horse/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:21 GMT",
+          "src_frames": 4,
+          "sub": "87296894-2eb9-4a18-860a-47b9301f39ca"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__north.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/north/00.webp",
+            "chestnut_horse/animations/die/north/01.webp",
+            "chestnut_horse/animations/die/north/02.webp",
+            "chestnut_horse/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:23 GMT",
+          "src_frames": 4,
+          "sub": "ebee5874-6b1f-4aef-a94f-c96770ef7a66"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__north-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/north-east/00.webp",
+            "chestnut_horse/animations/die/north-east/01.webp",
+            "chestnut_horse/animations/die/north-east/02.webp",
+            "chestnut_horse/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:24 GMT",
+          "src_frames": 4,
+          "sub": "8d10e7da-e67a-4b7e-bcbb-431e77c2dd13"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__north-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/north-west/00.webp",
+            "chestnut_horse/animations/die/north-west/01.webp",
+            "chestnut_horse/animations/die/north-west/02.webp",
+            "chestnut_horse/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:25 GMT",
+          "src_frames": 4,
+          "sub": "1457f253-3f9a-4c61-8bc8-527cd804901d"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__south.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/south/00.webp",
+            "chestnut_horse/animations/die/south/01.webp",
+            "chestnut_horse/animations/die/south/02.webp",
+            "chestnut_horse/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:29 GMT",
+          "src_frames": 4,
+          "sub": "469eefcd-e8ff-4fc8-8c85-f496d62e6b31"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__south-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/south-east/00.webp",
+            "chestnut_horse/animations/die/south-east/01.webp",
+            "chestnut_horse/animations/die/south-east/02.webp",
+            "chestnut_horse/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:35 GMT",
+          "src_frames": 4,
+          "sub": "74ab280b-fe86-4849-8131-e47ed78ac8fc"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__south-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/south-west/00.webp",
+            "chestnut_horse/animations/die/south-west/01.webp",
+            "chestnut_horse/animations/die/south-west/02.webp",
+            "chestnut_horse/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:36 GMT",
+          "src_frames": 4,
+          "sub": "75d17a5e-e5fc-4cf0-b410-1af3d10ec4c4"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "chestnut_horse/animations/die__west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/die/west/00.webp",
+            "chestnut_horse/animations/die/west/01.webp",
+            "chestnut_horse/animations/die/west/02.webp",
+            "chestnut_horse/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:38 GMT",
+          "src_frames": 4,
+          "sub": "ae58ddb2-fd42-4b07-85a9-d64aefcda47d"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "4c5c7836-6cb5-4707-86e2-d5d837b88e14",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/east/00.webp",
+            "chestnut_horse/animations/walk/east/01.webp",
+            "chestnut_horse/animations/walk/east/02.webp",
+            "chestnut_horse/animations/walk/east/03.webp",
+            "chestnut_horse/animations/walk/east/04.webp",
+            "chestnut_horse/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:39 GMT",
+          "src_frames": 6,
+          "sub": "406b0cf6-accf-4f38-9061-acea7ec55808"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__north.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/north/00.webp",
+            "chestnut_horse/animations/walk/north/01.webp",
+            "chestnut_horse/animations/walk/north/02.webp",
+            "chestnut_horse/animations/walk/north/03.webp",
+            "chestnut_horse/animations/walk/north/04.webp",
+            "chestnut_horse/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:40 GMT",
+          "src_frames": 6,
+          "sub": "1c17650d-2270-4827-89c5-427d81a3a0ca"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__north-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/north-east/00.webp",
+            "chestnut_horse/animations/walk/north-east/01.webp",
+            "chestnut_horse/animations/walk/north-east/02.webp",
+            "chestnut_horse/animations/walk/north-east/03.webp",
+            "chestnut_horse/animations/walk/north-east/04.webp",
+            "chestnut_horse/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:41 GMT",
+          "src_frames": 6,
+          "sub": "15043e6c-0deb-48cc-947f-92499830bc0f"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__north-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/north-west/00.webp",
+            "chestnut_horse/animations/walk/north-west/01.webp",
+            "chestnut_horse/animations/walk/north-west/02.webp",
+            "chestnut_horse/animations/walk/north-west/03.webp",
+            "chestnut_horse/animations/walk/north-west/04.webp",
+            "chestnut_horse/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:43 GMT",
+          "src_frames": 6,
+          "sub": "4f4286ee-f3d0-4664-a6e7-404940bf362c"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__south.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/south/00.webp",
+            "chestnut_horse/animations/walk/south/01.webp",
+            "chestnut_horse/animations/walk/south/02.webp",
+            "chestnut_horse/animations/walk/south/03.webp",
+            "chestnut_horse/animations/walk/south/04.webp",
+            "chestnut_horse/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:47 GMT",
+          "src_frames": 6,
+          "sub": "07192bce-99ed-44e7-8b81-be50cda1e1cd"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__south-east.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/south-east/00.webp",
+            "chestnut_horse/animations/walk/south-east/01.webp",
+            "chestnut_horse/animations/walk/south-east/02.webp",
+            "chestnut_horse/animations/walk/south-east/03.webp",
+            "chestnut_horse/animations/walk/south-east/04.webp",
+            "chestnut_horse/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:51 GMT",
+          "src_frames": 6,
+          "sub": "82070d0a-2116-46d6-bea4-e13e27d19f65"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__south-west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/south-west/00.webp",
+            "chestnut_horse/animations/walk/south-west/01.webp",
+            "chestnut_horse/animations/walk/south-west/02.webp",
+            "chestnut_horse/animations/walk/south-west/03.webp",
+            "chestnut_horse/animations/walk/south-west/04.webp",
+            "chestnut_horse/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:52 GMT",
+          "src_frames": 6,
+          "sub": "fe5e02e6-1700-4e50-b7ba-164482e4ad8a"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "chestnut_horse/animations/walk__west.webp",
+          "frame_paths": [
+            "chestnut_horse/animations/walk/west/00.webp",
+            "chestnut_horse/animations/walk/west/01.webp",
+            "chestnut_horse/animations/walk/west/02.webp",
+            "chestnut_horse/animations/walk/west/03.webp",
+            "chestnut_horse/animations/walk/west/04.webp",
+            "chestnut_horse/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:40:54 GMT",
+          "src_frames": 6,
+          "sub": "21284b3e-d5a8-403d-9b70-59ffd513276b"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

@@ -351,7 +351,7 @@ def process_monster(mid, dry_run=False):
     for d, rel in (meta.get("rotations") or {}).items():
         p = os.path.join(ROOT, rel)
         _save(_recanvas(_load(p), canvas), p)
-    sp = os.path.join(mdir, "sprite.png")
+    sp = mirror._art_path(os.path.join(mdir, "sprite.png"))
     if os.path.exists(sp):
         _save(_recanvas(_load(sp), canvas), sp)
 
@@ -476,10 +476,10 @@ def trim_die_tails(mid, dry_run=False):
                     for f in files:
                         os.remove(os.path.join(fdir, f))
                     for i, fr in enumerate(frames):
-                        fr.save(os.path.join(fdir, f"{i:02d}.png"))
+                        mirror._save_png(fr, os.path.join(fdir, f"{i:02d}{mirror.ART_EXT}"))
                     rec["frames"] = len(frames)
                     rec["frame_paths"] = [
-                        os.path.join(mid, "animations", "die", d, f"{i:02d}.png")
+                        os.path.join(mid, "animations", "die", d, f"{i:02d}{mirror.ART_EXT}")
                         for i in range(len(frames))]
                     mirror._save_strip(frames, os.path.join(
                         mdir, "animations", f"die__{d}.png"))
@@ -511,13 +511,12 @@ def trim_die_tails(mid, dry_run=False):
             for f in files:
                 os.remove(os.path.join(fdir, f))
             for i, fr in enumerate(frames):
-                fr.save(os.path.join(fdir, f"{i:02d}.png"))
+                mirror._save_png(fr, os.path.join(fdir, f"{i:02d}{mirror.ART_EXT}"))
             rec["frames"] = len(frames)
             rec["frame_paths"] = [
-                os.path.join(mid, "animations", "die", d, f"{i:02d}.png")
+                os.path.join(mid, "animations", "die", d, f"{i:02d}{mirror.ART_EXT}")
                 for i in range(len(frames))]
             mirror._save_strip(frames, os.path.join(mdir, "animations", f"die__{d}.png"))
-            mirror._save_gif(frames, os.path.join(mdir, "animations", f"die__{d}.gif"))
             auto = applied.get(d) or {}
             auto["auto_dropped"] = sorted(set(auto.get("auto_dropped") or []) | set(drop))
             applied[d] = auto

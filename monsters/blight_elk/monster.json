@@ -1,0 +1,643 @@
+{
+  "id": "blight_elk",
+  "name": "Sporehorn",
+  "lore": "The fungus steers the elk now. Its antlers bloom green in the dark, sowing spores wherever it grieves.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "f937851a-9f6b-4919-b774-606a46ff3fe3",
+    "url": "https://www.pixellab.ai/create-character/f937851a-9f6b-4919-b774-606a46ff3fe3",
+    "prompt": "Corrupted four-legged elk-like creature with a lean horse-shaped body, sickly brown fur, huge asymmetrical antlers covered in glowing green fungus, hollow green eyes, exposed ribs and poisonous mushrooms growing along its back.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 152,
+    "height": 152
+  },
+  "native_size": {
+    "width": 152,
+    "height": 152
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "blight_elk/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "blight_elk/rotations/south.webp",
+    "west": "blight_elk/rotations/west.webp",
+    "east": "blight_elk/rotations/east.webp",
+    "north": "blight_elk/rotations/north.webp",
+    "south-east": "blight_elk/rotations/south-east.webp",
+    "north-east": "blight_elk/rotations/north-east.webp",
+    "north-west": "blight_elk/rotations/north-west.webp",
+    "south-west": "blight_elk/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "0a129954-593a-495e-91d5-bb34f4ba25f6",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__east.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/east/00.webp",
+            "blight_elk/animations/idle/east/01.webp",
+            "blight_elk/animations/idle/east/02.webp",
+            "blight_elk/animations/idle/east/03.webp",
+            "blight_elk/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:03 GMT",
+          "src_frames": 5,
+          "sub": "25f716c9-7b01-49d8-9e21-9b4084aa7fa4"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__north.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/north/00.webp",
+            "blight_elk/animations/idle/north/01.webp",
+            "blight_elk/animations/idle/north/02.webp",
+            "blight_elk/animations/idle/north/03.webp",
+            "blight_elk/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:05 GMT",
+          "src_frames": 5,
+          "sub": "37b25260-e70b-4fee-a994-66a2e0823af3"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__north-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/north-east/00.webp",
+            "blight_elk/animations/idle/north-east/01.webp",
+            "blight_elk/animations/idle/north-east/02.webp",
+            "blight_elk/animations/idle/north-east/03.webp",
+            "blight_elk/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:06 GMT",
+          "src_frames": 5,
+          "sub": "a11f32c9-4349-42fa-b20f-fcbc3c38c7f5"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__north-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/north-west/00.webp",
+            "blight_elk/animations/idle/north-west/01.webp",
+            "blight_elk/animations/idle/north-west/02.webp",
+            "blight_elk/animations/idle/north-west/03.webp",
+            "blight_elk/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:07 GMT",
+          "src_frames": 5,
+          "sub": "948d908b-d7fe-4498-b364-b61fca2ce90c"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__south.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/south/00.webp",
+            "blight_elk/animations/idle/south/01.webp",
+            "blight_elk/animations/idle/south/02.webp",
+            "blight_elk/animations/idle/south/03.webp",
+            "blight_elk/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:09 GMT",
+          "src_frames": 5,
+          "sub": "8a12e8b0-869c-46b8-a187-902dbe218c21"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__south-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/south-east/00.webp",
+            "blight_elk/animations/idle/south-east/01.webp",
+            "blight_elk/animations/idle/south-east/02.webp",
+            "blight_elk/animations/idle/south-east/03.webp",
+            "blight_elk/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:11 GMT",
+          "src_frames": 5,
+          "sub": "6226014b-b689-4cb9-b873-4167cec894ae"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__south-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/south-west/00.webp",
+            "blight_elk/animations/idle/south-west/01.webp",
+            "blight_elk/animations/idle/south-west/02.webp",
+            "blight_elk/animations/idle/south-west/03.webp",
+            "blight_elk/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:12 GMT",
+          "src_frames": 5,
+          "sub": "7bd1eaf3-2732-4506-a057-f0fd7dd6f28f"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "blight_elk/animations/idle__west.webp",
+          "frame_paths": [
+            "blight_elk/animations/idle/west/00.webp",
+            "blight_elk/animations/idle/west/01.webp",
+            "blight_elk/animations/idle/west/02.webp",
+            "blight_elk/animations/idle/west/03.webp",
+            "blight_elk/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:13 GMT",
+          "src_frames": 5,
+          "sub": "84811bfd-b958-40f2-ad35-564bf1f12783"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "0f35dfd0-7bcc-4c55-827a-59b0921244d9",
+      "source_name": "custom-Horn Strike - Lowers head and quickly thrusts horn",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__east.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/east/00.webp",
+            "blight_elk/animations/attack/east/01.webp",
+            "blight_elk/animations/attack/east/02.webp",
+            "blight_elk/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:15 GMT",
+          "src_frames": 4,
+          "sub": "2bb03d6b-532c-4618-8dc6-a89ab59caa3e"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__north.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/north/00.webp",
+            "blight_elk/animations/attack/north/01.webp",
+            "blight_elk/animations/attack/north/02.webp",
+            "blight_elk/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:15 GMT",
+          "src_frames": 4,
+          "sub": "d29e6ece-e982-483d-9845-ab99967afc91"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__north-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/north-east/00.webp",
+            "blight_elk/animations/attack/north-east/01.webp",
+            "blight_elk/animations/attack/north-east/02.webp",
+            "blight_elk/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:17 GMT",
+          "src_frames": 4,
+          "sub": "a90177e6-5bfb-47ef-8605-f118c26685e9"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__north-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/north-west/00.webp",
+            "blight_elk/animations/attack/north-west/01.webp",
+            "blight_elk/animations/attack/north-west/02.webp",
+            "blight_elk/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:18 GMT",
+          "src_frames": 4,
+          "sub": "8765fcaf-87b8-418f-baf6-bf66f5b9ae85"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__south.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/south/00.webp",
+            "blight_elk/animations/attack/south/01.webp",
+            "blight_elk/animations/attack/south/02.webp",
+            "blight_elk/animations/attack/south/03.webp"
+          ],
+          "lm": "Wed, 12 Aug 2026 22:37:45 GMT",
+          "src_frames": 4,
+          "sub": "3c915f4a-638b-4258-81f7-2a647407a78e"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__south-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/south-east/00.webp",
+            "blight_elk/animations/attack/south-east/01.webp",
+            "blight_elk/animations/attack/south-east/02.webp",
+            "blight_elk/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:20 GMT",
+          "src_frames": 4,
+          "sub": "e685ba0d-376d-4e4e-9e9d-edd499e46894"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__south-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/south-west/00.webp",
+            "blight_elk/animations/attack/south-west/01.webp",
+            "blight_elk/animations/attack/south-west/02.webp",
+            "blight_elk/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:21 GMT",
+          "src_frames": 4,
+          "sub": "50e84b10-b925-47b3-8b95-18de7b308724"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/attack__west.webp",
+          "frame_paths": [
+            "blight_elk/animations/attack/west/00.webp",
+            "blight_elk/animations/attack/west/01.webp",
+            "blight_elk/animations/attack/west/02.webp",
+            "blight_elk/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:23 GMT",
+          "src_frames": 4,
+          "sub": "a01caca6-7648-4bdc-8970-0c4c43676124"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "ae64beb9-c9cb-4a55-bce3-ba05aeef9e0e",
+      "source_name": "custom-angry but calm idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__east.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/east/00.webp",
+            "blight_elk/animations/angry/east/01.webp",
+            "blight_elk/animations/angry/east/02.webp",
+            "blight_elk/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:25 GMT",
+          "src_frames": 4,
+          "sub": "4355e00e-cfe8-44dd-8958-2631d7e12108"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__north.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/north/00.webp",
+            "blight_elk/animations/angry/north/01.webp",
+            "blight_elk/animations/angry/north/02.webp",
+            "blight_elk/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:26 GMT",
+          "src_frames": 4,
+          "sub": "31114a83-5254-421b-b247-e8ae0adfc302"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__north-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/north-east/00.webp",
+            "blight_elk/animations/angry/north-east/01.webp",
+            "blight_elk/animations/angry/north-east/02.webp",
+            "blight_elk/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:27 GMT",
+          "src_frames": 4,
+          "sub": "93745dc6-b8e5-4456-835c-17c9c260e78e"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__north-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/north-west/00.webp",
+            "blight_elk/animations/angry/north-west/01.webp",
+            "blight_elk/animations/angry/north-west/02.webp",
+            "blight_elk/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:28 GMT",
+          "src_frames": 4,
+          "sub": "f440cccf-a4bb-4e21-962e-05b6b9bac5a5"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__south.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/south/00.webp",
+            "blight_elk/animations/angry/south/01.webp",
+            "blight_elk/animations/angry/south/02.webp",
+            "blight_elk/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:29 GMT",
+          "src_frames": 4,
+          "sub": "5de9a2fa-e33a-42d4-94f5-92ccc07c6c39"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__south-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/south-east/00.webp",
+            "blight_elk/animations/angry/south-east/01.webp",
+            "blight_elk/animations/angry/south-east/02.webp",
+            "blight_elk/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:31 GMT",
+          "src_frames": 4,
+          "sub": "0e2a6975-3d6b-44d3-8086-60f5e84a1f00"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__south-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/south-west/00.webp",
+            "blight_elk/animations/angry/south-west/01.webp",
+            "blight_elk/animations/angry/south-west/02.webp",
+            "blight_elk/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:32 GMT",
+          "src_frames": 4,
+          "sub": "468f4e21-c764-47fa-aad9-b29a07adb7fd"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/angry__west.webp",
+          "frame_paths": [
+            "blight_elk/animations/angry/west/00.webp",
+            "blight_elk/animations/angry/west/01.webp",
+            "blight_elk/animations/angry/west/02.webp",
+            "blight_elk/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:33 GMT",
+          "src_frames": 4,
+          "sub": "35265444-4cac-4de5-a25a-0e97ce3c083c"
+        }
+      }
+    },
+    "die": {
+      "group_id": "42f7de12-7e81-4e0c-a141-bfc9c8ab7fb1",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__east.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/east/00.webp",
+            "blight_elk/animations/die/east/01.webp",
+            "blight_elk/animations/die/east/02.webp",
+            "blight_elk/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:35 GMT",
+          "src_frames": 4,
+          "sub": "eb9792dc-41cd-4c53-b393-412580e6447b"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__north.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/north/00.webp",
+            "blight_elk/animations/die/north/01.webp",
+            "blight_elk/animations/die/north/02.webp",
+            "blight_elk/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:36 GMT",
+          "src_frames": 4,
+          "sub": "3c263885-ff7a-476b-b7d2-813a284168b8"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__north-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/north-east/00.webp",
+            "blight_elk/animations/die/north-east/01.webp",
+            "blight_elk/animations/die/north-east/02.webp",
+            "blight_elk/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:38 GMT",
+          "src_frames": 4,
+          "sub": "07e48801-8520-455d-8fa1-ca0dddf9754f"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__north-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/north-west/00.webp",
+            "blight_elk/animations/die/north-west/01.webp",
+            "blight_elk/animations/die/north-west/02.webp",
+            "blight_elk/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:39 GMT",
+          "src_frames": 4,
+          "sub": "560bbbdc-4056-47ba-a8c2-17e1129c5b32"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__south.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/south/00.webp",
+            "blight_elk/animations/die/south/01.webp",
+            "blight_elk/animations/die/south/02.webp",
+            "blight_elk/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:42 GMT",
+          "src_frames": 4,
+          "sub": "3051b048-ccc2-4224-9d78-fba5e039e287"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__south-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/south-east/00.webp",
+            "blight_elk/animations/die/south-east/01.webp",
+            "blight_elk/animations/die/south-east/02.webp",
+            "blight_elk/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:43 GMT",
+          "src_frames": 4,
+          "sub": "a7a0ed98-bc48-4d34-8270-6c0d0edfbf7e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__south-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/south-west/00.webp",
+            "blight_elk/animations/die/south-west/01.webp",
+            "blight_elk/animations/die/south-west/02.webp",
+            "blight_elk/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:45 GMT",
+          "src_frames": 4,
+          "sub": "b2078386-2c24-400b-a716-66aa0ff8c948"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "blight_elk/animations/die__west.webp",
+          "frame_paths": [
+            "blight_elk/animations/die/west/00.webp",
+            "blight_elk/animations/die/west/01.webp",
+            "blight_elk/animations/die/west/02.webp",
+            "blight_elk/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:46 GMT",
+          "src_frames": 4,
+          "sub": "efc344e6-c265-4548-aaeb-985b0d4ffca3"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "d74f9350-f4c3-4e1c-a759-89c373e913a3",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__east.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/east/00.webp",
+            "blight_elk/animations/walk/east/01.webp",
+            "blight_elk/animations/walk/east/02.webp",
+            "blight_elk/animations/walk/east/03.webp",
+            "blight_elk/animations/walk/east/04.webp",
+            "blight_elk/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:48 GMT",
+          "src_frames": 6,
+          "sub": "3d933498-f521-41c3-94ad-bce8734e0640"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__north.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/north/00.webp",
+            "blight_elk/animations/walk/north/01.webp",
+            "blight_elk/animations/walk/north/02.webp",
+            "blight_elk/animations/walk/north/03.webp",
+            "blight_elk/animations/walk/north/04.webp",
+            "blight_elk/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:49 GMT",
+          "src_frames": 6,
+          "sub": "9649320a-6ec2-4e5a-944f-9262d6b48064"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__north-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/north-east/00.webp",
+            "blight_elk/animations/walk/north-east/01.webp",
+            "blight_elk/animations/walk/north-east/02.webp",
+            "blight_elk/animations/walk/north-east/03.webp",
+            "blight_elk/animations/walk/north-east/04.webp",
+            "blight_elk/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:50 GMT",
+          "src_frames": 6,
+          "sub": "ed4cad09-be99-4ff2-9108-37bc2ae01a10"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__north-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/north-west/00.webp",
+            "blight_elk/animations/walk/north-west/01.webp",
+            "blight_elk/animations/walk/north-west/02.webp",
+            "blight_elk/animations/walk/north-west/03.webp",
+            "blight_elk/animations/walk/north-west/04.webp",
+            "blight_elk/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:52 GMT",
+          "src_frames": 6,
+          "sub": "779537a5-e889-4aa0-9d48-1a3f7c5234a2"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__south.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/south/00.webp",
+            "blight_elk/animations/walk/south/01.webp",
+            "blight_elk/animations/walk/south/02.webp",
+            "blight_elk/animations/walk/south/03.webp",
+            "blight_elk/animations/walk/south/04.webp",
+            "blight_elk/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:53 GMT",
+          "src_frames": 6,
+          "sub": "83b79d2a-4d71-4b20-909a-1d911b54b437"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__south-east.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/south-east/00.webp",
+            "blight_elk/animations/walk/south-east/01.webp",
+            "blight_elk/animations/walk/south-east/02.webp",
+            "blight_elk/animations/walk/south-east/03.webp",
+            "blight_elk/animations/walk/south-east/04.webp",
+            "blight_elk/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:54 GMT",
+          "src_frames": 6,
+          "sub": "d2993a9a-42fd-4b3b-a27c-269a1de0335b"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__south-west.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/south-west/00.webp",
+            "blight_elk/animations/walk/south-west/01.webp",
+            "blight_elk/animations/walk/south-west/02.webp",
+            "blight_elk/animations/walk/south-west/03.webp",
+            "blight_elk/animations/walk/south-west/04.webp",
+            "blight_elk/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:55 GMT",
+          "src_frames": 6,
+          "sub": "1f8d4980-5725-49e0-9ef2-b75a0b0f3836"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "blight_elk/animations/walk__west.webp",
+          "frame_paths": [
+            "blight_elk/animations/walk/west/00.webp",
+            "blight_elk/animations/walk/west/01.webp",
+            "blight_elk/animations/walk/west/02.webp",
+            "blight_elk/animations/walk/west/03.webp",
+            "blight_elk/animations/walk/west/04.webp",
+            "blight_elk/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:46:57 GMT",
+          "src_frames": 6,
+          "sub": "ca1ae288-5fc8-4da3-b5f2-61c74fb0e6bd"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Horn Strike - Lowers head and quickly thrusts horn",
+      "key": "attack",
+      "direction": "south",
+      "takes": [
+        "65fc0e06-e81f-4df5-aae4-2c7a2bbc1411",
+        "3c915f4a-638b-4258-81f7-2a647407a78e"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

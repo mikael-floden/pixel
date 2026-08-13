@@ -1,5 +1,5 @@
 {
-  "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, in-game display `name` (max 12 chars; folder ids keep the original prompt wording and never change) and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned). Each entry also carries `lore`: a short RPG-flavour description for the wiki, copied into monster.json on every sync (edit it here).",
+  "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, display name and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned).",
   "monsters": [
     {
       "id": "butterfly_dragon",
@@ -275,6 +275,466 @@
         "melting and disappears": "die"
       },
       "lore": "A snow-packed blob with a frozen grin. It spits ice spikes, and melts to slush when its winter finally ends."
+    },
+    {
+      "id": "gray_brute",
+      "kind": "character",
+      "pixellab_id": "20c9597b-ebc9-42e3-b9ee-aaab69674b89",
+      "name": "Gnashjaw",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Ground Bite - Lowers head quickly and snaps jaws t": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-turns to skeleton and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "It gnaws boulders to keep its tusks short. When the grinding stops, something softer has wandered close."
+    },
+    {
+      "id": "chestnut_horse",
+      "kind": "character",
+      "pixellab_id": "ccfb0bd7-2e6f-4065-ad8c-f4d0d5393ce1",
+      "name": "Sorrel",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Charge - Lowers head and quickly charges forward a": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A farm horse that outlived its farm. It still waits at the gate each dusk for a hand that never comes."
+    },
+    {
+      "id": "white_horse",
+      "kind": "character",
+      "pixellab_id": "ed322571-acf0-4fbc-9644-749938fdb660",
+      "name": "Snowmane",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Charge - Lowers head and quickly charges forward w": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-falls and fade away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "White as the morning it vanished from the king's stable. It allows no rider, but walks beside the lost."
+    },
+    {
+      "id": "black_horse",
+      "kind": "character",
+      "pixellab_id": "b444b8a2-112e-4403-8459-287d7c1cc870",
+      "name": "Duskhoof",
+      "renames": {
+        "custom-Black darkness stomp attack": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-falls and fade away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A black horse that casts no shadow. It stamps, and the dark pools around its hooves like spilled ink."
+    },
+    {
+      "id": "root_bear",
+      "kind": "character",
+      "pixellab_id": "48402f4a-5894-45a5-b6c1-45b233104b97",
+      "name": "Gnarloak",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Horn Strike - Lowers head and quickly thrusts horn": "attack",
+        "custom-angry and calm, not much movement ": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Roots that dreamed of being a bear. It sleeps for whole seasons, and wakes furious at whatever an axe is."
+    },
+    {
+      "id": "obsidian_lion",
+      "kind": "character",
+      "pixellab_id": "c4d19561-b599-4dce-9ec7-cf0061cf8e86",
+      "name": "Magmane",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Roar Attack - Raises head, opens mouth wide and pe": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A lion poured from the volcano's throat. Its obsidian mane cools black; its roar glows through the cracks."
+    },
+    {
+      "id": "blight_elk",
+      "kind": "character",
+      "pixellab_id": "f937851a-9f6b-4919-b774-606a46ff3fe3",
+      "name": "Sporehorn",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Horn Strike - Lowers head and quickly thrusts horn": "attack",
+        "custom-angry but calm idle": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "The fungus steers the elk now. Its antlers bloom green in the dark, sowing spores wherever it grieves."
+    },
+    {
+      "id": "gray_brute_2",
+      "kind": "character",
+      "pixellab_id": "2fb20ddc-d95c-47ed-b489-eb52cda35de1",
+      "name": "Tuskmaul",
+      "renames": {
+        "custom-Bite - Quickly lunges forward, bites once, then re": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "The old bull of the brutes. Whole warbands have broken against shoulders wider than their shield-wall."
+    },
+    {
+      "id": "spectral_horse",
+      "kind": "character",
+      "pixellab_id": "c25fa5a6-e315-4299-8ad7-3350e8317e70",
+      "name": "Nightmare",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Mystical light flame burst attack. Turns it's ligh": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "It gallops where sleep is thin. Pale flames mark its passing, and by morning no one recalls their dreams."
+    },
+    {
+      "id": "granite_bear",
+      "kind": "character",
+      "pixellab_id": "9a479549-c690-4502-879c-37c1e80adf28",
+      "name": "Cragback",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Stomp - Raises one front leg and forcefully stomps": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A hillside that stood up. Moss and granite shift when it breathes, and climbers swear the mountain growled."
+    },
+    {
+      "id": "undead_charger",
+      "kind": "character",
+      "pixellab_id": "57721458-6d4d-4e98-a018-cd6713590707",
+      "name": "Gravecharger",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Headbutt - Pulls head back slightly, then quickly ": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A war-mount that refused to fall with its rider. It still charges the enemy line, centuries after the war."
+    },
+    {
+      "id": "polar_bear",
+      "kind": "character",
+      "pixellab_id": "1b7d7ddd-d90f-4360-a716-43b09bef2926",
+      "name": "Bergclaw",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Stomp - Raises one front leg and forcefully stomps": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Carved by the glacier and jealous of it. Its frozen tusks crack shields the way spring cracks river ice."
+    },
+    {
+      "id": "desert_cat",
+      "kind": "character",
+      "pixellab_id": "192285b2-6725-49c0-843b-802f59e2bb4f",
+      "name": "Sunscale",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Claw Swipe - Raises one front paw and performs one": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A cat armored in noon-light. Its golden scales drink the desert sun and pay it back in blinding flashes."
+    },
+    {
+      "id": "undead_hound",
+      "kind": "character",
+      "pixellab_id": "3860f84b-290e-45b1-9dc1-b7ca4aef8ccc",
+      "name": "Rotjaw",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Dash Attack - Makes a very short fast dash forward": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Too stubborn to stay buried. Its crooked jaw hangs loose, grinning at a joke told before it died."
+    },
+    {
+      "id": "crystal_lynx",
+      "kind": "character",
+      "pixellab_id": "5708d3ed-e8a7-41d7-b372-226ef386e015",
+      "name": "Prismclaw",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Claw Swipe - Raises one front paw and performs one": "attack",
+        "custom-angry but calm idle": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A lynx grown through with crystal. Light bends wrong around it, and its tail-blade sings when it strikes."
+    },
+    {
+      "id": "swamp_cat",
+      "kind": "character",
+      "pixellab_id": "306e685e-a3fa-4361-87cf-dd9f64e1560a",
+      "name": "Bogstalker",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Claw Swipe - Raises one front paw and performs one": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Yellow eyes just above the waterline, algae drifting where it waits. The swamp's stillness is a hunting pose."
+    },
+    {
+      "id": "swamp_cat_2",
+      "kind": "character",
+      "pixellab_id": "ef90e1f6-42f0-4342-9af8-8879d3106b93",
+      "name": "Mireglare",
+      "renames": {
+        "custom-Bright white/light yellow eye laser attack. The ca": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-fades away in green blue flames": "die",
+        "custom-still cool idle. only evil eyes. very still and ca": "angry",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Its stare bores through the fen-mist and burns. Hunters who meet those still eyes are found lit from within."
+    },
+    {
+      "id": "hellhound",
+      "kind": "character",
+      "pixellab_id": "069a5964-d8af-4415-aeb4-9a069cd8822c",
+      "name": "Cinderhowl",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Fast flame attack": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A hound cracked open by its own fire. Embers sift from its seams, and its howl smells of burning."
+    },
+    {
+      "id": "storm_shellback",
+      "kind": "character",
+      "pixellab_id": "cd16bfab-3e9c-4177-ac30-3df35b6a8111",
+      "name": "Voltshell",
+      "renames": {
+        "custom-Blue crystal attack. Releases ": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. should look good repea": "walk"
+      },
+      "lore": "Storms nest in the crystals on its shell. It crosses a valley in a lifetime, thunder rolling in its wake."
+    },
+    {
+      "id": "corrupt_stag",
+      "kind": "character",
+      "pixellab_id": "b864be4b-1da7-4c22-956b-b722128f3714",
+      "name": "Thornstag",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Horn Strike - Lowers head and quickly thrusts horn": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-falls and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Corruption walking on too-long legs. Thorned vines drag from its antlers, and flowers die where it browses."
+    },
+    {
+      "id": "eldritch_maw",
+      "kind": "character",
+      "pixellab_id": "998816b2-59f8-41e6-a2b6-fa45b693b402",
+      "name": "Voidmaw",
+      "renames": {
+        "custom-Bite - Quickly lunges forward, bites once, then re": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "It has no face, only appetite. The ringed mouth opens wider than reason, and the light goes in first."
+    },
+    {
+      "id": "moon_wolf",
+      "kind": "character",
+      "pixellab_id": "623dd33c-d5f5-41e4-80eb-6d10a5686db6",
+      "name": "Moonpelt",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Wold claw attack": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A wolf the moon keeps. Its silver fur holds the crescent's mark, and its paws never quite touch the frost."
+    },
+    {
+      "id": "storm_stag",
+      "kind": "character",
+      "pixellab_id": "2de638a2-ae0a-459a-9410-1314a10056e1",
+      "name": "Stormcrown",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Headbutt - Pulls head back slightly, then quickly ": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Lightning courts its antlers. It stands on the high fells in the worst weather, daring the sky to try."
+    },
+    {
+      "id": "rune_lion",
+      "kind": "character",
+      "pixellab_id": "5cdfe0e4-cf79-4c3f-b95e-7cfc00b67ccb",
+      "name": "Runemane",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Slams the two front feets on the ground so stones ": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A guardian left running after its temple fell. The cyan runes still burn with orders no one can rescind."
+    },
+    {
+      "id": "plague_hound",
+      "kind": "character",
+      "pixellab_id": "8c8feb4b-e0ca-42a1-9a8b-29a399ffd59a",
+      "name": "Blightcur",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Sickness on four legs. It survived what it carries, which is more than those it visits can say."
+    },
+    {
+      "id": "dune_digger",
+      "kind": "character",
+      "pixellab_id": "7bbf1757-6a10-4d7d-8e93-9b26e8b10753",
+      "name": "Dunedelver",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Powerful one arm/hand slash attack with motion tra": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "It swims through sand the way fish forget water. Only the jagged back-plates betray the tide beneath."
+    },
+    {
+      "id": "ice_wolf",
+      "kind": "character",
+      "pixellab_id": "57e44f58-35b3-45d3-9ef0-f4cee9767b5e",
+      "name": "Winterfang",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Double Claw - Performs two quick alternating front": "attack",
+        "custom-calm but angry idle, eyes angry, body is not movin": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Its mane is a crown of ice that never melts. The cold arrives a breath before it does, and stays after."
+    },
+    {
+      "id": "armor_tusker",
+      "kind": "character",
+      "pixellab_id": "5fc96a7f-26a6-4cac-896e-2bb725f6f1c9",
+      "name": "Ironhide",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Horn Strike - Lowers head and quickly thrusts horn": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Armor that grew instead of being forged. Spears skate off its plates; its tusks do not return the favor."
+    },
+    {
+      "id": "shadow_panther",
+      "kind": "character",
+      "pixellab_id": "5b214959-ed87-4c44-a9bc-71acc47c7f45",
+      "name": "Gloompard",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Dark aura attack. The cat still. Only the aura spi": "attack",
+        "custom-angry eyes animation, calm still cat with angry lo": "angry",
+        "custom-dissapears in smoke. The cat is still and don't mo": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "Count its violet eyes and you have already lost it. The smoke it trails is the only warning anyone gets."
+    },
+    {
+      "id": "crystal_horn",
+      "kind": "character",
+      "pixellab_id": "7c97a47a-c702-4076-bbe4-141860c0f0ff",
+      "name": "Amethyrn",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Headbutt - Pulls head back slightly, then quickly ": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A beast crowned with one great amethyst horn. It headbutts like a landslide and grazes on buried gems."
+    },
+    {
+      "id": "swamp_bear",
+      "kind": "character",
+      "pixellab_id": "3867b940-5211-4098-906c-36df5738923e",
+      "name": "Mireback",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Roar Attack - Raises head, opens mouth wide and pe": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A bear the swamp claimed and gave back. Mushrooms fruit on its shoulders; its jaw closes like a bog-gate."
+    },
+    {
+      "id": "magma_wolf",
+      "kind": "character",
+      "pixellab_id": "b757da9a-80fe-47ef-a260-b8e7c8255af5",
+      "name": "Slagfang",
+      "renames": {
+        "custom-Burning claw attack": "attack",
+        "custom-Calm still idle, breathing": "idle",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "A wolf quenched in the caldera. Magma veins its black hide, and its bite leaves wounds already cauterized."
+    },
+    {
+      "id": "magma_wolf_2",
+      "kind": "character",
+      "pixellab_id": "e3bf32bf-f5b2-450f-939f-dbfb4a7a748c",
+      "name": "Basalthowl",
+      "renames": {
+        "custom-Calm still idle, breathing": "idle",
+        "custom-Roar Attack - Raises head, opens mouth wide and pe": "attack",
+        "custom-angry combat idle, frustrated": "angry",
+        "custom-faints and fades away": "die",
+        "custom-walk loop. full walk cycle. sh": "walk"
+      },
+      "lore": "The pack-sire of the volcanic wolves. When it roars, the mountain answers, and the ash begins to fall."
     },
     {
       "id": "snow_demon",

@@ -22,16 +22,19 @@ Usage (sync.py drives this; ad-hoc use):
 
 Output layout (one folder per monster; monster.json is the contract):
 
+Art is written in the format config/format.json:art_ext selects (lossless WebP
+since 2026-07-31) — always through _save_png/_save_strip, never a raw
+Image.save, so the extension stays consistent with the manifest.
+
+Output layout (one folder per monster; monster.json is the contract; EXT is the
+configured extension):
+
   monsters/<id>/
     monster.json                    manifest: source ids, sizes, animations, states
-    sprite.png                      base sprite (south rotation)
-    rotations/<dir>.png             8 directions
-    animations/<key>/<dir>/NN.png   per-frame PNGs
-    animations/<key>__<dir>.png     sprite-sheet strip (all frames in a row)
-    animations/<key>__<dir>.gif     looping preview of one direction
-    animations/<key>__rotating.gif  plays the full animation in one direction,
-                                    then rotates one step (45°) and plays again,
-                                    through all 8 directions
+    sprite.EXT                      base sprite (south rotation)
+    rotations/<dir>.EXT             8 directions
+    animations/<key>/<dir>/NN.EXT   per-frame art
+    animations/<key>__<dir>.EXT     sprite-sheet strip (all frames in a row)
 """
 
 from __future__ import annotations
@@ -44,7 +47,7 @@ import shutil
 
 from PIL import Image
 
-from pixellab_client import DIRECTIONS_8, PixelLabClient
+from pixellab_client import PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESERVED_DIRS = {"pipeline", "config", "spec"}
@@ -65,7 +68,6 @@ def _fmt():
 
 ART_EXT, WEBP_OPTS = _fmt()
 STATES = ("idle", "walk", "angry", "attack", "die")
-PREVIEW_MS = 120
 
 
 # --- small helpers -----------------------------------------------------------
@@ -163,43 +165,12 @@ def _save_strip(frames, path):
     _save_png(strip, path)
 
 
-def _gif_quantize(frames):
-    out = []
-    w = max(f.width for f in frames)
-    h = max(f.height for f in frames)
-    for f in frames:
-        rgba = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-        rgba.alpha_composite(f.convert("RGBA"), ((w - f.width) // 2, (h - f.height) // 2))
-        p = rgba.convert("RGB").quantize(colors=255, dither=Image.NONE)
-        transparent = rgba.getchannel("A").point(lambda a: 255 if a < 128 else 0)
-        p.paste(255, mask=transparent)
-        out.append(p)
-    return out
-
-
-def _save_gif(frames, path, duration_ms=PREVIEW_MS):
-    if not frames:
-        return
-    out = _gif_quantize(frames)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    out[0].save(path, save_all=True, append_images=out[1:], duration=duration_ms,
-                loop=0, transparency=255, disposal=2, optimize=False)
-
-
-def save_rotating_gif(frames_by_dir, path, duration_ms=PREVIEW_MS):
-    """The review GIF: play the full animation facing one direction, then turn
-    one 45° step and play it again, all the way around (8 plays per loop).
-    Directions follow DIRECTIONS_8 so consecutive plays are adjacent headings.
-
-    Note: Pillow's GIF writer merges IDENTICAL consecutive frames into one
-    longer-duration frame (common in die animations once the monster has
-    vanished), so the file's physical frame count can be below the logical
-    one while total duration and visuals stay exact."""
-    seq = []
-    for d in DIRECTIONS_8:
-        seq.extend(frames_by_dir.get(d) or [])
-    if seq:
-        _save_gif(seq, path, duration_ms)
+# GIF writers lived here until 2026-08-12. Both consumers read frames/strips
+# and neither ever referenced a .gif, so the previews were 17.5 MB of art
+# nothing loaded. Do not reintroduce them: postprocess.trim_die_tails kept
+# calling the writer after the files were deleted, which silently recreated 15
+# of them (and, because the raw Pillow save bypassed _save_png, wrote 572 PNG
+# frames into a WebP-only domain). Write art through _save_png / _save_strip.
 
 
 # --- mirror one monster ------------------------------------------------------

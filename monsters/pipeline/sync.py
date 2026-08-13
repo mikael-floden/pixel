@@ -199,8 +199,6 @@ def verify(metas):
             nd = len(a.get("directions") or {})
             if nd != 8:
                 problems.append(f"{mid}: animation '{key}' has {nd}/8 directions")
-            if not mirror._exists(a.get("rotating_gif")):
-                problems.append(f"{mid}: animation '{key}' missing rotating gif")
         for s, key in (meta.get("states") or {}).items():
             if key is None:
                 problems.append(f"{mid}: state '{s}' has NO animation "

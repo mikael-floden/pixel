@@ -1,0 +1,643 @@
+{
+  "id": "eldritch_maw",
+  "name": "Voidmaw",
+  "lore": "It has no face, only appetite. The ringed mouth opens wider than reason, and the light goes in first.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "998816b2-59f8-41e6-a2b6-fa45b693b402",
+    "url": "https://www.pixellab.ai/create-character/998816b2-59f8-41e6-a2b6-fa45b693b402",
+    "prompt": "Heavy eldritch quadruped with no normal head. Upper torso opens into an enormous circular mouth containing concentric rows of teeth. Black-purple skin and glowing magenta markings.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 236,
+    "height": 236
+  },
+  "native_size": {
+    "width": 236,
+    "height": 236
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "eldritch_maw/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "eldritch_maw/rotations/south.webp",
+    "west": "eldritch_maw/rotations/west.webp",
+    "east": "eldritch_maw/rotations/east.webp",
+    "north": "eldritch_maw/rotations/north.webp",
+    "south-east": "eldritch_maw/rotations/south-east.webp",
+    "north-east": "eldritch_maw/rotations/north-east.webp",
+    "north-west": "eldritch_maw/rotations/north-west.webp",
+    "south-west": "eldritch_maw/rotations/south-west.webp"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "0c1a14f2-1c22-4957-b900-f8675037457f",
+      "source_name": "custom-Bite - Quickly lunges forward, bites once, then re",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/east/00.webp",
+            "eldritch_maw/animations/attack/east/01.webp",
+            "eldritch_maw/animations/attack/east/02.webp",
+            "eldritch_maw/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:13 GMT",
+          "src_frames": 4,
+          "sub": "22541ba6-13eb-436b-b24e-df298ffb9781"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__north.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/north/00.webp",
+            "eldritch_maw/animations/attack/north/01.webp",
+            "eldritch_maw/animations/attack/north/02.webp",
+            "eldritch_maw/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:15 GMT",
+          "src_frames": 4,
+          "sub": "f0b213d7-69ee-4f35-baac-12b38edad1ca"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__north-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/north-east/00.webp",
+            "eldritch_maw/animations/attack/north-east/01.webp",
+            "eldritch_maw/animations/attack/north-east/02.webp",
+            "eldritch_maw/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:17 GMT",
+          "src_frames": 4,
+          "sub": "df60416f-7ffd-43c3-9558-de74b317075a"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__north-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/north-west/00.webp",
+            "eldritch_maw/animations/attack/north-west/01.webp",
+            "eldritch_maw/animations/attack/north-west/02.webp",
+            "eldritch_maw/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:18 GMT",
+          "src_frames": 4,
+          "sub": "d8437a54-0d3b-4cf4-b425-67bd5a9cf149"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__south.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/south/00.webp",
+            "eldritch_maw/animations/attack/south/01.webp",
+            "eldritch_maw/animations/attack/south/02.webp",
+            "eldritch_maw/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:19 GMT",
+          "src_frames": 4,
+          "sub": "fd675a5f-be0e-4d2a-9a9e-32bfda6749a5"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__south-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/south-east/00.webp",
+            "eldritch_maw/animations/attack/south-east/01.webp",
+            "eldritch_maw/animations/attack/south-east/02.webp",
+            "eldritch_maw/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:21 GMT",
+          "src_frames": 4,
+          "sub": "013a9fe5-977a-4fd8-bd1c-a2fcd1fd78f6"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__south-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/south-west/00.webp",
+            "eldritch_maw/animations/attack/south-west/01.webp",
+            "eldritch_maw/animations/attack/south-west/02.webp",
+            "eldritch_maw/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:25 GMT",
+          "src_frames": 4,
+          "sub": "4826088c-6db9-4f70-a0c3-9148ed7f5c94"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/attack__west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/attack/west/00.webp",
+            "eldritch_maw/animations/attack/west/01.webp",
+            "eldritch_maw/animations/attack/west/02.webp",
+            "eldritch_maw/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:26 GMT",
+          "src_frames": 4,
+          "sub": "ac4083eb-b039-40f1-81e0-dabecbc73210"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "77061d03-fd1b-42fa-a3d9-bf9603174c51",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/east/00.webp",
+            "eldritch_maw/animations/idle/east/01.webp",
+            "eldritch_maw/animations/idle/east/02.webp",
+            "eldritch_maw/animations/idle/east/03.webp",
+            "eldritch_maw/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:27 GMT",
+          "src_frames": 5,
+          "sub": "8465bc0c-ebdd-44fe-a097-5fcdfa8bf7fe"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__north.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/north/00.webp",
+            "eldritch_maw/animations/idle/north/01.webp",
+            "eldritch_maw/animations/idle/north/02.webp",
+            "eldritch_maw/animations/idle/north/03.webp",
+            "eldritch_maw/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:29 GMT",
+          "src_frames": 5,
+          "sub": "80fdeb2e-d81a-447d-bc74-b8e25093011c"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__north-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/north-east/00.webp",
+            "eldritch_maw/animations/idle/north-east/01.webp",
+            "eldritch_maw/animations/idle/north-east/02.webp",
+            "eldritch_maw/animations/idle/north-east/03.webp",
+            "eldritch_maw/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:30 GMT",
+          "src_frames": 5,
+          "sub": "7f6a62e2-46f2-4357-a4ce-a65b1e8a09c3"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__north-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/north-west/00.webp",
+            "eldritch_maw/animations/idle/north-west/01.webp",
+            "eldritch_maw/animations/idle/north-west/02.webp",
+            "eldritch_maw/animations/idle/north-west/03.webp",
+            "eldritch_maw/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:31 GMT",
+          "src_frames": 5,
+          "sub": "12b882e1-f9f3-4cef-859f-49aa067dc77e"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__south.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/south/00.webp",
+            "eldritch_maw/animations/idle/south/01.webp",
+            "eldritch_maw/animations/idle/south/02.webp",
+            "eldritch_maw/animations/idle/south/03.webp",
+            "eldritch_maw/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:32 GMT",
+          "src_frames": 5,
+          "sub": "ef636094-de5f-4bd0-8efe-6c99fd234094"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__south-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/south-east/00.webp",
+            "eldritch_maw/animations/idle/south-east/01.webp",
+            "eldritch_maw/animations/idle/south-east/02.webp",
+            "eldritch_maw/animations/idle/south-east/03.webp",
+            "eldritch_maw/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:34 GMT",
+          "src_frames": 5,
+          "sub": "0fe88cf7-e02a-4869-ac6b-c6350fcc001d"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__south-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/south-west/00.webp",
+            "eldritch_maw/animations/idle/south-west/01.webp",
+            "eldritch_maw/animations/idle/south-west/02.webp",
+            "eldritch_maw/animations/idle/south-west/03.webp",
+            "eldritch_maw/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:35 GMT",
+          "src_frames": 5,
+          "sub": "04afa281-15c5-43d8-90c4-32353b86309b"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "eldritch_maw/animations/idle__west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/idle/west/00.webp",
+            "eldritch_maw/animations/idle/west/01.webp",
+            "eldritch_maw/animations/idle/west/02.webp",
+            "eldritch_maw/animations/idle/west/03.webp",
+            "eldritch_maw/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:37 GMT",
+          "src_frames": 5,
+          "sub": "e09791d4-42ff-4717-8d47-4eb38bf1d1ec"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "3cab87e8-1491-4770-b531-91eeccc9a830",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/east/00.webp",
+            "eldritch_maw/animations/angry/east/01.webp",
+            "eldritch_maw/animations/angry/east/02.webp",
+            "eldritch_maw/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:38 GMT",
+          "src_frames": 4,
+          "sub": "d0dbc795-06d0-454a-afd7-5a022b8d1704"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__north.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/north/00.webp",
+            "eldritch_maw/animations/angry/north/01.webp",
+            "eldritch_maw/animations/angry/north/02.webp",
+            "eldritch_maw/animations/angry/north/03.webp"
+          ],
+          "lm": "Wed, 12 Aug 2026 22:37:54 GMT",
+          "src_frames": 4,
+          "sub": "7e74bd38-3455-4bb4-a091-c967bc9c9138"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__north-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/north-east/00.webp",
+            "eldritch_maw/animations/angry/north-east/01.webp",
+            "eldritch_maw/animations/angry/north-east/02.webp",
+            "eldritch_maw/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:45 GMT",
+          "src_frames": 4,
+          "sub": "af230894-0085-4c4e-8b06-4b1127c04eaa"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__north-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/north-west/00.webp",
+            "eldritch_maw/animations/angry/north-west/01.webp",
+            "eldritch_maw/animations/angry/north-west/02.webp",
+            "eldritch_maw/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:47 GMT",
+          "src_frames": 4,
+          "sub": "1cdf3bbf-bcfe-4946-b2fe-99ded593905c"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__south.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/south/00.webp",
+            "eldritch_maw/animations/angry/south/01.webp",
+            "eldritch_maw/animations/angry/south/02.webp",
+            "eldritch_maw/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:48 GMT",
+          "src_frames": 4,
+          "sub": "d3d7eca1-f423-47c6-9afa-41cebeff43e5"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__south-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/south-east/00.webp",
+            "eldritch_maw/animations/angry/south-east/01.webp",
+            "eldritch_maw/animations/angry/south-east/02.webp",
+            "eldritch_maw/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:50 GMT",
+          "src_frames": 4,
+          "sub": "f1a5b896-e869-488f-bbd6-329f265442b1"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__south-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/south-west/00.webp",
+            "eldritch_maw/animations/angry/south-west/01.webp",
+            "eldritch_maw/animations/angry/south-west/02.webp",
+            "eldritch_maw/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:51 GMT",
+          "src_frames": 4,
+          "sub": "a2a7e0eb-70a3-44f1-bd89-de4edd6c7f71"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/angry__west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/angry/west/00.webp",
+            "eldritch_maw/animations/angry/west/01.webp",
+            "eldritch_maw/animations/angry/west/02.webp",
+            "eldritch_maw/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:56 GMT",
+          "src_frames": 4,
+          "sub": "525259b9-2f6e-43ae-afab-2b287d3accf6"
+        }
+      }
+    },
+    "die": {
+      "group_id": "a4c88181-6dd9-4ad4-bfbe-e9b2d8ccecce",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/east/00.webp",
+            "eldritch_maw/animations/die/east/01.webp",
+            "eldritch_maw/animations/die/east/02.webp",
+            "eldritch_maw/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:03:58 GMT",
+          "src_frames": 4,
+          "sub": "0323a761-7033-4cd4-862f-b39f3beb518e"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__north.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/north/00.webp",
+            "eldritch_maw/animations/die/north/01.webp",
+            "eldritch_maw/animations/die/north/02.webp",
+            "eldritch_maw/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:00 GMT",
+          "src_frames": 4,
+          "sub": "690615eb-5580-4480-8617-a1df7afd6af5"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__north-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/north-east/00.webp",
+            "eldritch_maw/animations/die/north-east/01.webp",
+            "eldritch_maw/animations/die/north-east/02.webp",
+            "eldritch_maw/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:01 GMT",
+          "src_frames": 4,
+          "sub": "15f7e9ce-c340-4d04-840e-70707a62640b"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__north-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/north-west/00.webp",
+            "eldritch_maw/animations/die/north-west/01.webp",
+            "eldritch_maw/animations/die/north-west/02.webp",
+            "eldritch_maw/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:02 GMT",
+          "src_frames": 4,
+          "sub": "055ced1b-8636-4ad5-aecf-18d8bc024d19"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__south.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/south/00.webp",
+            "eldritch_maw/animations/die/south/01.webp",
+            "eldritch_maw/animations/die/south/02.webp",
+            "eldritch_maw/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:03 GMT",
+          "src_frames": 4,
+          "sub": "1c2f8658-997c-4f44-a49c-151e4cbd2bbf"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__south-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/south-east/00.webp",
+            "eldritch_maw/animations/die/south-east/01.webp",
+            "eldritch_maw/animations/die/south-east/02.webp",
+            "eldritch_maw/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:05 GMT",
+          "src_frames": 4,
+          "sub": "f85157a8-1df4-40af-833d-fd3963f7b6e9"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__south-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/south-west/00.webp",
+            "eldritch_maw/animations/die/south-west/01.webp",
+            "eldritch_maw/animations/die/south-west/02.webp",
+            "eldritch_maw/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:06 GMT",
+          "src_frames": 4,
+          "sub": "850b6aa7-a0cd-4b0f-b114-75bf50045286"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "eldritch_maw/animations/die__west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/die/west/00.webp",
+            "eldritch_maw/animations/die/west/01.webp",
+            "eldritch_maw/animations/die/west/02.webp",
+            "eldritch_maw/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:07 GMT",
+          "src_frames": 4,
+          "sub": "1e23d07a-deb9-4fc7-9853-ebfa80207943"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "5ebf850a-4b1b-479b-b4e5-2504c8899fbd",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/east/00.webp",
+            "eldritch_maw/animations/walk/east/01.webp",
+            "eldritch_maw/animations/walk/east/02.webp",
+            "eldritch_maw/animations/walk/east/03.webp",
+            "eldritch_maw/animations/walk/east/04.webp",
+            "eldritch_maw/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:09 GMT",
+          "src_frames": 6,
+          "sub": "2d006f4a-f7e2-4e28-ad1b-953551a63d97"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__north.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/north/00.webp",
+            "eldritch_maw/animations/walk/north/01.webp",
+            "eldritch_maw/animations/walk/north/02.webp",
+            "eldritch_maw/animations/walk/north/03.webp",
+            "eldritch_maw/animations/walk/north/04.webp",
+            "eldritch_maw/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:11 GMT",
+          "src_frames": 6,
+          "sub": "5e089f68-d9f0-420b-b6b2-868059dd96a8"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__north-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/north-east/00.webp",
+            "eldritch_maw/animations/walk/north-east/01.webp",
+            "eldritch_maw/animations/walk/north-east/02.webp",
+            "eldritch_maw/animations/walk/north-east/03.webp",
+            "eldritch_maw/animations/walk/north-east/04.webp",
+            "eldritch_maw/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:12 GMT",
+          "src_frames": 6,
+          "sub": "23f32525-d276-4cc5-9604-3d9c53232246"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__north-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/north-west/00.webp",
+            "eldritch_maw/animations/walk/north-west/01.webp",
+            "eldritch_maw/animations/walk/north-west/02.webp",
+            "eldritch_maw/animations/walk/north-west/03.webp",
+            "eldritch_maw/animations/walk/north-west/04.webp",
+            "eldritch_maw/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:14 GMT",
+          "src_frames": 6,
+          "sub": "e50d6d89-db29-407e-8298-4890fa0a4392"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__south.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/south/00.webp",
+            "eldritch_maw/animations/walk/south/01.webp",
+            "eldritch_maw/animations/walk/south/02.webp",
+            "eldritch_maw/animations/walk/south/03.webp",
+            "eldritch_maw/animations/walk/south/04.webp",
+            "eldritch_maw/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:15 GMT",
+          "src_frames": 6,
+          "sub": "18cf6297-b7f5-41aa-a2f4-3375f0de11d9"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__south-east.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/south-east/00.webp",
+            "eldritch_maw/animations/walk/south-east/01.webp",
+            "eldritch_maw/animations/walk/south-east/02.webp",
+            "eldritch_maw/animations/walk/south-east/03.webp",
+            "eldritch_maw/animations/walk/south-east/04.webp",
+            "eldritch_maw/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:19 GMT",
+          "src_frames": 6,
+          "sub": "8af1b04a-2066-4bee-b143-96346617e99b"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__south-west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/south-west/00.webp",
+            "eldritch_maw/animations/walk/south-west/01.webp",
+            "eldritch_maw/animations/walk/south-west/02.webp",
+            "eldritch_maw/animations/walk/south-west/03.webp",
+            "eldritch_maw/animations/walk/south-west/04.webp",
+            "eldritch_maw/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:21 GMT",
+          "src_frames": 6,
+          "sub": "d39a9446-3ddd-4720-b81f-59e240aa906c"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "eldritch_maw/animations/walk__west.webp",
+          "frame_paths": [
+            "eldritch_maw/animations/walk/west/00.webp",
+            "eldritch_maw/animations/walk/west/01.webp",
+            "eldritch_maw/animations/walk/west/02.webp",
+            "eldritch_maw/animations/walk/west/03.webp",
+            "eldritch_maw/animations/walk/west/04.webp",
+            "eldritch_maw/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:22 GMT",
+          "src_frames": 6,
+          "sub": "aa389bcb-3212-4789-9082-a89b639700f3"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-angry combat idle, frustrated",
+      "key": "angry",
+      "direction": "north",
+      "takes": [
+        "7e74bd38-3455-4bb4-a091-c967bc9c9138",
+        "fe3ab448-cf74-4e23-86c0-1e61063c3a14"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

@@ -1,0 +1,633 @@
+{
+  "id": "ice_wolf",
+  "name": "Winterfang",
+  "lore": "Its mane is a crown of ice that never melts. The cold arrives a breath before it does, and stays after.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "57e44f58-35b3-45d3-9ef0-f4cee9767b5e",
+    "url": "https://www.pixellab.ai/create-character/57e44f58-35b3-45d3-9ef0-f4cee9767b5e",
+    "prompt": "Large wolf-like ice monster. Pale blue-white fur, huge mane formed from sharp ice crystals, frozen claws, glowing cyan eyes, icy breath and hanging icicles.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 152,
+    "height": 152
+  },
+  "native_size": {
+    "width": 152,
+    "height": 152
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "ice_wolf/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "ice_wolf/rotations/south.webp",
+    "west": "ice_wolf/rotations/west.webp",
+    "east": "ice_wolf/rotations/east.webp",
+    "north": "ice_wolf/rotations/north.webp",
+    "south-east": "ice_wolf/rotations/south-east.webp",
+    "north-east": "ice_wolf/rotations/north-east.webp",
+    "north-west": "ice_wolf/rotations/north-west.webp",
+    "south-west": "ice_wolf/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "e88ce53e-08ac-4275-bd04-b72660c396a1",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/east/00.webp",
+            "ice_wolf/animations/idle/east/01.webp",
+            "ice_wolf/animations/idle/east/02.webp",
+            "ice_wolf/animations/idle/east/03.webp",
+            "ice_wolf/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:49 GMT",
+          "src_frames": 5,
+          "sub": "91de57c9-3d70-4063-aae6-f785e71ee026"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__north.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/north/00.webp",
+            "ice_wolf/animations/idle/north/01.webp",
+            "ice_wolf/animations/idle/north/02.webp",
+            "ice_wolf/animations/idle/north/03.webp",
+            "ice_wolf/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:51 GMT",
+          "src_frames": 5,
+          "sub": "f53a974d-b7ac-4cac-8d18-2b01340bf24a"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__north-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/north-east/00.webp",
+            "ice_wolf/animations/idle/north-east/01.webp",
+            "ice_wolf/animations/idle/north-east/02.webp",
+            "ice_wolf/animations/idle/north-east/03.webp",
+            "ice_wolf/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:52 GMT",
+          "src_frames": 5,
+          "sub": "9063de9a-eafa-461d-89a2-7f86df9a5da6"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__north-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/north-west/00.webp",
+            "ice_wolf/animations/idle/north-west/01.webp",
+            "ice_wolf/animations/idle/north-west/02.webp",
+            "ice_wolf/animations/idle/north-west/03.webp",
+            "ice_wolf/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:53 GMT",
+          "src_frames": 5,
+          "sub": "ac8c7c9f-c87b-434b-b216-cb2284bcdcc8"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__south.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/south/00.webp",
+            "ice_wolf/animations/idle/south/01.webp",
+            "ice_wolf/animations/idle/south/02.webp",
+            "ice_wolf/animations/idle/south/03.webp",
+            "ice_wolf/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:55 GMT",
+          "src_frames": 5,
+          "sub": "8cf2ad87-d2a8-4922-8fb2-a74f12709a4d"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__south-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/south-east/00.webp",
+            "ice_wolf/animations/idle/south-east/01.webp",
+            "ice_wolf/animations/idle/south-east/02.webp",
+            "ice_wolf/animations/idle/south-east/03.webp",
+            "ice_wolf/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:56 GMT",
+          "src_frames": 5,
+          "sub": "58a79e18-53dd-4601-a4c3-3c4e47094091"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__south-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/south-west/00.webp",
+            "ice_wolf/animations/idle/south-west/01.webp",
+            "ice_wolf/animations/idle/south-west/02.webp",
+            "ice_wolf/animations/idle/south-west/03.webp",
+            "ice_wolf/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:57 GMT",
+          "src_frames": 5,
+          "sub": "5f1a14ff-de37-4e29-951d-5a7f44b131be"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ice_wolf/animations/idle__west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/idle/west/00.webp",
+            "ice_wolf/animations/idle/west/01.webp",
+            "ice_wolf/animations/idle/west/02.webp",
+            "ice_wolf/animations/idle/west/03.webp",
+            "ice_wolf/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:59 GMT",
+          "src_frames": 5,
+          "sub": "9a55b165-5e24-4cde-9835-a7313c511c7e"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "f8857f72-707c-4e15-87de-355933f80fef",
+      "source_name": "custom-Double Claw - Performs two quick alternating front",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/east/00.webp",
+            "ice_wolf/animations/attack/east/01.webp",
+            "ice_wolf/animations/attack/east/02.webp",
+            "ice_wolf/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:01 GMT",
+          "src_frames": 4,
+          "sub": "fde3e482-4393-4881-a871-4bbae71e30eb"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__north.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/north/00.webp",
+            "ice_wolf/animations/attack/north/01.webp",
+            "ice_wolf/animations/attack/north/02.webp",
+            "ice_wolf/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:02 GMT",
+          "src_frames": 4,
+          "sub": "9f7bc95e-a211-49c4-8465-c45495629774"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__north-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/north-east/00.webp",
+            "ice_wolf/animations/attack/north-east/01.webp",
+            "ice_wolf/animations/attack/north-east/02.webp",
+            "ice_wolf/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:04 GMT",
+          "src_frames": 4,
+          "sub": "b08e89a6-2efa-4652-99ba-eaa611c99b49"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__north-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/north-west/00.webp",
+            "ice_wolf/animations/attack/north-west/01.webp",
+            "ice_wolf/animations/attack/north-west/02.webp",
+            "ice_wolf/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:05 GMT",
+          "src_frames": 4,
+          "sub": "8193dc9c-5213-4cff-818c-d98d3a8b9354"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__south.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/south/00.webp",
+            "ice_wolf/animations/attack/south/01.webp",
+            "ice_wolf/animations/attack/south/02.webp",
+            "ice_wolf/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:07 GMT",
+          "src_frames": 4,
+          "sub": "48e3320d-5507-4a1e-a184-9b4cf7a93443"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__south-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/south-east/00.webp",
+            "ice_wolf/animations/attack/south-east/01.webp",
+            "ice_wolf/animations/attack/south-east/02.webp",
+            "ice_wolf/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:09 GMT",
+          "src_frames": 4,
+          "sub": "cab438e1-c825-4d6a-81b8-c63a8bc9da67"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__south-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/south-west/00.webp",
+            "ice_wolf/animations/attack/south-west/01.webp",
+            "ice_wolf/animations/attack/south-west/02.webp",
+            "ice_wolf/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:10 GMT",
+          "src_frames": 4,
+          "sub": "a9ecdb60-07aa-4884-b9fa-e92b3274ae62"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/attack__west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/attack/west/00.webp",
+            "ice_wolf/animations/attack/west/01.webp",
+            "ice_wolf/animations/attack/west/02.webp",
+            "ice_wolf/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:12 GMT",
+          "src_frames": 4,
+          "sub": "7dfb29a3-036e-4c4c-90e0-279cc4896c25"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "b8994768-26bc-4462-9e17-a8da9c610de4",
+      "source_name": "custom-calm but angry idle, eyes angry, body is not movin",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/east/00.webp",
+            "ice_wolf/animations/angry/east/01.webp",
+            "ice_wolf/animations/angry/east/02.webp",
+            "ice_wolf/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:13 GMT",
+          "src_frames": 4,
+          "sub": "4ea2d1f3-3a23-40f0-90ee-4b75aba85ecf"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__north.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/north/00.webp",
+            "ice_wolf/animations/angry/north/01.webp",
+            "ice_wolf/animations/angry/north/02.webp",
+            "ice_wolf/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:14 GMT",
+          "src_frames": 4,
+          "sub": "44273db3-eb0f-4f08-943d-5d88792c7ff0"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__north-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/north-east/00.webp",
+            "ice_wolf/animations/angry/north-east/01.webp",
+            "ice_wolf/animations/angry/north-east/02.webp",
+            "ice_wolf/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:15 GMT",
+          "src_frames": 4,
+          "sub": "aca1fcda-a845-4145-b7a6-21c1639eb7b6"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__north-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/north-west/00.webp",
+            "ice_wolf/animations/angry/north-west/01.webp",
+            "ice_wolf/animations/angry/north-west/02.webp",
+            "ice_wolf/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:18 GMT",
+          "src_frames": 4,
+          "sub": "a548e49c-18f0-4509-ba9e-855561cbb84e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__south.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/south/00.webp",
+            "ice_wolf/animations/angry/south/01.webp",
+            "ice_wolf/animations/angry/south/02.webp",
+            "ice_wolf/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:19 GMT",
+          "src_frames": 4,
+          "sub": "c1bd2d36-1b44-4b9d-83ee-25e887bf3987"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__south-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/south-east/00.webp",
+            "ice_wolf/animations/angry/south-east/01.webp",
+            "ice_wolf/animations/angry/south-east/02.webp",
+            "ice_wolf/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:20 GMT",
+          "src_frames": 4,
+          "sub": "7b83687c-9d92-49b3-a768-452d6b52b971"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__south-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/south-west/00.webp",
+            "ice_wolf/animations/angry/south-west/01.webp",
+            "ice_wolf/animations/angry/south-west/02.webp",
+            "ice_wolf/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:22 GMT",
+          "src_frames": 4,
+          "sub": "f184a843-8aac-4734-9034-f0ff08f8740b"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/angry__west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/angry/west/00.webp",
+            "ice_wolf/animations/angry/west/01.webp",
+            "ice_wolf/animations/angry/west/02.webp",
+            "ice_wolf/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:23 GMT",
+          "src_frames": 4,
+          "sub": "01f26cde-35ee-45e3-92df-b9a813f71f67"
+        }
+      }
+    },
+    "die": {
+      "group_id": "fc598415-d299-4d8f-aea2-723c68327f6d",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/east/00.webp",
+            "ice_wolf/animations/die/east/01.webp",
+            "ice_wolf/animations/die/east/02.webp",
+            "ice_wolf/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:25 GMT",
+          "src_frames": 4,
+          "sub": "a6e8cfd6-893f-40ea-a424-6d59b8bb63ff"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__north.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/north/00.webp",
+            "ice_wolf/animations/die/north/01.webp",
+            "ice_wolf/animations/die/north/02.webp",
+            "ice_wolf/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:28 GMT",
+          "src_frames": 4,
+          "sub": "c4669603-805a-436d-bf6f-6835c2f69a25"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__north-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/north-east/00.webp",
+            "ice_wolf/animations/die/north-east/01.webp",
+            "ice_wolf/animations/die/north-east/02.webp",
+            "ice_wolf/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:30 GMT",
+          "src_frames": 4,
+          "sub": "0914f408-d897-4aa3-8ac9-e51ecba92dc3"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__north-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/north-west/00.webp",
+            "ice_wolf/animations/die/north-west/01.webp",
+            "ice_wolf/animations/die/north-west/02.webp",
+            "ice_wolf/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:31 GMT",
+          "src_frames": 4,
+          "sub": "713ee892-fae3-422d-a209-24d5112141e8"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__south.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/south/00.webp",
+            "ice_wolf/animations/die/south/01.webp",
+            "ice_wolf/animations/die/south/02.webp",
+            "ice_wolf/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:32 GMT",
+          "src_frames": 4,
+          "sub": "36caeff9-6af0-4132-8950-8d64f2f6c7c6"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__south-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/south-east/00.webp",
+            "ice_wolf/animations/die/south-east/01.webp",
+            "ice_wolf/animations/die/south-east/02.webp",
+            "ice_wolf/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:33 GMT",
+          "src_frames": 4,
+          "sub": "74ead338-1a80-42c2-8c1b-1c139d729f39"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__south-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/south-west/00.webp",
+            "ice_wolf/animations/die/south-west/01.webp",
+            "ice_wolf/animations/die/south-west/02.webp",
+            "ice_wolf/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:35 GMT",
+          "src_frames": 4,
+          "sub": "02d16f6f-a3ab-41b0-8355-0eeb22b9fcd9"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "ice_wolf/animations/die__west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/die/west/00.webp",
+            "ice_wolf/animations/die/west/01.webp",
+            "ice_wolf/animations/die/west/02.webp",
+            "ice_wolf/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:37 GMT",
+          "src_frames": 4,
+          "sub": "7758797f-a40d-4005-ba83-5a73a84d7dd8"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "2e07043e-214c-4592-b44c-f59dfba8df4e",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/east/00.webp",
+            "ice_wolf/animations/walk/east/01.webp",
+            "ice_wolf/animations/walk/east/02.webp",
+            "ice_wolf/animations/walk/east/03.webp",
+            "ice_wolf/animations/walk/east/04.webp",
+            "ice_wolf/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:44 GMT",
+          "src_frames": 6,
+          "sub": "c2a027b0-5955-4416-b9de-970fa8dd351d"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__north.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/north/00.webp",
+            "ice_wolf/animations/walk/north/01.webp",
+            "ice_wolf/animations/walk/north/02.webp",
+            "ice_wolf/animations/walk/north/03.webp",
+            "ice_wolf/animations/walk/north/04.webp",
+            "ice_wolf/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:45 GMT",
+          "src_frames": 6,
+          "sub": "e33b786a-3b98-4677-aa18-61762efc2b2b"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__north-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/north-east/00.webp",
+            "ice_wolf/animations/walk/north-east/01.webp",
+            "ice_wolf/animations/walk/north-east/02.webp",
+            "ice_wolf/animations/walk/north-east/03.webp",
+            "ice_wolf/animations/walk/north-east/04.webp",
+            "ice_wolf/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:47 GMT",
+          "src_frames": 6,
+          "sub": "a88206f2-ef5e-484d-b992-6f2d13808330"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__north-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/north-west/00.webp",
+            "ice_wolf/animations/walk/north-west/01.webp",
+            "ice_wolf/animations/walk/north-west/02.webp",
+            "ice_wolf/animations/walk/north-west/03.webp",
+            "ice_wolf/animations/walk/north-west/04.webp",
+            "ice_wolf/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:49 GMT",
+          "src_frames": 6,
+          "sub": "f0fba8bb-0bf2-4637-87ce-9ca50fd42b56"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__south.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/south/00.webp",
+            "ice_wolf/animations/walk/south/01.webp",
+            "ice_wolf/animations/walk/south/02.webp",
+            "ice_wolf/animations/walk/south/03.webp",
+            "ice_wolf/animations/walk/south/04.webp",
+            "ice_wolf/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:50 GMT",
+          "src_frames": 6,
+          "sub": "f2865eaf-4463-48d2-9bdc-9934c034be4b"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__south-east.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/south-east/00.webp",
+            "ice_wolf/animations/walk/south-east/01.webp",
+            "ice_wolf/animations/walk/south-east/02.webp",
+            "ice_wolf/animations/walk/south-east/03.webp",
+            "ice_wolf/animations/walk/south-east/04.webp",
+            "ice_wolf/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:52 GMT",
+          "src_frames": 6,
+          "sub": "4c3d7ca8-cd73-41ee-a851-e1ad5bc8c0b5"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__south-west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/south-west/00.webp",
+            "ice_wolf/animations/walk/south-west/01.webp",
+            "ice_wolf/animations/walk/south-west/02.webp",
+            "ice_wolf/animations/walk/south-west/03.webp",
+            "ice_wolf/animations/walk/south-west/04.webp",
+            "ice_wolf/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:53 GMT",
+          "src_frames": 6,
+          "sub": "845c9ec9-c793-4b82-8deb-5292a56eba63"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "ice_wolf/animations/walk__west.webp",
+          "frame_paths": [
+            "ice_wolf/animations/walk/west/00.webp",
+            "ice_wolf/animations/walk/west/01.webp",
+            "ice_wolf/animations/walk/west/02.webp",
+            "ice_wolf/animations/walk/west/03.webp",
+            "ice_wolf/animations/walk/west/04.webp",
+            "ice_wolf/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:11:55 GMT",
+          "src_frames": 6,
+          "sub": "0a67242a-56d5-4ceb-927f-8b09b3f8e533"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
