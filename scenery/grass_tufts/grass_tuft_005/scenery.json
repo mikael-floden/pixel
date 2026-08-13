@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "grass_tuft_005",
+  "group": "grass_tufts",
+  "rank": 36,
+  "index": 5,
+  "name": "Coarse marsh grass tuft 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "coarse marsh grass tuft",
+  "glow_concept": null,
+  "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, coarse marsh grass tuft, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "grass_tufts/grass_tuft_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.68,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "231aac9a-ff8d-4f60-b638-0c3f257c02a3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
