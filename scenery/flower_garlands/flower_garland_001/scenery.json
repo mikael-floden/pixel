@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_garland_001",
+  "group": "flower_garlands",
+  "rank": 73,
+  "index": 1,
+  "name": "Ribbon-woven midsummer garland 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "ribbon-woven midsummer garland",
+  "glow_concept": null,
+  "prompt": "two short wooden posts with a swag of flowering garland strung between them, ribbon-woven midsummer garland, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_garlands/flower_garland_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.61,
+    "world_px_height": 61,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "66bf8981-9bb0-4b76-b067-79b803a529e9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
