@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "water_pump_002",
+  "group": "water_pumps",
+  "rank": 91,
+  "index": 2,
+  "name": "Pump with lion-head spout 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pump with lion-head spout",
+  "glow_concept": "spout trickling a thread of glowing water",
+  "prompt": "a cast-iron village hand pump with a long curved handle and a spout hanging over a small stone splash slab, pump with lion-head spout, about as tall as an adult person, self-emissive at night, softly radiating light: spout trickling a thread of glowing water",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_pumps/water_pump_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "065ab574-1351-49d1-8899-463b57ee75f4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
