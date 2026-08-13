@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 401,
+  "scenery_count": 402,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 15,
@@ -792,7 +792,7 @@
     "beaver_lodges": 2,
     "beds": 4,
     "beehives": 4,
-    "bell_posts": 4,
+    "bell_posts": 5,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
@@ -1771,6 +1771,28 @@
       "status": "complete",
       "pixellab_object_id": "82436798-2364-474a-a847-f391906d0f0d",
       "sprite": "bell_posts/bell_post_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_012",
+      "rel": "bell_posts/bell_post_012",
+      "name": "Crooked birch post, small bell 012 \u00b7 lit",
+      "category": "bell_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, crooked birch post, small bell, large, twice human height, self-emissive at night, softly radiating light: light-moths circling the bell",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.59,
+        "world_px_height": 98,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "29c79ac2-b82f-447b-ab57-9114e8189b7a",
+      "sprite": "bell_posts/bell_post_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
