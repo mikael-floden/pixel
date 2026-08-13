@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "charcoal_kiln_002",
+  "group": "charcoal_kilns",
+  "rank": 99,
+  "index": 2,
+  "name": "Squat rounded kiln 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "squat rounded kiln",
+  "glow_concept": "soulstone core shining through a broken flank",
+  "prompt": "a tall clay-domed charcoal kiln mound with ridged earthen sides, pocked with small vent holes seeping thin smoke, squat rounded kiln, large, well above head height of a person, self-emissive at night, softly radiating light: soulstone core shining through a broken flank",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "charcoal_kilns/charcoal_kiln_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.05,
+    "world_px_height": 77,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9547dd87-d9de-4bd9-9484-5a5c9d6b454e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
