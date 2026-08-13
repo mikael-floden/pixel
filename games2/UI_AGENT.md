@@ -76,7 +76,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
   orientations; the SERVER's count clamp is unit-tested in
   `server/test/combat.review.test.ts` instead),
-  `scripts/verify-levelup.mjs` (the XP bar's level-up).
+  `scripts/verify-levelup.mjs` (the XP bar's level-up),
+  `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -183,6 +184,30 @@ from the games agent), #18 (title/landing screen).
   Everything DOM keeps working — the socket, the synced state, the HUD. It
   BLANKS the canvas, so it is useless for a screenshot of anything over the
   world, and useless for anything Phaser draws.
+- **THE LOGO'S TAGLINE IS TEXT NOW, NOT ART** (maintainer 2026-08-06). It was
+  baked into `logo.webp`, which is generated — "each time Gemini regenerates
+  the graphics the quality is reduced" — so the words could never change
+  without redrawing the whole logo. The letters are painted out of the art and
+  drawn over the empty banner from a pool in `select.ts` (`pixeltext.ts` is the
+  font). Four things that cost a round each:
+  - **MATCH BY MEASUREMENT, NOT BY EYE.** The baked line is a 5x7 font at 2
+    art-px per cell; transcribing the glyphs off the art gave a byte-for-byte
+    metric match (274x14 for the same sentence). Anything less exact shows,
+    because the new words sit beside the art they are imitating.
+  - **PIXEL-ART INK IS NEVER ONE COLOUR.** The maintainer's read was "a little
+    whiter and not as gold … work on the bold and texture". It is SEVEN golds,
+    one per cell row, plus a warm brown shoulder ring on the plate. A flat fill
+    reads cheap and cold.
+  - **A BLUR IS NOT A SOFT UPSCALE.** Imitating the art's shoulder with a
+    bilinear blur covered MORE pixels than the art while carrying 20% LESS
+    light — wide and washed out where the art is tight and bright. A hard 1px
+    dilation under a crisp core matched it to 1.5%.
+  - **THE PLATE'S LIMIT IS THE FLOURISHES, NOT THE BANNER.** The gold arms
+    reach in over the cap rows and leave 293px clear, not the rule's 352 — the
+    first limit passed a line whose S and full stop sat on top of the gold.
+  When ERASING baked text from art, inpaint by diffusion (blur, restore the
+  known pixels, repeat) so any glow behind the letters survives, and keep the
+  box off the ornaments: the first pass smeared a flourish into a brown blur.
 - **Film DOM animations with a MutationObserver, not a sampler.** It fires per
   mutation BATCH, so every paint is one ordered snapshot however slow the page
   is, and reading `getComputedStyle` inside the callback flushes style — which

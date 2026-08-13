@@ -5,8 +5,107 @@ import { mountTheme, toggleTheme } from "./theme";
 import { openWikiPanel } from "./wikipanel";
 import { gameAudio } from "../../composer/index";
 import { withV } from "./assetver";
+import { drawPixelText, measurePixelText } from "./pixeltext";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
+
+/**
+ * THE TAGLINE POOL. The logo used to carry "A THOUSAND PATHS. ONE LIFE."
+ * baked into the artwork; the letters were painted out of `logo.webp` (the
+ * banner, its gold and rose rules and both flourishes are untouched) and the
+ * line is drawn over the empty plate instead, so it costs nothing to change
+ * and never needs the art regenerated — which is the whole point, since every
+ * regeneration of that art loses quality.
+ *
+ * The maintainer chose these twelve from a page of thirty-five: the land as
+ * something older and awake, no arrival imagery, no daylight, no cheer.
+ * ONE IS PICKED PER TITLE-SCREEN LOAD ("rotate between the survivors, not in
+ * realtime, but every time the screen is loaded"), never the same one twice
+ * running.
+ *
+ * ADDING A LINE: keep it inside the plate. The limit is NOT the banner's
+ * width — it is the gap between the two FLOURISH ARMS that reach in over the
+ * cap rows, measured at x 379..671 in the art, i.e. 293px of clear space.
+ * Three of the chosen lines had to be tightened because of it (they read fine
+ * in a list and collide with the gold arms on the plate).
+ * `scripts/verify-tagline.mjs` measures every entry against that span and
+ * fails on one that would not fit, so this list cannot quietly overflow.
+ */
+export const TAGLINES = [
+  "THE LAND ON THE OTHER SIDE.",
+  "NO ONE ARRIVES BY ACCIDENT.",
+  "WANDER FAR. HOME BY DARK.",
+  "SOMETHING OUT THERE WAKES.",
+  "THE WILDS REMEMBER YOU.",
+  "EVERY FIRE HAS A STORY.",
+  "THE DARK IS NOT EMPTY.",
+  "THE LAND WAS HERE FIRST.",
+  "SOME PATHS DO NOT RETURN.",
+  "THE NIGHT KNOWS YOUR NAME.",
+  "NO MAP SHOWS EVERYTHING.",
+  "WHERE ONLY OLD ROADS EXIST.",
+];
+
+/**
+ * Where the line sits, in the LOGO ART's own pixels (the file is 1091x634).
+ * The cap box is the 14 rows the baked tagline occupied, centred on the gold
+ * rule's span (x 349..700) rather than on the image — the banner is not
+ * centred in the artwork, and centring on the image put the words 21px off.
+ */
+const PLATE = { imgW: 1091, imgH: 634, centreX: (349 + 700) / 2, capTop: 557, capRows: 14 };
+
+/**
+ * Widest line the plate takes, in font cells. The flourish arms leave 293
+ * art-px clear over the cap rows; at 2px per cell that is 146, and 142 keeps
+ * 4px of air on each side so a letter never kisses the gold.
+ */
+export const TAGLINE_MAX_CELLS = 142;
+
+/** The line for THIS load: random, but never a repeat of the last one. */
+export function pickTagline(pool: readonly string[] = TAGLINES): string {
+  let last = "";
+  try {
+    last = localStorage.getItem("ml-tagline") || "";
+  } catch {}
+  const fresh = pool.filter((t) => t !== last);
+  const pick = (fresh.length ? fresh : pool)[Math.floor(Math.random() * (fresh.length || pool.length))];
+  try {
+    localStorage.setItem("ml-tagline", pick);
+  } catch {}
+  return pick;
+}
+
+/**
+ * Draw one line onto the logo's empty banner. The canvas is laid out in
+ * PERCENT of the logo box, so it tracks the art at every width with no resize
+ * listener, and its backing store is the artwork's own 2px-per-cell grid —
+ * the browser then scales it down exactly as it scales the logo beside it.
+ */
+export function mountTagline(cv: HTMLCanvasElement, text = pickTagline()): string {
+  const art = drawPixelText(text, { scale: 2 });
+  const ctx = cv.getContext("2d");
+  cv.width = art.width;
+  cv.height = art.height;
+  if (ctx) ctx.drawImage(art, 0, 0);
+  const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+  // drawPixelText pads 1px for the shoulder ring — pull that back out so the
+  // cap lands on the same rows the baked letters used.
+  cv.style.left = pct(PLATE.centreX - art.width / 2, PLATE.imgW);
+  cv.style.top = pct(PLATE.capTop - (art.height - PLATE.capRows) / 2, PLATE.imgH);
+  cv.style.width = pct(art.width, PLATE.imgW);
+  cv.style.height = pct(art.height, PLATE.imgH);
+  return text;
+}
+
+/** QA: the pool, its measured widths, and the line currently on screen. */
+export function taglineInfo() {
+  const cv = document.querySelector<HTMLCanvasElement>(".ml-tagline");
+  return {
+    pool: TAGLINES.map((t) => ({ text: t, cells: measurePixelText(t) })),
+    max: TAGLINE_MAX_CELLS,
+    shown: cv ? { w: cv.width, h: cv.height, css: cv.getBoundingClientRect() } : null,
+  };
+}
 
 export interface JoinChoice {
   world: string;
@@ -52,7 +151,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
-        <img class="ml-logo" src="${withV("/logo.webp")}" alt="Nangijala Online — a browser MMORPG" />
+        <div class="ml-logowrap">
+          <img class="ml-logo" src="${withV("/logo.webp")}" alt="Nangijala Online — a browser MMORPG" />
+          <canvas class="ml-tagline" aria-hidden="true"></canvas>
+        </div>
         <div class="ml-card">
           ${showWorlds ? `
           <div class="ml-dd" id="ml-worlds">
@@ -102,7 +204,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const veil = el("div", "ml-title-veil");
     overlay.appendChild(veil);
     const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo")!;
-    logoImg.style.opacity = "0";
+    // The title beat moves the LOGO GROUP — the art and the tagline drawn over
+    // it — so the words can never slide off the banner mid-animation.
+    const logo = overlay.querySelector<HTMLElement>(".ml-logowrap")!;
+    logo.style.opacity = "0";
+    mountTagline(overlay.querySelector<HTMLCanvasElement>(".ml-tagline")!);
     const bgImg = new Image();
     bgImg.src = withV("/ui2/select-bg.webp");
     const decode = (im?: HTMLImageElement) => (im ? im.decode().catch(() => {}) : Promise.resolve());
@@ -117,9 +223,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       veil.style.pointerEvents = "none";
       Promise.race([decode(bgImg), delay(450)]).then(() =>
         twoFrames(() => {
-          logoImg.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
-          logoImg.style.transform = "translateY(0)";
-          logoImg.style.opacity = "1";
+          logo.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
+          logo.style.transform = "translateY(0)";
+          logo.style.opacity = "1";
           veil.style.opacity = "0";
           setTimeout(() => veil.remove(), 800);
         }),
@@ -131,16 +237,16 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       decode(logoImg).then(() => delay(150).then(reveal));
     } else {
       decode(logoImg).then(() => {
-        const r = logoImg.getBoundingClientRect();
+        const r = logo.getBoundingClientRect();
         const shift = Math.round(0.45 * window.innerHeight - (r.top + r.height / 2));
         if (r.height >= 10 && shift > 8) {
-          logoImg.style.transition = "none";
-          logoImg.style.transform = `translateY(${shift}px)`;
-          logoImg.getBoundingClientRect(); // commit the balanced start position
+          logo.style.transition = "none";
+          logo.style.transform = `translateY(${shift}px)`;
+          logo.getBoundingClientRect(); // commit the balanced start position
         }
         twoFrames(() => {
-          logoImg.style.transition = "opacity .5s ease";
-          logoImg.style.opacity = "1"; // the logo emerges alone on black
+          logo.style.transition = "opacity .5s ease";
+          logo.style.opacity = "1"; // the logo emerges alone on black
           delay(1000).then(reveal); // auto-advance after a short title hold
         });
       });
@@ -300,6 +406,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
       installVisible: () => !installBtn.hidden,
       wikiHref: () => wikiBtn.getAttribute("href"),
+      tagline: taglineInfo,
+      /** QA: force a specific line onto the plate (no argument = re-pick). */
+      setTagline: (t?: string) =>
+        mountTagline(overlay.querySelector<HTMLCanvasElement>(".ml-tagline")!, t ?? pickTagline()),
       commit,
     };
   });
@@ -438,11 +548,19 @@ function injectStyles() {
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   .ml-panel{width:var(--selw);margin:auto;padding:12px 0 132px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:14px}
-  /* the maintainer's logo with its black silhouette glow — brand art, kept */
-  .ml-logo{display:block;width:min(360px,92%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    position:relative;z-index:101;will-change:transform,opacity;pointer-events:none;
+  /* the maintainer's logo with its black silhouette glow — brand art, kept.
+     The WRAPPER owns the size, the stacking and the title animation so the
+     tagline canvas over the banner travels with the art. */
+  .ml-logowrap{position:relative;display:block;width:min(360px,92%);margin:0 auto;
+    z-index:101;will-change:transform,opacity;pointer-events:none;
     filter:drop-shadow(0 0 8px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(0,0,0,.6))
       drop-shadow(0 0 48px rgba(0,0,0,.5))}
+  .ml-logo{display:block;width:100%;user-select:none;-webkit-user-drag:none}
+  /* The tagline. Placed in PERCENT of the logo box, so it tracks the art at
+     every width, and left SMOOTH on purpose (image-rendering:auto): it is
+     drawn at the artwork's own 2px-per-cell grid and scaled DOWN with it —
+     pixelated here would drop rows out of a 7-row cap. See pixeltext.ts. */
+  .ml-tagline{position:absolute;pointer-events:none;image-rendering:auto}
   /* TITLE veil: a solid-black cover; only the logo (z 101) pokes through. */
   .ml-title-veil{position:absolute;inset:0;z-index:100;background:#05070d;opacity:1;
     transition:opacity .7s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
