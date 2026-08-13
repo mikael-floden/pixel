@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 170,
+  "scenery_count": 171,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -384,7 +384,7 @@
       "id": "soulstone_plinths",
       "name": "Soulstone Plinth",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 55,
@@ -786,7 +786,7 @@
     "sheaf_poles": 1,
     "signposts": 2,
     "soulstone_outcrops": 2,
-    "soulstone_plinths": 1,
+    "soulstone_plinths": 2,
     "spring_basins": 1,
     "standing_stones": 2,
     "statues": 1,
@@ -3415,6 +3415,28 @@
       "status": "complete",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_plinth_002",
+      "rel": "soulstone_plinths/soulstone_plinth_002",
+      "name": "Blue stone, carved column 002 \u00b7 lit",
+      "category": "soulstone_plinths",
+      "lights": "LIGHTS_ON",
+      "description": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, blue stone, carved column, about as tall as an adult person, self-emissive at night, softly radiating light: carved word on the plinth glowing",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.2,
+        "world_px_height": 45,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3664908e-0a3c-4285-8eaf-3cf830ec5489",
+      "sprite": "soulstone_plinths/soulstone_plinth_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
