@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 428,
+  "scenery_count": 429,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 14,
@@ -796,7 +796,7 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
-    "briar_thickets": 5,
+    "briar_thickets": 6,
     "broken_columns": 2,
     "bushes": 5,
     "cairns": 7,
@@ -2131,6 +2131,28 @@
       "status": "complete",
       "pixellab_object_id": "da3debd2-6628-4730-9c0f-7f55243a3813",
       "sprite": "briar_thickets/briar_thicket_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_013",
+      "rel": "briar_thickets/briar_thicket_013",
+      "name": "Dense head-high thorn wall 013",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dense head-high thorn wall, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.51,
+        "world_px_height": 57,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fd8a2f8b-79eb-484f-9cb2-40ec4301d3b1",
+      "sprite": "briar_thickets/briar_thicket_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
