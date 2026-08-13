@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "offering_table_004",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 4,
+  "name": "Birch log table, berries 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "birch log table, berries",
+  "glow_concept": "the offerings themselves glowing faintly gold",
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, birch log table, berries, waist-high to an adult person, self-emissive at night, softly radiating light: the offerings themselves glowing faintly gold",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.82,
+    "world_px_height": 31,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e6f9e6b0-7d53-414e-bbc0-0f1fd27029af",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
