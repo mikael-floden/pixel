@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_009",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 9,
+  "name": "Turnip-head with felt hat 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "turnip-head with felt hat",
+  "glow_concept": null,
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, turnip-head with felt hat, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_009/sprite.webp",
+  "placement": {
+    "world_height_m": 2.15,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4001ab8f-1535-45db-ad49-c0bf456d449c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
