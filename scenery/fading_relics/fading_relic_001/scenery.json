@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fading_relic_001",
+  "group": "fading_relics",
+  "rank": 62,
+  "index": 1,
+  "name": "Fading harmonium 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "fading harmonium",
+  "glow_concept": null,
+  "prompt": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, fading harmonium, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "fading_relics/fading_relic_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.72,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7731d832-8bd6-4fef-8da2-6270d1c5c015",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
