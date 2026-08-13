@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rail_cart_004",
+  "group": "rail_carts",
+  "rank": 71,
+  "index": 4,
+  "name": "Cart overgrown with brambles 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cart overgrown with brambles",
+  "glow_concept": "soul-light pooling under the cart",
+  "prompt": "a derelict abandoned wooden mine cart, weathered and rusted, tipped beside a short piece of broken track half-buried in grass and weeds, long out of use, cart overgrown with brambles, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light pooling under the cart",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "rail_carts/rail_cart_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.6,
+    "world_px_height": 60,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "96a3e727-0627-44d5-9f09-10713ac4fb6b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
