@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 261,
+  "scenery_count": 262,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 22,
@@ -868,7 +868,7 @@
     "statues": 1,
     "stone_fountains": 1,
     "stones": 14,
-    "story_posts": 1,
+    "story_posts": 2,
     "streetlights": 3,
     "stumps": 5,
     "sundials": 1,
@@ -5648,6 +5648,28 @@
       "status": "complete",
       "pixellab_object_id": "c253194a-e0b4-4d96-86bc-1d5d2584c24a",
       "sprite": "story_posts/story_post_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_008",
+      "rel": "story_posts/story_post_008",
+      "name": "Antler-topped tale post 008 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, antler-topped tale post, large, twice human height, self-emissive at night, softly radiating light: knot-hole shining like a small hearth",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.47,
+        "world_px_height": 93,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "65163a70-fddc-4adc-83e6-554463a46aca",
+      "sprite": "story_posts/story_post_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
