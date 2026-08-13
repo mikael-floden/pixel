@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 441,
+  "scenery_count": 442,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 27,
@@ -859,7 +859,7 @@
     "rugs_and_hides": 5,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 5,
+    "scarecrows": 6,
     "sheaf_poles": 2,
     "signposts": 6,
     "soulstone_outcrops": 6,
@@ -7454,6 +7454,28 @@
       "status": "complete",
       "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_011",
+      "rel": "scarecrows/scarecrow_011",
+      "name": "Net-draped shoreline scarecrow 011",
+      "category": "scarecrows",
+      "lights": "LIGHTS_OFF",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, net-draped shoreline scarecrow, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.29,
+        "world_px_height": 86,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "51d682b7-8464-4599-a9d1-0ef90147db84",
+      "sprite": "scarecrows/scarecrow_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
