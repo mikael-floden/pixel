@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:56:13+00:00",
+  "id": "dock_piling_009",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 9,
+  "name": "Three posts bound together 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "three posts bound together",
+  "glow_concept": null,
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, three posts bound together, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.46,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f0d57658-be80-4046-ae72-45e902cea020",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
