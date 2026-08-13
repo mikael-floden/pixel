@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 334,
+  "scenery_count": 335,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 24,
@@ -785,7 +785,7 @@
     "scarecrows": 4,
     "sheaf_poles": 2,
     "signposts": 5,
-    "soulstone_outcrops": 4,
+    "soulstone_outcrops": 5,
     "soulstone_plinths": 2,
     "spring_basins": 2,
     "standing_stones": 4,
@@ -5989,6 +5989,28 @@
       "status": "complete",
       "pixellab_object_id": "167f0281-49c6-45e2-9619-9db19ca8f4b9",
       "sprite": "soulstone_outcrops/soulstone_outcrop_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_005",
+      "rel": "soulstone_outcrops/soulstone_outcrop_005",
+      "name": "Cracked leaking soulstone 005",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_OFF",
+      "description": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, cracked leaking soulstone, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.49,
+        "world_px_height": 56,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8a68a95e-4735-40a8-855b-76ffff04aba7",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_005/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_005",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 5,
+  "name": "Cracked leaking soulstone 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "cracked leaking soulstone",
+  "glow_concept": null,
+  "prompt": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, cracked leaking soulstone, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.49,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8a68a95e-4735-40a8-855b-76ffff04aba7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
