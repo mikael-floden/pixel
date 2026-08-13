@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "gravel_pile_001",
+  "group": "gravel_piles",
+  "rank": 55,
+  "index": 1,
+  "name": "Shell-and-pebble beach pile 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "shell-and-pebble beach pile",
+  "glow_concept": null,
+  "prompt": "a loose heaped mound of small stones and gravel with scattered pebbles spilling around its base, shell-and-pebble beach pile, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "gravel_piles/gravel_pile_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.37,
+    "world_px_height": 14,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5a3efe9a-9112-474c-b1e0-20dfd2bb6f48",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
