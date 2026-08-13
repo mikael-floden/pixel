@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 210,
+  "scenery_count": 211,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -664,7 +664,7 @@
       "id": "spring_basins",
       "name": "Spring Basin",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 95,
@@ -787,7 +787,7 @@
     "signposts": 2,
     "soulstone_outcrops": 2,
     "soulstone_plinths": 2,
-    "spring_basins": 1,
+    "spring_basins": 2,
     "standing_stones": 2,
     "statues": 2,
     "stone_fountains": 2,
@@ -4075,6 +4075,28 @@
       "status": "complete",
       "pixellab_object_id": "2dfb3ef9-beb6-45e1-ac83-f40ad2c385c2",
       "sprite": "spring_basins/spring_basin_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "spring_basin_002",
+      "rel": "spring_basins/spring_basin_002",
+      "name": "Basin with wooden feed spout 002 \u00b7 lit",
+      "category": "spring_basins",
+      "lights": "LIGHTS_ON",
+      "description": "a raised rustic stone basin fed by a natural spring, rough mossy masonry walls holding clear welling water, a wooden feed spout at one side, basin with wooden feed spout, waist-high to an adult person, self-emissive at night, softly radiating light: lit mist curling off the warm water",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2dd16273-912e-4147-a87e-216ec676a4ad",
+      "sprite": "spring_basins/spring_basin_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
