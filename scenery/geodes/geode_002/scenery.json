@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "geode_002",
+  "group": "geodes",
+  "rank": 85,
+  "index": 2,
+  "name": "Black crystal void geode 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "black crystal void geode",
+  "glow_concept": "thin beam of light escaping the crack",
+  "prompt": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals, black crystal void geode, small, knee-high to an adult person, self-emissive at night, softly radiating light: thin beam of light escaping the crack",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "geodes/geode_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.69,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0755bbcc-1cc6-49a7-a42f-69f34e7368a6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
