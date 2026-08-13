@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:08:02+00:00",
+  "id": "briar_thicket_012",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 12,
+  "name": "Scarlet rose hip clusters 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "scarlet rose hip clusters",
+  "glow_concept": "glowworms strung along the arching canes",
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, scarlet rose hip clusters, waist-high, self-emissive at night, softly radiating light: glowworms strung along the arching canes",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "da3debd2-6628-4730-9c0f-7f55243a3813",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
