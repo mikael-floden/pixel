@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ruined_arch_001",
+  "group": "ruined_arches",
+  "rank": 51,
+  "index": 1,
+  "name": "Post-and-lintel dolmen arch 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "post-and-lintel dolmen arch",
+  "glow_concept": null,
+  "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, post-and-lintel dolmen arch, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.98,
+    "world_px_height": 112,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 68,
+  "scenery_count": 69,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -363,7 +363,7 @@
       "id": "ruined_arches",
       "name": "Ruined Arch",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 52,
@@ -746,6 +746,7 @@
     "offering_tables": 1,
     "orchard_trees": 1,
     "reed_beds": 1,
+    "ruined_arches": 1,
     "scarecrows": 1,
     "signposts": 1,
     "soulstone_outcrops": 1,
@@ -1605,6 +1606,28 @@
       "status": "complete",
       "pixellab_object_id": "756eb71e-a928-421c-8afa-88bb65e3654e",
       "sprite": "reed_beds/reed_bed_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "ruined_arch_001",
+      "rel": "ruined_arches/ruined_arch_001",
+      "name": "Post-and-lintel dolmen arch 001",
+      "category": "ruined_arches",
+      "lights": "LIGHTS_OFF",
+      "description": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, post-and-lintel dolmen arch, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.98,
+        "world_px_height": 112,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
+      "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
