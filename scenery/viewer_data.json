@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 341,
+  "scenery_count": 342,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -188,7 +188,7 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 27,
@@ -859,7 +859,7 @@
     "rugs_and_hides": 3,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 3,
+    "scarecrows": 4,
     "sheaf_poles": 2,
     "signposts": 4,
     "soulstone_outcrops": 4,
@@ -6090,6 +6090,28 @@
       "status": "complete",
       "pixellab_object_id": "00e93f2e-2400-46ad-afd0-35cff05cfa93",
       "sprite": "scarecrows/scarecrow_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "scarecrow_012",
+      "rel": "scarecrows/scarecrow_012",
+      "name": "Pumpkin-head autumn scarecrow 012 \u00b7 lit",
+      "category": "scarecrows",
+      "lights": "LIGHTS_ON",
+      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, pumpkin-head autumn scarecrow, large, twice human height, self-emissive at night, softly radiating light: glowing stitched runes across the patches",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.33,
+        "world_px_height": 88,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8fa2e31f-221f-4845-ba38-7a15f4de3286",
+      "sprite": "scarecrows/scarecrow_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
