@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cliff_vine_005",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 5,
+  "name": "Wilted dry brown vine fall 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "wilted dry brown vine fall",
+  "glow_concept": null,
+  "prompt": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, wilted dry brown vine fall, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "cliff_vines/cliff_vine_005/sprite.webp",
+  "placement": {
+    "world_height_m": 4.49,
+    "world_px_height": 169,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "28812cfa-d272-4d3c-a7f4-709232837824",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
