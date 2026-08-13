@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 431,
+  "scenery_count": 432,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 63,
@@ -815,6 +815,7 @@
     "dock_pilings": 5,
     "dovecotes": 2,
     "driftwood_logs": 2,
+    "fading_relics": 1,
     "fallen_logs": 7,
     "fences": 6,
     "ferns": 5,
@@ -3674,6 +3675,28 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fading_relic_004",
+      "rel": "fading_relics/fading_relic_004",
+      "name": "Half-faded armchair 004 \u00b7 lit",
+      "category": "fading_relics",
+      "lights": "LIGHTS_ON",
+      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, half-faded armchair, roughly six feet tall, human height, self-emissive at night, softly radiating light: a lit candle left beside it in remembrance",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.86,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1b28f735-8dfa-4983-9825-00982269e936",
+      "sprite": "fading_relics/fading_relic_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
