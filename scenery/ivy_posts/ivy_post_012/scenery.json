@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:40:41+00:00",
+  "id": "ivy_post_012",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 12,
+  "name": "Ivy on leaning birch post 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ivy on leaning birch post",
+  "glow_concept": "a swallowed tin lantern still burning inside the ivy",
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, ivy on leaning birch post, roughly six feet tall, human height, self-emissive at night, softly radiating light: a swallowed tin lantern still burning inside the ivy",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.57,
+    "world_px_height": 59,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8b961f51-ede7-4225-ac3a-d2be556cc8e5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
