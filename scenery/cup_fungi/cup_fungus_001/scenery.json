@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cup_fungus_001",
+  "group": "cup_fungi",
+  "rank": 58,
+  "index": 1,
+  "name": "Moss-nested scarlet cups 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-nested scarlet cups",
+  "glow_concept": null,
+  "prompt": "a cluster of small goblet-shaped cup fungi growing from mossy ground, moss-nested scarlet cups, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.11,
+    "world_px_height": 4,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 75,
+  "scenery_count": 76,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -412,7 +412,7 @@
       "id": "cup_fungi",
       "name": "Cup Fungus",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 59,
@@ -725,6 +725,7 @@
     "cattail_clumps": 1,
     "chimney_stacks": 1,
     "crystals": 1,
+    "cup_fungi": 1,
     "dock_pilings": 1,
     "driftwood_logs": 1,
     "fallen_logs": 1,
@@ -1133,6 +1134,28 @@
       "status": "complete",
       "pixellab_object_id": "8845694f-cfe9-404e-b6ff-0243a6bd791e",
       "sprite": "crystals/crystal_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cup_fungus_001",
+      "rel": "cup_fungi/cup_fungus_001",
+      "name": "Moss-nested scarlet cups 001",
+      "category": "cup_fungi",
+      "lights": "LIGHTS_OFF",
+      "description": "a cluster of small goblet-shaped cup fungi growing from mossy ground, moss-nested scarlet cups, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.11,
+        "world_px_height": 4,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
+      "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
