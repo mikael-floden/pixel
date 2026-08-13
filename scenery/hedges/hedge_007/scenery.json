@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_007",
+  "group": "hedges",
+  "rank": 12,
+  "index": 7,
+  "name": "Dark green yew hedge 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "dark green yew hedge",
+  "glow_concept": null,
+  "prompt": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground, dark green yew hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.44,
+    "world_px_height": 54,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f42f6f7a-38e9-4576-a3fa-7db237a4f913",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
