@@ -124,7 +124,10 @@ function starsWidget(domain, id) {
   render();
   return wrap;
 }
-function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false } = {}) {
+// `stamp` rides into every verdict this widget writes — the scenery pages
+// pass { art: <sprite hash> } so a verdict records the exact bytes it judged
+// (objVerdict's staleness is then byte-exact, immune to invented dates).
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
@@ -139,8 +142,8 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
     wrap.replaceChildren(...[
       // rejectOnly: a per-take unbind on an already-narrow row, where the
       // approval of the binding as a whole lives one row up.
-      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved" }); render(); onchange?.(); } }, "✓ approve"),
-      h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected" }); render(); onchange?.(); } }, reject),
+      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved", ...(stamp ?? {}) }); render(); onchange?.(); } }, "✓ approve"),
+      h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
     ].filter(Boolean));
   };
   render();
@@ -1998,7 +2001,17 @@ function objBadges(o) {
 function objVerdict(o) {
   const e = fb("objects", o.path);
   if (!e.status) return { status: null, stale: false };
-  return { status: e.status, at: e.updated_at, stale: !!(o.added && e.updated_at && e.updated_at < o.added) };
+  // A verdict is about BYTES, not about a date. New verdicts carry the sprite
+  // hash they were given on (verdictWidget's stamp), so staleness is exact.
+  // Legacy verdicts without a hash fall back to the date comparison — but
+  // ONLY against a date the build actually knows (addedGuess=false): the
+  // deploy image invents dates for pieces its committed cache has not met,
+  // and trusting one threw 129 already-reviewed pieces back into the queue
+  // (maintainer 2026-08-14). An invented date proves nothing about the art.
+  const stale = e.art && o.artHash
+    ? e.art !== o.artHash
+    : !!(o.added && !o.addedGuess && e.updated_at && e.updated_at < o.added);
+  return { status: e.status, at: e.updated_at, stale };
 }
 const OBJ_FILTERS = {
   all: { label: "all", title: "Every piece", match: () => true, empty: "Nothing here at all — the scenery domain is empty." },
@@ -2111,7 +2124,7 @@ function objectHead(o) {
           h("span", { class: "pill warn" }, "re-review"),
           `you marked this “${v.status}” on ${String(v.at).slice(0, 16).replace("T", " ")} — the art here has been regenerated since`) : null;
       })(),
-      feedbackRow("objects", o.path)));
+      feedbackRow("objects", o.path, { stamp: { art: o.artHash ?? null } })));
 }
 // The Man's idle/south frame 0 + measured content box — everything the size
 // reference needs to draw him by the viewer's own rules. Null when the

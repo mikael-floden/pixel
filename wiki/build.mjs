@@ -565,16 +565,25 @@ function buildObjects() {
   const { path: seenPath, seen } = loadFirstSeen();
   const stamp = new Date().toISOString();
   let seenGrew = 0, artChanged = 0;
+  // Returns { at, guess, hash }. `guess` is the load-bearing bit: inside the
+  // deploy image there is no git, so a piece missing from the committed cache
+  // gets `at` = THE BUILD'S OWN TIME — fine for newest-first sorting, but a
+  // LIE as a fact. Round one fed that lie to the staleness rule and every
+  // deploy post-dated the newly-landed pieces past the maintainer's fresh
+  // verdicts, throwing already-reviewed art back into his queue ("Why do I
+  // have to see and review items I have already reviewed?", 2026-08-14, 129
+  // pieces deep). A guessed date must never call a verdict stale.
   const firstSeenOf = (rel, spritePath) => {
     let hash = null;
     try { hash = createHash("md5").update(readFileSync(join(ROOT, spritePath))).digest("hex").slice(0, 16); } catch { /* unreadable */ }
     const prev = seen[rel];
-    if (prev && hash && prev.hash === hash) return prev.at;      // unchanged art keeps its date
-    const at = artChangeDates().get(rel) ?? stamp;
+    if (prev && hash && prev.hash === hash) return { at: prev.at, guess: false, hash };  // unchanged art keeps its date
+    const real = artChangeDates().get(rel);
+    const at = real ?? stamp;
     if (prev && hash && prev.hash !== hash) artChanged++;
     seen[rel] = { at, hash };
     seenGrew++;
-    return at;
+    return { at, guess: !real, hash };
   };
   const entries = [];
   for (const top of listDirs(base)) {
@@ -639,9 +648,16 @@ function buildObjects() {
       // So the page can say "Still" rather than claim an animation, and the
       // list can keep calling these "static".
       stillOnly: stillOnly && !!anims.still,
-      // When the art that is there NOW arrived. A verdict older than this is a
-      // verdict about art the maintainer can no longer see (wiki.js flags it).
-      added: preview ? firstSeenOf(`scenery/${rel}`, preview) : null,
+      // When the art that is there NOW arrived, plus its content hash — the
+      // hash is what a verdict is really ABOUT, and wiki.js stamps it into
+      // every new verdict so staleness is byte-exact from here on. addedGuess
+      // marks a date the deploy image had to invent (no git there); the
+      // staleness rule must never trust one.
+      ...(() => {
+        if (!preview) return { added: null, addedGuess: false, artHash: null };
+        const f = firstSeenOf(`scenery/${rel}`, preview);
+        return { added: f.at, addedGuess: f.guess, artHash: f.hash };
+      })(),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,
