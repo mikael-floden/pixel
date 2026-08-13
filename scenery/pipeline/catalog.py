@@ -148,29 +148,64 @@ def plan_group(cfg: dict, group: dict) -> list[dict]:
     return [piece_spec(cfg, group, i) for i in range(1, group_quota(group, cfg) + 1)]
 
 
-def next_batch(cfg: dict, done_by_group: dict[str, set[str]]) -> tuple[dict, list[dict]] | None:
+def next_indices(group: dict, done: set[str], retired: set[str], want: int) -> list[int]:
+    """The next `want` FRESH indices for a group.
+
+    Ids are never recycled: an index whose piece was deleted (rejected by the
+    maintainer, or condemned by the agent's QA) is retired, and the group
+    grows past its quota's index range to find clean numbers. Parity carries
+    the LIGHTS_ON/LIGHTS_OFF promise (even = lit), so a replacement takes the
+    next free index on whichever side is currently under-represented — half
+    and half survives any amount of re-rolling."""
+    lit = sum(1 for p in done if p.split("_")[-1].isdigit()
+              and int(p.split("_")[-1]) % 2 == 0)
+    unlit = len(done) - lit
+    out, i = [], 1
+    while len(out) < want:
+        want_even = lit <= unlit          # even index == LIGHTS_ON
+        cand = None
+        j = i
+        while cand is None:
+            pid = piece_id(group, j)
+            if pid not in done and pid not in retired and j not in out \
+                    and (j % 2 == 0) == want_even:
+                cand = j
+            j += 1
+            if j > 10000:                 # unreachable guard
+                return out
+        out.append(cand)
+        if cand % 2 == 0:
+            lit += 1
+        else:
+            unlit += 1
+    return out
+
+
+def next_batch(cfg: dict, done_by_group: dict[str, set[str]],
+               retired_by_group: dict[str, set[str]] | None = None
+               ) -> tuple[dict, list[dict]] | None:
     """The next batch to generate, derived purely from what exists on disk.
 
     Fairness rule (deterministic): the group with the FEWEST finished pieces
     that still has quota goes first; ties break by rank. This fills every
     group's first pairs early (the world gets variety fast) while quotas make
     importance win over time. Returns (group, [piece specs]) or None."""
+    retired_by_group = retired_by_group or {}
     best = None
     for group in cfg["groups"]:
         done = done_by_group.get(group["id"], set())
         quota = group_quota(group, cfg)
-        missing = [i for i in range(1, quota + 1)
-                   if piece_id(group, i) not in done]
-        if not missing:
+        if len(done) >= quota:
             continue
-        key = (quota - len(missing), group["rank"])
+        key = (len(done), group["rank"])
         if best is None or key < best[0]:
-            best = (key, group, missing)
+            best = (key, group, done)
     if best is None:
         return None
-    _, group, missing = best
+    _, group, done = best
     cap = batch_capacity(int(group["art_size"]), cfg)
-    return group, [piece_spec(cfg, group, i) for i in missing[:cap]]
+    idxs = next_indices(group, done, retired_by_group.get(group["id"], set()), cap)
+    return group, [piece_spec(cfg, group, i) for i in idxs]
 
 
 def progress(cfg: dict, done_by_group: dict[str, set[str]]) -> dict:

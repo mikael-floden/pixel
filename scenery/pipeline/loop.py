@@ -192,8 +192,9 @@ def main():
         done = factory.done_by_group()
         print("progress:", catalog.progress(cfg, done))
         shown = 0
+        retired = factory.load_retired()
         while shown < max_pieces:
-            nxt = catalog.next_batch(cfg, done)
+            nxt = catalog.next_batch(cfg, done, retired)
             if nxt is None:
                 print("(catalog complete)")
                 break
@@ -264,7 +265,8 @@ def main():
         done = factory.done_by_group()
         for gid, ids in skipped.items():
             done.setdefault(gid, set()).update(ids)
-        nxt = catalog.next_batch(cfg, done)
+        retired = factory.load_retired()
+        nxt = catalog.next_batch(cfg, done, retired)
         if nxt is None:
             stop_reason = "catalog complete" if not skipped else                 f"catalog complete except {sum(len(v) for v in skipped.values())} skipped piece(s)"
             break

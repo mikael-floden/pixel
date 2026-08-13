@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 237,
+  "scenery_count": 236,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -419,7 +419,7 @@
       "id": "waterwheels",
       "name": "Waterwheel",
       "quota": 2,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 60,
@@ -873,7 +873,6 @@
     "wasp_nest_trees": 2,
     "water_lily_clumps": 2,
     "water_pumps": 2,
-    "waterwheels": 1,
     "wayside_shrines": 1,
     "waystones": 2,
     "web_frames": 1,
@@ -972,9 +971,9 @@
       "animations": []
     },
     {
-      "id": "anvil_001",
-      "rel": "anvils/anvil_001",
-      "name": "Black iron anvil 001",
+      "id": "anvil_003",
+      "rel": "anvils/anvil_003",
+      "name": "Black iron anvil 003",
       "category": "anvils",
       "lights": "LIGHTS_OFF",
       "description": "a heavy black iron blacksmith's anvil mounted on a broad oak stump, its top face bare and empty, black iron anvil, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -989,7 +988,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "f172fe7a-cfe3-4c3a-9826-6251e9d894ed",
-      "sprite": "anvils/anvil_001/sprite.webp",
+      "sprite": "anvils/anvil_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -1618,9 +1617,9 @@
       "animations": []
     },
     {
-      "id": "briar_thicket_001",
-      "rel": "briar_thickets/briar_thicket_001",
-      "name": "Blackberry bramble tangle 001",
+      "id": "briar_thicket_009",
+      "rel": "briar_thickets/briar_thicket_009",
+      "name": "Blackberry bramble tangle 009",
       "category": "briar_thickets",
       "lights": "LIGHTS_OFF",
       "description": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses, blackberry bramble tangle, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -1635,7 +1634,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "431aa3db-74b3-47e0-b842-e511f9442fa1",
-      "sprite": "briar_thickets/briar_thicket_001/sprite.webp",
+      "sprite": "briar_thickets/briar_thicket_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -1750,28 +1749,6 @@
       "animations": []
     },
     {
-      "id": "cairn_001",
-      "rel": "cairns/cairn_001",
-      "name": "Toppled half-collapsed cairn 001",
-      "category": "cairns",
-      "lights": "LIGHTS_OFF",
-      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, toppled half-collapsed cairn, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.07,
-        "world_px_height": 40,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "dbee4c90-9c34-451b-9255-6768aa18b8c2",
-      "sprite": "cairns/cairn_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cairn_003",
       "rel": "cairns/cairn_003",
       "name": "Stacked slate slab cairn 003",
@@ -1790,6 +1767,28 @@
       "status": "complete",
       "pixellab_object_id": "1eb1bf17-2f79-4b68-b0fd-1f62b4513187",
       "sprite": "cairns/cairn_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_009",
+      "rel": "cairns/cairn_009",
+      "name": "Toppled half-collapsed cairn 009",
+      "category": "cairns",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, toppled half-collapsed cairn, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.07,
+        "world_px_height": 40,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dbee4c90-9c34-451b-9255-6768aa18b8c2",
+      "sprite": "cairns/cairn_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2260,9 +2259,9 @@
       "animations": []
     },
     {
-      "id": "dovecote_001",
-      "rel": "dovecotes/dovecote_001",
-      "name": "Stone drum dovecote 001",
+      "id": "dovecote_003",
+      "rel": "dovecotes/dovecote_003",
+      "name": "Stone drum dovecote 003",
       "category": "dovecotes",
       "lights": "LIGHTS_OFF",
       "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, stone drum dovecote, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -2277,7 +2276,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "4f358f3f-5a67-4eae-83bb-69dc5b5b84ac",
-      "sprite": "dovecotes/dovecote_001/sprite.webp",
+      "sprite": "dovecotes/dovecote_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2304,9 +2303,9 @@
       "animations": []
     },
     {
-      "id": "fading_relic_001",
-      "rel": "fading_relics/fading_relic_001",
-      "name": "Fading harmonium 001",
+      "id": "fading_relic_003",
+      "rel": "fading_relics/fading_relic_003",
+      "name": "Fading harmonium 003",
       "category": "fading_relics",
       "lights": "LIGHTS_OFF",
       "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, fading harmonium, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -2321,7 +2320,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "7731d832-8bd6-4fef-8da2-6270d1c5c015",
-      "sprite": "fading_relics/fading_relic_001/sprite.webp",
+      "sprite": "fading_relics/fading_relic_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2810,9 +2809,9 @@
       "animations": []
     },
     {
-      "id": "flower_garland_001",
-      "rel": "flower_garlands/flower_garland_001",
-      "name": "Ribbon-woven midsummer garland 001",
+      "id": "flower_garland_003",
+      "rel": "flower_garlands/flower_garland_003",
+      "name": "Ribbon-woven midsummer garland 003",
       "category": "flower_garlands",
       "lights": "LIGHTS_OFF",
       "description": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, ribbon-woven midsummer garland, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -2827,7 +2826,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "2998c510-5b8d-457f-b41e-eb16981141f3",
-      "sprite": "flower_garlands/flower_garland_001/sprite.webp",
+      "sprite": "flower_garlands/flower_garland_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3289,9 +3288,9 @@
       "animations": []
     },
     {
-      "id": "hanging_basket_001",
-      "rel": "hanging_baskets/hanging_basket_001",
-      "name": "Trailing strawberry runners 001",
+      "id": "hanging_basket_003",
+      "rel": "hanging_baskets/hanging_basket_003",
+      "name": "Trailing strawberry runners 003",
       "category": "hanging_baskets",
       "lights": "LIGHTS_OFF",
       "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, trailing strawberry runners, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -3306,7 +3305,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "0e66a5f6-af5c-49bb-bb4c-5c7705d0703c",
-      "sprite": "hanging_baskets/hanging_basket_001/sprite.webp",
+      "sprite": "hanging_baskets/hanging_basket_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3355,9 +3354,9 @@
       "animations": []
     },
     {
-      "id": "haystack_001",
-      "rel": "haystacks/haystack_001",
-      "name": "Twin small hillock stacks 001",
+      "id": "haystack_009",
+      "rel": "haystacks/haystack_009",
+      "name": "Twin small hillock stacks 009",
       "category": "haystacks",
       "lights": "LIGHTS_OFF",
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, twin small hillock stacks, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -3372,29 +3371,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "60f32652-5113-4df5-b6d9-3875957ba28e",
-      "sprite": "haystacks/haystack_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_001",
-      "rel": "hedges/hedge_001",
-      "name": "Neat boxwood hedge 001",
-      "category": "hedges",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "63b3b49f-add5-4199-a9c7-b41e85d388e8",
-      "sprite": "hedges/hedge_001/sprite.webp",
+      "sprite": "haystacks/haystack_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3417,6 +3394,28 @@
       "status": "complete",
       "pixellab_object_id": "8681ccd7-5e14-457c-bc16-a87c3e63c77f",
       "sprite": "hedges/hedge_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_009",
+      "rel": "hedges/hedge_009",
+      "name": "Neat boxwood hedge 009",
+      "category": "hedges",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.3,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "63b3b49f-add5-4199-a9c7-b41e85d388e8",
+      "sprite": "hedges/hedge_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3685,9 +3684,9 @@
       "animations": []
     },
     {
-      "id": "letter_box_001",
-      "rel": "letter_boxes/letter_box_001",
-      "name": "Carved farmhouse name box 001",
+      "id": "letter_box_003",
+      "rel": "letter_boxes/letter_box_003",
+      "name": "Carved farmhouse name box 003",
       "category": "letter_boxes",
       "lights": "LIGHTS_OFF",
       "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base, carved farmhouse name box, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -3702,7 +3701,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "0b076865-875e-4228-9fd5-9c31c131b18b",
-      "sprite": "letter_boxes/letter_box_001/sprite.webp",
+      "sprite": "letter_boxes/letter_box_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4279,9 +4278,9 @@
       "animations": []
     },
     {
-      "id": "rail_cart_001",
-      "rel": "rail_carts/rail_cart_001",
-      "name": "Moss-filled abandoned cart 001",
+      "id": "rail_cart_003",
+      "rel": "rail_carts/rail_cart_003",
+      "name": "Moss-filled abandoned cart 003",
       "category": "rail_carts",
       "lights": "LIGHTS_OFF",
       "description": "a heavy wooden mine cart with thick iron-banded wheels standing on a short section of rail track, seen from the side, solid chunky body, moss-filled abandoned cart, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -4296,7 +4295,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "418af1eb-26d0-4a69-a239-ded8052c772d",
-      "sprite": "rail_carts/rail_cart_001/sprite.webp",
+      "sprite": "rail_carts/rail_cart_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4455,9 +4454,9 @@
       "animations": []
     },
     {
-      "id": "rocking_horse_001",
-      "rel": "rocking_horses/rocking_horse_001",
-      "name": "Rope-tailed simple horse 001",
+      "id": "rocking_horse_003",
+      "rel": "rocking_horses/rocking_horse_003",
+      "name": "Rope-tailed simple horse 003",
       "category": "rocking_horses",
       "lights": "LIGHTS_OFF",
       "description": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers, rope-tailed simple horse, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -4472,7 +4471,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "fa2e7a96-5011-4b75-8fa4-37f5de05dfef",
-      "sprite": "rocking_horses/rocking_horse_001/sprite.webp",
+      "sprite": "rocking_horses/rocking_horse_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4631,28 +4630,6 @@
       "animations": []
     },
     {
-      "id": "signpost_001",
-      "rel": "signposts/signpost_001",
-      "name": "Rope-and-plank trail sign 001",
-      "category": "signposts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.26,
-        "world_px_height": 85,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8dc6888f-5d37-4d11-9777-e02e0e17941a",
-      "sprite": "signposts/signpost_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "signpost_004",
       "rel": "signposts/signpost_004",
       "name": "Cast-iron city signpost 004 \u00b7 lit",
@@ -4675,9 +4652,31 @@
       "animations": []
     },
     {
-      "id": "soulstone_outcrop_001",
-      "rel": "soulstone_outcrops/soulstone_outcrop_001",
-      "name": "Single tall quartz shard 001",
+      "id": "signpost_009",
+      "rel": "signposts/signpost_009",
+      "name": "Rope-and-plank trail sign 009",
+      "category": "signposts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.26,
+        "world_px_height": 85,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8dc6888f-5d37-4d11-9777-e02e0e17941a",
+      "sprite": "signposts/signpost_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_009",
+      "rel": "soulstone_outcrops/soulstone_outcrop_009",
+      "name": "Single tall quartz shard 009",
       "category": "soulstone_outcrops",
       "lights": "LIGHTS_OFF",
       "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, single tall quartz shard, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -4692,7 +4691,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "e37c6b1c-83e2-4a54-804d-7e902aac2638",
-      "sprite": "soulstone_outcrops/soulstone_outcrop_001/sprite.webp",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4719,9 +4718,9 @@
       "animations": []
     },
     {
-      "id": "spring_basin_001",
-      "rel": "spring_basins/spring_basin_001",
-      "name": "Moss-rimmed old basin 001",
+      "id": "spring_basin_003",
+      "rel": "spring_basins/spring_basin_003",
+      "name": "Moss-rimmed old basin 003",
       "category": "spring_basins",
       "lights": "LIGHTS_OFF",
       "description": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework, moss-rimmed old basin, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -4736,7 +4735,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "38de4942-59b4-4a97-8ffb-b5aa7b6c8ddc",
-      "sprite": "spring_basins/spring_basin_001/sprite.webp",
+      "sprite": "spring_basins/spring_basin_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5599,9 +5598,9 @@
       "animations": []
     },
     {
-      "id": "trailing_planter_001",
-      "rel": "trailing_planters/trailing_planter_001",
-      "name": "Blue-painted barrel, petunias 001",
+      "id": "trailing_planter_003",
+      "rel": "trailing_planters/trailing_planter_003",
+      "name": "Blue-painted barrel, petunias 003",
       "category": "trailing_planters",
       "lights": "LIGHTS_OFF",
       "description": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, blue-painted barrel, petunias, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -5616,7 +5615,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "76dcc926-13c3-4169-9fcf-8a521a520436",
-      "sprite": "trailing_planters/trailing_planter_001/sprite.webp",
+      "sprite": "trailing_planters/trailing_planter_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5929,31 +5928,9 @@
       "animations": []
     },
     {
-      "id": "waterwheel_001",
-      "rel": "waterwheels/waterwheel_001",
-      "name": "Undershot paddle wheel 001",
-      "category": "waterwheels",
-      "lights": "LIGHTS_OFF",
-      "description": "a large wooden waterwheel with thick heavy spokes and broad paddles mounted against a solid stone mill wall, water pouring over it, undershot paddle wheel, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 2.44,
-        "world_px_height": 92,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e1668908-e635-4ae5-b622-48cb1a543122",
-      "sprite": "waterwheels/waterwheel_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "wayside_shrine_001",
-      "rel": "wayside_shrines/wayside_shrine_001",
-      "name": "Shingle-roofed post shrine 001",
+      "id": "wayside_shrine_009",
+      "rel": "wayside_shrines/wayside_shrine_009",
+      "name": "Shingle-roofed post shrine 009",
       "category": "wayside_shrines",
       "lights": "LIGHTS_OFF",
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, shingle-roofed post shrine, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -5968,36 +5945,14 @@
       },
       "status": "complete",
       "pixellab_object_id": "36355e9f-1276-4632-938c-ba52f474e9d4",
-      "sprite": "wayside_shrines/wayside_shrine_001/sprite.webp",
+      "sprite": "wayside_shrines/wayside_shrine_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
     {
-      "id": "waystone_001",
-      "rel": "waystones/waystone_001",
-      "name": "Sea-smoothed coastal stone 001",
-      "category": "waystones",
-      "lights": "LIGHTS_OFF",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.16,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9f9343d6-2f00-463c-973b-7e6f6e095814",
-      "sprite": "waystones/waystone_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waystone_002",
-      "rel": "waystones/waystone_002",
-      "name": "White quartz-veined stone 002 \u00b7 lit",
+      "id": "waystone_008",
+      "rel": "waystones/waystone_008",
+      "name": "White quartz-veined stone 008 \u00b7 lit",
       "category": "waystones",
       "lights": "LIGHTS_ON",
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, waist-high to an adult person, self-emissive at night, softly radiating light: glowworms clustered in the carved lettering",
@@ -6012,14 +5967,36 @@
       },
       "status": "complete",
       "pixellab_object_id": "fe4d8a2b-ecc0-41a9-9222-925b203f8395",
-      "sprite": "waystones/waystone_002/sprite.webp",
+      "sprite": "waystones/waystone_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
     {
-      "id": "web_frame_001",
-      "rel": "web_frames/web_frame_001",
-      "name": "Lone standing doorframe 001",
+      "id": "waystone_009",
+      "rel": "waystones/waystone_009",
+      "name": "Sea-smoothed coastal stone 009",
+      "category": "waystones",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.16,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9f9343d6-2f00-463c-973b-7e6f6e095814",
+      "sprite": "waystones/waystone_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "web_frame_003",
+      "rel": "web_frames/web_frame_003",
+      "name": "Lone standing doorframe 003",
       "category": "web_frames",
       "lights": "LIGHTS_OFF",
       "description": "a dense heavy spiderweb spun across the gap between two thick weathered leaning posts, sagging with dew, lone standing doorframe, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -6034,7 +6011,7 @@
       },
       "status": "complete",
       "pixellab_object_id": "294fe0ec-4218-4a1a-847f-d94b86248191",
-      "sprite": "web_frames/web_frame_001/sprite.webp",
+      "sprite": "web_frames/web_frame_003/sprite.webp",
       "rotations": {},
       "animations": []
     },

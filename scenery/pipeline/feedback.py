@@ -108,6 +108,11 @@ def apply_rejections(client):
                           f"orphan report will flag the leftover")
         shutil.rmtree(factory.piece_dir(rel), ignore_errors=True)
         removed.append(rel)
+    if removed:
+        # The id dies with the art: a fresh roll gets a NEW number so the
+        # maintainer's verdict keeps pointing at the piece he actually judged
+        # and the re-roll lands in his unreviewed queue.
+        factory.retire(removed)
     if stale:
         print(f"  feedback: {len(stale)} rejection(s) predate the current art "
               f"(slot re-rolled since) — awaiting re-review, untouched")

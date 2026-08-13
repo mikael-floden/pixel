@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_009",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 9,
+  "name": "Shingle-roofed post shrine 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "shingle-roofed post shrine",
+  "glow_concept": null,
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, shingle-roofed post shrine, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "wayside_shrines/wayside_shrine_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.41,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "36355e9f-1276-4632-938c-ba52f474e9d4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "wayside_shrine_001",
+  "renamed_why": "the original id was retired with the piece the maintainer rejected; fresh art gets a fresh id so his verdict keeps pointing at what he judged and this lands in his unreviewed queue"
+}

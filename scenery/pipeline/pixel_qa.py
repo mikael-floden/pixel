@@ -141,6 +141,8 @@ def condemn(client, rels):
                     "reason": "broken pixel art (agent visual QA)"}
         gone.append(rel)
     _save_log(log)
+    if gone:
+        factory.retire(gone)      # never hand a condemned id out again
     return gone
 
 

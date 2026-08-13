@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hanging_basket_003",
+  "group": "hanging_baskets",
+  "rank": 74,
+  "index": 3,
+  "name": "Trailing strawberry runners 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "trailing strawberry runners",
+  "glow_concept": null,
+  "prompt": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, trailing strawberry runners, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "hanging_baskets/hanging_basket_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.24,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0e66a5f6-af5c-49bb-bb4c-5c7705d0703c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hanging_basket_001",
+  "renamed_why": "the original id was retired with the piece the maintainer rejected; fresh art gets a fresh id so his verdict keeps pointing at what he judged and this lands in his unreviewed queue"
+}

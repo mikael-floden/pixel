@@ -128,6 +128,42 @@ def discover():
     return out
 
 
+RETIRED = os.path.join(ROOT, "config", "retired_ids.json")
+
+
+def load_retired():
+    """{group_id: {piece_id, ...}} — ids whose art was DELETED (maintainer
+    rejection or the agent's own QA) and which must never be handed out again.
+
+    An id is an identity, not a slot number. Re-rolling fresh art into a
+    rejected id silently rewrites what a verdict refers to: the maintainer's
+    wiki keeps filing the new piece under the old "rejected" badge, so it
+    never reaches his unreviewed queue (measured 2026-08-13 — 21 re-rolled
+    pieces were invisible to review), and any world that placed the id gets
+    different art without being told."""
+    if not os.path.exists(RETIRED):
+        return {}
+    with open(RETIRED) as f:
+        return {k: set(v) for k, v in json.load(f).items()}
+
+
+def retire(ids):
+    """Mark rel-ids ('group/piece_id') retired; returns the number added."""
+    ret = load_retired()
+    added = 0
+    for rel in ids:
+        if "/" not in rel:
+            continue
+        group, pid = rel.split("/", 1)
+        if pid not in ret.setdefault(group, set()):
+            ret[group].add(pid)
+            added += 1
+    with open(RETIRED, "w") as f:
+        json.dump({k: sorted(v) for k, v in sorted(ret.items()) if v}, f, indent=1)
+        f.write("\n")
+    return added
+
+
 def done_by_group():
     """{group_id: {piece_id, ...}} for every COMPLETE grouped piece on disk —
     the planner's whole input. A piece counts only when its sprite exists, so a

@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hedge_009",
+  "group": "hedges",
+  "rank": 12,
+  "index": 9,
+  "name": "Neat boxwood hedge 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "neat boxwood hedge",
+  "glow_concept": null,
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "63b3b49f-add5-4199-a9c7-b41e85d388e8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hedge_001",
+  "renamed_why": "the original id was retired with the piece the maintainer rejected; fresh art gets a fresh id so his verdict keeps pointing at what he judged and this lands in his unreviewed queue"
+}

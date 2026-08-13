@@ -2194,25 +2194,23 @@
       "id": "waterwheels",
       "prefix": "waterwheel",
       "name": "Waterwheel",
-      "description": "a huge wooden waterwheel seen face-on, the round spoked wheel filling the picture with thick heavy rim and broad paddles, a small stone mill wall behind it and water spilling from its paddles",
+      "description": "a small stone watermill house with a big wooden waterwheel on its side, a millpond and a wooden sluice channel feeding water onto the wheel, the whole mill sitting on its stream bank",
       "world_height_m": [
-        2.0,
-        3.6
+        3.0,
+        5.5
       ],
       "art_size": 160,
       "variety": [
-        "overshot wooden wheel",
-        "undershot paddle wheel",
-        "iron-rimmed wheel",
-        "half-buried broken wheel",
-        "leaning detached wheel",
-        "moss-slick green wheel",
-        "rotted gap-toothed wheel",
-        "small creek wheel",
-        "tall narrow wheel",
-        "ice-fringed winter wheel",
-        "red-painted mill wheel",
-        "wheel wrapped in weeds"
+        "moss-covered old millhouse",
+        "red-roofed working mill",
+        "ruined mill with a broken wheel",
+        "snow-capped winter mill",
+        "timber-framed mill on stilts",
+        "stone mill with a full millpond",
+        "abandoned mill, dry channel",
+        "ivy-swallowed forgotten mill",
+        "thatched cottage mill",
+        "twin-wheel grain mill"
       ],
       "glow_concepts": [
         "glowing droplets flung from the turning paddles",
@@ -2223,7 +2221,7 @@
         "a slow halo of soul-light between the spokes"
       ],
       "animation_idea": "the wheel creaking through a slow turn, water dripping from the paddles",
-      "lore_fit": "The mill it drove has gone soft into the Quiet, but the wheel keeps turning because the water was the part everyone talked about."
+      "lore_fit": "A mill is a whole small world: the pond, the race, the wheel and the room where the flour lands \u2014 the dead keep all four or none."
     },
     {
       "rank": 60,
