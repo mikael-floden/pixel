@@ -1,18 +1,18 @@
 {
   "format": "pixel-lore@2",
-  "generated_at": "2026-08-05T19:32:44Z",
+  "generated_at": "2026-08-13T11:24:54Z",
   "note": "Authored by the lore agent, keyed by the owning domain's folder id. entities.<domain>.<id>.description is the SHORT line shown under the entity's name \u2014 it REPLACES the domain's own description, and is guaranteed never to be longer than the longest text that domain already ships, so substituting it cannot grow the layout. entities.<domain>.<id>.lore is the LONG read-more text, an array of paragraphs, shown only if the reader expands it; no length limit. 'entries' are standalone articles (chapters, peoples, places). A paragraph (in lore or body) is EITHER a plain string OR an array of segments {t} / {t, ref:{domain,id}} \u2014 render t as a text node, and a segment with ref as a link to #/domain/id. No markup ever. Standalone cross-references are {domain, id} pairs. Every entry carries an 'icon' (repo-relative path to a 48x48 png) \u2014 draw it at whole multiples of 48 with image-rendering: pixelated, never at a fractional width. See lore/icons/icons.json.",
   "layout_budget": {
     "monsters": 118,
     "items": 123,
     "characters": 161,
-    "objects": 70,
+    "objects": 318,
     "tiles": 51
   },
   "default_icon": "lore/icons/rune.png",
   "red_line_progress": {
     "revealed": 7,
-    "hinted": 2,
+    "hinted": 3,
     "hidden": 6
   },
   "entities": {
@@ -113,7 +113,7 @@
           ],
           [
             {
-              "t": "She has taken on the new blacksmith's education, unasked. "
+              "t": "He says she is the best teacher he never asked for. She has heard him say it and let it stand, which from her is a great deal. "
             },
             {
               "t": "Osric",
@@ -123,7 +123,7 @@
               }
             },
             {
-              "t": " arrived weeks-woken with the living word for breaking things still in his mouth, and she took it off him inside a month \u2014 not by correcting him, but by making him watch her work until the wrong word embarrassed itself. He calls her the best teacher he never asked for. As for the name she has not said since that day at the hearth: it is not in this record, it is not in the Chronicle, and it is not going to be. She is not keeping it from anyone. She is keeping it."
+              "t": " arrived weeks-woken with the living word for breaking things still in his mouth, and she took it off him inside a month \u2014 not by correcting him, but by making him watch her work until the wrong word embarrassed itself. He says she is the best teacher he never asked for, and she has let the sentence stand, which from her is a great deal. As for the name she has not said since that day at the hearth: it is not in this record, it is not in the Chronicle, and it is not going to be. She is not keeping it from anyone. She is keeping it."
             }
           ]
         ],
@@ -1830,7 +1830,14 @@
           ],
           [
             {
-              "t": "It goes into blades and only into blades, and that rule has a name on it. "
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": ", who had been woken about a year and still thought like a living smith, reasoned that a stone which moves a fighter might move him out of harm's way, and set one into a breastplate. "
             },
             {
               "t": "Osric",
@@ -1840,7 +1847,7 @@
               }
             },
             {
-              "t": ", new enough to still count in living years, reasoned that a stone which moves a fighter might move him out of harm's way, and set one into a breastplate. It moved him one stride \u2014 into the middle of what he was backing away from. He re-formed beside "
+              "t": ", who had been woken about a year and still thought like a living smith, reasoned that a stone which moves a fighter might move him out of harm's way, and set one into a breastplate. It moved him one stride \u2014 into the middle of what he was backing away from. He re-formed beside "
             },
             {
               "t": "Solveig",
@@ -1908,13 +1915,124 @@
       }
     },
     "monsters": {
+      "armor_tusker": {
+        "description": "Armor that grew instead of being forged. Spears skate off its plates; its tusks do not return the favor.",
+        "lore": [
+          [
+            {
+              "t": "Sigrun",
+              "ref": {
+                "domain": "characters",
+                "id": "646b922c"
+              }
+            },
+            {
+              "t": " calls it a cheat. Everyone laughs, and she is not joking. She has given a working life to the shoulder \u2014 the gap a plate harness has to leave so the arm can go up, and therefore the gap everything gets in through. Every smith who ever lived has failed at the shoulder. This animal wears bands that slide across one another when it breathes and shut when it turns, and it earned none of them, and does not know it has them."
+            }
+          ],
+          "She has been out to look at one four times now, taking no tools, getting no nearer than she has to, standing there watching a beast breathe \u2014 the least Sigrun-like thing she does all year. The tusks curve out low and forward and they are built for lifting; what they lift is whatever was standing in front of it. She has not made a shoulder yet.",
+          "Understand what she is actually trying to build. Nothing out here can be ended with a spear, so people take plate for vanity. Sigrun has watched what a bad shoulder really costs: a person goes down, re-forms by the nearest fire some hours later, and comes back short a little of what they were thinking \u2014 a face, a stretch of road, a name that gave them no trouble last year. It is not a wound. It is a subtraction, it does not come back, and they turn up at her door afterwards unable to say quite why they came. That thing out on the plain has never lost one thought to a spear in its life. She goes back next week."
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "646b922c"
+          }
+        ]
+      },
+      "black_horse": {
+        "description": "A black horse that casts no shadow. It stamps, and the dark pools around its hooves like spilled ink.",
+        "lore": [
+          "There is nothing whatever wrong with this horse. Sound feet, good coat, eats, sleeps, comes when it is called, hauls whatever you put behind it and does not sulk about the load. The only thing it does not do is lay a shadow on the ground. On a bright day people will watch the grass beside it for a while, and then find a reason to be somewhere else.",
+          "It has had a dozen owners and been handed on a dozen times, and every one of them offered a different reason out loud: too big for the yard, wrong temperament, no work for it this season. The reason none of them offered is that everybody knows which end of a long story a missing detail comes off, and a good horse you are going to have to stand and watch is worse than no horse at all.",
+          [
+            {
+              "t": "Sigrun",
+              "ref": {
+                "domain": "characters",
+                "id": "646b922c"
+              }
+            },
+            {
+              "t": " took it four years ago and has not handed it on. It hauls charcoal, stands in the yard behind the smithy while she works, and in the evening she scratches the place under its jaw it likes until it leans its whole considerable weight into her hand. People who know what she has already sat through in her life ask her, carefully, whether that is wise. She says the horse hauls charcoal."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "646b922c"
+          }
+        ]
+      },
+      "blight_elk": {
+        "description": "The fungus steers the elk now. Its antlers bloom green in the dark, sowing spores wherever it grieves.",
+        "lore": [
+          [
+            {
+              "t": "Sporehorn keeps a circuit. "
+            },
+            {
+              "t": "Gunnar",
+              "ref": {
+                "domain": "characters",
+                "id": "a6d7323d"
+              }
+            },
+            {
+              "t": " walked it out over two winters \u2014 he maps ground that will not hold still, and an animal that repeats itself was a rest \u2014 and got three stops: a ford, a burnt orchard, and a bare slope above the orchard with nothing on it at all. It stands at the ford a while. At the orchard a while. At the bare slope until the light goes."
+            }
+          ],
+          [
+            {
+              "t": "There was a hut on that slope. Gunnar asked eleven people before he found one who could still say so, and she could not produce the woman's name \u2014 only that she kept goats and fed whatever came to the door, elk included. The hut is not there now, nor the track up to it. Things nobody tells about "
+            },
+            {
+              "t": "go soft, and then go",
+              "ref": {
+                "domain": "lore",
+                "id": "the_quiet"
+              }
+            },
+            {
+              "t": ", and that elk is the last thing in the world that still turns up."
+            }
+          ],
+          "The fungus did not pick the route. It has only worked out where the elk stands longest, and standing still is the whole of what a fungus wants. The right antler is green through and wet with it; the left is still an elk's. The mushrooms come up thickest on the withers, the flat of the back, where you would put your hand on an animal to steady it. Gunnar's map marks the roads between as bad ground and will not say why. He says Sporehorn is no danger where it stops. It is a danger on the way, and he would rather people were not standing in the road when it goes to see about her."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "corrupt_stag"
+          },
+          {
+            "domain": "characters",
+            "id": "a6d7323d"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
       "butterfly_dragon": {
         "description": "Wings exact to the last scale, a lantern-sized dragon guessed at, and a jet of flame three times its length.",
         "lore": [
           "No dragon was ever anywhere to be remembered. What there was, in a hundred countries at once, was the telling of one, and a telling said often enough, to enough people listening, weighs as much here as a life does. So this is not the memory of an animal; it is the memory of an account, and you can see the difference at ten paces. Whoever did most of the remembering had never seen a dragon \u2014 no one has \u2014 but they had lain in a summer meadow once, watching the irises being worked over close up, and when the account ran out, that is what came to hand. The wings are the best-made thing on it: four of them, violet banded with pink, exact to the last scale. The body is a grey-green guess the size of a lantern. What got looked at came out sharp. What got taken on trust came out approximate.",
           [
             {
-              "t": "Then it opens its mouth and puts out flame three times its own length, and the joke stops there. The fire is the one detail every retelling in every country kept, so it came through whole and unworn, entirely indifferent to the size of the thing carrying it. "
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " called it a moth with opinions, at a range he has since revised. The fire is the one detail every retelling in every country kept, so it came through whole and unworn, entirely indifferent to the size of the thing carrying it. "
             },
             {
               "t": "Osric",
@@ -1924,7 +2042,7 @@
               }
             },
             {
-              "t": ", new enough to still count in living years, called it a moth with opinions, at a range he has since revised. The tellers do his eyebrows when they tell it, and he sits and lets them, which is most of why the fire likes him. Being wrong about a creature does not make it harmless. It only decides which parts of it are."
+              "t": ", not yet a year woken and still sure of things, called it a moth with opinions, at a range he has since revised. The tellers do his eyebrows when they tell it, and he sits and lets them, which is most of why the fire likes him. Being wrong about a creature does not make it harmless. It only decides which parts of it are."
             }
           ],
           [
@@ -1973,6 +2091,191 @@
           }
         ]
       },
+      "chestnut_horse": {
+        "description": "A farm horse that outlived its farm. It still waits at the gate each dusk for a hand that never comes.",
+        "lore": [
+          "The gate is still standing \u2014 two posts and a bar in open grass, the farm gone out from behind it. At dusk the horse comes up the slope, takes its place on the field side facing where the yard was, and waits about an hour to be brought in. The hand it waits for might be at a fire three days' walk from here, no longer able to tell you it ever owned a horse. It might never have woken at all.",
+          [
+            {
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " has been here three years and still counts in living ones, which is why he tried. He took it an apple; it ate the apple out of his hand very politely and went back to standing. He took it a rope; it walked with him most of a field, then turned round without any fuss whatever and walked back. He kept that up the better part of a season, in the hour after the forge was banked, which is not an hour a working man has spare."
+            }
+          ],
+          [
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " watched one evening from the fence and told him to leave the animal be. She would not say why and did not have to; she keeps an appointment of her own at dusk, daily, and has known for years that there is nothing at the other end of it. What she did not tell him was the rest of it \u2014 that he had not been trying to move a horse."
+            }
+          ],
+          [
+            {
+              "t": "Snowmane",
+              "ref": {
+                "domain": "monsters",
+                "id": "white_horse"
+              }
+            },
+            {
+              "t": " has walked people past that gate more than once, at the shoulder of somebody who could not find their way in the dark, and it has never stopped there. It goes with the lost. Whatever else is wrong with the horse at the gate, it knows exactly where it is."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "54bead23"
+          },
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
+          },
+          {
+            "domain": "monsters",
+            "id": "white_horse"
+          }
+        ]
+      },
+      "corrupt_stag": {
+        "description": "A thorn-racked stag so dark it reads as a gap in the wood. Violet light in its flank, and nothing regrows behind it.",
+        "lore": [
+          [
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " plants white bellflowers behind the chapel every spring, because the rite wants them and she has never found the trick of stopping. Thornstag comes in autumn, within a night or two of the same night, and takes the plot down to bare dirt. What it has browsed does not come up again \u2014 not that year, not after. She barrows the dead soil out and barrows new soil in, and she does it every time."
+            }
+          ],
+          "Inside a lamp's throw of it, which she has been, you get very little. A stag-shaped hole in the dark. A rack too wide for the gap it just came through. A violet seam working in the break of its flank, thin light where ribs ought to be. It has no interest in her whatsoever. She could put a hand on it. She has not.",
+          [
+            {
+              "t": "Bettany",
+              "ref": {
+                "domain": "characters",
+                "id": "ef25b1f0"
+              }
+            },
+            {
+              "t": " sat up with her one autumn to get the thing written down and came away with three pages on the stag and nine on the bellflowers, which tells you where the story is. Everybody says fence it. Jehanne has the wood. Jehanne has had the wood four years. She stopped believing a long time ago and could not stop practising; the fires have gone out across half the map; the rota is a courtesy nobody keeps. And that stag has not missed an autumn yet. Ask her plainly and she answers plainly: she would rather be robbed on schedule than left alone."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
+          },
+          {
+            "domain": "characters",
+            "id": "ef25b1f0"
+          }
+        ]
+      },
+      "crystal_horn": {
+        "description": "A beast crowned with one great amethyst horn. It headbutts like a landslide and grazes on buried gems.",
+        "lore": [
+          "Amethyrn never fell and never was anyone. Count instead the men who went into a hill certain \u2014 properly certain, the way you are certain of your own hand \u2014 that the next foot of rock had something in it, and count how many of them were wrong. Then work out what a few thousand years of that settles into, given nowhere to be and nothing else to do. It got up. It is the size of a cart, plated like a woodlouse, and it is never wrong.",
+          "The horn is one piece of amethyst as long as your forearm, and it is not the useful part. What the beast grazes comes back up through its shoulders in clusters, so a bull that has been feeding well is wearing the assay on its own back, and a patient man with a glass can read a whole hill from the next ridge. That is why people follow it. It headbutts like a landslide. That is why they follow it from the next ridge.",
+          [
+            {
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " has spent two years trying to reach a seam before it does and has not managed it once, which he considers unreasonable in a thing that walks slower than he does. He arrived recently enough to still count his age in living years. He is saving \u2014 in "
+            },
+            {
+              "t": "gold",
+              "ref": {
+                "domain": "lore",
+                "id": "the_gold_agreement"
+              }
+            },
+            {
+              "t": ", the one substance here that does not drift \u2014 and has not yet worked out what for. "
+            },
+            {
+              "t": "Wendell",
+              "ref": {
+                "domain": "characters",
+                "id": "7a779de1"
+              }
+            },
+            {
+              "t": " pointed out, kindly, over a fire, that Osric has all the time there is. Osric said that was the worry."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "54bead23"
+          },
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
+          },
+          {
+            "domain": "characters",
+            "id": "7a779de1"
+          }
+        ]
+      },
+      "crystal_lynx": {
+        "description": "A lynx grown through with crystal. Light bends wrong around it, and its tail-blade sings when it strikes.",
+        "lore": [
+          [
+            {
+              "t": "Sigrun",
+              "ref": {
+                "domain": "characters",
+                "id": "646b922c"
+              }
+            },
+            {
+              "t": " heard one before she saw it and put a hand out to stop the person walking next to her, which is not a thing she does. The tail-blade sings on the strike, one high note, the same note every time. In her trade that sound means a flaw running all the way through, and an edge that is going to let go, and the only open question is on which stroke. She stood in the trees a long while listening to an animal make the noise a bad blade makes, and could not manage to dislike it."
+            }
+          ],
+          "The crystal comes up at the shoulders, the hips and the brow, and it is still coming. It sits heaviest on the joints, the worst place on an animal to put weight, so an old one moves like something much older than it is. You can find the rubbing rocks out in the crystal country: a smooth boulder with a scatter of snapped points around the base. That is grooming. It is trying to get something off itself that is itself. The same growth bends the light, so what you see stands a hand's width from where the lynx is, always to the same side, and hunters are taught to strike beside the animal and trust the correction over their own eyes. The ones who cannot make themselves do it come back saying it moved. It did not move. There is no account of one ever moving at that moment."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "646b922c"
+          }
+        ]
+      },
       "dark_donkey": {
         "description": "Unharnessed, unloaded, unled \u2014 and still keeping to its route. Get in the way and it comes on at a walk.",
         "lore": [
@@ -2006,6 +2309,34 @@
           {
             "domain": "characters",
             "id": "7a779de1"
+          }
+        ]
+      },
+      "desert_cat": {
+        "description": "A cat armored in noon-light. Its golden scales drink the desert sun and pay it back in blinding flashes.",
+        "lore": [
+          [
+            {
+              "t": "More people have followed this cat than any other animal in Nangijala, and every one of them was following something it has not got. The plates look like gold, and gold is "
+            },
+            {
+              "t": "the one thing everybody here agrees about",
+              "ref": {
+                "domain": "lore",
+                "id": "the_gold_agreement"
+              }
+            },
+            {
+              "t": ", so a person who has seen gold is certain about it in a way they are almost never certain about anything. In shade the cat is the colour of ordinary sand. Nothing comes off it. It is a cat."
+            }
+          ],
+          "The flash is not a display, it is the entire defence. At noon it turns broadside, the plates take the sun and hand it back, and whoever is behind it loses their eyes for a count of ten, which is all it needs and all it ever uses. Early and late it hides instead, and hides well, because sand is what it actually is. The ones who get close go at dawn and stop expecting gold.",
+          "There was a man who followed one for eleven years. He gave up his work for it, walked out of two fires' rotas to do it, and got near enough four times to watch the plates dull over in shadow, which should have ended the business and did not. Asked what he meant to do if he ever caught the animal, he said he had stopped thinking about that part around year three. He was not a fool by then and he was not greedy. He had somewhere to be every morning, in a country where you can wake up and find you have nothing to do for the next four hundred years, and he had decided that was the better half of the bargain."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_gold_agreement"
           }
         ]
       },
@@ -2128,6 +2459,70 @@
           }
         ]
       },
+      "dune_digger": {
+        "description": "It swims through sand the way fish forget water. Only the jagged back-plates betray the tide beneath.",
+        "lore": [
+          "The dunes are the one ground in this country that keeps nothing. Put a thing under them and the sand hands it back \u2014 a week later, a season later, standing on end in a clean hollow with a delver's wake still settling around it. The animal is not looking for your box. There is nothing on the front of it that is looking at anything; it goes through a dune the way something goes through water, on those pale spade-claws, and whatever was down there ends up on top.",
+          [
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " walked three days east of her rota last autumn and buried the bell she calls people to fire with. She tells the story herself, at her own fire, and tells it well: how she could not go on ringing a thing she had stopped believing in, and could not bring herself to break it either, and so put it under a dune and came home lighter than she had walked out. Eleven days. Then a charcoal burner turned up at her door with it, upright and clean and pleased with himself."
+            }
+          ],
+          "She rings it every evening now, and the story gets its laugh, and she lets it. What she leaves out is that anyone who has worked that country knows exactly what the dunes do with anything you put in them. She had been out there before. She chose the place."
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
+          }
+        ]
+      },
+      "eldritch_maw": {
+        "description": "It has no face, only appetite. The ringed mouth opens wider than reason, and the light goes in first.",
+        "lore": [
+          "Look at the body before you look at the mouth. Four legs, a working shoulder, a tail with a switch in it \u2014 the whole frame of something that once grazed and was nervous of dogs. Then the neck ends in rings of teeth around a hole, and there is no face on it anywhere, no part of the head a name could ever have gone into. Violet marks crawl over the hide and give off their own light. Ordinary light goes the other way: hold a torch out toward one and it lights your hand and nothing past it.",
+          "There are three words for what a creature is here and not one of them will sit on this. It did not come \u2014 nothing that grazed anywhere arrives shaped like that. It was not made; the made are pooled out of what crowds of the dead agree on, and there is no crowd anywhere that agrees on this. And Hollowed means a thing emptied out and left with its outside, the outside being the whole of what the Hollowed keep. This one did not keep a face. The guides file it under Hollowed because a guide has to put a thing somewhere, and the crackers who work that ground will tell you plainly that the guides are guessing.",
+          [
+            {
+              "t": "Hearn",
+              "ref": {
+                "domain": "characters",
+                "id": "8c41be1e"
+              }
+            },
+            {
+              "t": " does not discuss "
+            },
+            {
+              "t": "the mountain",
+              "ref": {
+                "domain": "lore",
+                "id": "the_hole_under_the_mountain"
+              }
+            },
+            {
+              "t": ". Everyone knows why and everyone asks anyway. Shown an account of one of these, he broke his own rule for it: not the mountain's work, he said, and then a second sentence nobody had asked for \u2014 that the thing under the mountain wants something, and this wants nothing at all, it only opens. He would not go further. His reason was never the Chronicle. People who believe a thing came out of the mountain go east after it, and Hearn has been east once, with company, and does not mean to be why anyone goes again."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "8c41be1e"
+          },
+          {
+            "domain": "lore",
+            "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
       "forest_poring": {
         "description": "Round and sand-pale, balancing one bright drop on a stalk. The drop is the weapon and comes round like a flail.",
         "lore": [
@@ -2243,6 +2638,103 @@
           }
         ]
       },
+      "granite_bear": {
+        "description": "A hillside that stood up. Moss and granite shift when it breathes, and climbers swear the mountain growled.",
+        "lore": [
+          "Every valley had its one hill, and the people in it agreed on that hill's shape the way they agreed on almost nothing else: the same dark line against the same evening, seen from the same doorway, for generation after generation. And every hill of that kind carried the same story \u2014 there is a bear up there, do not go up after dark, I mean it. A hundred valleys' worth of that, held identically by everybody who ever lived in sight of one, and it does not stay a hill. The story stood up and brought the hill with it.",
+          [
+            {
+              "t": "Moving costs it. The seams open green down its legs when it walks and the moss tears along the shoulders, so mostly it declines to, and holds one position for years while people treat it as exactly what it looks like. There was a rota fire on the western rounds kept in its lee for eleven winters \u2014 out of the weather, with a wall at your back you could lean on all night. One spring the wall left. The keeper lost the fire twice to the wind before morning and finished the shift anyway, talking to whoever came, in the open, with nothing behind her. "
+            },
+            {
+              "t": "Solveig",
+              "ref": {
+                "domain": "characters",
+                "id": "6bb1eb5a"
+              }
+            },
+            {
+              "t": " has a private word for keepers who do that. She has never once said it to their faces. The wall is somewhere further west now, standing still again, with eleven winters of soot up one flank."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "6bb1eb5a"
+          }
+        ]
+      },
+      "gray_brute": {
+        "description": "It gnaws boulders to keep its tusks short. When the grinding stops, something softer has wandered close.",
+        "lore": [
+          "You find the stones a long time before you find the animal: boulders worn into a shallow saddle, glassy in the dip, three or four of them to a clearing. A teller once copied the grooves off one convinced they were writing, and got as far as ruling out four alphabets before somebody who had actually seen a brute took pity. They are teeth-marks. It grinds its tusks down on rock, all its life, on purpose.",
+          [
+            {
+              "t": "Ask why an animal would file off its own best weapon and the answer is standing somewhere east, and has been standing there a very long time. A full-grown pair of tusks is a challenge, and there is only one thing in this country worth challenging, and "
+            },
+            {
+              "t": "the old bull",
+              "ref": {
+                "domain": "monsters",
+                "id": "gray_brute_2"
+              }
+            },
+            {
+              "t": " has never lost. So they grind. Every young brute alive spends its whole span wearing itself smaller so it will not have to go and find out."
+            }
+          ],
+          "Almost everything else out in that country is at Habit by now, walking a round with the animal long since gone out of it. Not this one. It is entirely present \u2014 it is frightened, it is deciding, it grinds \u2014 and being present is precisely what the fear costs it. So watch the stones. When the wear on one goes grey and weathered and no fresh cut appears on it for a season, something has been settled out there, and it is a long walk east."
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "gray_brute_2"
+          }
+        ]
+      },
+      "gray_brute_2": {
+        "description": "The old bull of the brutes. Whole warbands have broken against shoulders wider than their shield-wall.",
+        "lore": [
+          [
+            {
+              "t": "There was an age here with enough people in it, and enough agreement between them, to put a shield-wall in a field and walk it forward in step. Sit with that fact by itself for a moment; it is a larger thing to know about this country's past than anything the animal ever did. Then note that the wall is the part that broke. The bull is out there yet, old past any counting, uninterested. It does not grind its tusks and has not needed to for longer than anyone can account for, and "
+            },
+            {
+              "t": "the young ones",
+              "ref": {
+                "domain": "monsters",
+                "id": "gray_brute"
+              }
+            },
+            {
+              "t": " file theirs off rather than come and ask. So no one asks. It moves when it wants the sun."
+            }
+          ],
+          [
+            {
+              "t": "Hearn",
+              "ref": {
+                "domain": "characters",
+                "id": "8c41be1e"
+              }
+            },
+            {
+              "t": " will tell you about that field. Hearn will tell you about it at length: the frost in the ground, the order the flanks went in, the sound a shield-wall makes at the moment it stops being a line and becomes people. He was not there \u2014 it was long before him \u2014 and he has every yard of it from those who were, and he can hold a fire for a whole evening with it, generous and exact and warm. It is not the story anybody sat down for. They sit down because Hearn went into the mountain with a party and came out of it by himself, and because he once said, of the inside, that it asked politely, and has said nothing since. So he gives them Tuskmaul. He gives them Tuskmaul every single time, and they take it, and they come back next week and take it again."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "gray_brute"
+          },
+          {
+            "domain": "characters",
+            "id": "8c41be1e"
+          }
+        ]
+      },
       "hedgehog": {
         "description": "Still laying in stores for a hand that stopped coming. Crowd this brown handful of spines and the quills stay in.",
         "lore": [
@@ -2291,6 +2783,47 @@
           {
             "domain": "monsters",
             "id": "white_rabbit"
+          }
+        ]
+      },
+      "hellhound": {
+        "description": "A hound cracked open by its own fire. Embers sift from its seams, and its howl smells of burning.",
+        "lore": [
+          "A drover on the west road watched one for eight nights from his fire, then went down and walked it into the river. It let him. That is the part he tells badly every time and the part that costs him his sleep: a lean black dog standing chest-deep in cold water while a stranger poured more of it over the split seams along its ribs \u2014 steaming, patient, entirely willing \u2014 and the orange in the splits never dimmed by a shade. Then it came out, shook itself, and followed him up the bank.",
+          [
+            {
+              "t": "So he walked to "
+            },
+            {
+              "t": "Sigrun",
+              "ref": {
+                "domain": "characters",
+                "id": "646b922c"
+              }
+            },
+            {
+              "t": "'s door and asked her to release it. She went and looked at it for an afternoon, which is more than she gives most requests, and came back and said no, and gave him the reason in the two flat words of "
+            },
+            {
+              "t": "her trade",
+              "ref": {
+                "domain": "lore",
+                "id": "the_hard_pieces"
+              }
+            },
+            {
+              "t": ". She cracks shapes that are thinning. This one is not thinning. It is holding beautifully \u2014 flame at the tail, fire between the ears, embers going out one by one on the ground behind it, every bit of it as steady as the day it arrived. What he wanted done would have been done for him, and she does not do that work for the watcher. She told him to stay off the road after dark. He goes. He reports that it waits for him at the same bend now, at the same distance, burning quietly, and that he talks to it. She has stopped telling him not to."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "characters",
+            "id": "646b922c"
           }
         ]
       },
@@ -2374,6 +2907,34 @@
           {
             "domain": "characters",
             "id": "a6d7323d"
+          }
+        ]
+      },
+      "ice_wolf": {
+        "description": "Its mane is a crown of ice that never melts. The cold arrives a breath before it does, and stays after.",
+        "lore": [
+          "You get the number before you get the animal: the fire wants twice the wood. Then it is at the rim of the light, heavy through the shoulders, a crest of ice grown up out of its neck like a crown hammered on wrong, icicles off the jaw, ice standing out through the claws. It does not come in. It has never once come in.",
+          [
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " had one at her fire for six hours in the black of a winter, with four people to keep warm and the pile going down and the tellings stopped, because you cannot tell a thing properly while you are hauling. A man there wanted it driven off and was right on every practical count. She fed the fire and let it stand, and said afterwards only that a rota does not get to ask who is coming. What she keeps to herself, because it does her no credit as a keeper, is why she thinks it stands there: it is trying to get warm. The cold is the last true thing it has left, and it puts out whatever it walks toward, and cannot learn this, and comes back. She splits a second pile now on the nights the frost arrives early. The man still keeps the rota with her. They have not discussed it once."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
           }
         ]
       },
@@ -2585,6 +3146,103 @@
           }
         ]
       },
+      "magma_wolf": {
+        "description": "A wolf quenched in the caldera. Magma veins its black hide, and its bite leaves wounds already cauterized.",
+        "lore": [
+          [
+            {
+              "t": "Animals wake in the grass too. "
+            },
+            {
+              "t": "Solveig",
+              "ref": {
+                "domain": "characters",
+                "id": "6bb1eb5a"
+              }
+            },
+            {
+              "t": " has met nine wolf-wakings at the meadow fire and has never once got the courtesy to work \u2014 you cannot ask an animal its name, and it has no one true thing to give you \u2014 so she does the part that carries over. She sits a little way off. She stays until it can stand. Then, every single time, without one exception in nine, it gets up and goes east."
+            }
+          ],
+          [
+            {
+              "t": "East is the burnt country, and by the time you see one out there it is black-hided with magma standing in the seams and flecks of ember lifting off its back, and it is not travelling alone any more. They arrive one at a time, spaced out by however long each of them took to get here, and they find each other. Solveig has never been east in her life and is certain of one thing about that road: they are not going somewhere. They are going to somebody, and his name is a noise that comes down the slopes at dusk. See "
+            },
+            {
+              "t": "Basalthowl",
+              "ref": {
+                "domain": "monsters",
+                "id": "magma_wolf_2"
+              }
+            },
+            {
+              "t": "."
+            }
+          ],
+          "The one last spring was thin-legged and could not stand for most of a day, and she gave it the day, and a man waiting to be met waited. When it finally went it did not look back at her. She says she would think less of it if it had."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_waking"
+          },
+          {
+            "domain": "characters",
+            "id": "6bb1eb5a"
+          },
+          {
+            "domain": "monsters",
+            "id": "magma_wolf_2"
+          }
+        ]
+      },
+      "magma_wolf_2": {
+        "description": "The pack-sire of the volcanic wolves. When it roars, the mountain answers, and the ash begins to fall.",
+        "lore": [
+          [
+            {
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " wanted a fire he would not have to feed. He is a smith, and new \u2014 he still counts in living years and lets people correct him \u2014 and he had worked out that a man who spends his life on fuel should go and look at ground that is already hot. So he went up to the caldera with a rule and a notebook, and came back with three days of good measurements and one evening he does not offer around."
+            }
+          ],
+          "The sire is enormous, black as cooled slag, veined orange through the chest and legs, smoke standing off its shoulders in a plume you can see from the col. At dusk it called, and the pack answered off the slopes one voice at a time, in an order, and Osric counted seven. Then it called once more into a gap in the order and waited. Then again. Six times into the same gap, unhurried, the way you knock at a door you have every reason to think is answered. Then it lay down in the ash.",
+          [
+            {
+              "t": "He understood the gap. Anyone who has kept anything here does: something up that mountain went "
+            },
+            {
+              "t": "Quiet",
+              "ref": {
+                "domain": "lore",
+                "id": "the_quiet"
+              }
+            },
+            {
+              "t": ", and the count it belonged to has not been corrected and will not be. Osric built his forge on the meadow side instead, where the wood comes in from three hours out and every fire is somebody's labour. He does not tell people the caldera was dangerous. He tells them it was occupied."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "magma_wolf"
+          },
+          {
+            "domain": "characters",
+            "id": "54bead23"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
       "malformed_creature": {
         "description": "Bare, blotched, hairless and shaped exactly like a person, coming at a walk with one hand open and green.",
         "lore": [
@@ -2739,6 +3397,35 @@
           {
             "domain": "lore",
             "id": "the_hole_under_the_mountain"
+          }
+        ]
+      },
+      "moon_wolf": {
+        "description": "A wolf the moon keeps. Its silver fur holds the crescent's mark, and its paws never quite touch the frost.",
+        "lore": [
+          [
+            {
+              "t": "Wendell",
+              "ref": {
+                "domain": "characters",
+                "id": "7a779de1"
+              }
+            },
+            {
+              "t": " walks between fires after dark, which a man his age has been told not to do, and he has not been alone doing it for eleven winters. Something falls in behind him a little way out and holds thirty paces \u2014 exactly thirty, over broken ground and through water \u2014 and comes as far as the edge of the light and no farther. Silver, a blue crescent set in the fur of the brow, seams of cold colour down the shoulders. He calls it his escort and means it."
+            }
+          ],
+          "Look at the frost under it. There is a hand's width of nothing there, no print in the rime, and after a night in new snow the road behind Wendell shows one set of boots. He knows what that is. It has let go of the ground the way you let go of a name, and what goes after the ground goes fast.",
+          "So he talks to it the whole way. Not chatter \u2014 proper tellings: the east road when it was still walked, his sister's stubbornness, the winter the wells went strange. Others say a telling wants somebody listening and an animal is not somebody. Wendell answers that it walks when he talks and stops when he stops, and that this will have to do, and that he could not tell you which of the two of them is holding the other up anyway. Both of them are still here. He considers the argument closed."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "7a779de1"
           }
         ]
       },
@@ -2900,6 +3587,163 @@
           }
         ]
       },
+      "obsidian_lion": {
+        "description": "A lion poured from the volcano's throat. Its obsidian mane cools black; its roar glows through the cracks.",
+        "lore": [
+          "Strike the light, not the dark. That is the whole of what the trade knows about it, and it is a worse rule than it sounds. Cold, the glass is armour: a spear takes a chip out of the mane, skates off, and the animal does not appear to notice it has been hit. The cracks only open when it is roused, so the one part of it that can be worked is the part that is not there until it has decided about you. Finding one is the easy half. Look for a scatter of boulders with nothing growing on any of them.",
+          [
+            {
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " went up to look on purpose. He still counts in living years, and he had spent all of them at a forge in a country with no mountains in it. He got within thirty feet, sat down on the scree and watched it sleep the afternoon out, black and cold and breathing about once a minute. What he wanted was the heat. He asked about it afterwards, carefully, the way a new smith asks a question he suspects is stupid, and got the trade's answer: it is the hottest thing in the country and the only fire in it you cannot sit at, and you cannot tell it anything either. He has been up three times since. A man arrived here with a working life still in his hands, in a place that needs nothing made, and the one great heat within reach of him is no use to anybody. He has stopped mentioning it at the fire."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "54bead23"
+          }
+        ]
+      },
+      "plague_hound": {
+        "description": "Sickness on four legs. All it wants is to sit near somebody, and everything already thinning pays for it.",
+        "lore": [
+          "It has never been known to go for anyone. It comes at a walk with its head low, olive and gaunt, spine and ribs up under a hide gone patchy and pale-knotted at the shoulders, and it stops at about twenty paces and lies down and stays. The eyes are the only bright thing on it. That is the entire behaviour. It would like to be near somebody.",
+          "A bright shape takes nothing from it worse than a foul week and a taste of old metal behind the teeth. What matters is what it does at the far end of the road. Sit an already-thinning man three nights inside that twenty paces and he loses ground he will not get back \u2014 Faded to Habit inside a season, in the two cases anyone wrote down, with no wound on him and no fight and nothing to point at. It cannot break you. It can only cost you what you had left.",
+          [
+            {
+              "t": "Gunnar",
+              "ref": {
+                "domain": "characters",
+                "id": "a6d7323d"
+              }
+            },
+            {
+              "t": " keeps most of what he measures to himself. Not this. He plots its line a week ahead and walks the fires along it to tell the old ones to move for a season, and he gives that one away free and gives it away furious, because the fire that has to move is always the one with somebody in it who cannot walk far. Then it follows them \u2014 not hunting, nothing that clean. It follows whoever sat still long enough to be near. Drive it off and it goes twenty paces and lies down again."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "a6d7323d"
+          }
+        ]
+      },
+      "polar_bear": {
+        "description": "It woke in warm grass with a life of sea ice behind it, and grew its own back. The tusks are that same ice.",
+        "lore": [
+          "It woke where everything wakes: in the meadow grass, in warm air, within sight of the house and the fire, with a whole life of frozen sea behind it and no ice anywhere it could see. There is a courtesy for that hour \u2014 you sit with the newly woken and ask their name and one true thing. Nobody has worked out how to do that for something with no name to give. It stood up on its own and went north, and kept going north, and there is nothing that far north but weather.",
+          "The ice came afterwards, and it came out of the bear. The crystals stand up through the coat at the shoulders and will not melt \u2014 not in rain, not in a warm month, not held in a hand. The tusks are the same stuff, grown down past a jaw with no business growing anything. It carries its own winter because there was not one here to be had.",
+          [
+            {
+              "t": "And it walks toward fires. That is the whole trouble with it: a bear goes by smell and warmth, and a tended fire is the warmest, best-smelling thing this country has. So every so often the cold arrives before the animal does, and a keeper looks up to find a great pale shape sitting just outside the light, not coming nearer, not going. "
+            },
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " has had one sit out three of her nights this year. She has taken to setting something down past the stones before she starts, which is in no rota she was ever given. She will not call it a prayer. She says so quickly, more than once, and she has not missed a night since it started coming."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_waking"
+          },
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
+          }
+        ]
+      },
+      "root_bear": {
+        "description": "Roots that dreamed of being a bear. It sleeps for whole seasons, and wakes furious at whatever an axe is.",
+        "lore": [
+          "Nobody ever felled this one, because it was never a tree. It is built out of the other half of an extremely ordinary memory: everyone who ever swung an axe remembers the tree going over. The crack, the hinge, the long lean, the ground coming up. Hundreds of thousands of people holding that same half-minute \u2014 and the part they kept was never their own arms. It was the tree. Enough of that pooled under one canopy and it gets up, wearing a crown of moss and mushrooms it never grew, having gone over its whole life and never once held a handle.",
+          [
+            {
+              "t": "It sleeps whole seasons, deep enough that people who work a wood will tell you exactly where it lies and walk over it without lowering their voices. You may carry anything you like across that ground. "
+            },
+            {
+              "t": "Osric",
+              "ref": {
+                "domain": "characters",
+                "id": "54bead23"
+              }
+            },
+            {
+              "t": " carried a new axe, hafted that morning, because he is not long woken and still counts in living years, and where he came from an axe on your shoulder meant work and nothing else. He does not remember the afternoon. He came back together at the fire that evening, short one afternoon and one good haft."
+            }
+          ],
+          "He still makes them; people need firewood, and a smith with opinions about axes is no use to anyone. But he asks now, out loud, before taking the work: what is this one for. And he goes around the north wood rather than through, which costs him an hour he does not mention. The wood has no opinion about Osric at all. It has one about the axe."
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "54bead23"
+          }
+        ]
+      },
+      "rune_lion": {
+        "description": "A guardian left running after its temple fell. The cyan runes still burn with orders no one can rescind.",
+        "lore": [
+          "The temple is not there. That is the first thing to get straight about the field it walks: no wall, no step, no floor, only long grass, a lion cut from a paler stone than any hill within a day of it, and a square. The runes down its chest and legs still hold their light. Whatever they said, they were an instruction, and the person who could have taken it back has been out of the world long enough that the building went with him.",
+          [
+            {
+              "t": "Gunnar",
+              "ref": {
+                "domain": "characters",
+                "id": "a6d7323d"
+              }
+            },
+            {
+              "t": " measures ground for a living, so he spent four days at a careful distance writing down where it turned. What he has now is a floor plan. Twenty-two paces by nine, a gap in one long side, a smaller square inside that the lion walks around rather than through. A building nobody remembers, on a single sheet, with no name to put at the top of it."
+            }
+          ],
+          [
+            {
+              "t": "Wendell",
+              "ref": {
+                "domain": "characters",
+                "id": "7a779de1"
+              }
+            },
+            {
+              "t": " went that road while the roof was still on. Ask him and he will give you the animal at the door in detail, the size of it, the colour of the light, how it never turned its head, and not one thing about the room behind. He is old enough to be honest about what that means. The hall went the way unspoken things go and the guard did not, because the guard is the part people tell each other about. It still will not cross the line where the wall stood. It goes round to the gap and comes in the way you are supposed to."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "a6d7323d"
+          },
+          {
+            "domain": "characters",
+            "id": "7a779de1"
+          }
+        ]
+      },
       "saber_toothed_tiger": {
         "description": "A hunter left over from an age this country stopped telling, black-furred, amber-eyed, built for one rush.",
         "lore": [
@@ -2947,6 +3791,31 @@
           }
         ]
       },
+      "shadow_panther": {
+        "description": "Count its violet eyes and you have already lost it. The smoke it trails is the only warning anyone gets.",
+        "lore": [
+          "Count the eyes. There are four, two low and wide and two smaller up on the brow, and by the time you have counted them you are inside the distance it needs \u2014 the joke every teller makes, and the reason the count is the first thing said about it. What the tellers leave out is that it used to have two. The oldest heads at the black-wood fires learned it with two, and will admit as much if you are patient.",
+          "Nothing about a cat in the dark survives being told except eyes. Ask anyone who has met one what they saw and you get eyes, then a smell, then how fast it was, in that order, every time. That is most of what this one is now: the parts that get told, kept hard, the rest let go. The smoke off its back is the same business, the smear of dark that follows anything you only half saw. It has been thinning for centuries and thickening exactly where people hold it, and the two have met in the middle to make something that is nearly all warning and hardly any animal.",
+          [
+            {
+              "t": "Jehanne",
+              "ref": {
+                "domain": "characters",
+                "id": "cfe826c1"
+              }
+            },
+            {
+              "t": " has had the argument three times and never lost it. The proposal is always identical: stop telling it. Leave it out of the round, let it go the rest of the way, and the black wood is quiet inside a generation. She keeps a rota for a faith she stopped believing in years ago and she will not do this. A fire that decides what it is prepared to remember, she said once and has not said since, has stopped being a fire and become a committee. So the telling goes on, and the animal keeps getting better at being one."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "cfe826c1"
+          }
+        ]
+      },
       "snow_demon": {
         "description": "Gaunt, four-horned, snow to the claws. The wings never beat. Two colours on it are wrong, and both are hot.",
         "lore": [
@@ -2991,6 +3860,63 @@
           {
             "domain": "characters",
             "id": "a6d7323d"
+          }
+        ]
+      },
+      "spectral_horse": {
+        "description": "It gallops where sleep is thin. Pale flames mark its passing, and by morning no one recalls their dreams.",
+        "lore": [
+          "The pale fire is only at the ends of it \u2014 hooves, mane, tail, the parts that move most. The rest is a black horse in good condition with a bright, interested eye that looks straight back at you. It is not remotely quiet about its work, either. Half the accounts begin with somebody sitting up in the grass to watch it go by.",
+          "What it costs is one night's dreaming. Everybody within earshot wakes rested and cheerful with a clean gap where the night was, and no way to miss what they cannot remember having had. That is not nothing. A great many of the dead only ever see their people in dreams \u2014 the ones who never came, the ones they will not name at a fire because saying it aloud is more than they can manage. A woman on the north circuit had been seeing her mother most nights for two hundred years. She is quite cheerful now.",
+          [
+            {
+              "t": "Gunnar",
+              "ref": {
+                "domain": "characters",
+                "id": "a6d7323d"
+              }
+            },
+            {
+              "t": " has been tracking where it runs for six years, because tracking what the country is quietly losing is what he does. "
+            },
+            {
+              "t": "Bettany",
+              "ref": {
+                "domain": "characters",
+                "id": "ef25b1f0"
+              }
+            },
+            {
+              "t": " has a page open for it in "
+            },
+            {
+              "t": "the Chronicle",
+              "ref": {
+                "domain": "lore",
+                "id": "the_chronicle"
+              }
+            },
+            {
+              "t": " and it is a short page. He has given her the dates, the ground, the weather and the hour, and not the one thing she keeps asking for, which is which way it goes. Twice she has asked. Twice he has talked about something else until she stopped. She wrote that down too, in the margin, because it is the second thing he will not tell her."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "a6d7323d"
+          },
+          {
+            "domain": "characters",
+            "id": "ef25b1f0"
+          },
+          {
+            "domain": "lore",
+            "id": "the_chronicle"
           }
         ]
       },
@@ -3086,6 +4012,186 @@
           }
         ]
       },
+      "storm_shellback": {
+        "description": "Storms nest in the crystals on its shell. It crosses a valley in a lifetime, thunder rolling in its wake.",
+        "lore": [
+          [
+            {
+              "t": "No one in that valley gives a distance in miles. They say: as far as the shellback, or a day past it, or it was at the alders when I woke and it is at the beck now, so work it out yourself. It walks one line at the pace of a shadow coming off a wall and has never once turned aside. The crystals are the weather's business rather than its own \u2014 sit against the shell through a storm and you feel them go off through the stone, and the animal does not change its footing. It is not the "
+            },
+            {
+              "t": "one on the gorge crossing",
+              "ref": {
+                "domain": "monsters",
+                "id": "stone_turtle"
+              }
+            },
+            {
+              "t": ", which was never anywhere and never an animal. This one woke here like everybody, out of some country that had real weather in it."
+            }
+          ],
+          "The woman who kept the fire at the head of that valley walked out to it every eighth day, for a stretch of years she had long stopped counting, and talked the whole way round it. The rota. Who had come. Who was going soft. What the wind was doing to the alders. A telling wants somebody listening, and there was no one else left on that road, and she had decided the shellback would do \u2014 she said so to anyone who raised it, in the tone of a person who has already had the argument with herself and won it.",
+          [
+            {
+              "t": "She went "
+            },
+            {
+              "t": "Quiet",
+              "ref": {
+                "domain": "lore",
+                "id": "the_quiet"
+              }
+            },
+            {
+              "t": " out there, in the ordinary way, slowly. The ground where the shellback lies up is still the sharpest ground in the valley: grass with edges on it, stones that have not shifted through a Turn, while the far end of the same road has gone the colour of an idea. The tortoise has made perhaps two fields since. It did not stop for her and it does not carry one word she said. What holds that ground is not the tortoise. It is four hundred years of somebody standing next to it, talking."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "stone_turtle"
+          },
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          }
+        ]
+      },
+      "storm_stag": {
+        "description": "Lightning courts its antlers. It stands on the high fells in the worst weather, daring the sky to try.",
+        "lore": [
+          "Go up the high fells in filthy weather and there it is, planted where the ground runs out, facing down into the wind with the summit at its back. Lightning comes to the antlers the way pigeons come to a sill. It does not shy and it does not lie down, and the white of its eye is the brightest thing on the mountain. Whatever it is doing it has been doing since before anyone thought to count, and there is nobody in there to leave off doing it.",
+          "A woman climbs up to stand near it. Different weather, same stag, five or six times a year. Standing near it in a storm is how you get broken \u2014 the bolt takes the antlers or it takes you \u2014 and what is left of you re-forms beside the nearest tended fire some hours later, short a little of what you were thinking.",
+          [
+            {
+              "t": "The nearest tended fire is "
+            },
+            {
+              "t": "Solveig",
+              "ref": {
+                "domain": "characters",
+                "id": "6bb1eb5a"
+              }
+            },
+            {
+              "t": "'s, out on the meadow, a long walk from those fells, and the walk is the point: she gets the whole way back to notice what she has put down. Solveig has met her nine times. She does the courtesy every time \u2014 sits with her, tells her what has happened to her, asks her name and one true thing. The name still comes. The one true thing is shorter each time. Solveig asked her once what she goes up there for. She said: because he does not flinch, and I want to see how it is done."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_hard_pieces"
+          },
+          {
+            "domain": "characters",
+            "id": "6bb1eb5a"
+          }
+        ]
+      },
+      "swamp_bear": {
+        "description": "A bear the swamp claimed and gave back. Mushrooms fruit on its shoulders; its jaw closes like a bog-gate.",
+        "lore": [
+          "It did not go into the swamp. The swamp arrived. This was a wood bear on wood-bear ground, doing the ordinary work of being one, and then the land re-remembered itself around it across a few slow years \u2014 and now the trail it knows is four feet under, and the trees it knows are stumps standing in water, and it is still walking the round. Out at the same bank. Up a slope that is not there any more. Three long pauses at nothing in particular. Back.",
+          [
+            {
+              "t": "You can read how long from its shoulders, because moss does not take on an animal that moves, and the red-caps come in after the moss, in tiers, and only where a thing has stood still through a great deal of wet. "
+            },
+            {
+              "t": "Gunnar",
+              "ref": {
+                "domain": "characters",
+                "id": "a6d7323d"
+              }
+            },
+            {
+              "t": " dates them the way other people date weather. He keeps his measurements to himself as a rule and gives this one away free, because the animal is not lost and is not looking for anything, and that makes it worse to meet: it is not wandering across your path, you are standing in the middle of its wood. The jaw comes down like a gate dropping, with no warning in it at all, and from where the bear is you were never anywhere but underfoot."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "characters",
+            "id": "a6d7323d"
+          }
+        ]
+      },
+      "swamp_cat": {
+        "description": "Yellow eyes just above the waterline, algae drifting where it waits. The swamp's stillness is a hunting pose.",
+        "lore": [
+          [
+            {
+              "t": "Fen-walkers carry a coat they never wear. It goes rolled on the end of a pole, about the size and shape of a person crouching, and when the water moves wrong you throw it as far as you can and walk the other way. It works four times in five, the best odds out there, and it works because of what is left of this animal. Carry the pole anyway when you cross: "
+            },
+            {
+              "t": "the other cat",
+              "ref": {
+                "domain": "monsters",
+                "id": "swamp_cat_2"
+              }
+            },
+            {
+              "t": " in that fen does not hide and will not be fooled by a coat."
+            }
+          ],
+          "It is far along. What thins out of a hunting cat goes in an order, and the order is the country first, then the prey, then the difference between the prey and anything else with roughly that outline. What it still holds, perfectly, is one silhouette and the conviction that the silhouette is food. It has gone at a barrow with a sack on it, at a bundled coat, and at its own reflection in flat water, which is the one people find hard to watch.",
+          "The low ford was kept for years by a woman who fed it. Not sentiment; she had worked out that a fed one lies up and a hungry one comes to the causeway, and she would rather buy the crossing than defend it. She thinned in her turn and went Quiet, and the cat is still on that stretch, and there is still meat on the flat stone by the water most weeks. The walkers took the job over between them. Not one of them can tell you her name."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "monsters",
+            "id": "swamp_cat_2"
+          }
+        ]
+      },
+      "swamp_cat_2": {
+        "description": "The fen's other cat, and it does not hide. It walks into the firelight, looks at every face in turn, and goes.",
+        "lore": [
+          [
+            {
+              "t": "It is nothing like "
+            },
+            {
+              "t": "the stalker",
+              "ref": {
+                "domain": "monsters",
+                "id": "swamp_cat"
+              }
+            },
+            {
+              "t": ". Squat, heavy through the shoulder, blunt in the face, and with no interest at all in cover. It comes to a fen fire, sits down inside the light where everyone can see it, and looks at the people. One at a time. It takes as long as it takes. Then it gets up and goes back out into the dark."
+            }
+          ],
+          "Hunters tell the stare as an attack, which is what people do about anything that will not stop looking at them, and the fen has a whole vocabulary for what those eyes are supposed to do to you. Watch it happen twice and the story goes flat. It is not doing anything to you. It is checking. Face, then the next face, losing interest at each one, and it has been working through faces for longer than anyone at that fire has been dead.",
+          [
+            {
+              "t": "Hearn",
+              "ref": {
+                "domain": "characters",
+                "id": "8c41be1e"
+              }
+            },
+            {
+              "t": " sits still for it. He is the one man on that circuit who has been looked over by something worse, and he will not say a word about that, but he will say this: you let it finish. Turning your face away from a thing that is looking for somebody is a rudeness he is not willing to commit. The others follow his lead now, so the fire goes quiet for a minute when the cat comes in, twelve people holding their chins up to be inspected by an animal, and then it leaves and they carry on."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "swamp_cat"
+          },
+          {
+            "domain": "characters",
+            "id": "8c41be1e"
+          }
+        ]
+      },
       "tree_stump": {
         "description": "A stump with no tree behind it, walking on root-legs. It does not mind you coming. It minds you leaving.",
         "lore": [
@@ -3126,6 +4232,85 @@
           {
             "domain": "items",
             "id": "crimson_vein_mossy_stone"
+          }
+        ]
+      },
+      "undead_charger": {
+        "description": "It would not fall when its rider did. It still charges a line that is not there, in horns no horse ever grew.",
+        "lore": [
+          "Nothing that ever grazed a field had that head. A horse's skull as far as the brow, then two great curled ram's horns on it, a ridge of bare spine standing out of the hide, something red down in the sockets. It did not look like that in life. It looks like that because it was the last thing a great many frightened men saw properly, and frightened men are poor witnesses, and enough of them told it the same way for long enough that the telling won. Set in the bone above the eyes is a small gold boss, all that is left of a head-piece somebody buckled onto it every working morning.",
+          [
+            {
+              "t": "The war is in nobody's book. "
+            },
+            {
+              "t": "Bettany",
+              "ref": {
+                "domain": "characters",
+                "id": "ef25b1f0"
+              }
+            },
+            {
+              "t": " has asked at every fire on her circuit for a banner, a year, a river, a reason, and come back with none of it \u2014 everyone who could have told it has gone Quiet, and it was never told often enough to hold. What survives of the entire business is one horse that will not stop, and a set of horns it never had."
+            }
+          ],
+          [
+            {
+              "t": "It does not charge people. It charges lines. Two of you standing together are furniture; six in a row are a shield-wall, and it comes at the middle of the row at a flat gallop and does not check. Most of the work at a fire is done in rows \u2014 wood passed hand to hand, buckets, a line walking the ground abreast at first light. "
+            },
+            {
+              "t": "Hearn",
+              "ref": {
+                "domain": "characters",
+                "id": "8c41be1e"
+              }
+            },
+            {
+              "t": " teaches everyone who works that country the same three sentences, and teaches them as orders, because an order is the only way he knows to say a thing fast enough. Break up. Stand apart. It is not coming for you, it is coming for the row."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_quiet"
+          },
+          {
+            "domain": "characters",
+            "id": "ef25b1f0"
+          },
+          {
+            "domain": "characters",
+            "id": "8c41be1e"
+          }
+        ]
+      },
+      "undead_hound": {
+        "description": "A dog that would not stop waiting. Its crooked jaw hangs loose, grinning at a joke told before it came.",
+        "lore": [
+          "The joke was not funny. A long one about a neighbour and a borrowed ladder, with the same wrong pause in the middle every time, told to the same dog most evenings for nine years by a hill farmer with no one else to try it on. The dog did not have the joke. The dog had the last two seconds of it: the man's own laugh going off like a dropped pan, a hand coming down heavy on its head, then supper. That is a complete world, if you are a dog.",
+          [
+            {
+              "t": "Then the farmer's turn came, and the dog's came after, and the dog "
+            },
+            {
+              "t": "woke in the meadow grass",
+              "ref": {
+                "domain": "lore",
+                "id": "the_waking"
+              }
+            },
+            {
+              "t": " like everything else that arrives here. It waited. He was not there, and he was not there the next season, and past a certain point the word for a man like that is the heaviest one in the language: he is one of the unwoken."
+            }
+          ],
+          "A dog cannot draw a conclusion from that. It is the only mercy in the business.",
+          "So it waits at the head of any track that climbs toward a farm \u2014 hide gone patchy, ribs standing out, something green lifting off its spine in the cold \u2014 and through all of it the jaw has not slipped a hair, hung open and crooked and full of teeth, fixed in the two seconds before a hand comes down. People have tried feeding it. It is not hungry. It wants the two seconds."
+        ],
+        "related": [
+          {
+            "domain": "lore",
+            "id": "the_waking"
           }
         ]
       },
@@ -3194,6 +4379,54 @@
           {
             "domain": "characters",
             "id": "a6d7323d"
+          }
+        ]
+      },
+      "white_horse": {
+        "description": "White as the morning it vanished from the king's stable. It allows no rider, but walks beside the lost.",
+        "lore": [
+          [
+            {
+              "t": "In life it was somebody's, and expensive, and one morning the stall stood empty with the door still bolted. That story is presumably still being told wrong in the living country. The truth is the ordinary one: it came the way everyone comes, "
+            },
+            {
+              "t": "woke in the meadow grass",
+              "ref": {
+                "domain": "lore",
+                "id": "the_waking"
+              }
+            },
+            {
+              "t": ", and has no idea it is supposed to be a wonder."
+            }
+          ],
+          "It will not be ridden and has never once made a fight of it. Put a saddle on and it stands patiently through the girth and the buckles; get a leg across and it simply walks out from under the whole arrangement and leaves you holding tack in an empty field. There is nothing there to argue with. Nothing was refused.",
+          "What it does instead is walk beside people who are lost \u2014 at the shoulder, at exactly their pace, for as long as it takes. Several have tried following it, on the reasonable assumption that a horse doing that must know a way, and been walked in a wide meandering circle back to their own footprints, because it was never leading. It goes where you go. All it does is see to it that a person alone in the dark is a person and a horse.",
+          [
+            {
+              "t": "Solveig",
+              "ref": {
+                "domain": "characters",
+                "id": "6bb1eb5a"
+              }
+            },
+            {
+              "t": " sees it more than anyone. Somebody comes stumbling in out of the dark towards the meadow fire with a white horse at their shoulder, and at the edge of the light the horse stops, and turns, and goes back out. It will not come in to the warm. The one courtesy she has never managed to do is thank it."
+            }
+          ]
+        ],
+        "related": [
+          {
+            "domain": "monsters",
+            "id": "chestnut_horse"
+          },
+          {
+            "domain": "lore",
+            "id": "the_waking"
+          },
+          {
+            "domain": "characters",
+            "id": "6bb1eb5a"
           }
         ]
       },

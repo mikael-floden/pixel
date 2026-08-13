@@ -1,62 +1,104 @@
 {
   "format": "pixel-lore-revelations@1",
-  "note": "The GM's map of the red line: every beat of the root story and how much of it has reached players. hidden = told nowhere; hinted = a careful reader could suspect; revealed = stated in shipped text. hinted/revealed beats point at the exact texts that do the telling; the build fails a beat whose pointers do not hold. This file is GM material — fetched by the wiki's Game Master view like RED_LINE.md, never baked into player data (lore.json carries counts only).",
+  "note": "The GM's map of the red line: every beat of the root story and how much of it has reached players. hidden = told nowhere; hinted = a careful reader could suspect; revealed = stated in shipped text. hinted/revealed beats point at the exact texts that do the telling; the build fails a beat whose pointers do not hold. This file is GM material \u2014 fetched by the wiki's Game Master view like RED_LINE.md, never baked into player data (lore.json carries counts only).",
   "beats": [
     {
       "id": "B1",
-      "title": "The Keeping — what is told aloud holds its shape",
+      "title": "The Keeping \u2014 what is told aloud holds its shape",
       "status": "revealed",
       "told_by": [
-        { "domain": "lore", "id": "the_age_of_fires" },
-        { "domain": "lore", "id": "the_human_dead" }
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        },
+        {
+          "domain": "lore",
+          "id": "the_human_dead"
+        }
       ]
     },
     {
       "id": "B2",
-      "title": "The four stages — Bright, Faded, Habit, Quiet",
+      "title": "The four stages \u2014 Bright, Faded, Habit, Quiet",
       "status": "revealed",
-      "told_by": [{ "domain": "lore", "id": "the_quiet" }]
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_quiet"
+        }
+      ]
     },
     {
       "id": "B3",
       "title": "Soulstones are the last hard piece of a long forgetting",
       "status": "revealed",
-      "told_by": [{ "domain": "lore", "id": "the_hard_pieces" }]
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        }
+      ]
     },
     {
       "id": "B4",
       "title": "Signe lost Emil to her own silence; the fires are her apology",
       "status": "revealed",
-      "told_by": [{ "domain": "lore", "id": "the_age_of_fires" }]
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_age_of_fires"
+        }
+      ]
     },
     {
       "id": "B5",
       "title": "Not everyone who dies wakes in Nangijala",
       "status": "revealed",
-      "told_by": [{ "domain": "lore", "id": "the_waking" }]
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_waking"
+        }
+      ]
     },
     {
       "id": "B6",
       "title": "The masks are attempts at one particular face",
       "status": "hinted",
       "told_by": [
-        { "domain": "lore", "id": "the_hole_under_the_mountain" },
-        { "domain": "monsters", "id": "masked_shadow_creature" }
+        {
+          "domain": "lore",
+          "id": "the_hole_under_the_mountain"
+        },
+        {
+          "domain": "monsters",
+          "id": "masked_shadow_creature"
+        }
       ],
       "notes": "Ship only: the masks are alike, made not worn, and always smiling. Never say whose face or why it smiles."
     },
     {
       "id": "B7",
-      "title": "The hole under the mountain was a person — one of the best",
+      "title": "The hole under the mountain was a person \u2014 one of the best",
       "status": "hinted",
-      "told_by": [{ "domain": "lore", "id": "the_hole_under_the_mountain" }],
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_hole_under_the_mountain"
+        }
+      ],
       "notes": "Ship: it is new, it was probably a person, it is hungry not hateful. Never: who."
     },
     {
       "id": "B8",
       "title": "When someone goes on, the grief of the left-behind goes missing",
       "status": "revealed",
-      "told_by": [{ "domain": "lore", "id": "the_long_morning" }],
+      "told_by": [
+        {
+          "domain": "lore",
+          "id": "the_long_morning"
+        }
+      ],
       "notes": "The phenomenon is public and disturbing. Its cause is B9 and stays hidden."
     },
     {
@@ -75,10 +117,16 @@
       "title": "Sigrun released her own husband and wears his stone in her hammer",
       "status": "revealed",
       "told_by": [
-        { "domain": "lore", "id": "the_hard_pieces" },
-        { "domain": "characters", "id": "646b922c" }
+        {
+          "domain": "lore",
+          "id": "the_hard_pieces"
+        },
+        {
+          "domain": "characters",
+          "id": "646b922c"
+        }
       ],
-      "notes": "His NAME (Stig) stays unspoken in shipped text — she has not said it since, and printing it wastes her scene."
+      "notes": "His NAME (Stig) stays unspoken in shipped text \u2014 she has not said it since, and printing it wastes her scene."
     },
     {
       "id": "B12",
@@ -96,13 +144,25 @@
       "id": "B14",
       "title": "She never woke because she is still alive",
       "status": "hidden",
-      "notes": "Identity chain step 3 — the cruelest sentence in the root. The endgame begins the day she dies."
+      "notes": "Identity chain step 3 \u2014 the cruelest sentence in the root. The endgame begins the day she dies."
     },
     {
       "id": "B15",
       "title": "The masks smile because in every shared memory of her, she was smiling",
       "status": "hidden",
       "notes": "Resolves B6. Spend only with or after B13."
+    },
+    {
+      "id": "B16",
+      "title": "Something other than the hole also takes memory",
+      "status": "hinted",
+      "told_by": [
+        {
+          "domain": "monsters",
+          "id": "spectral_horse"
+        }
+      ],
+      "notes": "Nightmare gallops where sleep is thin and the dreams do not survive the night. Ship only the observation and the unease of the people who measure such things. NEVER connect it to the hole, and never explain it. Held open deliberately: it is the one loose thread that lets the cave's nature be re-read later without retconning anything."
     }
   ]
 }

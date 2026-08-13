@@ -1,0 +1,20 @@
+{
+  "domain": "monsters",
+  "id": "swamp_cat",
+  "name_seen": "Bogstalker",
+  "kind": "come",
+  "law": "III",
+  "description": "Yellow eyes just above the waterline, algae drifting where it waits. The swamp's stillness is a hunting pose.",
+  "lore": [
+    "Fen-walkers carry a coat they never wear. It goes rolled on the end of a pole, about the size and shape of a person crouching, and when the water moves wrong you throw it as far as you can and walk the other way. It works four times in five, the best odds out there, and it works because of what is left of this animal. Carry the pole anyway when you cross: [[monsters/swamp_cat_2|the other cat]] in that fen does not hide and will not be fooled by a coat.",
+    "It is far along. What thins out of a hunting cat goes in an order, and the order is the country first, then the prey, then the difference between the prey and anything else with roughly that outline. What it still holds, perfectly, is one silhouette and the conviction that the silhouette is food. It has gone at a barrow with a sack on it, at a bundled coat, and at its own reflection in flat water, which is the one people find hard to watch.",
+    "The low ford was kept for years by a woman who fed it. Not sentiment; she had worked out that a fed one lies up and a hungry one comes to the causeway, and she would rather buy the crossing than defend it. She thinned in her turn and went Quiet, and the cat is still on that stretch, and there is still meat on the flat stone by the water most weeks. The walkers took the job over between them. Not one of them can tell you her name."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
+  ],
+  "gm_notes": "Stage-three written as a mechanic: the last thing left is a silhouette, so decoys work and the coat-on-a-pole is a real item of fen kit. The reflection is the gut-punch. The keeper of the ford is a leaf, deliberately unnamed by the end — the tradition survived her and the telling did not, which is the world's whole disease in four words. Distinct from swamp_cat_2 by method: this one hides."
+}

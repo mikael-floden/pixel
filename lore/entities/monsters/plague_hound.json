@@ -1,0 +1,20 @@
+{
+  "domain": "monsters",
+  "id": "plague_hound",
+  "name_seen": "Blightcur",
+  "kind": "come",
+  "law": "III",
+  "description": "Sickness on four legs. All it wants is to sit near somebody, and everything already thinning pays for it.",
+  "lore": [
+    "It has never been known to go for anyone. It comes at a walk with its head low, olive and gaunt, spine and ribs up under a hide gone patchy and pale-knotted at the shoulders, and it stops at about twenty paces and lies down and stays. The eyes are the only bright thing on it. That is the entire behaviour. It would like to be near somebody.",
+    "A bright shape takes nothing from it worse than a foul week and a taste of old metal behind the teeth. What matters is what it does at the far end of the road. Sit an already-thinning man three nights inside that twenty paces and he loses ground he will not get back — Faded to Habit inside a season, in the two cases anyone wrote down, with no wound on him and no fight and nothing to point at. It cannot break you. It can only cost you what you had left.",
+    "[[characters/a6d7323d|Gunnar]] keeps most of what he measures to himself. Not this. He plots its line a week ahead and walks the fires along it to tell the old ones to move for a season, and he gives that one away free and gives it away furious, because the fire that has to move is always the one with somebody in it who cannot walk far. Then it follows them — not hunting, nothing that clean. It follows whoever sat still long enough to be near. Drive it off and it goes twenty paces and lies down again."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
+  ],
+  "gm_notes": "Description rewritten: the shipped line ('more than those it visits can say') implied its visits are fatal, and sickness cannot end anybody here. The art has no attack state and no aggression in it — head down, gaunt, sores at the shoulders, and it is the only monster in the batch whose danger is entirely passive. Rule for play: it accelerates thinning by proximity, it does not take memory and must never be linked to anything that does (B16 stays a single loose thread). The scene it is built for is having to throw stones at something that is not attacking you. No stone or leavings bound yet."
+}

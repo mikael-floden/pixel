@@ -1,0 +1,20 @@
+{
+  "domain": "monsters",
+  "id": "undead_charger",
+  "name_seen": "Gravecharger",
+  "kind": "come",
+  "law": "II",
+  "description": "It would not fall when its rider did. It still charges a line that is not there, in horns no horse ever grew.",
+  "lore": [
+    "Nothing that ever grazed a field had that head. A horse's skull as far as the brow, then two great curled ram's horns on it, a ridge of bare spine standing out of the hide, something red down in the sockets. It did not look like that in life. It looks like that because it was the last thing a great many frightened men saw properly, and frightened men are poor witnesses, and enough of them told it the same way for long enough that the telling won. Set in the bone above the eyes is a small gold boss, all that is left of a head-piece somebody buckled onto it every working morning.",
+    "The war is in nobody's book. [[characters/ef25b1f0|Bettany]] has asked at every fire on her circuit for a banner, a year, a river, a reason, and come back with none of it — everyone who could have told it has gone Quiet, and it was never told often enough to hold. What survives of the entire business is one horse that will not stop, and a set of horns it never had.",
+    "It does not charge people. It charges lines. Two of you standing together are furniture; six in a row are a shield-wall, and it comes at the middle of the row at a flat gallop and does not check. Most of the work at a fire is done in rows — wood passed hand to hand, buckets, a line walking the ground abreast at first light. [[characters/8c41be1e|Hearn]] teaches everyone who works that country the same three sentences, and teaches them as orders, because an order is the only way he knows to say a thing fast enough. Break up. Stand apart. It is not coming for you, it is coming for the row."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    }
+  ],
+  "gm_notes": "The one record in the batch where the lore description replaces the monsters agent's rather than adopting it: theirs ('centuries after the war') did not account for the art, which is a heavy draft horse with a horned skull and a gold brow-boss. The horns are the record — it is wearing the shape its enemies remembered, not the shape it had. Second load-bearing beat: it attacks formations, so the thing it wrecks is a fire's own working line, which is the sad joke and also the gameable rule. Hearn drilling people out of a row is the only place his soldiering is usable without touching the cave. No stone or leavings bound to it yet."
+}

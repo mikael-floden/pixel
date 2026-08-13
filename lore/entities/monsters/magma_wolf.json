@@ -1,0 +1,20 @@
+{
+  "domain": "monsters",
+  "id": "magma_wolf",
+  "name_seen": "Slagfang",
+  "kind": "come",
+  "law": "I",
+  "description": "A wolf quenched in the caldera. Magma veins its black hide, and its bite leaves wounds already cauterized.",
+  "lore": [
+    "Animals wake in the grass too. [[characters/6bb1eb5a|Solveig]] has met nine wolf-wakings at the meadow fire and has never once got the courtesy to work — you cannot ask an animal its name, and it has no one true thing to give you — so she does the part that carries over. She sits a little way off. She stays until it can stand. Then, every single time, without one exception in nine, it gets up and goes east.",
+    "East is the burnt country, and by the time you see one out there it is black-hided with magma standing in the seams and flecks of ember lifting off its back, and it is not travelling alone any more. They arrive one at a time, spaced out by however long each of them took to get here, and they find each other. Solveig has never been east in her life and is certain of one thing about that road: they are not going somewhere. They are going to somebody, and his name is a noise that comes down the slopes at dusk. See [[monsters/magma_wolf_2|Basalthowl]].",
+    "The one last spring was thin-legged and could not stand for most of a day, and she gave it the day, and a man waiting to be met waited. When it finally went it did not look back at her. She says she would think less of it if it had."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    }
+  ],
+  "gm_notes": "Shipped description adopted verbatim. The record exists to put Law I under an animal: wolves wake on the meadow like everyone else, alone, confused, and walk a road nobody taught them. Solveig giving a whole day of the meadow watch to a wolf while a human waking waited is the beat — do not have her defend it. Pairs with magma_wolf_2, which is the same story from the top of the mountain. No stone or leavings bound yet."
+}
