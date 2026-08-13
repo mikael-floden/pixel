@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 117,
+  "scenery_count": 118,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -706,7 +706,7 @@
       "id": "beaver_lodges",
       "name": "Beaver Lodge",
       "quota": 2,
-      "done": 0
+      "done": 1
     }
   ],
   "categories": {
@@ -719,6 +719,7 @@
     "beached_rowboats": 1,
     "beacons": 1,
     "beast_skulls": 1,
+    "beaver_lodges": 1,
     "beehives": 1,
     "bell_posts": 1,
     "effect": 1,
@@ -1009,6 +1010,28 @@
       "status": "complete",
       "pixellab_object_id": "e4f1ae48-68fc-4371-b889-f6e1d69e1c35",
       "sprite": "beast_skulls/beast_skull_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beaver_lodge_001",
+      "rel": "beaver_lodges/beaver_lodge_001",
+      "name": "Abandoned sagging lodge 001",
+      "category": "beaver_lodges",
+      "lights": "LIGHTS_OFF",
+      "description": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, abandoned sagging lodge, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.19,
+        "world_px_height": 45,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c2d60240-9adf-4326-92dc-c95a8e546f2d",
+      "sprite": "beaver_lodges/beaver_lodge_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

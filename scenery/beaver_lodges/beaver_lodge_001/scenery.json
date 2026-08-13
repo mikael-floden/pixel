@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beaver_lodge_001",
+  "group": "beaver_lodges",
+  "rank": 100,
+  "index": 1,
+  "name": "Abandoned sagging lodge 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "abandoned sagging lodge",
+  "glow_concept": null,
+  "prompt": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, abandoned sagging lodge, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beaver_lodges/beaver_lodge_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.19,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c2d60240-9adf-4326-92dc-c95a8e546f2d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
