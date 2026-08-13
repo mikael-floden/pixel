@@ -96,7 +96,12 @@ def can_spend(cfg, state):
 
 # --- one piece ---------------------------------------------------------------
 
-PUSH_EVERY = 20  # commit per piece, push (-> deploy) every N pieces + at exit
+# Commit per piece; push (-> deploy -> reviewable in the wiki) every N pieces.
+# 10, not 20: the maintainer reviews WHILE the loop generates (2026-08-13), and
+# at ~2.6 min/piece a 20-piece batch left him waiting ~50 minutes for anything
+# new to appear. Ten keeps fresh art flowing without a deploy per sprite; the
+# deploy workflow's concurrency group collapses rapid pushes anyway.
+PUSH_EVERY = 10
 
 
 def run_piece(client, cfg, group, spec, push=True):
