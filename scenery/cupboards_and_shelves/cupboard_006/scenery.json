@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:26:40+00:00",
+  "id": "cupboard_006",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 6,
+  "name": "Welsh dresser stacked with plates 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "welsh dresser stacked with plates",
+  "glow_concept": "lamplight seeping from behind the cupboard doors",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, welsh dresser stacked with plates, large, twice human height, self-emissive at night, softly radiating light: lamplight seeping from behind the cupboard doors",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.19,
+    "world_px_height": 82,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6b211716-e5b9-4a6f-a582-e8215873e0f9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
