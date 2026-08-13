@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "moss_clump_011",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 11,
+  "name": "Hair-cap moss tussock 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "hair-cap moss tussock",
+  "glow_concept": null,
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, hair-cap moss tussock, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.54,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cc05007a-927f-4e36-968f-02792e671c5a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 447,
+  "scenery_count": 448,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -321,7 +321,7 @@
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 46,
@@ -843,7 +843,7 @@
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 5,
-    "moss_clumps": 5,
+    "moss_clumps": 6,
     "mushrooms": 6,
     "nest_posts": 2,
     "offering_tables": 6,
@@ -6486,6 +6486,28 @@
       "status": "complete",
       "pixellab_object_id": "375c509f-8880-4e9b-ac78-3b43c59c9ad3",
       "sprite": "moss_clumps/moss_clump_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moss_clump_011",
+      "rel": "moss_clumps/moss_clump_011",
+      "name": "Hair-cap moss tussock 011",
+      "category": "moss_clumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, hair-cap moss tussock, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.54,
+        "world_px_height": 20,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cc05007a-927f-4e36-968f-02792e671c5a",
+      "sprite": "moss_clumps/moss_clump_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
