@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:22:06+00:00",
+  "id": "dock_piling_008",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 8,
+  "name": "White gull-stained pilings 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white gull-stained pilings",
+  "glow_concept": "rope wraps smoldering with faint ember light",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, white gull-stained pilings, roughly six feet tall, human height, self-emissive at night, softly radiating light: rope wraps smoldering with faint ember light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.6,
+    "world_px_height": 60,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4a0685a9-b04f-4761-aeff-7c2482286408",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
