@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 503,
+  "scenery_count": 504,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -209,7 +209,7 @@
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 30,
@@ -839,7 +839,7 @@
     "house_clutter": 6,
     "ivy_posts": 7,
     "lantern_posts": 7,
-    "lantern_stands": 5,
+    "lantern_stands": 6,
     "letter_boxes": 2,
     "market_stalls": 4,
     "maypoles": 6,
@@ -6772,6 +6772,28 @@
       "status": "complete",
       "pixellab_object_id": "b71ccedf-6201-405b-8158-70819f84e62c",
       "sprite": "lantern_stands/lantern_stand_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_012",
+      "rel": "lantern_stands/lantern_stand_012",
+      "name": "Stone-footed iron stand 012 \u00b7 lit",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, stone-footed iron stand, large, twice human height, self-emissive at night, softly radiating light: caged ember-stone shedding deep orange light",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.15,
+        "world_px_height": 81,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "97ab8e9a-5b1f-458a-b6aa-c11a9256c37a",
+      "sprite": "lantern_stands/lantern_stand_012/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:41:30+00:00",
+  "id": "lantern_stand_012",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 12,
+  "name": "Stone-footed iron stand 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stone-footed iron stand",
+  "glow_concept": "caged ember-stone shedding deep orange light",
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, stone-footed iron stand, large, twice human height, self-emissive at night, softly radiating light: caged ember-stone shedding deep orange light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_012/sprite.webp",
+  "placement": {
+    "world_height_m": 2.15,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "97ab8e9a-5b1f-458a-b6aa-c11a9256c37a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
