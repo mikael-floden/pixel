@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 372,
+  "scenery_count": 373,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -118,7 +118,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 70,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 17,
@@ -820,7 +820,7 @@
     "fences": 5,
     "ferns": 5,
     "fish_drying_racks": 4,
-    "flame_niches": 4,
+    "flame_niches": 5,
     "flower_garlands": 2,
     "flower_stands": 4,
     "flower_trellises": 2,
@@ -3873,6 +3873,28 @@
       "status": "complete",
       "pixellab_object_id": "4d98ea5f-f9a6-499f-8d57-b8074d9b96ad",
       "sprite": "flame_niches/flame_niche_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flame_niche_010",
+      "rel": "flame_niches/flame_niche_010",
+      "name": "Twin-arch double niche 010 \u00b7 lit",
+      "category": "flame_niches",
+      "lights": "LIGHTS_ON",
+      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, twin-arch double niche, roughly six feet tall, human height, self-emissive at night, softly radiating light: sparks drifting up from the flame",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.55,
+        "world_px_height": 58,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "81b3e43f-5666-4068-ad31-391642cc5ba1",
+      "sprite": "flame_niches/flame_niche_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

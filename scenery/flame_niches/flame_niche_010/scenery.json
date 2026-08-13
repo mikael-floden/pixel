@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flame_niche_010",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 10,
+  "name": "Twin-arch double niche 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "twin-arch double niche",
+  "glow_concept": "sparks drifting up from the flame",
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, twin-arch double niche, roughly six feet tall, human height, self-emissive at night, softly radiating light: sparks drifting up from the flame",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "flame_niches/flame_niche_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.55,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "81b3e43f-5666-4068-ad31-391642cc5ba1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
