@@ -106,13 +106,14 @@ def apply_rejections(client):
                     print(f"  ! store delete failed for {rel} ({oid}): "
                           f"{str(e)[:120]} — repo copy removed anyway; the "
                           f"orphan report will flag the leftover")
+        # Retire BEFORE deleting: a crash between the two must never leave a
+        # judged id free for the planner to re-roll onto (it happened —
+        # 2026-08-13, a worker restart mid-apply left ~68 rejected ids
+        # unretired and the next run squatted 60 of them with fresh art,
+        # resurrecting the maintainer's whole review queue).
+        factory.retire([rel])
         shutil.rmtree(factory.piece_dir(rel), ignore_errors=True)
         removed.append(rel)
-    if removed:
-        # The id dies with the art: a fresh roll gets a NEW number so the
-        # maintainer's verdict keeps pointing at the piece he actually judged
-        # and the re-roll lands in his unreviewed queue.
-        factory.retire(removed)
     if stale:
         print(f"  feedback: {len(stale)} rejection(s) predate the current art "
               f"(slot re-rolled since) — awaiting re-review, untouched")

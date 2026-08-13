@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 508,
+  "scenery_count": 509,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -720,7 +720,7 @@
       "id": "cliff_features",
       "name": "Cliff Feature",
       "quota": 30,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 103,
@@ -806,7 +806,7 @@
     "chairs_and_benches": 6,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
-    "cliff_features": 6,
+    "cliff_features": 7,
     "cliff_fragments": 2,
     "cliff_vines": 6,
     "crystals": 7,
@@ -3433,6 +3433,28 @@
       "status": "complete",
       "pixellab_object_id": "9e4cb1c8-be6a-4a96-a2d4-f1d9ebc35351",
       "sprite": "cliff_features/cliff_feature_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_feature_010",
+      "rel": "cliff_features/cliff_feature_010",
+      "name": "Deep cracked seam with ferns growing out 010 \u00b7 lit",
+      "category": "cliff_features",
+      "lights": "LIGHTS_ON",
+      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, deep cracked seam with ferns growing out, large, twice human height, self-emissive at night, softly radiating light: soulstone seam glowing inside the crack",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.37,
+        "world_px_height": 89,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "39aedc60-a864-4cda-b4c8-afc3abcac9a2",
+      "sprite": "cliff_features/cliff_feature_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
