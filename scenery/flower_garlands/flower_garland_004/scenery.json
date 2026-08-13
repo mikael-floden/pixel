@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_garland_004",
+  "group": "flower_garlands",
+  "rank": 73,
+  "index": 4,
+  "name": "Daisy and briar-rose garland 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "daisy and briar-rose garland",
+  "glow_concept": "post tops carved with glowing painted names",
+  "prompt": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, daisy and briar-rose garland, roughly six feet tall, human height, self-emissive at night, softly radiating light: post tops carved with glowing painted names",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_garlands/flower_garland_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.39,
+    "world_px_height": 52,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9643cbc9-337f-47c1-a9d7-71720cefae68",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
