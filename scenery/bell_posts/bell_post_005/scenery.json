@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_005",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 5,
+  "name": "Antler-bracket bell 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "antler-bracket bell",
+  "glow_concept": null,
+  "prompt": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, antler-bracket bell, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.28,
+    "world_px_height": 86,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5164d1d6-4a3e-4125-a147-cb0a0793130a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
