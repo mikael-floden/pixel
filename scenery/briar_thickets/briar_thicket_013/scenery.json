@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_013",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 13,
+  "name": "Dense head-high thorn wall 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "dense head-high thorn wall",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dense head-high thorn wall, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.51,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6b5f93bf-b498-44ed-ba32-bf3a43db985d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
