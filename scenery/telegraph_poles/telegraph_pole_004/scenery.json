@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_004",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 4,
+  "name": "Single crossarm pine pole 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single crossarm pine pole",
+  "glow_concept": "pale ghost-fire crackling on the crossarm tips",
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, single crossarm pine pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pale ghost-fire crackling on the crossarm tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_004/sprite.webp",
+  "placement": {
+    "world_height_m": 6.09,
+    "world_px_height": 229,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b7bb14bb-8f77-489e-a368-92b66a5f6988",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
