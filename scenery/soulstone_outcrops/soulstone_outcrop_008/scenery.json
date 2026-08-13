@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_008",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 8,
+  "name": "Pearl-grey rounded soulstone 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pearl-grey rounded soulstone",
+  "glow_concept": "one sharp glowing facet like a window into the stone",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, pearl-grey rounded soulstone, small, knee-high, self-emissive at night, softly radiating light: one sharp glowing facet like a window into the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.51,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "208b4ccb-18ac-443f-94da-7a08870a08df",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
