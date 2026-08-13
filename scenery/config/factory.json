@@ -1,7 +1,7 @@
 {
   "format": "scenery-factory@2",
   "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees.",
-  "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
+  "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
   "quota_rule": {
@@ -507,7 +507,7 @@
       "id": "briar_thickets",
       "prefix": "briar_thicket",
       "name": "Briar Thicket",
-      "description": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it",
       "world_height_m": [
         0.9,
         1.6
@@ -2194,12 +2194,12 @@
       "id": "waterwheels",
       "prefix": "waterwheel",
       "name": "Waterwheel",
-      "description": "a small stone watermill house with a big wooden waterwheel on its side, a millpond and a wooden sluice channel feeding water onto the wheel, the whole mill sitting on its stream bank",
+      "description": "a stone watermill beside a stream, one big wooden waterwheel mounted on its gable wall, water falling onto the wheel from a simple wooden chute, bold simple shapes",
       "world_height_m": [
-        3.0,
-        5.5
+        4.0,
+        6.0
       ],
-      "art_size": 160,
+      "art_size": 256,
       "variety": [
         "moss-covered old millhouse",
         "red-roofed working mill",
@@ -2413,7 +2413,7 @@
       "id": "petrified_stumps",
       "prefix": "petrified_stump",
       "name": "Petrified Stump",
-      "description": "a tree stump turned entirely to stone, bark texture and growth rings preserved in banded mineral",
+      "description": "a tree stump turned entirely to grey banded stone, cold mineral colors with agate rings on the cut top, clearly rock not wood, no brown bark",
       "world_height_m": [
         0.5,
         1.4
@@ -3799,9 +3799,8 @@
         "table with a steaming soup pot"
       ],
       "glow_concepts": [
-        "a lit candle stub in a holder on the tabletop",
-        "a small oil lamp glowing at its center",
-        "a bowl of ember-warm coals",
+        "a lit candle stub in a brass holder on the tabletop",
+        "a small glass-hooded oil lamp glowing at its center",
         "memory-light pooling in the wood grain"
       ],
       "animation_idea": "the candleflame swaying gently",
@@ -3835,8 +3834,7 @@
       ],
       "glow_concepts": [
         "a knitted blanket glowing faintly with kept warmth",
-        "a candle lantern hung on the chair back",
-        "an ember-warm seat cushion glowing softly"
+        "a small candle lantern hung on the chair back"
       ],
       "animation_idea": "the rocking chair rocking slowly on its own",
       "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready."
