@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_008",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 8,
+  "name": "Ornate cast-iron gas lamp 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ornate cast-iron gas lamp",
+  "glow_concept": "pale blue soul-light orb hovering inside",
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ornate cast-iron gas lamp, large, twice human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.79,
+    "world_px_height": 105,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1d333112-b2ae-489e-a187-f401ef704c1d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
