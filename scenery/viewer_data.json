@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 354,
+  "scenery_count": 355,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -727,7 +727,7 @@
       "id": "tables",
       "name": "Table",
       "quota": 40,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 104,
@@ -873,7 +873,7 @@
     "streetlights": 4,
     "stumps": 5,
     "sundials": 2,
-    "tables": 3,
+    "tables": 4,
     "telegraph_poles": 4,
     "toadstool_rings": 4,
     "torch_posts": 4,
@@ -7454,6 +7454,28 @@
       "status": "complete",
       "pixellab_object_id": "97b7b2b1-1358-4126-a2f2-ed0b235f2dd2",
       "sprite": "tables/table_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "table_005",
+      "rel": "tables/table_005",
+      "name": "Table with a jug of wildflowers 005",
+      "category": "tables",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, table with a jug of wildflowers, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.75,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2a5c53da-6793-4b9d-9561-8fe45b48f313",
+      "sprite": "tables/table_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
