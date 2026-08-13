@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "statue_001",
+  "group": "statues",
+  "rank": 89,
+  "index": 1,
+  "name": "Fisherman with net 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "fisherman with net",
+  "glow_concept": null,
+  "prompt": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, fisherman with net, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "statues/statue_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.15,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1c62d37c-5cb5-46a1-afc2-3ff3658ec997",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
