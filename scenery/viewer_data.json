@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 441,
+  "scenery_count": 442,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -251,7 +251,7 @@
       "id": "dock_pilings",
       "name": "Dock Piling",
       "quota": 32,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 36,
@@ -812,7 +812,7 @@
     "crystals": 5,
     "cup_fungi": 2,
     "cupboards_and_shelves": 5,
-    "dock_pilings": 5,
+    "dock_pilings": 6,
     "dovecotes": 2,
     "driftwood_logs": 2,
     "fading_relics": 2,
@@ -3675,6 +3675,28 @@
       "status": "complete",
       "pixellab_object_id": "2ad9dc61-cf65-40ba-be53-499118bfeb51",
       "sprite": "dock_pilings/dock_piling_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dock_piling_010",
+      "rel": "dock_pilings/dock_piling_010",
+      "name": "Cut-off short piling stumps 010 \u00b7 lit",
+      "category": "dock_pilings",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, cut-off short piling stumps, large, twice human height, self-emissive at night, softly radiating light: a glowing algae skirt below the tide stain",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.93,
+        "world_px_height": 73,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ccbb52d9-34eb-4e85-a73e-c9699aa94b3c",
+      "sprite": "dock_pilings/dock_piling_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

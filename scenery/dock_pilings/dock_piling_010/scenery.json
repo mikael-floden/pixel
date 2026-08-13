@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "dock_piling_010",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 10,
+  "name": "Cut-off short piling stumps 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cut-off short piling stumps",
+  "glow_concept": "a glowing algae skirt below the tide stain",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, cut-off short piling stumps, large, twice human height, self-emissive at night, softly radiating light: a glowing algae skirt below the tide stain",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "dock_pilings/dock_piling_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.93,
+    "world_px_height": 73,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ccbb52d9-34eb-4e85-a73e-c9699aa94b3c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
