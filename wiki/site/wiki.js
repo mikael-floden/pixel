@@ -2001,10 +2001,13 @@ function objVerdict(o) {
   return { status: e.status, at: e.updated_at, stale: !!(o.added && e.updated_at && e.updated_at < o.added) };
 }
 const OBJ_FILTERS = {
-  all: { label: "all", title: "Every piece", match: () => true },
-  unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue", match: (v) => !v.status || v.stale },
-  approved: { label: "approved", title: "Approved, and the art has not changed since", match: (v) => v.status === "approved" && !v.stale },
-  rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale },
+  all: { label: "all", title: "Every piece", match: () => true, empty: "Nothing here at all — the scenery domain is empty." },
+  unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue", match: (v) => !v.status || v.stale,
+    empty: "Nothing needs review — you have judged every piece in the library. The art is all still here; new pieces will appear as the scenery agent generates them." },
+  approved: { label: "approved", title: "Approved, and the art has not changed since", match: (v) => v.status === "approved" && !v.stale,
+    empty: "No piece is approved yet." },
+  rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale,
+    empty: "No piece is waiting to be removed — the scenery agent has cleared them." },
 };
 const OBJ_SORTS = {
   group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
@@ -2041,10 +2044,25 @@ function viewObjects() {
     sectionHead("objects"),
     h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
-    state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) => [id, f.label, f.title]), q.filter, () => route()) : null,
+    // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
+    // legitimately empty the page: the maintainer reviewed the whole domain,
+    // the scenery agent deleted what he rejected, and "needs review" fell to
+    // zero — so the Scenery page he came back to was blank and read as "I
+    // can't see more scenery art" (2026-08-13). With the counts on the chips
+    // the pieces are never unaccounted for, whatever is selected.
+    state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) =>
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => f.match(objVerdict(o))).length}`, f.title]), q.filter, () => route()) : null,
     state.admin && q.filter !== "all"
       ? h("p", { class: "muted", style: "margin:-6px 0 12px" }, `${list.length} of ${q.total} pieces — ‹ › inside a piece walks this set only.`)
       : null,
+    // An empty grid must never be mistaken for missing art.
+    state.admin && !list.length ? h("div", { class: "panel empty-queue" },
+      h("p", {}, state.query
+        ? `No piece matches “${state.query}”${q.filter === "all" ? "" : ` in “${OBJ_FILTERS[q.filter].label}”`}.`
+        : OBJ_FILTERS[q.filter].empty),
+      h("button", {
+        class: "ghost-btn", onclick: () => { try { localStorage.setItem(OBJ_FILTER_KEY, "all"); } catch { /* private mode */ } route(); },
+      }, `Show all ${q.total} pieces`)) : null,
     // Newest-first cuts ACROSS groups, so the group headings would be noise —
     // one flat grid in the chosen order instead.
     ...(q.sort === "newest"

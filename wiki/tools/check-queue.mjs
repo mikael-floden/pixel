@@ -178,6 +178,43 @@ console.log("stray:", JSON.stringify(s));
 ok(s.nav && s.count === `1 / ${APPROVED.length + 1}`, `a piece outside the filter keeps its pager (${s.count})`);
 ok(s.outside, "and is labelled as outside the current filter");
 
+// --- AN EMPTY FILTER MUST NEVER READ AS MISSING ART.
+// The filter is sticky, and it can legitimately empty the page: the maintainer
+// judged the whole domain, the scenery agent deleted what he rejected, and
+// "needs review" fell to 0 — so the Scenery page he returned to was blank and
+// he reported "I can't see more scenery art" (2026-08-13). Every chip now
+// carries its count, and an empty result explains itself and offers the way
+// out. Simulated by approving EVERYTHING, which is the state he was in.
+{
+  const saved = { ...entries };
+  for (const o of objs) entries[o.path] = { status: "approved", updated_at: after(o.path) };
+  await go("#/objects");
+  await pick("unreviewed");
+  const e = await p.evaluate(() => ({
+    cards: document.querySelectorAll(".card").length,
+    msg: document.querySelector(".empty-queue p")?.textContent ?? null,
+    btn: document.querySelector(".empty-queue button")?.textContent ?? null,
+    chips: [...(document.querySelectorAll(".sortbar")[1]?.querySelectorAll("button") ?? [])].map((x) => x.textContent),
+  }));
+  console.log("empty queue:", JSON.stringify(e));
+  ok(e.cards === 0 && !!e.msg, "an empty filter says WHY it is empty instead of showing a blank page");
+  ok(/still here/.test(e.msg), `and says the art is not gone — "${e.msg?.slice(0, 60)}…"`);
+  ok(e.chips.some((c) => c === `all ${objs.length}`) && e.chips.some((c) => c === "needs review 0"),
+    `every chip carries its count, so the pieces are never unaccounted for (${e.chips.join(" | ")})`);
+  ok(!!e.btn && new RegExp(`${objs.length}`).test(e.btn), `and one button restores the full domain ("${e.btn}")`);
+  await p.evaluate(() => document.querySelector(".empty-queue button").click());
+  await p.waitForTimeout(600);
+  const back = await p.evaluate(() => ({ cards: document.querySelectorAll(".card").length, sel: [...document.querySelectorAll(".sortbar-btn.sel")].map((x) => x.textContent) }));
+  ok(back.cards === objs.length && back.sel.some((s) => s.startsWith("all")),
+    `pressing it really does bring everything back (${back.cards} pieces)`);
+  // Put back exactly what the next section expects: the real verdicts, the
+  // "approved" filter, and a piece page to reload.
+  for (const k of Object.keys(entries)) delete entries[k];
+  Object.assign(entries, saved);
+  await p.evaluate(() => localStorage.setItem("wiki-obj-filter", "approved"));
+  await go(`#/objects/${stray.id}`);
+}
+
 // --- survives a reload, and the public never sees any of it
 await p.reload({ waitUntil: "load" });
 await p.waitForTimeout(1500);
