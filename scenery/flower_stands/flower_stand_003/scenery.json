@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_003",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 3,
+  "name": "White oxeye daisies 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "white oxeye daisies",
+  "glow_concept": null,
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, white oxeye daisies, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b0b7d38a-deec-4e85-9996-d35c780b3f97",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
