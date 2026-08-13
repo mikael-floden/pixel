@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 409,
+  "scenery_count": 410,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -769,7 +769,7 @@
       "id": "house_clutter",
       "name": "House Clutter",
       "quota": 50,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 110,
@@ -836,7 +836,7 @@
     "hearths": 4,
     "hedges": 5,
     "hop_poles": 2,
-    "house_clutter": 4,
+    "house_clutter": 5,
     "ivy_posts": 5,
     "lantern_posts": 5,
     "lantern_stands": 5,
@@ -5320,6 +5320,28 @@
       "status": "complete",
       "pixellab_object_id": "466069cf-e13c-4585-9e56-9d54959f769d",
       "sprite": "house_clutter/clutter_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "clutter_006",
+      "rel": "house_clutter/clutter_006",
+      "name": "Washtub with a washboard 006 \u00b7 lit",
+      "category": "house_clutter",
+      "lights": "LIGHTS_ON",
+      "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, washtub with a washboard, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.35,
+        "world_px_height": 13,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
+      "sprite": "house_clutter/clutter_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

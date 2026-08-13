@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "clutter_006",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 6,
+  "name": "Washtub with a washboard 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "washtub with a washboard",
+  "glow_concept": "embers glowing in a small warming pot",
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, washtub with a washboard, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.35,
+    "world_px_height": 13,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
