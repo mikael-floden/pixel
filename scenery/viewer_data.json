@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 284,
+  "scenery_count": 285,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -685,7 +685,7 @@
       "id": "rocking_horses",
       "name": "Rocking Horse",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 98,
@@ -852,6 +852,7 @@
     "puffballs": 2,
     "reed_beds": 5,
     "rock_spires": 2,
+    "rocking_horses": 1,
     "rope_swings": 2,
     "rugs_and_hides": 1,
     "ruined_arches": 2,
@@ -5031,6 +5032,28 @@
       "status": "complete",
       "pixellab_object_id": "526a994f-242c-4a7c-985d-9fb4645621b2",
       "sprite": "rock_spires/rock_spire_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rocking_horse_006",
+      "rel": "rocking_horses/rocking_horse_006",
+      "name": "Tiny foal-sized horse 006 \u00b7 lit",
+      "category": "rocking_horses",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers, tiny foal-sized horse, small, knee-high, self-emissive at night, softly radiating light: painted dapples lit like tiny lanterns",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.69,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "25e9ef1b-f238-40b9-a34a-fba53cd90d78",
+      "sprite": "rocking_horses/rocking_horse_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
