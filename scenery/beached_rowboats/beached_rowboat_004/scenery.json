@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beached_rowboat_004",
+  "group": "beached_rowboats",
+  "rank": 84,
+  "index": 4,
+  "name": "Bare weathered grey wood 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "bare weathered grey wood",
+  "glow_concept": "glowing net floats heaped in the stern",
+  "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, bare weathered grey wood, waist-high, self-emissive at night, softly radiating light: glowing net floats heaped in the stern",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "beached_rowboats/beached_rowboat_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.15,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "930a2817-f593-4e81-a94d-1e68ac8515bf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
