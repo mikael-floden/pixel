@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_010",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 10,
+  "name": "Ladder-back kitchen chair 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ladder-back kitchen chair",
+  "glow_concept": "a knitted blanket glowing faintly with kept warmth",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, ladder-back kitchen chair, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "766535cf-32cc-4107-b9ac-517becac88d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 403,
+  "scenery_count": 404,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 105,
@@ -803,7 +803,7 @@
     "light": 1,
     "carts": 5,
     "cattail_clumps": 5,
-    "chairs_and_benches": 4,
+    "chairs_and_benches": 5,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
     "cliff_features": 4,
@@ -2729,6 +2729,28 @@
       "status": "complete",
       "pixellab_object_id": "9ca20568-1605-45c2-bfe7-f91c33cd57cd",
       "sprite": "chairs_and_benches/chair_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_010",
+      "rel": "chairs_and_benches/chair_010",
+      "name": "Ladder-back kitchen chair 010 \u00b7 lit",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_ON",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, ladder-back kitchen chair, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.94,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "766535cf-32cc-4107-b9ac-517becac88d8",
+      "sprite": "chairs_and_benches/chair_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
