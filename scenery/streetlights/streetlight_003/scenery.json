@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_003",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 3,
+  "name": "Cracked derelict tilted lamp 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "cracked derelict tilted lamp",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, cracked derelict tilted lamp, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.91,
+    "world_px_height": 110,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "79e7db04-7537-4f8f-ba6a-181cbd03a34d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
