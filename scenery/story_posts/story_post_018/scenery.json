@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:33:23+00:00",
+  "id": "story_post_018",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 18,
+  "name": "Wooden token-hung post 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wooden token-hung post",
+  "glow_concept": "tiny glowing letters spiraling up the post",
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wooden token-hung post, large, twice human height, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "story_posts/story_post_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.96,
+    "world_px_height": 74,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e70c6f1f-feaf-4ab5-a9d7-26f4fdce1b9c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

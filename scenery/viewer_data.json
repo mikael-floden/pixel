@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 479,
+  "scenery_count": 480,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 22,
@@ -869,7 +869,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
-    "story_posts": 6,
+    "story_posts": 7,
     "streetlights": 7,
     "stumps": 6,
     "sundials": 2,
@@ -9236,6 +9236,28 @@
       "status": "complete",
       "pixellab_object_id": "3374bc21-1c2d-4d6e-9c0d-7a0e556951e9",
       "sprite": "story_posts/story_post_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_018",
+      "rel": "story_posts/story_post_018",
+      "name": "Wooden token-hung post 018 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wooden token-hung post, large, twice human height, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.96,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e70c6f1f-feaf-4ab5-a9d7-26f4fdce1b9c",
+      "sprite": "story_posts/story_post_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
