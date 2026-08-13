@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 261,
+  "scenery_count": 262,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 47,
@@ -717,7 +717,7 @@
     "aqueduct_fragments": 2,
     "barrels": 3,
     "beached_rowboats": 2,
-    "beacons": 2,
+    "beacons": 3,
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 3,
@@ -1186,6 +1186,28 @@
       "status": "complete",
       "pixellab_object_id": "ee180a42-6b80-4d17-9997-9f09e88c5e1f",
       "sprite": "beacons/beacon_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_003",
+      "rel": "beacons/beacon_003",
+      "name": "Basket-topped tripod beacon 003",
+      "category": "beacons",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, basket-topped tripod beacon, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.06,
+        "world_px_height": 115,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8f741c6d-f46e-48c1-bfc2-bc360f74920c",
+      "sprite": "beacons/beacon_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
