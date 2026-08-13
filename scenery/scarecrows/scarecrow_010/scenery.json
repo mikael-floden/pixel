@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_010",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 10,
+  "name": "Sack-head, patched brown coat 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "sack-head, patched brown coat",
+  "glow_concept": "carved turnip head lit from inside",
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, sack-head, patched brown coat, large, twice human height, self-emissive at night, softly radiating light: carved turnip head lit from inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.94,
+    "world_px_height": 73,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "00e93f2e-2400-46ad-afd0-35cff05cfa93",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
