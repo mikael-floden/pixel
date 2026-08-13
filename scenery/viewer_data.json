@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 467,
+  "scenery_count": 468,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 7,
@@ -886,7 +886,7 @@
     "water_pumps": 2,
     "waterwheels": 2,
     "wayside_shrines": 6,
-    "waystones": 6,
+    "waystones": 7,
     "web_frames": 2,
     "wells": 6,
     "windmills": 6,
@@ -10820,6 +10820,28 @@
       "status": "complete",
       "pixellab_object_id": "35ff9adf-a1bd-4764-8427-b25673fd0e92",
       "sprite": "waystones/waystone_013/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_014",
+      "rel": "waystones/waystone_014",
+      "name": "Lichen-ringed old stone 014 \u00b7 lit",
+      "category": "waystones",
+      "lights": "LIGHTS_ON",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, lichen-ringed old stone, waist-high, self-emissive at night, softly radiating light: soulstone veins threading the rock alight",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.77,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c81db3f7-21ab-43a4-82af-d7958d0efd00",
+      "sprite": "waystones/waystone_014/sprite.webp",
       "rotations": {},
       "animations": []
     },

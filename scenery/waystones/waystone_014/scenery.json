@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "waystone_014",
+  "group": "waystones",
+  "rank": 6,
+  "index": 14,
+  "name": "Lichen-ringed old stone 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lichen-ringed old stone",
+  "glow_concept": "soulstone veins threading the rock alight",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, lichen-ringed old stone, waist-high, self-emissive at night, softly radiating light: soulstone veins threading the rock alight",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c81db3f7-21ab-43a4-82af-d7958d0efd00",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
