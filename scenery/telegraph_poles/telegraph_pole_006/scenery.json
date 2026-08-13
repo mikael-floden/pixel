@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_006",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 6,
+  "name": "Moss-footed rotting pole 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-footed rotting pole",
+  "glow_concept": "pulses of light traveling along the sagging wire",
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, moss-footed rotting pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pulses of light traveling along the sagging wire",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_006/sprite.webp",
+  "placement": {
+    "world_height_m": 4.68,
+    "world_px_height": 176,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

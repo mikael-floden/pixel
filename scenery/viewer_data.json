@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 401,
+  "scenery_count": 402,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -307,7 +307,7 @@
       "id": "telegraph_poles",
       "name": "Telegraph Pole",
       "quota": 16,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 44,
@@ -796,7 +796,7 @@
     "streetlights": 6,
     "stumps": 6,
     "sundials": 2,
-    "telegraph_poles": 5,
+    "telegraph_poles": 6,
     "toadstool_rings": 6,
     "torch_posts": 6,
     "trailing_planters": 2,
@@ -8299,6 +8299,28 @@
       "status": "complete",
       "pixellab_object_id": "847a0889-7079-4602-9034-b67630af6048",
       "sprite": "telegraph_poles/telegraph_pole_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "telegraph_pole_006",
+      "rel": "telegraph_poles/telegraph_pole_006",
+      "name": "Moss-footed rotting pole 006 \u00b7 lit",
+      "category": "telegraph_poles",
+      "lights": "LIGHTS_ON",
+      "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, moss-footed rotting pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pulses of light traveling along the sagging wire",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 4.68,
+        "world_px_height": 176,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
+      "sprite": "telegraph_poles/telegraph_pole_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
