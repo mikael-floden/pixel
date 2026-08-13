@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 154,
+  "scenery_count": 155,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 39,
@@ -788,7 +788,7 @@
     "soulstone_outcrops": 2,
     "soulstone_plinths": 1,
     "spring_basins": 1,
-    "standing_stones": 1,
+    "standing_stones": 2,
     "statues": 1,
     "stone_fountains": 1,
     "stones": 16,
@@ -3217,6 +3217,28 @@
       "status": "complete",
       "pixellab_object_id": "b8059594-b225-46e7-84ec-8d4e6640ef95",
       "sprite": "standing_stones/standing_stone_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "standing_stone_002",
+      "rel": "standing_stones/standing_stone_002",
+      "name": "Leaning weathered monolith 002 \u00b7 lit",
+      "category": "standing_stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, leaning weathered monolith, tall, about two people high, self-emissive at night, softly radiating light: crown of beacon light at the tip",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.27,
+        "world_px_height": 123,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e4ed3d88-76a0-409b-8535-255f7230c498",
+      "sprite": "standing_stones/standing_stone_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
