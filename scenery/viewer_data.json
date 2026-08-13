@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 468,
+  "scenery_count": 469,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 8,
@@ -876,7 +876,7 @@
     "tables": 6,
     "telegraph_poles": 6,
     "toadstool_rings": 6,
-    "torch_posts": 6,
+    "torch_posts": 7,
     "trailing_planters": 2,
     "trees": 7,
     "wall_hangings": 5,
@@ -9918,6 +9918,28 @@
       "status": "complete",
       "pixellab_object_id": "698620d2-10d4-4d0d-b22a-d02c1f889f2e",
       "sprite": "torch_posts/torch_post_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_011",
+      "rel": "torch_posts/torch_post_011",
+      "name": "Charred half-burnt post 011",
+      "category": "torch_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, charred half-burnt post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.74,
+        "world_px_height": 66,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "958217e5-c442-40fa-a32c-c9a57757af2d",
+      "sprite": "torch_posts/torch_post_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
