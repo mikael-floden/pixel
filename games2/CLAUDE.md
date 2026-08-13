@@ -1112,6 +1112,46 @@ visible head/shoulders are ABOVE the surface).
   walls off exactly the preferred heading and asserts the emitted one is open
   and still progressing; six replays both directions of the walk plus a tap on
   her own spot through the real brain, and fails at 232° without the standoff.
+  - **THE PASS — the "special move" past a body blocking the ONLY lane**
+    (maintainer 2026-08-13: "sometimes running around is not possible because
+    the monster/NPC/player is blocking the only path. This should not result
+    in the player switching direction back and forth in panic — this is where
+    the player uses its special move to run straight past the blocker", the
+    basketball crossover). Bodies are soft collision (input deflection only),
+    so walking through one is physically free — the change is the BRAIN:
+    `monsterDodge` gains a latched PASS, armed by two extra params (`now` +
+    `allowPass`) that ONLY the local player's client call passes — the
+    server's monster dodge is byte-identical (pinned by test).
+    - WHERE THE STUCK REALLY LIVES: not a straight corridor — the
+      axis-separated wall-slide scrapes past any body there — but a DOORWAY:
+      the steer assist pulls the walker to the opening, the dodge deflects it
+      off the body parked in it, and the two fight forever. Measured on the
+      composition harness (steerAssist → monsterDodge → stepMovement, the
+      client's exact order): **192 heading flips in 5s, parked at the door
+      line**; with the pass, **through in ~1.5s at 31 flips**.
+    - TWO TRIGGERS, ONE LATCH: STRUCTURAL — no dodge candidate is
+      terrain-open while the raw heading is (the body owns the one walkable
+      lane; fires the first frame, so the panic never appears); STALL — the
+      dodge held the same blocker for `DODGE_PASS_STALL_MS` (450) without
+      `DODGE_PASS_STALL_WU` (8) of real displacement (the anchor measures the
+      OUTCOME of candidate flip-flopping, whatever its cause). The pass ends
+      through the ordinary hold-release (body truly beside/behind), when the
+      lane closes (raw re-checked every frame — a pass can never walk into
+      terrain), or at `DODGE_PASS_MAX_MS` (1600, the body-glued-to-you
+      valve); expiry resets the anchor so re-arming needs a fresh stall.
+    - THE JINK (`DODGE_PASS_JINK_MS` 160): the crossover feint — one quick
+      45° step toward whichever side is free, then straight. HEADING-RELATIVE
+      and EITHER side (the maintainer: "left then right" is just an example —
+      running screen-sideways it is up-then-down); a fully sealed lane has no
+      sliver, so a structural pass goes straight through with no feint.
+    - Gates: `server/test/dodgepass.test.ts` — the doorway baseline VERIFIED
+      STUCK-AND-PANICKING without the pass (>60 flips required, so the
+      fixture can never go vacuous), the pass crossing through the door lane
+      with an order of magnitude fewer flips, first-frame structural fire,
+      open-field non-trigger (the normal dodge still routes around, personal
+      space kept), the feint's window/side/ring-step bounds, the valve's
+      expiry + re-arm cadence, and the 7-arg server path never growing pass
+      state.
 - **ONE TAP, TWO MEANINGS — RESOLVED BY ROUTING BOTH** (`startBestTrip`).
   **THE TWO READINGS ARE THE SAME PIXEL, IN DIFFERENT CELLS.** Screen y is
   `(col+row)*ISO_DY - level*LEVEL_PX`, so the ground drawn at a level-6 slab's

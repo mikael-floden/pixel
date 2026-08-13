@@ -7339,8 +7339,12 @@ export class WorldScene extends Phaser.Scene {
               return Math.hypot(r.x - me.fx, r.y - me.fy) > WALK_SPEED * dt * 0.35;
             }
           : undefined;
+        // `now` + allowPass arm THE PASS (the "special move"): when a body
+        // blocks the only lane the dodge stops negotiating and walks straight
+        // through, with the little crossover jink when a sliver exists —
+        // instead of the back-and-forth panic (maintainer 2026-08-13).
         const dodge = near.length
-          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading)
+          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading, this.time.now, true)
           : null;
         if (dodge) {
           ax = dodge.ax;

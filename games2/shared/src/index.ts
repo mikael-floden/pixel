@@ -2394,6 +2394,10 @@ import {
   MONSTER_DODGE_MARGIN,
   DEFAULT_MONSTER_RADIUS,
   PLAYER_BODY_RADIUS,
+  DODGE_PASS_STALL_MS,
+  DODGE_PASS_STALL_WU,
+  DODGE_PASS_MAX_MS,
+  DODGE_PASS_JINK_MS,
 } from "./monsters";
 
 /** A spawn zone resolved against a terrain grid: the cells a monster of this
@@ -2434,6 +2438,19 @@ export interface MonsterDodgeState {
    * manoeuvre: re-deciding it per frame makes the walker visibly snap between
    * two headings while passing one body. */
   wide?: boolean;
+  /** THE PASS (the "special move", maintainer 2026-08-13): the blocker being
+   * walked straight THROUGH because it blocks the only lane. Latched like the
+   * side commitment — it ends when the body's own hold-release fires (truly
+   * beside/behind), the lane closes, or DODGE_PASS_MAX_MS runs out. */
+  pass?: string;
+  passAt?: number; // clock when the pass began — times the jink and the valve
+  /** The stall anchor: where the walker was when dodge progress was last
+   * real. Standing (jittering) within DODGE_PASS_STALL_WU of it for
+   * DODGE_PASS_STALL_MS is the fallback pass trigger — the measurable form of
+   * "switching direction back and forth in panic". */
+  sx?: number;
+  sy?: number;
+  sAt?: number;
 }
 
 /** HOW CLOSE CAN A WALKER ACTUALLY GET TO THIS POINT, given who is standing
@@ -2477,6 +2494,12 @@ export function monsterDodge(
   // server's own uses), but the CLIENT passes it, and without it this function
   // will happily deflect a walker into a wall — see the side choice below.
   openHeading?: (ax: number, ay: number) => boolean,
+  // THE PASS needs a clock and an opt-in. Only the local PLAYER's dodge passes
+  // them (the client call site): monsters keep the plain negotiate-forever
+  // dodge — a cornered monster walking through its blocker would change server
+  // behaviour this feature has no business changing.
+  now?: number,
+  allowPass = false,
 ): { ax: number; ay: number; state: MonsterDodgeState } | null {
   const sax = Math.sign(ax);
   const say = Math.sign(ay);
@@ -2599,11 +2622,83 @@ export function monsterDodge(
     ? [2 * side, side, -side, 2 * -side]
     : [side, -side];
   let rot = order[0];
+  let anyOpen = !openHeading; // no instrument: assume the rotation works (pure callers)
   if (openHeading) {
     for (const cand of order) {
       const [rx, ry] = DODGE_RING[(idx + cand + 8) % 8];
-      if (openHeading(rx, ry)) { rot = cand; break; }
+      if (openHeading(rx, ry)) { rot = cand; anyOpen = true; break; }
     }
+  }
+  // ---- THE PASS — the "special move" (maintainer 2026-08-13) ---------------
+  // "The player should never feel stuck by a monster or another NPC...
+  // sometimes running around is not possible because the body blocks the ONLY
+  // path. This should not result in the player switching direction back and
+  // forth in panic — this is where the player uses its special move to run
+  // straight past the blocker", the basketball crossover. Bodies are soft
+  // (input deflection only — they are not in the collision grid), so walking
+  // through one is physically free; what has to change is the BRAIN: stop
+  // negotiating when negotiation cannot work.
+  //
+  // Two triggers, one latch:
+  //   • STRUCTURAL — no dodge candidate is terrain-open while the straight
+  //     line is: the body stands in the one walkable lane (a doorway, a
+  //     one-cell ledge path). This fires on the FIRST frame, so the panic
+  //     weave never even appears.
+  //   • STALL — the dodge has been engaged on this blocker for
+  //     DODGE_PASS_STALL_MS without DODGE_PASS_STALL_WU of real displacement
+  //     (the anchor below). Candidates that flip open/closed as both bodies
+  //     shuffle produce exactly the back-and-forth panic; the anchor measures
+  //     the OUTCOME, whatever the cause.
+  // The pass is LATCHED like the side commitment and ends through the same
+  // hold-release as any dodge (the body truly beside/behind → this function
+  // returns null), or when the lane closes mid-pass (rawOpen re-checked every
+  // frame — a pass can never walk into terrain), or at DODGE_PASS_MAX_MS (a
+  // body gluing itself to your face — combat circling has its own system);
+  // expiry resets the anchor so re-triggering needs a fresh stall.
+  //
+  // THE JINK: for the first DODGE_PASS_JINK_MS the walker takes one quick
+  // diagonal step toward whichever side is free before straightening out —
+  // the crossover feint. HEADING-RELATIVE and EITHER side ("left then right"
+  // or "right then left"; running screen-sideways it is up-then-down): the
+  // committed side is preferred, the other taken when only it is open, and
+  // in a truly sealed lane (structural trigger, nothing open) there is no
+  // feint to make — the walker goes straight through.
+  if (allowPass && now !== undefined && openHeading) {
+    const sameBlocker = state?.blocker === hit.id;
+    let sx = state?.sx;
+    let sy = state?.sy;
+    let sAt = state?.sAt;
+    if (!sameBlocker || sx === undefined || sy === undefined || sAt === undefined ||
+        Math.hypot(x - sx, y - sy) > DODGE_PASS_STALL_WU) {
+      sx = x; sy = y; sAt = now;
+    }
+    const holdingPass =
+      state?.pass === hit.id && state.passAt !== undefined && now - state.passAt < DODGE_PASS_MAX_MS;
+    if (state?.pass === hit.id && !holdingPass) { sx = x; sy = y; sAt = now; } // expired: earn a fresh stall
+    const rawOpen = openHeading(sax, say);
+    const stalled = sameBlocker && now - sAt > DODGE_PASS_STALL_MS;
+    if (rawOpen && (holdingPass || !anyOpen || stalled)) {
+      const passAt = holdingPass ? state!.passAt! : now;
+      let pax = sax;
+      let pay = say;
+      if (now - passAt < DODGE_PASS_JINK_MS) {
+        for (const cand of [side, -side]) {
+          const [rx, ry] = DODGE_RING[(idx + cand + 8) % 8];
+          if (openHeading(rx, ry)) { pax = rx; pay = ry; break; }
+        }
+      }
+      return {
+        ax: pax, ay: pay,
+        state: { side, blocker: hit.id, pass: hit.id, passAt, sx, sy, sAt },
+      };
+    }
+    const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
+    return {
+      ax: nax, ay: nay,
+      // The anchor rides along so the stall can mature across frames; the
+      // pass fields do NOT (reaching here mid-pass means the lane closed).
+      state: { side: Math.sign(rot) || side, blocker: hit.id, wide: Math.abs(rot) === 2, sx, sy, sAt },
+    };
   }
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
   return {

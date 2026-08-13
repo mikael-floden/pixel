@@ -160,6 +160,15 @@ export const MONSTER_SEP_MARGIN = 4; // wu — breathing room beyond touching ra
 export const MONSTER_SEP_RELAX_SPEED = 90; // wu/s — cap on the positional push (no teleporting)
 export const MONSTER_DODGE_MARGIN = 6; // wu — dodge clearance beyond the radii sum
 export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — MINIMUM dodge lookahead (scales with radius)
+// THE PASS — the player's "special move" past a body blocking the ONLY lane
+// (maintainer 2026-08-13: "this should not result in the player switching
+// direction back and forth in panic... run straight past the blocker", the
+// basketball crossover). Bodies are input-deflection only, so passing through
+// is physically free; these tune when the dodge gives up negotiating.
+export const DODGE_PASS_STALL_MS = 450; // dodging this long without real progress → pass
+export const DODGE_PASS_STALL_WU = 8; // "real progress" = moving this far resets the clock
+export const DODGE_PASS_MAX_MS = 1600; // a pass that outlives this re-arms the normal dodge
+export const DODGE_PASS_JINK_MS = 160; // the crossover feint: one quick diagonal step first
 
 /** One tick of positional separation for `bodies[self]` against every other
  * body. Overlap = (rA + rB + MONSTER_SEP_MARGIN) - distance; each overlapping
