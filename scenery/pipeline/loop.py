@@ -173,8 +173,10 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
     img = factory._normalize(img, size)
     rel = f"{group['id']}/{spec['id']}"
     factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")
+    from datetime import datetime, timezone
     factory.write_manifest(rel, {
         "format": "scenery-piece@2",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "id": spec["id"],
         "group": group["id"],
         "rank": group["rank"],
