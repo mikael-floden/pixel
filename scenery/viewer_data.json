@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 241,
+  "scenery_count": 242,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -727,7 +727,7 @@
       "id": "tables",
       "name": "Table",
       "quota": 40,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 104,
@@ -868,6 +868,7 @@
     "streetlights": 3,
     "stumps": 5,
     "sundials": 1,
+    "tables": 1,
     "telegraph_poles": 3,
     "toadstool_rings": 3,
     "torch_posts": 4,
@@ -5467,6 +5468,28 @@
       "status": "complete",
       "pixellab_object_id": "a3e345ff-60e1-4f4c-8256-b0a69a47c9c1",
       "sprite": "sundials/sundial_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "table_002",
+      "rel": "tables/table_002",
+      "name": "Bare scrubbed pine table 002 \u00b7 lit",
+      "category": "tables",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, bare scrubbed pine table, small, knee-high, self-emissive at night, softly radiating light: a bowl of ember-warm coals",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.73,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "973a4a42-39af-4a11-a746-939d4b56db28",
+      "sprite": "tables/table_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
