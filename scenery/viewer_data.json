@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 459,
+  "scenery_count": 460,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 105,
@@ -803,7 +803,7 @@
     "light": 1,
     "carts": 6,
     "cattail_clumps": 6,
-    "chairs_and_benches": 5,
+    "chairs_and_benches": 6,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
     "cliff_features": 5,
@@ -2971,6 +2971,28 @@
       "status": "complete",
       "pixellab_object_id": "f9b2a458-3d42-4eaf-8444-6dd227633ebc",
       "sprite": "chairs_and_benches/chair_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_008",
+      "rel": "chairs_and_benches/chair_008",
+      "name": "Carved high-back chair 008 \u00b7 lit",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_ON",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, carved high-back chair, waist-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.09,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f651649f-b699-43e5-9729-90c633135d3a",
+      "sprite": "chairs_and_benches/chair_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
