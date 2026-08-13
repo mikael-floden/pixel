@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 387,
+  "scenery_count": 388,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -251,7 +251,7 @@
       "id": "dock_pilings",
       "name": "Dock Piling",
       "quota": 32,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 36,
@@ -812,7 +812,7 @@
     "crystals": 4,
     "cup_fungi": 2,
     "cupboards_and_shelves": 4,
-    "dock_pilings": 4,
+    "dock_pilings": 5,
     "dovecotes": 2,
     "driftwood_logs": 2,
     "fading_relics": 2,
@@ -3301,6 +3301,28 @@
       "status": "complete",
       "pixellab_object_id": "314bc37c-474f-4e5d-b5a6-9d2eaaf8f299",
       "sprite": "dock_pilings/dock_piling_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dock_piling_008",
+      "rel": "dock_pilings/dock_piling_008",
+      "name": "White gull-stained pilings 008 \u00b7 lit",
+      "category": "dock_pilings",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, white gull-stained pilings, roughly six feet tall, human height, self-emissive at night, softly radiating light: rope wraps smoldering with faint ember light",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.6,
+        "world_px_height": 60,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2ad9dc61-cf65-40ba-be53-499118bfeb51",
+      "sprite": "dock_pilings/dock_piling_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
