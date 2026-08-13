@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:01:35+00:00",
+  "id": "rug_012",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 12,
+  "name": "Brown bearskin hide rug 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "brown bearskin hide rug",
+  "glow_concept": "pattern threads shimmering with woven memory-light",
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, brown bearskin hide rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: pattern threads shimmering with woven memory-light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.48,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c1fd5055-8f22-4adc-9198-2cc444d7d47d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
