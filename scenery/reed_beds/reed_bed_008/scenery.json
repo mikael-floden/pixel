@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_008",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 8,
+  "name": "Reeds with brown seed plumes 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "reeds with brown seed plumes",
+  "glow_concept": "seed plumes glowing like lit wicks",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds with brown seed plumes, large, twice human height, self-emissive at night, softly radiating light: seed plumes glowing like lit wicks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.01,
+    "world_px_height": 76,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1b5ca6bf-5bc1-429b-8725-8c584e7c7f8c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
