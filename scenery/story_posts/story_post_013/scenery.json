@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:52:10+00:00",
+  "id": "story_post_013",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 13,
+  "name": "Charred rune-burned post 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "charred rune-burned post",
+  "glow_concept": null,
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, charred rune-burned post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "story_posts/story_post_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.85,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "08c37543-8c02-4645-882d-64898739bfcd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
