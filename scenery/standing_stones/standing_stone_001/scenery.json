@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "standing_stone_001",
+  "group": "standing_stones",
+  "rank": 38,
+  "index": 1,
+  "name": "Red sandstone obelisk 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "red sandstone obelisk",
+  "glow_concept": null,
+  "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, red sandstone obelisk, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "standing_stones/standing_stone_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.16,
+    "world_px_height": 119,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b8059594-b225-46e7-84ec-8d4e6640ef95",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
