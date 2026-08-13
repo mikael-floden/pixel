@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_002",
+  "group": "ferns",
+  "rank": 42,
+  "index": 2,
+  "name": "Lady fern fountain 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lady fern fountain",
+  "glow_concept": "luminous spore dots lining the frond undersides",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, lady fern fountain, small, knee-high to an adult person, self-emissive at night, softly radiating light: luminous spore dots lining the frond undersides",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.51,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4953d2c5-c709-47f5-aee8-41d58c737400",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
