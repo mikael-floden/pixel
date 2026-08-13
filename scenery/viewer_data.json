@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 278,
+  "scenery_count": 279,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 16,
@@ -793,7 +793,7 @@
     "stone_fountains": 2,
     "stones": 16,
     "story_posts": 3,
-    "streetlights": 3,
+    "streetlights": 4,
     "stumps": 3,
     "sundials": 2,
     "telegraph_poles": 3,
@@ -5835,6 +5835,28 @@
       "status": "complete",
       "pixellab_object_id": "79e7db04-7537-4f8f-ba6a-181cbd03a34d",
       "sprite": "streetlights/streetlight_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_004",
+      "rel": "streetlights/streetlight_004",
+      "name": "Green-enameled telegraph-era lamp 004 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, green-enameled telegraph-era lamp, large, well above head height of a person, self-emissive at night, softly radiating light: cold gas-blue ring flame at the mantle",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 2.68,
+        "world_px_height": 101,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f36cf16e-d4ed-4be7-8290-df6bdd2c3d33",
+      "sprite": "streetlights/streetlight_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
