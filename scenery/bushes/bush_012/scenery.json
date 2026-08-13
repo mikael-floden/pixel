@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:34:52+00:00",
+  "id": "bush_012",
+  "group": "bushes",
+  "rank": 25,
+  "index": 12,
+  "name": "White-flowering elderberry 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white-flowering elderberry",
+  "glow_concept": "inner lantern glow silhouetting the leaves",
+  "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, white-flowering elderberry, roughly six feet tall, human height, self-emissive at night, softly radiating light: inner lantern glow silhouetting the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "bushes/bush_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "40a3bcc9-c4c5-45e8-ae7a-cf1b8478f0ab",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
