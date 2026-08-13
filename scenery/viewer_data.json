@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 521,
+  "scenery_count": 522,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -41,7 +41,7 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 6,
@@ -838,7 +838,7 @@
     "hop_poles": 2,
     "house_clutter": 7,
     "ivy_posts": 7,
-    "lantern_posts": 7,
+    "lantern_posts": 8,
     "lantern_stands": 6,
     "letter_boxes": 2,
     "market_stalls": 4,
@@ -6926,6 +6926,28 @@
       "status": "complete",
       "pixellab_object_id": "4329e6f4-ae57-4569-ac52-d85672276719",
       "sprite": "lantern_posts/lantern_post_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_post_011",
+      "rel": "lantern_posts/lantern_post_011",
+      "name": "Iron-banded dark post 011",
+      "category": "lantern_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, iron-banded dark post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.02,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d8104adb-93d5-4ad2-a37c-9c5a67b7e94f",
+      "sprite": "lantern_posts/lantern_post_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
