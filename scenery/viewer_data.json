@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 98,
+  "scenery_count": 99,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -573,7 +573,7 @@
       "id": "web_frames",
       "name": "Web Frame",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 82,
@@ -790,6 +790,7 @@
     "waterwheels": 1,
     "wayside_shrines": 1,
     "waystones": 1,
+    "web_frames": 1,
     "wells": 1,
     "windmills": 1,
     "wisteria_snags": 1
@@ -2933,6 +2934,28 @@
       "status": "complete",
       "pixellab_object_id": "ef976bbc-e6e6-4d3f-99e4-0f8fdfec8d7a",
       "sprite": "waystones/waystone_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "web_frame_001",
+      "rel": "web_frames/web_frame_001",
+      "name": "Lone standing doorframe 001",
+      "category": "web_frames",
+      "lights": "LIGHTS_OFF",
+      "description": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners, lone standing doorframe, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.69,
+        "world_px_height": 64,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "91ef57ab-7046-4e21-a4af-939734acfeea",
+      "sprite": "web_frames/web_frame_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

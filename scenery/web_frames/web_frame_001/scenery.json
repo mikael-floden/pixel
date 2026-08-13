@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "web_frame_001",
+  "group": "web_frames",
+  "rank": 81,
+  "index": 1,
+  "name": "Lone standing doorframe 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "lone standing doorframe",
+  "glow_concept": null,
+  "prompt": "a freestanding weathered wooden frame with a large spiderweb stretched across its opening, silk strands anchored into the corners, lone standing doorframe, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "web_frames/web_frame_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.69,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "91ef57ab-7046-4e21-a4af-939734acfeea",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
