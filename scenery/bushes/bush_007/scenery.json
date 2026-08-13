@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bush_007",
+  "group": "bushes",
+  "rank": 25,
+  "index": 7,
+  "name": "Lilac in purple bloom 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "lilac in purple bloom",
+  "glow_concept": null,
+  "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, lilac in purple bloom, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "bushes/bush_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cd517f05-425f-44f0-8d5a-7205e4ce2628",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
