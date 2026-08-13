@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_003",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 3,
+  "name": "Small roofed cap post 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "small roofed cap post",
+  "glow_concept": null,
+  "prompt": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, small roofed cap post, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "story_posts/story_post_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.34,
+    "world_px_height": 88,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a0d8c638-1fb8-471a-b872-d255e2f487d1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
