@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_005",
+  "group": "ferns",
+  "rank": 42,
+  "index": 5,
+  "name": "Green bracken clump 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "green bracken clump",
+  "glow_concept": null,
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, green bracken clump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.47,
+    "world_px_height": 18,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9e984b92-2644-494e-acfc-fdda5ad66e0e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

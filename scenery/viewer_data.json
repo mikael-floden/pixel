@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 353,
+  "scenery_count": 354,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -300,7 +300,7 @@
       "id": "ferns",
       "name": "Fern",
       "quota": 18,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 43,
@@ -743,7 +743,7 @@
     "fading_relics": 2,
     "fallen_logs": 5,
     "fences": 5,
-    "ferns": 4,
+    "ferns": 5,
     "fish_drying_racks": 4,
     "flame_niches": 5,
     "flower_garlands": 2,
@@ -3244,6 +3244,28 @@
       "status": "complete",
       "pixellab_object_id": "29f4f094-8069-4d99-a713-59b0d884ab10",
       "sprite": "ferns/fern_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fern_005",
+      "rel": "ferns/fern_005",
+      "name": "Green bracken clump 005",
+      "category": "ferns",
+      "lights": "LIGHTS_OFF",
+      "description": "a bushy clump of arching ferns rising from a shaggy root crown, green bracken clump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.47,
+        "world_px_height": 18,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9e984b92-2644-494e-acfc-fdda5ad66e0e",
+      "sprite": "ferns/fern_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
