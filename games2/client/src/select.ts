@@ -43,7 +43,7 @@ export const TAGLINES = [
   "SOME PATHS DO NOT RETURN.",
   "THE NIGHT KNOWS YOUR NAME.",
   "NO MAP SHOWS EVERYTHING.",
-  "WHERE OLD ROADS STILL EXISTS.",
+  "WHERE OLD ROADS STILL EXIST.",
 ];
 
 /**
@@ -62,7 +62,11 @@ const PLATE = {
   // rows and leave this much clear, well inside the gold rule's 349..700.
   clearL: 379,
   clearR: 671,
-  air: 4, // never let a letter kiss the gold
+  // The margin the ARTWORK itself kept: the baked line was 274px in this
+  // 292px gap, i.e. 9px of air each side. Matching it is what stops a long
+  // line reading cramped even when it technically clears the gold
+  // (maintainer: "I like when there is some spacing").
+  air: 9,
 };
 
 /** Widest the line may draw, in art pixels. */
