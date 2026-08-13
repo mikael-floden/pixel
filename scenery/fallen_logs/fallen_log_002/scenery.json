@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fallen_log_002",
+  "group": "fallen_logs",
+  "rank": 20,
+  "index": 2,
+  "name": "Log with honey fungus clumps 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "log with honey fungus clumps",
+  "glow_concept": "luminous moss carpeting the upper side",
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, log with honey fungus clumps, waist-high to an adult person, self-emissive at night, softly radiating light: luminous moss carpeting the upper side",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.82,
+    "world_px_height": 31,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9a054548-8a90-4147-83e7-102e7be275c4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
