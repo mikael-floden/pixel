@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beached_rowboat_006",
+  "group": "beached_rowboats",
+  "rank": 84,
+  "index": 6,
+  "name": "Freshly tarred black hull 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "freshly tarred black hull",
+  "glow_concept": "a storm lantern glowing at the prow",
+  "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, freshly tarred black hull, waist-high, self-emissive at night, softly radiating light: a storm lantern glowing at the prow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "beached_rowboats/beached_rowboat_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.01,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bd5dc96a-7841-42aa-8528-4f3dc52fa6c9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
