@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:50:19+00:00",
+  "id": "bell_post_013",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 13,
+  "name": "Weathered oak post, green patina bell 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "weathered oak post, green patina bell",
+  "glow_concept": null,
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, weathered oak post, green patina bell, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_013/sprite.webp",
+  "placement": {
+    "world_height_m": 2.69,
+    "world_px_height": 101,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5acb72e8-eb49-48e0-8ab5-f8eaadb87944",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
