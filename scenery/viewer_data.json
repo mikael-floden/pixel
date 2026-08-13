@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 295,
+  "scenery_count": 296,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 50,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 102,
@@ -808,7 +808,7 @@
     "chimney_stacks": 2,
     "cliff_features": 2,
     "cliff_fragments": 2,
-    "cliff_vines": 1,
+    "cliff_vines": 2,
     "crystals": 2,
     "cup_fungi": 2,
     "cupboards_and_shelves": 1,
@@ -2378,6 +2378,28 @@
       "status": "complete",
       "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
       "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_001",
+      "rel": "cliff_vines/cliff_vine_001",
+      "name": "Frost-silvered winter vine fall 001",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, frost-silvered winter vine fall, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 4.57,
+        "world_px_height": 172,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "13e1b8bb-1721-458e-958b-a3fd93fd593f",
+      "sprite": "cliff_vines/cliff_vine_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
