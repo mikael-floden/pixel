@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_001",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 1,
+  "name": "Bird nest on crossarm 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "bird nest on crossarm",
+  "glow_concept": null,
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, bird nest on crossarm, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_001/sprite.webp",
+  "placement": {
+    "world_height_m": 4.84,
+    "world_px_height": 182,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fb0a5e97-d3a5-4b73-8c83-6782cbf80726",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
