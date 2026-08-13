@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_008",
+  "group": "signposts",
+  "rank": 8,
+  "index": 8,
+  "name": "Faded unreadable signpost 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "faded unreadable signpost",
+  "glow_concept": "arrow edges limned with firefly light",
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, faded unreadable signpost, large, twice human height, self-emissive at night, softly radiating light: arrow edges limned with firefly light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.1,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4d79ecbf-73bb-44d2-a954-ffab16564f4b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
