@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:00:16+00:00",
+  "id": "nest_post_008",
+  "group": "nest_posts",
+  "rank": 80,
+  "index": 8,
+  "name": "Leaning crooked post nest 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "leaning crooked post nest",
+  "glow_concept": "glowworm strands dangling from the nest rim",
+  "prompt": "a weathered wooden post with a woven twig bird nest built on top, straw and moss sticking out of the rounded nest cup, leaning crooked post nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowworm strands dangling from the nest rim",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "nest_posts/nest_post_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.79,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "88ab291d-c866-4dc3-93b4-0b376f95dfe8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
