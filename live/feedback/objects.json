@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-13T21:00:39.237Z",
+  "updated_at": "2026-08-13T21:26:29.824Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -2001,8 +2001,9 @@
       "updated_at": "2026-08-13T20:54:05.595Z"
     },
     "scenery/dovecotes/dovecote_004": {
-      "status": "approved",
-      "updated_at": "2026-08-13T20:54:08.998Z"
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:25:07.334Z",
+      "note": "The door is to small for a human"
     },
     "scenery/dovecotes/dovecote_005": {
       "note": "Broken pixelart",
@@ -2064,7 +2065,8 @@
     },
     "scenery/house_clutter/clutter_001": {
       "status": "approved",
-      "updated_at": "2026-08-13T20:55:23.091Z"
+      "updated_at": "2026-08-13T21:25:29.135Z",
+      "rating": 5
     },
     "scenery/house_clutter/clutter_002": {
       "status": "approved",
@@ -2228,6 +2230,67 @@
     "scenery/woodpiles/woodpile_004": {
       "status": "rejected",
       "updated_at": "2026-08-13T20:59:32.513Z"
+    },
+    "scenery/anvils/anvil_004": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:22:38.046Z"
+    },
+    "scenery/bell_posts/bell_post_008": {
+      "note": "Omg, the pixel art is so so broken on this one 🤣. Your script didn't catch this usgly shit?",
+      "updated_at": "2026-08-13T21:23:59.582Z",
+      "status": "rejected"
+    },
+    "scenery/briar_thickets/briar_thicket_010": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:24:04.114Z"
+    },
+    "scenery/chairs_and_benches/chair_006": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:24:10.585Z"
+    },
+    "scenery/cliff_features/cliff_feature_004": {
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:24:16.747Z"
+    },
+    "scenery/cliff_vines/cliff_vine_004": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:24:23.910Z"
+    },
+    "scenery/crystals/crystal_008": {
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:24:35.920Z",
+      "note": "Broken pixel art"
+    },
+    "scenery/cupboards_and_shelves/cupboard_004": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:24:43.976Z"
+    },
+    "scenery/haystacks/haystack_008": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:25:15.266Z"
+    },
+    "scenery/hedges/hedge_010": {
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:25:23.582Z"
+    },
+    "scenery/scarecrows/scarecrow_008": {
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:25:50.234Z",
+      "note": "Broken pixel art"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_008": {
+      "status": "rejected",
+      "updated_at": "2026-08-13T21:26:00.980Z",
+      "note": "Broken pixelart"
+    },
+    "scenery/story_posts/story_post_010": {
+      "status": "approved",
+      "updated_at": "2026-08-13T21:26:09.275Z"
+    },
+    "scenery/tables/table_006": {
+      "note": "Broken pixelart",
+      "updated_at": "2026-08-13T21:26:19.675Z",
+      "status": "rejected"
     }
   }
 }
