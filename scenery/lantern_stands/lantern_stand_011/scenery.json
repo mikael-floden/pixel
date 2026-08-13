@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:54:43+00:00",
+  "id": "lantern_stand_011",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 11,
+  "name": "Gallows-arm timber stand 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "gallows-arm timber stand",
+  "glow_concept": null,
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, gallows-arm timber stand, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.21,
+    "world_px_height": 83,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "37a376b1-02bb-4c56-82f6-3b6aeaa031aa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
