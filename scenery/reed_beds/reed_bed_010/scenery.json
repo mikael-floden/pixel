@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:20:37+00:00",
+  "id": "reed_bed_010",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 10,
+  "name": "Thick bulrush clump 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "thick bulrush clump",
+  "glow_concept": "foxfire glow on rotted stems at the waterline",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, thick bulrush clump, roughly six feet tall, human height, self-emissive at night, softly radiating light: foxfire glow on rotted stems at the waterline",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "reed_beds/reed_bed_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.89,
+    "world_px_height": 71,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
