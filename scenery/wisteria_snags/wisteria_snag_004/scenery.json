@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wisteria_snag_004",
+  "group": "wisteria_snags",
+  "rank": 78,
+  "index": 4,
+  "name": "White wisteria cascades 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white wisteria cascades",
+  "glow_concept": "seed pods cracked open and leaking light",
+  "prompt": "a dead leafless tree draped in woody wisteria vines with long hanging clusters of flowers, white wisteria cascades, tall, about three times human height, self-emissive at night, softly radiating light: seed pods cracked open and leaking light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "wisteria_snags/wisteria_snag_004/sprite.webp",
+  "placement": {
+    "world_height_m": 3.01,
+    "world_px_height": 113,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7786fb91-7793-4a42-8338-3092ede5e04f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

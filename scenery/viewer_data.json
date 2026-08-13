@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 276,
+  "scenery_count": 277,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -552,7 +552,7 @@
       "id": "wisteria_snags",
       "name": "Wisteria Snag",
       "quota": 2,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 79,
@@ -891,7 +891,7 @@
     "web_frames": 1,
     "wells": 2,
     "windmills": 2,
-    "wisteria_snags": 1,
+    "wisteria_snags": 2,
     "woodpiles": 1
   },
   "scenery": [
@@ -6993,6 +6993,28 @@
       "status": "complete",
       "pixellab_object_id": "1a894063-b8ae-458b-b7d8-867e4f2c7b3f",
       "sprite": "wisteria_snags/wisteria_snag_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wisteria_snag_004",
+      "rel": "wisteria_snags/wisteria_snag_004",
+      "name": "White wisteria cascades 004 \u00b7 lit",
+      "category": "wisteria_snags",
+      "lights": "LIGHTS_ON",
+      "description": "a dead leafless tree draped in woody wisteria vines with long hanging clusters of flowers, white wisteria cascades, tall, about three times human height, self-emissive at night, softly radiating light: seed pods cracked open and leaking light",
+      "view": "low top-down",
+      "size": 160,
+      "placement": {
+        "world_height_m": 3.01,
+        "world_px_height": 113,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7786fb91-7793-4a42-8338-3092ede5e04f",
+      "sprite": "wisteria_snags/wisteria_snag_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
