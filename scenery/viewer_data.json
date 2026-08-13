@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 40,
+  "scenery_count": 41,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 24,
@@ -727,6 +727,7 @@
     "offering_tables": 1,
     "orchard_trees": 1,
     "signposts": 1,
+    "soulstone_outcrops": 1,
     "stones": 16,
     "story_posts": 1,
     "streetlights": 1,
@@ -1159,6 +1160,28 @@
       "status": "complete",
       "pixellab_object_id": "5d5bd852-cb0c-4c2e-b2de-373d257d64ce",
       "sprite": "signposts/signpost_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_001",
+      "rel": "soulstone_outcrops/soulstone_outcrop_001",
+      "name": "Single tall quartz shard 001",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_OFF",
+      "description": "a smooth semi-glassy mineral outcrop breaking out of the turf, unnaturally regular, with a gem-like sheen on its faces, single tall quartz shard, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.44,
+        "world_px_height": 54,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1aca6152-a41d-4b7f-a078-af055ff12a6f",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
