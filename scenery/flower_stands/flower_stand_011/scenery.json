@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:55:16+00:00",
+  "id": "flower_stand_011",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 11,
+  "name": "Harebells on thin stems 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "harebells on thin stems",
+  "glow_concept": null,
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, harebells on thin stems, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.14,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "eb296321-24d9-4f07-8310-94c61a3f2bc3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
