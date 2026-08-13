@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_006",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 6,
+  "name": "Reeds mixed with yellow iris 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "reeds mixed with yellow iris",
+  "glow_concept": "a will-o-wisp hovering inside the clump",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds mixed with yellow iris, about as tall as an adult person, self-emissive at night, softly radiating light: a will-o-wisp hovering inside the clump",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.73,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2fdfad09-4e8a-4162-bfc3-cf7885abb7da",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
