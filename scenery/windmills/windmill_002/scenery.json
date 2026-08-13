@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "windmill_002",
+  "group": "windmills",
+  "rank": 47,
+  "index": 2,
+  "name": "Snow-dusted winter mill 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-dusted winter mill",
+  "glow_concept": "glowing grain dust drifting from the loading door",
+  "prompt": "a small weathered wooden field windmill with four latticed sails and a shingled cap, its low hatch boarded shut, snow-dusted winter mill, tall, about two people high, self-emissive at night, softly radiating light: glowing grain dust drifting from the loading door",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_002/sprite.webp",
+  "placement": {
+    "world_height_m": 4.01,
+    "world_px_height": 151,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c2f5aa2c-b8ac-4b04-9293-29d20c85135a",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
