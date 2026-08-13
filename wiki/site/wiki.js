@@ -3538,20 +3538,58 @@ function route() {
   else view = viewHome();
   $("#content").replaceChildren(view);
   renderNav();
-  setMenu(false);
+  closeMenuForNav();
   // A story card must always be able to reach the top of the viewport.
   fitStoryTail();
 }
 
 // Open/close the mobile nav; keep the scrim and the hosting game drawer
 // (when embedded — same-origin iframe) in sync.
-function setMenu(open) {
+//
+// THE MENU OWNS ONE HISTORY ENTRY, ARMED HERE IN THE WIKI'S OWN WINDOW —
+// never in the hosting drawer. Same-origin frames share ONE joint session
+// history, and round one had the game drawer push/pop an entry for this
+// menu: the moment a nav link stacked its new page on top, the host's pop
+// removed the NAVIGATION instead of the menu — the maintainer tapped
+// Overview, watched it highlight, and stayed on the same page (2026-08-14,
+// with screenshots). Only the window that owns the top entry can pop it
+// safely, and while the menu is open that window is this one.
+//
+// So: opening the menu pushes {wikiMenu}; the phone's back gesture pops it
+// and we just un-draw the menu; the ✕/scrim/host close it by handing the
+// entry back; and a MENU LINK navigates with location.replace while armed,
+// so the destination REPLACES the menu's entry — back from the new page
+// returns to the page the menu was opened over, and nothing can undo the
+// click. Standalone tabs get the same behaviour free.
+let menuArmed = false;
+function applyMenu(open) {
   $("#sidebar").classList.toggle("open", open);
   $("#menu-scrim").classList.toggle("on", open);
   if (window.parent !== window) {
     window.parent.postMessage({ type: "wiki:menu", open }, location.origin);
   }
 }
+function setMenu(open) {
+  const was = $("#sidebar").classList.contains("open");
+  applyMenu(open);
+  if (open && !was && !menuArmed) {
+    menuArmed = true;
+    history.pushState({ wikiMenu: 1 }, "");
+  } else if (!open && was && menuArmed) {
+    menuArmed = false;
+    history.back();          // hand the entry back; the popstate below sees armed=false and stays out
+  }
+}
+// A navigation that was NOT a menu link (typed hash, code) while the menu is
+// open: close the menu visually but leave its now-buried entry alone —
+// popping blind is exactly the round-one bug.
+function closeMenuForNav() {
+  menuArmed = false;
+  applyMenu(false);
+}
+window.addEventListener("popstate", () => {
+  if (menuArmed) { menuArmed = false; applyMenu(false); }   // back gesture: menu first
+});
 
 /* ----------------------------------------------------------------- boot */
 async function fetchJson(url, fallback = null) {
@@ -3613,6 +3651,15 @@ function initChrome() {
   // closes the menu first; see wikipanel.ts).
   $("#menu-btn").addEventListener("click", () => setMenu(!$("#sidebar").classList.contains("open")));
   $("#menu-scrim").addEventListener("click", () => setMenu(false));
+  // Menu links replace the menu's own history entry (see setMenu) — this is
+  // the click that used to be silently undone.
+  $("#sidebar").addEventListener("click", (e) => {
+    const a = e.target?.closest?.("a[href]");
+    if (!a || !menuArmed) return;
+    e.preventDefault();
+    closeMenuForNav();
+    location.replace(a.getAttribute("href"));
+  });
   window.addEventListener("message", (e) => {
     if (e.origin === location.origin && e.data?.type === "wiki:closeMenu") setMenu(false);
   });

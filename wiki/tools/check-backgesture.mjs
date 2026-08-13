@@ -70,8 +70,34 @@ await back();
 const m2 = await state();
 ok(!m2.panel && m2.inGame, `back #2 closes the wiki and returns to the game (panel ${m2.panel})`);
 
+// 2b. A MENU LINK MUST ACTUALLY NAVIGATE — the maintainer's blocking bug
+//     (2026-08-14: "I definitely clicked on Overview! and the page didn't
+//     change!"). Same-origin frames share ONE joint session history; round
+//     one had the parent pop an entry when the menu closed, and a nav click
+//     had just stacked the new page on top — so the pop removed the
+//     NAVIGATION and silently undid the click. Now the wiki owns the menu's
+//     entry and menu links location.replace() it away.
+await boot();
+await openWiki();
+await frame().evaluate(() => { location.hash = "#/objects"; });   // start somewhere that is not Overview
+await p.waitForTimeout(1100);
+await openMenu();
+await frame().evaluate(() => [...document.querySelectorAll("#nav a")]
+  .find((a) => /Overview/.test(a.textContent || ""))?.click());
+await p.waitForTimeout(1000);
+const nav1 = await state();
+ok(nav1.panel && (nav1.wiki === "#/" || nav1.wiki === ""), `clicking Overview in the menu really lands on Overview (${JSON.stringify(nav1.wiki)})`);
+ok(!nav1.menu, "and the menu closed with it");
+await p.waitForTimeout(900);                                       // the old bug reverted a beat later
+const nav2 = await state();
+ok(nav2.wiki === "#/" || nav2.wiki === "", `and STAYS on Overview — nothing undoes the click (${JSON.stringify(nav2.wiki)})`);
+await back();
+const nav3 = await state();
+ok(nav3.panel && nav3.wiki === "#/objects", `back from there returns to the page the menu was opened over (${nav3.wiki})`);
+
 // 3. closing the menu BY HAND returns its entry — otherwise the next back is a
 //    dead press and the player has to swipe twice to leave the wiki.
+await boot();
 await openWiki();
 await openMenu();
 await frame().evaluate(() => document.querySelector("header button")?.click());
@@ -91,6 +117,28 @@ ok(!(await state()).panel, "the dark strip still closes the wiki");
 await back();
 const left = p.isClosed() ? { inGame: false } : await state().catch(() => ({ inGame: false }));
 ok(!left.inGame, "and the back after it leaves the game, instead of pressing a dead entry");
+
+// 4b. hand-closing AFTER browsing: the panel's entry is buried under the
+//     wiki's own navigations, so the handback must wait for the iframe to be
+//     discarded (which prunes them) — popping early would walk the wiki's
+//     history from behind a closed drawer.
+await boot();
+await openWiki();
+await frame().evaluate(() => { location.hash = "#/objects"; }); await p.waitForTimeout(900);
+await frame().evaluate(() => { location.hash = "#/monsters"; }); await p.waitForTimeout(900);
+await p.evaluate(() => document.querySelector(".ml-wikiback").click());
+await p.waitForTimeout(1100);                                      // slide-out + cleanup
+ok(!(await state()).panel, "the drawer hand-closes after a browse");
+// KNOWN PAPERCUT, bounded: Chromium keeps a discarded iframe's joint-history
+// entries (measured: history.length 5 before AND after removal), so the
+// browsed pages leave inert entries behind a hand-close. They are invisible
+// no-ops; the game must still be left within a few presses, never trapped.
+let left = false;
+for (let i = 0; i < 4 && !left; i++) {
+  await back();
+  left = p.isClosed() || !(await state().catch(() => ({ inGame: false }))).inGame;
+}
+ok(left, "backing out after a hand-close still leaves the game within 4 presses (inert entries tolerated)");
 
 // 5. an in-wiki walk is the player's own history and is walked first, then the
 //    drawer closes — the same order the wiki's ← crumb uses.

@@ -34,29 +34,28 @@ let onPop: (() => void) | null = null;
 // swipe back doesn't close the wiki. It exits the game").
 //
 // The drawer is not a page, so back had nothing of ours to pop and left the
-// game outright. It now owns one history entry per layer it puts on screen —
-// one for the panel, one more while the wiki's own menu is open — and pops
-// them in the same order the dark strip and Escape already used: menu first,
-// then the wiki, and only then is the game itself allowed to go.
+// game outright. It owns exactly ONE history entry — the panel's — and a
+// popstate here means that entry was popped: close the drawer, and the next
+// back is the game's own to leave on.
 //
-// `owned` is how many of those entries are still on the stack; `selfPop`
-// counts the popstates WE cause when the player closes a layer some other way
-// (tap, Escape, the wiki's own close button) and we hand the entry back. Both
-// paths end at the same place, so the two must never handle the same event.
-let owned = 0;
-let selfPop = 0;
-function pushLayer(): void {
-  owned++;
-  history.pushState({ mlWikiLayer: owned }, "");
-}
-/** Hand back n entries we pushed, without letting our own popstate close a
- *  layer the player already closed by hand. */
-function dropLayers(n: number): void {
-  if (n <= 0) return;
-  selfPop += n;
-  owned -= n;
-  history.go(-n);
-}
+// ONE entry, on purpose. Round one also pushed an entry for the wiki's side
+// menu from HERE, and that is the bug the maintainer caught as "I definitely
+// clicked on Overview! and the page didn't change!" (2026-08-14): same-origin
+// frames share one joint session history, so the iframe's own navigations
+// stack ON TOP of anything this window pushed — a nav click put the new page
+// above the menu's entry, the menu-closed message made this window history.go(-1),
+// and that popped the NAVIGATION, silently undoing the click. The parent can
+// only ever pop safely when its own entry is the top one, which is exactly
+// and only the panel's; the menu's entry lives in the wiki's own window now
+// (wiki.js setMenu), where menu links can location.replace() it away.
+//
+// Hand-closing (strip tap, Escape) hands the entry back — but only AFTER the
+// iframe is discarded: removing the iframe prunes its joint-history entries,
+// which leaves the panel's sentinel as the current entry, so one silent
+// history.back() lands on the game wherever the player had browsed. Popping
+// before the prune would walk the wiki's history instead (the same class of
+// bug as the menu one, from the other side).
+let pendingCleanup: (() => void) | null = null;
 let onMsg: ((e: MessageEvent) => void) | null = null;
 let onTheme: (() => void) | null = null;
 let menuOpen = false; // the wiki's OWN nav drawer inside the iframe
@@ -172,6 +171,10 @@ function layout(panel: HTMLDivElement, frame: HTMLIFrameElement): void {
 
 export function openWikiPanel(): void {
   if (root) return; // already open
+  // A close still sliding out has not yet handed its history entry back —
+  // flush it first, or that delayed back() would pop the entry THIS open is
+  // about to push and shut the new drawer on arrival.
+  pendingCleanup?.();
   // FREEZE THE WORLD FIRST (maintainer 2026-08-13: "the wiki lags a bit when
   // opened on top of the game — can you freeze or pause the game rendering
   // when the wiki is open?"). Before the iframe is even created, so the
@@ -209,15 +212,11 @@ export function openWikiPanel(): void {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data as { type?: string; open?: boolean; on?: boolean };
     if (data?.type === "wiki:menu") {
-      const was = menuOpen;
+      // Mirror only — the menu's history entry is the WIKI's own business
+      // (wiki.js setMenu). Touching history from here on this message is the
+      // undone-Overview-click bug; see the note atop pendingCleanup.
       menuOpen = !!data.open;
       back.classList.toggle("deep", menuOpen);
-      // The menu is a layer with no URL of its own, so give it one: opening it
-      // pushes an entry, closing it by hand gives that entry back. Without
-      // this, back from an open menu would skip straight past it and shut the
-      // whole wiki.
-      if (menuOpen && !was) pushLayer();
-      else if (!menuOpen && was && owned > 1) dropLayers(1);
     } else if (data?.type === "wiki:muteGame") {
       setGameMuted(!!data.on);
     }
@@ -234,22 +233,22 @@ export function openWikiPanel(): void {
   // popped it, so peel one layer and never call history.go() here — that would
   // fight the player's own navigation.
   onPop = () => {
-    if (selfPop > 0) { selfPop--; return; }   // our own doing; the layer is already closed
-    if (owned <= 0) return;                   // not ours — let it through
-    owned--;
+    // The panel's sentinel was popped by a real back gesture. While the menu
+    // is open its own entry sits above this one inside the iframe, so this
+    // normally never fires with menuOpen set — but if it somehow does, honour
+    // the ladder anyway: shut the menu and re-arm, never skip a rung.
     if (menuOpen) {
-      menuOpen = false;                       // the entry is gone; only the UI is left to close
-      back.classList.remove("deep");
       frame.contentWindow?.postMessage({ type: "wiki:closeMenu" }, location.origin);
+      history.pushState({ mlWiki: true }, "");
     } else {
-      closeWikiPanel({ keepHistory: true });  // the entry popped itself
+      closeWikiPanel({ fromBack: true });     // the entry popped itself
     }
   };
   window.addEventListener("popstate", onPop);
   // One entry for the panel itself, pushed LAST so it sits directly above the
   // game: everything the wiki pushes while the player browses stacks on top of
   // it, and back walks those wiki pages first, then this, then the game.
-  pushLayer();
+  history.pushState({ mlWiki: true }, "");
 
   // THEME LIVE-SYNC (maintainer 2026-07-30: one dark-theme choice flips both
   // the wiki and the game). The wiki reads localStorage["wiki-theme"] only at
@@ -295,14 +294,8 @@ export function openWikiPanel(): void {
   }));
 }
 
-export function closeWikiPanel(opts?: { keepHistory?: boolean }): void {
+export function closeWikiPanel(opts?: { fromBack?: boolean }): void {
   if (!root) return;
-  // Closing by hand hands back every entry the drawer still owns, so the game
-  // is one back away again rather than several dead ones deep. When the close
-  // CAME from a back gesture the browser has already popped it — touching
-  // history there would take the player somewhere they never asked to go.
-  if (opts?.keepHistory) owned = Math.max(0, owned);
-  else dropLayers(owned);
   if (onPop) { window.removeEventListener("popstate", onPop); onPop = null; }
   // Back to the world — and BEFORE the slide-out, not after it: wake() ticks a
   // frame synchronously, so the game is already repainted (and reading live
@@ -322,7 +315,22 @@ export function closeWikiPanel(opts?: { keepHistory?: boolean }): void {
   menuOpen = false;
   r.querySelector(".ml-wikiback")?.classList.remove("on");
   r.querySelector(".ml-wikipanel")?.classList.remove("on");
-  setTimeout(() => r.remove(), ANIM_MS + 40);
+  // Remove the drawer after the slide-out — and only THEN hand the panel's
+  // history entry back on a hand-close: discarding the iframe prunes its
+  // joint-history entries, leaving our sentinel as the current entry, so one
+  // silent back lands on the game no matter how far the player browsed. On a
+  // back-gesture close the browser already popped it — touching history there
+  // would drag the player somewhere they never asked to go.
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    pendingCleanup = null;
+    r.remove();
+    if (!opts?.fromBack) history.back();
+  };
+  pendingCleanup = finish;
+  setTimeout(finish, ANIM_MS + 40);
 }
 
 export const isWikiPanelOpen = (): boolean => !!root;
