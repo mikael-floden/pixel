@@ -1483,13 +1483,20 @@ try {
     const mid = await page.evaluate(() => window.__leaveProbe);
     if (!mid)
       fail("never caught a frame that was outdoors with the ambient fade still running — the leave probe cannot judge the delay");
-    const midSealed = mid.mons.filter((m) => m.sealed && m.cover > 0.5);
+    // SEALED only — deliberately NOT `cover > 0.5` any more. The exit fade
+    // (2026-08-13) holds the CUT world until the mix lands on 0: on this
+    // mid-fade frame the returning rock is a debris layer, not occluder
+    // geometry, so occluder cover CANNOT exist here and requiring it made
+    // this a guaranteed no-measurement. The stronger statement replaces it:
+    // with no cover computable, ANY ring on a sealed body at this frame is
+    // the wall-hack leaking through the fade mask.
+    const midSealed = mid.mons.filter((m) => m.sealed);
     // NON-VACUITY, and it bit: the first version of this check reported
     // "none of the 0 sealed monsters is outlined" and PASSED against code that
     // still had the delay. The cave's population wanders, so the latched frame
-    // may simply contain nobody buried — that is a no-measurement, not a pass.
+    // may simply contain nobody sealed — that is a no-measurement, not a pass.
     if (!midSealed.length)
-      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed, buried monster ` +
+      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed monster ` +
         `out of ${mid.mons.length} nearby — nothing was measured, retry`);
     const midLeak = midSealed.filter((m) => m.ring > 0);
     if (midLeak.length)

@@ -2696,11 +2696,38 @@ side collision just like monsters").
     Room-to-room flips inside one building rebuild the debris for the new
     room; a direct A→B crossing mid-fade keeps ≤1s of stale fade art —
     accepted. Probe: `__ml.indoorFade()` (debris count, alpha, exiting).
-    Gate: verify-indoorscope sections 4-5 — a DISTINCT intermediate frame
-    exists both ways (mid ≠ either endpoint by >8 luma at the anchor; NOT a
-    luminance corridor — the debris composites over a background whose own
-    light is still easing, so the anchor legitimately dips non-monotonically),
-    debris present at mid-range alpha, gone at settle.
+    TWO REFINEMENTS the maintainer asked for the same day, with screenshots:
+    - **THE DEBRIS RUNS AT 3× THE LIGHT'S ROLL, both directions**
+      (`debrisAlpha()`: entry gone by mix ⅓; exit COMPLETE by the roll's
+      first third, then held at 1 until the mix-0 swap; he asked for 2×,
+      then "twice as fast is not enough, 3×"). The light keeps its full
+      0.35s roll — only the geometry crossfade is quick. At 60fps that is
+      ~7 blended frames; the starved headless harness renders ~1-2, which is
+      why the gate needs the pin below.
+    - **THE EXIT UNCLAMPS THE RESOLVE AT THE FLIP, NOT AT THE END** ("the
+      top of the roof completely changes color" at the fade's end). The end
+      swap was only art-invisible: with the resolve still clamped to the cut
+      world, the returning roof debris was LIT as the shadowed interior
+      behind it, and the mix-0 repaint traded a dark slab for a sunlit one.
+      `night.indoor = indoorInside && mask` now — the whole exit fade is lit
+      as the real outdoor world (measured: late-fade roof 53.1 vs settled
+      53.2 over a 78-luma transition span), and the accepted cost is the
+      mirror image on the half you are leaving: for a fraction of a second
+      the still-visible interior is tinted as the surfaces returning above
+      it, under a debris layer already covering it. Entry keeps the clamp
+      from its own flip (the room lights as a room immediately). Section 8
+      of verify-indoor adapted: on the mid-exit frame occluder COVER cannot
+      exist (the rock is a fade layer until mix 0), so its non-vacuity is
+      "≥1 sealed monster" and the assertion is "no ring AT ALL".
+    - `__ml.indoorMixPin(v?)` parks the blend anywhere in (0,1) — the
+      instrument that lets the starved harness photograph the 3× crossfade
+      mid-blend deterministically (pin BEFORE the teleport, shoot at
+      leisure, release; same probe family as timeOfDay's phaseT override).
+    Gate: verify-indoorscope sections 4-5 — the PINNED mid frame is a real
+    rendered blend distinct from both endpoints (>8 luma), debris gone at
+    settle, and the late-exit frame (pinned mix 0.02: debris complete, light
+    ~settled) matches the settled outdoor roof within a tight drift bar —
+    the colour-snap regression test.
   - **THE DIAL IS A MINIMUM — WALLS RISE PER CELL UNTIL THEY'D COVER A FLOOR**
     (maintainer 2026-08-13: "make the current wall height a minimum setting...
     draw the walls all the way to the roof on sides where it's possible; some

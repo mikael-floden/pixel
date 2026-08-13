@@ -247,60 +247,103 @@ try {
     if (!v) fail(`house_a roof point off screen for ${name} (${Math.round(p.x)},${Math.round(p.y)})`);
     return v.med;
   };
+  // THE PIN IS THE INSTRUMENT. At 3× the debris crosses its whole alpha range
+  // inside one or two STARVED harness frames (a single ~180ms delta carries
+  // the mix past ⅓ — measured; a real 60fps device renders ~8 blended
+  // frames), so no wall-clock sampling can photograph the blend here. The
+  // pin parks the mix mid-roll BEFORE the trigger lands, the shot is taken at
+  // leisure on a stable frame, and the release lets the roll complete.
   const tryFade = async (label, goIn) => {
-    // settle at the far state first; the camera follows the player (a teleport
-    // snaps it), and every sample re-projects against the live camera.
     await page.evaluate(() => window.__ml.lookAt());
     await goTo(...(goIn ? OUT_SPOT : [aC + 0.5, aR + 0.5]));
     if (!(await settle(!goIn, 45000))) return null;
     await page.waitForTimeout(300);
     const before = await roofMed(`${label}-before`);
-    await goTo(...(goIn ? [aC + 0.5, aR + 0.5] : OUT_SPOT));
-    // catch a genuinely intermediate moment: debris up, alpha mid-range
-    const mid = await page.waitForFunction(() => {
-      const f = window.__ml.indoorFade();
-      return f.debris > 0 && f.alpha > 0.12 && f.alpha < 0.88 ? f : false;
-    }, undefined, { timeout: 20000, polling: 40 }).then((h) => h.jsonValue()).catch(() => null);
-    if (!mid) return null;
-    const midP = await roofPoint(fadeCell[0], fadeCell[1], A.d.level);
-    const midShot = await shoot(`${label}-mid`);
-    const midF = await page.evaluate(() => window.__ml.indoorFade());
+    // Pin at a MID blend, then trigger in the same evaluate: entry alpha at
+    // mix .15 = .55; exit alpha at mix .85 = .45 — both genuinely blended.
+    await page.evaluate(([tc, tr, pin]) => {
+      window.__ml.indoorMixPin(pin);
+      const m = window.__ml.me();
+      if (m?.dead) window.__ml.roomSend("respawn", {});
+      window.__ml.teleport(tc, tr);
+    }, [...(goIn ? [aC + 0.5, aR + 0.5] : OUT_SPOT), goIn ? 0.15 : 0.85]);
+    const flipped = await page.waitForFunction(
+      (w) => window.__ml.indoor().indoor === w && window.__ml.indoorFade().debris > 0,
+      goIn,
+      { timeout: 20000, polling: 100 },
+    ).then(() => true).catch(() => false);
+    if (!flipped) {
+      await page.evaluate(() => window.__ml.indoorMixPin(null));
+      return null;
+    }
+    await page.waitForTimeout(700); // a couple of stable pinned frames
+    const mid = await page.evaluate(() => window.__ml.indoorFade());
+    const midVal = await roofMed(`${label}-mid`);
+    // Exit only: re-pin deep into the roll's tail — debris complete, light
+    // ~settled — the frame the maintainer's colour snap lived on.
+    let late = null;
+    if (!goIn) {
+      await page.evaluate(() => window.__ml.indoorMixPin(0.02));
+      await page.waitForTimeout(700);
+      late = await roofMed(`${label}-late`);
+    }
+    await page.evaluate(() => window.__ml.indoorMixPin(null));
     if (!(await settle(goIn, 45000))) return null;
     await page.waitForTimeout(400);
     const after = await roofMed(`${label}-after`);
     const fadeEnd = await page.evaluate(() => window.__ml.indoorFade());
-    const midPatch = patch(midShot, midP.x, midP.y, 4);
-    if (!midPatch) return null;
-    return { before, midVal: midPatch.med, after, mid, midF, fadeEnd };
+    if (!(mid.debris > 0 && mid.alpha > 0.01 && mid.alpha < 0.99)) {
+      console.log(`  [${label}] pinned frame not blended: ${JSON.stringify(mid)}`);
+      return null;
+    }
+    return { before, midVal, late, after, mid, sawExiting: mid.exiting, fadeEnd };
   };
-  // "Not a pop" = a DISTINCT INTERMEDIATE FRAME exists: the mid shot differs
-  // from BOTH endpoint frames at the anchor. NOT a luminance corridor — the
-  // debris composites over a background whose own light is still easing
-  // (indoorMix drives both), so the anchor's luminance is legitimately
-  // non-monotone (it can dip through dark mid-fade). The mechanism half —
-  // debris present at a mid-range alpha, gone at settle — is asserted from
-  // the probe in the same pass.
+  // "Not a pop" = the transition really rendered a BLENDED state (the
+  // recorder caught the debris at an intermediate alpha — at 3× on a starved
+  // 3fps harness that is 2-3 frames, which is why the recorder lives in the
+  // page) and the layer is gone at settle. Deliberately NOT a mid-shot pixel
+  // corridor: at these frame rates no node-side screenshot can be timed into
+  // the fast half of a 3× curve, and the debris composites over a background
+  // whose own light is still easing, so the anchor is legitimately
+  // non-monotone anyway.
   const judge = (t, label) => {
-    if (!t) fail(`could not catch an intermediate ${label} frame in 3 attempts — is the fade running at all?`);
+    if (!t) fail(`could not catch the ${label} fade in 3 attempts — is it running at all?`);
     if (t.fadeEnd.debris !== 0) fail(`${label} debris survived the settle (${t.fadeEnd.debris})`);
     const span = Math.abs(t.before - t.after);
     if (!(span > 20)) fail(`the roof patch barely changes across the ${label} (${t.before.toFixed(1)} -> ${t.after.toFixed(1)}) — sample is wrong`);
+    // The pinned mid frame is a real rendered blend — it must look like
+    // NEITHER endpoint at the anchor, which is the literal "not binary".
     if (!(Math.abs(t.midVal - t.before) > 8 && Math.abs(t.midVal - t.after) > 8))
-      fail(`the ${label} mid frame (${t.midVal.toFixed(1)}) is indistinguishable from an endpoint ` +
-        `(${t.before.toFixed(1)} / ${t.after.toFixed(1)}) — the transition still reads binary`);
-    ok(`${label.toUpperCase()} is a fade, not a pop: roof ${t.before.toFixed(1)} -> ${t.midVal.toFixed(1)} ` +
-      `(debris ${t.mid.debris} @ alpha ${t.mid.alpha}) -> ${t.after.toFixed(1)}, debris gone at settle`);
+      fail(`the pinned ${label} mid frame (${t.midVal.toFixed(1)}) is indistinguishable from an endpoint ` +
+        `(${t.before.toFixed(1)} / ${t.after.toFixed(1)}) — the transition reads binary`);
+    ok(`${label.toUpperCase()} blends: roof ${t.before.toFixed(1)} -> ${t.midVal.toFixed(1)} ` +
+      `(debris ${t.mid.debris} @ alpha ${t.mid.alpha}, pinned) -> ${t.after.toFixed(1)}, gone at settle`);
   };
   let entry = null;
   for (let n = 0; n < 3 && !entry; n++) entry = await tryFade(`entry${n}`, true);
   judge(entry, "entry");
 
-  // ---- 5. THE FADE, exit: the roof comes BACK gradually too ----------------
+  // ---- 5. THE FADE, exit: back gradually, and NO COLOUR SNAP AT THE END ----
   let exit = null;
   for (let n = 0; n < 3 && !exit; n++) exit = await tryFade(`exit${n}`, false);
   judge(exit, "exit");
-  if (exit && !exit.midF.exiting && !exit.mid.exiting)
+  if (exit && !exit.sawExiting)
     fail("the exit fade never reported exiting=true — the cut world is not being held through the roll");
+  // THE MAINTAINER'S SNAP (2026-08-13: "the top of the roof completely
+  // changes color" at the fade's end): the late-exit frame — debris complete,
+  // mix deep in the roll's slow tail — must already match the settled outdoor
+  // roof. Clamped-resolve lighting made this a full tint pop (the roof lit as
+  // the shadowed interior behind it until the swap); the exit flip unclamps
+  // the resolve now, so the only residual is the ambient's own last easing.
+  {
+    const drift = Math.abs(exit.late - exit.after);
+    const span = Math.abs(exit.before - exit.after);
+    if (!(drift <= Math.max(14, span * 0.35)))
+      fail(`the roof still snaps at the exit's end: late-fade ${exit.late.toFixed(1)} vs settled ${exit.after.toFixed(1)} ` +
+        `(drift ${drift.toFixed(1)} over a ${span.toFixed(1)} span) — the resolve is being clamped through the fade again`);
+    ok(`no colour snap at the exit's end: late-fade roof ${exit.late.toFixed(1)} ≈ settled ${exit.after.toFixed(1)} ` +
+      `(drift ${drift.toFixed(1)}, transition span ${span.toFixed(1)})`);
+  }
 
   // ---- 6. the zero-ambient mechanism itself, one data pin ------------------
   await goTo(aC + 0.5, aR + 0.5);
