@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 262,
+  "scenery_count": 263,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -685,7 +685,7 @@
       "id": "rocking_horses",
       "name": "Rocking Horse",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 98,
@@ -854,6 +854,7 @@
     "rail_carts": 1,
     "reed_beds": 5,
     "rock_spires": 2,
+    "rocking_horses": 1,
     "rope_swings": 2,
     "ruined_arches": 2,
     "rusted_machines": 2,
@@ -4855,6 +4856,28 @@
       "status": "complete",
       "pixellab_object_id": "526a994f-242c-4a7c-985d-9fb4645621b2",
       "sprite": "rock_spires/rock_spire_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "rocking_horse_004",
+      "rel": "rocking_horses/rocking_horse_004",
+      "name": "Cracked one-eared old horse 004 \u00b7 lit",
+      "category": "rocking_horses",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden rocking horse seen from the side, a chunky carved horse body standing on thick curved rockers, cracked one-eared old horse, waist-high, self-emissive at night, softly radiating light: glass eyes glowing softly amber",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.97,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8549fb24-cf5b-4d8c-b6df-e57c6b7fa09b",
+      "sprite": "rocking_horses/rocking_horse_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
