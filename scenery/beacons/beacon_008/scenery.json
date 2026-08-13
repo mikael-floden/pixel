@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_008",
+  "group": "beacons",
+  "rank": 46,
+  "index": 8,
+  "name": "Moss-footed forgotten beacon 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-footed forgotten beacon",
+  "glow_concept": "pillar of pale soul-light rising skyward",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, moss-footed forgotten beacon, tall, about three times human height, self-emissive at night, softly radiating light: pillar of pale soul-light rising skyward",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_008/sprite.webp",
+  "placement": {
+    "world_height_m": 3.28,
+    "world_px_height": 123,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "576e2114-e90b-454d-aa04-c507a15c8a6b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

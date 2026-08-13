@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 350,
+  "scenery_count": 351,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 47,
@@ -787,7 +787,7 @@
     "aqueduct_fragments": 2,
     "barrels": 5,
     "beached_rowboats": 2,
-    "beacons": 3,
+    "beacons": 4,
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beds": 3,
@@ -1331,6 +1331,28 @@
       "status": "complete",
       "pixellab_object_id": "8f741c6d-f46e-48c1-bfc2-bc360f74920c",
       "sprite": "beacons/beacon_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_008",
+      "rel": "beacons/beacon_008",
+      "name": "Moss-footed forgotten beacon 008 \u00b7 lit",
+      "category": "beacons",
+      "lights": "LIGHTS_ON",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, moss-footed forgotten beacon, tall, about three times human height, self-emissive at night, softly radiating light: pillar of pale soul-light rising skyward",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.28,
+        "world_px_height": 123,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "576e2114-e90b-454d-aa04-c507a15c8a6b",
+      "sprite": "beacons/beacon_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
