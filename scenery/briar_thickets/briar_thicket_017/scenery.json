@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:49:06+00:00",
+  "id": "briar_thicket_017",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 17,
+  "name": "Blackberry bramble tangle 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "blackberry bramble tangle",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, blackberry bramble tangle, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.47,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d21cbfb2-7a91-473b-9da3-701133af7055",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
