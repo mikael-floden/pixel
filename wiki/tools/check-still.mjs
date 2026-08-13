@@ -193,10 +193,14 @@ await pa.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
 const hinfo = () => pa.evaluate(() => {
   const st = document.querySelector(".player-stage"), cv = st?.querySelector("canvas"), hu = st?.querySelector(".human-ref");
   const r = (x) => { const q = x.getBoundingClientRect(); return { l: Math.round(q.left), b: Math.round(q.bottom), w: Math.round(q.width), h: Math.round(q.height) }; };
+  const sb = st.getBoundingClientRect();
+  const hb = hu && getComputedStyle(hu).display !== "none" ? hu.getBoundingClientRect() : null;
   return { on: !!document.querySelector(".human-toggle")?.classList.contains("on"),
-    visible: !!hu && getComputedStyle(hu).display !== "none",
-    canvas: cv ? r(cv) : null, human: hu && getComputedStyle(hu).display !== "none" ? r(hu) : null,
-    stageL: Math.round(st.getBoundingClientRect().left) };
+    visible: !!hb, canvas: cv ? r(cv) : null, human: hb ? r(hu) : null,
+    stageL: Math.round(sb.left),
+    // Position INSIDE the stage — the page's own scroll differs per piece, so
+    // viewport coordinates cannot answer "did he move?".
+    inStage: hb ? Math.round(hb.top - sb.top) : null };
 });
 await pa.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
 await pa.waitForTimeout(1700);
@@ -209,16 +213,27 @@ console.log("human on:", JSON.stringify(h1), `expect ${boyW}x${boyH}`);
 ok(h1.visible && h1.human.w === boyW && h1.human.h === boyH,
   `the Man draws at the shared scale, content-cropped (${h1.human?.w}x${h1.human?.h} = ${boyW}x${boyH})`);
 ok(JSON.stringify(h0.canvas) === JSON.stringify(h1.canvas), "the scenery's own canvas is untouched by the toggle");
-ok(Math.abs(h1.human.b - h1.canvas.b) <= 1, `their feet share the baseline (Man ${h1.human.b}, piece ${h1.canvas.b})`);
+ok(Math.abs((h1.human.b - h1.human.h / 2) - (h1.canvas.b - h1.canvas.h / 2)) <= 1,
+  "he is centred vertically, exactly like the canvas beside him");
 ok(h1.human.l - h1.stageL <= 3, `and he hugs the stage's left edge (${h1.human.l - h1.stageL}px in)`);
-// Sticky across ‹ › — the request verbatim.
-for (let i = 0; i < 2; i++) {
+// STICKY, AND STILL. He must survive ‹ › (the original request) and must not
+// move a pixel while doing it — pinned to each piece's baseline he "jump[ed] a
+// lot up and down when switching page", because a centred canvas cropped to
+// its content puts that baseline somewhere different on every piece. The walk
+// deliberately crosses wildly different sizes.
+const hwalk = [h1];
+for (let i = 0; i < 8; i++) {
   await pa.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
-  await pa.waitForTimeout(450);
+  await pa.waitForTimeout(430);
+  hwalk.push(await hinfo());
 }
-const h2 = await hinfo();
-ok(h2.on && h2.visible && Math.abs(h2.human.b - h2.canvas.b) <= 1,
-  `two pages later he is still there, still on the new piece's baseline (${h2.human?.b} vs ${h2.canvas?.b})`);
+const spots = [...new Set(hwalk.map((r) => r.inStage))];
+const pieceHs = [...new Set(hwalk.map((r) => r.canvas.h))];
+console.log("human walk:", JSON.stringify({ spots, pieceHs }));
+ok(hwalk.every((r) => r.on && r.visible), "he survives eight pages of ‹ ›");
+ok(pieceHs.length > 2, `and those pages really are different sizes (${pieceHs.join(", ")}px) — otherwise this proves nothing`);
+ok(spots.length === 1, `yet he never moves: one position on every page (${spots.join(", ")}px from the stage top)`);
+const h2 = hwalk[hwalk.length - 1];
 // Zoom must scale BOTH bodies — 2x of him beside 4x of a mushroom is a lie.
 await pa.evaluate(() => [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "4×")?.click());
 await pa.waitForTimeout(350);

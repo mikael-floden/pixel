@@ -261,8 +261,15 @@ function makePlayer(entity, kind, opts = {}) {
   // so the comparison needs no math at all: the Man's idle/south frame,
   // content-cropped by his measured bb like every other sprite, drawn at the
   // SAME `s` this page is using — zoom included, or 2x of him next to 4x of a
-  // mushroom would be a lie. He hugs the stage's left edge, feet on the
-  // creature's baseline, and the entity's own canvas is never touched.
+  // mushroom would be a lie. He hugs the stage's left edge and the entity's
+  // own canvas is never touched.
+  //
+  // He is CENTRED vertically, exactly like the canvas beside him, and not
+  // stood on the piece's baseline: the canvas is centred and cropped, so its
+  // bottom edge sits at a different height for every piece, and pinning him
+  // to it made him "jump a lot up and down when switching page" (maintainer,
+  // same day). Centred, the stage is a fixed size per domain and his height
+  // depends only on zoom — so his position is identical on all 391 pages.
   let human = null;
   if (opts.humanRef) {
     human = h("div", { class: "human-ref", title: "the Man, at this page's scale" });
@@ -277,9 +284,6 @@ function makePlayer(entity, kind, opts = {}) {
     human.style.backgroundImage = `url("${url}")`;
     human.style.backgroundSize = `${fw * s}px ${fh * s}px`;
     human.style.backgroundPosition = `${-bb[0] * s}px ${-bb[1] * s}px`;
-    // Same ground line as the creature: the canvas is bottom-cropped to its
-    // lowest opaque pixel, so its bottom edge IS the baseline.
-    human.style.bottom = `${Math.max(0, stage.clientHeight - canvas.offsetTop - canvas.offsetHeight)}px`;
   }
   // FIXED STAGE (maintainer 2026-07-30): one chessboard size for the whole
   // domain — the widest and tallest pose any of its entities needs — with the
