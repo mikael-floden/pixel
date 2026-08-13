@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 474,
+  "scenery_count": 475,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -83,7 +83,7 @@
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 12,
@@ -888,7 +888,7 @@
     "wayside_shrines": 6,
     "waystones": 7,
     "web_frames": 2,
-    "wells": 6,
+    "wells": 7,
     "windmills": 6,
     "wisteria_snags": 2,
     "woodpiles": 2
@@ -11106,6 +11106,28 @@
       "status": "complete",
       "pixellab_object_id": "77f73b9c-0ba4-47fb-879e-a208cdc1e591",
       "sprite": "wells/well_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "well_010",
+      "rel": "wells/well_010",
+      "name": "Cracked ancient stone, ivy-grown 010 \u00b7 lit",
+      "category": "wells",
+      "lights": "LIGHTS_ON",
+      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, cracked ancient stone, ivy-grown, large, twice human height, self-emissive at night, softly radiating light: pale green moonmoss between the stones",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.92,
+        "world_px_height": 72,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "548e00ad-f0cf-4d68-80a3-3a60bc0a16de",
+      "sprite": "wells/well_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

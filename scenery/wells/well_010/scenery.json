@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_010",
+  "group": "wells",
+  "rank": 11,
+  "index": 10,
+  "name": "Cracked ancient stone, ivy-grown 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cracked ancient stone, ivy-grown",
+  "glow_concept": "pale green moonmoss between the stones",
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, cracked ancient stone, ivy-grown, large, twice human height, self-emissive at night, softly radiating light: pale green moonmoss between the stones",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.92,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "548e00ad-f0cf-4d68-80a3-3a60bc0a16de",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
