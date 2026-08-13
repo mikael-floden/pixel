@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ivy_post_002",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 2,
+  "name": "Ivy on rusted iron post 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ivy on rusted iron post",
+  "glow_concept": "a carved name shining through gaps in the leaves",
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, ivy on rusted iron post, about as tall as an adult person, self-emissive at night, softly radiating light: a carved name shining through gaps in the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.89,
+    "world_px_height": 71,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c8067f2f-0df9-404c-bac5-f7a5bb40b11a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
