@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_011",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 11,
+  "name": "Berry-laden bramble mound 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "berry-laden bramble mound",
+  "glow_concept": null,
+  "prompt": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses, berry-laden bramble mound, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8a5204cf-0aef-41e8-92b5-bafb75ab8f22",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
