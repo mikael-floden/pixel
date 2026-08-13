@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 462,
+  "scenery_count": 463,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -755,7 +755,7 @@
       "id": "hearths",
       "name": "Hearth",
       "quota": 30,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 108,
@@ -833,7 +833,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 6,
-    "hearths": 5,
+    "hearths": 6,
     "hedges": 6,
     "hop_poles": 2,
     "house_clutter": 5,
@@ -5628,6 +5628,28 @@
       "status": "complete",
       "pixellab_object_id": "e18ab340-1a8f-4b57-bd76-99b5dbbad040",
       "sprite": "hearths/hearth_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hearth_005",
+      "rel": "hearths/hearth_005",
+      "name": "Grand carved-mantel hearth 005",
+      "category": "hearths",
+      "lights": "LIGHTS_OFF",
+      "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, grand carved-mantel hearth, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.09,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e430292b-5066-4041-9674-1ebcf72bebb4",
+      "sprite": "hearths/hearth_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
