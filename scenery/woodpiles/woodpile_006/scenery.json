@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "woodpile_006",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 6,
+  "name": "Tarpaulin-topped stack 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tarpaulin-topped stack",
+  "glow_concept": "log ends glowing like a wall of embers",
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, tarpaulin-topped stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: log ends glowing like a wall of embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "abc1cc55-d59c-48ed-96e6-2f6e69c2c805",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
