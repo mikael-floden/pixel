@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 269,
+  "scenery_count": 270,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 14,
@@ -796,7 +796,7 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 7,
-    "briar_thickets": 1,
+    "briar_thickets": 2,
     "broken_columns": 2,
     "bushes": 3,
     "cairns": 2,
@@ -1670,6 +1670,28 @@
       "status": "complete",
       "pixellab_object_id": "067fb3cc-bd07-4730-8edc-a2d9e2e057cd",
       "sprite": "braziers/brazier_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_008",
+      "rel": "briar_thickets/briar_thicket_008",
+      "name": "Pale pink dog roses 008 \u00b7 lit",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_ON",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, pale pink dog roses, roughly six feet tall, human height, self-emissive at night, softly radiating light: rose blossoms glowing like paper lanterns",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.37,
+        "world_px_height": 52,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cd3e3e5d-f18b-4f1a-ae51-7006acf969a3",
+      "sprite": "briar_thickets/briar_thicket_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
