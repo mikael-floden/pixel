@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_002",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 2,
+  "name": "Blue-painted farm chair 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "blue-painted farm chair",
+  "glow_concept": "an ember-warm seat cushion glowing softly",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, blue-painted farm chair, small, knee-high, self-emissive at night, softly radiating light: an ember-warm seat cushion glowing softly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.64,
+    "world_px_height": 24,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f637d9f3-3c4a-4bff-92cb-0252daa569d9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

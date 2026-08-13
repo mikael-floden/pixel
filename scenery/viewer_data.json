@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 242,
+  "scenery_count": 243,
   "target_count": 3033,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 105,
@@ -802,6 +802,7 @@
     "light": 1,
     "carts": 3,
     "cattail_clumps": 4,
+    "chairs_and_benches": 1,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
     "cliff_features": 1,
@@ -1997,6 +1998,28 @@
       "status": "complete",
       "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_002",
+      "rel": "chairs_and_benches/chair_002",
+      "name": "Blue-painted farm chair 002 \u00b7 lit",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_ON",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, blue-painted farm chair, small, knee-high, self-emissive at night, softly radiating light: an ember-warm seat cushion glowing softly",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.64,
+        "world_px_height": 24,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f637d9f3-3c4a-4bff-92cb-0252daa569d9",
+      "sprite": "chairs_and_benches/chair_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
