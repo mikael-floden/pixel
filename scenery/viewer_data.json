@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 222,
+  "scenery_count": 223,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 8,
@@ -798,7 +798,7 @@
     "sundials": 2,
     "telegraph_poles": 2,
     "toadstool_rings": 2,
-    "torch_posts": 2,
+    "torch_posts": 3,
     "trailing_planters": 2,
     "trees": 3,
     "washing_lines": 2,
@@ -5087,6 +5087,28 @@
       "status": "complete",
       "pixellab_object_id": "9e10c3c5-3e94-48b5-b84f-9ebcf7fab175",
       "sprite": "torch_posts/torch_post_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_003",
+      "rel": "torch_posts/torch_post_003",
+      "name": "Iron sconce on oak post 003",
+      "category": "torch_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, iron sconce on oak post, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.8,
+        "world_px_height": 68,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d509cd34-8313-4854-ab3f-f96618181acc",
+      "sprite": "torch_posts/torch_post_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
