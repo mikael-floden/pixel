@@ -1,0 +1,32 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:30:40+00:00",
+  "id": "bed_003",
+  "group": "beds",
+  "rank": 105,
+  "index": 3,
+  "name": "Bed with a carved headboard 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "bed with a carved headboard",
+  "glow_concept": null,
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, bed with a carved headboard, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_003/sprite.webp",
+  "placement": {
+    "world_height_m": 0.73,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "48046b3f-14a9-4396-8529-4e15caa3bea8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
