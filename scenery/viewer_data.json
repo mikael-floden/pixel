@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 284,
+  "scenery_count": 285,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 22,
@@ -792,7 +792,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 16,
-    "story_posts": 3,
+    "story_posts": 4,
     "streetlights": 4,
     "stumps": 3,
     "sundials": 2,
@@ -5857,6 +5857,28 @@
       "status": "complete",
       "pixellab_object_id": "a0d8c638-1fb8-471a-b872-d255e2f487d1",
       "sprite": "story_posts/story_post_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_004",
+      "rel": "story_posts/story_post_004",
+      "name": "Wooden token-hung post 004 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, wooden token-hung post, large, well above head height of a person, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.42,
+        "world_px_height": 91,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c98ed19c-64a7-4693-9129-b99eeeac7b31",
+      "sprite": "story_posts/story_post_004/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,31 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_004",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 4,
+  "name": "Wooden token-hung post 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wooden token-hung post",
+  "glow_concept": "tiny glowing letters spiraling up the post",
+  "prompt": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, wooden token-hung post, large, well above head height of a person, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "story_posts/story_post_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.42,
+    "world_px_height": 91,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c98ed19c-64a7-4693-9129-b99eeeac7b31",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
