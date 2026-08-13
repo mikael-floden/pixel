@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 309,
+  "scenery_count": 310,
   "target_count": 2653,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 47,
@@ -717,7 +717,7 @@
     "aqueduct_fragments": 2,
     "barrels": 4,
     "beached_rowboats": 2,
-    "beacons": 3,
+    "beacons": 4,
     "beast_skulls": 2,
     "beaver_lodges": 2,
     "beehives": 4,
@@ -1230,6 +1230,28 @@
       "status": "complete",
       "pixellab_object_id": "8f741c6d-f46e-48c1-bfc2-bc360f74920c",
       "sprite": "beacons/beacon_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_004",
+      "rel": "beacons/beacon_004",
+      "name": "Chain-hoisted cage beacon 004 \u00b7 lit",
+      "category": "beacons",
+      "lights": "LIGHTS_ON",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, chain-hoisted cage beacon, tall, about two people high, self-emissive at night, softly radiating light: burning soulstone shining like a fixed star",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.37,
+        "world_px_height": 127,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dc45cc09-b4b6-43ee-94f0-cb7b39ab1a81",
+      "sprite": "beacons/beacon_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
