@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 500,
+  "scenery_count": 501,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 5,
     "sheaf_poles": 2,
-    "signposts": 8,
+    "signposts": 9,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -8598,6 +8598,28 @@
       "status": "complete",
       "pixellab_object_id": "7080604f-15aa-4297-aaea-7c74e87fc7a6",
       "sprite": "signposts/signpost_023/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_024",
+      "rel": "signposts/signpost_024",
+      "name": "Carved gothic-letter signpost 024 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, carved gothic-letter signpost, weathered silver-grey, large, twice human height, self-emissive at night, softly radiating light: rune-burned names shining through the wood",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.36,
+        "world_px_height": 89,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f9f7977b-9842-4172-8b9c-8cda4b749fd6",
+      "sprite": "signposts/signpost_024/sprite.webp",
       "rotations": {},
       "animations": []
     },
