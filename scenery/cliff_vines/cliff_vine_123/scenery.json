@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:43:44+00:00",
+  "id": "cliff_vine_123",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 123,
+  "name": "Dry brown wilted fall 123",
+  "lights": "LIGHTS_OFF",
+  "variety": "dry brown wilted fall",
+  "modifier": "one long root with a single doubling-back curve",
+  "glow_concept": null,
+  "prompt": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, dry brown wilted fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_123/sprite.webp",
+  "placement": {
+    "world_height_m": 10.23,
+    "world_px_height": 385,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b2125824-65e3-4f0b-9921-2f5a60de9432",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
