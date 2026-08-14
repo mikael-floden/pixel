@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:14:04+00:00",
+  "id": "cliff_root_005",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 5,
+  "name": "Dark wet roots 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "dark wet roots",
+  "modifier": "clumps of soil still held aloft",
+  "glow_concept": null,
+  "prompt": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, dark wet roots, clumps of soil still held aloft, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_005/sprite.webp",
+  "placement": {
+    "world_height_m": 8.52,
+    "world_px_height": 321,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "69e6022d-329e-4b1a-8757-96b9980fbcf0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
