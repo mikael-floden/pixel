@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 525,
+  "scenery_count": 526,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -83,7 +83,7 @@
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 12,
@@ -888,7 +888,7 @@
     "wayside_shrines": 8,
     "waystones": 11,
     "web_frames": 1,
-    "wells": 9,
+    "wells": 10,
     "windmills": 3,
     "wisteria_snags": 2,
     "woodpiles": 2
@@ -12338,6 +12338,28 @@
       "status": "complete",
       "pixellab_object_id": "8916dd49-ca5f-44ca-85d3-6fbe311c8b05",
       "sprite": "wells/well_017/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "well_019",
+      "rel": "wells/well_019",
+      "name": "Autumn leaves drifted on roof 019",
+      "category": "wells",
+      "lights": "LIGHTS_OFF",
+      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, autumn leaves drifted on roof, reinforced with iron bands, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.13,
+        "world_px_height": 80,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
+      "sprite": "wells/well_019/sprite.webp",
       "rotations": {},
       "animations": []
     },
