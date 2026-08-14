@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:29:01+00:00",
+  "id": "wayside_shrine_024",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 24,
+  "name": "Red-painted shrine box 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red-painted shrine box",
+  "modifier": "with climbing flowers at one corner",
+  "glow_concept": "painted door symbols traced in light",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, red-painted shrine box, with climbing flowers at one corner, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted door symbols traced in light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_024/sprite.webp",
+  "placement": {
+    "world_height_m": 1.81,
+    "world_px_height": 68,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0bd105d3-6188-4f80-92c6-3bac3f4ed17e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
