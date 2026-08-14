@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 741,
+  "scenery_count": 742,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 156,
@@ -1239,7 +1239,7 @@
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 10,
-    "cliff_roots": 10,
+    "cliff_roots": 11,
     "cliff_shrubs": 12,
     "cliff_vines": 61,
     "crystal_trees": 1,
@@ -4869,6 +4869,28 @@
       "status": "complete",
       "pixellab_object_id": "2a4e0ae4-a21a-4b8d-a7c6-31974d67e753",
       "sprite": "cliff_roots/cliff_root_064/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_067",
+      "rel": "cliff_roots/cliff_root_067",
+      "name": "Rootlets with one tiny fern 067",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_OFF",
+      "description": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger trailing down bare stone, gently winding, gripping with hair-fine side-roots, mostly bare strand with one or two small leaf sprouts, delicate and sparse, no trunk, no stump, NOT a big root, fantasy RPG nature art, transparent background, rootlets with one tiny fern, one strand crossing another once, lightly, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.26,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2c980161-24fc-4416-92bf-45ddaa8625b0",
+      "sprite": "cliff_roots/cliff_root_067/sprite.webp",
       "rotations": {},
       "animations": []
     },
