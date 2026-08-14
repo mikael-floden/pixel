@@ -19298,6 +19298,13 @@
           "difference_from_source": 0.6743,
           "glow_score": 0.0516
         },
+        "LIT_4": {
+          "sprite": "trees/tree_032/lit_4/sprite.webp",
+          "pixellab_object_id": "f298acdc-0bb0-4e6d-8a78-8f780512c77a",
+          "glow_concept": "iron lantern hung from a low branch",
+          "difference_from_source": 0.3427,
+          "glow_score": 0.0989
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_032/not_lit_1/sprite.webp",
           "pixellab_object_id": "46fd43f7-4eb9-441e-b623-84cd7f865adf",
@@ -19407,11 +19414,25 @@
           "difference_from_source": 0.2805,
           "glow_score": 0.0318
         },
+        "LIT_4": {
+          "sprite": "trees/tree_034/lit_4/sprite.webp",
+          "pixellab_object_id": "3e04cac7-f7ce-4d85-93d3-0b283e44d571",
+          "glow_concept": "blue-white soul-light spilling from a knot hole",
+          "difference_from_source": 0.2644,
+          "glow_score": 0.0281
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_034/not_lit_1/sprite.webp",
           "pixellab_object_id": "31512ac0-452e-43b2-9f25-9dadff844004",
           "difference_from_source": 0.279,
           "glow_score": 0.0017
+        },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_034/not_lit_10/sprite.webp",
+          "pixellab_object_id": "f93ca43c-aa3f-4763-9d94-9f053236dd27",
+          "glow_concept": null,
+          "difference_from_source": 0.4197,
+          "glow_score": 0.0
         },
         "NOT_LIT_2": {
           "sprite": "trees/tree_034/not_lit_2/sprite.webp",
@@ -19437,6 +19458,13 @@
           "difference_from_source": 0.25,
           "glow_score": 0.0019
         },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_034/not_lit_6/sprite.webp",
+          "pixellab_object_id": "ca184bcc-3f34-490f-a643-e37417138ce1",
+          "glow_concept": null,
+          "difference_from_source": 0.4145,
+          "glow_score": 0.0034
+        },
         "NOT_LIT_7": {
           "sprite": "trees/tree_034/not_lit_7/sprite.webp",
           "pixellab_object_id": "0c88c8ee-2741-4f8e-b2a4-c9b20cff2271",
@@ -19450,6 +19478,13 @@
           "glow_concept": null,
           "difference_from_source": 0.7703,
           "glow_score": 0.0
+        },
+        "NOT_LIT_9": {
+          "sprite": "trees/tree_034/not_lit_9/sprite.webp",
+          "pixellab_object_id": "b004eb33-5c94-44b4-82b3-11655d1187cc",
+          "glow_concept": null,
+          "difference_from_source": 0.2837,
+          "glow_score": 0.0019
         }
       },
       "animations": []
@@ -19490,9 +19525,30 @@
           "difference_from_source": 0.8503,
           "glow_score": 0.0603
         },
+        "LIT_3": {
+          "sprite": "trees/tree_035/lit_3/sprite.webp",
+          "pixellab_object_id": "11e14937-6a7b-4f82-a8f7-9ae2a6a3fc17",
+          "glow_concept": "golden sap veins glowing through bark cracks",
+          "difference_from_source": 0.3623,
+          "glow_score": 0.0114
+        },
+        "LIT_4": {
+          "sprite": "trees/tree_035/lit_4/sprite.webp",
+          "pixellab_object_id": "626f9945-3c12-4631-a16f-19739a0dfc6c",
+          "glow_concept": "swarm of fireflies drifting through the crown",
+          "difference_from_source": 0.1286,
+          "glow_score": 0.0065
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_035/sprite.webp",
           "pixellab_object_id": "6ef67205-a5e3-4acc-834f-2ac97176860d",
+          "glow_score": 0.0
+        },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_035/not_lit_10/sprite.webp",
+          "pixellab_object_id": "867c5f2e-8c03-4697-9d75-79218f4dd2dc",
+          "glow_concept": null,
+          "difference_from_source": 0.3516,
           "glow_score": 0.0
         },
         "NOT_LIT_2": {
@@ -19517,6 +19573,27 @@
           "sprite": "trees/tree_035/not_lit_5/sprite.webp",
           "pixellab_object_id": "608b7710-9bee-4ca3-af57-a3995d7dc699",
           "difference_from_source": 0.8579,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_035/not_lit_6/sprite.webp",
+          "pixellab_object_id": "89b5a89e-b34b-4003-aa2f-0990ad6d1827",
+          "glow_concept": null,
+          "difference_from_source": 0.2637,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_7": {
+          "sprite": "trees/tree_035/not_lit_7/sprite.webp",
+          "pixellab_object_id": "4c695dad-8a9f-44b1-98dc-5800ef0a55cd",
+          "glow_concept": null,
+          "difference_from_source": 0.1843,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_9": {
+          "sprite": "trees/tree_035/not_lit_9/sprite.webp",
+          "pixellab_object_id": "86c3b10c-87d3-4eb2-9765-dd6e0dc47f6d",
+          "glow_concept": null,
+          "difference_from_source": 0.4398,
           "glow_score": 0.0
         }
       },
@@ -19585,6 +19662,13 @@
           "pixellab_object_id": "0874f877-e0c0-4174-926d-8499d06df1f2",
           "difference_from_source": 0.2541,
           "glow_score": 0.0006
+        },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_036/not_lit_6/sprite.webp",
+          "pixellab_object_id": "03f1d747-59e6-482f-b99e-2c83e74e958a",
+          "glow_concept": null,
+          "difference_from_source": 0.1932,
+          "glow_score": 0.0
         }
       },
       "animations": []
