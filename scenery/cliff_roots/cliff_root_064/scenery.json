@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:27:10+00:00",
+  "id": "cliff_root_064",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 64,
+  "name": "Pale bleached roots 064 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale bleached roots",
+  "modifier": "very fine roots with sparse leaves",
+  "glow_concept": "the root tips glowing faintly",
+  "prompt": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, pale bleached roots, very fine roots with sparse leaves, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_064/sprite.webp",
+  "placement": {
+    "world_height_m": 7.65,
+    "world_px_height": 288,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2a4e0ae4-a21a-4b8d-a7c6-31974d67e753",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
