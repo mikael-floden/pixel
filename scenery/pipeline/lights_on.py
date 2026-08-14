@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import sys
 import time
 
@@ -108,6 +109,11 @@ def finalize(client, rel, man, oid):
             delta = silhouette_delta(base_south, img)
             if delta > SILHOUETTE_MAX:
                 client.delete_object(oid)
+                # KEEP writes south-east before south, so a rejection here would
+                # otherwise strand a half-written state on disk — one facing of
+                # art the manifest never references and nothing ever cleans up.
+                shutil.rmtree(os.path.join(factory.ROOT, rel, STATE_DIR),
+                              ignore_errors=True)
                 raise PixelLabError(
                     f"GATE {rel}: silhouette moved {delta:.1%} (max "
                     f"{SILHOUETTE_MAX:.0%}) — the window was redrawn, not lit")
