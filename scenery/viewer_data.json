@@ -20021,6 +20021,18 @@
       "type": "TREE",
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trees/tree_079/lit_1/sprite.webp",
+          "pixellab_object_id": "f7afef18-1513-45ef-90bf-0584097af829",
+          "difference_from_source": 0.1904,
+          "glow_score": 0.0073
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_079/lit_2/sprite.webp",
+          "pixellab_object_id": "b287fa42-9163-4282-ab9b-bddc33d8bec8",
+          "difference_from_source": 0.3669,
+          "glow_score": 0.0201
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_079/sprite.webp",
           "pixellab_object_id": "64e050cc-e6b0-4480-8687-e7633b1cb8ec",
@@ -20079,6 +20091,42 @@
           "sprite": "trees/tree_080/sprite.webp",
           "pixellab_object_id": "e2bd409a-f6cb-49fb-9a92-3cec94cb1ce7",
           "glow_score": 0.0245
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_080/lit_2/sprite.webp",
+          "pixellab_object_id": "c9f4aa58-e6c5-40dd-a948-7033893997a1",
+          "difference_from_source": 0.6186,
+          "glow_score": 0.0145
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_080/not_lit_1/sprite.webp",
+          "pixellab_object_id": "73e14246-a894-4fd0-939e-558a8bd9a142",
+          "difference_from_source": 0.3465,
+          "glow_score": 0.0001
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_080/not_lit_2/sprite.webp",
+          "pixellab_object_id": "88090596-0612-43a0-9bc3-b5bd3a7ae71a",
+          "difference_from_source": 0.189,
+          "glow_score": 0.0003
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_080/not_lit_3/sprite.webp",
+          "pixellab_object_id": "483f2844-33a1-4e8f-8f89-0ac0a84d63f4",
+          "difference_from_source": 0.2115,
+          "glow_score": 0.0002
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_080/not_lit_4/sprite.webp",
+          "pixellab_object_id": "caab3cd5-9651-4746-a691-0a1f9aa076a1",
+          "difference_from_source": 0.2938,
+          "glow_score": 0.0001
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_080/not_lit_5/sprite.webp",
+          "pixellab_object_id": "afa58451-b9d9-4aec-9440-7b968754ca0a",
+          "difference_from_source": 0.1734,
+          "glow_score": 0.0003
         }
       },
       "animations": []
@@ -20109,6 +20157,42 @@
           "sprite": "trees/tree_082/sprite.webp",
           "pixellab_object_id": "64d83453-11ec-42a0-bad5-4b4554633637",
           "glow_score": 0.1353
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_082/lit_2/sprite.webp",
+          "pixellab_object_id": "8ddb7c0d-7738-4783-8648-e231e00365b7",
+          "difference_from_source": 0.6903,
+          "glow_score": 0.1476
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_082/not_lit_1/sprite.webp",
+          "pixellab_object_id": "99c6fbce-5e69-4c1b-bb90-ef626dcaa752",
+          "difference_from_source": 0.4709,
+          "glow_score": 0.129
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_082/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a303c7d7-aa59-407e-93d6-5798ba076dfa",
+          "difference_from_source": 0.8892,
+          "glow_score": 0.0636
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_082/not_lit_3/sprite.webp",
+          "pixellab_object_id": "89c6862c-1ddf-46cf-a3a7-4c40e92cfdf0",
+          "difference_from_source": 0.4596,
+          "glow_score": 0.1114
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_082/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b6227e7d-8f2d-48ed-81c5-2fe83c8b5c12",
+          "difference_from_source": 0.5643,
+          "glow_score": 0.077
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_082/not_lit_5/sprite.webp",
+          "pixellab_object_id": "428c14a0-9fd9-4b93-b2e1-56b645a1ef47",
+          "difference_from_source": 0.1756,
+          "glow_score": 0.1618
         }
       },
       "animations": []
