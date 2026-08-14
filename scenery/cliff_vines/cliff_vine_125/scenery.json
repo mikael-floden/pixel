@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:34:41+00:00",
+  "id": "cliff_vine_125",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 125,
+  "name": "Blue-flowered creeper fall 125",
+  "lights": "LIGHTS_OFF",
+  "variety": "blue-flowered creeper fall",
+  "modifier": "a long straightish run with two sharp kinks",
+  "glow_concept": null,
+  "prompt": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, blue-flowered creeper fall, a long straightish run with two sharp kinks, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_125/sprite.webp",
+  "placement": {
+    "world_height_m": 8.01,
+    "world_px_height": 302,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b663a2d9-8d00-4ded-a475-f323aab474db",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
