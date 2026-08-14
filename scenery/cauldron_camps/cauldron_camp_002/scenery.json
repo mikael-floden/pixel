@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:13:11+00:00",
+  "id": "cauldron_camp_002",
+  "group": "cauldron_camps",
+  "rank": 123,
+  "index": 2,
+  "name": "Iron tripod cauldron 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "iron tripod cauldron",
+  "modifier": "cold and crow-visited",
+  "glow_concept": "the brew glowing faintly green",
+  "prompt": "a big iron cauldron on a tripod over a campfire ring, ladle hooked on the rim, stones worn smooth by sitters, iron tripod cauldron, cold and crow-visited, roughly six feet tall, human height, self-emissive at night, softly radiating light: the brew glowing faintly green",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cauldron_camps/cauldron_camp_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.4,
+    "world_px_height": 53,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e33f24e8-140b-4b98-b901-015748d61daa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 507,
+  "scenery_count": 508,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -867,7 +867,7 @@
       "id": "cauldron_camps",
       "name": "Cauldron Camp",
       "quota": 7,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 124,
@@ -915,6 +915,7 @@
     "light": 1,
     "carts": 6,
     "cattail_clumps": 5,
+    "cauldron_camps": 1,
     "chairs_and_benches": 6,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
@@ -3220,6 +3221,28 @@
       "status": "complete",
       "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
       "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cauldron_camp_002",
+      "rel": "cauldron_camps/cauldron_camp_002",
+      "name": "Iron tripod cauldron 002 \u00b7 lit",
+      "category": "cauldron_camps",
+      "lights": "LIGHTS_ON",
+      "description": "a big iron cauldron on a tripod over a campfire ring, ladle hooked on the rim, stones worn smooth by sitters, iron tripod cauldron, cold and crow-visited, roughly six feet tall, human height, self-emissive at night, softly radiating light: the brew glowing faintly green",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e33f24e8-140b-4b98-b901-015748d61daa",
+      "sprite": "cauldron_camps/cauldron_camp_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
