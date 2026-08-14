@@ -140,6 +140,14 @@ def submit_piece(client, cfg, group, spec):
     the next (maintainer: "you are the bottleneck", 2026-08-13)."""
     size = int(spec["size"])
     desc = f"{spec['prompt']}, {cfg['style_base']}"
+    # The 1-direction endpoint 422s on long descriptions (measured 2026-08-14:
+    # accumulated rules reached 2010 chars and killed a whole test batch). Trim
+    # the piece-specific tail rather than the style laws, which must survive.
+    LIMIT = 1000
+    if len(desc) > LIMIT:
+        keep = LIMIT - len(cfg["style_base"]) - 2
+        desc = f"{spec['prompt'][:max(0, keep)].rstrip(' ,;—-')}, {cfg['style_base']}"
+        print(f"  ~ prompt trimmed to {len(desc)} chars for {spec['id']}")
     if size <= 168:
         return client.submit_object(desc, size=size,
                                     view=cfg.get("view", "low top-down")), 8
