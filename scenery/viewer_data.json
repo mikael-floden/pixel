@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 614,
+  "scenery_count": 615,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -244,7 +244,7 @@
       "id": "flower_stands",
       "name": "Flower Stand",
       "quota": 34,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 35,
@@ -1169,7 +1169,7 @@
     "ferns": 12,
     "fish_drying_racks": 4,
     "flame_niches": 9,
-    "flower_stands": 6,
+    "flower_stands": 7,
     "flower_trellises": 2,
     "frost_flowers": 1,
     "frozen_springs": 2,
@@ -6167,6 +6167,28 @@
       "status": "complete",
       "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
       "sprite": "flower_stands/flower_stand_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flower_stand_012",
+      "rel": "flower_stands/flower_stand_012",
+      "name": "Dry winter seed-head stand 012 \u00b7 lit",
+      "category": "flower_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, dry winter seed-head stand, asymmetric, wind-shaped, waist-high, self-emissive at night, softly radiating light: night-blooms open and shining moon-pale",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3a67fea3-f89a-4962-bbb9-d3279e823b4e",
+      "sprite": "flower_stands/flower_stand_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
