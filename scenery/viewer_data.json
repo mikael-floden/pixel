@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 602,
+  "scenery_count": 603,
   "target_count": 2529,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -202,7 +202,7 @@
       "id": "barrels",
       "name": "Barrel",
       "quota": 46,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 29,
@@ -1128,7 +1128,7 @@
     "ant_hills": 2,
     "anvils": 2,
     "aqueduct_fragments": 2,
-    "barrels": 8,
+    "barrels": 9,
     "beached_rowboats": 2,
     "beacons": 11,
     "beast_skulls": 2,
@@ -1643,6 +1643,28 @@
       "status": "complete",
       "pixellab_object_id": "15ee4a5a-8dbc-4ac4-86cc-8895a5caaed9",
       "sprite": "barrels/barrel_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "barrel_016",
+      "rel": "barrels/barrel_016",
+      "name": "Open brine barrel, floating lid 016 \u00b7 lit",
+      "category": "barrels",
+      "lights": "LIGHTS_ON",
+      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, open brine barrel, floating lid, leaning slightly, waist-high, self-emissive at night, softly radiating light: open barrel brimful of luminous shining water",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.12,
+        "world_px_height": 42,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6095a411-4673-4e3c-b493-c28d5be0a452",
+      "sprite": "barrels/barrel_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
