@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:23:01+00:00",
+  "id": "window_011",
+  "group": "windows",
+  "rank": 25,
+  "index": 11,
+  "name": "A wide mullioned window of six panes in old timber 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "a wide mullioned window of six panes in old timber",
+  "modifier": "ivy creeping across one corner",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide mullioned window of six panes in old timber, ivy creeping across one corner, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_011/rotations/south-east.webp",
+    "south-west": "windows/window_011/rotations/south-west.webp",
+    "south": "windows/window_011/sprite.webp"
+  },
+  "size": 64,
+  "sprite": "windows/window_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.81,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      10,
+      8,
+      56,
+      55
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 41
+  },
+  "pixellab_object_id": "402426ba-3886-4a23-a0b4-3e1ab0c28c7e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
