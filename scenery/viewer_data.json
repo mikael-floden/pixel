@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 549,
+  "scenery_count": 550,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 16
+      "done": 17
     },
     {
       "rank": 8,
@@ -995,7 +995,7 @@
     "tables": 8,
     "telegraph_poles": 4,
     "toadstool_rings": 11,
-    "torch_posts": 16,
+    "torch_posts": 17,
     "trailing_planters": 2,
     "trees": 24,
     "wall_hangings": 6,
@@ -11292,6 +11292,28 @@
       "status": "complete",
       "pixellab_object_id": "4b02ce35-fa73-440e-af4b-94476ae3cccd",
       "sprite": "torch_posts/torch_post_022/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_024",
+      "rel": "torch_posts/torch_post_024",
+      "name": "Banded ceremonial torch post 024 \u00b7 lit",
+      "category": "torch_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, banded ceremonial torch post, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: slow blue resin flame with white core",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.95,
+        "world_px_height": 73,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b54b2a57-6761-4f14-abb5-34f71b0bc91b",
+      "sprite": "torch_posts/torch_post_024/sprite.webp",
       "rotations": {},
       "animations": []
     },
