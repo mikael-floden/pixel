@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:25+00:00",
+  "id": "beacon_014",
+  "group": "beacons",
+  "rank": 46,
+  "index": 14,
+  "name": "Hilltop signal beacon 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hilltop signal beacon",
+  "modifier": "half-repainted",
+  "glow_concept": "cold green marsh-fire flame",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, hilltop signal beacon, half-repainted, tall, about three times human height, self-emissive at night, softly radiating light: cold green marsh-fire flame",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_014/sprite.webp",
+  "placement": {
+    "world_height_m": 3.63,
+    "world_px_height": 137,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
