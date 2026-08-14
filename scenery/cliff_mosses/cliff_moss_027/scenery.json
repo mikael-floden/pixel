@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:56:09+00:00",
+  "id": "cliff_moss_027",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 27,
+  "name": "Moss with tiny ferns through it 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss with tiny ferns through it",
+  "modifier": "gathering low, sparse above",
+  "glow_concept": null,
+  "prompt": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, moss with tiny ferns through it, gathering low, sparse above, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_027/sprite.webp",
+  "placement": {
+    "world_height_m": 9.29,
+    "world_px_height": 350,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1ac70e48-b98f-4110-b693-cf0cc728b01f",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
