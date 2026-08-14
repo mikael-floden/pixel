@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:23:15+00:00",
+  "id": "window_012",
+  "group": "windows",
+  "rank": 25,
+  "index": 12,
+  "name": "A square window in rough stone masonry 012",
+  "lights": "LIGHTS_OFF",
+  "variety": "a square window in rough stone masonry",
+  "modifier": "paint peeling and curling from the frame",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square window in rough stone masonry, paint peeling and curling from the frame, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_012/rotations/south-east.webp",
+    "south-west": "windows/window_012/rotations/south-west.webp",
+    "south": "windows/window_012/sprite.webp"
+  },
+  "size": 48,
+  "sprite": "windows/window_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.65,
+    "world_px_height": 24,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      8,
+      7,
+      42,
+      42
+    ],
+    "content_px_height": 35,
+    "canvas_render_px": 33
+  },
+  "pixellab_object_id": "12932dde-f633-43a7-9e80-8dd6f3d6a513",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
