@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:07:05+00:00",
+  "id": "cliff_moss_001",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 1,
+  "name": "Grey-green lichen crust 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "grey-green lichen crust",
+  "modifier": "peeling away at one edge",
+  "glow_concept": null,
+  "prompt": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, grey-green lichen crust, peeling away at one edge, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.2,
+    "world_px_height": 120,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "58a85adf-b1df-4282-944f-9d6c60a6470d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
