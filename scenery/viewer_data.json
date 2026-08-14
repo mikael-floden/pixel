@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 657,
-  "target_count": 2150,
+  "scenery_count": 641,
+  "target_count": 2105,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 58
+      "done": 59
     },
     {
       "rank": 2,
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 11
+      "done": 8
     },
     {
       "rank": 102,
@@ -1091,14 +1091,14 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 6
+      "done": 0
     },
     {
       "rank": 156,
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 3
+      "done": 1
     },
     {
       "rank": 157,
@@ -1112,14 +1112,14 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 159,
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
-      "quota": 45,
-      "done": 4
+      "quota": 0,
+      "done": 0
     },
     {
       "rank": 160,
@@ -1235,14 +1235,12 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 3,
+    "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 4,
-    "cliff_mosses": 7,
-    "cliff_roots": 6,
+    "cliff_mosses": 5,
     "cliff_shrubs": 7,
-    "cliff_vines": 11,
+    "cliff_vines": 8,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -1321,7 +1319,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 58,
+    "trees": 59,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -4123,50 +4121,6 @@
       "animations": []
     },
     {
-      "id": "cliff_fall_005",
-      "rel": "cliff_falls/cliff_fall_005",
-      "name": "Stepped, breaking on two ledges 005",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, stepped, breaking on two ledges, disappearing into a crack, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 15.91,
-        "world_px_height": 599,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "6cdc4274-c254-4903-b9c4-115c8c31dfdc",
-      "sprite": "cliff_falls/cliff_fall_005/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_006",
-      "rel": "cliff_falls/cliff_fall_006",
-      "name": "Half-frozen with ice columns 006 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, half-frozen with ice columns, framed by hanging ferns, towering, many times human height, self-emissive at night, softly radiating light: light welling from the mist",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 17.71,
-        "world_px_height": 667,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "49671cb0-d50d-42b4-b3a5-009cb7a68171",
-      "sprite": "cliff_falls/cliff_fall_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_feature_002",
       "rel": "cliff_features/cliff_feature_002",
       "name": "Honeycomb-weathered rock pockets 002 \u00b7 lit",
@@ -4343,94 +4297,6 @@
       "animations": []
     },
     {
-      "id": "cliff_ledgetree_005",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_005",
-      "name": "Dead silvered snag 005",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_OFF",
-      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dead silvered snag, sharing the ledge with a boulder, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.32,
-        "world_px_height": 276,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "39792554-3788-4a51-a276-a142d9a862c0",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_005/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_006",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_006",
-      "name": "Blossoming cherry 006 \u00b7 lit",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_ON",
-      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, blossoming cherry, leaning out at a hard angle, towering, many times human height, self-emissive at night, softly radiating light: the trunk glowing where it grips",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.04,
-        "world_px_height": 265,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a6569275-3c51-4ed2-b7ba-1111985322d2",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_007",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_007",
-      "name": "Wind-bent pine 007",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_OFF",
-      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, wind-bent pine, roots spilling over the ledge lip, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.3,
-        "world_px_height": 237,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "24e55dd9-b272-40cc-bb7e-905763b55214",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_008",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_008",
-      "name": "White birch leaning far out 008 \u00b7 lit",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_ON",
-      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, white birch leaning far out, grass and flowers around its base, towering, many times human height, self-emissive at night, softly radiating light: fireflies around its crown",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.65,
-        "world_px_height": 213,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b5660e10-51d5-43e0-90f2-105a5a5bfc85",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_001",
       "rel": "cliff_mosses/cliff_moss_001",
       "name": "Grey-green lichen crust 001",
@@ -4519,50 +4385,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_008",
-      "rel": "cliff_mosses/cliff_moss_008",
-      "name": "Deep emerald cushion moss 008 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, deep emerald cushion moss, broken by bare rock, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.89,
-        "world_px_height": 335,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "34c24513-d96b-4c18-825b-2733267b74e5",
-      "sprite": "cliff_mosses/cliff_moss_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_010",
-      "rel": "cliff_mosses/cliff_moss_010",
-      "name": "Frost-tipped winter moss 010 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, frost-tipped winter moss, a tall narrow stripe down the wall, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.78,
-        "world_px_height": 331,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "338af78e-82f6-4204-b0d6-41c54bb63c1d",
-      "sprite": "cliff_mosses/cliff_moss_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_012",
       "rel": "cliff_mosses/cliff_moss_012",
       "name": "Rust-orange lichen patches 012 \u00b7 lit",
@@ -4581,138 +4403,6 @@
       "status": "complete",
       "pixellab_object_id": "4380d25f-c944-42e9-957e-7fd1a5e4cbbb",
       "sprite": "cliff_mosses/cliff_moss_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_001",
-      "rel": "cliff_roots/cliff_root_001",
-      "name": "Roots with ferns rooted between them 001",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, roots with ferns rooted between them, a wide fan of roots spreading as it falls, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.95,
-        "world_px_height": 337,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4e84f421-93d0-4122-bb95-94ddc8d41052",
-      "sprite": "cliff_roots/cliff_root_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_002",
-      "rel": "cliff_roots/cliff_root_002",
-      "name": "Fine hair-roots in a dense veil 002 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, fine hair-roots in a dense veil, one great root twisted alone down the face, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.39,
-        "world_px_height": 354,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "79fabe31-3c73-49c7-ace8-1fa9e39e44c9",
-      "sprite": "cliff_roots/cliff_root_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_009",
-      "rel": "cliff_roots/cliff_root_009",
-      "name": "Two great roots twined together 009",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, two great roots twined together, a hollow behind the roots, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.12,
-        "world_px_height": 306,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9ad7399f-3398-409a-836a-0aaf7ba648ae",
-      "sprite": "cliff_roots/cliff_root_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_010",
-      "rel": "cliff_roots/cliff_root_010",
-      "name": "Pale bleached roots 010 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, pale bleached roots, roots ending in a knot above the ground, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 13.54,
-        "world_px_height": 510,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9f8f4498-34bf-49e4-b9ab-eb1e1d2fda09",
-      "sprite": "cliff_roots/cliff_root_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_011",
-      "rel": "cliff_roots/cliff_root_011",
-      "name": "Dark wet roots 011",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dark wet roots, clumps of soil still held aloft, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.98,
-        "world_px_height": 263,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2d08b3b9-7beb-4cda-b3fd-be3eb48fe892",
-      "sprite": "cliff_roots/cliff_root_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_012",
-      "rel": "cliff_roots/cliff_root_012",
-      "name": "Moss-furred roots 012 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, moss-furred roots, roots braided into a rope, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.42,
-        "world_px_height": 279,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "12d82f6b-ab6f-4a15-bfdc-c7466124037a",
-      "sprite": "cliff_roots/cliff_root_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4937,50 +4627,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_015",
-      "rel": "cliff_vines/cliff_vine_015",
-      "name": "Old thick-stemmed ancient fall 015",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, old thick-stemmed ancient fall, tangled with dead stems, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 14.46,
-        "world_px_height": 544,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f9e33fb0-a3f5-475c-8f90-6b90d879584c",
-      "sprite": "cliff_vines/cliff_vine_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_017",
-      "rel": "cliff_vines/cliff_vine_017",
-      "name": "Red-leaved autumn creeper fall 017",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, red-leaved autumn creeper fall, reaching the ground and pooling, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.29,
-        "world_px_height": 274,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "142e37a3-ac2c-447f-a28d-e5bfb786059a",
-      "sprite": "cliff_vines/cliff_vine_017/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_018",
       "rel": "cliff_vines/cliff_vine_018",
       "name": "White-flowering bindweed fall 018 \u00b7 lit",
@@ -5043,28 +4689,6 @@
       "status": "complete",
       "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
       "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_026",
-      "rel": "cliff_vines/cliff_vine_026",
-      "name": "Purple wisteria fall 026 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, purple wisteria fall, one side thinner than the other, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 13.2,
-        "world_px_height": 497,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e24c0a25-1b4f-4198-ae04-39b40f936d43",
-      "sprite": "cliff_vines/cliff_vine_026/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -14322,6 +13946,28 @@
       "status": "complete",
       "pixellab_object_id": "70272ac1-116a-4456-8f50-7a990ea847a4",
       "sprite": "trees/tree_064/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_065",
+      "rel": "trees/tree_065",
+      "name": "Juniper, columnar and dark 065",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, juniper, columnar and dark, lightly snow-dusted, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.23,
+        "world_px_height": 122,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4b89f1c5-7189-4cdf-bbe5-309ad68193d7",
+      "sprite": "trees/tree_065/sprite.webp",
       "rotations": {},
       "animations": []
     },
