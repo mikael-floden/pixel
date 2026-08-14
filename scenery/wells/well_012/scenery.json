@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:45:06+00:00",
+  "id": "well_012",
+  "group": "wells",
+  "rank": 11,
+  "index": 12,
+  "name": "Snow-capped winter well 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-capped winter well",
+  "modifier": "moss-capped",
+  "glow_concept": "soulstone vein glinting through cracked stonework",
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, snow-capped winter well, moss-capped, large, twice human height, self-emissive at night, softly radiating light: soulstone vein glinting through cracked stonework",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_012/sprite.webp",
+  "placement": {
+    "world_height_m": 2.24,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

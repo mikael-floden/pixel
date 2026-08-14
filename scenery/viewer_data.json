@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 508,
+  "scenery_count": 509,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -83,7 +83,7 @@
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 12,
@@ -888,7 +888,7 @@
     "wayside_shrines": 7,
     "waystones": 10,
     "web_frames": 1,
-    "wells": 8,
+    "wells": 9,
     "windmills": 3,
     "wisteria_snags": 2,
     "woodpiles": 2
@@ -11920,6 +11920,28 @@
       "status": "complete",
       "pixellab_object_id": "58cdbe47-441f-441f-bc8d-8f65f7f9d7d8",
       "sprite": "wells/well_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "well_012",
+      "rel": "wells/well_012",
+      "name": "Snow-capped winter well 012 \u00b7 lit",
+      "category": "wells",
+      "lights": "LIGHTS_ON",
+      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, snow-capped winter well, moss-capped, large, twice human height, self-emissive at night, softly radiating light: soulstone vein glinting through cracked stonework",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.24,
+        "world_px_height": 84,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
+      "sprite": "wells/well_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
