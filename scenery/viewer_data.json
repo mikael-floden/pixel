@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 593,
+  "scenery_count": 594,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -286,7 +286,7 @@
       "id": "washing_lines",
       "name": "Washing Line",
       "quota": 22,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 41,
@@ -999,7 +999,7 @@
     "trailing_planters": 2,
     "trees": 26,
     "wall_hangings": 6,
-    "washing_lines": 6,
+    "washing_lines": 7,
     "wasp_nest_trees": 3,
     "water_lily_clumps": 3,
     "water_pumps": 2,
@@ -12920,6 +12920,28 @@
       "status": "complete",
       "pixellab_object_id": "1636fb42-f449-4c5d-812d-c062a933262f",
       "sprite": "washing_lines/washing_line_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "washing_line_016",
+      "rel": "washing_lines/washing_line_016",
+      "name": "Empty line, dangling pegs 016 \u00b7 lit",
+      "category": "washing_lines",
+      "lights": "LIGHTS_ON",
+      "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, empty line, dangling pegs, bird-favored, with droppings and a nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: one garment glowing while the rest hang dark",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.72,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d50f140d-21aa-4394-af92-2eda0bbe1e9c",
+      "sprite": "washing_lines/washing_line_016/sprite.webp",
       "rotations": {},
       "animations": []
     },

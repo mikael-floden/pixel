@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:57:44+00:00",
+  "id": "washing_line_016",
+  "group": "washing_lines",
+  "rank": 40,
+  "index": 16,
+  "name": "Empty line, dangling pegs 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "empty line, dangling pegs",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": "one garment glowing while the rest hang dark",
+  "prompt": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, empty line, dangling pegs, bird-favored, with droppings and a nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: one garment glowing while the rest hang dark",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "washing_lines/washing_line_016/sprite.webp",
+  "placement": {
+    "world_height_m": 1.72,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d50f140d-21aa-4394-af92-2eda0bbe1e9c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
