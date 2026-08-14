@@ -219,7 +219,14 @@ def next_batch(cfg: dict, done_by_group: dict[str, set[str]],
         # welcomed") carry a `demand` multiplier below 1.0, which makes them
         # read as emptier than they are and keeps a steady stream flowing no
         # matter what else is unfilled. Stateless, so every run agrees.
-        key = (len(done) / quota * float(group.get("demand", 1.0)), group["rank"])
+        # Laplace-smoothed fill fraction: (done+1)/(quota+1). Without the +1 a
+        # brand-new group scores a flat 0 whatever its size, so every freshly
+        # added 3-piece special outranked trees and the mountain walls — the
+        # maintainer watched a whole run go to types he had just declared full
+        # (2026-08-14). Smoothed, a 0/3 group sits at 0.25 while a 0/70 group
+        # sits at 0.014, so BIG wanted families lead, small specials trickle.
+        key = ((len(done) + 1) / (quota + 1) * float(group.get("demand", 1.0)),
+               group["rank"])
         if best is None or key < best[0]:
             best = (key, group, done)
     if best is None:
