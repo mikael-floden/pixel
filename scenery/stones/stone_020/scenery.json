@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:33:55+00:00",
+  "id": "stone_020",
+  "group": "stones",
+  "rank": 2,
+  "index": 20,
+  "name": "Weathered sandstone lump 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "weathered sandstone lump",
+  "modifier": "with a bird nest tucked in it",
+  "glow_concept": "tiny golden memory motes drifting above it",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, weathered sandstone lump, with a bird nest tucked in it, small, knee-high, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_020/sprite.webp",
+  "placement": {
+    "world_height_m": 0.72,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "83171a85-2b16-4eb3-9f58-0b2c4d515c6a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

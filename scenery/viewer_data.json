@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 523,
+  "scenery_count": 524,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 98,
-      "done": 15
+      "done": 16
     },
     {
       "rank": 3,
@@ -988,7 +988,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 15,
+    "stones": 16,
     "story_posts": 8,
     "streetlights": 8,
     "stumps": 8,
@@ -9621,6 +9621,28 @@
       "status": "complete",
       "pixellab_object_id": "c824cb8f-046f-4cff-94ff-6b43d20cf7b8",
       "sprite": "stones/stone_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_020",
+      "rel": "stones/stone_020",
+      "name": "Weathered sandstone lump 020 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, weathered sandstone lump, with a bird nest tucked in it, small, knee-high, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.72,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "83171a85-2b16-4eb3-9f58-0b2c4d515c6a",
+      "sprite": "stones/stone_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
