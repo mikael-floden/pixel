@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 586,
+  "scenery_count": 587,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -916,7 +916,7 @@
       "id": "lantern_trees",
       "name": "Lantern Tree",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 131,
@@ -1195,6 +1195,7 @@
     "ivy_posts": 5,
     "lantern_posts": 13,
     "lantern_stands": 6,
+    "lantern_trees": 1,
     "letter_boxes": 1,
     "lightning_oaks": 1,
     "market_stalls": 4,
@@ -7944,6 +7945,28 @@
       "status": "complete",
       "pixellab_object_id": "b71ccedf-6201-405b-8158-70819f84e62c",
       "sprite": "lantern_stands/lantern_stand_902/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_tree_004",
+      "rel": "lantern_trees/lantern_tree_004",
+      "name": "Spreading beech 004 \u00b7 lit",
+      "category": "lantern_trees",
+      "lights": "LIGHTS_ON",
+      "description": "a broad tree hung with dozens of small memory lanterns on ribbons, each a different shape and color, spreading beech, paper and iron lanterns mixed, tall, about three times human height, self-emissive at night, softly radiating light: every lantern lit warm",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.04,
+        "world_px_height": 114,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "53a7b779-971d-4e41-a758-96c79792de77",
+      "sprite": "lantern_trees/lantern_tree_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
