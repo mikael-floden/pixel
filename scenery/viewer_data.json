@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 536,
+  "scenery_count": 537,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -328,7 +328,7 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 47,
@@ -899,7 +899,7 @@
     "aqueduct_fragments": 2,
     "barrels": 7,
     "beached_rowboats": 2,
-    "beacons": 7,
+    "beacons": 8,
     "beast_skulls": 2,
     "beaver_lodges": 1,
     "beds": 4,
@@ -1562,6 +1562,28 @@
       "status": "complete",
       "pixellab_object_id": "348db063-dd77-459b-9ce7-b1f6bc798358",
       "sprite": "beacons/beacon_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "beacon_011",
+      "rel": "beacons/beacon_011",
+      "name": "Stone cairn base beacon 011",
+      "category": "beacons",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, stone cairn base beacon, reinforced with iron bands, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.3,
+        "world_px_height": 162,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "45c26a75-d86c-48a5-9f69-47c35a55c656",
+      "sprite": "beacons/beacon_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
