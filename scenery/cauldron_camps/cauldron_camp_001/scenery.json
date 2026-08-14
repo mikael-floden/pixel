@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:22:26+00:00",
+  "id": "cauldron_camp_001",
+  "group": "cauldron_camps",
+  "rank": 123,
+  "index": 1,
+  "name": "Copper wash cauldron 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "copper wash cauldron",
+  "modifier": "tipped and long abandoned",
+  "glow_concept": null,
+  "prompt": "a big iron cauldron on a tripod over a campfire ring, ladle hooked on the rim, stones worn smooth by sitters, copper wash cauldron, tipped and long abandoned, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cauldron_camps/cauldron_camp_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.44,
+    "world_px_height": 54,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "715ec3d3-68bf-43b0-9eb5-5ca6e04c7d46",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
