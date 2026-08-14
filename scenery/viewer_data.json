@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 22
+      "done": 23
     },
     {
       "rank": 2,
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 16
+      "done": 15
     },
     {
       "rank": 5,
@@ -908,7 +908,7 @@
     "bell_posts": 1,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 16,
+    "braziers": 15,
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
@@ -997,7 +997,7 @@
     "toadstool_rings": 11,
     "torch_posts": 16,
     "trailing_planters": 2,
-    "trees": 22,
+    "trees": 23,
     "wall_hangings": 6,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
@@ -2251,28 +2251,6 @@
       "status": "complete",
       "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
       "sprite": "braziers/brazier_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "brazier_013",
-      "rel": "braziers/brazier_013",
-      "name": "Double-tier tall basket 013",
-      "category": "braziers",
-      "lights": "LIGHTS_OFF",
-      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, double-tier tall basket, old and settling into the ground, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.18,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5850beb2-f3b0-43f6-9371-987dc8444309",
-      "sprite": "braziers/brazier_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11732,6 +11710,28 @@
       "status": "complete",
       "pixellab_object_id": "f091242d-2055-4b95-9cb4-001d87d75e38",
       "sprite": "trees/tree_026/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_028",
+      "rel": "trees/tree_028",
+      "name": "Stout dead oak, thick bare limbs 028 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, stout dead oak, thick bare limbs, asymmetric, wind-shaped, large, twice human height, self-emissive at night, softly radiating light: carved initials glowing ember-orange in the bark",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 2.84,
+        "world_px_height": 107,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d8a8771e-89e0-449a-a7bc-65da9649df9f",
+      "sprite": "trees/tree_028/sprite.webp",
       "rotations": {},
       "animations": []
     },
