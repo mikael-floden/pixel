@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:03:20+00:00",
+  "id": "sunken_statue_004",
+  "group": "sunken_statues",
+  "rank": 125,
+  "index": 4,
+  "name": "Stern buried head 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stern buried head",
+  "modifier": "children's chalk-free games worn on the crown",
+  "glow_concept": "soul-light welling from the buried mouth",
+  "prompt": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, stern buried head, children's chalk-free games worn on the crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light welling from the buried mouth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "sunken_statues/sunken_statue_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.73,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d1e0cc99-6ff8-4cc2-979b-748e937239c7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

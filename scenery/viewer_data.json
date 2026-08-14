@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 584,
+  "scenery_count": 585,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -881,7 +881,7 @@
       "id": "sunken_statues",
       "name": "Sunken Statue",
       "quota": 6,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 126,
@@ -1068,6 +1068,7 @@
     "streetlights": 6,
     "stumps": 13,
     "sundials": 2,
+    "sunken_statues": 1,
     "tables": 10,
     "telegraph_poles": 4,
     "toadstool_rings": 12,
@@ -10994,6 +10995,28 @@
       "status": "complete",
       "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
       "sprite": "sundials/sundial_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sunken_statue_004",
+      "rel": "sunken_statues/sunken_statue_004",
+      "name": "Stern buried head 004 \u00b7 lit",
+      "category": "sunken_statues",
+      "lights": "LIGHTS_ON",
+      "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, stern buried head, children's chalk-free games worn on the crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light welling from the buried mouth",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d1e0cc99-6ff8-4cc2-979b-748e937239c7",
+      "sprite": "sunken_statues/sunken_statue_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
