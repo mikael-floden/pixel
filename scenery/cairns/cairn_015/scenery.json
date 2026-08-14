@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:46:51+00:00",
+  "id": "cairn_015",
+  "group": "cairns",
+  "rank": 9,
+  "index": 15,
+  "name": "Toppled half-collapsed cairn 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "toppled half-collapsed cairn",
+  "modifier": "with berries scattered beneath it",
+  "glow_concept": null,
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, toppled half-collapsed cairn, with berries scattered beneath it, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_015/sprite.webp",
+  "placement": {
+    "world_height_m": 1.1,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f35d740b-ffb2-411c-ad04-11dcf2b21e49",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
