@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:41:18+00:00",
+  "id": "cliff_root_069",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 69,
+  "name": "Reddish young rootlets 069",
+  "lights": "LIGHTS_OFF",
+  "variety": "reddish young rootlets",
+  "modifier": "a single wiry strand with slight bends",
+  "glow_concept": null,
+  "prompt": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger trailing down bare stone, gently winding, gripping with hair-fine side-roots, mostly bare strand with one or two small leaf sprouts, delicate and sparse, no trunk, no stump, NOT a big root, fantasy RPG nature art, transparent background, reddish young rootlets, a single wiry strand with slight bends, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_roots/cliff_root_069/sprite.webp",
+  "placement": {
+    "world_height_m": 1.57,
+    "world_px_height": 59,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8daa8564-e64c-4807-b1d4-131cfed8ae46",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
