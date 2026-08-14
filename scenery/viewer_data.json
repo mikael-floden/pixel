@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 588,
+  "scenery_count": 578,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 16
+      "done": 15
     },
     {
       "rank": 5,
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 16
+      "done": 15
     },
     {
       "rank": 8,
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 16
+      "done": 15
     },
     {
       "rank": 10,
@@ -83,7 +83,7 @@
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 14
+      "done": 13
     },
     {
       "rank": 12,
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 13
+      "done": 12
     },
     {
       "rank": 14,
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 16,
@@ -146,7 +146,7 @@
       "id": "fallen_logs",
       "name": "Fallen Log",
       "quota": 62,
-      "done": 11
+      "done": 9
     },
     {
       "rank": 21,
@@ -160,7 +160,7 @@
       "id": "offering_tables",
       "name": "Offering Table",
       "quota": 58,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 23,
@@ -279,7 +279,7 @@
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
       "quota": 24,
-      "done": 12
+      "done": 11
     },
     {
       "rank": 40,
@@ -349,7 +349,7 @@
       "id": "market_stalls",
       "name": "Market Stall",
       "quota": 4,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 50,
@@ -958,7 +958,7 @@
       "id": "frost_flowers",
       "name": "Frost Flower",
       "quota": 5,
-      "done": 0
+      "done": 1
     }
   ],
   "categories": {
@@ -979,11 +979,11 @@
     "bell_posts": 1,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 16,
-    "briar_thickets": 13,
+    "braziers": 15,
+    "briar_thickets": 12,
     "broken_columns": 2,
     "bushes": 8,
-    "cairns": 16,
+    "cairns": 15,
     "light": 1,
     "carts": 6,
     "cattail_clumps": 5,
@@ -1002,13 +1002,14 @@
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
     "fairy_stumps": 1,
-    "fallen_logs": 11,
+    "fallen_logs": 9,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
     "flame_niches": 8,
     "flower_stands": 5,
     "flower_trellises": 2,
+    "frost_flowers": 1,
     "frozen_springs": 1,
     "geodes": 1,
     "giant_fallen_bells": 1,
@@ -1036,13 +1037,13 @@
     "lantern_trees": 1,
     "letter_boxes": 1,
     "lightning_oaks": 1,
-    "market_stalls": 5,
+    "market_stalls": 4,
     "maypoles": 2,
     "meteor_stones": 1,
     "moon_pools": 1,
     "moss_clumps": 5,
     "mushrooms": 13,
-    "offering_tables": 8,
+    "offering_tables": 7,
     "orchard_trees": 2,
     "overgrown_archways": 2,
     "owl_snags": 2,
@@ -1068,14 +1069,14 @@
     "stone_giant_hands": 1,
     "stones": 23,
     "story_posts": 8,
-    "streetlights": 6,
+    "streetlights": 5,
     "stumps": 13,
     "sundials": 2,
     "sunken_statues": 1,
     "tables": 10,
     "telegraph_poles": 4,
-    "toadstool_rings": 12,
-    "torch_posts": 16,
+    "toadstool_rings": 11,
+    "torch_posts": 15,
     "trailing_planters": 2,
     "trees": 25,
     "wall_hangings": 7,
@@ -1087,7 +1088,7 @@
     "wayside_shrines": 6,
     "waystones": 12,
     "web_frames": 1,
-    "wells": 14,
+    "wells": 13,
     "windmills": 3,
     "wisteria_snags": 3,
     "witch_rings": 1,
@@ -2489,28 +2490,6 @@
       "animations": []
     },
     {
-      "id": "brazier_019",
-      "rel": "braziers/brazier_019",
-      "name": "Silver-rimmed ceremonial bowl 019",
-      "category": "braziers",
-      "lights": "LIGHTS_OFF",
-      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, silver-rimmed ceremonial bowl, bird-favored, with droppings and a nest, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.74,
-        "world_px_height": 28,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f9d7b3c3-f051-4c82-a255-495e666ccbe6",
-      "sprite": "braziers/brazier_019/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "brazier_021",
       "rel": "braziers/brazier_021",
       "name": "Wrought basket-legged brazier 021",
@@ -2771,28 +2750,6 @@
       "status": "complete",
       "pixellab_object_id": "4ddcbb94-5378-4ef8-ac42-f0c2b1dfefaa",
       "sprite": "briar_thickets/briar_thicket_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "briar_thicket_023",
-      "rel": "briar_thickets/briar_thicket_023",
-      "name": "Yellow wild roses 023",
-      "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, yellow wild roses, on a low grassy hummock, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.27,
-        "world_px_height": 48,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a1f884db-6946-4d53-8623-484c41e69b31",
-      "sprite": "briar_thickets/briar_thicket_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3321,28 +3278,6 @@
       "status": "complete",
       "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
       "sprite": "cairns/cairn_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cairn_023",
-      "rel": "cairns/cairn_023",
-      "name": "Painted-names cairn 023",
-      "category": "cairns",
-      "lights": "LIGHTS_OFF",
-      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, painted-names cairn, with a bird nest tucked in it, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.73,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "578fbfaa-bf3e-46d6-bbcd-b8a56dd50a10",
-      "sprite": "cairns/cairn_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5045,28 +4980,6 @@
       "animations": []
     },
     {
-      "id": "fallen_log_009",
-      "rel": "fallen_logs/fallen_log_009",
-      "name": "Fungus-shelved beech log 009",
-      "category": "fallen_logs",
-      "lights": "LIGHTS_OFF",
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fungus-shelved beech log, with a bird nest tucked in it, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.77,
-        "world_px_height": 29,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "270581e6-18aa-4818-b72b-ae9c5764df9d",
-      "sprite": "fallen_logs/fallen_log_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "fallen_log_010",
       "rel": "fallen_logs/fallen_log_010",
       "name": "Fern-flanked damp log 010 \u00b7 lit",
@@ -5085,28 +4998,6 @@
       "status": "complete",
       "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
       "sprite": "fallen_logs/fallen_log_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fallen_log_012",
-      "rel": "fallen_logs/fallen_log_012",
-      "name": "Two crossed fallen trunks 012 \u00b7 lit",
-      "category": "fallen_logs",
-      "lights": "LIGHTS_ON",
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, two crossed fallen trunks, rain-dark and glistening, small, knee-high, self-emissive at night, softly radiating light: a lit traveler's lantern resting on top",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.58,
-        "world_px_height": 22,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bfec9964-f42f-4bed-a2d5-7b5859f9fef5",
-      "sprite": "fallen_logs/fallen_log_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5855,6 +5746,28 @@
       "status": "complete",
       "pixellab_object_id": "281d9446-194a-4ea8-8363-9e4234d700f8",
       "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "frost_flower_002",
+      "rel": "frost_flowers/frost_flower_002",
+      "name": "Rose-form 002 \u00b7 lit",
+      "category": "frost_flowers",
+      "lights": "LIGHTS_ON",
+      "description": "a giant flower made entirely of ice and frost, petals like blown glass, growing impossibly from green grass, rose-form, twin blooms sharing a stem, small, knee-high, self-emissive at night, softly radiating light: moonlight caught in the petals",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.71,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "13b6f8f1-7f47-48cb-9d15-ee610e9557af",
+      "sprite": "frost_flowers/frost_flower_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -7812,28 +7725,6 @@
       "animations": []
     },
     {
-      "id": "market_stall_006",
-      "rel": "market_stalls/market_stall_006",
-      "name": "Potter's stall, stacked crockery 006 \u00b7 lit",
-      "category": "market_stalls",
-      "lights": "LIGHTS_ON",
-      "description": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, potter's stall, stacked crockery, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: paper lanterns strung along the canopy edge",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.28,
-        "world_px_height": 86,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4ddce2fd-41b3-40a3-a7fd-96f9bb32644d",
-      "sprite": "market_stalls/market_stall_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "maypole_002",
       "rel": "maypoles/maypole_002",
       "name": "Small village-green pole 002 \u00b7 lit",
@@ -8468,28 +8359,6 @@
       "status": "complete",
       "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
       "sprite": "offering_tables/offering_table_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "offering_table_014",
-      "rel": "offering_tables/offering_table_014",
-      "name": "Stacked-stone table, clay bowls 014 \u00b7 lit",
-      "category": "offering_tables",
-      "lights": "LIGHTS_ON",
-      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, stacked-stone table, clay bowls, moss-capped, small, knee-high, self-emissive at night, softly radiating light: ring of lit tea candles among the gifts",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.65,
-        "world_px_height": 24,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "972fa6c7-3e5b-497b-81de-98022a00588d",
-      "sprite": "offering_tables/offering_table_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -10716,28 +10585,6 @@
       "animations": []
     },
     {
-      "id": "streetlight_032",
-      "rel": "streetlights/streetlight_032",
-      "name": "Green-enameled telegraph-era lamp 032 \u00b7 lit",
-      "category": "streetlights",
-      "lights": "LIGHTS_ON",
-      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, green-enameled telegraph-era lamp, bird-favored, with droppings and a nest, tall, about three times human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 3.25,
-        "world_px_height": 122,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "980751d8-1f94-41e5-9ed5-cc34b5e25951",
-      "sprite": "streetlights/streetlight_032/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "stump_001",
       "rel": "stumps/stump_001",
       "name": "Stump with axe embedded 001",
@@ -11640,28 +11487,6 @@
       "animations": []
     },
     {
-      "id": "toadstool_ring_020",
-      "rel": "toadstool_rings/toadstool_ring_020",
-      "name": "Snow-dusted winter ring 020 \u00b7 lit",
-      "category": "toadstool_rings",
-      "lights": "LIGHTS_ON",
-      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, snow-dusted winter ring, lightly snow-dusted, tiny, only ankle-high, self-emissive at night, softly radiating light: faint curtain of light rising inside the ring",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.33,
-        "world_px_height": 12,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f8be6b77-96b7-4f9b-bc80-306e461fb8f2",
-      "sprite": "toadstool_rings/toadstool_ring_020/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "torch_post_004",
       "rel": "torch_posts/torch_post_004",
       "name": "Rag-wrapped ash stake 004 \u00b7 lit",
@@ -11966,28 +11791,6 @@
       "status": "complete",
       "pixellab_object_id": "4b02ce35-fa73-440e-af4b-94476ae3cccd",
       "sprite": "torch_posts/torch_post_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "torch_post_023",
-      "rel": "torch_posts/torch_post_023",
-      "name": "Charred half-burnt post 023",
-      "category": "torch_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, charred half-burnt post, half-repainted, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 2.07,
-        "world_px_height": 78,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "fb9e53a3-cc81-47e6-8d72-6e379b621d10",
-      "sprite": "torch_posts/torch_post_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -13836,28 +13639,6 @@
       "status": "complete",
       "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
       "sprite": "wells/well_019/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "well_021",
-      "rel": "wells/well_021",
-      "name": "Twin-bucket chain windlass well 021",
-      "category": "wells",
-      "lights": "LIGHTS_OFF",
-      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, twin-bucket chain windlass well, overgrown at the base, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.41,
-        "world_px_height": 91,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "ad057873-f535-4b1c-96a6-b498eae55646",
-      "sprite": "wells/well_021/sprite.webp",
       "rotations": {},
       "animations": []
     },
