@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 467,
+  "scenery_count": 468,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 14,
@@ -796,7 +796,7 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 8,
-    "briar_thickets": 6,
+    "briar_thickets": 7,
     "broken_columns": 2,
     "bushes": 8,
     "cairns": 8,
@@ -2219,6 +2219,28 @@
       "status": "complete",
       "pixellab_object_id": "33920291-ff33-4607-8f1d-bd0cb0c06855",
       "sprite": "briar_thickets/briar_thicket_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_018",
+      "rel": "briar_thickets/briar_thicket_018",
+      "name": "White briar roses 018 \u00b7 lit",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_ON",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, white briar roses, half-swallowed by tall grass, roughly six feet tall, human height, self-emissive at night, softly radiating light: a warm heart of light buried deep inside",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.56,
+        "world_px_height": 59,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6dc45a0c-6189-427c-9380-8d0e02eb6afd",
+      "sprite": "briar_thickets/briar_thicket_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
