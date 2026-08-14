@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 749,
+  "scenery_count": 750,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 27
+      "done": 28
     },
     {
       "rank": 156,
@@ -1239,7 +1239,7 @@
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 22,
-    "cliff_roots": 27,
+    "cliff_roots": 28,
     "cliff_shrubs": 12,
     "cliff_vines": 44,
     "crystal_trees": 1,
@@ -5353,6 +5353,28 @@
       "status": "complete",
       "pixellab_object_id": "16962bd9-3669-4b27-bc7e-f11cfdef1919",
       "sprite": "cliff_roots/cliff_root_059/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_060",
+      "rel": "cliff_roots/cliff_root_060",
+      "name": "Moss-furred roots 060 \u00b7 lit",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_ON",
+      "description": "ONE long thick tree root SNAKING and WINDING across a rock face, clinging tight against the stone as it wanders upward, coiling and doubling back in slow S-curves the way a root spirals a tree trunk, gripping with small side-roots along its length, clusters of green leaves and little ferns sprouting at a few points on the root, the tree it belongs to far above and out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, moss-furred roots, coiling into a loose loop midway, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.06,
+        "world_px_height": 303,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8afda7a0-d0b7-44d1-a2c5-e79f0e0c6c44",
+      "sprite": "cliff_roots/cliff_root_060/sprite.webp",
       "rotations": {},
       "animations": []
     },
