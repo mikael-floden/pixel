@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:36:30+00:00",
+  "id": "cliff_moss_012",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 12,
+  "name": "Rust-orange lichen patches 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rust-orange lichen patches",
+  "modifier": "thickest where water seeps",
+  "glow_concept": "light seeping from beneath the cushions",
+  "prompt": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, rust-orange lichen patches, thickest where water seeps, tall, about three times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_012/sprite.webp",
+  "placement": {
+    "world_height_m": 3.99,
+    "world_px_height": 150,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4380d25f-c944-42e9-957e-7fd1a5e4cbbb",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
