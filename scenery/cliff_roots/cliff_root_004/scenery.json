@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:08:25+00:00",
+  "id": "cliff_root_004",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 4,
+  "name": "Pale bleached roots 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale bleached roots",
+  "modifier": "roots ending in a knot above the ground",
+  "glow_concept": "the root tips glowing faintly",
+  "prompt": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, pale bleached roots, roots ending in a knot above the ground, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_004/sprite.webp",
+  "placement": {
+    "world_height_m": 11.96,
+    "world_px_height": 450,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c8f2d491-31a4-4ad2-af45-3c38e6b1e2bf",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

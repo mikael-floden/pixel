@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 596,
+  "scenery_count": 597,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 156,
@@ -1240,6 +1240,7 @@
     "cliff_fragments": 2,
     "cliff_ledgetrees": 1,
     "cliff_mosses": 2,
+    "cliff_roots": 1,
     "cliff_shrubs": 2,
     "cliff_vines": 4,
     "crystal_trees": 1,
@@ -4360,6 +4361,28 @@
       "status": "complete",
       "pixellab_object_id": "f8e68627-7cb4-4570-9e0b-19e111fdd2d9",
       "sprite": "cliff_mosses/cliff_moss_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_004",
+      "rel": "cliff_roots/cliff_root_004",
+      "name": "Pale bleached roots 004 \u00b7 lit",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_ON",
+      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, pale bleached roots, roots ending in a knot above the ground, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 11.96,
+        "world_px_height": 450,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c8f2d491-31a4-4ad2-af45-3c38e6b1e2bf",
+      "sprite": "cliff_roots/cliff_root_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
