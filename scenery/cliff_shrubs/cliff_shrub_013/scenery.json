@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:57:53+00:00",
+  "id": "cliff_shrub_013",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 13,
+  "name": "Flowering broom in yellow 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "flowering broom in yellow",
+  "modifier": "half its branches dead",
+  "glow_concept": null,
+  "prompt": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, flowering broom in yellow, half its branches dead, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_013/sprite.webp",
+  "placement": {
+    "world_height_m": 2.06,
+    "world_px_height": 78,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "19f43907-f2b1-4a13-97ec-1be4239951d0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
