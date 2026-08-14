@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 580,
+  "scenery_count": 581,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -146,7 +146,7 @@
       "id": "fallen_logs",
       "name": "Fallen Log",
       "quota": 62,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 21,
@@ -929,7 +929,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
-    "fallen_logs": 10,
+    "fallen_logs": 11,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
@@ -4939,6 +4939,28 @@
       "status": "complete",
       "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
       "sprite": "fallen_logs/fallen_log_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_012",
+      "rel": "fallen_logs/fallen_log_012",
+      "name": "Two crossed fallen trunks 012 \u00b7 lit",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_ON",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, two crossed fallen trunks, rain-dark and glistening, small, knee-high, self-emissive at night, softly radiating light: a lit traveler's lantern resting on top",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.58,
+        "world_px_height": 22,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bfec9964-f42f-4bed-a2d5-7b5859f9fef5",
+      "sprite": "fallen_logs/fallen_log_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
