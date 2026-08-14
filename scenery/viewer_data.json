@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 497,
+  "scenery_count": 498,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -790,7 +790,7 @@
       "id": "meteor_stones",
       "name": "Meteor Stone",
       "quota": 7,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 113,
@@ -952,6 +952,7 @@
     "letter_boxes": 1,
     "market_stalls": 4,
     "maypoles": 2,
+    "meteor_stones": 1,
     "moss_clumps": 5,
     "mushrooms": 8,
     "offering_tables": 7,
@@ -7033,6 +7034,28 @@
       "status": "complete",
       "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
       "sprite": "maypoles/maypole_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "meteor_stone_002",
+      "rel": "meteor_stones/meteor_stone_002",
+      "name": "Iron-dark star-stone 002 \u00b7 lit",
+      "category": "meteor_stones",
+      "lights": "LIGHTS_ON",
+      "description": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it, iron-dark star-stone, surrounded by curious mushrooms, roughly six feet tall, human height, self-emissive at night, softly radiating light: embers that never cool in the crater",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.38,
+        "world_px_height": 52,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
+      "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

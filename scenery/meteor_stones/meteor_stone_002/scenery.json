@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:26+00:00",
+  "id": "meteor_stone_002",
+  "group": "meteor_stones",
+  "rank": 112,
+  "index": 2,
+  "name": "Iron-dark star-stone 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "iron-dark star-stone",
+  "modifier": "surrounded by curious mushrooms",
+  "glow_concept": "embers that never cool in the crater",
+  "prompt": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it, iron-dark star-stone, surrounded by curious mushrooms, roughly six feet tall, human height, self-emissive at night, softly radiating light: embers that never cool in the crater",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.38,
+    "world_px_height": 52,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
