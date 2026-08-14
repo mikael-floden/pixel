@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 594,
+  "scenery_count": 595,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 157,
@@ -1235,6 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
+    "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_ledgetrees": 1,
@@ -4095,6 +4096,28 @@
       "status": "complete",
       "pixellab_object_id": "5c55e2df-28eb-4bd3-ac02-0410dd7bb250",
       "sprite": "chimney_stacks/chimney_stack_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_002",
+      "rel": "cliff_falls/cliff_fall_002",
+      "name": "A fine misting veil 002 \u00b7 lit",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_ON",
+      "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a fine misting veil, splitting into two threads midway, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 17.62,
+        "world_px_height": 663,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d854723a-5cab-47f3-9600-713be3138b15",
+      "sprite": "cliff_falls/cliff_fall_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
