@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin — never municipal.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin — never municipal. [2026-08-14] SPECIAL WAVE 3 (his: 'if you gonna give me special items you have to come up with something new' — the old specials are full): sleeping giants under the turf, inland whale bones, door trees, giant eggs, floating stones, sky stairs ending in air, singing stones bored by wind, giant feathers planted like monuments, petrified waves, cocoon trees, battle marks, tar pools.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -5986,6 +5986,414 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
+    },
+    {
+      "rank": 160,
+      "id": "sleeping_giants",
+      "prefix": "sleeping_giant",
+      "name": "Sleeping Giant",
+      "quota": 3,
+      "description": "a grassy hillock that is unmistakably a sleeping figure under the turf — the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass",
+      "world_height_m": [
+        2.0,
+        3.5
+      ],
+      "art_size": 192,
+      "variety": [
+        "sleeping giant",
+        "weathered sleeping giant",
+        "ancient sleeping giant"
+      ],
+      "modifiers": [
+        "one stone hand outstretched",
+        "a knee breaking the turf",
+        "the head end mossed over",
+        "flowers growing along the spine",
+        "a birch rooted on the shoulder",
+        "stone fingers curled around a boulder"
+      ],
+      "glow_concepts": [
+        "a slow breathing glow beneath the turf",
+        "light between the stone fingers",
+        "soul-light seeping along the spine"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 161,
+      "id": "whale_bones",
+      "prefix": "whale_bone",
+      "name": "Whale Bones",
+      "quota": 3,
+      "description": "the enormous ribcage and jaw of a whale lying in a green meadow far from any sea, bones bleached and lichen-mapped, grass growing through",
+      "world_height_m": [
+        2.5,
+        4.5
+      ],
+      "art_size": 256,
+      "variety": [
+        "whale bones",
+        "weathered whale bones",
+        "ancient whale bones"
+      ],
+      "modifiers": [
+        "the jaw propped open like an arch",
+        "half the ribs fallen inward",
+        "a path worn through the ribcage",
+        "barnacles still on the jawbone",
+        "sunk to the spine in turf",
+        "a nest in the eye socket"
+      ],
+      "glow_concepts": [
+        "soul-light drifting inside the ribs",
+        "the bones glowing white as moonlight",
+        "light pooling in the open jaw"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 162,
+      "id": "door_trees",
+      "prefix": "door_tree",
+      "name": "Door Tree",
+      "quota": 3,
+      "description": "a living tree with a real wooden door fitted into its trunk, hinges set into the bark, a worn step of stone at its foot",
+      "world_height_m": [
+        3.0,
+        5.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "door tree",
+        "weathered door tree",
+        "ancient door tree"
+      ],
+      "modifiers": [
+        "door standing slightly open",
+        "a tiny window above the door",
+        "iron knocker shaped like a leaf",
+        "two doors on one trunk",
+        "roots grown over the threshold",
+        "a letter slot in the planks"
+      ],
+      "glow_concepts": [
+        "warm light spilling from the gap",
+        "the keyhole glowing",
+        "light in the little window"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 163,
+      "id": "giant_eggs",
+      "prefix": "giant_egg",
+      "name": "Giant Egg",
+      "quota": 3,
+      "description": "an enormous speckled egg resting in a rough nest of branches on the ground, taller than a person's waist, shell cracked at one end",
+      "world_height_m": [
+        1.0,
+        1.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "giant egg",
+        "weathered giant egg",
+        "ancient giant egg"
+      ],
+      "modifiers": [
+        "hatched and empty",
+        "perfectly whole and warm",
+        "two eggs, one broken",
+        "moss growing on the shell",
+        "the nest half-collapsed",
+        "shell fragments scattered around"
+      ],
+      "glow_concepts": [
+        "light glowing through the shell",
+        "the crack shining bright",
+        "a pulse of warm light inside"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 164,
+      "id": "floating_stones",
+      "prefix": "floating_stone",
+      "name": "Floating Stone",
+      "quota": 3,
+      "description": "several rough boulders hanging motionless in the air above their own shadowed hollow in the grass, held up by nothing at all",
+      "world_height_m": [
+        1.2,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "floating stone",
+        "weathered floating stone",
+        "ancient floating stone"
+      ],
+      "modifiers": [
+        "one large stone with three small orbiting",
+        "stacked in an impossible column",
+        "tilted as if mid-fall",
+        "grass hanging from their undersides",
+        "a chain dangling from the lowest",
+        "turning very slowly"
+      ],
+      "glow_concepts": [
+        "light glowing beneath each stone",
+        "soul-light in the gap they left",
+        "the undersides shining softly"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 165,
+      "id": "sky_stairs",
+      "prefix": "sky_stair",
+      "name": "Sky Stair",
+      "quota": 3,
+      "description": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above",
+      "world_height_m": [
+        2.5,
+        4.5
+      ],
+      "art_size": 192,
+      "variety": [
+        "sky stair",
+        "weathered sky stair",
+        "ancient sky stair"
+      ],
+      "modifiers": [
+        "seven steps and gone",
+        "crumbling at the top step",
+        "ivy up the side of the flight",
+        "a boot left on the third step",
+        "spiralling as it rises",
+        "the last step broken in half"
+      ],
+      "glow_concepts": [
+        "each tread glowing faintly upward",
+        "light where the stair ends",
+        "soul-lights drifting off the top step"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 166,
+      "id": "singing_stones",
+      "prefix": "singing_stone",
+      "name": "Singing Stone",
+      "quota": 3,
+      "description": "tall standing stones bored through with round holes that the wind plays, edges worn smooth by centuries of air",
+      "world_height_m": [
+        1.4,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "singing stone",
+        "weathered singing stone",
+        "ancient singing stone"
+      ],
+      "modifiers": [
+        "a single stone, many holes",
+        "three stones in a row",
+        "holes lined with copper",
+        "one hole big enough to look through",
+        "frost rimming every opening",
+        "lichen ringing the holes"
+      ],
+      "glow_concepts": [
+        "light streaming through the holes",
+        "the stone humming with visible light",
+        "glow-moss inside each bore"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 167,
+      "id": "giant_feathers",
+      "prefix": "giant_feather",
+      "name": "Giant Feather",
+      "quota": 3,
+      "description": "a single enormous feather planted quill-down in the earth like a monument, barbs taller than a person, faintly iridescent",
+      "world_height_m": [
+        1.6,
+        3.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "giant feather",
+        "weathered giant feather",
+        "ancient giant feather"
+      ],
+      "modifiers": [
+        "black raven-feather",
+        "white swan-feather",
+        "barred owl-feather",
+        "half-stripped to the shaft",
+        "bent by the wind",
+        "two crossed feathers"
+      ],
+      "glow_concepts": [
+        "the barbs glowing along their length",
+        "light running up the shaft",
+        "an iridescent shimmer moving across it"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 168,
+      "id": "petrified_waves",
+      "prefix": "petrified_wave",
+      "name": "Petrified Wave",
+      "quota": 3,
+      "description": "a breaking wave turned entirely to grey stone, crest curled and frozen mid-fall, standing alone in dry grass",
+      "world_height_m": [
+        2.0,
+        3.5
+      ],
+      "art_size": 192,
+      "variety": [
+        "petrified wave",
+        "weathered petrified wave",
+        "ancient petrified wave"
+      ],
+      "modifiers": [
+        "the crest just about to break",
+        "spray frozen as stone droplets",
+        "cracked along the curl",
+        "seaweed still dried to its face",
+        "two waves meeting",
+        "half-buried in the turf"
+      ],
+      "glow_concepts": [
+        "blue light caught inside the stone crest",
+        "the spray droplets glowing",
+        "light rippling across the face"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 169,
+      "id": "cocoon_trees",
+      "prefix": "cocoon_tree",
+      "name": "Cocoon Tree",
+      "quota": 3,
+      "description": "a bare tree hung with enormous pale silk cocoons the size of barrels, silk strands catching between the branches",
+      "world_height_m": [
+        2.5,
+        4.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "cocoon tree",
+        "weathered cocoon tree",
+        "ancient cocoon tree"
+      ],
+      "modifiers": [
+        "one cocoon split open and empty",
+        "cocoons wrapped tight and new",
+        "silk sagging heavy with dew",
+        "a single huge cocoon",
+        "frost-stiffened silk",
+        "cocoons at the very top only"
+      ],
+      "glow_concepts": [
+        "a soft glow inside each cocoon",
+        "one cocoon blazing bright",
+        "light travelling along the silk strands"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 170,
+      "id": "battle_marks",
+      "prefix": "battle_mark",
+      "name": "Battle Mark",
+      "quota": 3,
+      "description": "a cluster of broken spears and a split shield driven into the turf where something was decided long ago, grass grown high around them",
+      "world_height_m": [
+        1.2,
+        2.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "battle mark",
+        "weathered battle mark",
+        "ancient battle mark"
+      ],
+      "modifiers": [
+        "a helm hung on the tallest spear",
+        "shafts snapped at different heights",
+        "the shield sunk edge-down",
+        "wildflowers claiming the ground",
+        "one spear still upright and whole",
+        "rust-red streaks down the shafts"
+      ],
+      "glow_concepts": [
+        "soul-lights hovering at spear height",
+        "the shield boss glowing",
+        "light in the grass between them"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "rank": 171,
+      "id": "tar_pools",
+      "prefix": "tar_pool",
+      "name": "Tar Pool",
+      "quota": 3,
+      "description": "a small pool of black shining tar in a stone hollow, thick and slow, ancient bones caught half-sunk at its edge",
+      "world_height_m": [
+        0.4,
+        0.9
+      ],
+      "art_size": 128,
+      "variety": [
+        "tar pool",
+        "weathered tar pool",
+        "ancient tar pool"
+      ],
+      "modifiers": [
+        "a bubble rising slowly",
+        "a single antler breaking the surface",
+        "dried and cracked at the rim",
+        "reflecting like black glass",
+        "reeds dying at the edge",
+        "a bird footprint trail into it"
+      ],
+      "glow_concepts": [
+        "the surface glowing with drifting lights",
+        "a bubble lit from within",
+        "soul-light trapped under the skin"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "lore_fit": "A landmark a place is remembered by."
     }
   ],
   "modifier_pools": {
