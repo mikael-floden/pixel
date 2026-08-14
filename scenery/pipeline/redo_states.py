@@ -83,7 +83,14 @@ def main():
                 try:
                     d = tv.finalize(client, rel, man, st, oid, src, glow)
                     old = superseded.pop((rel, st), None)
-                    if old and old != oid:
+                    # NEVER delete the piece's own base object. For a LIGHTS_ON
+                    # tree the anchor state is LIT_1, and the anchor entry stores
+                    # the PIECE's pixellab_object_id -- so regenerating it and
+                    # deleting the "superseded" object destroyed the source every
+                    # future state is generated from. It killed four trees
+                    # (tree_012/028/044/060) before it showed up as a 404.
+                    base = (factory.read_manifest(rel) or {}).get("pixellab_object_id")
+                    if old and old != oid and old != base:
                         try:
                             client.delete_object(old)
                         except PixelLabError:

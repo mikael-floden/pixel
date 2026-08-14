@@ -132,7 +132,8 @@ def main():
                 try:
                     d = tv.finalize(client, rel, man, s, oid, src, glow)
                     old_oid = superseded.pop((rel, s), None)
-                    if old_oid and old_oid != oid:
+                    base = (factory.read_manifest(rel) or {}).get("pixellab_object_id")
+                    if old_oid and old_oid != oid and old_oid != base:
                         try:
                             client.delete_object(old_oid)
                         except PixelLabError:
