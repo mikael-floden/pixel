@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:54:37+00:00",
+  "id": "market_stall_006",
+  "group": "market_stalls",
+  "rank": 49,
+  "index": 6,
+  "name": "Potter's stall, stacked crockery 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "potter's stall, stacked crockery",
+  "modifier": "patched with mismatched materials",
+  "glow_concept": "paper lanterns strung along the canopy edge",
+  "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, potter's stall, stacked crockery, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: paper lanterns strung along the canopy edge",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "market_stalls/market_stall_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.28,
+    "world_px_height": 86,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4ddce2fd-41b3-40a3-a7fd-96f9bb32644d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

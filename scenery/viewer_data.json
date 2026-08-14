@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 581,
+  "scenery_count": 582,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -349,7 +349,7 @@
       "id": "market_stalls",
       "name": "Market Stall",
       "quota": 4,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 50,
@@ -960,7 +960,7 @@
     "lantern_stands": 6,
     "letter_boxes": 1,
     "lightning_oaks": 1,
-    "market_stalls": 4,
+    "market_stalls": 5,
     "maypoles": 2,
     "meteor_stones": 1,
     "moss_clumps": 5,
@@ -7684,6 +7684,28 @@
       "status": "complete",
       "pixellab_object_id": "d464941a-d025-45b2-a98a-8155229e8ffd",
       "sprite": "market_stalls/market_stall_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "market_stall_006",
+      "rel": "market_stalls/market_stall_006",
+      "name": "Potter's stall, stacked crockery 006 \u00b7 lit",
+      "category": "market_stalls",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, potter's stall, stacked crockery, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: paper lanterns strung along the canopy edge",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.28,
+        "world_px_height": 86,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4ddce2fd-41b3-40a3-a7fd-96f9bb32644d",
+      "sprite": "market_stalls/market_stall_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
