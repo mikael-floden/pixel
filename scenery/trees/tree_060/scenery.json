@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:15:23+00:00",
+  "id": "tree_060",
+  "group": "trees",
+  "rank": 1,
+  "index": 60,
+  "name": "Rowan with red berries 060 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rowan with red berries",
+  "modifier": "with thick exposed roots",
+  "glow_concept": "carved initials glowing ember-orange in the bark",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, rowan with red berries, with thick exposed roots, towering, many times human height, self-emissive at night, softly radiating light: carved initials glowing ember-orange in the bark",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_060/sprite.webp",
+  "placement": {
+    "world_height_m": 4.6,
+    "world_px_height": 173,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "04f85d01-ec45-49fc-81e4-1cb1b31b009b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
