@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:32:24+00:00",
+  "id": "cliff_vine_024",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 24,
+  "name": "Pale lichen-strung fall 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale lichen-strung fall",
+  "modifier": "stems thick as arms at the top",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, pale lichen-strung fall, stems thick as arms at the top, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
+  "placement": {
+    "world_height_m": 10.81,
+    "world_px_height": 407,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

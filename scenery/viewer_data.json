@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 659,
+  "scenery_count": 630,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,14 +13,14 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 63
+      "done": 58
     },
     {
       "rank": 2,
       "id": "stones",
       "name": "Stone",
       "quota": 150,
-      "done": 27
+      "done": 25
     },
     {
       "rank": 3,
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 8
+      "done": 6
     },
     {
       "rank": 102,
@@ -1091,35 +1091,35 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 6
+      "done": 0
     },
     {
       "rank": 156,
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 3
+      "done": 1
     },
     {
       "rank": 157,
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 7
+      "done": 2
     },
     {
       "rank": 158,
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 5
+      "done": 2
     },
     {
       "rank": 159,
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 4
+      "done": 0
     },
     {
       "rank": 160,
@@ -1235,14 +1235,12 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 3,
+    "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 4,
-    "cliff_mosses": 5,
-    "cliff_roots": 6,
-    "cliff_shrubs": 7,
-    "cliff_vines": 8,
+    "cliff_mosses": 2,
+    "cliff_shrubs": 2,
+    "cliff_vines": 6,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -1311,7 +1309,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 27,
+    "stones": 25,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -1321,7 +1319,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 63,
+    "trees": 58,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -4101,50 +4099,6 @@
       "animations": []
     },
     {
-      "id": "cliff_fall_002",
-      "rel": "cliff_falls/cliff_fall_002",
-      "name": "A fine misting veil 002 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a fine misting veil, splitting into two threads midway, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 17.62,
-        "world_px_height": 663,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d854723a-5cab-47f3-9600-713be3138b15",
-      "sprite": "cliff_falls/cliff_fall_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_003",
-      "rel": "cliff_falls/cliff_fall_003",
-      "name": "A thin silver thread 003",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
-      "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a thin silver thread, blown sideways at the bottom, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.95,
-        "world_px_height": 337,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4ded6316-6b5a-43b9-a582-a50d143ef38b",
-      "sprite": "cliff_falls/cliff_fall_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_fall_004",
       "rel": "cliff_falls/cliff_fall_004",
       "name": "A broad white curtain 004 \u00b7 lit",
@@ -4343,94 +4297,6 @@
       "animations": []
     },
     {
-      "id": "cliff_ledgetree_001",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_001",
-      "name": "Wind-bent pine 001",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_OFF",
-      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, wind-bent pine, roots spilling over the ledge lip, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.27,
-        "world_px_height": 274,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8bb02f8f-aeef-4586-a8b7-9d9bb98f9572",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_002",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_002",
-      "name": "White birch leaning far out 002 \u00b7 lit",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_ON",
-      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, white birch leaning far out, grass and flowers around its base, towering, many times human height, self-emissive at night, softly radiating light: fireflies around its crown",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.92,
-        "world_px_height": 261,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "51e8f0b2-79a2-4569-a679-8cea0f93e21f",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_003",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_003",
-      "name": "Gnarled oak on a wide ledge 003",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_OFF",
-      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, gnarled oak on a wide ledge, half its roots in air, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.41,
-        "world_px_height": 241,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e03863a4-1244-4e45-9cad-b3e6ff5b9497",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_ledgetree_004",
-      "rel": "cliff_ledgetrees/cliff_ledgetree_004",
-      "name": "Autumn-gold larch 004 \u00b7 lit",
-      "category": "cliff_ledgetrees",
-      "lights": "LIGHTS_ON",
-      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, autumn-gold larch, with a rope swing hanging from it, towering, many times human height, self-emissive at night, softly radiating light: lanterns hung in its branches",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.41,
-        "world_px_height": 204,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7855d514-918a-4dd4-9b56-7e645d2e9b0d",
-      "sprite": "cliff_ledgetrees/cliff_ledgetree_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_001",
       "rel": "cliff_mosses/cliff_moss_001",
       "name": "Grey-green lichen crust 001",
@@ -4449,72 +4315,6 @@
       "status": "complete",
       "pixellab_object_id": "58a85adf-b1df-4282-944f-9d6c60a6470d",
       "sprite": "cliff_mosses/cliff_moss_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_002",
-      "rel": "cliff_mosses/cliff_moss_002",
-      "name": "Deep emerald cushion moss 002 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, deep emerald cushion moss, broken by bare rock, tall, about three times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.37,
-        "world_px_height": 165,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f8e68627-7cb4-4570-9e0b-19e111fdd2d9",
-      "sprite": "cliff_mosses/cliff_moss_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_003",
-      "rel": "cliff_mosses/cliff_moss_003",
-      "name": "Moss with tiny ferns through it 003",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, moss with tiny ferns through it, with liverworts at the base, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 7.98,
-        "world_px_height": 300,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "30245809-f78f-4928-adcc-43d7d19845a6",
-      "sprite": "cliff_mosses/cliff_moss_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_004",
-      "rel": "cliff_mosses/cliff_moss_004",
-      "name": "Frost-tipped winter moss 004 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, frost-tipped winter moss, a tall narrow stripe down the wall, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.45,
-        "world_px_height": 318,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4d222c38-49c8-4336-bbac-43aab1a0deca",
-      "sprite": "cliff_mosses/cliff_moss_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4541,160 +4341,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_003",
-      "rel": "cliff_roots/cliff_root_003",
-      "name": "Two great roots twined together 003",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, two great roots twined together, a hollow behind the roots, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.07,
-        "world_px_height": 379,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bc1f5ef9-9a28-4656-b8a0-cff4f1a3f4b6",
-      "sprite": "cliff_roots/cliff_root_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_004",
-      "rel": "cliff_roots/cliff_root_004",
-      "name": "Pale bleached roots 004 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, pale bleached roots, roots ending in a knot above the ground, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.96,
-        "world_px_height": 450,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "c8f2d491-31a4-4ad2-af45-3c38e6b1e2bf",
-      "sprite": "cliff_roots/cliff_root_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_005",
-      "rel": "cliff_roots/cliff_root_005",
-      "name": "Dark wet roots 005",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, dark wet roots, clumps of soil still held aloft, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.52,
-        "world_px_height": 321,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "69e6022d-329e-4b1a-8757-96b9980fbcf0",
-      "sprite": "cliff_roots/cliff_root_005/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_006",
-      "rel": "cliff_roots/cliff_root_006",
-      "name": "Moss-furred roots 006 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, moss-furred roots, roots braided into a rope, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.08,
-        "world_px_height": 342,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "ab3580e1-14c0-4ba1-92d0-7d62f1bd4919",
-      "sprite": "cliff_roots/cliff_root_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_007",
-      "rel": "cliff_roots/cliff_root_007",
-      "name": "Roots with ferns rooted between them 007",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, roots with ferns rooted between them, a wide fan of roots spreading as it falls, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.39,
-        "world_px_height": 391,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4c402acd-62b0-4b29-8ef5-4a661e2d3b1f",
-      "sprite": "cliff_roots/cliff_root_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_008",
-      "rel": "cliff_roots/cliff_root_008",
-      "name": "Fine hair-roots in a dense veil 008 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, fine hair-roots in a dense veil, one great root twisted alone down the face, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.44,
-        "world_px_height": 431,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f0bfb45e-c23e-4581-8f13-75833fe8e002",
-      "sprite": "cliff_roots/cliff_root_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_shrub_001",
-      "rel": "cliff_shrubs/cliff_shrub_001",
-      "name": "Flowering broom in yellow 001",
-      "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
-      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, flowering broom in yellow, half its branches dead, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 1.88,
-        "world_px_height": 71,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "db690361-4f6b-4a57-8888-4c3a3052a7da",
-      "sprite": "cliff_shrubs/cliff_shrub_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_shrub_002",
       "rel": "cliff_shrubs/cliff_shrub_002",
       "name": "Wind-flattened juniper 002 \u00b7 lit",
@@ -4717,72 +4363,6 @@
       "animations": []
     },
     {
-      "id": "cliff_shrub_003",
-      "rel": "cliff_shrubs/cliff_shrub_003",
-      "name": "Stunted twisted pine 003",
-      "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
-      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, stunted twisted pine, growing from a narrow crack, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.95,
-        "world_px_height": 149,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "71523695-3c76-46af-9a48-08121f9e9a4c",
-      "sprite": "cliff_shrubs/cliff_shrub_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_shrub_004",
-      "rel": "cliff_shrubs/cliff_shrub_004",
-      "name": "Grey-leaved sea buckthorn 004 \u00b7 lit",
-      "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
-      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, grey-leaved sea buckthorn, perched on a tiny ledge, tall, about three times human height, self-emissive at night, softly radiating light: the leaves shining faintly",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.45,
-        "world_px_height": 130,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "23afea37-daab-4e5f-ad07-f10b74b0e351",
-      "sprite": "cliff_shrubs/cliff_shrub_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_shrub_005",
-      "rel": "cliff_shrubs/cliff_shrub_005",
-      "name": "Autumn-red rowan sapling 005",
-      "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
-      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, autumn-red rowan sapling, hanging almost upside down, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 1.91,
-        "world_px_height": 72,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "3c3ddc39-092a-43a4-95a4-5efd60a9fa50",
-      "sprite": "cliff_shrubs/cliff_shrub_005/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_shrub_006",
       "rel": "cliff_shrubs/cliff_shrub_006",
       "name": "Dark holly bush 006 \u00b7 lit",
@@ -4801,28 +4381,6 @@
       "status": "complete",
       "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
       "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_shrub_008",
-      "rel": "cliff_shrubs/cliff_shrub_008",
-      "name": "Wind-flattened juniper 008 \u00b7 lit",
-      "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
-      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, wind-flattened juniper, a bird nest in its crown, tall, about three times human height, self-emissive at night, softly radiating light: light in the crack at its root",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.58,
-        "world_px_height": 135,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "3dffd0b1-0a08-48f9-a7c9-b1cccaaf5246",
-      "sprite": "cliff_shrubs/cliff_shrub_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4893,50 +4451,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_013",
-      "rel": "cliff_vines/cliff_vine_013",
-      "name": "Blue-flowered creeper fall 013",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, blue-flowered creeper fall, with a bird nest deep in the leaves, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.24,
-        "world_px_height": 273,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9a811d0e-08ea-4a85-91d2-bef331167179",
-      "sprite": "cliff_vines/cliff_vine_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_016",
-      "rel": "cliff_vines/cliff_vine_016",
-      "name": "Dark green ivy fall 016 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, dark green ivy fall, ending high, swinging free, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 15.09,
-        "world_px_height": 568,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "34ef7983-5113-4516-a1d1-7c1e5de9c2d9",
-      "sprite": "cliff_vines/cliff_vine_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_018",
       "rel": "cliff_vines/cliff_vine_018",
       "name": "White-flowering bindweed fall 018 \u00b7 lit",
@@ -4959,24 +4473,24 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_020",
-      "rel": "cliff_vines/cliff_vine_020",
-      "name": "Yellow honeysuckle fall 020 \u00b7 lit",
+      "id": "cliff_vine_024",
+      "rel": "cliff_vines/cliff_vine_024",
+      "name": "Pale lichen-strung fall 024 \u00b7 lit",
       "category": "cliff_vines",
       "lights": "LIGHTS_ON",
-      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, yellow honeysuckle fall, two falls side by side, one longer, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+      "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, pale lichen-strung fall, stems thick as arms at the top, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
       "view": "low top-down",
       "size": 256,
       "placement": {
-        "world_height_m": 10.47,
-        "world_px_height": 394,
+        "world_height_m": 10.81,
+        "world_px_height": 407,
         "character_height_px": 64,
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "227ff4e9-2d1e-47ef-a972-09e009124901",
-      "sprite": "cliff_vines/cliff_vine_020/sprite.webp",
+      "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
+      "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11334,28 +10848,6 @@
       "animations": []
     },
     {
-      "id": "stone_023",
-      "rel": "stones/stone_023",
-      "name": "Red iron-stained stone 023",
-      "category": "stones",
-      "lights": "LIGHTS_OFF",
-      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, with a small sapling beside it, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.66,
-        "world_px_height": 25,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1319c2a3-7148-4cf7-b63b-1134cb982a0f",
-      "sprite": "stones/stone_023/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "stone_024",
       "rel": "stones/stone_024",
       "name": "Smooth river-worn boulder 024 \u00b7 lit",
@@ -11462,28 +10954,6 @@
       "status": "complete",
       "pixellab_object_id": "11b51c4c-b08d-4503-a8b0-e20c1c13b550",
       "sprite": "stones/stone_030/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "stone_032",
-      "rel": "stones/stone_032",
-      "name": "Snow-dusted winter stone 032 \u00b7 lit",
-      "category": "stones",
-      "lights": "LIGHTS_ON",
-      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, snow-dusted winter stone, with butterflies resting on it, waist-high, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.91,
-        "world_px_height": 34,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f7416e48-d7d7-4dd7-9708-546a32325f70",
-      "sprite": "stones/stone_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -13534,28 +13004,6 @@
       "animations": []
     },
     {
-      "id": "tree_027",
-      "rel": "trees/tree_027",
-      "name": "Tall scots pine 027",
-      "category": "trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, tall scots pine, with a rabbit burrow at the base, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.12,
-        "world_px_height": 117,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5753f642-523c-4337-b20c-7f3ec7de76e2",
-      "sprite": "trees/tree_027/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "tree_028",
       "rel": "trees/tree_028",
       "name": "Stout dead oak, thick bare limbs 028 \u00b7 lit",
@@ -13666,28 +13114,6 @@
       "animations": []
     },
     {
-      "id": "tree_033",
-      "rel": "trees/tree_033",
-      "name": "Crooked windswept pine 033",
-      "category": "trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, crooked windswept pine, with berries scattered beneath it, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.02,
-        "world_px_height": 114,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "ddd83542-f8a6-406f-9689-4eacfba621b0",
-      "sprite": "trees/tree_033/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "tree_034",
       "rel": "trees/tree_034",
       "name": "Elder heavy with black berries 034 \u00b7 lit",
@@ -13750,28 +13176,6 @@
       "status": "complete",
       "pixellab_object_id": "87e13399-f871-4c32-a6e6-fb0bc36b6942",
       "sprite": "trees/tree_036/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "tree_037",
-      "rel": "trees/tree_037",
-      "name": "Coastal windswept hawthorn, leaning hard 037",
-      "category": "trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, coastal windswept hawthorn, leaning hard, with butterflies resting on it, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.0,
-        "world_px_height": 113,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8b1e67c6-05dc-42b2-9891-5dee4f03ae23",
-      "sprite": "trees/tree_037/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -14260,28 +13664,6 @@
       "animations": []
     },
     {
-      "id": "tree_061",
-      "rel": "trees/tree_061",
-      "name": "Crab apple, small tart fruit 061",
-      "category": "trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, crab apple, small tart fruit, with butterflies resting on it, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.34,
-        "world_px_height": 126,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "70ded8d2-92cc-4636-82b3-9297e3ef8d46",
-      "sprite": "trees/tree_061/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "tree_062",
       "rel": "trees/tree_062",
       "name": "Lightning-split trunk 062 \u00b7 lit",
@@ -14366,28 +13748,6 @@
       "status": "complete",
       "pixellab_object_id": "27e3a0c0-d2c9-4441-8125-05ddba6b571d",
       "sprite": "trees/tree_066/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "tree_068",
-      "rel": "trees/tree_068",
-      "name": "Snow-dusted winter fir 068 \u00b7 lit",
-      "category": "trees",
-      "lights": "LIGHTS_ON",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, snow-dusted winter fir, scarred by an old lightning strike, towering, many times human height, self-emissive at night, softly radiating light: golden sap veins glowing through bark cracks",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.56,
-        "world_px_height": 172,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "3cec06a3-cac8-4e34-903d-03f0e2abe7ab",
-      "sprite": "trees/tree_068/sprite.webp",
       "rotations": {},
       "animations": []
     },
