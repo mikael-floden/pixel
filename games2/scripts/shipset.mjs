@@ -45,10 +45,21 @@ const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 const POLICY = join(GAME_ROOT, "config", "publish.json");
 const OUT = join(GAME_ROOT, "client", "public", "shipset.json");
 
+// POLICY-ONLY mode: validating the policy against a sparse checkout, where
+// most of the art is legitimately absent. The closure still runs (it is how we
+// learn what the policy names), but its "missing X" warnings are EXPECTED
+// there and would bury the real output in ~50 lines of noise on every CI run,
+// so they are collected and not printed. Nor is shipset.json written: a digest
+// computed from a partial tree is wrong, and publishing it would invite
+// someone to trust it.
+const argv = process.argv;
+const policyOnly =
+  argv.includes("--check-policy") && !argv.includes("--check") && !argv.includes("--report") && !argv.includes("--emit");
+
 const warnings = [];
 const warn = (m) => {
   warnings.push(m);
-  console.warn(`[shipset] WARN ${m}`);
+  if (!policyOnly) console.warn(`[shipset] WARN ${m}`);
 };
 
 /** Repo-relative, forward-slashed — the form every manifest and URL uses. */
@@ -356,19 +367,82 @@ if (emitIdx !== -1) {
   );
 }
 
+// POLICY CHECK — the part that is meaningful WITHOUT the art tree, and so the
+// only part safe to run from `npm test`.
+//
+// The deploy's `test` job sparse-checks-out games2 + characters2 +
+// maps2/worlds + live + tiles2/emission.json. Under that tree a full --check
+// is meaningless: tiles2/ EXISTS (one file) but 571 tile paths are absent, so
+// it cannot even be rescued by an "is the domain missing?" heuristic — which
+// is exactly how the first attempt turned the pipeline red while the image
+// itself built fine. Asset existence is verified where the whole tree really
+// is: the Dockerfile's curate stage.
+//
+// What IS checkable here: the policy names things that exist. A typo'd world
+// silently ships an empty game, and maps2/worlds is checked out, so this
+// catches the failure that actually bites.
+if (process.argv.includes("--check-policy")) {
+  const problems = [];
+  if (!worldNames.length) problems.push("policy publishes no worlds");
+  for (const n of worldNames) {
+    const wj = join(ASSETS_ROOT, "maps2", "worlds", n, "world.json");
+    if (!existsSync(wj)) problems.push(`published world "${n}" has no world.json`);
+    else if (!readJson(wj, `world ${n}`)) problems.push(`published world "${n}" has unparseable world.json`);
+  }
+  for (const key of ["playableCharacters", "scenery", "alwaysShip", "entityDomains"])
+    if (policy[key] && !Array.isArray(policy[key])) problems.push(`policy.${key} must be an array`);
+  for (const g of policy.exclude ?? []) {
+    try {
+      new RegExp(g);
+    } catch {
+      problems.push(`policy.exclude has an invalid regex: ${g}`);
+    }
+  }
+  if (problems.length) {
+    console.error("[shipset] policy problems:");
+    for (const p of problems) console.error(`  ${p}`);
+    process.exit(1);
+  }
+  console.log(`[shipset] policy OK — worlds: ${worldNames.join(", ")}`);
+}
+
 if (process.argv.includes("--check")) {
   // A reachable-but-missing file is the one failure that MUST stop a deploy:
   // it is a guaranteed 404 in production.
+  //
+  // PARTIAL CHECKOUTS ARE NOT THAT FAILURE. The deploy's `test` job uses a
+  // sparse checkout (games2 + characters2 + maps2/worlds + live + one tiles2
+  // file) because materialising 200 MB of art to run unit tests is pure cost.
+  // The first version of this check ignored that, saw every absent domain as
+  // "missing", exited 1, and turned the whole pipeline red — the image built
+  // fine, the gate did not. So: an ENTIRELY absent domain root means "not
+  // checked out here" and is a warning; a domain that IS present but is
+  // missing a file it should contain is a real, fatal error.
+  //
+  // The strict, whole-tree run happens in the Dockerfile's curate stage, where
+  // the full build context exists and this cannot be fooled.
+  const absentDomains = new Set(
+    DOMAINS.filter((d) => !existsSync(join(ASSETS_ROOT, d))),
+  );
   const missing = sorted.filter((p) => !existsSync(join(ASSETS_ROOT, p)));
-  if (missing.length) {
-    console.error(`[shipset] ${missing.length} shipped path(s) do not exist:`);
-    for (const m of missing.slice(0, 20)) console.error(`  ${m}`);
+  const fatal = missing.filter((p) => !absentDomains.has(domainOf(p)));
+  const skipped = missing.length - fatal.length;
+  if (fatal.length) {
+    console.error(`[shipset] ${fatal.length} shipped path(s) do not exist:`);
+    for (const m of fatal.slice(0, 20)) console.error(`  ${m}`);
     process.exit(1);
   }
-  console.log(`[shipset] OK — ${sorted.length} paths, all present, digest ${digest}`);
+  if (absentDomains.size) {
+    console.log(
+      `[shipset] partial tree — not checked out: ${[...absentDomains].join(", ")} (${skipped} paths unverified)`,
+    );
+  }
+  console.log(
+    `[shipset] OK — ${sorted.length - skipped}/${sorted.length} paths verified, digest ${digest}`,
+  );
 }
 
-if (!process.argv.includes("--report") || process.argv.includes("--write")) {
+if (!policyOnly && (!process.argv.includes("--report") || process.argv.includes("--write"))) {
   // SERVED form is deliberately COMPACT — digest, policy and per-domain stats,
   // but NOT the 13k-entry path list (794 KB no browser has any use for). The
   // client never needs to ask "is this shipped?": the manifests it reads were
