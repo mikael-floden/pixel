@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 564,
+  "scenery_count": 565,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -279,7 +279,7 @@
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
       "quota": 24,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 40,
@@ -994,7 +994,7 @@
     "sundials": 2,
     "tables": 9,
     "telegraph_poles": 4,
-    "toadstool_rings": 12,
+    "toadstool_rings": 13,
     "torch_posts": 17,
     "trailing_planters": 2,
     "trees": 25,
@@ -11204,6 +11204,28 @@
       "status": "complete",
       "pixellab_object_id": "2e5af1bc-dba5-4a4b-9037-46cd881a9f28",
       "sprite": "toadstool_rings/toadstool_ring_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "toadstool_ring_020",
+      "rel": "toadstool_rings/toadstool_ring_020",
+      "name": "Snow-dusted winter ring 020 \u00b7 lit",
+      "category": "toadstool_rings",
+      "lights": "LIGHTS_ON",
+      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, snow-dusted winter ring, lightly snow-dusted, tiny, only ankle-high, self-emissive at night, softly radiating light: faint curtain of light rising inside the ring",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.33,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f8be6b77-96b7-4f9b-bc80-306e461fb8f2",
+      "sprite": "toadstool_rings/toadstool_ring_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
