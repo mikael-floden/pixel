@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:57:46+00:00",
+  "id": "tree_083",
+  "group": "trees",
+  "rank": 1,
+  "index": 83,
+  "name": "Aspen with trembling round leaves 083",
+  "lights": "LIGHTS_OFF",
+  "variety": "aspen with trembling round leaves",
+  "modifier": "young and vigorous",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, aspen with trembling round leaves, young and vigorous, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_083/sprite.webp",
+  "placement": {
+    "world_height_m": 4.71,
+    "world_px_height": 177,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "24348411-b0e7-4fc7-93d5-4daf3b583f6b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
