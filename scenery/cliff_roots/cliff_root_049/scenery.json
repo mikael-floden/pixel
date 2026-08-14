@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:24:20+00:00",
+  "id": "cliff_root_049",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 49,
+  "name": "Roots with ferns rooted between them 049",
+  "lights": "LIGHTS_OFF",
+  "variety": "roots with ferns rooted between them",
+  "modifier": "a single slender root with slight bends",
+  "glow_concept": null,
+  "prompt": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, roots with ferns rooted between them, a single slender root with slight bends, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_049/sprite.webp",
+  "placement": {
+    "world_height_m": 11.78,
+    "world_px_height": 443,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9e95c927-5e93-4a6f-bbaf-fd5102670ab0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
