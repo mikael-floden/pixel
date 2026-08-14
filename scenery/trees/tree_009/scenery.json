@@ -44,10 +44,31 @@
       "difference_from_source": 0.388,
       "glow_score": 0.0521
     },
+    "LIT_3": {
+      "sprite": "trees/tree_009/lit_3/sprite.webp",
+      "pixellab_object_id": "0f85d954-c275-47b1-998d-31c7f2fc2d91",
+      "glow_concept": "iron lantern hung from a low branch",
+      "difference_from_source": 0.2902,
+      "glow_score": 0.0777
+    },
+    "LIT_4": {
+      "sprite": "trees/tree_009/lit_4/sprite.webp",
+      "pixellab_object_id": "dd8ddbf0-fef9-4bc8-94ff-e4c5db630da7",
+      "glow_concept": "golden sap veins glowing through bark cracks",
+      "difference_from_source": 0.2996,
+      "glow_score": 0.0781
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_009/sprite.webp",
       "pixellab_object_id": "542db258-acff-44ab-abaa-a3c07b0b37fc",
       "glow_score": 0.003
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_009/not_lit_10/sprite.webp",
+      "pixellab_object_id": "da99c7c9-1ca9-4822-939f-7fb56715bcda",
+      "glow_concept": null,
+      "difference_from_source": 0.5582,
+      "glow_score": 0.0079
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_009/not_lit_2/sprite.webp",
@@ -93,6 +114,13 @@
       "glow_concept": null,
       "difference_from_source": 0.7886,
       "glow_score": 0.0026
+    },
+    "NOT_LIT_9": {
+      "sprite": "trees/tree_009/not_lit_9/sprite.webp",
+      "pixellab_object_id": "36f1cbde-9a0f-4eeb-9f82-b937d91d30c5",
+      "glow_concept": null,
+      "difference_from_source": 0.4917,
+      "glow_score": 0.002
     }
   },
   "must_be_imbplemented_with_random_hflip": true
