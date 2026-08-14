@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:41:04+00:00",
+  "id": "cairn_024",
+  "group": "cairns",
+  "rank": 9,
+  "index": 24,
+  "name": "Wide low memorial cairn 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wide low memorial cairn",
+  "modifier": "heavily weathered and gnarled",
+  "glow_concept": "topmost stone glowing like a lantern",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, heavily weathered and gnarled, roughly six feet tall, human height, self-emissive at night, softly radiating light: topmost stone glowing like a lantern",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_024/sprite.webp",
+  "placement": {
+    "world_height_m": 1.55,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4fb51ce1-bd36-41ea-ae65-1236c3cbc0b8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
