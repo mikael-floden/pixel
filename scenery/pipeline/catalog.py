@@ -133,10 +133,11 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
         group.get("modifier_pool") or "", [])
     mod = _pick(pool, group["id"], "modifier", index) if pool else None
     body = f"{group['description']}, {variety}" + (f", {mod}" if mod else "")
-    if lights_on:
-        prompt = f"{body}, {scale}, {on_clause}: {glow}"
-    else:
-        prompt = f"{body}, {scale}, {off_clause}"
+    # The tail carries the two clauses that must NEVER be lost to the 1000-char
+    # trim: the human-anchored size cue and the lights promise. Handed to the
+    # runner separately so it trims the body instead (see loop.submit_piece).
+    tail = f", {scale}, {on_clause}: {glow}" if lights_on else f", {scale}, {off_clause}"
+    prompt = f"{body}{tail}"
 
     nice = variety.strip().rstrip(".")
     name = f"{nice[:1].upper()}{nice[1:]} {index:03d}" + (" · lit" if lights_on else "")
@@ -151,6 +152,8 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
         "modifier": mod,
         "glow_concept": glow if lights_on else None,
         "prompt": prompt,
+        "prompt_body": body,
+        "prompt_tail": tail,
         "size": int(group["art_size"]),
         "world_height_m": height,
     }

@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:27:50+00:00",
+  "id": "cliff_fall_017",
+  "group": "cliff_falls",
+  "rank": 156,
+  "index": 17,
+  "name": "Stepped, breaking on two ledges 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "stepped, breaking on two ledges",
+  "modifier": "sprawling in every direction at once",
+  "glow_concept": null,
+  "prompt": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, stepped, breaking on two ledges, sprawling in every direction at once, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_falls/cliff_fall_017/sprite.webp",
+  "placement": {
+    "world_height_m": 16.01,
+    "world_px_height": 603,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7a66fed1-51d3-4ed6-a606-4dfd5a2f06a9",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

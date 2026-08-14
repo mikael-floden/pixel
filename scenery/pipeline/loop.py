@@ -145,8 +145,18 @@ def submit_piece(client, cfg, group, spec):
     # the piece-specific tail rather than the style laws, which must survive.
     LIMIT = 1000
     if len(desc) > LIMIT:
-        keep = LIMIT - len(cfg["style_base"]) - 2
-        desc = f"{spec['prompt'][:max(0, keep)].rstrip(' ,;—-')}, {cfg['style_base']}"
+        # Trim the BODY (description/variety/modifier) and keep the tail. The
+        # first version cut the raw tail off `prompt`, which is precisely where
+        # the scale anchor and the LIGHTS_ON/OFF clause live — so every long
+        # prompt silently shipped with no size cue and no lights promise. That
+        # is how cliff_roots came out as a hero mega-root instead of the small
+        # detail it is configured to be (maintainer 2026-08-14: "I'm thinking
+        # small subtile detail at the mountain wall. Not a huge mega tree
+        # root."). Style laws and tail both survive; only the body gives way.
+        tail = spec.get("prompt_tail") or ""
+        keep = LIMIT - len(cfg["style_base"]) - len(tail) - 2
+        body = spec.get("prompt_body") or spec["prompt"]
+        desc = f"{body[:max(0, keep)].rstrip(' ,;—-')}{tail}, {cfg['style_base']}"
         print(f"  ~ prompt trimmed to {len(desc)} chars for {spec['id']}")
     if size <= 168:
         return client.submit_object(desc, size=size,
