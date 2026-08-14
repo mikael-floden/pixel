@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:32:53+00:00",
+  "id": "cliff_vine_022",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 22,
+  "name": "Berry-dotted bramble fall 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "berry-dotted bramble fall",
+  "modifier": "spilling over a ledge halfway down",
+  "glow_concept": "luminous sap veins glowing through the leaves",
+  "prompt": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, berry-dotted bramble fall, spilling over a ledge halfway down, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_022/sprite.webp",
+  "placement": {
+    "world_height_m": 13.7,
+    "world_px_height": 516,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d2b8647a-a07e-4751-81ab-7a712e595ee7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

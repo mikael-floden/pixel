@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 635,
+  "scenery_count": 636,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 3,
     "cliff_roots": 2,
     "cliff_shrubs": 3,
-    "cliff_vines": 7,
+    "cliff_vines": 8,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4580,6 +4580,28 @@
       "status": "complete",
       "pixellab_object_id": "6ebd05d0-2c86-4f4f-93fe-e47224391fb0",
       "sprite": "cliff_vines/cliff_vine_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_022",
+      "rel": "cliff_vines/cliff_vine_022",
+      "name": "Berry-dotted bramble fall 022 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, berry-dotted bramble fall, spilling over a ledge halfway down, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 13.7,
+        "world_px_height": 516,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d2b8647a-a07e-4751-81ab-7a712e595ee7",
+      "sprite": "cliff_vines/cliff_vine_022/sprite.webp",
       "rotations": {},
       "animations": []
     },
