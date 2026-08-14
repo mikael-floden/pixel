@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:02:34+00:00",
-  "id": "hedge_011",
+  "id": "hedge_901",
   "group": "hedges",
   "rank": 12,
-  "index": 11,
-  "name": "Neat boxwood hedge 011",
+  "index": 901,
+  "name": "Neat boxwood hedge 901",
   "lights": "LIGHTS_OFF",
   "variety": "neat boxwood hedge",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "hedges/hedge_011/sprite.webp",
+  "sprite": "hedges/hedge_901/sprite.webp",
   "placement": {
     "world_height_m": 1.02,
     "world_px_height": 38,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hedge_011",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

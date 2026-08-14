@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:04:52+00:00",
-  "id": "moss_clump_007",
+  "id": "moss_clump_903",
   "group": "moss_clumps",
   "rank": 45,
-  "index": 7,
-  "name": "Pillow moss hummock 007",
+  "index": 903,
+  "name": "Pillow moss hummock 903",
   "lights": "LIGHTS_OFF",
   "variety": "pillow moss hummock",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 48,
-  "sprite": "moss_clumps/moss_clump_007/sprite.webp",
+  "sprite": "moss_clumps/moss_clump_903/sprite.webp",
   "placement": {
     "world_height_m": 0.25,
     "world_px_height": 9,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "moss_clump_007",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

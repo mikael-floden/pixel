@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:29:14+00:00",
-  "id": "lantern_post_009",
+  "id": "lantern_post_901",
   "group": "lantern_posts",
   "rank": 5,
-  "index": 9,
-  "name": "Carved spiral post 009",
+  "index": 901,
+  "name": "Carved spiral post 901",
   "lights": "LIGHTS_OFF",
   "variety": "carved spiral post",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 64,
-  "sprite": "lantern_posts/lantern_post_009/sprite.webp",
+  "sprite": "lantern_posts/lantern_post_901/sprite.webp",
   "placement": {
     "world_height_m": 1.83,
     "world_px_height": 69,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "lantern_post_009",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

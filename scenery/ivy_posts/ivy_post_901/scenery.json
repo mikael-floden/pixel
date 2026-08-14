@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:24:14+00:00",
-  "id": "ivy_post_007",
+  "id": "ivy_post_901",
   "group": "ivy_posts",
   "rank": 41,
-  "index": 7,
-  "name": "Common green ivy, oak post 007",
+  "index": 901,
+  "name": "Common green ivy, oak post 901",
   "lights": "LIGHTS_OFF",
   "variety": "common green ivy, oak post",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "ivy_posts/ivy_post_007/sprite.webp",
+  "sprite": "ivy_posts/ivy_post_901/sprite.webp",
   "placement": {
     "world_height_m": 2.01,
     "world_px_height": 76,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "ivy_post_007",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

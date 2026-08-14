@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:08:12+00:00",
-  "id": "hedge_012",
+  "id": "hedge_900",
   "group": "hedges",
   "rank": 12,
-  "index": 12,
-  "name": "Hedge with bird nest tuft 012 \u00b7 lit",
+  "index": 900,
+  "name": "Hedge with bird nest tuft 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "hedge with bird nest tuft",
   "glow_concept": "small iron lanterns set into clipped niches",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "hedges/hedge_012/sprite.webp",
+  "sprite": "hedges/hedge_900/sprite.webp",
   "placement": {
     "world_height_m": 1.17,
     "world_px_height": 44,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hedge_012",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

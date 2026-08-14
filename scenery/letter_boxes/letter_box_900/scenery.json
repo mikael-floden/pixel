@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T22:57:33+00:00",
-  "id": "letter_box_006",
+  "id": "letter_box_900",
   "group": "letter_boxes",
   "rank": 88,
-  "index": 6,
-  "name": "Blue enamel box, brass slot 006 \u00b7 lit",
+  "index": 900,
+  "name": "Blue enamel box, brass slot 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "blue enamel box, brass slot",
   "glow_concept": "wax seals glowing like small embers",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 64,
-  "sprite": "letter_boxes/letter_box_006/sprite.webp",
+  "sprite": "letter_boxes/letter_box_900/sprite.webp",
   "placement": {
     "world_height_m": 1.18,
     "world_px_height": 44,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "letter_box_006",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

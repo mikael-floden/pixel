@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:19:00+00:00",
-  "id": "haystack_011",
+  "id": "haystack_901",
   "group": "haystacks",
   "rank": 17,
-  "index": 11,
-  "name": "Thatch-capped rain-hooded stack 011",
+  "index": 901,
+  "name": "Thatch-capped rain-hooded stack 901",
   "lights": "LIGHTS_OFF",
   "variety": "thatch-capped rain-hooded stack",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "haystacks/haystack_011/sprite.webp",
+  "sprite": "haystacks/haystack_901/sprite.webp",
   "placement": {
     "world_height_m": 2.53,
     "world_px_height": 95,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "haystack_011",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:14:48+00:00",
-  "id": "hearth_006",
+  "id": "hearth_900",
   "group": "hearths",
   "rank": 107,
-  "index": 6,
-  "name": "Hearth with copper pans hung beside it 006 \u00b7 lit",
+  "index": 900,
+  "name": "Hearth with copper pans hung beside it 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "hearth with copper pans hung beside it",
   "glow_concept": "coals banked for the night glowing low",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "hearths/hearth_006/sprite.webp",
+  "sprite": "hearths/hearth_900/sprite.webp",
   "placement": {
     "world_height_m": 1.14,
     "world_px_height": 43,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hearth_006",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

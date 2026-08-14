@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:17:30+00:00",
-  "id": "hedge_013",
+  "id": "hedge_903",
   "group": "hedges",
   "rank": 12,
-  "index": 13,
-  "name": "Privet hedge with berries 013",
+  "index": 903,
+  "name": "Privet hedge with berries 903",
   "lights": "LIGHTS_OFF",
   "variety": "privet hedge with berries",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "hedges/hedge_013/sprite.webp",
+  "sprite": "hedges/hedge_903/sprite.webp",
   "placement": {
     "world_height_m": 1.68,
     "world_px_height": 63,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hedge_013",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

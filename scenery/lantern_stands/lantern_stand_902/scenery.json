@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:12:21+00:00",
-  "id": "lantern_stand_010",
+  "id": "lantern_stand_902",
   "group": "lantern_stands",
   "rank": 29,
-  "index": 10,
-  "name": "Slender reed-thin stand 010 \u00b7 lit",
+  "index": 902,
+  "name": "Slender reed-thin stand 902 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "slender reed-thin stand",
   "glow_concept": "wickless ghost-flame hovering inside the cage",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "lantern_stands/lantern_stand_010/sprite.webp",
+  "sprite": "lantern_stands/lantern_stand_902/sprite.webp",
   "placement": {
     "world_height_m": 1.94,
     "world_px_height": 73,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "lantern_stand_010",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

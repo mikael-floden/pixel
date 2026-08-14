@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:27:18+00:00",
-  "id": "hearth_005",
+  "id": "hearth_901",
   "group": "hearths",
   "rank": 107,
-  "index": 5,
-  "name": "Grand carved-mantel hearth 005",
+  "index": 901,
+  "name": "Grand carved-mantel hearth 901",
   "lights": "LIGHTS_OFF",
   "variety": "grand carved-mantel hearth",
   "glow_concept": null,
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "hearths/hearth_005/sprite.webp",
+  "sprite": "hearths/hearth_901/sprite.webp",
   "placement": {
     "world_height_m": 1.09,
     "world_px_height": 41,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "hearth_005",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

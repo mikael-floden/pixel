@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:05:10+00:00",
-  "id": "lantern_stand_008",
+  "id": "lantern_stand_900",
   "group": "lantern_stands",
   "rank": 29,
-  "index": 8,
-  "name": "Brass-hooked garden stand 008 \u00b7 lit",
+  "index": 900,
+  "name": "Brass-hooked garden stand 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "brass-hooked garden stand",
   "glow_concept": "green foxfire fungus packed behind the glass",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 128,
-  "sprite": "lantern_stands/lantern_stand_008/sprite.webp",
+  "sprite": "lantern_stands/lantern_stand_900/sprite.webp",
   "placement": {
     "world_height_m": 2.42,
     "world_px_height": 91,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "lantern_stand_008",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

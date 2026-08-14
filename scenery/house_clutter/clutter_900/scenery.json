@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:28:01+00:00",
-  "id": "clutter_004",
+  "id": "clutter_900",
   "group": "house_clutter",
   "rank": 109,
-  "index": 4,
-  "name": "Muddy boots by a doormat 004 \u00b7 lit",
+  "index": 900,
+  "name": "Muddy boots by a doormat 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "muddy boots by a doormat",
   "glow_concept": "a covered lantern set among the things",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 64,
-  "sprite": "house_clutter/clutter_004/sprite.webp",
+  "sprite": "house_clutter/clutter_900/sprite.webp",
   "placement": {
     "world_height_m": 0.77,
     "world_px_height": 29,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "clutter_004",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }

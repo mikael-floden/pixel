@@ -1,11 +1,11 @@
 {
   "format": "scenery-piece@2",
   "generated_at": "2026-08-13T23:25:11+00:00",
-  "id": "maypole_008",
+  "id": "maypole_900",
   "group": "maypoles",
   "rank": 48,
-  "index": 8,
-  "name": "Pole topped with small flag 008 \u00b7 lit",
+  "index": 900,
+  "name": "Pole topped with small flag 900 \u00b7 lit",
   "lights": "LIGHTS_ON",
   "variety": "pole topped with small flag",
   "glow_concept": "ghost-pale ring of dancers' light in the grass below",
@@ -13,7 +13,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": 256,
-  "sprite": "maypoles/maypole_008/sprite.webp",
+  "sprite": "maypoles/maypole_900/sprite.webp",
   "placement": {
     "world_height_m": 4.2,
     "world_px_height": 158,
@@ -28,5 +28,7 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "renamed_from": "maypole_008",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is"
 }
