@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 579,
+  "scenery_count": 580,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 16,
@@ -989,7 +989,7 @@
     "stone_fountains": 2,
     "stones": 23,
     "story_posts": 8,
-    "streetlights": 5,
+    "streetlights": 6,
     "stumps": 14,
     "sundials": 2,
     "tables": 10,
@@ -10544,6 +10544,28 @@
       "status": "complete",
       "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
       "sprite": "streetlights/streetlight_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_032",
+      "rel": "streetlights/streetlight_032",
+      "name": "Green-enameled telegraph-era lamp 032 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, green-enameled telegraph-era lamp, bird-favored, with droppings and a nest, tall, about three times human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.25,
+        "world_px_height": 122,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "980751d8-1f94-41e5-9ed5-cc34b5e25951",
+      "sprite": "streetlights/streetlight_032/sprite.webp",
       "rotations": {},
       "animations": []
     },

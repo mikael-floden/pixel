@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:54:01+00:00",
+  "id": "streetlight_032",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 32,
+  "name": "Green-enameled telegraph-era lamp 032 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "green-enameled telegraph-era lamp",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": "pale blue soul-light orb hovering inside",
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, green-enameled telegraph-era lamp, bird-favored, with droppings and a nest, tall, about three times human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "streetlights/streetlight_032/sprite.webp",
+  "placement": {
+    "world_height_m": 3.25,
+    "world_px_height": 122,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "980751d8-1f94-41e5-9ed5-cc34b5e25951",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
