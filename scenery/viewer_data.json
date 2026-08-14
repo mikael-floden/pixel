@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 495,
+  "scenery_count": 491,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,14 +48,14 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 11
+      "done": 9
     },
     {
       "rank": 7,
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 8,
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 16,
@@ -139,7 +139,7 @@
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 20,
@@ -991,14 +991,14 @@
     "stone_fountains": 2,
     "stones": 14,
     "story_posts": 8,
-    "streetlights": 7,
+    "streetlights": 5,
     "stumps": 8,
     "sundials": 2,
     "sunken_statues": 1,
     "tables": 7,
     "telegraph_poles": 4,
     "toadstool_rings": 8,
-    "torch_posts": 10,
+    "torch_posts": 11,
     "trailing_planters": 2,
     "trees": 12,
     "wall_hangings": 6,
@@ -1007,8 +1007,8 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 8,
-    "waystones": 11,
+    "wayside_shrines": 7,
+    "waystones": 9,
     "web_frames": 1,
     "wells": 10,
     "windmills": 3,
@@ -9429,50 +9429,6 @@
       "animations": []
     },
     {
-      "id": "streetlight_020",
-      "rel": "streetlights/streetlight_020",
-      "name": "Verdigris copper-headed lamp 020 \u00b7 lit",
-      "category": "streetlights",
-      "lights": "LIGHTS_ON",
-      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, verdigris copper-headed lamp, bird-favored, with droppings and a nest, tall, about three times human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 3.46,
-        "world_px_height": 130,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2d1b0c6b-8d8a-4995-976f-422d1a8b46bc",
-      "sprite": "streetlights/streetlight_020/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "streetlight_022",
-      "rel": "streetlights/streetlight_022",
-      "name": "Ornate cast-iron gas lamp 022 \u00b7 lit",
-      "category": "streetlights",
-      "lights": "LIGHTS_ON",
-      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ornate cast-iron gas lamp, reinforced with iron bands, tall, about three times human height, self-emissive at night, softly radiating light: fireflies swarming and filling the lamp head",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 3.14,
-        "world_px_height": 118,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "46f1910e-c47a-4e6b-850c-3217c56a779b",
-      "sprite": "streetlights/streetlight_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "streetlight_024",
       "rel": "streetlights/streetlight_024",
       "name": "Onion-domed brass head 024 \u00b7 lit",
@@ -10371,6 +10327,28 @@
       "status": "complete",
       "pixellab_object_id": "774a83f8-0de1-4340-bae8-a739b09bfd99",
       "sprite": "torch_posts/torch_post_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_018",
+      "rel": "torch_posts/torch_post_018",
+      "name": "Stone-socketed torch post 018 \u00b7 lit",
+      "category": "torch_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, stone-socketed torch post, weathered silver-grey, roughly six feet tall, human height, self-emissive at night, softly radiating light: smokeless pale-blue soul-flame",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.79,
+        "world_px_height": 67,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c3106603-9642-4b8d-ae11-2ac01976ed94",
+      "sprite": "torch_posts/torch_post_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11277,28 +11255,6 @@
       "animations": []
     },
     {
-      "id": "wayside_shrine_022",
-      "rel": "wayside_shrines/wayside_shrine_022",
-      "name": "Lantern-hung roadside shrine 022 \u00b7 lit",
-      "category": "wayside_shrines",
-      "lights": "LIGHTS_ON",
-      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, lantern-hung roadside shrine, half-repainted, waist-high, self-emissive at night, softly radiating light: rooftop finial star shining pale",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.01,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2f02e968-4c87-4a4e-91a5-f658e17ad6ab",
-      "sprite": "wayside_shrines/wayside_shrine_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "waystone_008",
       "rel": "waystones/waystone_008",
       "name": "White quartz-veined stone 008 \u00b7 lit",
@@ -11471,50 +11427,6 @@
       "status": "complete",
       "pixellab_object_id": "1b14d3a5-4c60-4f8d-8fd4-5b599de69fc9",
       "sprite": "waystones/waystone_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waystone_017",
-      "rel": "waystones/waystone_017",
-      "name": "Chiseled numeral milestone 017",
-      "category": "waystones",
-      "lights": "LIGHTS_OFF",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, chiseled numeral milestone, patched with mismatched materials, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.7,
-        "world_px_height": 26,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9304b8d5-1f19-41f1-9a0b-21f4befd6d87",
-      "sprite": "waystones/waystone_017/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waystone_018",
-      "rel": "waystones/waystone_018",
-      "name": "Red-painted mark stone 018 \u00b7 lit",
-      "category": "waystones",
-      "lights": "LIGHTS_ON",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, red-painted mark stone, old and settling into the ground, waist-high, self-emissive at night, softly radiating light: glowworms clustered in the carved lettering",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.81,
-        "world_px_height": 30,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "cbdf9b1c-2674-4bc3-82ff-f0d854ff1cba",
-      "sprite": "waystones/waystone_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
