@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 749,
+  "scenery_count": 725,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 64
+      "done": 49
     },
     {
       "rank": 102,
@@ -1091,14 +1091,14 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 13
+      "done": 9
     },
     {
       "rank": 156,
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 9
+      "done": 5
     },
     {
       "rank": 157,
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 11
+      "done": 10
     },
     {
       "rank": 159,
@@ -1235,13 +1235,13 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 9,
+    "cliff_falls": 5,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 11,
-    "cliff_roots": 13,
+    "cliff_mosses": 10,
+    "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 64,
+    "cliff_vines": 49,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4213,94 +4213,6 @@
       "animations": []
     },
     {
-      "id": "cliff_fall_017",
-      "rel": "cliff_falls/cliff_fall_017",
-      "name": "Stepped, breaking on two ledges 017",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
-      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, stepped, breaking on two ledges, sprawling in every direction at once, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 16.01,
-        "world_px_height": 603,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7a66fed1-51d3-4ed6-a606-4dfd5a2f06a9",
-      "sprite": "cliff_falls/cliff_fall_017/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_018",
-      "rel": "cliff_falls/cliff_fall_018",
-      "name": "Half-frozen with ice columns 018 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, half-frozen with ice columns, covering most of the frame loosely, with holes, towering, many times human height, self-emissive at night, softly radiating light: light welling from the mist",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 17.23,
-        "world_px_height": 649,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "81cb59fc-e9a1-40ec-b4ac-fabe828e9f9f",
-      "sprite": "cliff_falls/cliff_fall_018/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_020",
-      "rel": "cliff_falls/cliff_fall_020",
-      "name": "A fine misting veil 020 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a fine misting veil, two overlapping layers, one behind the other, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 14.55,
-        "world_px_height": 548,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9f51f528-184e-4528-a239-088edeedfced",
-      "sprite": "cliff_falls/cliff_fall_020/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_022",
-      "rel": "cliff_falls/cliff_fall_022",
-      "name": "A broad white curtain 022 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a broad white curtain, thick low down, thinning as it rises, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 12.83,
-        "world_px_height": 483,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8cac7ae7-2dbb-4e63-b7c5-7b416b62ff02",
-      "sprite": "cliff_falls/cliff_fall_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_feature_002",
       "rel": "cliff_features/cliff_feature_002",
       "name": "Honeycomb-weathered rock pockets 002 \u00b7 lit",
@@ -4631,28 +4543,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_041",
-      "rel": "cliff_mosses/cliff_moss_041",
-      "name": "Tiny stone shelf with moss 041",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background, tiny stone shelf with moss, a single cushion and bare stone elsewhere, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.74,
-        "world_px_height": 28,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "943719c9-f06e-4577-b64d-770a5bb89a7b",
-      "sprite": "cliff_mosses/cliff_moss_041/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_043",
       "rel": "cliff_mosses/cliff_moss_043",
       "name": "Lichen-crusted little ledge 043",
@@ -4851,50 +4741,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_062",
-      "rel": "cliff_roots/cliff_root_062",
-      "name": "Fine hair-roots in a dense veil 062 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, fine hair-roots in a dense veil, two thin roots side by side, one longer, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.92,
-        "world_px_height": 373,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "0da3c858-7421-4cce-a5cf-ad779ec2945a",
-      "sprite": "cliff_roots/cliff_root_062/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_064",
-      "rel": "cliff_roots/cliff_root_064",
-      "name": "Pale bleached roots 064 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, pale bleached roots, very fine roots with sparse leaves, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.65,
-        "world_px_height": 288,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2a4e0ae4-a21a-4b8d-a7c6-31974d67e753",
-      "sprite": "cliff_roots/cliff_root_064/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_067",
       "rel": "cliff_roots/cliff_root_067",
       "name": "Rootlets with one tiny fern 067",
@@ -4939,28 +4785,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_070",
-      "rel": "cliff_roots/cliff_root_070",
-      "name": "Pale bleached roots 070 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, pale bleached roots, thin roots close together near the top, spreading below, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.57,
-        "world_px_height": 285,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "76f83bd5-8de2-4fd2-af77-855d477f0f2d",
-      "sprite": "cliff_roots/cliff_root_070/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_072",
       "rel": "cliff_roots/cliff_root_072",
       "name": "Faintly moss-furred rootlets 072 \u00b7 lit",
@@ -4979,28 +4803,6 @@
       "status": "complete",
       "pixellab_object_id": "7dd066c0-62cb-475e-9ec6-4e5fad92b5d8",
       "sprite": "cliff_roots/cliff_root_072/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_073",
-      "rel": "cliff_roots/cliff_root_073",
-      "name": "Roots with ferns rooted between them 073",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, roots with ferns rooted between them, one root with a small leaf cluster halfway, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.06,
-        "world_px_height": 303,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "fea5780b-5326-4420-9e36-fdef7d1c53f9",
-      "sprite": "cliff_roots/cliff_root_073/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6083,270 +5885,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_101",
-      "rel": "cliff_vines/cliff_vine_101",
-      "name": "Red-leaved autumn creeper fall 101",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, red-leaved autumn creeper fall, a lazy meander across the width, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.2,
-        "world_px_height": 196,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8db5b6d5-956e-432a-aaea-cc5f5f2562dd",
-      "sprite": "cliff_vines/cliff_vine_101/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_103",
-      "rel": "cliff_vines/cliff_vine_103",
-      "name": "Moss-heavy dripping fall 103",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, moss-heavy dripping fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.0,
-        "world_px_height": 414,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d9bc1167-d1db-40ca-943e-3b81236e0f5c",
-      "sprite": "cliff_vines/cliff_vine_103/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_105",
-      "rel": "cliff_vines/cliff_vine_105",
-      "name": "Frost-silvered winter fall 105",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, frost-silvered winter fall, a long straightish run with two sharp kinks, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.26,
-        "world_px_height": 198,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "ea649ced-b128-44e7-9888-b916eb49c467",
-      "sprite": "cliff_vines/cliff_vine_105/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_106",
-      "rel": "cliff_vines/cliff_vine_106",
-      "name": "Berry-dotted bramble fall 106 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, berry-dotted bramble fall, thick at one end, tapering as it climbs, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.63,
-        "world_px_height": 250,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "79746583-934f-4a86-a4f4-ffb76bcff000",
-      "sprite": "cliff_vines/cliff_vine_106/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_107",
-      "rel": "cliff_vines/cliff_vine_107",
-      "name": "Fern-mixed green fall 107",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, fern-mixed green fall, gripping side-roots reaching out at intervals, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.84,
-        "world_px_height": 408,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e1a4211d-4926-486d-abe4-b972bf5f23a8",
-      "sprite": "cliff_vines/cliff_vine_107/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_108",
-      "rel": "cliff_vines/cliff_vine_108",
-      "name": "Pale lichen-strung fall 108 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, pale lichen-strung fall, S-curving with leaves at every bend, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.7,
-        "world_px_height": 440,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9c8e6da0-1992-47f0-aeda-32648a4dbc41",
-      "sprite": "cliff_vines/cliff_vine_108/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_109",
-      "rel": "cliff_vines/cliff_vine_109",
-      "name": "Dry brown wilted fall 109",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, dry brown wilted fall, coiling into a loose loop midway, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.74,
-        "world_px_height": 216,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f7d253a6-15ef-45ea-9f7b-8e6393747519",
-      "sprite": "cliff_vines/cliff_vine_109/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_110",
-      "rel": "cliff_vines/cliff_vine_110",
-      "name": "Purple wisteria fall 110 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, purple wisteria fall, two roots winding side by side, touching once, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.0,
-        "world_px_height": 414,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "897c83c6-9e1c-4d6d-b17c-1b95e61ad0b2",
-      "sprite": "cliff_vines/cliff_vine_110/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_111",
-      "rel": "cliff_vines/cliff_vine_111",
-      "name": "Blue-flowered creeper fall 111",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, blue-flowered creeper fall, a lazy meander across the width, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.46,
-        "world_px_height": 243,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a084b7bd-f92e-4f66-9565-94a0cc628d05",
-      "sprite": "cliff_vines/cliff_vine_111/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_112",
-      "rel": "cliff_vines/cliff_vine_112",
-      "name": "Variegated cream-and-green fall 112 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, variegated cream-and-green fall, winding steeply upward in tight bends, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.2,
-        "world_px_height": 196,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "adb7cfb6-d5cd-4732-9b38-f59da3426286",
-      "sprite": "cliff_vines/cliff_vine_112/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_113",
-      "rel": "cliff_vines/cliff_vine_113",
-      "name": "Old thick-stemmed ancient fall 113",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, old thick-stemmed ancient fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.38,
-        "world_px_height": 428,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e4340320-486b-4027-ae53-e78bab98e8d9",
-      "sprite": "cliff_vines/cliff_vine_113/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_114",
-      "rel": "cliff_vines/cliff_vine_114",
-      "name": "Dark green ivy fall 114 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, dark green ivy fall, wandering diagonally with leaf clusters low and high, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.84,
-        "world_px_height": 408,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4941cb15-611e-4ea0-91e5-99f2b6f1067f",
-      "sprite": "cliff_vines/cliff_vine_114/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_115",
       "rel": "cliff_vines/cliff_vine_115",
       "name": "Red-leaved autumn creeper fall 115",
@@ -6365,72 +5903,6 @@
       "status": "complete",
       "pixellab_object_id": "881c0a3f-16fd-4e4a-9d4d-8ed644841478",
       "sprite": "cliff_vines/cliff_vine_115/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_116",
-      "rel": "cliff_vines/cliff_vine_116",
-      "name": "White-flowering bindweed fall 116 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, white-flowering bindweed fall, thick at one end, tapering as it climbs, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.27,
-        "world_px_height": 198,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bdd16775-bbb4-4241-951b-3f3dce0771b5",
-      "sprite": "cliff_vines/cliff_vine_116/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_118",
-      "rel": "cliff_vines/cliff_vine_118",
-      "name": "Yellow honeysuckle fall 118 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, yellow honeysuckle fall, S-curving with leaves at every bend, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.44,
-        "world_px_height": 393,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b7de66d9-3ec5-48d2-b8f9-7c7b836c6bfd",
-      "sprite": "cliff_vines/cliff_vine_118/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_120",
-      "rel": "cliff_vines/cliff_vine_120",
-      "name": "Berry-dotted bramble fall 120 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, berry-dotted bramble fall, two roots winding side by side, touching once, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.86,
-        "world_px_height": 334,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a546ba39-2847-48b8-8c1a-9b6a7b3babf9",
-      "sprite": "cliff_vines/cliff_vine_120/sprite.webp",
       "rotations": {},
       "animations": []
     },
