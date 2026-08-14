@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 623,
+  "scenery_count": 624,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 44
+      "done": 45
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 44,
+    "trees": 45,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13618,6 +13618,28 @@
       "status": "complete",
       "pixellab_object_id": "c4a8655c-8215-4982-80a1-7986aa11404e",
       "sprite": "trees/tree_050/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_052",
+      "rel": "trees/tree_052",
+      "name": "Hornbeam with muscular fluted trunk 052 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, hornbeam with muscular fluted trunk, asymmetric, wind-shaped, tall, about three times human height, self-emissive at night, softly radiating light: golden sap veins glowing through bark cracks",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.59,
+        "world_px_height": 135,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "23b0a8c0-413e-4636-8f84-76245176d656",
+      "sprite": "trees/tree_052/sprite.webp",
       "rotations": {},
       "animations": []
     },
