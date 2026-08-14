@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 748,
+  "scenery_count": 749,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 63
+      "done": 64
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 11,
     "cliff_roots": 13,
     "cliff_shrubs": 12,
-    "cliff_vines": 63,
+    "cliff_vines": 64,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6607,6 +6607,28 @@
       "status": "complete",
       "pixellab_object_id": "5d61d6cc-17bc-4781-8b8b-03b12cd2cb79",
       "sprite": "cliff_vines/cliff_vine_144/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_146",
+      "rel": "cliff_vines/cliff_vine_146",
+      "name": "Yellow honeysuckle fall 146 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, yellow honeysuckle fall, thick at one end, tapering as it climbs, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 11.65,
+        "world_px_height": 439,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a630e3c8-f7b3-4e6b-8209-388111394290",
+      "sprite": "cliff_vines/cliff_vine_146/sprite.webp",
       "rotations": {},
       "animations": []
     },
