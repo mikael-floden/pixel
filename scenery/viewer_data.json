@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 639,
+  "scenery_count": 640,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 53
+      "done": 54
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 53,
+    "trees": 54,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13882,6 +13882,28 @@
       "status": "complete",
       "pixellab_object_id": "23b0a8c0-413e-4636-8f84-76245176d656",
       "sprite": "trees/tree_052/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_053",
+      "rel": "trees/tree_053",
+      "name": "White-blossomed hawthorn 053",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, white-blossomed hawthorn, split into a double form, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.36,
+        "world_px_height": 164,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ef3dbc31-72b9-499d-ace4-35a0cc9aefd8",
+      "sprite": "trees/tree_053/sprite.webp",
       "rotations": {},
       "animations": []
     },
