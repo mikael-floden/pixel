@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:39:28+00:00",
+  "id": "briar_thicket_019",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 19,
+  "name": "Briar smothering a mossy boulder 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "briar smothering a mossy boulder",
+  "modifier": "young and vigorous",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, briar smothering a mossy boulder, young and vigorous, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_019/sprite.webp",
+  "placement": {
+    "world_height_m": 0.99,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c610f7e5-5cc9-4c67-8945-435d9346d693",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
