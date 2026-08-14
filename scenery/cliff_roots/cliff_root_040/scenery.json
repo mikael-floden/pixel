@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:48:50+00:00",
+  "id": "cliff_root_040",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 40,
+  "name": "Pale bleached roots 040 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale bleached roots",
+  "modifier": "strands closer together on one side",
+  "glow_concept": "the root tips glowing faintly",
+  "prompt": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, pale bleached roots, strands closer together on one side, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_040/sprite.webp",
+  "placement": {
+    "world_height_m": 5.32,
+    "world_px_height": 200,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a4dd0bdb-336d-4f34-acdb-6c72b3eb4d73",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
