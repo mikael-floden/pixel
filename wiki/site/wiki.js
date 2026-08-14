@@ -173,6 +173,17 @@ function noteWidget(domain, id) {
   ta.addEventListener("change", () => setFb(domain, id, { note: ta.value.trim() || null }));
   return ta;
 }
+// The per-facet feedback block: one row, under the preview, with a word for
+// what it judges. The long caption ("Feedback on this animation (state)") was
+// removed in July at the maintainer's request, and the row then read as a
+// second whole-entity verdict — he reported on 2026-08-14 that he could not
+// give feedback per animation at all, on a page that had carried it for six
+// weeks. A two-word label is the middle ground.
+function facetPanel(labelText, box) {
+  if (!state.admin) return null;
+  return h("div", { class: "facet-fb", style: "margin-top:12px" },
+    h("span", { class: "muted facet-label" }, labelText), box);
+}
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
     starsWidget(domain, id),
@@ -1576,7 +1587,7 @@ function viewMonster(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,
-      h("div", { style: "margin-top:12px" }, facetBox)),
+      facetPanel("This animation:", facetBox)),
     zoneMapPanel(m.id),
     // What it drops, each row a link to that item's page.
     dropsPanel(m.id),
@@ -1800,7 +1811,7 @@ function viewCharacter(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
-      h("div", { style: "margin-top:12px" }, facetBox)),
+      facetPanel("This animation:", facetBox)),
     // Standing in the world? Then the map showing roughly where.
     npcMapPanel(c),
     // The character's OWN sound events — their jump/fall voice today — with
@@ -2257,10 +2268,32 @@ function viewObject(id) {
   const ref = state.admin ? humanRefData() : null;
   const humanOn = !!ref && localStorage.getItem(HUMAN_REF_KEY) === "1";
   let playerEl = null, player = null;
+  // FEEDBACK ON THE STATE YOU ARE LOOKING AT (maintainer 2026-08-14: "when I
+  // give feedback to an agent I can't do it on individual animations or
+  // individual states … I would like the Scenery preview card to have an
+  // accept/reject/rate/comment on individual states, placed in the same card
+  // but UNDER the preview, since the entire entity is rated OVER the card").
+  // Same widget, same key convention (`path#state`) and same position as the
+  // monster and character pages have had since 2026-07-30 — a LIGHTS_ON that
+  // came out wrong is now rejectable without condemning the whole piece.
+  const facetBox = h("div", {});
+  const renderFacet = () => {
+    const st = player?.getState();
+    if (!st) return;
+    facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}`, {
+      // The state's own art, so a re-rolled state goes stale on its own terms.
+      stamp: { art: o.artHash ?? null },
+      reject: "✕ redo",
+      rejectTitle: `Reject just this state (${stateLabel(st)}) — the scenery agent regenerates it, the piece stays`,
+      rejectedLabel: "to be redone",
+    }));
+  };
   if (hasAnims) {
     player = makePlayer(o, "object", ref ? { humanRef: { ...ref, on: humanOn } } : {});
     activePlayers.push(player);
     playerEl = player.el;
+    player.onStateChange = renderFacet;
+    renderFacet();
   }
   const humanBtn = ref && player ? h("button", {
     class: `ghost-btn human-toggle${humanOn ? " on" : ""}`,
@@ -2305,7 +2338,10 @@ function viewObject(id) {
             o.stillOnly ? "Preview" : "Animations",
             stillShape(o) ? h("span", { class: "pill" }, stillShape(o)) : null,
             humanBtn),
-          playerEl)
+          playerEl,
+          // Under the preview, never over it: the whole piece is judged in the
+          // header, this judges the one state on screen.
+          facetPanel("This state:", facetBox))
       : h("p", { class: "muted" }, "No animations."),
     entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last

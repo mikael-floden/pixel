@@ -211,6 +211,13 @@ button { font: inherit; cursor: pointer; }
    jumping this page was rebuilt to stop (maintainer 2026-08-07). Admin rows
    hold buttons and are taller; a minimum can only ever help them. */
 .fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 22px; }
+/* PER-STATE FEEDBACK, under the preview (maintainer 2026-08-14). It sits
+   inside the same card as the art, so it needs a line above it to read as a
+   separate act from judging the whole piece — which happens in the header. */
+.facet-fb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  border-top: 1px solid var(--border); padding-top: 10px; }
+.facet-fb .facet-label { font-size: 12.5px; white-space: nowrap; }
+.facet-fb .fb-row { flex: 1; min-width: 0; }
 .fb-note {
   width: 100%; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
