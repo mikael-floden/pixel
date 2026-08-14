@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 617,
+  "scenery_count": 618,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 156,
@@ -1240,7 +1240,7 @@
     "cliff_fragments": 2,
     "cliff_ledgetrees": 3,
     "cliff_mosses": 3,
-    "cliff_roots": 2,
+    "cliff_roots": 3,
     "cliff_shrubs": 4,
     "cliff_vines": 4,
     "crystal_trees": 1,
@@ -4493,6 +4493,28 @@
       "status": "complete",
       "pixellab_object_id": "c8f2d491-31a4-4ad2-af45-3c38e6b1e2bf",
       "sprite": "cliff_roots/cliff_root_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_006",
+      "rel": "cliff_roots/cliff_root_006",
+      "name": "Moss-furred roots 006 \u00b7 lit",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_ON",
+      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, moss-furred roots, roots braided into a rope, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 9.08,
+        "world_px_height": 342,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ab3580e1-14c0-4ba1-92d0-7d62f1bd4919",
+      "sprite": "cliff_roots/cliff_root_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
