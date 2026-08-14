@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:27:32+00:00",
+  "id": "grave_030",
+  "group": "graves",
+  "rank": 3,
+  "index": 30,
+  "name": "Snow-capped winter headstone 030 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-capped winter headstone",
+  "modifier": "weathered silver-grey",
+  "glow_concept": "bioluminescent moss veining the cracks",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, snow-capped winter headstone, weathered silver-grey, small, knee-high, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_030/sprite.webp",
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e54f8cec-5e45-46db-88b5-e59ecb196bdf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
