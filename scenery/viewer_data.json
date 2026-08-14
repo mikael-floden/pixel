@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 730,
+  "scenery_count": 731,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1126,7 +1126,7 @@
       "id": "sleeping_giants",
       "name": "Sleeping Giant",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 161,
@@ -1308,7 +1308,7 @@
     "shipwreck_prows": 1,
     "signposts": 5,
     "sky_stairs": 2,
-    "sleeping_giants": 1,
+    "sleeping_giants": 2,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -11797,6 +11797,28 @@
       "status": "complete",
       "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
       "sprite": "sky_stairs/sky_stair_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sleeping_giant_001",
+      "rel": "sleeping_giants/sleeping_giant_001",
+      "name": "Ancient sleeping giant 001",
+      "category": "sleeping_giants",
+      "lights": "LIGHTS_OFF",
+      "description": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass, ancient sleeping giant, the head end mossed over, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.42,
+        "world_px_height": 129,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "17f6c26f-b6a8-426c-b903-4760ace6386d",
+      "sprite": "sleeping_giants/sleeping_giant_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

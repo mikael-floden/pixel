@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:23+00:00",
+  "id": "sleeping_giant_001",
+  "group": "sleeping_giants",
+  "rank": 160,
+  "index": 1,
+  "name": "Ancient sleeping giant 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "ancient sleeping giant",
+  "modifier": "the head end mossed over",
+  "glow_concept": null,
+  "prompt": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass, ancient sleeping giant, the head end mossed over, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "sleeping_giants/sleeping_giant_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.42,
+    "world_px_height": 129,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "17f6c26f-b6a8-426c-b903-4760ace6386d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
