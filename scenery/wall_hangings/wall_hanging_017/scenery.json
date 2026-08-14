@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:27:57+00:00",
+  "id": "wall_hanging_017",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 17,
+  "name": "Kitchen rack of hanging spoons and ladles 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "kitchen rack of hanging spoons and ladles",
+  "modifier": "inlaid with tiny soulstone chips",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, kitchen rack of hanging spoons and ladles, inlaid with tiny soulstone chips, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_017/sprite.webp",
+  "placement": {
+    "world_height_m": 0.67,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7c833f2b-bd62-4481-a1fc-aade1f09e5a5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
