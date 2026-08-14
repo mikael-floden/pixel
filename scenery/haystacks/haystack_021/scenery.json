@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:27:49+00:00",
+  "id": "haystack_021",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 21,
+  "name": "Rope-bound conical stack 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "rope-bound conical stack",
+  "modifier": "with climbing flowers at one corner",
+  "glow_concept": null,
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, rope-bound conical stack, with climbing flowers at one corner, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_021/sprite.webp",
+  "placement": {
+    "world_height_m": 2.29,
+    "world_px_height": 86,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ce39fe8b-43b6-4f88-9e56-c811c992bdb7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
