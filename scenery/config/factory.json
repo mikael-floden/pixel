@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy).",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect \u2014 the language of the dead. Rune glow concepts seeded first across the script-bearing groups.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -192,6 +192,7 @@
         "sea-worn driftwood marker"
       ],
       "glow_concepts": [
+        "the epitaph glowing in unreadable soul-script",
         "carved name letters glowing warm amber",
         "single votive candle flickering at the base",
         "pale soul-wisp hovering above the stone",
@@ -306,6 +307,7 @@
         "half-sunken meadow stone"
       ],
       "glow_concepts": [
+        "glowing unreadable runes flowing down the stone face",
         "carved runes glowing warm amber",
         "soulstone veins threading the rock alight",
         "cap of luminous blue moss",
@@ -345,6 +347,7 @@
         "rope-bound triple torch"
       ],
       "glow_concepts": [
+        "unreadable charms glowing faintly up the post",
         "ragged orange flame trailing black smoke",
         "smokeless pale-blue soul-flame",
         "slow blue resin flame with white core",
@@ -383,6 +386,7 @@
         "single-armed old milepost"
       ],
       "glow_concepts": [
+        "unreadable fire-bright rune-script burning on the arrow boards",
         "painted place-names glowing like embers",
         "gilded lettering lit from within",
         "arrow edges limned with firefly light",
@@ -892,6 +896,7 @@
         "wave-carved sea-tale post"
       ],
       "glow_concepts": [
+        "unreadable rune-bands glowing between the carved figures",
         "carved story scenes glowing panel by panel",
         "tiny glowing letters spiraling up the post",
         "luminous ribbons streaming from the top",
@@ -1555,6 +1560,7 @@
         "rose-wrapped stone"
       ],
       "glow_concepts": [
+        "a column of burning unreadable script older than names",
         "full column of runes blazing ice-blue",
         "spiral carvings glowing ember orange",
         "crown of beacon light at the tip",
@@ -4333,6 +4339,7 @@
         "with a worn path running through"
       ],
       "glow_concepts": [
+        "unreadable script kindling across the lintel",
         "the gap shimmering faintly",
         "soul-lights drifting through the doorway",
         "carved spirals glowing on the lintel"
@@ -4367,6 +4374,7 @@
         "with a small offering bowl in the middle"
       ],
       "glow_concepts": [
+        "each stone's mark burning in unreadable script",
         "candle stubs relighting themselves",
         "a faint ring of light on the grass",
         "runes glowing on the stones"

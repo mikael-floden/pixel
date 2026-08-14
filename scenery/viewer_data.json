@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 494,
+  "scenery_count": 495,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 9,
@@ -981,7 +981,7 @@
     "scarecrows": 5,
     "sheaf_poles": 2,
     "shipwreck_prows": 1,
-    "signposts": 6,
+    "signposts": 7,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spirit_gates": 1,
@@ -8435,6 +8435,28 @@
       "status": "complete",
       "pixellab_object_id": "730f6301-6b95-48d5-819f-b2970f087fc4",
       "sprite": "signposts/signpost_029/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_030",
+      "rel": "signposts/signpost_030",
+      "name": "Cast-iron city signpost 030 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, cast-iron city signpost, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: gilded lettering lit from within",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.25,
+        "world_px_height": 85,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f5b55460-488d-4de5-8ba3-3e99007dfa52",
+      "sprite": "signposts/signpost_030/sprite.webp",
       "rotations": {},
       "animations": []
     },
