@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 534,
+  "scenery_count": 535,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 10,
@@ -912,7 +912,7 @@
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
-    "cairns": 10,
+    "cairns": 11,
     "light": 1,
     "carts": 6,
     "cattail_clumps": 5,
@@ -2912,6 +2912,28 @@
       "status": "complete",
       "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
       "sprite": "cairns/cairn_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_022",
+      "rel": "cairns/cairn_022",
+      "name": "Waist-high dome cairn 022 \u00b7 lit",
+      "category": "cairns",
+      "lights": "LIGHTS_ON",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, waist-high dome cairn, wrapped in thin creeper vines, small, knee-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.64,
+        "world_px_height": 24,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
+      "sprite": "cairns/cairn_022/sprite.webp",
       "rotations": {},
       "animations": []
     },

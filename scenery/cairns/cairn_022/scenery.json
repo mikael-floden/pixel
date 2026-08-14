@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:36:11+00:00",
+  "id": "cairn_022",
+  "group": "cairns",
+  "rank": 9,
+  "index": 22,
+  "name": "Waist-high dome cairn 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "waist-high dome cairn",
+  "modifier": "wrapped in thin creeper vines",
+  "glow_concept": "cold blue soul-light seeping from under the base",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, waist-high dome cairn, wrapped in thin creeper vines, small, knee-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_022/sprite.webp",
+  "placement": {
+    "world_height_m": 0.64,
+    "world_px_height": 24,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
