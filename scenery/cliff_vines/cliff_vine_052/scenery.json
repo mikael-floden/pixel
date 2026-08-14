@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:40:37+00:00",
+  "id": "cliff_vine_052",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 52,
+  "name": "Pale lichen-strung fall 052 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale lichen-strung fall",
+  "modifier": "a long drift down across the frame",
+  "glow_concept": "luminous sap veins glowing through the leaves",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, pale lichen-strung fall, a long drift down across the frame, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_052/sprite.webp",
+  "placement": {
+    "world_height_m": 5.88,
+    "world_px_height": 221,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c5bef938-ce05-4c72-8751-ba24c52020bf",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
