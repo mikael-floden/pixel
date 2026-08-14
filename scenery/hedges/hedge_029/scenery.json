@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:24:02+00:00",
+  "id": "hedge_029",
+  "group": "hedges",
+  "rank": 12,
+  "index": 29,
+  "name": "Wild overgrown hedge 029",
+  "lights": "LIGHTS_OFF",
+  "variety": "wild overgrown hedge",
+  "modifier": "with butterflies resting on it",
+  "glow_concept": null,
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, wild overgrown hedge, with butterflies resting on it, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_029/sprite.webp",
+  "placement": {
+    "world_height_m": 1.24,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9b68df52-acdc-444c-8fc1-0cfeb235a194",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
