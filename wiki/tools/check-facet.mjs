@@ -7,6 +7,12 @@
 // placed in the same card but UNDER the preview (since the entire entity is
 // rated OVER the card)."
 //
+// Maintainer, same day again, on placement: "it's still under scenery preview.
+// I said OVER the preview … I want it in the same card but OVER the preview",
+// and "same in both Scenery and the Monsters/players. You placed it at the
+// bottom of the card. I want it at the TOP of the card." So the order inside
+// the card is: heading, judging block, state row, direction row, art.
+//
 // Maintainer, same day, sharpening it: "what I'm actually asking for is a
 // feedback system on direction + state/animation. Not state/animation alone.
 // This is because you can regenerate an animation for a direction. You don't
@@ -37,7 +43,7 @@ await p.route("**/api/wiki/save", async (r) => {
 await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
 
 const facet = () => p.evaluate(() => {
-  const f = document.querySelector(".facet-fb");
+  const f = document.querySelector(".facet-head");
   if (!f) return { present: false };
   const stage = document.querySelector(".player-stage")?.getBoundingClientRect();
   const head = document.querySelector(".detail-head .fb-row")?.getBoundingClientRect();
@@ -54,14 +60,24 @@ const facet = () => p.evaluate(() => {
       const seg = document.querySelector(".seg-states")?.getBoundingClientRect();
       return !!(head && seg && head.bottom <= seg.top + 2);
     })(),
+    stageOffset: (() => {
+      const st = document.querySelector(".player-stage");
+      const pan = [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+      return st && pan ? Math.round(st.getBoundingClientRect().top - pan.getBoundingClientRect().top) : -1;
+    })(),
     starBox: (() => { const b = document.querySelector(".stars button")?.getBoundingClientRect();
       return b ? { w: Math.round(b.width), h: Math.round(b.height) } : null; })(),
     stars: f.querySelectorAll(".stars button").length,
     approve: [...f.querySelectorAll("button")].some((x) => /approve/i.test(x.textContent)),
     reject: [...f.querySelectorAll("button")].find((x) => /✕/.test(x.textContent))?.textContent ?? null,
     comment: !!f.querySelector("textarea"),
-    // The two halves of the maintainer's placement rule.
-    underPreview: !!stage && fr.top >= stage.bottom - 1,
+    // The placement rule: the judging block is the FIRST thing under the
+    // card's heading, above every control and above the art.
+    overPreview: !!stage && fr.bottom <= stage.top,
+    underTitle: (() => { const t = document.querySelector(".panel-title")?.getBoundingClientRect();
+      return !!(t && fr.top >= t.bottom - 2); })(),
+    // The old slot: anything still rendering there means it moved only halfway.
+    nothingBelowStage: !document.querySelector(".facet-fb"),
     entityAbove: !!head && !!stage && head.bottom <= stage.top,
     sameCard: f.closest(".panel") === document.querySelector(".player-stage")?.closest(".panel"),
     verdictClasses: [...f.querySelectorAll("button")].map((x) => x.className).join("|"),
@@ -78,12 +94,14 @@ const headBefore = await p.evaluate(() => [...document.querySelectorAll(".detail
 console.log("scenery, Lights Off:", JSON.stringify(s1), "| piece verdict before:", JSON.stringify(headBefore));
 ok(s1.present, "the scenery preview card carries a per-state feedback row");
 ok(s1.sameCard, "in the SAME card as the art, not a panel of its own");
-ok(s1.underPreview, "under the preview");
+ok(s1.overPreview, "OVER the preview, not under it");
+ok(s1.underTitle && s1.headAboveStates, "at the very top of the card — under the heading, above the state and direction rows");
+ok(s1.nothingBelowStage, "and nothing of it is left below the art");
 ok(s1.entityAbove, "while the whole-piece verdict stays above it, in the header");
 ok(s1.stars === 5 && s1.approve && s1.comment, `with rate, accept and comment (${s1.stars} stars, approve=${s1.approve}, comment=${s1.comment})`);
 ok(/redo/.test(s1.reject ?? ""), `and a reject that says what it means for ONE state (“${s1.reject}”)`);
 ok(/Judging/.test(s1.label ?? ""), `labelled for what it judges (“${s1.label}”)`);
-ok(s1.headAboveStates, "and that label sits ABOVE the state/direction selectors, not under the preview");
+ok(s1.headAboveStates, "the label sits above the state/direction selectors");
 // STARS BIG ENOUGH FOR A THUMB (maintainer 2026-08-14: "I also want all stars
 // in the entire application to be a bit bigger, hard to click").
 console.log("star hit box:", JSON.stringify(s1.starBox));
@@ -92,7 +110,7 @@ ok(s1.starBox && s1.starBox.w >= 28 && s1.starBox.h >= 32,
 ok(s1.pill === "Lights Off · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
 
 // A VERDICT FOLLOWS THE STATE. Approving Lights Off must not colour Lights On.
-await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /approve/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/.test(x.textContent)).click());
 await p.waitForTimeout(250);
 const afterApprove = await facet();
 ok(/approved/.test(afterApprove.verdictClasses), "approving marks THIS state");
@@ -111,7 +129,7 @@ const sSE = await facet();
 console.log("scenery, Lights Off · SE:", JSON.stringify({ pill: sSE.pill, dirOn: sSE.dirOn, verdictClasses: sSE.verdictClasses }));
 ok(sSE.pill === "Lights Off · SE", `pressing a direction re-aims the row (“${sSE.pill}”)`);
 ok(!/approved/.test(sSE.verdictClasses), "and SE is unjudged though S of the same state was approved");
-await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /✕/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
 await p.waitForTimeout(250);
 await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "S").click());
 await p.waitForTimeout(400);
@@ -119,7 +137,7 @@ const backS = await facet();
 ok(/approved/.test(backS.verdictClasses), "coming back to S shows its own approval, not SE's rejection");
 await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /On/.test(x.textContent)).click());
 await p.waitForTimeout(400);
-await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /✕/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
 await p.waitForTimeout(250);
 const head = await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row button")].map((x) => x.className).join("|"));
 // UNCHANGED, not empty: the maintainer reviews these pieces for real, so this
@@ -148,7 +166,7 @@ await p.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
 await p.waitForTimeout(1600);
 const lone = await facet();
 console.log("lone static:", JSON.stringify({ label: lone.label, facetName: lone.facetName, underPreview: lone.underPreview }));
-ok(lone.present && lone.underPreview, "a piece with only Static has it too");
+ok(lone.present && lone.overPreview && lone.underTitle, "a piece with only Static has it too, in the same place");
 ok(lone.facetName === "Static" && lone.pill === "Static · S", `judging what is on screen (${lone.pill})`);
 
 // ----------------------------------------------------- monsters + characters
@@ -158,7 +176,9 @@ for (const [url, what, expectFacet] of [[`${W}#/monsters/mammoth`, "monster", "I
   await p.waitForTimeout(1800);
   const f = await facet();
   console.log(`${what}:`, JSON.stringify({ label: f.label, under: f.underPreview, same: f.sameCard, stars: f.stars, comment: f.comment, facetName: f.facetName }));
-  ok(f.present && f.sameCard && f.underPreview, `the ${what} animation card has the row under the preview too`);
+  ok(f.present && f.sameCard && f.overPreview && f.underTitle,
+    `the ${what} animation card puts it at the top of the card too — "same in both Scenery and the Monsters/players"`);
+  ok(f.nothingBelowStage, `and nothing of it hangs below the ${what}'s art`);
   ok(/Judging/.test(f.label ?? "") && /·/.test(f.pill ?? ""), `naming the animation AND the direction (“${f.pill}”) — it read as a whole-entity verdict before`);
   ok(f.headAboveStates, `and on the ${what} too the label leads the selectors`);
   ok(f.starBox.w >= 28 && f.starBox.h >= 32, `with the same big stars (${f.starBox.w}x${f.starBox.h}px)`);
@@ -180,7 +200,7 @@ const pub = await ctx.browser().newContext({ viewport: { width: 393, height: 851
 const pp = await pub.newPage();
 await pp.goto(`${W}#/objects/window_058`, { waitUntil: "load" });
 await pp.waitForTimeout(1700);
-ok(!(await pp.evaluate(() => !!document.querySelector(".facet-fb"))), "and a visitor never sees it");
+ok(!(await pp.evaluate(() => !!document.querySelector(".facet-head"))), "and a visitor never sees it");
 await pub.close();
 
 console.log("page errors:", errs.length ? errs : "none");
