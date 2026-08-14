@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:05:08+00:00",
+  "id": "cliff_moss_014",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 14,
+  "name": "Deep emerald cushion moss 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "deep emerald cushion moss",
+  "modifier": "sparse at the top, gathering lower",
+  "glow_concept": "the moss glowing soft green",
+  "prompt": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like small islands linked by threads, wide bare gaps between the patches, MOSTLY EMPTY SPACE \u2014 NO main stem, NO trunk, NO single origin, NO starting line or bar across the top, nothing it hangs from, no defined beginning or end anywhere; the growth simply THINS OUT and dissolves into a few isolated leaves and tendrils toward every edge, so copies can be scattered and overlapped freely across a wall, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, the whole thing inside the frame with margin, nothing cropped, deep emerald cushion moss, sparse at the top, gathering lower, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_014/sprite.webp",
+  "placement": {
+    "world_height_m": 11.8,
+    "world_px_height": 444,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a2d0d78e-bdab-45eb-875f-f40c341822b3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

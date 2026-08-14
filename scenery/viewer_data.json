@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 664,
+  "scenery_count": 665,
   "target_count": 2105,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 2,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 5,
+    "cliff_mosses": 6,
     "cliff_shrubs": 11,
     "cliff_vines": 8,
     "crystal_trees": 1,
@@ -4425,6 +4425,28 @@
       "status": "complete",
       "pixellab_object_id": "4380d25f-c944-42e9-957e-7fd1a5e4cbbb",
       "sprite": "cliff_mosses/cliff_moss_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_014",
+      "rel": "cliff_mosses/cliff_moss_014",
+      "name": "Deep emerald cushion moss 014 \u00b7 lit",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_ON",
+      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like small islands linked by threads, wide bare gaps between the patches, MOSTLY EMPTY SPACE \u2014 NO main stem, NO trunk, NO single origin, NO starting line or bar across the top, nothing it hangs from, no defined beginning or end anywhere; the growth simply THINS OUT and dissolves into a few isolated leaves and tendrils toward every edge, so copies can be scattered and overlapped freely across a wall, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, the whole thing inside the frame with margin, nothing cropped, deep emerald cushion moss, sparse at the top, gathering lower, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 11.8,
+        "world_px_height": 444,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a2d0d78e-bdab-45eb-875f-f40c341822b3",
+      "sprite": "cliff_mosses/cliff_moss_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
