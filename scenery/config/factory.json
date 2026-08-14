@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -70,7 +70,23 @@
         "coastal windswept hawthorn, leaning hard",
         "golden larch in autumn colour",
         "black alder with cones, waterside tree",
-        "stout dead oak, thick bare limbs"
+        "stout dead oak, thick bare limbs",
+        "hollow-trunked veteran oak",
+        "young beech with smooth grey bark",
+        "crab apple, small tart fruit",
+        "wild pear, upright crown",
+        "aspen with trembling round leaves",
+        "hornbeam with muscular fluted trunk",
+        "walnut with wide open crown",
+        "field maple, modest and round",
+        "grey willow by damp ground",
+        "bird cherry hung with white racemes",
+        "juniper, columnar and dark",
+        "elder heavy with black berries",
+        "sycamore with peeling patchwork bark",
+        "small-leaved lime, heart-leaf shade tree",
+        "storm-broken crown regrowing sideways",
+        "coppiced stool with many stems"
       ],
       "glow_concepts": [
         "iron lantern hung from a low branch",
@@ -83,7 +99,8 @@
         "pale blossoms shining faintly across the branches"
       ],
       "animation_idea": "crown foliage swaying gently in the wind with a few leaves drifting loose",
-      "lore_fit": "Every remembered climbing-tree and churchyard oak still stands here, so Nangijala's valleys are stitched together out of the trees the dead could not forget."
+      "lore_fit": "Every remembered climbing-tree and churchyard oak still stands here, so Nangijala's valleys are stitched together out of the trees the dead could not forget.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 2,
@@ -122,7 +139,17 @@
         "sea-smoothed blue-grey stone",
         "glacial erratic perched on smaller stones",
         "volcanic dark pumice boulder",
-        "petrified wood turned to stone"
+        "petrified wood turned to stone",
+        "tilted slab like a fallen door",
+        "pair of leaning stones touching tips",
+        "hollowed stone cupping rainwater",
+        "stone cracked clean in two",
+        "low whale-back outcrop",
+        "stone capped with a smaller balanced stone",
+        "flint nodule, glassy fracture",
+        "old millstone half-buried",
+        "stone ringed by a worn animal path",
+        "frost-shattered angular scatter"
       ],
       "glow_concepts": [
         "thin runes etched glowing warm amber",
@@ -134,7 +161,8 @@
         "ember light leaking from a hollow beneath"
       ],
       "animation_idea": "moss glow softly pulsing while golden motes drift up",
-      "lore_fit": "Every plain stone is a fact somebody still remembers about a field or a path, the humblest furniture of the remembered valleys."
+      "lore_fit": "Every plain stone is a fact somebody still remembers about a field or a path, the humblest furniture of the remembered valleys.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 3,
@@ -173,7 +201,8 @@
         "luminous white flowers blooming against the stone"
       ],
       "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
-      "lore_fit": "A grave with a legible name is a spoken fact holding its shape \u2014 the first defense against the Quiet."
+      "lore_fit": "A grave with a legible name is a spoken fact holding its shape \u2014 the first defense against the Quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 4,
@@ -213,7 +242,8 @@
         "coals glowing through the weave in stripes"
       ],
       "animation_idea": "flames licking upward with sparks drifting off",
-      "lore_fit": "A tended brazier is sacred infrastructure \u2014 the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth."
+      "lore_fit": "A tended brazier is sacred infrastructure \u2014 the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 5,
@@ -249,7 +279,8 @@
         "thread of woven light burning like a wick"
       ],
       "animation_idea": "candle flame wavering with faint light spill",
-      "lore_fit": "Lantern courtesy is how neighbors tell each other a path is still remembered, so a lit post means the way beyond it has not gone soft."
+      "lore_fit": "Lantern courtesy is how neighbors tell each other a path is still remembered, so a lit post means the way beyond it has not gone soft.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 6,
@@ -285,7 +316,8 @@
         "glowworms clustered in the carved lettering"
       ],
       "animation_idea": "rune glow pulsing slowly brighter and dimmer",
-      "lore_fit": "Waystones are facts pressed toward mineral \u2014 direction and distance worn down to one carved certainty that even the Quiet chews slowly."
+      "lore_fit": "Waystones are facts pressed toward mineral \u2014 direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 7,
@@ -321,7 +353,8 @@
         "molten pitch dripping in glowing beads"
       ],
       "animation_idea": "flame streaming sideways as if in wind",
-      "lore_fit": "Torch posts line the roads between fires, planted by walkers who wanted the dark stretches between remembered places to stay short."
+      "lore_fit": "Torch posts line the roads between fires, planted by walkers who wanted the dark stretches between remembered places to stay short.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 8,
@@ -358,7 +391,8 @@
         "soft halo around one true arrow"
       ],
       "animation_idea": "loosest arm creaking and rocking slightly",
-      "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten."
+      "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 9,
@@ -395,7 +429,8 @@
         "cold blue soul-light seeping from under the base"
       ],
       "animation_idea": "warm light flickering in the gaps between the stones",
-      "lore_fit": "Travelers stack them so a path stays spoken of, each added stone a small promise that the way will not go soft."
+      "lore_fit": "Travelers stack them so a path stays spoken of, each added stone a small promise that the way will not go soft.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 10,
@@ -431,7 +466,8 @@
         "pale soulstone cap stones on the posts"
       ],
       "animation_idea": "a loose rail rocking gently in the wind",
-      "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft."
+      "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 11,
@@ -467,7 +503,8 @@
         "soulstone vein glinting through cracked stonework"
       ],
       "animation_idea": "the windlass rope swaying and light glinting on the water below",
-      "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does."
+      "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 12,
@@ -501,7 +538,8 @@
         "glowing sap threads veining the twigs"
       ],
       "animation_idea": "waves of leaf-shiver running along the trimmed surface in the wind",
-      "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them."
+      "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 13,
@@ -542,7 +580,8 @@
         "moon-white roses casting a pale halo"
       ],
       "animation_idea": "a loose petal breaking free and drifting to the ground",
-      "lore_fit": "Briar roses bloomed over Cherry Valley in every story the dead tell of it, so here they bloom in stubborn thorny plenty, keeping the Quiet out at the meadow edges."
+      "lore_fit": "Briar roses bloomed over Cherry Valley in every story the dead tell of it, so here they bloom in stubborn thorny plenty, keeping the Quiet out at the meadow edges.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 14,
@@ -581,7 +620,8 @@
         "light-moths circling the bell"
       ],
       "animation_idea": "bell swaying gently with faint light rings rippling outward",
-      "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire."
+      "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 15,
@@ -619,7 +659,8 @@
         "cold gas-blue ring flame at the mantle"
       ],
       "animation_idea": "flame guttering inside the head, halo slowly breathing",
-      "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind."
+      "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 16,
@@ -658,7 +699,8 @@
         "sparks drifting up from the flame"
       ],
       "animation_idea": "flame flickering with tiny sparks drifting upward",
-      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure \u2014 a tended fire small enough to keep one memory warm."
+      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure \u2014 a tended fire small enough to keep one memory warm.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 17,
@@ -694,7 +736,8 @@
         "pale foxfire crust on the rotting side"
       ],
       "animation_idea": "loose straws lifting off and drifting away in the breeze",
-      "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape."
+      "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 18,
@@ -730,7 +773,8 @@
         "ring of fireflies circling the crown"
       ],
       "animation_idea": "a fruit-heavy bough dipping and bobbing lightly in the breeze",
-      "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once."
+      "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 19,
@@ -770,7 +814,8 @@
         "wisps sheltering under the roof"
       ],
       "animation_idea": "hanging lamp swinging slightly, its light wavering",
-      "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm."
+      "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 20,
@@ -796,7 +841,11 @@
         "sawn timber log with cut ends",
         "ivy-wrapped ancient log",
         "fern-flanked damp log",
-        "log with honey fungus clumps"
+        "log with honey fungus clumps",
+        "log bridge over a dip",
+        "two crossed windfall trunks",
+        "log split showing red heartwood",
+        "beetle-galleried bark half-shed"
       ],
       "glow_concepts": [
         "blue foxfire glowing in the bark cracks",
@@ -808,7 +857,8 @@
         "row of small glowing caps along the log's spine"
       ],
       "animation_idea": "small ferns and grass beside the trunk swaying in the wind",
-      "lore_fit": "Even a tree's death is remembered here; a fallen trunk is the storm somebody still tells the story of."
+      "lore_fit": "Even a tree's death is remembered here; a fallen trunk is the storm somebody still tells the story of.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 21,
@@ -847,7 +897,8 @@
         "glowing symbol hovering above the finial"
       ],
       "animation_idea": "ribbons fluttering in the wind",
-      "lore_fit": "These are the told-aloud stations where stories must be retold, because what is spoken of holds its shape."
+      "lore_fit": "These are the told-aloud stations where stories must be retold, because what is spoken of holds its shape.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 22,
@@ -886,7 +937,8 @@
         "one bowl of live ember coals"
       ],
       "animation_idea": "luminous steam curling up from the offering bowl",
-      "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body."
+      "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 23,
@@ -924,7 +976,8 @@
         "tips glowing like small candle flames"
       ],
       "animation_idea": "heart-light pulsing like a slow breath",
-      "lore_fit": "Soulstones are what remains when a thing thins far enough \u2014 one fact pressed to mineral \u2014 and here they surface right out of the ground."
+      "lore_fit": "Soulstones are what remains when a thing thins far enough \u2014 one fact pressed to mineral \u2014 and here they surface right out of the ground.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 24,
@@ -950,7 +1003,11 @@
         "snow-covered stump",
         "hollow stump with fern",
         "stump with tinder fungus",
-        "split stump with lion's mane"
+        "split stump with lion's mane",
+        "springboard-notched old cut",
+        "stump table with tea set left out",
+        "stump colonised by a whole moss world",
+        "fresh-cut, sap still bright"
       ],
       "glow_concepts": [
         "growth rings glowing like concentric embers",
@@ -962,7 +1019,8 @@
         "shelf undersides shedding pale spore light downward"
       ],
       "animation_idea": "the young shoot at its edge trembling and mushroom caps quivering in the breeze",
-      "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years."
+      "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 25,
@@ -985,7 +1043,13 @@
         "white snowberry bush",
         "lilac in purple bloom",
         "bare winter twig bush",
-        "gooseberry bush"
+        "gooseberry bush",
+        "arching bramble over a gap",
+        "clipped ball gone shaggy",
+        "burning-red winter stems",
+        "grey-leaved sea buckthorn with orange berries",
+        "juniper sprawling low",
+        "spindle bush with pink lantern fruits"
       ],
       "glow_concepts": [
         "berries glowing like scattered tiny lanterns",
@@ -995,7 +1059,8 @@
         "phosphorescent rime edging every leaf"
       ],
       "animation_idea": "the whole clump of foliage rustling in a light breeze",
-      "lore_fit": "Berry bushes are remembered hands-first \u2014 every picker who filled a pail keeps their bush standing at the field edge."
+      "lore_fit": "Berry bushes are remembered hands-first \u2014 every picker who filled a pail keeps their bush standing at the field edge.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 26,
@@ -1031,7 +1096,8 @@
         "glowing stitched runes across the patches"
       ],
       "animation_idea": "coat hem and straw fingers fluttering in the wind",
-      "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own."
+      "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 27,
@@ -1068,7 +1134,8 @@
         "glowing chalk waymarks scrawled on the sideboards"
       ],
       "animation_idea": "the hanging lantern swaying from the cart shaft",
-      "lore_fit": "Every homestead's goods rode a cart at least once, so the half-remembered roads keep their carts even where the horses that pulled them are gone."
+      "lore_fit": "Every homestead's goods rode a cart at least once, so the half-remembered roads keep their carts even where the horses that pulled them are gone.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 28,
@@ -1104,7 +1171,8 @@
         "foxfire fungus fringing the damp base"
       ],
       "animation_idea": "a slow drip from the tap with a rippling puddle",
-      "lore_fit": "Winter stores were counted and re-counted aloud until spring, and anything counted that often holds its shape for centuries."
+      "lore_fit": "Winter stores were counted and re-counted aloud until spring, and anything counted that often holds its shape for centuries.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 29,
@@ -1140,7 +1208,8 @@
         "stained-glass panes throwing colored light"
       ],
       "animation_idea": "lantern swaying gently on its chain",
-      "lore_fit": "Hanging a lantern out for travelers is a small act of keeping, and its swinging light marks the doorsteps of people the Quiet has not touched."
+      "lore_fit": "Hanging a lantern out for travelers is a small act of keeping, and its swinging light marks the doorsteps of people the Quiet has not touched.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 30,
@@ -1176,7 +1245,8 @@
         "moon-pale gleaming wax drippings"
       ],
       "animation_idea": "a few bees looping lazily around the entrance hole",
-      "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet."
+      "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 31,
@@ -1201,7 +1271,13 @@
         "honey-brown clustered sheathed stems",
         "frost-grey winter mushrooms",
         "speckled tawny grisettes",
-        "tiny bonnet mushroom troop"
+        "tiny bonnet mushroom troop",
+        "shelf of oysters on a buried log",
+        "tall shaggy inkcaps dissolving",
+        "fly agaric fairy-tale red",
+        "morel cluster, honeycomb caps",
+        "chanterelle patch, egg-yolk yellow",
+        "puffball trio mid-burst"
       ],
       "glow_concepts": [
         "bioluminescent gills casting light from under the caps",
@@ -1213,7 +1289,8 @@
         "dewdrops on the caps lit like tiny lamps"
       ],
       "animation_idea": "caps bobbing faintly while a few spores drift upward",
-      "lore_fit": "Humble Nordic-forest mushrooms rise wherever the remembered valley soil is rich, first to sprout at the soft edges where the Quiet begins."
+      "lore_fit": "Humble Nordic-forest mushrooms rise wherever the remembered valley soil is rich, first to sprout at the soft edges where the Quiet begins.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 32,
@@ -1252,7 +1329,8 @@
         "a tiny hidden lantern glowing deep in the reeds"
       ],
       "animation_idea": "stalks swaying together in a slow breeze",
-      "lore_fit": "Reed beds fringe every remembered lakeshore in the valley, and their constant whispering is often the only voice keeping the water's edge spoken of."
+      "lore_fit": "Reed beds fringe every remembered lakeshore in the valley, and their constant whispering is often the only voice keeping the water's edge spoken of.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 33,
@@ -1288,7 +1366,8 @@
         "marsh-gas wisps flickering above the heads"
       ],
       "animation_idea": "heads nodding while loose fluff drifts away",
-      "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water."
+      "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 34,
@@ -1324,7 +1403,8 @@
         "a glowing memorial ribbon tied among stems"
       ],
       "animation_idea": "flower heads nodding on their stems in the breeze",
-      "lore_fit": "Wild Rose Valley is named for its briars, and every posy the living once picked still blooms here exactly where its picker remembers kneeling."
+      "lore_fit": "Wild Rose Valley is named for its briars, and every posy the living once picked still blooms here exactly where its picker remembers kneeling.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 35,
@@ -1363,7 +1443,8 @@
         "the rope coil glowing like a slow fuse"
       ],
       "animation_idea": "rope fenders knocking softly against the wood",
-      "lore_fit": "The pier they carried has gone soft into the Quiet, but the pilings stand because departures are the part everyone remembers."
+      "lore_fit": "The pier they carried has gone soft into the Quiet, but the pilings stand because departures are the part everyone remembers.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 36,
@@ -1386,7 +1467,11 @@
         "frost-rimed winter tuft",
         "tuft mixed with clover",
         "coarse marsh grass tuft",
-        "silvery hair-grass tuft"
+        "silvery hair-grass tuft",
+        "seedheads gone silver",
+        "cow parsley umbrellas above the grass",
+        "sedge tussock, stiff fans",
+        "hare's-tail cotton grass tufts"
       ],
       "glow_concepts": [
         "seed heads glowing like tiny lamps",
@@ -1396,7 +1481,8 @@
         "faint green foxfire at the roots"
       ],
       "animation_idea": "blades rippling over in a passing breeze",
-      "lore_fit": "Meadow grass is the ground note of every remembered summer, so tufts of it spring up wherever anyone's memory of hayfields touches the world."
+      "lore_fit": "Meadow grass is the ground note of every remembered summer, so tufts of it spring up wherever anyone's memory of hayfields touches the world.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 37,
@@ -1434,7 +1520,8 @@
         "ground around the base lit in the crystal's color"
       ],
       "animation_idea": "inner light slowly pulsing while tiny sparks drift off the tips",
-      "lore_fit": "Bright mineral the valleys remember from every tale of treasure \u2014 distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about."
+      "lore_fit": "Bright mineral the valleys remember from every tale of treasure \u2014 distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 38,
@@ -1473,7 +1560,8 @@
         "the central name shining bright white"
       ],
       "animation_idea": "runes brightening in sequence from base to tip",
-      "lore_fit": "The oldest dead raised them to keep telling their names, and names still spoken stand harder than anything else in Nangijala."
+      "lore_fit": "The oldest dead raised them to keep telling their names, and names still spoken stand harder than anything else in Nangijala.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 39,
@@ -1508,7 +1596,8 @@
         "low glowing spore mist pooled in the center"
       ],
       "animation_idea": "spore mist slowly circling around the inside of the ring",
-      "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else."
+      "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 40,
@@ -1544,7 +1633,8 @@
         "one garment glowing while the rest hang dark"
       ],
       "animation_idea": "the linens rippling and billowing on the line",
-      "lore_fit": "Wash on the line means somebody still keeps house, and clothes remembered by the bodies that wore them hold their shape the longest."
+      "lore_fit": "Wash on the line means somebody still keeps house, and clothes remembered by the bodies that wore them hold their shape the longest.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 41,
@@ -1582,7 +1672,8 @@
         "dewdrops holding points of caught light"
       ],
       "animation_idea": "loose tendrils at the top swaying gently in the wind",
-      "lore_fit": "Fences outlive their farms in Nangijala, and the ivy somebody once cursed at keeps its post upright long after the field around it has gone quiet."
+      "lore_fit": "Fences outlive their farms in Nangijala, and the ivy somebody once cursed at keeps its post upright long after the field around it has gone quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 42,
@@ -1605,7 +1696,11 @@
         "frost-silvered fern",
         "dense shield fern mound",
         "ostrich fern vase",
-        "small polypody tuft"
+        "small polypody tuft",
+        "shuttlecock crowns unrolling",
+        "bracken browning at the tips",
+        "hart's-tongue, strap leaves",
+        "fern colonising a wall crack"
       ],
       "glow_concepts": [
         "frond tips glowing like green candle flames",
@@ -1616,7 +1711,8 @@
         "one bright glowing frond among dark ones"
       ],
       "animation_idea": "fronds swaying and nodding in a light breeze",
-      "lore_fit": "Ferns are older than every era standing in the valley, remembered bone-deep by even the most ancient dead."
+      "lore_fit": "Ferns are older than every era standing in the valley, remembered bone-deep by even the most ancient dead.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 43,
@@ -1654,7 +1750,8 @@
         "swarm of glowing moths circling the pole top"
       ],
       "animation_idea": "the cut wire swinging gently in the wind",
-      "lore_fit": "Somebody's century still remembers sending word down the wire, so its poles march across meadows where no line was ever strung."
+      "lore_fit": "Somebody's century still remembers sending word down the wire, so its poles march across meadows where no line was ever strung.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 44,
@@ -1690,7 +1787,8 @@
         "fireflies gathered on the top pole"
       ],
       "animation_idea": "the hanging fish swaying slightly in the wind",
-      "lore_fit": "Whole coastal generations remember winters survived on racks like these, and remembered providence keeps the fish from ever spoiling."
+      "lore_fit": "Whole coastal generations remember winters survived on racks like these, and remembered providence keeps the fish from ever spoiling.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 45,
@@ -1724,7 +1822,8 @@
         "rune-shaped bare patch glowing on the mound"
       ],
       "animation_idea": "dew beads glinting as the cushion slowly swells and settles",
-      "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently."
+      "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 46,
@@ -1760,7 +1859,8 @@
         "spark column streaming off downwind"
       ],
       "animation_idea": "blaze raging with sparks streaming off the cage",
-      "lore_fit": "A beacon is a whole village's agreement to remember the way home, raised high so its light can hold the valley's edges against the Quiet."
+      "lore_fit": "A beacon is a whole village's agreement to remember the way home, raised high so its light can hold the valley's edges against the Quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 47,
@@ -1795,7 +1895,8 @@
         "faint light leaking between the cap shingles"
       ],
       "animation_idea": "the sails turning slowly in the wind",
-      "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat."
+      "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 48,
@@ -1831,7 +1932,8 @@
         "ghost-pale ring of dancers' light in the grass below"
       ],
       "animation_idea": "ribbons and wreaths swaying gently in the breeze",
-      "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet."
+      "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 49,
@@ -1867,7 +1969,8 @@
         "small coal brazier beside the counter"
       ],
       "animation_idea": "the canopy edge fluttering and hanging goods swinging",
-      "lore_fit": "Market day is remembering out loud \u2014 prices, names and gossip repeated weekly for lifetimes \u2014 so stalls stand firm even in villages gone half-Quiet."
+      "lore_fit": "Market day is remembering out loud \u2014 prices, names and gossip repeated weekly for lifetimes \u2014 so stalls stand firm even in villages gone half-Quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 50,
@@ -1903,7 +2006,8 @@
         "smoke of soft light curling from the crown"
       ],
       "animation_idea": "hearth flames flickering while thin smoke curls from the crown",
-      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften \u2014 the fire everyone gathered at stands long after the walls are gone."
+      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften \u2014 the fire everyone gathered at stands long after the walls are gone.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 51,
@@ -1939,7 +2043,8 @@
         "cold aurora shimmer hanging under the arch"
       ],
       "animation_idea": "briar rose vines swaying against the stonework",
-      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through."
+      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 52,
@@ -1976,7 +2081,8 @@
         "bright sap beads glowing along the bark"
       ],
       "animation_idea": "the branch curtains rippling gently in the wind",
-      "lore_fit": "Willows lean over every riverbank the dead remember, curtained trees a child could hide inside, and grief keeps them greener than anything else in the valley."
+      "lore_fit": "Willows lean over every riverbank the dead remember, curtained trees a child could hide inside, and grief keeps them greener than anything else in the valley.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 53,
@@ -2010,7 +2116,8 @@
         "burst husk spilling a pile of glowing spores"
       ],
       "animation_idea": "puffball venting a little spore cloud in a slow rhythm",
-      "lore_fit": "Each puff scatters spores like retold stories, seeding firm ground downwind of wherever people still talk."
+      "lore_fit": "Each puff scatters spores like retold stories, seeding firm ground downwind of wherever people still talk.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 54,
@@ -2049,7 +2156,8 @@
         "luminous crystal frost spreading down the pedestal"
       ],
       "animation_idea": "core light pulsing like a slow heartbeat with orbiting motes",
-      "lore_fit": "When a memory has thinned to one mineral fact, displaying its soulstone keeps that last fact spoken for."
+      "lore_fit": "When a memory has thinned to one mineral fact, displaying its soulstone keeps that last fact spoken for.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 55,
@@ -2082,7 +2190,8 @@
         "trickle of glowing pebbles down one side"
       ],
       "animation_idea": "a loose pebble occasionally trickling down the slope",
-      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten \u2014 memory ground down but not yet gone to the Quiet."
+      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten \u2014 memory ground down but not yet gone to the Quiet.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 56,
@@ -2118,7 +2227,8 @@
         "votive candles flickering in a pier niche"
       ],
       "animation_idea": "remembered water trickling and dripping from the broken channel",
-      "lore_fit": "The oldest dead still trust their empire's stonework, so its arches stand beside cherry orchards, carrying water only they remember."
+      "lore_fit": "The oldest dead still trust their empire's stonework, so its arches stand beside cherry orchards, carrying water only they remember.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 57,
@@ -2154,7 +2264,8 @@
         "ghost-blue barnacle colonies at the sand line"
       ],
       "animation_idea": "a caught gull feather fluttering on a branch stub",
-      "lore_fit": "Every drowned sailor and river child remembers wood the water gave back, so the shores of Nangijala are strewn with it."
+      "lore_fit": "Every drowned sailor and river child remembers wood the water gave back, so the shores of Nangijala are strewn with it.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 58,
@@ -2188,7 +2299,8 @@
         "glowing haze puffing from the cups"
       ],
       "animation_idea": "faint luminous steam curling up out of the cups",
-      "lore_fit": "Little cups that hold light the way the valley holds its tended fires, keeping a sip of memory lit through the night."
+      "lore_fit": "Little cups that hold light the way the valley holds its tended fires, keeping a sip of memory lit through the night.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 59,
@@ -2217,7 +2329,8 @@
         "soul-light seeping from the axle hollow"
       ],
       "animation_idea": "the wheel creaking a few degrees and settling back",
-      "lore_fit": "Somebody remembers the mill fondly but not exactly, so only its wheel endures, leaning wherever the meadow will hold it."
+      "lore_fit": "Somebody remembers the mill fondly but not exactly, so only its wheel endures, leaning wherever the meadow will hold it.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 60,
@@ -2253,7 +2366,8 @@
         "stacked bracket fungi glowing phosphorescent green"
       ],
       "animation_idea": "the massive crown breathing in a slow sway while motes drift down through it",
-      "lore_fit": "A tree spoken of for generations becomes a landmark certainty, older and firmer than the ground it stands on, and whole districts of the dead navigate by it."
+      "lore_fit": "A tree spoken of for generations becomes a landmark certainty, older and firmer than the ground it stands on, and whole districts of the dead navigate by it.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 61,
@@ -2289,7 +2403,8 @@
         "ember-orange cracks like cooling magma"
       ],
       "animation_idea": "ivy leaves fluttering against the shaft",
-      "lore_fit": "A temple nobody fully remembers has thinned to its last certain piece: one column somebody once leaned against and never forgot."
+      "lore_fit": "A temple nobody fully remembers has thinned to its last certain piece: one column somebody once leaned against and never forgot.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 62,
@@ -2327,7 +2442,8 @@
         "soft aurora shimmer across the thinned surface"
       ],
       "animation_idea": "the faded half slowly flickering between half-visible and almost gone",
-      "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone."
+      "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 63,
@@ -2363,7 +2479,8 @@
         "a will-o-wisp resting on the largest pad"
       ],
       "animation_idea": "pads drifting gently on a slow ripple",
-      "lore_fit": "Lilies bloom over the deepest remembered water, each flower marking a place where someone was last looked for; shipped as water-overlay scenery for maps2 to place only on water tiles."
+      "lore_fit": "Lilies bloom over the deepest remembered water, each flower marking a place where someone was last looked for; shipped as water-overlay scenery for maps2 to place only on water tiles.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 64,
@@ -2402,7 +2519,8 @@
         "moonflowers open and shining white"
       ],
       "animation_idea": "leaves fluttering while one heavy blossom nods on its stem",
-      "lore_fit": "Cottage gardeners keep their trellises exactly as they were proudest of them, and a well-spoken-of trellis stays sharp-edged while the beds around it soften."
+      "lore_fit": "Cottage gardeners keep their trellises exactly as they were proudest of them, and a well-spoken-of trellis stays sharp-edged while the beds around it soften.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 65,
@@ -2436,7 +2554,8 @@
         "sap channels lit like slow embers"
       ],
       "animation_idea": "amber ring-light breathing slowly while spore motes rise",
-      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments."
+      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 66,
@@ -2472,7 +2591,8 @@
         "a thin line of glowing sap spiraling upward"
       ],
       "animation_idea": "the bine tip high above swaying in a slow circle",
-      "lore_fit": "Brewers from every century remember their hop gardens at harvest, and the beer poured around tended fires keeps the poles standing tall and certain."
+      "lore_fit": "Brewers from every century remember their hop gardens at harvest, and the beer poured around tended fires keeps the poles standing tall and certain.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 67,
@@ -2509,7 +2629,8 @@
         "foxfire fungus shelf glowing on the jaw"
       ],
       "animation_idea": "a butterfly settling on the antler tip, slowly fanning its wings, then fluttering off",
-      "lore_fit": "Bones are the last firm fact of a beast, still held in shape by every hunter and child who told of it."
+      "lore_fit": "Bones are the last firm fact of a beast, still held in shape by every hunter and child who told of it.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 68,
@@ -2545,7 +2666,8 @@
         "copper coils holding a faint galvanic glow"
       ],
       "animation_idea": "a gauge needle twitching with an occasional puff of steam",
-      "lore_fit": "An engineer's pride outlasts its factory: the machine idles in a meadow, kept solid by everyone who ever bragged about it."
+      "lore_fit": "An engineer's pride outlasts its factory: the machine idles in a meadow, kept solid by everyone who ever bragged about it.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 69,
@@ -2581,7 +2703,8 @@
         "small wisps circling the broken top"
       ],
       "animation_idea": "the owl in the hollow blinking slowly and swiveling its head",
-      "lore_fit": "Dead trees stand long in Nangijala because owls are watched and spoken of, and speaking keeps the snag from thinning."
+      "lore_fit": "Dead trees stand long in Nangijala because owls are watched and spoken of, and speaking keeps the snag from thinning.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 70,
@@ -2618,7 +2741,8 @@
         "glowing knotted memory-cords wound around the ribs"
       ],
       "animation_idea": "tall grass swaying around the bones while one loose rib rocks and settles",
-      "lore_fit": "Even beasts are remembered in Nangijala, and their bones lie where a story once put them, kept solid by retelling."
+      "lore_fit": "Even beasts are remembered in Nangijala, and their bones lie where a story once put them, kept solid by retelling.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 71,
@@ -2686,7 +2810,8 @@
         "hanging seed pods glowing like small lamps"
       ],
       "animation_idea": "loose vine strands swinging slowly in the opening",
-      "lore_fit": "Every era's dead remember a gateway they were proud to walk through, so arches stand alone in the meadows long after the walls they belonged to were forgotten."
+      "lore_fit": "Every era's dead remember a gateway they were proud to walk through, so arches stand alone in the meadows long after the walls they belonged to were forgotten.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 73,
@@ -2722,7 +2847,8 @@
         "post tops carved with glowing painted names"
       ],
       "animation_idea": "the garland swag bobbing gently between the posts",
-      "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk."
+      "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 74,
@@ -2758,7 +2884,8 @@
         "moss lining glowing soft foxfire green"
       ],
       "animation_idea": "the basket swinging slightly on its creaking hook",
-      "lore_fit": "Hanging a light and flowers out for travelers is old lantern courtesy, and the dead keep the habit even where the door it belonged to is gone."
+      "lore_fit": "Hanging a light and flowers out for travelers is old lantern courtesy, and the dead keep the habit even where the door it belonged to is gone.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 75,
@@ -2794,7 +2921,8 @@
         "the spout stream falling as a ribbon of light"
       ],
       "animation_idea": "water trickling and rippling in the basin",
-      "lore_fit": "Every village square in living memory had a fountain, and the sound of one still running keeps a whole square from going quiet."
+      "lore_fit": "Every village square in living memory had a fountain, and the sound of one still running keeps a whole square from going quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 76,
@@ -2828,7 +2956,8 @@
         "tip capped in cold starlight"
       ],
       "animation_idea": "glowing motes spiraling slowly up around the spire",
-      "lore_fit": "A landmark pointed at from afar by so many of the dead that it keeps its exact silhouette across every era's world."
+      "lore_fit": "A landmark pointed at from afar by so many of the dead that it keeps its exact silhouette across every era's world.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 77,
@@ -2864,7 +2993,8 @@
         "iron hoops etched with faintly glowing runes"
       ],
       "animation_idea": "the trailing vine tips stirring softly against the barrel",
-      "lore_fit": "A barrel of flowers by the door is the plainest certainty of home the dead carry, so planters bloom on doorsteps whose houses have long since gone soft."
+      "lore_fit": "A barrel of flowers by the door is the plainest certainty of home the dead carry, so planters bloom on doorsteps whose houses have long since gone soft.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 78,
@@ -2901,7 +3031,8 @@
         "a soulstone in the trunk hollow, veins alight"
       ],
       "animation_idea": "the long flower clusters swinging like slow pendulums",
-      "lore_fit": "The tree itself died long ago, but its flowering is still spoken of every spring, so the wisteria returns to dress the dead wood in what it is remembered for."
+      "lore_fit": "The tree itself died long ago, but its flowering is still spoken of every spring, so the wisteria returns to dress the dead wood in what it is remembered for.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 79,
@@ -2935,7 +3066,8 @@
         "band of foxfire ringing the stalk base"
       ],
       "animation_idea": "cap swaying gently while spore motes fall like slow snow",
-      "lore_fit": "In woods drifting toward the Quiet, growth stops obeying anyone's certainty, and mushrooms nobody contradicts swell to the size of trees."
+      "lore_fit": "In woods drifting toward the Quiet, growth stops obeying anyone's certainty, and mushrooms nobody contradicts swell to the size of trees.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 80,
@@ -2972,7 +3104,8 @@
         "waymark rune on the post glowing softly"
       ],
       "animation_idea": "nestling heads popping up with open beaks, then ducking back down into the cup",
-      "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright."
+      "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 81,
@@ -3009,7 +3142,8 @@
         "ghost-light halo where threads have thinned away"
       ],
       "animation_idea": "the web rippling gently in the breeze while the spider bobs at the hub",
-      "lore_fit": "Frames whose houses have gone quiet stand alone in the meadows, and spiders web over the gaps the Quiet left."
+      "lore_fit": "Frames whose houses have gone quiet stand alone in the meadows, and spiders web over the gaps the Quiet left.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 82,
@@ -3043,7 +3177,8 @@
         "warm light from a sheltered hollow beneath"
       ],
       "animation_idea": "dust sifting from the cracks while moss sways gently",
-      "lore_fit": "A piece of a remembered mountain that outlived the mountain itself when the Quiet took the rest of the range."
+      "lore_fit": "A piece of a remembered mountain that outlived the mountain itself when the Quiet took the rest of the range.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 83,
@@ -3079,7 +3214,8 @@
         "thin wisps of light rising from the crown"
       ],
       "animation_idea": "lines of ants trickling in and out of the entrance holes",
-      "lore_fit": "The small diligent lives of the meadow are remembered too, and their mounds firm up wherever people once watched ants work."
+      "lore_fit": "The small diligent lives of the meadow are remembered too, and their mounds firm up wherever people once watched ants work.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 84,
@@ -3115,7 +3251,8 @@
         "glowing net floats heaped in the stern"
       ],
       "animation_idea": "a loose mooring rope swaying against the hull",
-      "lore_fit": "For many the crossing into Nangijala was a last ferry over dark water, and each beached hull is somebody's arrival still held ashore."
+      "lore_fit": "For many the crossing into Nangijala was a last ferry over dark water, and each beached hull is somebody's arrival still held ashore.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 85,
@@ -3148,7 +3285,8 @@
         "opening rimmed in soft ember light"
       ],
       "animation_idea": "crystal lining glinting as the interior glow flickers",
-      "lore_fit": "Memory keeps its brightest part hidden \u2014 a plain stone that cracks open to show the light it has been holding all along."
+      "lore_fit": "Memory keeps its brightest part hidden \u2014 a plain stone that cracks open to show the light it has been holding all along.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 86,
@@ -3184,7 +3322,8 @@
         "ghost-pale nest turned translucent and shining"
       ],
       "animation_idea": "wasps drifting lazily in and out of the nest entrance while the nest sways slightly",
-      "lore_fit": "Everyone remembers the tree they were told never to poke, so the gray paper nests hang unusually firm."
+      "lore_fit": "Everyone remembers the tree they were told never to poke, so the gray paper nests hang unusually firm.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 87,
@@ -3220,7 +3359,8 @@
         "sparks of light drifting off fresh-split wood"
       ],
       "animation_idea": "a loose log settling as fine wood dust drifts",
-      "lore_fit": "Firewood laid up for winter feeds the tended fires, and a full woodpile is the standing promise that a fire will not be allowed to go out."
+      "lore_fit": "Firewood laid up for winter feeds the tended fires, and a full woodpile is the standing promise that a fire will not be allowed to go out.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 88,
@@ -3256,7 +3396,8 @@
         "address runes glowing down the post"
       ],
       "animation_idea": "the hinged lid lifting slightly and settling as if breathing",
-      "lore_fit": "The dead write letters to the still-living and to each other, and every letter waiting in a box is a name being spoken in ink."
+      "lore_fit": "The dead write letters to the still-living and to each other, and every letter waiting in a box is a name being spoken in ink.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 89,
@@ -3298,7 +3439,8 @@
         "whole figure translucent, lit from within"
       ],
       "animation_idea": "moths slowly circling the statue's head",
-      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered \u2014 hardest of all for the Quiet to take."
+      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered \u2014 hardest of all for the Quiet to take.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 90,
@@ -3334,7 +3476,8 @@
         "worn ground beneath shining in a faint ring"
       ],
       "animation_idea": "the empty seat swinging gently as if someone just jumped off",
-      "lore_fit": "Children remember swings with their whole bodies, so the swings of Nangijala keep swinging over ground worn bare by feet that still return."
+      "lore_fit": "Children remember swings with their whole bodies, so the swings of Nangijala keep swinging over ground worn bare by feet that still return.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 91,
@@ -3370,7 +3513,8 @@
         "tin cup brimming with luminous water"
       ],
       "animation_idea": "the handle dipping slowly as a trickle falls from the spout",
-      "lore_fit": "Every era pumped its own water, and a pump that still primes means the dooryard it served is still spoken of."
+      "lore_fit": "Every era pumped its own water, and a pump that still primes means the dooryard it served is still spoken of.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 92,
@@ -3406,7 +3550,8 @@
         "a lantern hung from the anchor ring"
       ],
       "animation_idea": "the loose chain end swaying and clinking softly",
-      "lore_fit": "An anchor set ashore is a sailor's promise that the voyage is over, holding whole harbors of memory fast against the Quiet."
+      "lore_fit": "An anchor set ashore is a sailor's promise that the voyage is over, holding whole harbors of memory fast against the Quiet.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 93,
@@ -3442,7 +3587,8 @@
         "dial numerals lit like small windows"
       ],
       "animation_idea": "the glowing shadow line creeping slowly around the dial",
-      "lore_fit": "Time runs strangely where every era stands at once, and each sundial in Nangijala keeps the hour its keeper remembers best."
+      "lore_fit": "Time runs strangely where every era stands at once, and each sundial in Nangijala keeps the hour its keeper remembers best.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 94,
@@ -3477,7 +3623,8 @@
         "moonmilk mineral crust glowing on the rim stones"
       ],
       "animation_idea": "bubbles rising as rings spread across the water surface",
-      "lore_fit": "Springs are where the land remembers water beginning, and drinking from a kept basin is said to steady whatever in you has gone thin."
+      "lore_fit": "Springs are where the land remembers water beginning, and drinking from a kept basin is said to steady whatever in you has gone thin.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 95,
@@ -3513,7 +3660,8 @@
         "seed heads sparking softly as they nod"
       ],
       "animation_idea": "grain heads nodding while sparrows flutter in and out",
-      "lore_fit": "Setting out the midwinter sheaf for the birds is remembered kindness, and kindness repeated every year holds its pole upright for centuries."
+      "lore_fit": "Setting out the midwinter sheaf for the birds is remembered kindness, and kindness repeated every year holds its pole upright for centuries.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 96,
@@ -3549,7 +3697,8 @@
         "ghost-doves of light circling the roof"
       ],
       "animation_idea": "doves shuffling on the ledges, one fluttering off and returning",
-      "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms."
+      "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 97,
@@ -3585,7 +3734,8 @@
         "painted dapples lit like tiny lanterns"
       ],
       "animation_idea": "rocking gently on its own with a slow creak",
-      "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small."
+      "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 98,
@@ -3621,7 +3771,8 @@
         "warm forge-light pooling in the stump's cracks"
       ],
       "animation_idea": "a faint ring of sparks scattering as if from an unseen hammer blow",
-      "lore_fit": "The smith's trade is remembered in every era at once, and an anvil rings on in the meadow long after its forge went soft."
+      "lore_fit": "The smith's trade is remembered in every era at once, and an anvil rings on in the meadow long after its forge went soft.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 99,
@@ -3657,7 +3808,8 @@
         "inner charcoal bed glowing through deep cracks"
       ],
       "animation_idea": "heat shimmer and thin smoke rising from the vent holes",
-      "lore_fit": "Charcoal burners watched their smoking mounds night and day for weeks, and a thing watched that hard keeps burning here, feeding the valley's tended fires."
+      "lore_fit": "Charcoal burners watched their smoking mounds night and day for weeks, and a thing watched that hard keeps burning here, feeding the valley's tended fires.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 100,
@@ -3692,7 +3844,8 @@
         "fireflies hovering low over the dome"
       ],
       "animation_idea": "one loose twig quivering while warm light flickers inside the dome",
-      "lore_fit": "Streams remember being worked, and the lodges of long-dead beavers stand at the shore because valley folk still tell where the water pooled."
+      "lore_fit": "Streams remember being worked, and the lodges of long-dead beavers stand at the shore because valley folk still tell where the water pooled.",
+      "modifier_pool": "structure"
     },
     {
       "rank": 101,
@@ -3728,7 +3881,8 @@
         "moonlit silver shimmer across the leaves"
       ],
       "animation_idea": "leaves rippling in a draft down the rock face",
-      "lore_fit": "The mountains are the oldest memories in Nangijala, and green still climbs them wherever names are spoken often."
+      "lore_fit": "The mountains are the oldest memories in Nangijala, and green still climbs them wherever names are spoken often.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 102,
@@ -3761,7 +3915,8 @@
         "fireflies drifting around the ledge"
       ],
       "animation_idea": "a thin trickle of dust falling from the ledge",
-      "lore_fit": "Even a wall of old stone keeps small lives and small lights in its cracks."
+      "lore_fit": "Even a wall of old stone keeps small lives and small lights in its cracks.",
+      "modifier_pool": "nature"
     },
     {
       "rank": 103,
@@ -3776,18 +3931,18 @@
       ],
       "art_size": 64,
       "variety": [
-        "bare scrubbed pine table",
-        "table set with bowls and bread",
-        "round pedestal table",
-        "table with a jug of wildflowers",
-        "heavy oak table with carved legs",
-        "kitchen work table with chopping block",
-        "small bedside table",
-        "table draped with a woven cloth",
-        "table with sewing basket and folded cloth",
-        "table with clay cups and a pitcher",
-        "low child-height table",
-        "table with a steaming soup pot"
+        "round tavern table with spilled cards",
+        "kneading table dusted with flour",
+        "map table with rolled charts",
+        "cobbler's bench with tools and lasts",
+        "tea table with a samovar",
+        "fisherman's gutting table with buckets",
+        "herbalist's table of bunches and jars",
+        "half-set supper table for two",
+        "dye-stained craft table",
+        "trestle table with a pie cooling",
+        "shrine-corner table with offerings",
+        "carpenter's table mid-project"
       ],
       "glow_concepts": [
         "a lit candle stub in a brass holder on the tabletop",
@@ -3795,7 +3950,8 @@
         "memory-light pooling in the wood grain"
       ],
       "animation_idea": "the candleflame swaying gently",
-      "lore_fit": "A laid table says someone is expected home, and in Nangijala someone always is."
+      "lore_fit": "A laid table says someone is expected home, and in Nangijala someone always is.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 104,
@@ -3810,25 +3966,26 @@
       ],
       "art_size": 64,
       "variety": [
-        "ladder-back kitchen chair",
-        "three-legged milking stool",
-        "carved high-back chair",
-        "short deacon's bench",
-        "rocking chair with thick rockers",
-        "small child's stool",
-        "cushioned fireside chair",
-        "bench with a folded blanket",
-        "blue-painted farm chair",
-        "woven rush-seat chair",
-        "half-barrel chair",
-        "worn footstool"
+        "nursing chair with low seat",
+        "spinning-stool beside a basket",
+        "settle bench with high back",
+        "pew bench with worn kneeler",
+        "tripod stool with charred leg",
+        "window bench with cushions",
+        "carver chair with armrests",
+        "bodger's fresh green-wood chair",
+        "upturned crate used as a seat",
+        "milking stool with initials burned away",
+        "porch rocker with blanket",
+        "apprentice's wobbly first stool"
       ],
       "glow_concepts": [
         "a knitted blanket glowing faintly with kept warmth",
         "a small candle lantern hung on the chair back"
       ],
       "animation_idea": "the rocking chair rocking slowly on its own",
-      "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready."
+      "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 105,
@@ -3843,16 +4000,16 @@
       ],
       "art_size": 128,
       "variety": [
-        "patchwork quilt bed",
-        "bed with a carved headboard",
-        "small child's bed with a rag doll",
-        "box bed with drawers underneath",
-        "canopy bed with heavy curtains",
-        "simple straw pallet bed",
-        "fur-covered hunter's bed",
-        "blue-painted bed",
-        "unmade bed with turned-back covers",
-        "sturdy iron-frame bed with brass knobs"
+        "cupboard bed built into panelling",
+        "truckle bed half-slid under",
+        "hammock slung on a frame",
+        "sickbed with medicine table",
+        "sailor's box bunk",
+        "bearskin-piled winter bed",
+        "newlyweds' carved marriage bed",
+        "grandmother's high feather bed",
+        "trundle nursery cot",
+        "monk's plank bed with single blanket"
       ],
       "glow_concepts": [
         "a warming pan glowing at the foot of the bed",
@@ -3861,7 +4018,8 @@
         "a little nightlight lantern beside the pillow"
       ],
       "animation_idea": "the quilt rising and falling as if someone breathes beneath it",
-      "lore_fit": "The dead still sleep \u2014 not because they must, but because dreams are where the living visit."
+      "lore_fit": "The dead still sleep \u2014 not because they must, but because dreams are where the living visit.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 106,
@@ -3876,18 +4034,18 @@
       ],
       "art_size": 128,
       "variety": [
-        "welsh dresser stacked with plates",
-        "tall larder cupboard",
-        "open shelf unit of jars and crocks",
-        "carved linen chest",
-        "low sideboard with jugs",
-        "bookshelf of worn plain cloth-bound books with blank spines",
-        "corner cupboard",
-        "pot-rack shelf with copper pans",
-        "painted folk-art cupboard",
-        "apothecary chest of many small drawers",
-        "heavy china cabinet",
-        "woodbox stacked with kindling"
+        "spice rack of tiny drawers",
+        "fisherman's net-and-float shelf",
+        "toy shelf with wooden animals",
+        "cheese safe with mesh door",
+        "map chest of wide flat drawers",
+        "seed cabinet with paper packets",
+        "trophy shelf of ribbons and cups",
+        "curio cabinet of shells and stones",
+        "bottle rack half-full",
+        "tool cupboard with hung saws",
+        "bread cupboard with ventilation holes",
+        "wedding china display"
       ],
       "glow_concepts": [
         "jars of glowing preserves on the shelves",
@@ -3895,7 +4053,8 @@
         "a glowing kettle resting on the sideboard"
       ],
       "animation_idea": "a cupboard door drifting open a crack and closing again",
-      "lore_fit": "Shelves are how a house remembers out loud: everything kept where it was always kept."
+      "lore_fit": "Shelves are how a house remembers out loud: everything kept where it was always kept.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 107,
@@ -3910,16 +4069,16 @@
       ],
       "art_size": 128,
       "variety": [
-        "fieldstone hearth with an iron cook pot",
-        "brick hearth with a baking oven",
-        "hearth with drying herbs on the mantel",
-        "grand carved-mantel hearth",
-        "small cottage hearth with a kettle",
-        "smoke-blackened old hearth",
-        "hearth with copper pans hung beside it",
-        "whitewashed hearth with tile trim",
-        "hearth with a cat asleep on the warm stone",
-        "cold swept hearth with stacked logs"
+        "bread oven glowing beside the fire",
+        "hearth with drying mittens on a rail",
+        "smithy forge-hearth with bellows",
+        "hearth with a soup kettle on a swing arm",
+        "tiled stove hearth, blue and white",
+        "open-pit central hearth ringed with stone",
+        "hearth with a sleeping dog",
+        "summer hearth filled with dried flowers",
+        "hearth mid-sweep with brush and pan",
+        "double hearth back to back"
       ],
       "glow_concepts": [
         "fire burning warm in the hearth mouth",
@@ -3927,7 +4086,8 @@
         "coals banked for the night glowing low"
       ],
       "animation_idea": "the fire flickering and a curl of smoke rising",
-      "lore_fit": "The hearth is the first thing a remembered house gets right; the fire has burned since someone first told the story."
+      "lore_fit": "The hearth is the first thing a remembered house gets right; the fire has burned since someone first told the story.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 108,
@@ -3958,7 +4118,8 @@
         "warm hearthlight reflected across the pile"
       ],
       "animation_idea": "a corner of the rug lifting in a draft and settling",
-      "lore_fit": "A rug marks the warm middle of a room the way a fire marks a camp."
+      "lore_fit": "A rug marks the warm middle of a room the way a fire marks a camp.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 109,
@@ -3973,18 +4134,18 @@
       ],
       "art_size": 64,
       "variety": [
-        "stacked crockery pile",
-        "basket of folded linen",
-        "firewood stack bound with rope",
-        "flour sack leaning on a crock",
-        "butter churn with milk pails",
-        "basket of wool with knitting needles",
-        "washtub with a washboard",
-        "string of onions coiled in a bowl",
-        "muddy boots by a doormat",
-        "toy blocks and a rag doll",
-        "potted kitchen herbs",
-        "cluster of clay jugs"
+        "spilled sewing box mid-tidy",
+        "stack of firewood with kindling axe block",
+        "preserves crate packed in straw",
+        "fishing gear heaped by the door",
+        "market basket with leeks and bread",
+        "cobbler's pile of shoes to mend",
+        "toy fort of blocks mid-play",
+        "laundry pile with washboard",
+        "berry-stained foraging baskets",
+        "winter boots drying on a rack",
+        "beekeeper's smoker and veil on a stool",
+        "half-wound wool skein and spindle"
       ],
       "glow_concepts": [
         "a covered lantern set among the things",
@@ -3992,7 +4153,8 @@
         "embers glowing in a small warming pot"
       ],
       "animation_idea": "a mouse darting between the jugs and vanishing",
-      "lore_fit": "Clutter is proof of living; empty rooms are how the Quiet gets in."
+      "lore_fit": "Clutter is proof of living; empty rooms are how the Quiet gets in.",
+      "modifier_pool": "indoor"
     },
     {
       "rank": 110,
@@ -4007,18 +4169,18 @@
       ],
       "art_size": 64,
       "variety": [
-        "mounted deer antlers on a wooden plaque",
-        "row of hanging copper pans",
-        "herb bundles drying on a rail",
-        "framed folk embroidery with pattern only",
-        "round woven basket-lid display",
-        "small mounted shelf of jars on brackets",
-        "hunting horn hanging on a strap",
-        "braided garlic strings",
-        "painted wooden plate rack",
-        "small framed landscape painting",
-        "iron candle sconce",
-        "fiddle hanging on a peg"
+        "mounted pike on a board",
+        "kitchen rack of hanging spoons and ladles",
+        "child's felt banner with stitched sun",
+        "hunting bow and quiver on pegs",
+        "dried flower wreath",
+        "ship-in-profile carved relief",
+        "mask of a festival animal",
+        "rack of clay pipes",
+        "hand mirror and brushes on hooks",
+        "farm tools hung in neat rows",
+        "saint's-day ribbon fan",
+        "weather-house with two doors"
       ],
       "glow_concepts": [
         "the candle sconce lit warm",
@@ -4026,7 +4188,70 @@
         "embroidery threads shimmering with memory-light"
       ],
       "animation_idea": "the hanging pans swaying and knocking softly once",
-      "lore_fit": "Walls with things on them are walls someone chose; bare walls are just weather kept out."
+      "lore_fit": "Walls with things on them are walls someone chose; bare walls are just weather kept out.",
+      "modifier_pool": "indoor"
     }
-  ]
+  ],
+  "modifier_pools": {
+    "nature": [
+      "leaning noticeably to one side",
+      "grown around a half-buried stone",
+      "with thick exposed roots",
+      "split into a double form",
+      "with a small sapling beside it",
+      "one side die-back, the other thriving",
+      "wrapped in thin creeper vines",
+      "with a bird nest tucked in it",
+      "heavily weathered and gnarled",
+      "young and vigorous",
+      "asymmetric, wind-shaped",
+      "with bracket fungi steps",
+      "standing in a patch of wildflowers",
+      "on a low grassy hummock",
+      "with fallen leaves collected at its base",
+      "lightly snow-dusted",
+      "rain-dark and glistening",
+      "with a rabbit burrow at the base",
+      "scarred by an old lightning strike",
+      "with butterflies resting on it",
+      "half-swallowed by tall grass",
+      "unusually broad and squat",
+      "unusually tall and narrow",
+      "with berries scattered beneath it"
+    ],
+    "indoor": [
+      "well-worn from years of use",
+      "freshly made and neat",
+      "slightly crooked with age",
+      "child-sized",
+      "grand and heavy",
+      "simple and rustic",
+      "lovingly repaired with mismatched parts",
+      "dusty from long storage",
+      "with carved decorative trim",
+      "painted in faded folk colors",
+      "draped with a knitted throw",
+      "with a cat-shaped worn patch",
+      "stacked with extra belongings",
+      "missing one small piece",
+      "polished to a warm shine",
+      "built from driftwood planks",
+      "inlaid with tiny soulstone chips",
+      "with initials-free heart carving"
+    ],
+    "structure": [
+      "recently maintained",
+      "old and settling into the ground",
+      "patched with mismatched materials",
+      "overgrown at the base",
+      "leaning slightly",
+      "reinforced with iron bands",
+      "moss-capped",
+      "bird-favored, with droppings and a nest",
+      "half-repainted",
+      "weathered silver-grey",
+      "with climbing flowers at one corner",
+      "snow-dusted"
+    ]
+  }
 }
