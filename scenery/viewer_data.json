@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 666,
-  "target_count": 2105,
+  "scenery_count": 661,
+  "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -12,8 +12,8 @@
       "rank": 1,
       "id": "trees",
       "name": "Tree",
-      "quota": 200,
-      "done": 77
+      "quota": 77,
+      "done": 73
     },
     {
       "rank": 2,
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 2,
+    "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 7,
@@ -1319,7 +1319,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 77,
+    "trees": 73,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -4117,28 +4117,6 @@
       "status": "complete",
       "pixellab_object_id": "44ab6785-f6f0-4ca4-908d-f44a28f98a19",
       "sprite": "cliff_falls/cliff_fall_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_008",
-      "rel": "cliff_falls/cliff_fall_008",
-      "name": "A fine misting veil 008 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, a fine misting veil, splitting into two threads midway, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.19,
-        "world_px_height": 384,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "cafe4223-08ea-4890-b671-9f999474c73d",
-      "sprite": "cliff_falls/cliff_fall_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -14280,28 +14258,6 @@
       "animations": []
     },
     {
-      "id": "tree_073",
-      "rel": "trees/tree_073",
-      "name": "Snow-dusted fir 073",
-      "category": "trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, snow-dusted fir, with a bird nest tucked in it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.6,
-        "world_px_height": 173,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "59aae7d4-1dca-4b66-9cd0-7397a3491f58",
-      "sprite": "trees/tree_073/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "tree_074",
       "rel": "trees/tree_074",
       "name": "Field maple, modest and round 074 \u00b7 lit",
@@ -14346,28 +14302,6 @@
       "animations": []
     },
     {
-      "id": "tree_076",
-      "rel": "trees/tree_076",
-      "name": "Elder heavy with black berries 076 \u00b7 lit",
-      "category": "trees",
-      "lights": "LIGHTS_ON",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, elder heavy with black berries, asymmetric, wind-shaped, tall, about three times human height, self-emissive at night, softly radiating light: carved initials glowing ember-orange in the bark",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.23,
-        "world_px_height": 122,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a9e90f14-89d2-4615-8a72-27a8ff21f688",
-      "sprite": "trees/tree_076/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "tree_077",
       "rel": "trees/tree_077",
       "name": "Broad chestnut with a deep round canopy 077",
@@ -14386,28 +14320,6 @@
       "status": "complete",
       "pixellab_object_id": "48ffb0c1-f068-48a7-9678-24155b61b194",
       "sprite": "trees/tree_077/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "tree_078",
-      "rel": "trees/tree_078",
-      "name": "Coppiced stool with many stems 078 \u00b7 lit",
-      "category": "trees",
-      "lights": "LIGHTS_ON",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, coppiced stool with many stems, half-swallowed by tall grass, towering, many times human height, self-emissive at night, softly radiating light: memorial candles nestled between the roots",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.99,
-        "world_px_height": 188,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4a8d7696-b042-417b-aafa-f2e0ba6769ec",
-      "sprite": "trees/tree_078/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -14496,28 +14408,6 @@
       "status": "complete",
       "pixellab_object_id": "24348411-b0e7-4fc7-93d5-4daf3b583f6b",
       "sprite": "trees/tree_083/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "tree_084",
-      "rel": "trees/tree_084",
-      "name": "Slim young aspen 084 \u00b7 lit",
-      "category": "trees",
-      "lights": "LIGHTS_ON",
-      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, slim young aspen, with thick exposed roots, towering, many times human height, self-emissive at night, softly radiating light: golden sap veins glowing through bark cracks",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.75,
-        "world_px_height": 179,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e4f7fda9-06fa-480b-98e4-77cff06f6b9e",
-      "sprite": "trees/tree_084/sprite.webp",
       "rotations": {},
       "animations": []
     },
