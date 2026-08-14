@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-14T02:44:01.811Z",
+  "updated_at": "2026-08-14T02:45:26.664Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -6371,11 +6371,9 @@
       "art": "6a9c361ea2bb926e"
     },
     "scenery/braziers/brazier_025": {
-      "rating": 3,
-      "updated_at": "2026-08-14T02:39:06.915Z",
-      "status": "approved",
+      "status": "rejected",
       "art": "88bce7ed138fc977",
-      "note": "It looks good but we have to many already"
+      "updated_at": "2026-08-14T02:45:12.763Z"
     },
     "scenery/fairy_stumps/fairy_stump_008": {
       "status": "rejected",
@@ -6388,10 +6386,11 @@
       "updated_at": "2026-08-14T02:39:18.587Z"
     },
     "scenery/offering_tables/offering_table_011": {
-      "rating": 2,
-      "updated_at": "2026-08-14T02:39:22.012Z",
-      "status": "approved",
-      "art": "6199bd6080aa3820"
+      "rating": 4,
+      "updated_at": "2026-08-14T02:45:28.357Z",
+      "status": "rejected",
+      "art": "6199bd6080aa3820",
+      "note": "To many tables"
     },
     "scenery/waystones/waystone_028": {
       "status": "rejected",
@@ -6452,6 +6451,32 @@
       "rating": 4,
       "updated_at": "2026-08-14T02:44:03.365Z",
       "note": "We got to many of this type"
+    },
+    "scenery/braziers/brazier_020": {
+      "status": "rejected",
+      "art": "0d2dcf904ea500bd",
+      "updated_at": "2026-08-14T02:44:12.570Z"
+    },
+    "scenery/harvest_altars/harvest_altar_001": {
+      "status": "rejected",
+      "art": "22ca7f9921dd0531",
+      "updated_at": "2026-08-14T02:44:36.400Z"
+    },
+    "scenery/frozen_springs/frozen_spring_001": {
+      "status": "rejected",
+      "art": "97b4fd1f0e2e86fa",
+      "updated_at": "2026-08-14T02:44:39.667Z"
+    },
+    "scenery/dragon_ribcages/dragon_ribcage_001": {
+      "rating": 5,
+      "updated_at": "2026-08-14T02:44:47.248Z",
+      "status": "approved",
+      "art": "f7e61a654fc95ef0"
+    },
+    "scenery/honey_trees/honey_tree_001": {
+      "status": "rejected",
+      "art": "0fc2944598e457b9",
+      "updated_at": "2026-08-14T02:45:02.332Z"
     }
   }
 }
