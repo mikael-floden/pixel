@@ -156,3 +156,31 @@ if __name__ == "__main__":
             f"scenery: remove {len(removed)} rejected piece(s) (wiki verdicts)",
             push=not args.no_push)
     print(f"feedback: {len(removed)} piece(s) removed")
+
+
+# --- saturation: his notes are quota decisions -------------------------------
+
+SATURATION_PHRASES = (
+    "enough", "to many", "too many", "so many", "plenty", "no more", "no nore",
+    "not more", "nore of this", "last from this", "last one from this",
+    "done with this",
+)
+
+
+def saturated_groups():
+    """{group_id: [note, ...]} for every group he has said he has ENOUGH of.
+
+    He writes it a dozen ways ("Got to many already", "No nore barrels", "This
+    was the last from this type I will approve") and — crucially — often on a
+    piece he APPROVED or even five-starred. Saturation is not a quality
+    verdict: it means beautiful, stop. The loop freezes these groups at their
+    current count so budget flows to what he still wants."""
+    out = {}
+    for key, verdict in load_entries().items():
+        note = (verdict or {}).get("note") or ""
+        parts = key.split("/")
+        if not note or len(parts) < 3:
+            continue
+        if any(p in note.lower() for p in SATURATION_PHRASES):
+            out.setdefault(parts[1], []).append(note)
+    return out

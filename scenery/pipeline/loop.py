@@ -284,6 +284,28 @@ def main():
     # planner refills those slots with fresh rolls in this very pass.
     try:
         import feedback
+        # His "we have enough of these" notes are quota law — apply before
+        # planning so a saturated group never takes another slot.
+        sat = feedback.saturated_groups()
+        if sat:
+            done_now = factory.done_by_group()
+            changed = []
+            for gid, notes in sat.items():
+                grp = next((x for x in cfg["groups"] if x["id"] == gid), None)
+                if grp is None:
+                    continue
+                have = len(done_now.get(gid, set()))
+                if grp.get("quota") != have:
+                    grp["quota"] = have
+                    grp["_saturated"] = (f"maintainer said enough ({len(notes)} note(s)) "
+                                         f"— frozen at {have}")
+                    changed.append(gid)
+            if changed:
+                import json as _json
+                with open(factory.CONFIG, "w") as f:
+                    _json.dump(cfg, f, indent=2, ensure_ascii=False)
+                    f.write("\n")
+                print(f"  saturation: froze {len(changed)} group(s): {', '.join(changed)}")
         removed = feedback.apply_rejections(client)
         if removed:
             viewer_build.build()
