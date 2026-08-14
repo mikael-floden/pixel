@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:43:10+00:00",
+  "id": "scarecrow_015",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 15,
+  "name": "Slumped collapsing scarecrow 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "slumped collapsing scarecrow",
+  "modifier": "half-repainted",
+  "glow_concept": null,
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, slumped collapsing scarecrow, half-repainted, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "scarecrows/scarecrow_015/sprite.webp",
+  "placement": {
+    "world_height_m": 2.32,
+    "world_px_height": 87,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8c031475-ae50-4452-b233-131e017ca947",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
