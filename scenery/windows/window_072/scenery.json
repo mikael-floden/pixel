@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:56:28+00:00",
+  "id": "window_072",
+  "group": "windows",
+  "rank": 25,
+  "index": 72,
+  "name": "An arched window set in cut stone 072",
+  "lights": "LIGHTS_OFF",
+  "variety": "an arched window set in cut stone",
+  "modifier": "heavy dark curtains drawn shut within",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, an arched window set in cut stone, heavy dark curtains drawn shut within, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_072/rotations/south-east.webp",
+    "south-west": "windows/window_072/rotations/south-west.webp",
+    "south": "windows/window_072/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_072/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      23,
+      10,
+      76,
+      88
+    ],
+    "content_px_height": 78,
+    "canvas_render_px": 59
+  },
+  "pixellab_object_id": "4164cbc7-28d2-4f28-b3e6-dd79e7c42ae5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
