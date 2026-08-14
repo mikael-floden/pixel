@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:34:05+00:00",
+  "id": "cliff_root_009",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 9,
+  "name": "Two great roots twined together 009",
+  "lights": "LIGHTS_OFF",
+  "variety": "two great roots twined together",
+  "modifier": "a hollow behind the roots",
+  "glow_concept": null,
+  "prompt": "a mass of enormous tree roots hanging straight down, thick woody ropes tangled together with soil and moss caught between them, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, two great roots twined together, a hollow behind the roots, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_009/sprite.webp",
+  "placement": {
+    "world_height_m": 8.12,
+    "world_px_height": 306,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9ad7399f-3398-409a-836a-0aaf7ba648ae",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
