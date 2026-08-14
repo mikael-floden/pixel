@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:31:56+00:00",
+  "id": "grave_040",
+  "group": "graves",
+  "rank": 3,
+  "index": 40,
+  "name": "Rusted iron plate marker 040 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rusted iron plate marker",
+  "modifier": "snow-dusted",
+  "glow_concept": "pale soul-wisp hovering above the stone",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rusted iron plate marker, snow-dusted, waist-high, self-emissive at night, softly radiating light: pale soul-wisp hovering above the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_040/sprite.webp",
+  "placement": {
+    "world_height_m": 1.06,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e2846b04-0593-4726-a07f-63a7f25e0bab",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
