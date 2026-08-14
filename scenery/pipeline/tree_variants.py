@@ -179,12 +179,18 @@ def finalize(client, rel, man, state, new_oid, source_img):
     factory.save_webp(img, os.path.join(factory.ROOT, out))
     client.set_tags(new_oid, TAGS)
 
-    states = dict(man.get("states") or {})
+    # RE-READ before merging. Six states of one tree are in flight at once, and
+    # each carries the manifest snapshot it was submitted with — writing that
+    # stale copy back clobbers whatever its siblings finalized in the meantime.
+    # Measured on the first batch: 10 of 14 generated states were missing from
+    # their manifests, the art on disk but invisible to every consumer.
+    fresh = factory.read_manifest(rel) or man
+    states = dict(fresh.get("states") or {})
     states[state] = {"sprite": out, "pixellab_object_id": new_oid,
                      "difference_from_source": round(diff, 4),
                      "glow_score": round(glow_score(img), 4)}
-    man["states"] = states
-    factory.write_manifest(rel, man)
+    fresh["states"] = {k: states[k] for k in sorted(states)}
+    factory.write_manifest(rel, fresh)
     return diff
 
 

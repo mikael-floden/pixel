@@ -14852,16 +14852,41 @@
       "sprite": "trees/tree_001/sprite.webp",
       "rotations": {},
       "states": {
-        "NOT_LIT_1": {
-          "sprite": "trees/tree_001/sprite.webp",
-          "pixellab_object_id": "463ebe11-33f2-4caa-b9c3-3870e66be6aa",
-          "glow_score": 0.0005
+        "LIT_1": {
+          "sprite": "trees/tree_001/lit_1/sprite.webp",
+          "glow_score": 0.0612,
+          "recovered": true
         },
         "LIT_2": {
           "sprite": "trees/tree_001/lit_2/sprite.webp",
           "pixellab_object_id": "455bcdb1-b8e9-48d3-a1d2-4aa82ccdf22e",
           "difference_from_source": 0.7963,
           "glow_score": 0.1631
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_001/sprite.webp",
+          "pixellab_object_id": "463ebe11-33f2-4caa-b9c3-3870e66be6aa",
+          "glow_score": 0.0005
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_001/not_lit_2/sprite.webp",
+          "glow_score": 0.0,
+          "recovered": true
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_001/not_lit_3/sprite.webp",
+          "glow_score": 0.0,
+          "recovered": true
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_001/not_lit_4/sprite.webp",
+          "glow_score": 0.0,
+          "recovered": true
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_001/not_lit_5/sprite.webp",
+          "glow_score": 0.0,
+          "recovered": true
         }
       },
       "animations": []
@@ -14887,10 +14912,26 @@
       "sprite": "trees/tree_003/sprite.webp",
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trees/tree_003/lit_1/sprite.webp",
+          "glow_score": 0.0294,
+          "recovered": true
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_003/lit_2/sprite.webp",
+          "pixellab_object_id": "1080b782-688c-4947-9c69-1517f9376496",
+          "difference_from_source": 0.6945,
+          "glow_score": 0.2664
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_003/sprite.webp",
           "pixellab_object_id": "894f3263-3ed9-4599-8450-75b494f5e98a",
           "glow_score": 0.0233
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_003/not_lit_2/sprite.webp",
+          "glow_score": 0.0158,
+          "recovered": true
         },
         "NOT_LIT_3": {
           "sprite": "trees/tree_003/not_lit_3/sprite.webp",
@@ -14898,11 +14939,15 @@
           "difference_from_source": 0.56,
           "glow_score": 0.0097
         },
-        "LIT_2": {
-          "sprite": "trees/tree_003/lit_2/sprite.webp",
-          "pixellab_object_id": "1080b782-688c-4947-9c69-1517f9376496",
-          "difference_from_source": 0.6945,
-          "glow_score": 0.2664
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_003/not_lit_4/sprite.webp",
+          "glow_score": 0.0038,
+          "recovered": true
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_003/not_lit_5/sprite.webp",
+          "glow_score": 0.0686,
+          "recovered": true
         }
       },
       "animations": []
@@ -14932,6 +14977,11 @@
           "sprite": "trees/tree_004/sprite.webp",
           "pixellab_object_id": "be51f913-2af2-4a57-a791-19ef1ca0169a",
           "glow_score": 0.0438
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_004/not_lit_3/sprite.webp",
+          "glow_score": 0.0326,
+          "recovered": true
         },
         "NOT_LIT_4": {
           "sprite": "trees/tree_004/not_lit_4/sprite.webp",
