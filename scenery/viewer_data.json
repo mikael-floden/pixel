@@ -17229,7 +17229,7 @@
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "fdf53bee-ba53-42a3-acd4-dfd1b1c535d5",
+      "pixellab_object_id": "4327be6b-85c0-4469-8512-043a16331529",
       "sprite": "trees/tree_012/sprite.webp",
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
@@ -18264,6 +18264,13 @@
           "pixellab_object_id": "9b840da0-7297-4754-8683-9b0fae83c9c5",
           "glow_score": 0.0047
         },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_021/not_lit_10/sprite.webp",
+          "pixellab_object_id": "030e4640-3cef-41d1-a871-bb983b2e5dae",
+          "glow_concept": null,
+          "difference_from_source": 0.3439,
+          "glow_score": 0.0045
+        },
         "NOT_LIT_2": {
           "sprite": "trees/tree_021/not_lit_2/sprite.webp",
           "pixellab_object_id": "45e0903c-4226-4958-990f-b52e010b30e6",
@@ -18353,10 +18360,31 @@
           "difference_from_source": 0.2218,
           "glow_score": 0.0838
         },
+        "LIT_3": {
+          "sprite": "trees/tree_022/lit_3/sprite.webp",
+          "pixellab_object_id": "0c3be5f7-ebe3-40eb-b3e3-5220bc463e98",
+          "glow_concept": "teal bioluminescent moss patches up the trunk",
+          "difference_from_source": 0.7245,
+          "glow_score": 0.1016
+        },
+        "LIT_4": {
+          "sprite": "trees/tree_022/lit_4/sprite.webp",
+          "pixellab_object_id": "9f41a768-e794-4f65-9877-123a37cc961d",
+          "glow_concept": "memorial candles nestled between the roots",
+          "difference_from_source": 0.414,
+          "glow_score": 0.0627
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_022/not_lit_1/sprite.webp",
           "pixellab_object_id": "a9d73071-9da3-40f9-a4a8-f4b7e6211db5",
           "difference_from_source": 0.2228,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_022/not_lit_10/sprite.webp",
+          "pixellab_object_id": "69ba01d1-6e64-4312-9bb0-8e688c02f546",
+          "glow_concept": null,
+          "difference_from_source": 0.2366,
           "glow_score": 0.0
         },
         "NOT_LIT_2": {
@@ -18388,6 +18416,20 @@
           "pixellab_object_id": "2ecb2e64-beb9-4176-b177-879059a8cb04",
           "glow_concept": null,
           "difference_from_source": 0.7779,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_7": {
+          "sprite": "trees/tree_022/not_lit_7/sprite.webp",
+          "pixellab_object_id": "a8540c97-02b5-4941-b024-3dc9ef5091e7",
+          "glow_concept": null,
+          "difference_from_source": 0.5935,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_8": {
+          "sprite": "trees/tree_022/not_lit_8/sprite.webp",
+          "pixellab_object_id": "d776f2ed-20d7-4a9c-b428-80df4fcc27a5",
+          "glow_concept": null,
+          "difference_from_source": 0.1559,
           "glow_score": 0.0
         }
       },
@@ -18428,9 +18470,30 @@
           "difference_from_source": 0.5822,
           "glow_score": 0.0176
         },
+        "LIT_3": {
+          "sprite": "trees/tree_023/lit_3/sprite.webp",
+          "pixellab_object_id": "fd18ac80-9c8c-480f-82a7-c1bb3569f8db",
+          "glow_concept": "blue-white soul-light spilling from a knot hole",
+          "difference_from_source": 0.6035,
+          "glow_score": 0.0242
+        },
+        "LIT_4": {
+          "sprite": "trees/tree_023/lit_4/sprite.webp",
+          "pixellab_object_id": "68ed9013-fa62-4015-bf74-8d8e3c05fb5a",
+          "glow_concept": "teal bioluminescent moss patches up the trunk",
+          "difference_from_source": 0.6239,
+          "glow_score": 0.0134
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_023/sprite.webp",
           "pixellab_object_id": "345032d4-a2d0-4f99-b428-6b392ae451b6",
+          "glow_score": 0.0
+        },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_023/not_lit_10/sprite.webp",
+          "pixellab_object_id": "14b23e1e-4d04-4745-ac69-fc3b8dea9358",
+          "glow_concept": null,
+          "difference_from_source": 0.6974,
           "glow_score": 0.0
         },
         "NOT_LIT_2": {
@@ -18455,6 +18518,34 @@
           "sprite": "trees/tree_023/not_lit_5/sprite.webp",
           "pixellab_object_id": "3942bc5c-5444-464b-925a-3a8132e328cf",
           "difference_from_source": 0.4527,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_023/not_lit_6/sprite.webp",
+          "pixellab_object_id": "fd20f88c-1f50-47b5-95c2-55c3fb4a7169",
+          "glow_concept": null,
+          "difference_from_source": 0.8224,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_7": {
+          "sprite": "trees/tree_023/not_lit_7/sprite.webp",
+          "pixellab_object_id": "fcc0a431-1e65-4f75-9eea-1aa089406a24",
+          "glow_concept": null,
+          "difference_from_source": 0.3951,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_8": {
+          "sprite": "trees/tree_023/not_lit_8/sprite.webp",
+          "pixellab_object_id": "61a92d12-e4f4-42cc-ac31-ae7d679c2b40",
+          "glow_concept": null,
+          "difference_from_source": 0.6462,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_9": {
+          "sprite": "trees/tree_023/not_lit_9/sprite.webp",
+          "pixellab_object_id": "c28e6e94-b0a1-4b95-bf66-39df6131535f",
+          "glow_concept": null,
+          "difference_from_source": 0.7504,
           "glow_score": 0.0
         }
       },
@@ -18612,7 +18703,7 @@
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "d8a8771e-89e0-449a-a7bc-65da9649df9f",
+      "pixellab_object_id": "dc30dd19-379e-4d30-88eb-cdaad3e0500e",
       "sprite": "trees/tree_028/sprite.webp",
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
@@ -19553,7 +19644,7 @@
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "11e90e48-f7ec-46f4-a82f-421981d6784b",
+      "pixellab_object_id": "11db7c78-e85d-49e4-ba36-dd760db73940",
       "sprite": "trees/tree_044/sprite.webp",
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
@@ -20628,7 +20719,7 @@
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
       "status": "complete",
-      "pixellab_object_id": "04f85d01-ec45-49fc-81e4-1cb1b31b009b",
+      "pixellab_object_id": "1e6acb5d-0d29-499d-b77b-10df284e5514",
       "sprite": "trees/tree_060/sprite.webp",
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
