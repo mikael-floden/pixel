@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:55:48+00:00",
+  "id": "cliff_root_055",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 55,
+  "name": "Roots with ferns rooted between them 055",
+  "lights": "LIGHTS_OFF",
+  "variety": "roots with ferns rooted between them",
+  "modifier": "a pair of roots twisting around each other once",
+  "glow_concept": null,
+  "prompt": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, roots with ferns rooted between them, a pair of roots twisting around each other once, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_055/sprite.webp",
+  "placement": {
+    "world_height_m": 10.94,
+    "world_px_height": 412,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "506a1681-f1dc-4889-a933-f3b660351248",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
