@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:23:14+00:00",
+  "id": "fence_021",
+  "group": "fences",
+  "rank": 10,
+  "index": 21,
+  "name": "Weathered grey picket run 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "weathered grey picket run",
+  "modifier": "old and settling into the ground",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, weathered grey picket run, old and settling into the ground, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_021/sprite.webp",
+  "placement": {
+    "world_height_m": 1.07,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3a431c82-a55a-4ac9-8323-51722b6cd392",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
