@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:25:36+00:00",
+  "id": "fairy_stump_004",
+  "group": "fairy_stumps",
+  "rank": 122,
+  "index": 4,
+  "name": "Oak fairy stump 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "oak fairy stump",
+  "modifier": "chimney twig smoking",
+  "glow_concept": "glow-moss garden paths",
+  "prompt": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world, oak fairy stump, chimney twig smoking, waist-high, self-emissive at night, softly radiating light: glow-moss garden paths",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "fairy_stumps/fairy_stump_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.78,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cfc4553d-8b2d-4114-98a3-d5c32fe211bc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
