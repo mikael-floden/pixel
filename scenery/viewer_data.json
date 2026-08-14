@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 734,
+  "scenery_count": 735,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 58
+      "done": 59
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 58,
+    "cliff_vines": 59,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6321,6 +6321,28 @@
       "status": "complete",
       "pixellab_object_id": "27a35e60-e9c6-4df8-8d59-d22e9341da50",
       "sprite": "cliff_vines/cliff_vine_148/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_149",
+      "rel": "cliff_vines/cliff_vine_149",
+      "name": "Fern-mixed green fall 149",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, fern-mixed green fall, coiling into a loose loop midway, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 10.75,
+        "world_px_height": 405,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "afe56da7-7dfe-4e9c-84eb-3268a9f7e9ea",
+      "sprite": "cliff_vines/cliff_vine_149/sprite.webp",
       "rotations": {},
       "animations": []
     },
