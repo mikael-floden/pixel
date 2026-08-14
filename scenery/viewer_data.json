@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 579,
+  "scenery_count": 580,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -909,7 +909,7 @@
       "id": "moon_pools",
       "name": "Moon Pool",
       "quota": 5,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 130,
@@ -1034,6 +1034,7 @@
     "market_stalls": 5,
     "maypoles": 2,
     "meteor_stones": 1,
+    "moon_pools": 1,
     "moss_clumps": 5,
     "mushrooms": 13,
     "offering_tables": 8,
@@ -7777,6 +7778,28 @@
       "status": "complete",
       "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
       "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "moon_pool_002",
+      "rel": "moon_pools/moon_pool_002",
+      "name": "Mirror-calm water 002 \u00b7 lit",
+      "category": "moon_pools",
+      "lights": "LIGHTS_ON",
+      "description": "a small perfectly round pool of still dark water reflecting a full moon that is not in the sky, mirror-calm water, ringed with white pebbles, small, knee-high, self-emissive at night, softly radiating light: silver mist over the surface",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "95fea78f-0ee3-4201-8642-29b1b206a309",
+      "sprite": "moon_pools/moon_pool_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
