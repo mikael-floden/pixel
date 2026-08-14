@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 636,
+  "scenery_count": 637,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 150,
-      "done": 23
+      "done": 24
     },
     {
       "rank": 3,
@@ -1311,7 +1311,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 23,
+    "stones": 24,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -11176,6 +11176,28 @@
       "status": "complete",
       "pixellab_object_id": "63b91831-915b-4391-80a4-bf83682c1a23",
       "sprite": "stones/stone_022/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_023",
+      "rel": "stones/stone_023",
+      "name": "Red iron-stained stone 023",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, with a small sapling beside it, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.66,
+        "world_px_height": 25,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1319c2a3-7148-4cf7-b63b-1134cb982a0f",
+      "sprite": "stones/stone_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
