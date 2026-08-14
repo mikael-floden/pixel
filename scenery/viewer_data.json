@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 453,
+  "scenery_count": 454,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 15,
@@ -792,7 +792,7 @@
     "beaver_lodges": 1,
     "beds": 4,
     "beehives": 4,
-    "bell_posts": 4,
+    "bell_posts": 5,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 8,
@@ -1793,6 +1793,28 @@
       "status": "complete",
       "pixellab_object_id": "3a8500cc-103a-4016-a43b-00aa77efbe33",
       "sprite": "bell_posts/bell_post_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_020",
+      "rel": "bell_posts/bell_post_020",
+      "name": "Tar-black post, bright bronze bell 020 \u00b7 lit",
+      "category": "bell_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, tar-black post, bright bronze bell, leaning slightly, tall, about three times human height, self-emissive at night, softly radiating light: faint concentric light rings rippling from the bell",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.16,
+        "world_px_height": 119,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e2b6484b-5463-44db-b3a4-361193f04009",
+      "sprite": "bell_posts/bell_post_020/sprite.webp",
       "rotations": {},
       "animations": []
     },

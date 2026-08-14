@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:27:29+00:00",
+  "id": "bell_post_020",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 20,
+  "name": "Tar-black post, bright bronze bell 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tar-black post, bright bronze bell",
+  "modifier": "leaning slightly",
+  "glow_concept": "faint concentric light rings rippling from the bell",
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, tar-black post, bright bronze bell, leaning slightly, tall, about three times human height, self-emissive at night, softly radiating light: faint concentric light rings rippling from the bell",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_020/sprite.webp",
+  "placement": {
+    "world_height_m": 3.16,
+    "world_px_height": 119,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e2b6484b-5463-44db-b3a4-361193f04009",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
