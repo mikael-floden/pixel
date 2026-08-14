@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 619,
+  "scenery_count": 620,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 102,
@@ -1242,7 +1242,7 @@
     "cliff_mosses": 3,
     "cliff_roots": 3,
     "cliff_shrubs": 4,
-    "cliff_vines": 4,
+    "cliff_vines": 5,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4669,6 +4669,28 @@
       "status": "complete",
       "pixellab_object_id": "9cf7568d-0747-494a-9ab6-e81b7ec16fd2",
       "sprite": "cliff_vines/cliff_vine_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_016",
+      "rel": "cliff_vines/cliff_vine_016",
+      "name": "Dark green ivy fall 016 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, dark green ivy fall, ending high, swinging free, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 15.09,
+        "world_px_height": 568,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "34ef7983-5113-4516-a1d1-7c1e5de9c2d9",
+      "sprite": "cliff_vines/cliff_vine_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
