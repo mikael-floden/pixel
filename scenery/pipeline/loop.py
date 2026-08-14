@@ -177,6 +177,8 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
             client.delete_object(oid)
         except Exception:
             pass
+        print(f"  x GATE {group['id']}/{spec['id']}: pixels too big "
+              f"(single-px {ones:.3f} < {factory.PIXEL_GRID_MIN}) — re-rolling")
         raise PixelLabError(
             f"{spec['id']}: PIXEL GRID FAIL (single-pixel fraction {ones:.3f} < "
             f"{factory.PIXEL_GRID_MIN}) — upscaled art, rejected before saving")

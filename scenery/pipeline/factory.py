@@ -289,9 +289,23 @@ def single_pixel_fraction(img):
     return sum(1 for r in runs if r == 1) / len(runs)
 
 
-# Reject below this. 0.50 catches 56% of the art he called broken while
-# false-flagging 1.5% of his starred pieces — and a false flag costs only a
-# $0.09 re-roll, while a miss costs his trust. Deliberately NOT tuned higher:
-# above 0.55 the false-flag rate climbs past 6% and starts killing art he
-# loves. Raise it only with new labelled data.
-PIXEL_GRID_MIN = 0.50
+# THE OPERATING POINT, set by the cost asymmetry he stated himself:
+# "EVERY TIME I COMPLAIN ABOUT THE PIXELART IT'S BECAUSE THE PIXELS ARE TO BIG
+# (NOT 1 PIXEL PER PIXEL)." One failure mode, so tune hard for it.
+#
+# A false flag costs $0.09 for a re-roll of a piece he NEVER SEES. A miss puts
+# upscaled art in his review queue and costs his trust — which today reads
+# "HOW HARD CAN IT BE!!!". Those are not comparable, so the threshold sits far
+# past the statistically "balanced" point:
+#
+#   T=0.50  catch 56%   re-roll  1.5%
+#   T=0.65  catch 89%   re-roll 31%    <- chosen
+#   T=0.68  catch 95%   re-roll 46%
+#
+# 0.65 catches 89% of everything he has ever called broken, for ~$0.028 extra
+# per delivered piece (~31% of rolls discarded). At 0.68 the re-roll rate
+# nearly doubles for six more points of recall; that is the next step if any
+# upscaled piece still reaches him. Calibrated on 62 of his broken-art
+# complaints vs 265 of his 4-5 star pieces (medians 0.491 vs 0.688), and the
+# metric is canvas-size-neutral (starred medians 0.63-0.77 across 48-256px).
+PIXEL_GRID_MIN = 0.65
