@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 609,
+  "scenery_count": 610,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -818,7 +818,7 @@
       "id": "giant_snail_shells",
       "name": "Giant Snail Shell",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 117,
@@ -1177,7 +1177,7 @@
     "giant_fallen_bells": 1,
     "giant_mushrooms": 2,
     "giant_skulls": 1,
-    "giant_snail_shells": 1,
+    "giant_snail_shells": 2,
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
@@ -6409,6 +6409,28 @@
       "status": "complete",
       "pixellab_object_id": "b4789150-ed75-405b-aae1-7c6080dad867",
       "sprite": "giant_snail_shells/giant_snail_shell_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "giant_snail_shell_003",
+      "rel": "giant_snail_shells/giant_snail_shell_003",
+      "name": "Moss-green shell 003",
+      "category": "giant_snail_shells",
+      "lights": "LIGHTS_OFF",
+      "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, moss-green shell, half-buried in leaf litter, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.1,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7934ba98-b099-4d33-aa16-7c7b93e135fb",
+      "sprite": "giant_snail_shells/giant_snail_shell_003/sprite.webp",
       "rotations": {},
       "animations": []
     },

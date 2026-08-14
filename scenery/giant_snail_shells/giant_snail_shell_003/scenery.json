@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:46:12+00:00",
+  "id": "giant_snail_shell_003",
+  "group": "giant_snail_shells",
+  "rank": 116,
+  "index": 3,
+  "name": "Moss-green shell 003",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-green shell",
+  "modifier": "half-buried in leaf litter",
+  "glow_concept": null,
+  "prompt": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, moss-green shell, half-buried in leaf litter, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_snail_shells/giant_snail_shell_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.1,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7934ba98-b099-4d33-aa16-7c7b93e135fb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
