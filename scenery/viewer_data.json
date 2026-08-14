@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 499,
+  "scenery_count": 500,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 15,
@@ -792,7 +792,7 @@
     "beaver_lodges": 1,
     "beds": 4,
     "beehives": 5,
-    "bell_posts": 7,
+    "bell_posts": 8,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 10,
@@ -1837,6 +1837,28 @@
       "status": "complete",
       "pixellab_object_id": "3a8500cc-103a-4016-a43b-00aa77efbe33",
       "sprite": "bell_posts/bell_post_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_019",
+      "rel": "bell_posts/bell_post_019",
+      "name": "Carved wooden bracket, small bell 019",
+      "category": "bell_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, carved wooden bracket, small bell, weathered silver-grey, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.39,
+        "world_px_height": 90,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5faf7cf2-c00c-4833-9df2-50c3093bf26c",
+      "sprite": "bell_posts/bell_post_019/sprite.webp",
       "rotations": {},
       "animations": []
     },
