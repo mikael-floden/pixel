@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:02:11+00:00",
+  "id": "cliff_fall_016",
+  "group": "cliff_falls",
+  "rank": 156,
+  "index": 16,
+  "name": "A broad white curtain 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "a broad white curtain",
+  "modifier": "heavy growth on one side thinning to bare on the other",
+  "glow_concept": "the whole fall shining like moonlight",
+  "prompt": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a broad white curtain, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_falls/cliff_fall_016/sprite.webp",
+  "placement": {
+    "world_height_m": 9.37,
+    "world_px_height": 353,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0cd316e4-07bd-4a7a-bd6e-839e4e3d7976",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
