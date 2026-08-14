@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:42:55+00:00",
+  "id": "flame_niche_013",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 13,
+  "name": "Carved granite aedicula 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved granite aedicula",
+  "modifier": "leaning slightly",
+  "glow_concept": null,
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, carved granite aedicula, leaning slightly, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flame_niches/flame_niche_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.61,
+    "world_px_height": 61,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "48f648b3-4996-4db8-8886-30cd10e42291",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
