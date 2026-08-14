@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 574,
+  "scenery_count": 575,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -769,7 +769,7 @@
       "id": "house_clutter",
       "name": "House Clutter",
       "quota": 50,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 110,
@@ -954,7 +954,7 @@
     "honey_trees": 1,
     "hop_poles": 2,
     "hot_springs": 1,
-    "house_clutter": 7,
+    "house_clutter": 8,
     "ivy_posts": 5,
     "lantern_posts": 10,
     "lantern_stands": 6,
@@ -6914,6 +6914,28 @@
       "status": "complete",
       "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
       "sprite": "house_clutter/clutter_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "clutter_007",
+      "rel": "house_clutter/clutter_007",
+      "name": "Half-wound wool skein and spindle 007",
+      "category": "house_clutter",
+      "lights": "LIGHTS_OFF",
+      "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, half-wound wool skein and spindle, with carved decorative trim, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.66,
+        "world_px_height": 25,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2248fe24-ef3c-4ad8-8fa3-c81ce38d16f3",
+      "sprite": "house_clutter/clutter_007/sprite.webp",
       "rotations": {},
       "animations": []
     },

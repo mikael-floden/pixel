@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:52:43+00:00",
+  "id": "clutter_007",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 7,
+  "name": "Half-wound wool skein and spindle 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-wound wool skein and spindle",
+  "modifier": "with carved decorative trim",
+  "glow_concept": null,
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, half-wound wool skein and spindle, with carved decorative trim, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.66,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2248fe24-ef3c-4ad8-8fa3-c81ce38d16f3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
