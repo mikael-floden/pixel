@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:29:23+00:00",
+  "id": "lantern_post_018",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 18,
+  "name": "Tar-blackened coastal post 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tar-blackened coastal post",
+  "modifier": "old and settling into the ground",
+  "glow_concept": "steady candle flame behind horn panes",
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, tar-blackened coastal post, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: steady candle flame behind horn panes",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "lantern_posts/lantern_post_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.71,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0eceb489-6ee1-473e-99f9-38c3bcdb15e1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
