@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:17:18+00:00",
+  "id": "grave_028",
+  "group": "graves",
+  "rank": 3,
+  "index": 28,
+  "name": "Headstone with carved bird 028 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "headstone with carved bird",
+  "modifier": "snow-dusted",
+  "glow_concept": "small lantern hung on the marker",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, headstone with carved bird, snow-dusted, small, knee-high, self-emissive at night, softly radiating light: small lantern hung on the marker",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_028/sprite.webp",
+  "placement": {
+    "world_height_m": 0.67,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "13aea3c4-fb1a-4032-941f-657da53d1c19",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
