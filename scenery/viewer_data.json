@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 753,
+  "scenery_count": 754,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 6,
+    "cliff_falls": 7,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 11,
@@ -4231,6 +4231,28 @@
       "status": "complete",
       "pixellab_object_id": "0cd316e4-07bd-4a7a-bd6e-839e4e3d7976",
       "sprite": "cliff_falls/cliff_fall_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_018",
+      "rel": "cliff_falls/cliff_fall_018",
+      "name": "Half-frozen with ice columns 018 \u00b7 lit",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_ON",
+      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, half-frozen with ice columns, covering most of the frame loosely, with holes, towering, many times human height, self-emissive at night, softly radiating light: light welling from the mist",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 17.23,
+        "world_px_height": 649,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "81cb59fc-e9a1-40ec-b4ac-fabe828e9f9f",
+      "sprite": "cliff_falls/cliff_fall_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
