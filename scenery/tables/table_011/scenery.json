@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:50:54+00:00",
+  "id": "table_011",
+  "group": "tables",
+  "rank": 103,
+  "index": 11,
+  "name": "Trestle table with a pie cooling 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "trestle table with a pie cooling",
+  "modifier": "built from driftwood planks",
+  "glow_concept": null,
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, trestle table with a pie cooling, built from driftwood planks, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "72e16fbd-c35b-411d-8ff4-41566ff32884",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
