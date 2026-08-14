@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:12:17+00:00",
+  "id": "lantern_post_021",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 21,
+  "name": "Carved spiral post 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved spiral post",
+  "modifier": "leaning slightly",
+  "glow_concept": null,
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, carved spiral post, leaning slightly, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "lantern_posts/lantern_post_021/sprite.webp",
+  "placement": {
+    "world_height_m": 2.14,
+    "world_px_height": 81,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b690b1ca-e1c2-4d1d-9af1-b8a4b5a46ebb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
