@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:01:58+00:00",
+  "id": "antler_throne_002",
+  "group": "antler_thrones",
+  "rank": 128,
+  "index": 2,
+  "name": "Stag-antler 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "stag-antler",
+  "modifier": "flowers threaded through the tines",
+  "glow_concept": "a pale aura where a king once sat",
+  "prompt": "a wild throne woven from shed antlers and dark wood, moss-cushioned, standing alone in the grass, stag-antler, flowers threaded through the tines, large, twice human height, self-emissive at night, softly radiating light: a pale aura where a king once sat",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "antler_thrones/antler_throne_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.98,
+    "world_px_height": 75,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5e03a8fa-a1f0-4dde-a8e5-912b315e9889",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
