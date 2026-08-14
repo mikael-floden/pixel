@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:28:44+00:00",
+  "id": "hedge_020",
+  "group": "hedges",
+  "rank": 12,
+  "index": 20,
+  "name": "Flowering hawthorn hedge 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flowering hawthorn hedge",
+  "modifier": "unusually tall and narrow",
+  "glow_concept": "firefly colony blinking through the leaves",
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, flowering hawthorn hedge, unusually tall and narrow, roughly six feet tall, human height, self-emissive at night, softly radiating light: firefly colony blinking through the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.6,
+    "world_px_height": 60,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dad251e8-ae04-4788-848f-ca5dc2eb6b85",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
