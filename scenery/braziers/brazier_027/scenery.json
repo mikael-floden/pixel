@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:42:04+00:00",
+  "id": "brazier_027",
+  "group": "braziers",
+  "rank": 4,
+  "index": 27,
+  "name": "Ship's cresset basket 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "ship's cresset basket",
+  "modifier": "snow-dusted",
+  "glow_concept": null,
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, ship's cresset basket, snow-dusted, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_027/sprite.webp",
+  "placement": {
+    "world_height_m": 1.05,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c88bc3f6-71c3-4c96-b4de-32d447861ea8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

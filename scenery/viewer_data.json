@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 596,
-  "target_count": 2529,
+  "scenery_count": 597,
+  "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -26,7 +26,7 @@
       "rank": 3,
       "id": "graves",
       "name": "Grave",
-      "quota": 12,
+      "quota": 11,
       "done": 11
     },
     {
@@ -34,20 +34,20 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 16,
-      "done": 16
+      "done": 17
     },
     {
       "rank": 5,
       "id": "lantern_posts",
       "name": "Lantern Post",
-      "quota": 92,
+      "quota": 13,
       "done": 13
     },
     {
       "rank": 6,
       "id": "waystones",
       "name": "Waystone",
-      "quota": 14,
+      "quota": 13,
       "done": 13
     },
     {
@@ -117,7 +117,7 @@
       "rank": 16,
       "id": "flame_niches",
       "name": "Flame Niche",
-      "quota": 10,
+      "quota": 9,
       "done": 9
     },
     {
@@ -152,7 +152,7 @@
       "rank": 21,
       "id": "story_posts",
       "name": "Story Post",
-      "quota": 60,
+      "quota": 9,
       "done": 9
     },
     {
@@ -194,14 +194,14 @@
       "rank": 27,
       "id": "carts",
       "name": "Cart",
-      "quota": 48,
+      "quota": 7,
       "done": 7
     },
     {
       "rank": 28,
       "id": "barrels",
       "name": "Barrel",
-      "quota": 46,
+      "quota": 8,
       "done": 8
     },
     {
@@ -236,7 +236,7 @@
       "rank": 33,
       "id": "cattail_clumps",
       "name": "Cattail Clump",
-      "quota": 6,
+      "quota": 5,
       "done": 5
     },
     {
@@ -929,7 +929,7 @@
       "rank": 132,
       "id": "bone_arbors",
       "name": "Bone Arbor",
-      "quota": 0,
+      "quota": 1,
       "done": 1
     },
     {
@@ -1141,7 +1141,7 @@
     "effect": 1,
     "bone_arbors": 1,
     "bone_piles": 2,
-    "braziers": 16,
+    "braziers": 17,
     "briar_thickets": 13,
     "broken_columns": 2,
     "bushes": 10,
@@ -2687,6 +2687,28 @@
       "status": "complete",
       "pixellab_object_id": "21155c68-5708-451a-8500-ad62fba9fc9e",
       "sprite": "braziers/brazier_025/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "brazier_027",
+      "rel": "braziers/brazier_027",
+      "name": "Ship's cresset basket 027",
+      "category": "braziers",
+      "lights": "LIGHTS_OFF",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, ship's cresset basket, snow-dusted, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.05,
+        "world_px_height": 40,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c88bc3f6-71c3-4c96-b4de-32d447861ea8",
+      "sprite": "braziers/brazier_027/sprite.webp",
       "rotations": {},
       "animations": []
     },
