@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:53:44+00:00",
+  "id": "dock_piling_013",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 13,
+  "name": "Single bollard post with iron ring 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "single bollard post with iron ring",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": null,
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, single bollard post with iron ring, bird-favored, with droppings and a nest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_013/sprite.webp",
+  "placement": {
+    "world_height_m": 1.86,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5fa02842-7b92-48e8-989f-1f290e319459",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
