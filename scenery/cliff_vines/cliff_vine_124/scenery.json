@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:44:04+00:00",
+  "id": "cliff_vine_124",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 124,
+  "name": "Purple wisteria fall 124 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "purple wisteria fall",
+  "modifier": "wandering diagonally with leaf clusters low and high",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, purple wisteria fall, wandering diagonally with leaf clusters low and high, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_124/sprite.webp",
+  "placement": {
+    "world_height_m": 8.61,
+    "world_px_height": 324,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e165e7e9-7bea-4fea-aa2f-0ca5247c57d3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
