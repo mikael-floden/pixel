@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:35:32+00:00",
+  "id": "cliff_moss_007",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 7,
+  "name": "Grey-green lichen crust 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "grey-green lichen crust",
+  "modifier": "peeling away at one edge",
+  "glow_concept": null,
+  "prompt": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, grey-green lichen crust, peeling away at one edge, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_007/sprite.webp",
+  "placement": {
+    "world_height_m": 8.12,
+    "world_px_height": 306,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "86c02868-3d74-4dca-8e4c-177609a88914",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
