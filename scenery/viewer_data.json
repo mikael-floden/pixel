@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 592,
+  "scenery_count": 593,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -181,7 +181,7 @@
       "id": "bushes",
       "name": "Bush",
       "quota": 52,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 26,
@@ -1144,7 +1144,7 @@
     "braziers": 15,
     "briar_thickets": 12,
     "broken_columns": 2,
-    "bushes": 8,
+    "bushes": 9,
     "cairns": 15,
     "light": 1,
     "carts": 6,
@@ -3106,6 +3106,28 @@
       "status": "complete",
       "pixellab_object_id": "40a3bcc9-c4c5-45e8-ae7a-cf1b8478f0ab",
       "sprite": "bushes/bush_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bush_014",
+      "rel": "bushes/bush_014",
+      "name": "Juniper sprawling low 014 \u00b7 lit",
+      "category": "bushes",
+      "lights": "LIGHTS_ON",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, juniper sprawling low, scarred by an old lightning strike, waist-high, self-emissive at night, softly radiating light: phosphorescent rime edging every leaf",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.11,
+        "world_px_height": 42,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4a9302d2-5a57-4068-83bb-7f361aced0e2",
+      "sprite": "bushes/bush_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
