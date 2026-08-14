@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 591,
+  "scenery_count": 592,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -202,7 +202,7 @@
       "id": "barrels",
       "name": "Barrel",
       "quota": 46,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 29,
@@ -1129,7 +1129,7 @@
     "antler_thrones": 1,
     "anvils": 2,
     "aqueduct_fragments": 2,
-    "barrels": 7,
+    "barrels": 8,
     "beached_rowboats": 2,
     "beacons": 11,
     "beast_skulls": 2,
@@ -1646,6 +1646,28 @@
       "status": "complete",
       "pixellab_object_id": "bbd23dff-c544-4ec4-8865-8fb169f4d5a6",
       "sprite": "barrels/barrel_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "barrel_014",
+      "rel": "barrels/barrel_014",
+      "name": "Flour-dusted pale barrel 014 \u00b7 lit",
+      "category": "barrels",
+      "lights": "LIGHTS_ON",
+      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, flour-dusted pale barrel, patched with mismatched materials, waist-high, self-emissive at night, softly radiating light: bunghole leaking warm amber light",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "15ee4a5a-8dbc-4ac4-86cc-8895a5caaed9",
+      "sprite": "barrels/barrel_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
