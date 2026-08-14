@@ -20,8 +20,8 @@
   ],
   "rotations": {
     "south-east": "windows/window_052/rotations/south-east.webp",
-    "south-west": "windows/window_052/rotations/south-west.webp",
-    "south": "windows/window_052/sprite.webp"
+    "south": "windows/window_052/sprite.webp",
+    "south-west": "windows/window_052/rotations/south-west.webp"
   },
   "size": 96,
   "sprite": "windows/window_052/sprite.webp",
@@ -32,20 +32,41 @@
     "character_height_m": 1.7,
     "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
     "content_box": [
-      10,
-      14,
-      90,
-      85
+      9,
+      7,
+      89,
+      90
     ],
-    "content_px_height": 71,
-    "canvas_render_px": 68
+    "content_px_height": 83,
+    "canvas_render_px": 58
   },
-  "pixellab_object_id": "5de304c4-5c3a-4c9f-8ef0-84bdd252f273",
+  "pixellab_object_id": "1d5b0467-dca0-4827-bd08-57257e02a9eb",
   "pixellab_directions": 8,
   "tags": [
     "SCENERY"
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIGHTS_ON": {
+      "sprite": "windows/window_052/lights_on/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_052/lights_on/rotations/south-east.webp",
+        "south": "windows/window_052/lights_on/sprite.webp",
+        "south-west": "windows/window_052/lights_on/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "da199ad8-a73b-42e6-a53a-447757b4d5bd",
+      "edit_description": "maintainer-supplied pair (PixelLab UI)"
+    },
+    "LIGHTS_OFF": {
+      "sprite": "windows/window_052/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_052/rotations/south-east.webp",
+        "south": "windows/window_052/sprite.webp",
+        "south-west": "windows/window_052/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "1d5b0467-dca0-4827-bd08-57257e02a9eb"
+    }
+  }
 }

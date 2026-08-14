@@ -76,11 +76,52 @@ def windows_missing_state():
     return out
 
 
+def _outer(mask):
+    """The shape's OUTER silhouette: flood the background inward from the
+    border; whatever the flood cannot reach is inside the outline, holes
+    included."""
+    from collections import deque
+    h, w = mask.shape
+    seen = np.zeros_like(mask)
+    q = deque()
+    for x in range(w):
+        for y in (0, h - 1):
+            if not mask[y, x] and not seen[y, x]:
+                seen[y, x] = True
+                q.append((y, x))
+    for y in range(h):
+        for x in (0, w - 1):
+            if not mask[y, x] and not seen[y, x]:
+                seen[y, x] = True
+                q.append((y, x))
+    while q:
+        y, x = q.popleft()
+        for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+            if 0 <= ny < h and 0 <= nx < w and not mask[ny, nx] and not seen[ny, nx]:
+                seen[ny, nx] = True
+                q.append((ny, nx))
+    return ~seen
+
+
 def silhouette_delta(base_img, lit_img):
-    """Fraction of pixels whose opacity flipped — a redraw, not a relight."""
+    """How far the window's OUTLINE moved — a redraw, not a relight.
+
+    Measured on the outer silhouette, NOT a raw alpha XOR. Many windows are
+    drawn with TRANSPARENT panes: you see through the glass when the room is
+    dark, and lighting it makes those pixels opaque. A raw XOR scores that as
+    a massive silhouette change when the frame has not moved by a single pixel
+    — it rejected window_052 eight times running at ~32.5% while its outline
+    was actually 0.00% off, and cost the maintainer the original object he
+    deleted while cleaning up after those bogus failures (2026-08-14).
+
+    Filling the holes first makes the check what it always meant: did the
+    OUTLINE move? That is the thing that breaks the game's crossfade between
+    the two states; light appearing inside the glass is the entire point.
+    """
     a = np.asarray(base_img.convert("RGBA"))[:, :, 3] > 16
     b = np.asarray(lit_img.convert("RGBA").resize(base_img.size, Image.NEAREST))[:, :, 3] > 16
-    return float((a ^ b).sum()) / max(int(a.sum()), 1)
+    fa, fb = _outer(a), _outer(b)
+    return float((fa ^ fb).sum()) / max(int(fa.sum()), 1)
 
 
 def submit(client, man):
