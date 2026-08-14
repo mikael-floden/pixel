@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:39:44+00:00",
+  "id": "lantern_stand_014",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 14,
+  "name": "Festival stand with ribbons 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "festival stand with ribbons",
+  "modifier": "snow-dusted",
+  "glow_concept": "paper lantern glowing through painted panes",
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, festival stand with ribbons, snow-dusted, large, twice human height, self-emissive at night, softly radiating light: paper lantern glowing through painted panes",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.91,
+    "world_px_height": 72,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2f76225f-cef1-41d5-a8c8-2354f36c6f07",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
