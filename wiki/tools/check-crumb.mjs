@@ -36,6 +36,19 @@ const slugs = await p.evaluate(() => [...document.querySelectorAll("#nav a")]
 console.log("sections from the wiki's own nav:", slugs.join(", "));
 ok(slugs.length >= 8, `the nav advertises the whole ladder (${slugs.length} sections)`);
 
+// THE NAV AND THE OVERVIEW TILES ARE ONE ORDER (SECTION_ORDER feeds both), and
+// Races leads it — "feels like humans must be sorted before monsters"
+// (maintainer 2026-08-14). Two lists that can disagree eventually do.
+const tileOrder = await p.evaluate(() => [...document.querySelectorAll("#content a[href^='#/']")]
+  .map((a) => a.getAttribute("href").replace("#/", ""))
+  .filter((h) => h && h !== ""));
+const firstTiles = tileOrder.filter((x, i) => tileOrder.indexOf(x) === i).slice(0, slugs.length);
+console.log("overview tiles :", firstTiles.join(", "));
+ok(slugs[0] === "characters" && slugs[1] === "monsters",
+  `the menu puts Races before Creatures (${slugs.slice(0, 2).join(", ")})`);
+ok(JSON.stringify(firstTiles) === JSON.stringify(slugs),
+  "and the Overview tiles run in exactly the same order as the menu");
+
 const seen = [];
 for (const slug of slugs) {
   await p.goto(`${W}#/${slug}`, { waitUntil: "load" });

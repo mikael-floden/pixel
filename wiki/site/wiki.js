@@ -637,7 +637,12 @@ const SECTIONS = {
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
 };
-const SECTION_ORDER = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
+// ONE list, read by both the nav (renderNav) and the Overview tiles
+// (viewHome) — so the two can never disagree about the order.
+// Races before Creatures: the people of Nangijala come before the things that
+// hunt them (maintainer 2026-08-14, "feels like humans must be sorted before
+// monsters").
+const SECTION_ORDER = ["characters", "monsters", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
 const label = (slug) => SECTIONS[slug]?.label ?? slug;
 /** The maintainer's 48x48 pixel art, drawn ONLY at whole multiples of 48 and
  *  never resampled — `image-rendering: pixelated` plus an exact CSS size, so
