@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 583,
-  "target_count": 2499,
+  "scenery_count": 584,
+  "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -12,14 +12,14 @@
       "rank": 1,
       "id": "trees",
       "name": "Tree",
-      "quota": 100,
+      "quota": 200,
       "done": 25
     },
     {
       "rank": 2,
       "id": "stones",
       "name": "Stone",
-      "quota": 98,
+      "quota": 150,
       "done": 23
     },
     {
@@ -930,7 +930,7 @@
       "id": "bone_arbors",
       "name": "Bone Arbor",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 133,
@@ -1139,6 +1139,7 @@
     "beehives": 4,
     "bell_posts": 1,
     "effect": 1,
+    "bone_arbors": 1,
     "bone_piles": 2,
     "braziers": 15,
     "briar_thickets": 12,
@@ -2248,6 +2249,28 @@
           "directions": {}
         }
       ]
+    },
+    {
+      "id": "bone_arbor_004",
+      "rel": "bone_arbors/bone_arbor_004",
+      "name": "Whale-bone 004 \u00b7 lit",
+      "category": "bone_arbors",
+      "lights": "LIGHTS_ON",
+      "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it, whale-bone, rib-and-antler weave, large, twice human height, self-emissive at night, softly radiating light: a pale gate-glow beneath the arch",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.39,
+        "world_px_height": 90,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4d9435ea-ee31-4449-b716-e5b4783fd519",
+      "sprite": "bone_arbors/bone_arbor_004/sprite.webp",
+      "rotations": {},
+      "animations": []
     },
     {
       "id": "bone_pile_001",
