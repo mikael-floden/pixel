@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:42:40+00:00",
+  "id": "stump_011",
+  "group": "stumps",
+  "rank": 24,
+  "index": 11,
+  "name": "Mushroom-ringed stump 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "mushroom-ringed stump",
+  "modifier": "with butterflies resting on it",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, mushroom-ringed stump, with butterflies resting on it, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.36,
+    "world_px_height": 14,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "101362b9-6637-46a8-bac1-3c44fc5956f6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
