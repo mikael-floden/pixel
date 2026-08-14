@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 776,
+  "scenery_count": 777,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1105,7 +1105,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 158,
@@ -1240,7 +1240,7 @@
     "cliff_fragments": 2,
     "cliff_mosses": 30,
     "cliff_roots": 37,
-    "cliff_shrubs": 11,
+    "cliff_shrubs": 12,
     "cliff_vines": 46,
     "crystal_trees": 1,
     "crystals": 8,
@@ -6192,6 +6192,28 @@
       "status": "complete",
       "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
       "sprite": "cliff_shrubs/cliff_shrub_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_shrub_017",
+      "rel": "cliff_shrubs/cliff_shrub_017",
+      "name": "Autumn-red rowan sapling 017",
+      "category": "cliff_shrubs",
+      "lights": "LIGHTS_OFF",
+      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, autumn-red rowan sapling, hanging almost upside down, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 2.03,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5750f173-355a-4ab5-b332-a8c984e2b710",
+      "sprite": "cliff_shrubs/cliff_shrub_017/sprite.webp",
       "rotations": {},
       "animations": []
     },
