@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:21:23+00:00",
+  "id": "cliff_vine_097",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 97,
+  "name": "Blue-flowered creeper fall 097",
+  "lights": "LIGHTS_OFF",
+  "variety": "blue-flowered creeper fall",
+  "modifier": "gripping side-roots reaching out at intervals",
+  "glow_concept": null,
+  "prompt": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, blue-flowered creeper fall, gripping side-roots reaching out at intervals, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_097/sprite.webp",
+  "placement": {
+    "world_height_m": 9.2,
+    "world_px_height": 346,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7e2fa0d5-360e-48fb-9272-d15f2ed96afa",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
