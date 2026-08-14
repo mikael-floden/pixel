@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 713,
+  "scenery_count": 714,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 4,
+    "cliff_falls": 5,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 19,
@@ -4140,6 +4140,28 @@
       "status": "complete",
       "pixellab_object_id": "fb6d7421-816b-4f94-8b25-45ac6511bc96",
       "sprite": "cliff_falls/cliff_fall_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_009",
+      "rel": "cliff_falls/cliff_fall_009",
+      "name": "A thin silver thread 009",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, a thin silver thread, blown sideways at the bottom, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 16.51,
+        "world_px_height": 622,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4f55f302-6f71-4aec-b7fa-eec9333b766f",
+      "sprite": "cliff_falls/cliff_fall_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
