@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 512,
+  "scenery_count": 513,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -195,7 +195,7 @@
       "id": "carts",
       "name": "Cart",
       "quota": 48,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 28,
@@ -801,7 +801,7 @@
     "bushes": 8,
     "cairns": 9,
     "light": 1,
-    "carts": 5,
+    "carts": 6,
     "cattail_clumps": 5,
     "chairs_and_benches": 6,
     "charcoal_kilns": 1,
@@ -2927,6 +2927,28 @@
       "status": "complete",
       "pixellab_object_id": "1efb1c12-22b6-4733-afc3-ca34f24e5a46",
       "sprite": "carts/cart_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cart_014",
+      "rel": "carts/cart_014",
+      "name": "Snow-drifted abandoned cart 014 \u00b7 lit",
+      "category": "carts",
+      "lights": "LIGHTS_ON",
+      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, snow-drifted abandoned cart, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: small brazier of tended coals in the bed",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.97,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e3ce5473-1b19-42b5-94cf-563f588bcf62",
+      "sprite": "carts/cart_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
