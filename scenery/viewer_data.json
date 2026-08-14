@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 464,
+  "scenery_count": 465,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 4,
@@ -829,7 +829,7 @@
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 7,
+    "graves": 8,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "haystacks": 6,
@@ -5298,6 +5298,28 @@
       "status": "complete",
       "pixellab_object_id": "ea8124a0-f256-4436-9305-c123afa8a00b",
       "sprite": "graves/grave_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_022",
+      "rel": "graves/grave_022",
+      "name": "Weathered wooden plank marker 022 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, weathered wooden plank marker, reinforced with iron bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: thin soulstone vein glinting through the rock",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.34,
+        "world_px_height": 50,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8cbfaf9e-7c7c-4955-bbe1-288cf662b951",
+      "sprite": "graves/grave_022/sprite.webp",
       "rotations": {},
       "animations": []
     },
