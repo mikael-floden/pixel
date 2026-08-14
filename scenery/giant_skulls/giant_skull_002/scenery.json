@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:04:26+00:00",
+  "id": "giant_skull_002",
+  "group": "giant_skulls",
+  "rank": 134,
+  "index": 2,
+  "name": "Crested skull 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "crested skull",
+  "modifier": "half-buried jaw",
+  "glow_concept": "soul-light pooling under the jaw",
+  "prompt": "the huge weathered skull of an ancient beast resting in the meadow, horned and moss-patched, big enough to walk into, crested skull, half-buried jaw, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light pooling under the jaw",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "giant_skulls/giant_skull_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.64,
+    "world_px_height": 62,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "59ae47ec-64d2-4991-910b-19e7d28b7084",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
