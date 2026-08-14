@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect \u2014 the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces \u2014 those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count \u2014 the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -202,7 +202,7 @@
         "luminous white flowers blooming against the stone"
       ],
       "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
-      "lore_fit": "A grave with a legible name is a spoken fact holding its shape \u2014 the first defense against the Quiet.",
+      "lore_fit": "A grave with a legible name is a spoken fact holding its shape — the first defense against the Quiet.",
       "modifier_pool": "structure"
     },
     {
@@ -243,7 +243,7 @@
         "coals glowing through the weave in stripes"
       ],
       "animation_idea": "flames licking upward with sparks drifting off",
-      "lore_fit": "A tended brazier is sacred infrastructure \u2014 the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
+      "lore_fit": "A tended brazier is sacred infrastructure — the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
       "modifier_pool": "structure"
     },
     {
@@ -318,7 +318,7 @@
         "glowworms clustered in the carved lettering"
       ],
       "animation_idea": "rune glow pulsing slowly brighter and dimmer",
-      "lore_fit": "Waystones are facts pressed toward mineral \u2014 direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
+      "lore_fit": "Waystones are facts pressed toward mineral — direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
       "modifier_pool": "structure"
     },
     {
@@ -395,10 +395,10 @@
         "soft halo around one true arrow"
       ],
       "animation_idea": "loosest arm creaking and rocking slightly",
-      "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
+      "lore_fit": "Written place-names are load-bearing in Nangijala — a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 9,
@@ -451,7 +451,7 @@
       "art_size": 128,
       "variety": [
         "split-rail birch, bark on",
-        "slanted roundpole g\u00e4rdsg\u00e5rd run",
+        "slanted roundpole gärdsgård run",
         "weathered grey picket run",
         "woven hazel wattle hurdle",
         "white-painted pickets, peeling",
@@ -475,7 +475,7 @@
       "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 11,
@@ -514,7 +514,7 @@
       "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does.",
       "modifier_pool": "structure",
       "quota": 13,
-      "_saturated": "maintainer 2026-08-14 review note: we have enough of these \u2014 quota frozen at the 13 already generated; raise only if he asks"
+      "_saturated": "maintainer 2026-08-14 review note: we have enough of these — quota frozen at the 13 already generated; raise only if he asks"
     },
     {
       "rank": 12,
@@ -551,7 +551,7 @@
       "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them.",
       "modifier_pool": "nature",
       "quota": 4,
-      "_throttled": "maintainer approval 2/34 (6%) over 34 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 2/34 (6%) over 34 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 13,
@@ -635,7 +635,7 @@
       "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 1/20 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 1/20 approved — concept dead 2026-08-14"
     },
     {
       "rank": 15,
@@ -676,7 +676,7 @@
       "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 5/23 (22%) over 23 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/23 (22%) over 23 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 16,
@@ -715,7 +715,7 @@
         "sparks drifting up from the flame"
       ],
       "animation_idea": "flame flickering with tiny sparks drifting upward",
-      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure \u2014 a tended fire small enough to keep one memory warm.",
+      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure — a tended fire small enough to keep one memory warm.",
       "modifier_pool": "structure"
     },
     {
@@ -752,10 +752,10 @@
         "pale foxfire crust on the rotting side"
       ],
       "animation_idea": "loose straws lifting off and drifting away in the breeze",
-      "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape.",
+      "lore_fit": "A haystack is a whole summer's work remembered at once — the proof a homestead would live through winter, and proof keeps its shape.",
       "modifier_pool": "structure",
       "quota": 6,
-      "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 18,
@@ -794,7 +794,7 @@
       "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once.",
       "modifier_pool": "nature",
       "quota": 0,
-      "_retired": "maintainer verdicts 1/27 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 1/27 approved — concept dead 2026-08-14"
     },
     {
       "rank": 19,
@@ -837,7 +837,7 @@
       "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm.",
       "modifier_pool": "structure",
       "quota": 6,
-      "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 20,
@@ -999,7 +999,7 @@
         "tips glowing like small candle flames"
       ],
       "animation_idea": "heart-light pulsing like a slow breath",
-      "lore_fit": "Soulstones are what remains when a thing thins far enough \u2014 one fact pressed to mineral \u2014 and here they surface right out of the ground.",
+      "lore_fit": "Soulstones are what remains when a thing thins far enough — one fact pressed to mineral — and here they surface right out of the ground.",
       "modifier_pool": "nature"
     },
     {
@@ -1042,7 +1042,7 @@
         "shelf undersides shedding pale spore light downward"
       ],
       "animation_idea": "the young shoot at its edge trembling and mushroom caps quivering in the breeze",
-      "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years.",
+      "lore_fit": "A stump is a tree half-forgotten — felled in someone's memory yet too well-known to go soft — its rings a readable record of kept years.",
       "modifier_pool": "nature"
     },
     {
@@ -1082,7 +1082,7 @@
         "phosphorescent rime edging every leaf"
       ],
       "animation_idea": "the whole clump of foliage rustling in a light breeze",
-      "lore_fit": "Berry bushes are remembered hands-first \u2014 every picker who filled a pail keeps their bush standing at the field edge.",
+      "lore_fit": "Berry bushes are remembered hands-first — every picker who filled a pail keeps their bush standing at the field edge.",
       "modifier_pool": "nature"
     },
     {
@@ -1122,7 +1122,7 @@
       "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 27,
@@ -1273,7 +1273,7 @@
       "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet.",
       "modifier_pool": "structure",
       "quota": 4,
-      "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 31,
@@ -1547,7 +1547,7 @@
         "ground around the base lit in the crystal's color"
       ],
       "animation_idea": "inner light slowly pulsing while tiny sparks drift off the tips",
-      "lore_fit": "Bright mineral the valleys remember from every tale of treasure \u2014 distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
+      "lore_fit": "Bright mineral the valleys remember from every tale of treasure — distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
       "modifier_pool": "nature"
     },
     {
@@ -1627,7 +1627,7 @@
       "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else.",
       "modifier_pool": "nature",
       "quota": 11,
-      "_saturated": "maintainer 2026-08-14 review note: we have enough of these \u2014 quota frozen at the 11 already generated; raise only if he asks"
+      "_saturated": "maintainer 2026-08-14 review note: we have enough of these — quota frozen at the 11 already generated; raise only if he asks"
     },
     {
       "rank": 40,
@@ -1855,7 +1855,7 @@
       "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently.",
       "modifier_pool": "nature",
       "quota": 5,
-      "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 46,
@@ -1930,7 +1930,7 @@
       "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat.",
       "modifier_pool": "structure",
       "quota": 3,
-      "_throttled": "maintainer approval 3/17 (18%) over 17 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 3/17 (18%) over 17 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 48,
@@ -1969,7 +1969,7 @@
       "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet.",
       "modifier_pool": "structure",
       "quota": 2,
-      "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 49,
@@ -2005,7 +2005,7 @@
         "small coal brazier beside the counter"
       ],
       "animation_idea": "the canopy edge fluttering and hanging goods swinging",
-      "lore_fit": "Market day is remembering out loud \u2014 prices, names and gossip repeated weekly for lifetimes \u2014 so stalls stand firm even in villages gone half-Quiet.",
+      "lore_fit": "Market day is remembering out loud — prices, names and gossip repeated weekly for lifetimes — so stalls stand firm even in villages gone half-Quiet.",
       "modifier_pool": "structure"
     },
     {
@@ -2042,7 +2042,7 @@
         "smoke of soft light curling from the crown"
       ],
       "animation_idea": "hearth flames flickering while thin smoke curls from the crown",
-      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften \u2014 the fire everyone gathered at stands long after the walls are gone.",
+      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften — the fire everyone gathered at stands long after the walls are gone.",
       "modifier_pool": "structure"
     },
     {
@@ -2079,7 +2079,7 @@
         "cold aurora shimmer hanging under the arch"
       ],
       "animation_idea": "briar rose vines swaying against the stonework",
-      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through.",
+      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall — an opening still held open by the habit of walking through.",
       "modifier_pool": "structure"
     },
     {
@@ -2226,7 +2226,7 @@
         "trickle of glowing pebbles down one side"
       ],
       "animation_idea": "a loose pebble occasionally trickling down the slope",
-      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten \u2014 memory ground down but not yet gone to the Quiet.",
+      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten — memory ground down but not yet gone to the Quiet.",
       "modifier_pool": "nature"
     },
     {
@@ -2478,10 +2478,10 @@
         "soft aurora shimmer across the thinned surface"
       ],
       "animation_idea": "the faded half slowly flickering between half-visible and almost gone",
-      "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone.",
+      "lore_fit": "These are the Quiet made visible — furniture nobody speaks of anymore, caught halfway between remembered and gone.",
       "modifier_pool": "indoor",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
     },
     {
       "rank": 63,
@@ -2592,7 +2592,7 @@
         "sap channels lit like slow embers"
       ],
       "animation_idea": "amber ring-light breathing slowly while spore motes rise",
-      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments.",
+      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay — trees pressed down into their own stone monuments.",
       "modifier_pool": "nature"
     },
     {
@@ -2888,7 +2888,7 @@
       "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
     },
     {
       "rank": 74,
@@ -3147,7 +3147,7 @@
       "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/5 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/5 approved — concept dead 2026-08-14"
     },
     {
       "rank": 81,
@@ -3327,7 +3327,7 @@
         "opening rimmed in soft ember light"
       ],
       "animation_idea": "crystal lining glinting as the interior glow flickers",
-      "lore_fit": "Memory keeps its brightest part hidden \u2014 a plain stone that cracks open to show the light it has been holding all along.",
+      "lore_fit": "Memory keeps its brightest part hidden — a plain stone that cracks open to show the light it has been holding all along.",
       "modifier_pool": "nature"
     },
     {
@@ -3481,7 +3481,7 @@
         "whole figure translucent, lit from within"
       ],
       "animation_idea": "moths slowly circling the statue's head",
-      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered \u2014 hardest of all for the Quiet to take.",
+      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered — hardest of all for the Quiet to take.",
       "modifier_pool": "structure"
     },
     {
@@ -3742,7 +3742,7 @@
       "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
     },
     {
       "rank": 97,
@@ -3781,7 +3781,7 @@
       "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small.",
       "modifier_pool": "indoor",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
     },
     {
       "rank": 98,
@@ -4064,7 +4064,7 @@
         "a little nightlight lantern beside the pillow"
       ],
       "animation_idea": "the quilt rising and falling as if someone breathes beneath it",
-      "lore_fit": "The dead still sleep \u2014 not because they must, but because dreams are where the living visit.",
+      "lore_fit": "The dead still sleep — not because they must, but because dreams are where the living visit.",
       "modifier_pool": "indoor"
     },
     {
@@ -4242,7 +4242,7 @@
       "id": "giant_fallen_bells",
       "prefix": "giant_fallen_bell",
       "name": "Giant Fallen Bell",
-      "quota": 7,
+      "quota": 3,
       "description": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground",
       "world_height_m": [
         1.2,
@@ -4269,14 +4269,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 112,
       "id": "meteor_stones",
       "prefix": "meteor_stone",
       "name": "Meteor Stone",
-      "quota": 7,
+      "quota": 3,
       "description": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it",
       "world_height_m": [
         0.8,
@@ -4303,14 +4304,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 113,
       "id": "hot_springs",
       "prefix": "hot_spring",
       "name": "Hot Spring",
-      "quota": 8,
+      "quota": 3,
       "description": "a natural hot spring pool ringed by mineral-crusted rocks, steam rising off milky turquoise water",
       "world_height_m": [
         0.5,
@@ -4337,14 +4339,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 114,
       "id": "spirit_gates",
       "prefix": "spirit_gate",
       "name": "Spirit Gate",
-      "quota": 7,
+      "quota": 3,
       "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass",
       "world_height_m": [
         2.4,
@@ -4372,14 +4375,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 115,
       "id": "witch_rings",
       "prefix": "witch_ring",
       "name": "Witch Ring",
-      "quota": 7,
+      "quota": 3,
       "description": "a ring of small carved stones set in trampled grass with melted candle stubs between them, the site of quiet old rituals",
       "world_height_m": [
         0.3,
@@ -4407,14 +4411,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 116,
       "id": "giant_snail_shells",
       "prefix": "giant_snail_shell",
       "name": "Giant Snail Shell",
-      "quota": 6,
+      "quota": 3,
       "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in",
       "world_height_m": [
         0.9,
@@ -4441,14 +4446,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 117,
       "id": "dragon_ribcages",
       "prefix": "dragon_ribcage",
       "name": "Dragon Ribcage",
-      "quota": 6,
+      "quota": 3,
       "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched",
       "world_height_m": [
         2.0,
@@ -4475,14 +4481,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 118,
       "id": "honey_trees",
       "prefix": "honey_tree",
       "name": "Honey Tree",
-      "quota": 6,
+      "quota": 3,
       "description": "a stout hollow tree trunk with wild honeycomb bulging from its split, bees drifting around, bark dark with old honey runs",
       "world_height_m": [
         1.4,
@@ -4509,14 +4516,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 119,
       "id": "shipwreck_prows",
       "prefix": "shipwreck_prow",
       "name": "Shipwreck Prow",
-      "quota": 6,
+      "quota": 3,
       "description": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass",
       "world_height_m": [
         1.8,
@@ -4543,14 +4551,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 120,
       "id": "frozen_springs",
       "prefix": "frozen_spring",
       "name": "Frozen Spring",
-      "quota": 6,
+      "quota": 3,
       "description": "a small spring frozen mid-flow, ice caught in smooth rounded spills over its stones, frost ferns on every surface",
       "world_height_m": [
         0.8,
@@ -4577,14 +4586,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 121,
       "id": "lightning_oaks",
       "prefix": "lightning_oak",
       "name": "Lightning Oak",
-      "quota": 6,
+      "quota": 3,
       "description": "a massive oak split and charred by an old lightning strike, half the trunk black, the other half stubbornly alive and leafing",
       "world_height_m": [
         2.2,
@@ -4611,14 +4621,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 122,
       "id": "fairy_stumps",
       "prefix": "fairy_stump",
       "name": "Fairy Stump",
-      "quota": 7,
+      "quota": 3,
       "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world",
       "world_height_m": [
         0.6,
@@ -4645,14 +4656,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 123,
       "id": "cauldron_camps",
       "prefix": "cauldron_camp",
       "name": "Cauldron Camp",
-      "quota": 7,
+      "quota": 3,
       "description": "a big iron cauldron on a tripod over a campfire ring, ladle hooked on the rim, stones worn smooth by sitters",
       "world_height_m": [
         0.9,
@@ -4679,14 +4691,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 124,
       "id": "harvest_altars",
       "prefix": "harvest_altar",
       "name": "Harvest Altar",
-      "quota": 6,
+      "quota": 3,
       "description": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields",
       "world_height_m": [
         0.8,
@@ -4713,14 +4726,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 125,
       "id": "sunken_statues",
       "prefix": "sunken_statue",
       "name": "Sunken Statue",
-      "quota": 6,
+      "quota": 3,
       "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss",
       "world_height_m": [
         1.6,
@@ -4747,14 +4761,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 126,
       "id": "bee_logs",
       "prefix": "bee_log",
       "name": "Bee Log",
-      "quota": 6,
+      "quota": 3,
       "description": "a fallen log fitted as a wild beehive, entrance holes drilled in a row, comb visible in a knothole, bees busy around it",
       "world_height_m": [
         0.5,
@@ -4781,14 +4796,15 @@
       ],
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
-      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 127,
       "id": "stone_giant_hands",
       "prefix": "stone_giant_hand",
       "name": "Stone Giant Hand",
-      "quota": 5,
+      "quota": 3,
       "description": "a colossal weathered stone hand emerging from the earth, fingers half-curled, moss in the knuckle creases",
       "world_height_m": [
         1.6,
@@ -4813,14 +4829,15 @@
         "a warm ember cupped in the palm"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 128,
       "id": "antler_thrones",
       "prefix": "antler_throne",
       "name": "Antler Throne",
-      "quota": 5,
+      "quota": 3,
       "description": "a wild throne woven from shed antlers and dark wood, moss-cushioned, standing alone in the grass",
       "world_height_m": [
         1.2,
@@ -4845,14 +4862,15 @@
         "glow-moss cushion shining softly"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 129,
       "id": "moon_pools",
       "prefix": "moon_pool",
       "name": "Moon Pool",
-      "quota": 5,
+      "quota": 3,
       "description": "a small perfectly round pool of still dark water reflecting a full moon that is not in the sky",
       "world_height_m": [
         0.4,
@@ -4877,14 +4895,15 @@
         "silver mist over the surface"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 130,
       "id": "lantern_trees",
       "prefix": "lantern_tree",
       "name": "Lantern Tree",
-      "quota": 5,
+      "quota": 3,
       "description": "a broad tree hung with dozens of small memory lanterns on ribbons, each a different shape and color",
       "world_height_m": [
         2.2,
@@ -4909,14 +4928,15 @@
         "lanterns glowing in slow waves"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 131,
       "id": "crystal_trees",
       "prefix": "crystal_tree",
       "name": "Crystal Tree",
-      "quota": 5,
+      "quota": 3,
       "description": "a small tree whose branches have grown translucent crystal shards instead of leaves, bark silvered",
       "world_height_m": [
         1.4,
@@ -4941,14 +4961,15 @@
         "one shard blazing like a star"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 132,
       "id": "bone_arbors",
       "prefix": "bone_arbor",
       "name": "Bone Arbor",
-      "quota": 5,
+      "quota": 3,
       "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it",
       "world_height_m": [
         1.8,
@@ -4973,14 +4994,15 @@
         "a pale gate-glow beneath the arch"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 133,
       "id": "glow_hollows",
       "prefix": "glow_hollow",
       "name": "Glow Hollow",
-      "quota": 5,
+      "quota": 3,
       "description": "a hollow fallen log whose interior glows, moss-covered outside, a small warm world visible through the opening",
       "world_height_m": [
         0.5,
@@ -5005,14 +5027,15 @@
         "light spilling out onto the grass"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 134,
       "id": "giant_skulls",
       "prefix": "giant_skull",
       "name": "Giant Skull",
-      "quota": 5,
+      "quota": 3,
       "description": "the huge weathered skull of an ancient beast resting in the meadow, horned and moss-patched, big enough to walk into",
       "world_height_m": [
         1.4,
@@ -5037,14 +5060,15 @@
         "glowing runes scratched by pilgrims"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 135,
       "id": "root_arches",
       "prefix": "root_arch",
       "name": "Root Arch",
-      "quota": 5,
+      "quota": 3,
       "description": "a living archway formed by two trees whose roots and branches have grown together over a worn path",
       "world_height_m": [
         1.8,
@@ -5069,14 +5093,15 @@
         "glow-moss lighting the path beneath"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
     },
     {
       "rank": 136,
       "id": "frost_flowers",
       "prefix": "frost_flower",
       "name": "Frost Flower",
-      "quota": 5,
+      "quota": 3,
       "description": "a giant flower made entirely of ice and frost, petals like blown glass, growing impossibly from green grass",
       "world_height_m": [
         0.6,
@@ -5101,7 +5126,604 @@
         "aurora colors shifting through the ice"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+    },
+    {
+      "rank": 137,
+      "id": "lone_doorframes",
+      "prefix": "lone_doorframe",
+      "name": "Lone Doorframe",
+      "quota": 3,
+      "description": "a single weathered wooden door standing upright in its frame alone in the grass, no house around it, the door slightly ajar",
+      "world_height_m": [
+        1.9,
+        2.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "lone doorframe",
+        "weathered lone doorframe",
+        "old lone doorframe"
+      ],
+      "modifiers": [
+        "painted blue, paint peeling",
+        "carved with a sun motif",
+        "hanging off one hinge",
+        "wound with climbing roses",
+        "a boot-scraper still at its step",
+        "its key still in the lock"
+      ],
+      "glow_concepts": [
+        "warm light spilling through the gap",
+        "the keyhole glowing",
+        "light outlining the whole frame"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 138,
+      "id": "stone_boats",
+      "prefix": "stone_boat",
+      "name": "Stone Boat",
+      "quota": 3,
+      "description": "a boat-shaped grave setting of upright stones laid out in the grass, prow and stern stones taller than the rest",
+      "world_height_m": [
+        0.6,
+        1.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "stone boat",
+        "weathered stone boat",
+        "old stone boat"
+      ],
+      "modifiers": [
+        "half its stones fallen",
+        "filled with white pebbles",
+        "moss between every stone",
+        "a mast-stone at its center",
+        "ringed by short grass kept clear"
+      ],
+      "glow_concepts": [
+        "each stone glowing faintly",
+        "soul-light pooled inside the hull",
+        "the prow stone shining like a lamp"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 139,
+      "id": "wishing_trees",
+      "prefix": "wishing_tree",
+      "name": "Wishing Tree",
+      "quota": 3,
+      "description": "a bare-branched tree hung with hundreds of knotted cloth strips and ribbons in faded colors, weighted with small tokens",
+      "world_height_m": [
+        2.4,
+        3.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "wishing tree",
+        "weathered wishing tree",
+        "old wishing tree"
+      ],
+      "modifiers": [
+        "ribbons in reds and whites",
+        "one branch bare where the wind took them",
+        "tokens of tin and bone",
+        "new bright ribbons over old grey ones",
+        "strips tied so thick the bark is hidden"
+      ],
+      "glow_concepts": [
+        "the knots glowing like fireflies",
+        "one ribbon burning bright",
+        "light running along the ribbons in waves"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 140,
+      "id": "weeping_stones",
+      "prefix": "weeping_stone",
+      "name": "Weeping Stone",
+      "quota": 3,
+      "description": "an upright dark boulder with water endlessly running down its face into a small basin worn at its foot, moss thriving on the wet stone",
+      "world_height_m": [
+        1.0,
+        1.8
+      ],
+      "art_size": 64,
+      "variety": [
+        "weeping stone",
+        "weathered weeping stone",
+        "old weeping stone"
+      ],
+      "modifiers": [
+        "a hand-worn hollow in the face",
+        "ferns crowding the basin",
+        "frost-rimed and still dripping",
+        "a tin cup left on the rim",
+        "the water running clear over green algae"
+      ],
+      "glow_concepts": [
+        "the water glowing as it falls",
+        "light welling from the basin",
+        "the wet face shining silver"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 141,
+      "id": "hollow_kings",
+      "prefix": "hollow_king",
+      "name": "Hollow King",
+      "quota": 3,
+      "description": "an empty suit of old armor standing upright in the meadow, nobody inside, grass grown up through its greaves and helm",
+      "world_height_m": [
+        1.6,
+        2.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "hollow king",
+        "weathered hollow king",
+        "old hollow king"
+      ],
+      "modifiers": [
+        "one gauntlet resting on a sword pommel",
+        "helm tipped forward as if asleep",
+        "rusted red-brown",
+        "ivy through the visor",
+        "shield still strapped to the arm",
+        "kneeling, not standing"
+      ],
+      "glow_concepts": [
+        "a soul-light burning in the empty helm",
+        "light seeping between the plates",
+        "the sword blade glowing faintly"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 142,
+      "id": "echo_horns",
+      "prefix": "echo_horn",
+      "name": "Echo Horn",
+      "quota": 3,
+      "description": "a giant curved bronze listening horn planted mouth-up in the earth, green with age, big enough to shout into",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "echo horn",
+        "weathered echo horn",
+        "old echo horn"
+      ],
+      "modifiers": [
+        "dented and patched",
+        "two horns leaning together",
+        "filled with rainwater",
+        "wound with rope at the throat",
+        "a bird nesting in the bell"
+      ],
+      "glow_concepts": [
+        "sound made visible as rings of light",
+        "the throat glowing deep inside",
+        "light spilling from the mouth"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 143,
+      "id": "memory_mirrors",
+      "prefix": "memory_mirror",
+      "name": "Memory Mirror",
+      "quota": 3,
+      "description": "a tall standing mirror in a heavy carved frame set up outdoors in the grass, its glass showing only fog",
+      "world_height_m": [
+        1.6,
+        2.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "memory mirror",
+        "weathered memory mirror",
+        "old memory mirror"
+      ],
+      "modifiers": [
+        "frame gilded and flaking",
+        "cracked from corner to corner",
+        "draped half over with cloth",
+        "tilted back on its stand",
+        "vines growing up one side"
+      ],
+      "glow_concepts": [
+        "the fog inside glowing softly",
+        "a warm room reflected that is not there",
+        "light leaking from the frame's carvings"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 144,
+      "id": "thread_poles",
+      "prefix": "thread_pole",
+      "name": "Thread Pole",
+      "quota": 3,
+      "description": "two short carved poles with hundreds of red threads wound between them in a dense band, tokens knotted along the threads",
+      "world_height_m": [
+        1.4,
+        2.0
+      ],
+      "art_size": 64,
+      "variety": [
+        "thread pole",
+        "weathered thread pole",
+        "old thread pole"
+      ],
+      "modifiers": [
+        "threads faded pink by sun",
+        "one pole leaning inward",
+        "thread band sagging heavy",
+        "new red threads over grey",
+        "small bells knotted among them"
+      ],
+      "glow_concepts": [
+        "the threads glowing red like embers",
+        "light travelling along the strands",
+        "knots shining like beads"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 145,
+      "id": "star_wells",
+      "prefix": "star_well",
+      "name": "Star Well",
+      "quota": 3,
+      "description": "a low round stone well-mouth with no roof, its water black and holding a field of stars that the sky above does not have",
+      "world_height_m": [
+        0.7,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "star well",
+        "weathered star well",
+        "old star well"
+      ],
+      "modifiers": [
+        "moss-cushioned rim",
+        "a stone lid pushed half aside",
+        "coins scattered on the rim",
+        "the mouth ringed with white pebbles",
+        "cracked and grass-filled"
+      ],
+      "glow_concepts": [
+        "the star field bright and slowly turning",
+        "light rising from the mouth in a column",
+        "one star burning brighter than the rest"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 146,
+      "id": "pilgrim_piles",
+      "prefix": "pilgrim_pile",
+      "name": "Pilgrim Pile",
+      "quota": 3,
+      "description": "a heap of worn-out boots and shoes left at a wayside, leather cracked, laces knotted together in pairs",
+      "world_height_m": [
+        0.4,
+        0.8
+      ],
+      "art_size": 64,
+      "variety": [
+        "pilgrim pile",
+        "weathered pilgrim pile",
+        "old pilgrim pile"
+      ],
+      "modifiers": [
+        "tiny children's shoes on top",
+        "one pair still standing neatly",
+        "half-swallowed by grass",
+        "snow filling the uppers",
+        "a walking staff leaning against them"
+      ],
+      "glow_concepts": [
+        "a soft glow from inside the shoes",
+        "light on the knotted laces",
+        "one pair shining brighter"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 147,
+      "id": "wind_harps",
+      "prefix": "wind_harp",
+      "name": "Wind Harp",
+      "quota": 3,
+      "description": "a heavy timber frame strung with thick wires that the wind plays, mounted on a broad stone base in the open grass",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "wind harp",
+        "weathered wind harp",
+        "old wind harp"
+      ],
+      "modifiers": [
+        "wires furred with frost",
+        "one wire broken and curled",
+        "carved sound-holes in the frame",
+        "two frames facing each other",
+        "moss on the base stones"
+      ],
+      "glow_concepts": [
+        "the wires glowing as they sound",
+        "rings of light leaving the frame",
+        "the sound-holes lit from within"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 148,
+      "id": "giant_hourglasses",
+      "prefix": "giant_hourglass",
+      "name": "Giant Hourglass",
+      "quota": 3,
+      "description": "an enormous wooden-framed hourglass standing in the meadow, most of its sand already fallen, glass clouded with age",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "giant hourglass",
+        "weathered giant hourglass",
+        "old giant hourglass"
+      ],
+      "modifiers": [
+        "the frame carved with vines",
+        "cracked glass mended with lead",
+        "tipped on its side in the grass",
+        "nearly empty, a last thread of sand",
+        "half-buried in its own spilled sand"
+      ],
+      "glow_concepts": [
+        "the falling sand glowing like sparks",
+        "the lower bulb lit warm",
+        "light caught in the clouded glass"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 149,
+      "id": "stone_libraries",
+      "prefix": "stone_library",
+      "name": "Stone Library",
+      "quota": 3,
+      "description": "a squat stone shelf structure holding rows of thick stone tablets like books, weathered and lichen-spotted, open to the sky",
+      "world_height_m": [
+        1.2,
+        1.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "stone library",
+        "weathered stone library",
+        "old stone library"
+      ],
+      "modifiers": [
+        "one tablet pulled half out",
+        "a tablet fallen and split",
+        "birds nesting in a gap",
+        "moss filling the shelf lines",
+        "a reading slab in front"
+      ],
+      "glow_concepts": [
+        "the tablet edges glowing",
+        "warm light between the rows",
+        "one tablet blazing on the reading slab"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 150,
+      "id": "cradle_stones",
+      "prefix": "cradle_stone",
+      "name": "Cradle Stone",
+      "quota": 3,
+      "description": "a smooth hollowed boulder shaped like a cradle, lined with soft moss and small wildflowers, rocking-worn at its base",
+      "world_height_m": [
+        0.5,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "cradle stone",
+        "weathered cradle stone",
+        "old cradle stone"
+      ],
+      "modifiers": [
+        "a woolen blanket folded inside",
+        "filled with rainwater and petals",
+        "two cradles side by side",
+        "carved with a soft spiral",
+        "a wooden rattle left on the rim"
+      ],
+      "glow_concepts": [
+        "a gentle glow from within the hollow",
+        "light like a nightlight at its head",
+        "the moss lining shining softly"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 151,
+      "id": "sky_anchors",
+      "prefix": "sky_anchor",
+      "name": "Sky Anchor",
+      "quota": 3,
+      "description": "a colossal iron anchor buried fluke-down in the meadow with its chain rising taut into the air and simply ending",
+      "world_height_m": [
+        2.2,
+        3.2
+      ],
+      "art_size": 128,
+      "variety": [
+        "sky anchor",
+        "weathered sky anchor",
+        "old sky anchor"
+      ],
+      "modifiers": [
+        "chain links thick with rust",
+        "the chain slack and coiling on the grass",
+        "moss claiming the shank",
+        "a rope ladder up the chain",
+        "the stock snapped off"
+      ],
+      "glow_concepts": [
+        "the chain glowing link by link upward",
+        "light pooling where it enters the ground",
+        "the ring at the top shining"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 152,
+      "id": "seed_vaults",
+      "prefix": "seed_vault",
+      "name": "Seed Vault",
+      "quota": 3,
+      "description": "a small round stone silo with a heavy sealed door, carved with rows of plant shapes, standing alone at a field edge",
+      "world_height_m": [
+        0.8,
+        1.3
+      ],
+      "art_size": 64,
+      "variety": [
+        "seed vault",
+        "weathered seed vault",
+        "old seed vault"
+      ],
+      "modifiers": [
+        "door cracked open, seed spilled",
+        "grass sprouting from its roof",
+        "a scoop hanging on a nail",
+        "ringed by volunteer wheat",
+        "frost-rimed and shut tight"
+      ],
+      "glow_concepts": [
+        "the door seams glowing",
+        "warm light through a gap in the roof",
+        "the carved seeds shining"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 153,
+      "id": "singing_reeds",
+      "prefix": "singing_reed",
+      "name": "Singing Reed",
+      "quota": 3,
+      "description": "a dense stand of unnaturally tall hollow reeds with cut mouths that whistle, growing from a small mud hummock",
+      "world_height_m": [
+        1.2,
+        1.8
+      ],
+      "art_size": 64,
+      "variety": [
+        "singing reed",
+        "weathered singing reed",
+        "old singing reed"
+      ],
+      "modifiers": [
+        "some reeds cut short, some long",
+        "bound in the middle with cord",
+        "frost-silvered stems",
+        "a bird perched on the tallest",
+        "leaning all one way"
+      ],
+      "glow_concepts": [
+        "light pulsing up the stems as they sound",
+        "the cut mouths glowing",
+        "a soft aura around the whole stand"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 154,
+      "id": "tide_stones",
+      "prefix": "tide_stone",
+      "name": "Tide Stone",
+      "quota": 3,
+      "description": "a barnacle-crusted boulder standing far inland in dry grass, its lower half still marked by a waterline and dried seaweed",
+      "world_height_m": [
+        0.9,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "tide stone",
+        "weathered tide stone",
+        "old tide stone"
+      ],
+      "modifiers": [
+        "mussels dried to the stone",
+        "a rusted mooring ring set in it",
+        "seaweed hair drying in strands",
+        "split with a rockpool in the crack",
+        "gulls' marks whitening the top"
+      ],
+      "glow_concepts": [
+        "the waterline glowing blue-green",
+        "light rippling as if underwater",
+        "the rockpool lit from beneath"
+      ],
+      "animation_idea": "subtle idle motion",
+      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "lore_fit": "A one-off landmark; a place is remembered by it."
     }
   ],
   "modifier_pools": {
