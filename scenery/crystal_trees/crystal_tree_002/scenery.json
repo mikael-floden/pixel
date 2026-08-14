@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:01:43+00:00",
+  "id": "crystal_tree_002",
+  "group": "crystal_trees",
+  "rank": 131,
+  "index": 2,
+  "name": "Black-barked 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "black-barked",
+  "modifier": "half leaves half crystal",
+  "glow_concept": "the crystals glowing from within",
+  "prompt": "a small tree whose branches have grown translucent crystal shards instead of leaves, bark silvered, black-barked, half leaves half crystal, roughly six feet tall, human height, self-emissive at night, softly radiating light: the crystals glowing from within",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.79,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

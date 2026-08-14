@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 580,
+  "scenery_count": 581,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -923,7 +923,7 @@
       "id": "crystal_trees",
       "name": "Crystal Tree",
       "quota": 5,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 132,
@@ -993,6 +993,7 @@
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_vines": 4,
+    "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
@@ -4131,6 +4132,28 @@
       "status": "complete",
       "pixellab_object_id": "6875c9dc-134a-4c8e-93a2-8f4212d8d5d5",
       "sprite": "cliff_vines/cliff_vine_903/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "crystal_tree_002",
+      "rel": "crystal_trees/crystal_tree_002",
+      "name": "Black-barked 002 \u00b7 lit",
+      "category": "crystal_trees",
+      "lights": "LIGHTS_ON",
+      "description": "a small tree whose branches have grown translucent crystal shards instead of leaves, bark silvered, black-barked, half leaves half crystal, roughly six feet tall, human height, self-emissive at night, softly radiating light: the crystals glowing from within",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.79,
+        "world_px_height": 67,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
+      "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
