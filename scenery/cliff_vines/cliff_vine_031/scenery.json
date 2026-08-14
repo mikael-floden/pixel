@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:27:14+00:00",
+  "id": "cliff_vine_031",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 31,
+  "name": "Red-leaved autumn creeper fall 031",
+  "lights": "LIGHTS_OFF",
+  "variety": "red-leaved autumn creeper fall",
+  "modifier": "two loose clusters joined by a single runner",
+  "glow_concept": null,
+  "prompt": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, red-leaved autumn creeper fall, two loose clusters joined by a single runner, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_031/sprite.webp",
+  "placement": {
+    "world_height_m": 10.21,
+    "world_px_height": 384,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "34be8e14-712a-4e1e-84c1-185a73be7a56",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
