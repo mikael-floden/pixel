@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:31:56+00:00",
+  "id": "window_016",
+  "group": "windows",
+  "rank": 25,
+  "index": 16,
+  "name": "A rectangular window set deep in a thick clay wall 016",
+  "lights": "LIGHTS_OFF",
+  "variety": "a rectangular window set deep in a thick clay wall",
+  "modifier": "rain streaks and old water stains",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window set deep in a thick clay wall, rain streaks and old water stains, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_016/rotations/south-east.webp",
+    "south-west": "windows/window_016/rotations/south-west.webp",
+    "south": "windows/window_016/sprite.webp"
+  },
+  "size": 48,
+  "sprite": "windows/window_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.6,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      8,
+      6,
+      42,
+      43
+    ],
+    "content_px_height": 37,
+    "canvas_render_px": 30
+  },
+  "pixellab_object_id": "34278589-99ac-465b-bb34-af731ab56b99",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
