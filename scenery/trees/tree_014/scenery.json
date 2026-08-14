@@ -43,11 +43,32 @@
       "difference_from_source": 0.5336,
       "glow_score": 0.0844
     },
+    "LIT_3": {
+      "sprite": "trees/tree_014/lit_3/sprite.webp",
+      "pixellab_object_id": "7d8fa3f3-b1ff-43fc-a333-bbbf30097635",
+      "glow_concept": "teal bioluminescent moss patches up the trunk",
+      "difference_from_source": 0.4244,
+      "glow_score": 0.0686
+    },
+    "LIT_4": {
+      "sprite": "trees/tree_014/lit_4/sprite.webp",
+      "pixellab_object_id": "7fd4eb09-4244-4042-8b95-164649e87a95",
+      "glow_concept": "pale blossoms shining faintly across the branches",
+      "difference_from_source": 0.7449,
+      "glow_score": 0.1792
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_014/not_lit_1/sprite.webp",
       "pixellab_object_id": "83aeaa2d-c8ec-4afe-8a2e-6275de2728fa",
       "difference_from_source": 0.8602,
       "glow_score": 0.0041
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_014/not_lit_10/sprite.webp",
+      "pixellab_object_id": "9bfe305f-fb6c-43fd-ad92-c296e23ad93e",
+      "glow_concept": null,
+      "difference_from_source": 0.7499,
+      "glow_score": 0.0042
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_014/not_lit_2/sprite.webp",
@@ -71,6 +92,27 @@
       "sprite": "trees/tree_014/not_lit_5/sprite.webp",
       "pixellab_object_id": "36ec4a16-b0f9-4e8d-9cf1-c5ea7d2386ac",
       "difference_from_source": 0.3313,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_6": {
+      "sprite": "trees/tree_014/not_lit_6/sprite.webp",
+      "pixellab_object_id": "36b73b4a-5748-4847-91a4-463bb82881eb",
+      "glow_concept": null,
+      "difference_from_source": 0.5656,
+      "glow_score": 0.0044
+    },
+    "NOT_LIT_7": {
+      "sprite": "trees/tree_014/not_lit_7/sprite.webp",
+      "pixellab_object_id": "4ab144d6-a35a-4e39-8ac4-049ee9f2d5bf",
+      "glow_concept": null,
+      "difference_from_source": 0.4103,
+      "glow_score": 0.0035
+    },
+    "NOT_LIT_8": {
+      "sprite": "trees/tree_014/not_lit_8/sprite.webp",
+      "pixellab_object_id": "be0a71dc-662c-43b1-a3f0-a15c76661f30",
+      "glow_concept": null,
+      "difference_from_source": 0.4697,
       "glow_score": 0.0
     }
   },
