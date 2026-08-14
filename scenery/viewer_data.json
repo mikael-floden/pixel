@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 668,
+  "scenery_count": 669,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 7,
     "cliff_roots": 4,
     "cliff_shrubs": 11,
-    "cliff_vines": 11,
+    "cliff_vines": 12,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4954,6 +4954,28 @@
       "status": "complete",
       "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
       "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_025",
+      "rel": "cliff_vines/cliff_vine_025",
+      "name": "Dry brown wilted fall 025",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dry brown wilted fall, a few isolated tufts drifting away from the main spread, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.57,
+        "world_px_height": 323,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "90cd8fc1-ea5d-4d23-b44d-c7c8fa36112a",
+      "sprite": "cliff_vines/cliff_vine_025/sprite.webp",
       "rotations": {},
       "animations": []
     },
