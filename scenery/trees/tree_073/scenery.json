@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:54:56+00:00",
+  "id": "tree_073",
+  "group": "trees",
+  "rank": 1,
+  "index": 73,
+  "name": "Snow-dusted fir 073",
+  "lights": "LIGHTS_OFF",
+  "variety": "snow-dusted fir",
+  "modifier": "with a bird nest tucked in it",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, snow-dusted fir, with a bird nest tucked in it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_073/sprite.webp",
+  "placement": {
+    "world_height_m": 4.6,
+    "world_px_height": 173,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "59aae7d4-1dca-4b66-9cd0-7397a3491f58",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
