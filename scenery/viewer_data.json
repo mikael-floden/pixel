@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 751,
+  "scenery_count": 752,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 6,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 10,
+    "cliff_mosses": 11,
     "cliff_roots": 10,
     "cliff_shrubs": 12,
     "cliff_vines": 74,
@@ -4627,6 +4627,28 @@
       "status": "complete",
       "pixellab_object_id": "a55503be-b20a-4ce1-b876-95084dd1ccf6",
       "sprite": "cliff_mosses/cliff_moss_052/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_054",
+      "rel": "cliff_mosses/cliff_moss_054",
+      "name": "Mossy stone knob 054 \u00b7 lit",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_ON",
+      "description": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background, mossy stone knob, a fern sprout in a crack, small, knee-high, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.39,
+        "world_px_height": 15,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "579104f2-2c96-4731-8848-2b68aff4a4c9",
+      "sprite": "cliff_mosses/cliff_moss_054/sprite.webp",
       "rotations": {},
       "animations": []
     },

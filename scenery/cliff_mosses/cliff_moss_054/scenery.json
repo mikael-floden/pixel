@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:24:58+00:00",
+  "id": "cliff_moss_054",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 54,
+  "name": "Mossy stone knob 054 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "mossy stone knob",
+  "modifier": "a fern sprout in a crack",
+  "glow_concept": "light seeping from beneath the cushions",
+  "prompt": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background, mossy stone knob, a fern sprout in a crack, small, knee-high, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cliff_mosses/cliff_moss_054/sprite.webp",
+  "placement": {
+    "world_height_m": 0.39,
+    "world_px_height": 15,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "579104f2-2c96-4731-8848-2b68aff4a4c9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
