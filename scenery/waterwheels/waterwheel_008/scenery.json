@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:57:19+00:00",
+  "id": "waterwheel_008",
+  "group": "waterwheels",
+  "rank": 59,
+  "index": 8,
+  "name": "Wheel sunk to its axle in grass 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wheel sunk to its axle in grass",
+  "modifier": "weathered silver-grey",
+  "glow_concept": "soul-light seeping from the axle hollow",
+  "prompt": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use, wheel sunk to its axle in grass, weathered silver-grey, tall, about three times human height, self-emissive at night, softly radiating light: soul-light seeping from the axle hollow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "waterwheels/waterwheel_008/sprite.webp",
+  "placement": {
+    "world_height_m": 3.28,
+    "world_px_height": 123,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3839e085-93da-4255-901f-660b8ba20821",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
