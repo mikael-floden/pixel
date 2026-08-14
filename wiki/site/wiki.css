@@ -340,6 +340,13 @@ button { font: inherit; cursor: pointer; }
 .player-stage {
   align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
   padding: 8px; max-width: 100%; overflow: auto;
+  /* `safe` centring: when the content overflows, fall back to start-alignment.
+     A plain centred flex child that overflows puts half its width in NEGATIVE
+     scroll space, which no scrollbar can reach — that is how a big piece lost
+     its left edge with no way to bring it back. Belt and braces beside
+     autoScale(): if anything ever overflows again, it overflows RIGHT, where
+     it can at least be scrolled to. */
+  justify-content: safe center;
   /* fixed per-domain stage: the creature is centred in it, so paging
      through monsters keeps the layout perfectly still */
   display: flex; align-items: center; justify-content: center;

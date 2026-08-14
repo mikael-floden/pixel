@@ -411,10 +411,38 @@ function makePlayer(entity, kind, opts = {}) {
   // draws at data.artScale: same creature = same size, bigger creature =
   // bigger. The crop is PER CLIP, so it stays put while a clip plays and the
   // animation's motion still shows. Zoom buttons override the scale.
+  // THE DEFAULT SCALE NEVER CUTS THE ART (maintainer 2026-08-14, after
+  // rejecting scenery for being "cut at the border": "IT'S YOU WHO DOESN'T
+  // RENDER THE ENTIRE OBJECT"). The stage is capped at the viewport, so a
+  // piece drawn wider than that overflowed — and a CENTRED overflowing flex
+  // child cannot be scrolled back to, because scrollLeft starts at 0 and
+  // cannot go negative, so the left 81px of a colossal oak was permanently
+  // invisible. It looked exactly like art with its left edge chopped off.
+  //
+  // So the automatic scale steps DOWN, in whole numbers, until the piece fits
+  // the width it actually has. Whole numbers because fractional scaling of
+  // pixel art gives uneven pixels; width only, because vertical scrolling is
+  // ordinary page behaviour and hides nothing. A piece that already fits is
+  // untouched — every monster, every character and all but a dozen scenery
+  // pieces render exactly as before — and the explicit 1x/2x/4x buttons are
+  // unaffected, so true scale is always one tap away.
+  function autoScale() {
+    const base = state.data.artScale || 2;
+    const bb = clip?.bb;
+    if (!bb) return base;
+    // The room the stage really has: its own container, less the stage's
+    // padding and border (the +18 sizeStage adds).
+    const avail = (stage.parentElement?.clientWidth ?? 0) - 18;
+    if (avail <= 0) return base;
+    const w = Math.max(1, bb[2] - bb[0]);
+    let s = base;
+    while (s > 1 && w * s > avail) s--;
+    return s;
+  }
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
-    const s = cur.zoom || state.data.artScale || 2;
+    const s = cur.zoom || autoScale();
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
     // A hovering creature (butterfly_dragon) floats hoverPx above the ground,
     // so its shadow sits that much BELOW its foot line.
