@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 528,
+  "scenery_count": 529,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 5,
@@ -908,7 +908,7 @@
     "bell_posts": 1,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 12,
+    "braziers": 13,
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
@@ -2208,6 +2208,28 @@
       "status": "complete",
       "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
       "sprite": "braziers/brazier_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "brazier_013",
+      "rel": "braziers/brazier_013",
+      "name": "Double-tier tall basket 013",
+      "category": "braziers",
+      "lights": "LIGHTS_OFF",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, double-tier tall basket, old and settling into the ground, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.18,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5850beb2-f3b0-43f6-9371-987dc8444309",
+      "sprite": "braziers/brazier_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
