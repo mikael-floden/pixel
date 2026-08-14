@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:12:33+00:00",
+  "id": "grave_032",
+  "group": "graves",
+  "rank": 3,
+  "index": 32,
+  "name": "Toppled half-sunk stone 032 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "toppled half-sunk stone",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": "luminous white flowers blooming against the stone",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, bird-favored, with droppings and a nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: luminous white flowers blooming against the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_032/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e7a36a17-f2af-4e15-bd4a-37724f700825",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
