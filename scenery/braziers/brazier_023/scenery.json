@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:23:56+00:00",
+  "id": "brazier_023",
+  "group": "braziers",
+  "rank": 4,
+  "index": 23,
+  "name": "Antlered iron brazier 023",
+  "lights": "LIGHTS_OFF",
+  "variety": "antlered iron brazier",
+  "modifier": "overgrown at the base",
+  "glow_concept": null,
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, antlered iron brazier, overgrown at the base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_023/sprite.webp",
+  "placement": {
+    "world_height_m": 1.06,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "788bf9f1-e87f-487d-96d4-fab2e3836296",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
