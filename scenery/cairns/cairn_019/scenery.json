@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:34+00:00",
+  "id": "cairn_019",
+  "group": "cairns",
+  "rank": 9,
+  "index": 19,
+  "name": "Massive boulder-based cairn 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "massive boulder-based cairn",
+  "modifier": "split into a double form",
+  "glow_concept": null,
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, massive boulder-based cairn, split into a double form, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_019/sprite.webp",
+  "placement": {
+    "world_height_m": 1.02,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8d1e665a-6b45-40c6-ab0d-b597544f4531",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
