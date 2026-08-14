@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:56:33+00:00",
+  "id": "wisteria_snag_006",
+  "group": "wisteria_snags",
+  "rank": 78,
+  "index": 6,
+  "name": "Soft pink wisteria 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soft pink wisteria",
+  "modifier": "with thick exposed roots",
+  "glow_concept": "luminous moths at rest among the blooms",
+  "prompt": "a dead leafless tree draped in woody wisteria vines with long hanging clusters of flowers, soft pink wisteria, with thick exposed roots, tall, about three times human height, self-emissive at night, softly radiating light: luminous moths at rest among the blooms",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "wisteria_snags/wisteria_snag_006/sprite.webp",
+  "placement": {
+    "world_height_m": 3.25,
+    "world_px_height": 122,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "68fefe47-8dfa-4df4-ad47-c4634c9b2902",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
