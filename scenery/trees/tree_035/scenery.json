@@ -32,9 +32,27 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
+    "LIT_1": {
+      "sprite": "trees/tree_035/lit_1/sprite.webp",
+      "pixellab_object_id": "ceec4a3d-fe60-4f83-a878-74cf8efd337d",
+      "difference_from_source": 0.2208,
+      "glow_score": 0.002
+    },
+    "LIT_2": {
+      "sprite": "trees/tree_035/lit_2/sprite.webp",
+      "pixellab_object_id": "447a8a88-51e7-4341-9ea9-4a69568906b7",
+      "difference_from_source": 0.8503,
+      "glow_score": 0.0603
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_035/sprite.webp",
       "pixellab_object_id": "6ef67205-a5e3-4acc-834f-2ac97176860d",
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "trees/tree_035/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2d294326-534d-4ed8-9267-f3a21f43475d",
+      "difference_from_source": 0.4057,
       "glow_score": 0.0
     },
     "NOT_LIT_3": {
@@ -47,6 +65,12 @@
       "sprite": "trees/tree_035/not_lit_4/sprite.webp",
       "pixellab_object_id": "400221dd-2340-4ac4-a023-ea0437f31346",
       "difference_from_source": 0.3121,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_5": {
+      "sprite": "trees/tree_035/not_lit_5/sprite.webp",
+      "pixellab_object_id": "369c0977-e1c2-450b-9b89-a687f4df5eaa",
+      "difference_from_source": 0.1873,
       "glow_score": 0.0
     }
   }
