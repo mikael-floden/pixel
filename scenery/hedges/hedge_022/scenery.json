@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:34:33+00:00",
+  "id": "hedge_022",
+  "group": "hedges",
+  "rank": 12,
+  "index": 22,
+  "name": "Hedge with bird nest tuft 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "hedge with bird nest tuft",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "luminous white briar roses threaded through",
+  "prompt": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, hedge with bird nest tuft, leaning noticeably to one side, roughly six feet tall, human height, self-emissive at night, softly radiating light: luminous white briar roses threaded through",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hedges/hedge_022/sprite.webp",
+  "placement": {
+    "world_height_m": 1.31,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9abd3680-0e65-46e4-8748-96b0c195fac5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
