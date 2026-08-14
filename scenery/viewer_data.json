@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 716,
+  "scenery_count": 717,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 41
+      "done": 42
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 41,
+    "cliff_vines": 42,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -5903,6 +5903,28 @@
       "status": "complete",
       "pixellab_object_id": "96d03c95-3894-4a10-aa06-8c27f3e52eeb",
       "sprite": "cliff_vines/cliff_vine_082/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_083",
+      "rel": "cliff_vines/cliff_vine_083",
+      "name": "Blue-flowered creeper fall 083",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, blue-flowered creeper fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 9.52,
+        "world_px_height": 358,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "c952ca2f-fe61-4365-bd7d-fe950fa0845c",
+      "sprite": "cliff_vines/cliff_vine_083/sprite.webp",
       "rotations": {},
       "animations": []
     },
