@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 518,
+  "scenery_count": 519,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 14
+      "done": 15
     },
     {
       "rank": 2,
@@ -998,7 +998,7 @@
     "toadstool_rings": 8,
     "torch_posts": 11,
     "trailing_planters": 2,
-    "trees": 14,
+    "trees": 15,
     "wall_hangings": 6,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
@@ -11183,6 +11183,28 @@
       "status": "complete",
       "pixellab_object_id": "d7675683-defa-482a-bdbb-6d039e958388",
       "sprite": "trees/tree_017/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_018",
+      "rel": "trees/tree_018",
+      "name": "Rowan with red berries 018 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, rowan with red berries, heavily weathered and gnarled, tall, about three times human height, self-emissive at night, softly radiating light: iron lantern hung from a low branch",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.51,
+        "world_px_height": 132,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d9ee4f74-ca1a-4a40-8789-54fa767ab09e",
+      "sprite": "trees/tree_018/sprite.webp",
       "rotations": {},
       "animations": []
     },

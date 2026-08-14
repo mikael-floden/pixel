@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:33:09+00:00",
+  "id": "tree_018",
+  "group": "trees",
+  "rank": 1,
+  "index": 18,
+  "name": "Rowan with red berries 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rowan with red berries",
+  "modifier": "heavily weathered and gnarled",
+  "glow_concept": "iron lantern hung from a low branch",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, rowan with red berries, heavily weathered and gnarled, tall, about three times human height, self-emissive at night, softly radiating light: iron lantern hung from a low branch",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_018/sprite.webp",
+  "placement": {
+    "world_height_m": 3.51,
+    "world_px_height": 132,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d9ee4f74-ca1a-4a40-8789-54fa767ab09e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
