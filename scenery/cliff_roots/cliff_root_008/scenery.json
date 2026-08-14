@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:17:26+00:00",
+  "id": "cliff_root_008",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 8,
+  "name": "Fine hair-roots in a dense veil 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fine hair-roots in a dense veil",
+  "modifier": "one great root twisted alone down the face",
+  "glow_concept": "soul-light running up the roots",
+  "prompt": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, fine hair-roots in a dense veil, one great root twisted alone down the face, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_008/sprite.webp",
+  "placement": {
+    "world_height_m": 11.44,
+    "world_px_height": 431,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f0bfb45e-c23e-4581-8f13-75833fe8e002",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

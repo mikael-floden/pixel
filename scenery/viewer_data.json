@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 646,
+  "scenery_count": 647,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 156,
@@ -1240,7 +1240,7 @@
     "cliff_fragments": 2,
     "cliff_ledgetrees": 4,
     "cliff_mosses": 5,
-    "cliff_roots": 4,
+    "cliff_roots": 5,
     "cliff_shrubs": 6,
     "cliff_vines": 7,
     "crystal_trees": 1,
@@ -4625,6 +4625,28 @@
       "status": "complete",
       "pixellab_object_id": "ab3580e1-14c0-4ba1-92d0-7d62f1bd4919",
       "sprite": "cliff_roots/cliff_root_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_008",
+      "rel": "cliff_roots/cliff_root_008",
+      "name": "Fine hair-roots in a dense veil 008 \u00b7 lit",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_ON",
+      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them, fine hair-roots in a dense veil, one great root twisted alone down the face, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 11.44,
+        "world_px_height": 431,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f0bfb45e-c23e-4581-8f13-75833fe8e002",
+      "sprite": "cliff_roots/cliff_root_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
