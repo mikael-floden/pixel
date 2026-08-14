@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 559,
+  "scenery_count": 560,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -251,7 +251,7 @@
       "id": "dock_pilings",
       "name": "Dock Piling",
       "quota": 32,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 36,
@@ -926,7 +926,7 @@
     "crystals": 8,
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
-    "dock_pilings": 10,
+    "dock_pilings": 11,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
     "fallen_logs": 9,
@@ -4521,6 +4521,28 @@
       "status": "complete",
       "pixellab_object_id": "b2747524-14e7-4220-b8f1-76fb2226308b",
       "sprite": "dock_pilings/dock_piling_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dock_piling_016",
+      "rel": "dock_pilings/dock_piling_016",
+      "name": "Pilings with iron mooring cleat 016 \u00b7 lit",
+      "category": "dock_pilings",
+      "lights": "LIGHTS_ON",
+      "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pilings with iron mooring cleat, with climbing flowers at one corner, roughly six feet tall, human height, self-emissive at night, softly radiating light: ghost-blue barnacle rings glowing at the waterline",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.24,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4a0cefd2-42c4-4993-a021-2d3936ea6bf0",
+      "sprite": "dock_pilings/dock_piling_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
