@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 628,
+  "scenery_count": 629,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1105,7 +1105,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 158,
@@ -1241,7 +1241,7 @@
     "cliff_ledgetrees": 3,
     "cliff_mosses": 4,
     "cliff_roots": 3,
-    "cliff_shrubs": 4,
+    "cliff_shrubs": 5,
     "cliff_vines": 5,
     "crystal_trees": 1,
     "crystals": 8,
@@ -4647,6 +4647,28 @@
       "status": "complete",
       "pixellab_object_id": "23afea37-daab-4e5f-ad07-f10b74b0e351",
       "sprite": "cliff_shrubs/cliff_shrub_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_shrub_006",
+      "rel": "cliff_shrubs/cliff_shrub_006",
+      "name": "Dark holly bush 006 \u00b7 lit",
+      "category": "cliff_shrubs",
+      "lights": "LIGHTS_ON",
+      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, dark holly bush, two shrubs from one crack, roughly six feet tall, human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 1.77,
+        "world_px_height": 67,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+      "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
       "rotations": {},
       "animations": []
     },

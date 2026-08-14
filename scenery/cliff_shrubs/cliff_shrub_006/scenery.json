@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:13:33+00:00",
+  "id": "cliff_shrub_006",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 6,
+  "name": "Dark holly bush 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dark holly bush",
+  "modifier": "two shrubs from one crack",
+  "glow_concept": "blossoms glowing along the branches",
+  "prompt": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, dark holly bush, two shrubs from one crack, roughly six feet tall, human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.77,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
