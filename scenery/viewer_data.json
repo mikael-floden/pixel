@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 744,
+  "scenery_count": 745,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 41
+      "done": 42
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 22,
     "cliff_roots": 25,
     "cliff_shrubs": 12,
-    "cliff_vines": 41,
+    "cliff_vines": 42,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6453,6 +6453,28 @@
       "status": "complete",
       "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
       "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_071",
+      "rel": "cliff_vines/cliff_vine_071",
+      "name": "Old thick-stemmed ancient fall 071",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, old thick-stemmed ancient fall, a lazy meander across the width, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.23,
+        "world_px_height": 310,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "35e39ec5-e562-49a5-bc9c-61ec133b279f",
+      "sprite": "cliff_vines/cliff_vine_071/sprite.webp",
       "rotations": {},
       "animations": []
     },
