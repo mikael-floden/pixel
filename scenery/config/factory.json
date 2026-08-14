@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy).",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -621,7 +621,9 @@
       ],
       "animation_idea": "bell swaying gently with faint light rings rippling outward",
       "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 0,
+      "_retired": "maintainer verdicts 1/20 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 15,
@@ -774,7 +776,9 @@
       ],
       "animation_idea": "a fruit-heavy bough dipping and bobbing lightly in the breeze",
       "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once.",
-      "modifier_pool": "nature"
+      "modifier_pool": "nature",
+      "quota": 0,
+      "_retired": "maintainer verdicts 1/27 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 19,
@@ -2443,7 +2447,9 @@
       ],
       "animation_idea": "the faded half slowly flickering between half-visible and almost gone",
       "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone.",
-      "modifier_pool": "indoor"
+      "modifier_pool": "indoor",
+      "quota": 0,
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 63,
@@ -2848,7 +2854,9 @@
       ],
       "animation_idea": "the garland swag bobbing gently between the posts",
       "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 0,
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 74,
@@ -3105,7 +3113,9 @@
       ],
       "animation_idea": "nestling heads popping up with open beaks, then ducking back down into the cup",
       "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 0,
+      "_retired": "maintainer verdicts 0/5 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 81,
@@ -3698,7 +3708,9 @@
       ],
       "animation_idea": "doves shuffling on the ledges, one fluttering off and returning",
       "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 0,
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 97,
@@ -3735,7 +3747,9 @@
       ],
       "animation_idea": "rocking gently on its own with a slow creak",
       "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small.",
-      "modifier_pool": "indoor"
+      "modifier_pool": "indoor",
+      "quota": 0,
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 98,
@@ -4190,6 +4204,550 @@
       "animation_idea": "the hanging pans swaying and knocking softly once",
       "lore_fit": "Walls with things on them are walls someone chose; bare walls are just weather kept out.",
       "modifier_pool": "indoor"
+    },
+    {
+      "rank": 111,
+      "id": "giant_fallen_bells",
+      "prefix": "giant_fallen_bell",
+      "name": "Giant Fallen Bell",
+      "quota": 7,
+      "description": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground",
+      "world_height_m": [
+        1.2,
+        2.2
+      ],
+      "art_size": 64,
+      "variety": [
+        "green-bronze giant bell",
+        "iron-black great bell",
+        "verdigris ship's bell"
+      ],
+      "modifiers": [
+        "split down one side",
+        "nested in wildflowers",
+        "with its broken yoke beside it",
+        "home to a small animal now",
+        "wrapped in ivy",
+        "upright but leaning, rim buried"
+      ],
+      "glow_concepts": [
+        "a soft hum of light inside the crack",
+        "soul-light pooling under the rim",
+        "glowing moss tracing the relief bands"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 112,
+      "id": "meteor_stones",
+      "prefix": "meteor_stone",
+      "name": "Meteor Stone",
+      "quota": 7,
+      "description": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it",
+      "world_height_m": [
+        0.8,
+        1.6
+      ],
+      "art_size": 64,
+      "variety": [
+        "iron-dark star-stone",
+        "glass-slagged impact stone",
+        "pale sky-stone"
+      ],
+      "modifiers": [
+        "still faintly smoking",
+        "ringed by fused glassy soil",
+        "split open showing a bright core",
+        "half-buried at an angle",
+        "surrounded by curious mushrooms",
+        "polished smooth by visitors' hands"
+      ],
+      "glow_concepts": [
+        "veins of starlight through the rock",
+        "a slow pulse of pale blue",
+        "embers that never cool in the crater"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 113,
+      "id": "hot_springs",
+      "prefix": "hot_spring",
+      "name": "Hot Spring",
+      "quota": 8,
+      "description": "a natural hot spring pool ringed by mineral-crusted rocks, steam rising off milky turquoise water",
+      "world_height_m": [
+        0.5,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "turquoise mineral pool",
+        "milky-white spring",
+        "rust-terraced spring"
+      ],
+      "modifiers": [
+        "with terraced mineral shelves",
+        "ringed by lush warm-loving moss",
+        "with a flat sitting stone at the edge",
+        "two pools joined by a trickle",
+        "crusted white and orange",
+        "with snow melting at its rim"
+      ],
+      "glow_concepts": [
+        "steam glowing faintly from below",
+        "warm light rising through the water",
+        "glowing mineral rings"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 114,
+      "id": "spirit_gates",
+      "prefix": "spirit_gate",
+      "name": "Spirit Gate",
+      "quota": 7,
+      "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass",
+      "world_height_m": [
+        2.4,
+        3.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "grey granite gate",
+        "dark basalt gate",
+        "lichen-gold gate"
+      ],
+      "modifiers": [
+        "moss-hung and ancient",
+        "with offerings at the threshold",
+        "half-fallen, lintel tilted",
+        "wound with prayer ropes",
+        "fern-crowned",
+        "with a worn path running through"
+      ],
+      "glow_concepts": [
+        "the gap shimmering faintly",
+        "soul-lights drifting through the doorway",
+        "carved spirals glowing on the lintel"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 115,
+      "id": "witch_rings",
+      "prefix": "witch_ring",
+      "name": "Witch Ring",
+      "quota": 7,
+      "description": "a ring of small carved stones set in trampled grass with melted candle stubs between them, the site of quiet old rituals",
+      "world_height_m": [
+        0.3,
+        0.6
+      ],
+      "art_size": 64,
+      "variety": [
+        "nine-stone ring",
+        "seven-stone ring",
+        "cracked old ring"
+      ],
+      "modifiers": [
+        "with a scorched center",
+        "half-swallowed by moss",
+        "one stone toppled outward",
+        "ringed by tiny white flowers",
+        "dusted with ash",
+        "with a small offering bowl in the middle"
+      ],
+      "glow_concepts": [
+        "candle stubs relighting themselves",
+        "a faint ring of light on the grass",
+        "runes glowing on the stones"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 116,
+      "id": "giant_snail_shells",
+      "prefix": "giant_snail_shell",
+      "name": "Giant Snail Shell",
+      "quota": 6,
+      "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in",
+      "world_height_m": [
+        0.9,
+        1.6
+      ],
+      "art_size": 64,
+      "variety": [
+        "banded brown shell",
+        "chalk-white shell",
+        "moss-green shell"
+      ],
+      "modifiers": [
+        "with a fern growing from its mouth",
+        "bleached and cracked",
+        "home to nesting birds",
+        "half-buried in leaf litter",
+        "striped in faded bands",
+        "with a tiny door fitted in the opening"
+      ],
+      "glow_concepts": [
+        "a warm glow from deep in the spiral",
+        "pearly shimmer along the whorls",
+        "glow-snails clustered on the rim"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 117,
+      "id": "dragon_ribcages",
+      "prefix": "dragon_ribcage",
+      "name": "Dragon Ribcage",
+      "quota": 6,
+      "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched",
+      "world_height_m": [
+        2.0,
+        3.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "grey weathered ribcage",
+        "bleached white ribcage",
+        "moss-clad ribcage"
+      ],
+      "modifiers": [
+        "with wildflowers growing up through it",
+        "half-sunk, only four ribs left",
+        "bleached white by seasons",
+        "hung with traveler's ribbons",
+        "a bird nest wedged in the spine",
+        "ivy climbing one side"
+      ],
+      "glow_concepts": [
+        "soul-light breathing softly between the ribs",
+        "glowing lichen mapping the bone",
+        "a warm heart-glow where the heart was"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 118,
+      "id": "honey_trees",
+      "prefix": "honey_tree",
+      "name": "Honey Tree",
+      "quota": 6,
+      "description": "a stout hollow tree trunk with wild honeycomb bulging from its split, bees drifting around, bark dark with old honey runs",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "old oak honey tree",
+        "hollow beech hive-tree",
+        "storm-topped honey stump"
+      ],
+      "modifiers": [
+        "comb spilling to the ground",
+        "with a bear-claw scar",
+        "wrapped in protective straw rope",
+        "two combs at different heights",
+        "autumn-leaved and heavy",
+        "stump-short with comb like a crown"
+      ],
+      "glow_concepts": [
+        "the comb glowing amber from within",
+        "drowsy glow-bees circling",
+        "honey runs shining like resin light"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 119,
+      "id": "shipwreck_prows",
+      "prefix": "shipwreck_prow",
+      "name": "Shipwreck Prow",
+      "quota": 6,
+      "description": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass",
+      "world_height_m": [
+        1.8,
+        3.0
+      ],
+      "art_size": 128,
+      "variety": [
+        "tarred fishing-boat bow",
+        "carved longship prow",
+        "grey ghost-ship bow"
+      ],
+      "modifiers": [
+        "with a weathered figurehead",
+        "sails long gone, one rope left",
+        "grass growing over the deck line",
+        "tilted hard to port",
+        "barnacle-crusted below the old waterline",
+        "a rope ladder still hanging"
+      ],
+      "glow_concepts": [
+        "a lantern still burning at the prow",
+        "soul-light seeping between planks",
+        "the figurehead's eyes faintly aglow"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 120,
+      "id": "frozen_springs",
+      "prefix": "frozen_spring",
+      "name": "Frozen Spring",
+      "quota": 6,
+      "description": "a small spring frozen mid-flow, ice caught in smooth rounded spills over its stones, frost ferns on every surface",
+      "world_height_m": [
+        0.8,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "blue-hearted frozen spring",
+        "white rimed spring",
+        "layered ice spring"
+      ],
+      "modifiers": [
+        "with one thread of water still moving",
+        "blue-hearted thick ice",
+        "icicles fringing the lip",
+        "a bird frozen-bath hollow on top",
+        "rimmed with frost-silvered grass",
+        "cracked and refrozen in layers"
+      ],
+      "glow_concepts": [
+        "a cold blue glow in the ice heart",
+        "trapped bubbles shining like pearls",
+        "aurora shimmer across the frost"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 121,
+      "id": "lightning_oaks",
+      "prefix": "lightning_oak",
+      "name": "Lightning Oak",
+      "quota": 6,
+      "description": "a massive oak split and charred by an old lightning strike, half the trunk black, the other half stubbornly alive and leafing",
+      "world_height_m": [
+        2.2,
+        3.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "half-alive split oak",
+        "black-hearted burl oak",
+        "silver-scarred oak"
+      ],
+      "modifiers": [
+        "with the split face silvered",
+        "regrowth sprouting from the burl",
+        "a swing rope on the living limb",
+        "fungus shelving the dead half",
+        "the crack wide enough to stand in",
+        "scorch spiraling the bark"
+      ],
+      "glow_concepts": [
+        "embers that never died in the heartwood",
+        "the scar glowing faintly at dusk",
+        "fireflies favoring the dead branches"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 122,
+      "id": "fairy_stumps",
+      "prefix": "fairy_stump",
+      "name": "Fairy Stump",
+      "quota": 7,
+      "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world",
+      "world_height_m": [
+        0.6,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "oak fairy stump",
+        "birch fairy stump",
+        "mossy pine fairy stump"
+      ],
+      "modifiers": [
+        "with a miniature washing line",
+        "a tiny dock over a puddle",
+        "moss lawns and pebble paths",
+        "chimney twig smoking",
+        "two doors quarreling neighbors apart",
+        "a spiral stair around the outside"
+      ],
+      "glow_concepts": [
+        "tiny windows lit warm at night",
+        "a thumb-sized lantern by the door",
+        "glow-moss garden paths"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 123,
+      "id": "cauldron_camps",
+      "prefix": "cauldron_camp",
+      "name": "Cauldron Camp",
+      "quota": 7,
+      "description": "a big iron cauldron on a tripod over a campfire ring, ladle hooked on the rim, stones worn smooth by sitters",
+      "world_height_m": [
+        0.9,
+        1.5
+      ],
+      "art_size": 64,
+      "variety": [
+        "iron tripod cauldron",
+        "copper wash cauldron",
+        "great feast cauldron"
+      ],
+      "modifiers": [
+        "mid-stew with steam rising",
+        "cold and crow-visited",
+        "tipped and long abandoned",
+        "ringed by log seats",
+        "hung with herb bundles",
+        "two cauldrons sharing one fire"
+      ],
+      "glow_concepts": [
+        "fire burning low and warm beneath",
+        "the brew glowing faintly green",
+        "embers breathing in the ash"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 124,
+      "id": "harvest_altars",
+      "prefix": "harvest_altar",
+      "name": "Harvest Altar",
+      "quota": 6,
+      "description": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields",
+      "world_height_m": [
+        0.8,
+        1.3
+      ],
+      "art_size": 64,
+      "variety": [
+        "pumpkin-laden altar",
+        "sheaf-and-apple altar",
+        "gourd-and-candle altar"
+      ],
+      "modifiers": [
+        "candle-ringed for the festival",
+        "picked over by birds",
+        "snow settling on the gourds",
+        "heaped extravagantly",
+        "nearly bare, one perfect apple left",
+        "moss claiming the slab's edge"
+      ],
+      "glow_concepts": [
+        "candles burning steady around it",
+        "the offerings glowing with kept memory",
+        "a warm column of light above the slab"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 125,
+      "id": "sunken_statues",
+      "prefix": "sunken_statue",
+      "name": "Sunken Statue",
+      "quota": 6,
+      "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss",
+      "world_height_m": [
+        1.6,
+        2.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "serene buried head",
+        "stern buried head",
+        "laughing buried head"
+      ],
+      "modifiers": [
+        "with one eye at soil level",
+        "a bird perched on the brow",
+        "flowers growing from the ear",
+        "split diagonally, both halves near",
+        "a traveler's ladder against the temple",
+        "children's chalk-free games worn on the crown"
+      ],
+      "glow_concepts": [
+        "the eyes faintly aglow",
+        "soul-light welling from the buried mouth",
+        "glowing moss marking old tear lines"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 126,
+      "id": "bee_logs",
+      "prefix": "bee_log",
+      "name": "Bee Log",
+      "quota": 6,
+      "description": "a fallen log fitted as a wild beehive, entrance holes drilled in a row, comb visible in a knothole, bees busy around it",
+      "world_height_m": [
+        0.5,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "single keeper's bee log",
+        "double-stack bee log",
+        "wild half-split bee log"
+      ],
+      "modifiers": [
+        "propped on two stones",
+        "with a keeper's straw skirt",
+        "half-wild, comb escaping a crack",
+        "end capped with a carved bee",
+        "young grass growing along its top",
+        "two logs stacked as a bee tower"
+      ],
+      "glow_concepts": [
+        "comb glowing amber in the knothole",
+        "drowsy glow-bees drifting home",
+        "warm light at every entrance hole"
+      ],
+      "animation_idea": "subtle idle motion",
+      "modifier_pool": null,
+      "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
     }
   ],
   "modifier_pools": {
