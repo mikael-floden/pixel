@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:54:23+00:00",
+  "id": "cliff_vine_064",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 64,
+  "name": "Berry-dotted bramble fall 064 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "berry-dotted bramble fall",
+  "modifier": "an old thick growth with young shoots around it",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, berry-dotted bramble fall, an old thick growth with young shoots around it, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_064/sprite.webp",
+  "placement": {
+    "world_height_m": 9.5,
+    "world_px_height": 358,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "40276d41-9206-458e-b074-4892a7c0c0c3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
