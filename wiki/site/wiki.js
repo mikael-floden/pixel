@@ -98,11 +98,28 @@ function markDirty(key) {
   state.dirty.add(key);
   updateSavebar();
 }
+// WHAT IS IN THE COMMIT, not how many files carry it (maintainer 2026-08-14:
+// "Yes, its 1 file, but how much is in it..."). A review session puts every
+// verdict into ONE feedback file, so the old "1 file with unsaved changes"
+// read the same after one approval as after ninety — it described the
+// plumbing, not the work. state.touched already holds the affected ids per
+// file, so the honest number was one reduce away. The file count stays, in
+// second place, for the sessions that really do span several.
+function pendingCount() {
+  return Object.values(state.touched).reduce((n, set) => n + set.size, 0);
+}
 function updateSavebar() {
   const bar = $("#savebar");
   if (!state.dirty.size) { bar.classList.add("hidden"); return; }
   bar.classList.remove("hidden");
-  $("#savebar-text").textContent = `${state.dirty.size} file${state.dirty.size > 1 ? "s" : ""} with unsaved changes`;
+  const n = pendingCount(), f = state.dirty.size;
+  // Short on purpose: the button beside it already says Commit, and on a
+  // phone every extra word costs a line. The NUMBER is what is being read —
+  // it carries the weight, the noun is just its unit.
+  $("#savebar-text").replaceChildren(
+    h("b", {}, String(n)),
+    ` change${n === 1 ? "" : "s"}${f > 1 ? ` · ${f} files` : ""}`,
+  );
 }
 
 // Every feedback widget has two faces: interactive for the signed-in admin,
@@ -208,30 +225,22 @@ async function apiSaveFile(key) {
 async function saveAll() {
   if (!state.admin) { $("#login-dialog").showModal(); return; }
   const btn = $("#save-btn");
-  btn.disabled = true; btn.textContent = "Saving…";
+  const n = pendingCount();          // read BEFORE saving empties `touched`
+  btn.disabled = true; btn.textContent = "Committing…";
   try {
     for (const key of [...state.dirty]) {
       await apiSaveFile(key);
       updateSavebar();
     }
-    toast("Saved — committed to the repo and pushed live to the game.");
+    toast(`Committed ${n} change${n === 1 ? "" : "s"} — pushed to the repo and live to the game.`);
     route();
   } catch (err) {
     console.error(err);
-    toast(`Save failed: ${err.message}`);
+    toast(`Commit failed: ${err.message}`);
     if (!state.admin) $("#login-dialog").showModal();
   } finally {
-    btn.disabled = false; btn.textContent = "Save";
+    btn.disabled = false; btn.textContent = "Commit";
   }
-}
-function exportAll() {
-  for (const key of state.dirty) {
-    const { path, get } = FILE_FOR(key);
-    const blob = new Blob([JSON.stringify(get(), null, 2) + "\n"], { type: "application/json" });
-    const a = h("a", { href: URL.createObjectURL(blob), download: path.split("/").pop() });
-    document.body.append(a); a.click(); a.remove();
-  }
-  toast("Exported — commit the files under live/ by hand.");
 }
 async function discardAll() {
   state.dirty.clear();
@@ -239,7 +248,11 @@ async function discardAll() {
   await loadLiveFiles();
   updateSavebar();
   route();
-  toast("Discarded unsaved changes.");
+  // "Cancel", never "Discard" (maintainer 2026-08-14: "Discard for me sounds
+  // like 'discard all scenery objects'"). It throws away the pending verdicts
+  // and nothing else — worth saying, since the button sits next to a page
+  // full of art.
+  toast("Cancelled — your uncommitted changes are back to what the game has.");
 }
 
 /* --------------------------------------------------------------- player */
@@ -3706,9 +3719,8 @@ function initChrome() {
       route();
     }, 160);
   });
-  // save / export / discard
+  // commit / cancel
   $("#save-btn").addEventListener("click", saveAll);
-  $("#export-btn").addEventListener("click", exportAll);
   $("#discard-btn").addEventListener("click", discardAll);
   // admin login/logout
   const dlg = $("#login-dialog");

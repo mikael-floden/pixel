@@ -419,7 +419,13 @@ table.tune input.overridden { border-color: var(--accent); background: var(--acc
   box-shadow: var(--shadow); padding: 10px 14px;
   display: flex; gap: 10px; align-items: center; z-index: 60; max-width: 92vw;
 }
-#savebar-text { font-size: 13.5px; }
+/* The bar is position:fixed, so it SHRINK-WRAPS its contents — which is why
+   flex-wrap must stay off: with wrapping enabled the box computes a narrow
+   preferred width and folds itself onto three rows even with room to spare.
+   nowrap on the count then keeps "12 changes" from breaking into one word per
+   line, which is what it did while Export was still stealing the width. */
+#savebar-text { font-size: 13.5px; white-space: nowrap; }
+#savebar-text b { font-weight: 700; }
 
 /* ---- dialog ---- */
 dialog {
