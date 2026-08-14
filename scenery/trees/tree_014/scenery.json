@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:32:56+00:00",
+  "id": "tree_014",
+  "group": "trees",
+  "rank": 1,
+  "index": 14,
+  "name": "Small-leaved lime, heart-leaf shade tree 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "small-leaved lime, heart-leaf shade tree",
+  "modifier": "standing in a patch of wildflowers",
+  "glow_concept": "memorial candles nestled between the roots",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, small-leaved lime, heart-leaf shade tree, standing in a patch of wildflowers, tall, about three times human height, self-emissive at night, softly radiating light: memorial candles nestled between the roots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_014/sprite.webp",
+  "placement": {
+    "world_height_m": 3.36,
+    "world_px_height": 126,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "00c20b9e-ad51-40e9-93dd-e5dab6e92672",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
