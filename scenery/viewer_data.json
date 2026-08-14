@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 540,
+  "scenery_count": 541,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 98,
-      "done": 20
+      "done": 21
     },
     {
       "rank": 3,
@@ -987,7 +987,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 20,
+    "stones": 21,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 12,
@@ -9686,6 +9686,28 @@
       "status": "complete",
       "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
       "sprite": "stones/stone_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_026",
+      "rel": "stones/stone_026",
+      "name": "Stacked pair of stones 026 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stacked pair of stones, grown around a half-buried stone, waist-high, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.07,
+        "world_px_height": 40,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d609b1ce-40dc-4e8f-982b-31130ce95a05",
+      "sprite": "stones/stone_026/sprite.webp",
       "rotations": {},
       "animations": []
     },
