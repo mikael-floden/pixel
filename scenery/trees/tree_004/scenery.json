@@ -41,11 +41,32 @@
       "difference_from_source": 0.3326,
       "glow_score": 0.1029
     },
+    "LIT_3": {
+      "sprite": "trees/tree_004/lit_3/sprite.webp",
+      "pixellab_object_id": "0f77cb02-bbf0-43e5-aea8-f93524bf7570",
+      "glow_concept": "memorial candles nestled between the roots",
+      "difference_from_source": 0.7804,
+      "glow_score": 0.1541
+    },
+    "LIT_4": {
+      "sprite": "trees/tree_004/lit_4/sprite.webp",
+      "pixellab_object_id": "59772bd0-572d-45ab-a2e8-18f82b331c16",
+      "glow_concept": "pale blossoms shining faintly across the branches",
+      "difference_from_source": 0.373,
+      "glow_score": 0.0801
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_004/not_lit_1/sprite.webp",
       "pixellab_object_id": "e31eea30-cc00-4bfe-9bf8-1ca7faf54441",
       "difference_from_source": 0.9478,
       "glow_score": 0.0036
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_004/not_lit_10/sprite.webp",
+      "pixellab_object_id": "a59b9003-a685-49cd-84af-593123fa95ed",
+      "glow_concept": null,
+      "difference_from_source": 0.5694,
+      "glow_score": 0.0495
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_004/not_lit_2/sprite.webp",
@@ -70,6 +91,34 @@
       "pixellab_object_id": "44c67442-0860-4d54-8c21-93c1b3ca90df",
       "difference_from_source": 0.3007,
       "glow_score": 0.0355
+    },
+    "NOT_LIT_6": {
+      "sprite": "trees/tree_004/not_lit_6/sprite.webp",
+      "pixellab_object_id": "96010327-f5a1-4387-bbd3-f99b14beb709",
+      "glow_concept": null,
+      "difference_from_source": 0.3577,
+      "glow_score": 0.0423
+    },
+    "NOT_LIT_7": {
+      "sprite": "trees/tree_004/not_lit_7/sprite.webp",
+      "pixellab_object_id": "d536e2b1-00e1-4574-bded-e6f8772e0ffd",
+      "glow_concept": null,
+      "difference_from_source": 0.2516,
+      "glow_score": 0.056
+    },
+    "NOT_LIT_8": {
+      "sprite": "trees/tree_004/not_lit_8/sprite.webp",
+      "pixellab_object_id": "0ea815ed-979f-409d-a6b7-905c33ae931d",
+      "glow_concept": null,
+      "difference_from_source": 0.2039,
+      "glow_score": 0.0371
+    },
+    "NOT_LIT_9": {
+      "sprite": "trees/tree_004/not_lit_9/sprite.webp",
+      "pixellab_object_id": "4b6e6451-ddb5-4bf9-8b5e-d991b1376f46",
+      "glow_concept": null,
+      "difference_from_source": 0.4099,
+      "glow_score": 0.003
     }
   },
   "must_be_imbplemented_with_random_hflip": true
