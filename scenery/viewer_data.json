@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 500,
+  "scenery_count": 501,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -811,7 +811,7 @@
       "id": "witch_rings",
       "name": "Witch Ring",
       "quota": 7,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 116,
@@ -1001,6 +1001,7 @@
     "wells": 10,
     "windmills": 3,
     "wisteria_snags": 2,
+    "witch_rings": 1,
     "woodpiles": 2
   },
   "scenery": [
@@ -12008,6 +12009,28 @@
       "status": "complete",
       "pixellab_object_id": "7786fb91-7793-4a42-8338-3092ede5e04f",
       "sprite": "wisteria_snags/wisteria_snag_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "witch_ring_002",
+      "rel": "witch_rings/witch_ring_002",
+      "name": "Nine-stone ring 002 \u00b7 lit",
+      "category": "witch_rings",
+      "lights": "LIGHTS_ON",
+      "description": "a ring of small carved stones set in trampled grass with melted candle stubs between them, the site of quiet old rituals, nine-stone ring, half-swallowed by moss, tiny, only ankle-high, self-emissive at night, softly radiating light: a faint ring of light on the grass",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.32,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
+      "sprite": "witch_rings/witch_ring_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

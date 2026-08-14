@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:46+00:00",
+  "id": "witch_ring_002",
+  "group": "witch_rings",
+  "rank": 115,
+  "index": 2,
+  "name": "Nine-stone ring 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "nine-stone ring",
+  "modifier": "half-swallowed by moss",
+  "glow_concept": "a faint ring of light on the grass",
+  "prompt": "a ring of small carved stones set in trampled grass with melted candle stubs between them, the site of quiet old rituals, nine-stone ring, half-swallowed by moss, tiny, only ankle-high, self-emissive at night, softly radiating light: a faint ring of light on the grass",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "witch_rings/witch_ring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.32,
+    "world_px_height": 12,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
