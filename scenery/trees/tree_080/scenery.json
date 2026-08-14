@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:56:19+00:00",
+  "id": "tree_080",
+  "group": "trees",
+  "rank": 1,
+  "index": 80,
+  "name": "Dark narrow spruce 080 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dark narrow spruce",
+  "modifier": "wrapped in thin creeper vines",
+  "glow_concept": "pale blossoms shining faintly across the branches",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, dark narrow spruce, wrapped in thin creeper vines, towering, many times human height, self-emissive at night, softly radiating light: pale blossoms shining faintly across the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_080/sprite.webp",
+  "placement": {
+    "world_height_m": 4.83,
+    "world_px_height": 182,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e2bd409a-f6cb-49fb-9a92-3cec94cb1ce7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

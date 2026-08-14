@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 653,
+  "scenery_count": 654,
   "target_count": 2105,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 71
+      "done": 72
     },
     {
       "rank": 2,
@@ -1319,7 +1319,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 71,
+    "trees": 72,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -14276,6 +14276,28 @@
       "status": "complete",
       "pixellab_object_id": "64e050cc-e6b0-4480-8687-e7633b1cb8ec",
       "sprite": "trees/tree_079/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_080",
+      "rel": "trees/tree_080",
+      "name": "Dark narrow spruce 080 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, dark narrow spruce, wrapped in thin creeper vines, towering, many times human height, self-emissive at night, softly radiating light: pale blossoms shining faintly across the branches",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.83,
+        "world_px_height": 182,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e2bd409a-f6cb-49fb-9a92-3cec94cb1ce7",
+      "sprite": "trees/tree_080/sprite.webp",
       "rotations": {},
       "animations": []
     },
