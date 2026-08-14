@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:15:52+00:00",
+  "id": "shipwreck_prow_002",
+  "group": "shipwreck_prows",
+  "rank": 119,
+  "index": 2,
+  "name": "Carved longship prow 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "carved longship prow",
+  "modifier": "a rope ladder still hanging",
+  "glow_concept": "the figurehead's eyes faintly aglow",
+  "prompt": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass, carved longship prow, a rope ladder still hanging, large, twice human height, self-emissive at night, softly radiating light: the figurehead's eyes faintly aglow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.94,
+    "world_px_height": 111,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

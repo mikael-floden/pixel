@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 513,
+  "scenery_count": 514,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -839,7 +839,7 @@
       "id": "shipwreck_prows",
       "name": "Shipwreck Prow",
       "quota": 6,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 120,
@@ -980,6 +980,7 @@
     "rusted_machines": 2,
     "scarecrows": 6,
     "sheaf_poles": 2,
+    "shipwreck_prows": 1,
     "signposts": 8,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
@@ -8632,6 +8633,28 @@
       "status": "complete",
       "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
       "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "shipwreck_prow_002",
+      "rel": "shipwreck_prows/shipwreck_prow_002",
+      "name": "Carved longship prow 002 \u00b7 lit",
+      "category": "shipwreck_prows",
+      "lights": "LIGHTS_ON",
+      "description": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass, carved longship prow, a rope ladder still hanging, large, twice human height, self-emissive at night, softly radiating light: the figurehead's eyes faintly aglow",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.94,
+        "world_px_height": 111,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
+      "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
