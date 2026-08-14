@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:36:13+00:00",
+  "id": "tree_026",
+  "group": "trees",
+  "rank": 1,
+  "index": 26,
+  "name": "Snow-dusted winter fir 026 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-dusted winter fir",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "teal bioluminescent moss patches up the trunk",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, snow-dusted winter fir, leaning noticeably to one side, towering, many times human height, self-emissive at night, softly radiating light: teal bioluminescent moss patches up the trunk",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_026/sprite.webp",
+  "placement": {
+    "world_height_m": 4.55,
+    "world_px_height": 171,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f091242d-2055-4b95-9cb4-001d87d75e38",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
