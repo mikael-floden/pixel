@@ -32,6 +32,18 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
+    "LIT_1": {
+      "sprite": "trees/tree_065/lit_1/sprite.webp",
+      "pixellab_object_id": "0f4b0646-8d74-40c2-b280-0a1b54907864",
+      "difference_from_source": 0.8518,
+      "glow_score": 0.1085
+    },
+    "LIT_2": {
+      "sprite": "trees/tree_065/lit_2/sprite.webp",
+      "pixellab_object_id": "b27b93e8-6883-4b7c-b7cb-6b4051f725d1",
+      "difference_from_source": 0.5706,
+      "glow_score": 0.0599
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_065/sprite.webp",
       "pixellab_object_id": "4b89f1c5-7189-4cdf-bbe5-309ad68193d7",
