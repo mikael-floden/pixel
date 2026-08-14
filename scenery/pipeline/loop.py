@@ -306,6 +306,23 @@ def main():
                     _json.dump(cfg, f, indent=2, ensure_ascii=False)
                     f.write("\n")
                 print(f"  saturation: froze {len(changed)} group(s): {', '.join(changed)}")
+            # ...and PURGE their unreviewed pieces. A freeze that leaves
+            # already-generated pieces in his queue makes him hand-reject the
+            # very type he just declared full — his "you keep generating the
+            # same shit on me" (2026-08-14) was exactly this backlog, not new
+            # generation. Anything he has already judged is untouched.
+            import feedback as _fb
+            judged = set(_fb.load_entries())
+            frozen_ids = {x["id"] for x in cfg["groups"]
+                          if x.get("_saturated") or x.get("_throttled") or x.get("_retired")}
+            purge = [rel for rel, _m in factory.discover()
+                     if "/" in rel and rel.split("/")[0] in frozen_ids
+                     and f"scenery/{rel}" not in judged]
+            if purge:
+                import pixel_qa as _qa
+                _qa.condemn(client, purge)
+                print(f"  queue purge: removed {len(purge)} unreviewed piece(s) "
+                      f"from frozen groups so they never reach his review queue")
         removed = feedback.apply_rejections(client)
         if removed:
             viewer_build.build()
