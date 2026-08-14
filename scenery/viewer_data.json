@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 740,
+  "scenery_count": 741,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 60
+      "done": 61
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 10,
     "cliff_shrubs": 12,
-    "cliff_vines": 60,
+    "cliff_vines": 61,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6453,6 +6453,28 @@
       "status": "complete",
       "pixellab_object_id": "9f43d6c7-f63a-465a-94c0-c26cef5b650c",
       "sprite": "cliff_vines/cliff_vine_137/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_142",
+      "rel": "cliff_vines/cliff_vine_142",
+      "name": "Dark green ivy fall 142 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, dark green ivy fall, winding steeply upward in tight bends, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 11.93,
+        "world_px_height": 449,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ee1e1009-5e86-4ace-b182-81c63777f026",
+      "sprite": "cliff_vines/cliff_vine_142/sprite.webp",
       "rotations": {},
       "animations": []
     },
