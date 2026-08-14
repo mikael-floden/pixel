@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:40:27+00:00",
+  "id": "cliff_root_072",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 72,
+  "name": "Faintly moss-furred rootlets 072 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "faintly moss-furred rootlets",
+  "modifier": "two thin strands side by side, one longer",
+  "glow_concept": "glow-moss packed between them",
+  "prompt": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger trailing down bare stone, gently winding, gripping with hair-fine side-roots, mostly bare strand with one or two small leaf sprouts, delicate and sparse, no trunk, no stump, NOT a big root, fantasy RPG nature art, transparent background, faintly moss-furred rootlets, two thin strands side by side, one longer, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-moss packed between them",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_roots/cliff_root_072/sprite.webp",
+  "placement": {
+    "world_height_m": 1.46,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7dd066c0-62cb-475e-9ec6-4e5fad92b5d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
