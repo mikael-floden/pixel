@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:51:10+00:00",
+  "id": "lantern_stand_018",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 18,
+  "name": "Curled fern-tip iron stand 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "curled fern-tip iron stand",
+  "modifier": "overgrown at the base",
+  "glow_concept": "stained-glass panes throwing colored light",
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, curled fern-tip iron stand, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: stained-glass panes throwing colored light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.95,
+    "world_px_height": 73,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f8f56430-7ac7-4210-b9cc-ee4225129f16",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

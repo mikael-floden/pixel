@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 623,
+  "scenery_count": 624,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -209,7 +209,7 @@
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 30,
@@ -1194,7 +1194,7 @@
     "house_clutter": 10,
     "ivy_posts": 5,
     "lantern_posts": 17,
-    "lantern_stands": 6,
+    "lantern_stands": 7,
     "letter_boxes": 1,
     "lightning_oaks": 1,
     "market_stalls": 4,
@@ -8450,6 +8450,28 @@
       "status": "complete",
       "pixellab_object_id": "2f76225f-cef1-41d5-a8c8-2354f36c6f07",
       "sprite": "lantern_stands/lantern_stand_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_018",
+      "rel": "lantern_stands/lantern_stand_018",
+      "name": "Curled fern-tip iron stand 018 \u00b7 lit",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_ON",
+      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, curled fern-tip iron stand, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: stained-glass panes throwing colored light",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.95,
+        "world_px_height": 73,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f8f56430-7ac7-4210-b9cc-ee4225129f16",
+      "sprite": "lantern_stands/lantern_stand_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
