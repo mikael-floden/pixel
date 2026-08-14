@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 586,
+  "scenery_count": 587,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -608,7 +608,7 @@
       "id": "wasp_nest_trees",
       "name": "Wasp Nest Tree",
       "quota": 2,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 87,
@@ -1000,7 +1000,7 @@
     "trees": 25,
     "wall_hangings": 6,
     "washing_lines": 6,
-    "wasp_nest_trees": 2,
+    "wasp_nest_trees": 3,
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
@@ -12942,6 +12942,28 @@
       "status": "complete",
       "pixellab_object_id": "b4cef6f6-7c0a-4283-8726-b99a31b99648",
       "sprite": "wasp_nest_trees/wasp_nest_tree_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "wasp_nest_tree_004",
+      "rel": "wasp_nest_trees/wasp_nest_tree_004",
+      "name": "Bare snag three nests 004 \u00b7 lit",
+      "category": "wasp_nest_trees",
+      "lights": "LIGHTS_ON",
+      "description": "a small gnarled tree with a large gray paper wasp nest hanging from a branch, layered papery swirls around a round entrance hole, bare snag three nests, with thick exposed roots, large, twice human height, self-emissive at night, softly radiating light: foxfire brackets climbing the trunk",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 2.75,
+        "world_px_height": 104,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "62ad44a2-64f3-427d-8d37-9b30bdc0933e",
+      "sprite": "wasp_nest_trees/wasp_nest_tree_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
