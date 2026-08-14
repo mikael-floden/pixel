@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:34:56+00:00",
+  "id": "stone_022",
+  "group": "stones",
+  "rank": 2,
+  "index": 22,
+  "name": "White quartz-flecked boulder 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white quartz-flecked boulder",
+  "modifier": "one side die-back, the other thriving",
+  "glow_concept": "glowing pale handprint pressed on the face",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, white quartz-flecked boulder, one side die-back, the other thriving, waist-high, self-emissive at night, softly radiating light: glowing pale handprint pressed on the face",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_022/sprite.webp",
+  "placement": {
+    "world_height_m": 1.11,
+    "world_px_height": 42,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "63b91831-915b-4391-80a4-bf83682c1a23",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
