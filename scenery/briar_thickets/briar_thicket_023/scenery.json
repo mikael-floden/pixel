@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:48:28+00:00",
+  "id": "briar_thicket_023",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 23,
+  "name": "Yellow wild roses 023",
+  "lights": "LIGHTS_OFF",
+  "variety": "yellow wild roses",
+  "modifier": "on a low grassy hummock",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, yellow wild roses, on a low grassy hummock, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_023/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a1f884db-6946-4d53-8623-484c41e69b31",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
