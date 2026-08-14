@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 721,
+  "scenery_count": 722,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 46
+      "done": 47
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 46,
+    "cliff_vines": 47,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6057,6 +6057,28 @@
       "status": "complete",
       "pixellab_object_id": "db64faea-e741-4666-861e-c85705d8379f",
       "sprite": "cliff_vines/cliff_vine_088/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_092",
+      "rel": "cliff_vines/cliff_vine_092",
+      "name": "Berry-dotted bramble fall 092 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, berry-dotted bramble fall, winding steeply upward in tight bends, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.32,
+        "world_px_height": 313,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "aae7b12c-6061-4606-8247-8f89763fef6b",
+      "sprite": "cliff_vines/cliff_vine_092/sprite.webp",
       "rotations": {},
       "animations": []
     },
