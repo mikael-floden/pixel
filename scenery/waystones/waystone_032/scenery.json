@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:48:34+00:00",
+  "id": "waystone_032",
+  "group": "waystones",
+  "rank": 6,
+  "index": 32,
+  "name": "White quartz-veined stone 032 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white quartz-veined stone",
+  "modifier": "snow-dusted",
+  "glow_concept": "warm handprint glow where travelers touch",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, snow-dusted, waist-high, self-emissive at night, softly radiating light: warm handprint glow where travelers touch",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_032/sprite.webp",
+  "placement": {
+    "world_height_m": 1.14,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b77e805a-517e-4b51-97f1-e4eeaf75f2d2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

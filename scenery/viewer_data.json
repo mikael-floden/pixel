@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 616,
+  "scenery_count": 617,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 13,
-      "done": 15
+      "done": 16
     },
     {
       "rank": 7,
@@ -1243,7 +1243,7 @@
     "water_pumps": 2,
     "waterwheels": 3,
     "wayside_shrines": 6,
-    "waystones": 15,
+    "waystones": 16,
     "web_frames": 1,
     "wells": 12,
     "windmills": 3,
@@ -14368,6 +14368,28 @@
       "status": "complete",
       "pixellab_object_id": "b88e1dcf-76fd-4278-a4d7-a4f4671a6cc0",
       "sprite": "waystones/waystone_031/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_032",
+      "rel": "waystones/waystone_032",
+      "name": "White quartz-veined stone 032 \u00b7 lit",
+      "category": "waystones",
+      "lights": "LIGHTS_ON",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, snow-dusted, waist-high, self-emissive at night, softly radiating light: warm handprint glow where travelers touch",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.14,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b77e805a-517e-4b51-97f1-e4eeaf75f2d2",
+      "sprite": "waystones/waystone_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
