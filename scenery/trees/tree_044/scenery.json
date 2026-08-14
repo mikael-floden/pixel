@@ -45,10 +45,31 @@
       "difference_from_source": 0.6362,
       "glow_score": 0.1055
     },
+    "LIT_3": {
+      "sprite": "trees/tree_044/lit_3/sprite.webp",
+      "pixellab_object_id": "19961f10-f9ea-481f-af8c-77aa0a1fa29b",
+      "glow_concept": "iron lantern hung from a low branch",
+      "difference_from_source": 0.3006,
+      "glow_score": 0.0042
+    },
+    "LIT_4": {
+      "sprite": "trees/tree_044/lit_4/sprite.webp",
+      "pixellab_object_id": "e78e478d-941c-475b-83fb-6fa2fadaf4ea",
+      "glow_concept": "golden sap veins glowing through bark cracks",
+      "difference_from_source": 0.3104,
+      "glow_score": 0.0383
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_044/not_lit_1/sprite.webp",
       "pixellab_object_id": "74eeee2d-ad93-46be-b67d-2782b306adbd",
       "difference_from_source": 0.3746,
+      "glow_score": 0.0007
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_044/not_lit_10/sprite.webp",
+      "pixellab_object_id": "efce3ced-69f6-4c75-baaa-202aab662705",
+      "glow_concept": null,
+      "difference_from_source": 0.3717,
       "glow_score": 0.0007
     },
     "NOT_LIT_2": {
@@ -82,12 +103,26 @@
       "difference_from_source": 0.4802,
       "glow_score": 0.001
     },
+    "NOT_LIT_7": {
+      "sprite": "trees/tree_044/not_lit_7/sprite.webp",
+      "pixellab_object_id": "8f3ae94e-bd8c-41c8-96e8-0d69af8dfb21",
+      "glow_concept": null,
+      "difference_from_source": 0.2846,
+      "glow_score": 0.0009
+    },
     "NOT_LIT_8": {
       "sprite": "trees/tree_044/not_lit_8/sprite.webp",
       "pixellab_object_id": "59f3e361-1535-4525-bd3e-ea9e73837367",
       "glow_concept": null,
       "difference_from_source": 0.4349,
       "glow_score": 0.0009
+    },
+    "NOT_LIT_9": {
+      "sprite": "trees/tree_044/not_lit_9/sprite.webp",
+      "pixellab_object_id": "9d5851a5-e656-401f-9982-b87f11089718",
+      "glow_concept": null,
+      "difference_from_source": 0.5616,
+      "glow_score": 0.0011
     }
   },
   "must_be_imbplemented_with_random_hflip": true
