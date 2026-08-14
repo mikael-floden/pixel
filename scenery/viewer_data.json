@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 651,
+  "scenery_count": 652,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 2,
+    "cliff_falls": 3,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_ledgetrees": 3,
@@ -4119,6 +4119,28 @@
       "status": "complete",
       "pixellab_object_id": "44ab6785-f6f0-4ca4-908d-f44a28f98a19",
       "sprite": "cliff_falls/cliff_fall_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_005",
+      "rel": "cliff_falls/cliff_fall_005",
+      "name": "Stepped, breaking on two ledges 005",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_OFF",
+      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, stepped, breaking on two ledges, disappearing into a crack, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 15.91,
+        "world_px_height": 599,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6cdc4274-c254-4903-b9c4-115c8c31dfdc",
+      "sprite": "cliff_falls/cliff_fall_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
