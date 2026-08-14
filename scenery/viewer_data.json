@@ -14978,6 +14978,24 @@
           "pixellab_object_id": "be51f913-2af2-4a57-a791-19ef1ca0169a",
           "glow_score": 0.0438
         },
+        "LIT_2": {
+          "sprite": "trees/tree_004/lit_2/sprite.webp",
+          "pixellab_object_id": "00fc98ff-dafe-48d2-9d24-d3e166430af2",
+          "difference_from_source": 0.3326,
+          "glow_score": 0.1029
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "516c1201-6d3c-4a13-9173-c0609a638e2b",
+          "difference_from_source": 0.179,
+          "glow_score": 0.0345
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f691c6fc-e068-44d7-b4de-38542f47fc9f",
+          "difference_from_source": 0.1658,
+          "glow_score": 0.0356
+        },
         "NOT_LIT_3": {
           "sprite": "trees/tree_004/not_lit_3/sprite.webp",
           "glow_score": 0.0326,
@@ -14988,6 +15006,12 @@
           "pixellab_object_id": "ebf5acda-be7e-47d7-9aa4-0ddf56873280",
           "difference_from_source": 0.1482,
           "glow_score": 0.0351
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_004/not_lit_5/sprite.webp",
+          "pixellab_object_id": "b907821c-23a9-403d-92a8-6c80fd0e53a5",
+          "difference_from_source": 0.1212,
+          "glow_score": 0.0365
         }
       },
       "animations": []
@@ -15013,10 +15037,40 @@
       "sprite": "trees/tree_005/sprite.webp",
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "trees/tree_005/lit_2/sprite.webp",
+          "pixellab_object_id": "b70d9ec9-8946-44b6-8034-ddb98c52980c",
+          "difference_from_source": 0.5296,
+          "glow_score": 0.0819
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_005/sprite.webp",
           "pixellab_object_id": "19758807-2707-48aa-866b-4effbf1ef9b4",
           "glow_score": 0.1072
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cdc10c5b-fcc7-478c-bfb6-c49aa4f07dec",
+          "difference_from_source": 0.4558,
+          "glow_score": 0.1118
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "29db6dc7-3992-4e92-a399-63b0210df9ed",
+          "difference_from_source": 0.3927,
+          "glow_score": 0.0927
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "dd4e402d-a693-4127-b118-48c5dd5b2f13",
+          "difference_from_source": 0.5506,
+          "glow_score": 0.0869
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_005/not_lit_5/sprite.webp",
+          "pixellab_object_id": "23b01e91-2f71-4e44-a872-30a300a415c1",
+          "difference_from_source": 0.6108,
+          "glow_score": 0.1133
         }
       },
       "animations": []
@@ -15046,6 +15100,30 @@
           "sprite": "trees/tree_006/sprite.webp",
           "pixellab_object_id": "5386df0b-f8a3-4e91-b8fc-91bd3a0806b4",
           "glow_score": 0.0123
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "686f6785-9a4e-4f55-97e3-cc9192c15893",
+          "difference_from_source": 0.2236,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1dcf015a-8ad9-4bda-9de1-5f4d4f886a60",
+          "difference_from_source": 0.2357,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_006/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f7fd7107-2871-4642-8674-adcf44ee1487",
+          "difference_from_source": 0.2991,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_006/not_lit_5/sprite.webp",
+          "pixellab_object_id": "1a5306e9-af68-441c-a5fb-02334680a4dc",
+          "difference_from_source": 0.2412,
+          "glow_score": 0.0
         }
       },
       "animations": []
