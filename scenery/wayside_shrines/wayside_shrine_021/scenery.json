@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:18:17+00:00",
+  "id": "wayside_shrine_021",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 21,
+  "name": "Blue double-shutter shrine 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "blue double-shutter shrine",
+  "modifier": "old and settling into the ground",
+  "glow_concept": null,
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, blue double-shutter shrine, old and settling into the ground, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_021/sprite.webp",
+  "placement": {
+    "world_height_m": 1.19,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cfa29ee2-2007-47ed-ae1c-d7f8fb736b25",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
