@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:54:33+00:00",
+  "id": "window_067",
+  "group": "windows",
+  "rank": 25,
+  "index": 67,
+  "name": "A rectangular window in soot-darkened timber 067",
+  "lights": "LIGHTS_OFF",
+  "variety": "a rectangular window in soot-darkened timber",
+  "modifier": "all the glass gone, only the empty frame",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in soot-darkened timber, all the glass gone, only the empty frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_067/rotations/south-east.webp",
+    "south-west": "windows/window_067/rotations/south-west.webp",
+    "south": "windows/window_067/sprite.webp"
+  },
+  "size": 80,
+  "sprite": "windows/window_067/sprite.webp",
+  "placement": {
+    "world_height_m": 1.2,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      18,
+      11,
+      64,
+      71
+    ],
+    "content_px_height": 60,
+    "canvas_render_px": 60
+  },
+  "pixellab_object_id": "0581924b-7eb0-4b72-baf3-d3d5a5f85d28",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
