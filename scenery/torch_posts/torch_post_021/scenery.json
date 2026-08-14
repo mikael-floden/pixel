@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:42:08+00:00",
+  "id": "torch_post_021",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 21,
+  "name": "Leaning trailside torch 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "leaning trailside torch",
+  "modifier": "moss-capped",
+  "glow_concept": null,
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, leaning trailside torch, moss-capped, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "torch_posts/torch_post_021/sprite.webp",
+  "placement": {
+    "world_height_m": 1.52,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
