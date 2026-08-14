@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:34:24+00:00",
+  "id": "cliff_vine_122",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 122,
+  "name": "Pale lichen-strung fall 122 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pale lichen-strung fall",
+  "modifier": "winding steeply upward in tight bends",
+  "glow_concept": "luminous sap veins glowing through the leaves",
+  "prompt": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, pale lichen-strung fall, winding steeply upward in tight bends, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_122/sprite.webp",
+  "placement": {
+    "world_height_m": 7.22,
+    "world_px_height": 272,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b8971c9e-6c5f-4bd3-8312-60764d9aa59d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
