@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 525,
+  "scenery_count": 526,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 19
+      "done": 20
     },
     {
       "rank": 2,
@@ -998,7 +998,7 @@
     "toadstool_rings": 8,
     "torch_posts": 11,
     "trailing_planters": 2,
-    "trees": 19,
+    "trees": 20,
     "wall_hangings": 6,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
@@ -11271,6 +11271,28 @@
       "status": "complete",
       "pixellab_object_id": "d9ee4f74-ca1a-4a40-8789-54fa767ab09e",
       "sprite": "trees/tree_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_019",
+      "rel": "trees/tree_019",
+      "name": "Crab apple, small tart fruit 019",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, crab apple, small tart fruit, grown around a half-buried stone, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.42,
+        "world_px_height": 166,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ded2c906-787a-4e5b-b938-e6386454601b",
+      "sprite": "trees/tree_019/sprite.webp",
       "rotations": {},
       "animations": []
     },

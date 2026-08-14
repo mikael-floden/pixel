@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:34:32+00:00",
+  "id": "tree_019",
+  "group": "trees",
+  "rank": 1,
+  "index": 19,
+  "name": "Crab apple, small tart fruit 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "crab apple, small tart fruit",
+  "modifier": "grown around a half-buried stone",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, crab apple, small tart fruit, grown around a half-buried stone, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_019/sprite.webp",
+  "placement": {
+    "world_height_m": 4.42,
+    "world_px_height": 166,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ded2c906-787a-4e5b-b938-e6386454601b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
