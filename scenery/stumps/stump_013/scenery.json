@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:50:12+00:00",
+  "id": "stump_013",
+  "group": "stumps",
+  "rank": 24,
+  "index": 13,
+  "name": "Stump with axe embedded 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "stump with axe embedded",
+  "modifier": "with a rabbit burrow at the base",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, stump with axe embedded, with a rabbit burrow at the base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "614aed5a-505c-4aa0-aba3-bc8f6fbc372b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
