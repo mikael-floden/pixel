@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:53:12+00:00",
+  "id": "cairn_020",
+  "group": "cairns",
+  "rank": 9,
+  "index": 20,
+  "name": "Moss-grown ancient cairn 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-grown ancient cairn",
+  "modifier": "with a small sapling beside it",
+  "glow_concept": "wisps of soul-light circling the peak",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, moss-grown ancient cairn, with a small sapling beside it, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.48,
+    "world_px_height": 56,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

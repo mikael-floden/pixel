@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 534,
+  "scenery_count": 535,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 10,
@@ -799,7 +799,7 @@
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
-    "cairns": 10,
+    "cairns": 11,
     "light": 1,
     "carts": 6,
     "cattail_clumps": 5,
@@ -2901,6 +2901,28 @@
       "status": "complete",
       "pixellab_object_id": "10a33b6f-d384-4979-b592-cc1526ca5781",
       "sprite": "cairns/cairn_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_020",
+      "rel": "cairns/cairn_020",
+      "name": "Moss-grown ancient cairn 020 \u00b7 lit",
+      "category": "cairns",
+      "lights": "LIGHTS_ON",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, moss-grown ancient cairn, with a small sapling beside it, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.48,
+        "world_px_height": 56,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
+      "sprite": "cairns/cairn_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
