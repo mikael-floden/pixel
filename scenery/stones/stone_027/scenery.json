@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:18:36+00:00",
+  "id": "stone_027",
+  "group": "stones",
+  "rank": 2,
+  "index": 27,
+  "name": "Half-buried tilted stone 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "half-buried tilted stone",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, half-buried tilted stone, leaning noticeably to one side, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_027/sprite.webp",
+  "placement": {
+    "world_height_m": 0.7,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d02906b1-d935-41dc-8998-070a0ff7350f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

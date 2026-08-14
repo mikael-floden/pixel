@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 651,
+  "scenery_count": 652,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 150,
-      "done": 26
+      "done": 27
     },
     {
       "rank": 3,
@@ -1311,7 +1311,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 26,
+    "stones": 27,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -11330,6 +11330,28 @@
       "status": "complete",
       "pixellab_object_id": "d609b1ce-40dc-4e8f-982b-31130ce95a05",
       "sprite": "stones/stone_026/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_027",
+      "rel": "stones/stone_027",
+      "name": "Half-buried tilted stone 027",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, half-buried tilted stone, leaning noticeably to one side, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.7,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d02906b1-d935-41dc-8998-070a0ff7350f",
+      "sprite": "stones/stone_027/sprite.webp",
       "rotations": {},
       "animations": []
     },
