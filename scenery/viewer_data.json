@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 533,
+  "scenery_count": 534,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -125,7 +125,7 @@
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 18,
@@ -832,7 +832,7 @@
     "graves": 12,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 8,
+    "haystacks": 9,
     "hearths": 7,
     "hedges": 10,
     "hop_poles": 2,
@@ -6134,6 +6134,28 @@
       "status": "complete",
       "pixellab_object_id": "61eaa4e7-477b-4197-aca5-0592c1e85b50",
       "sprite": "haystacks/haystack_017/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "haystack_018",
+      "rel": "haystacks/haystack_018",
+      "name": "Half-used stack with pitchfork 018 \u00b7 lit",
+      "category": "haystacks",
+      "lights": "LIGHTS_ON",
+      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, half-used stack with pitchfork, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm light leaking from a hollow inside",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.63,
+        "world_px_height": 61,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a19676d9-a59b-4af6-8725-622502d31205",
+      "sprite": "haystacks/haystack_018/sprite.webp",
       "rotations": {},
       "animations": []
     },

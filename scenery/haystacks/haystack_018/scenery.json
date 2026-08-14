@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:53:11+00:00",
+  "id": "haystack_018",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 18,
+  "name": "Half-used stack with pitchfork 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "half-used stack with pitchfork",
+  "modifier": "old and settling into the ground",
+  "glow_concept": "warm light leaking from a hollow inside",
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, half-used stack with pitchfork, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm light leaking from a hollow inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.63,
+    "world_px_height": 61,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a19676d9-a59b-4af6-8725-622502d31205",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
