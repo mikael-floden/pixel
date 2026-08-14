@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 750,
+  "scenery_count": 714,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 44
+      "done": 39
     },
     {
       "rank": 102,
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 28
+      "done": 9
     },
     {
       "rank": 156,
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 22
+      "done": 10
     },
     {
       "rank": 159,
@@ -1238,10 +1238,10 @@
     "cliff_falls": 5,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 22,
-    "cliff_roots": 28,
+    "cliff_mosses": 10,
+    "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 44,
+    "cliff_vines": 39,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4543,138 +4543,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_023",
-      "rel": "cliff_mosses/cliff_moss_023",
-      "name": "Black wet moss 023",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, black wet moss, a broad patch with smaller islands around it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 9.0,
-        "world_px_height": 339,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "ebbd3a61-3f9e-4e1b-b498-c841162b5559",
-      "sprite": "cliff_mosses/cliff_moss_023/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_027",
-      "rel": "cliff_mosses/cliff_moss_027",
-      "name": "Moss with tiny ferns through it 027",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, moss with tiny ferns through it, gathering low, sparse above, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 9.29,
-        "world_px_height": 350,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1ac70e48-b98f-4110-b693-cf0cc728b01f",
-      "sprite": "cliff_mosses/cliff_moss_027/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_029",
-      "rel": "cliff_mosses/cliff_moss_029",
-      "name": "Black wet moss 029",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, black wet moss, an old thick growth with young shoots around it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 7.29,
-        "world_px_height": 274,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "45385eda-30a1-4039-877b-eb1dca23ae9f",
-      "sprite": "cliff_mosses/cliff_moss_029/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_031",
-      "rel": "cliff_mosses/cliff_moss_031",
-      "name": "Grey-green lichen crust 031",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, grey-green lichen crust, a long drift down across the frame, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.39,
-        "world_px_height": 316,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "97004c65-1092-42e6-8033-7c9c37afe10c",
-      "sprite": "cliff_mosses/cliff_moss_031/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_033",
-      "rel": "cliff_mosses/cliff_moss_033",
-      "name": "Moss with tiny ferns through it 033",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, moss with tiny ferns through it, a broad patch with smaller islands around it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 9.38,
-        "world_px_height": 353,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1429322b-c5e6-4c20-b51d-455735f105de",
-      "sprite": "cliff_mosses/cliff_moss_033/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_035",
-      "rel": "cliff_mosses/cliff_moss_035",
-      "name": "Black wet moss 035",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, black wet moss, a diagonal band of growth, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.14,
-        "world_px_height": 306,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b08fc046-0e79-4cca-90a8-b532b1cff216",
-      "sprite": "cliff_mosses/cliff_moss_035/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_037",
       "rel": "cliff_mosses/cliff_moss_037",
       "name": "Grey-green lichen crust 037",
@@ -4715,138 +4583,6 @@
       "status": "complete",
       "pixellab_object_id": "cdd8d84c-c786-4703-a32c-8ab33db3a9cd",
       "sprite": "cliff_mosses/cliff_moss_039/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_040",
-      "rel": "cliff_mosses/cliff_moss_040",
-      "name": "Frost-tipped winter moss 040 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-tipped winter moss, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 5.34,
-        "world_px_height": 201,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9631ac02-4908-437b-9a2e-43768a51ad11",
-      "sprite": "cliff_mosses/cliff_moss_040/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_042",
-      "rel": "cliff_mosses/cliff_moss_042",
-      "name": "Rust-orange lichen patches 042 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, rust-orange lichen patches, clustered thickly at the top corner, trailing below, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 10.7,
-        "world_px_height": 403,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d3243190-5c05-433d-a343-eb23e4936b6d",
-      "sprite": "cliff_mosses/cliff_moss_042/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_044",
-      "rel": "cliff_mosses/cliff_moss_044",
-      "name": "Deep emerald cushion moss 044 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, deep emerald cushion moss, dense in the middle, ragged at both ends, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 5.06,
-        "world_px_height": 190,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d2003d3c-f3ef-4924-9c17-fa0ab7ff8377",
-      "sprite": "cliff_mosses/cliff_moss_044/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_046",
-      "rel": "cliff_mosses/cliff_moss_046",
-      "name": "Frost-tipped winter moss 046 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-tipped winter moss, one thick tendril reaching far out alone, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 11.08,
-        "world_px_height": 417,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "017b9114-d5bf-451e-abd9-e4369ed0ba67",
-      "sprite": "cliff_mosses/cliff_moss_046/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_048",
-      "rel": "cliff_mosses/cliff_moss_048",
-      "name": "Rust-orange lichen patches 048 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, rust-orange lichen patches, a wide loose spread with big gaps, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 5.47,
-        "world_px_height": 206,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2f9f7a0b-d6a8-4595-b454-7b333e2f3a02",
-      "sprite": "cliff_mosses/cliff_moss_048/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_050",
-      "rel": "cliff_mosses/cliff_moss_050",
-      "name": "Deep emerald cushion moss 050 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, deep emerald cushion moss, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 6.71,
-        "world_px_height": 253,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "3498d345-db72-4759-bfeb-246bf97bbe09",
-      "sprite": "cliff_mosses/cliff_moss_050/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4917,28 +4653,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_039",
-      "rel": "cliff_roots/cliff_root_039",
-      "name": "Two great roots twined together 039",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, two great roots twined together, one thick root with two thin ones far off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.81,
-        "world_px_height": 294,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "418ea66a-7791-450a-8381-1b8473e78afd",
-      "sprite": "cliff_roots/cliff_root_039/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_040",
       "rel": "cliff_roots/cliff_root_040",
       "name": "Pale bleached roots 040 \u00b7 lit",
@@ -4961,94 +4675,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_041",
-      "rel": "cliff_roots/cliff_root_041",
-      "name": "Dark wet roots 041",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, dark wet roots, widely spaced with a fern between two, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.28,
-        "world_px_height": 425,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "eef1d17e-4747-4f9f-85ce-de528a04c626",
-      "sprite": "cliff_roots/cliff_root_041/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_042",
-      "rel": "cliff_roots/cliff_root_042",
-      "name": "Moss-furred roots 042 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, moss-furred roots, three or four long strands, widely spaced, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.9,
-        "world_px_height": 410,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "48604616-4589-40ac-9e09-52b2020cb6e9",
-      "sprite": "cliff_roots/cliff_root_042/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_043",
-      "rel": "cliff_roots/cliff_root_043",
-      "name": "Roots with ferns rooted between them 043",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, roots with ferns rooted between them, a single root crossing the frame diagonally, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.58,
-        "world_px_height": 248,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "6bd97174-1c71-4741-8b9e-776263e824f9",
-      "sprite": "cliff_roots/cliff_root_043/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_044",
-      "rel": "cliff_roots/cliff_root_044",
-      "name": "Fine hair-roots in a dense veil 044 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, fine hair-roots in a dense veil, one root branching low, the rest plain, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.15,
-        "world_px_height": 194,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "fd35879d-4e64-4fd3-ab6c-60f95d0a7995",
-      "sprite": "cliff_roots/cliff_root_044/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_045",
       "rel": "cliff_roots/cliff_root_045",
       "name": "Two great roots twined together 045",
@@ -5067,28 +4693,6 @@
       "status": "complete",
       "pixellab_object_id": "d2d613dd-21c8-4efe-ab23-bc0a9de4223e",
       "sprite": "cliff_roots/cliff_root_045/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_046",
-      "rel": "cliff_roots/cliff_root_046",
-      "name": "Pale bleached roots 046 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, pale bleached roots, roots drifting apart as they descend, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.94,
-        "world_px_height": 412,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4c4fa4cb-0604-4b4c-b2b1-d3b23623d5b5",
-      "sprite": "cliff_roots/cliff_root_046/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5137,50 +4741,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_050",
-      "rel": "cliff_roots/cliff_root_050",
-      "name": "Fine hair-roots in a dense veil 050 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, fine hair-roots in a dense veil, strands closer together on one side, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.57,
-        "world_px_height": 247,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "40ee6fb5-e771-4f57-8a35-0ffe7b39616f",
-      "sprite": "cliff_roots/cliff_root_050/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_051",
-      "rel": "cliff_roots/cliff_root_051",
-      "name": "Two great roots twined together 051",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, two great roots twined together, widely spaced with a fern between two, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.9,
-        "world_px_height": 410,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "be1db042-1f4f-44fb-bfd0-c5a659e558ad",
-      "sprite": "cliff_roots/cliff_root_051/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_052",
       "rel": "cliff_roots/cliff_root_052",
       "name": "Pale bleached roots 052 \u00b7 lit",
@@ -5203,160 +4763,6 @@
       "animations": []
     },
     {
-      "id": "cliff_root_053",
-      "rel": "cliff_roots/cliff_root_053",
-      "name": "Dark wet roots 053",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, dark wet roots, a single root crossing the frame diagonally, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.31,
-        "world_px_height": 200,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5ec76c02-861c-46c9-9734-c44b46cf9661",
-      "sprite": "cliff_roots/cliff_root_053/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_054",
-      "rel": "cliff_roots/cliff_root_054",
-      "name": "Moss-furred roots 054 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, moss-furred roots, one root branching low, the rest plain, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.51,
-        "world_px_height": 245,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e2e4d4a5-233b-4038-a4b6-e92420c288e8",
-      "sprite": "cliff_roots/cliff_root_054/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_055",
-      "rel": "cliff_roots/cliff_root_055",
-      "name": "Roots with ferns rooted between them 055",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, roots with ferns rooted between them, a pair of roots twisting around each other once, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.94,
-        "world_px_height": 412,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "506a1681-f1dc-4889-a933-f3b660351248",
-      "sprite": "cliff_roots/cliff_root_055/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_056",
-      "rel": "cliff_roots/cliff_root_056",
-      "name": "Fine hair-roots in a dense veil 056 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, fine hair-roots in a dense veil, roots drifting apart as they descend, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.43,
-        "world_px_height": 430,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a71ffe38-60d6-469c-aa1e-79dbde1f99de",
-      "sprite": "cliff_roots/cliff_root_056/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_057",
-      "rel": "cliff_roots/cliff_root_057",
-      "name": "Two great roots twined together 057",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, two great roots twined together, roots angling across rather than straight down, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.15,
-        "world_px_height": 194,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1cd7286d-a473-4ff9-8d37-510123b79c48",
-      "sprite": "cliff_roots/cliff_root_057/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_058",
-      "rel": "cliff_roots/cliff_root_058",
-      "name": "Pale bleached roots 058 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, pale bleached roots, long and lazy with slow curves, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.99,
-        "world_px_height": 226,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "36ad4183-40de-437b-8d8f-e80e7e475e47",
-      "sprite": "cliff_roots/cliff_root_058/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_059",
-      "rel": "cliff_roots/cliff_root_059",
-      "name": "Dark wet roots 059",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, dark wet roots, one thick root with two thin ones far off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.53,
-        "world_px_height": 396,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "16962bd9-3669-4b27-bc7e-f11cfdef1919",
-      "sprite": "cliff_roots/cliff_root_059/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_root_060",
       "rel": "cliff_roots/cliff_root_060",
       "name": "Moss-furred roots 060 \u00b7 lit",
@@ -5375,94 +4781,6 @@
       "status": "complete",
       "pixellab_object_id": "8afda7a0-d0b7-44d1-a2c5-e79f0e0c6c44",
       "sprite": "cliff_roots/cliff_root_060/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_061",
-      "rel": "cliff_roots/cliff_root_061",
-      "name": "Roots with ferns rooted between them 061",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, roots with ferns rooted between them, widely spaced with a fern between two, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.55,
-        "world_px_height": 322,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d35792ea-9d4d-4150-843f-afe868af2023",
-      "sprite": "cliff_roots/cliff_root_061/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_063",
-      "rel": "cliff_roots/cliff_root_063",
-      "name": "Two great roots twined together 063",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, two great roots twined together, a single root crossing the frame diagonally, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.57,
-        "world_px_height": 285,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1eb29ea1-9783-4a13-9857-31f6c809d0ed",
-      "sprite": "cliff_roots/cliff_root_063/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_065",
-      "rel": "cliff_roots/cliff_root_065",
-      "name": "Dark wet roots 065",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, dark wet roots, a pair of roots twisting around each other once, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.91,
-        "world_px_height": 335,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7f8de414-86e1-49f4-8b68-eaf91f46bee3",
-      "sprite": "cliff_roots/cliff_root_065/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_066",
-      "rel": "cliff_roots/cliff_root_066",
-      "name": "Moss-furred roots 066 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, moss-furred roots, roots drifting apart as they descend, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.17,
-        "world_px_height": 383,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7ebb7f4c-7829-42f8-a0f4-5e6523c00a4c",
-      "sprite": "cliff_roots/cliff_root_066/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6149,50 +5467,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_053",
-      "rel": "cliff_vines/cliff_vine_053",
-      "name": "Dry brown wilted fall 053",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, dry brown wilted fall, heavy growth on one side thinning to bare on the other, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.64,
-        "world_px_height": 401,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "79c96c48-1827-4ac3-923e-271f4183d5f7",
-      "sprite": "cliff_vines/cliff_vine_053/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_055",
-      "rel": "cliff_vines/cliff_vine_055",
-      "name": "Blue-flowered creeper fall 055",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, blue-flowered creeper fall, a wide loose spread with big gaps, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.79,
-        "world_px_height": 218,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9cd33543-1826-4a44-88be-abf0e8370465",
-      "sprite": "cliff_vines/cliff_vine_055/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_056",
       "rel": "cliff_vines/cliff_vine_056",
       "name": "Variegated cream-and-green fall 056 \u00b7 lit",
@@ -6325,50 +5599,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_062",
-      "rel": "cliff_vines/cliff_vine_062",
-      "name": "Yellow honeysuckle fall 062 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, yellow honeysuckle fall, a long drift down across the frame, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.24,
-        "world_px_height": 310,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "97c86d65-c692-49c7-9873-5f88884caee1",
-      "sprite": "cliff_vines/cliff_vine_062/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_063",
-      "rel": "cliff_vines/cliff_vine_063",
-      "name": "Frost-silvered winter fall 063",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-silvered winter fall, heavy growth on one side thinning to bare on the other, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.17,
-        "world_px_height": 345,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "840dc611-a1ea-4d6d-859a-0630c2921aa4",
-      "sprite": "cliff_vines/cliff_vine_063/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_064",
       "rel": "cliff_vines/cliff_vine_064",
       "name": "Berry-dotted bramble fall 064 \u00b7 lit",
@@ -6387,28 +5617,6 @@
       "status": "complete",
       "pixellab_object_id": "40276d41-9206-458e-b074-4892a7c0c0c3",
       "sprite": "cliff_vines/cliff_vine_064/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_065",
-      "rel": "cliff_vines/cliff_vine_065",
-      "name": "Fern-mixed green fall 065",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, fern-mixed green fall, a wide loose spread with big gaps, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.04,
-        "world_px_height": 265,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "267fe831-2a2e-4e4a-bc38-3d8ff1876b6b",
-      "sprite": "cliff_vines/cliff_vine_065/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6453,28 +5661,6 @@
       "status": "complete",
       "pixellab_object_id": "4995ce90-1993-405c-b5bf-589033a2f178",
       "sprite": "cliff_vines/cliff_vine_067/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_068",
-      "rel": "cliff_vines/cliff_vine_068",
-      "name": "Purple wisteria fall 068 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, purple wisteria fall, a diagonal band of growth, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.03,
-        "world_px_height": 378,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9b4f4e6f-6680-4d12-a5f6-26c620fdeaa4",
-      "sprite": "cliff_vines/cliff_vine_068/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6629,6 +5815,28 @@
       "status": "complete",
       "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
       "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_077",
+      "rel": "cliff_vines/cliff_vine_077",
+      "name": "Frost-silvered winter fall 077",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, frost-silvered winter fall, gripping side-roots reaching out at intervals, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 9.5,
+        "world_px_height": 358,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3613c28a-2dfd-4d1f-812b-9555b02f002f",
+      "sprite": "cliff_vines/cliff_vine_077/sprite.webp",
       "rotations": {},
       "animations": []
     },
