@@ -137,16 +137,35 @@ ok(many.transport.length === 0 && many.states === 0,
   `and still offers nothing to play or choose (${many.transport.length} transport, ${many.states} states)`);
 ok(/Still · \d+ views/.test(many.title.join(" ")), `headed with the count (${many.title.join(", ")})`);
 ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
+// THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on
+// monsters and players the direction is OVER the preview … please make it
+// similar looking"). Over the stage, in its own control row, same buttons.
 const padPos = await p.evaluate(() => {
   const st = document.querySelector(".player-stage").getBoundingClientRect();
-  const pad = document.querySelector(".dirpad").getBoundingClientRect();
-  const zoom = [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "2×");
-  return { padTop: Math.round(pad.top), stageBottom: Math.round(st.bottom), stageTop: Math.round(st.top),
-    sameRow: !!zoom && Math.abs(zoom.getBoundingClientRect().top - pad.top) < 14 };
+  const pad = document.querySelector(".dirpad");
+  const b = pad.getBoundingClientRect();
+  const btn = pad.querySelector("button").getBoundingClientRect();
+  return { padBottom: Math.round(b.bottom), stageTop: Math.round(st.top),
+    ownRow: pad.parentElement.classList.contains("player-controls"),
+    btnH: Math.round(btn.height), btnW: Math.round(btn.width) };
 });
-console.log("pad position:", JSON.stringify(padPos));
-ok(padPos.padTop >= padPos.stageBottom - 2, "the pad sits under the stage, so the art never shifts down for it");
-ok(padPos.sameRow, "on the same row as zoom — one control strip, not a new one");
+await p.goto(`${W}#/monsters/mammoth`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const monPad = await p.evaluate(() => {
+  const st = document.querySelector(".player-stage").getBoundingClientRect();
+  const pad = document.querySelector(".dirpad");
+  const btn = pad.querySelector("button").getBoundingClientRect();
+  return { padBottom: Math.round(pad.getBoundingClientRect().bottom), stageTop: Math.round(st.top),
+    ownRow: pad.parentElement.classList.contains("player-controls"),
+    btnH: Math.round(btn.height), btnW: Math.round(btn.width) };
+});
+console.log("pad — scenery:", JSON.stringify(padPos), "monster:", JSON.stringify(monPad));
+ok(padPos.padBottom <= padPos.stageTop + 2, "the pad sits OVER the preview, like it does on a monster");
+ok(monPad.padBottom <= monPad.stageTop + 2, "and the monster's still does too — one layout, not two");
+ok(padPos.ownRow && monPad.ownRow, "in its own control row on both");
+ok(padPos.btnH === monPad.btnH, `with buttons the same size as a monster's (${padPos.btnH}px vs ${monPad.btnH}px)`);
+await p.goto(`${W}#/objects/${rotId}`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
 // THE BUTTONS MUST ACTUALLY SHOW DIFFERENT ART. Three views that all draw the
 // same pixels would be worse than none: it would read as confirmation.
 const views = await p.evaluate(async () => {

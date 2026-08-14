@@ -566,12 +566,6 @@ function makePlayer(entity, kind, opts = {}) {
     && Object.values(anims[stateNames[0]]?.dirs ?? {}).every((d) => (d?.frames ?? 1) <= 1);
   const noTransport = singleStill || stillMultiDir;
   const controls2 = h("div", { class: "player-controls" },
-    // For a still the pad rides BELOW the stage, with the zoom buttons. Above
-    // it, an extra row would push the art down on exactly the pieces that have
-    // rotations and leave it up on the ones that don't — the "viewer in the
-    // same place when I press next next next" complaint, reintroduced by a
-    // control row. Animated entities keep their pad where it has always been.
-    noTransport && maxDirs > 1 ? dirPad : null,
     noTransport ? null : playBtn,
     noTransport ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
     noTransport ? null : h("button", { class: "ghost-btn", title: "Next frame", onclick: () => step(1) }, "⏭"),
@@ -591,7 +585,12 @@ function makePlayer(entity, kind, opts = {}) {
   loadClip();
   const rootEl = h("div", { class: "player" },
     noTransport ? null : h("div", { class: "player-controls" }, stateSeg),
-    noTransport || maxDirs <= 1 ? null : h("div", { class: "player-controls" }, dirPad),
+    // ONE PLACE FOR THE DIRECTION PAD, whatever the entity (maintainer
+    // 2026-08-14: "on monsters and players the direction is OVER the preview
+    // — please make it similar looking"). A still's pad sat under the stage
+    // for a while so a rotated piece wouldn't push the art down; he'd rather
+    // have it look the same everywhere, so above the stage it is.
+    maxDirs <= 1 ? null : h("div", { class: "player-controls" }, dirPad),
     stage, overflowNote, controls2);
   return {
     el: rootEl,
