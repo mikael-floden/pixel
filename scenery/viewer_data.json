@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 602,
+  "scenery_count": 603,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 30
+      "done": 31
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 30,
+    "trees": 31,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13090,6 +13090,28 @@
       "status": "complete",
       "pixellab_object_id": "4c2f99f3-2673-4b8b-9d48-6c08a55b4a63",
       "sprite": "trees/tree_030/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_031",
+      "rel": "trees/tree_031",
+      "name": "Snow-dusted fir 031",
+      "category": "trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, snow-dusted fir, on a low grassy hummock, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.5,
+        "world_px_height": 169,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "76bb32d6-df8e-46c7-a629-e7d89eba2ba3",
+      "sprite": "trees/tree_031/sprite.webp",
       "rotations": {},
       "animations": []
     },
