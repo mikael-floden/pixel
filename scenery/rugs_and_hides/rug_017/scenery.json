@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:46:20+00:00",
+  "id": "rug_017",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 17,
+  "name": "Plaited reed floor mat 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "plaited reed floor mat",
+  "modifier": "child-sized",
+  "glow_concept": null,
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, plaited reed floor mat, child-sized, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.19,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2b16acb5-c377-4791-b84b-ac9ca77f00aa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
