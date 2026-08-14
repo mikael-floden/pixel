@@ -130,7 +130,7 @@ def main():
             retry = status == "failed"
             if not retry:
                 try:
-                    d = tv.finalize(client, rel, man, s, oid, src)
+                    d = tv.finalize(client, rel, man, s, oid, src, glow)
                     ok += 1; since += 1
                     print(f"  = {rel} {s} reshaped ({d:.0%} different) [{ok}]", flush=True)
                 except PixelLabError as ex:

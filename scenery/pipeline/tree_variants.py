@@ -212,7 +212,7 @@ def submit(client, oid, prompt, state):
     return new
 
 
-def finalize(client, rel, man, state, new_oid, source_img):
+def finalize(client, rel, man, state, new_oid, source_img, glow_used=None):
     detail = client.get_object(new_oid)
     url = (detail.get("rotation_urls") or {}).get("south") or client.sprite_url(detail)
     if not url:
@@ -258,6 +258,9 @@ def finalize(client, rel, man, state, new_oid, source_img):
     fresh = factory.read_manifest(rel) or man
     states = dict(fresh.get("states") or {})
     states[state] = {"sprite": out, "pixellab_object_id": new_oid,
+                     # Which glow produced this, so "G+E is ugly" can be traced
+                     # back to the concept that drew it rather than guessed at.
+                     "glow_concept": glow_used,
                      "difference_from_source": round(diff, 4),
                      "glow_score": round(glow_score(img), 4)}
     fresh["states"] = {k: states[k] for k in sorted(states)}
@@ -381,7 +384,7 @@ def main():
             retry = status == "failed"
             if not retry:
                 try:
-                    d = finalize(client, rel, man, st, oid, src)
+                    d = finalize(client, rel, man, st, oid, src, glow)
                     ok += 1
                     since_push += 1
                     mins = (time.monotonic() - started) / 60

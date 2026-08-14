@@ -111,7 +111,7 @@ def main():
             retry = status == "failed"
             if not retry:
                 try:
-                    d = tv.finalize(client, rel, man, st, oid, src)
+                    d = tv.finalize(client, rel, man, st, oid, src, glow)
                     ok += 1
                     print(f"  = {rel} {st} ({d:.0%} different)", flush=True)
                 except PixelLabError as ex:
