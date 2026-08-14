@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 729,
+  "scenery_count": 730,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1182,7 +1182,7 @@
       "id": "petrified_waves",
       "name": "Petrified Wave",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 169,
@@ -1295,6 +1295,7 @@
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 2,
+    "petrified_waves": 1,
     "puffballs": 2,
     "reed_beds": 7,
     "rock_spires": 2,
@@ -10938,6 +10939,28 @@
       "status": "complete",
       "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
       "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "petrified_wave_002",
+      "rel": "petrified_waves/petrified_wave_002",
+      "name": "Ancient petrified wave 002 \u00b7 lit",
+      "category": "petrified_waves",
+      "lights": "LIGHTS_ON",
+      "description": "a breaking wave turned entirely to grey stone, crest curled and frozen mid-fall, standing alone in dry grass, ancient petrified wave, the crest just about to break, tall, about three times human height, self-emissive at night, softly radiating light: blue light caught inside the stone crest",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.21,
+        "world_px_height": 121,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2619aac7-0294-4c61-8f89-6bb15f6398ca",
+      "sprite": "petrified_waves/petrified_wave_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

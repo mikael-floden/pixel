@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:15+00:00",
+  "id": "petrified_wave_002",
+  "group": "petrified_waves",
+  "rank": 168,
+  "index": 2,
+  "name": "Ancient petrified wave 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ancient petrified wave",
+  "modifier": "the crest just about to break",
+  "glow_concept": "blue light caught inside the stone crest",
+  "prompt": "a breaking wave turned entirely to grey stone, crest curled and frozen mid-fall, standing alone in dry grass, ancient petrified wave, the crest just about to break, tall, about three times human height, self-emissive at night, softly radiating light: blue light caught inside the stone crest",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "petrified_waves/petrified_wave_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.21,
+    "world_px_height": 121,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2619aac7-0294-4c61-8f89-6bb15f6398ca",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
