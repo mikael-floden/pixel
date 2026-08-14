@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:37:39+00:00",
+  "id": "haystack_016",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 16,
+  "name": "Netted stack, hanging stone weights 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "netted stack, hanging stone weights",
+  "modifier": "snow-dusted",
+  "glow_concept": "fireflies swarming the crown",
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, netted stack, hanging stone weights, snow-dusted, large, twice human height, self-emissive at night, softly radiating light: fireflies swarming the crown",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_016/sprite.webp",
+  "placement": {
+    "world_height_m": 2.4,
+    "world_px_height": 90,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0c62f303-6c5b-4890-89f9-1919772367ba",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
