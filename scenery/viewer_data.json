@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 583,
+  "scenery_count": 584,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -895,7 +895,7 @@
       "id": "stone_giant_hands",
       "name": "Stone Giant Hand",
       "quota": 5,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 128,
@@ -1062,6 +1062,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
+    "stone_giant_hands": 1,
     "stones": 23,
     "story_posts": 8,
     "streetlights": 6,
@@ -9827,6 +9828,28 @@
       "status": "complete",
       "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
       "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_giant_hand_002",
+      "rel": "stone_giant_hands/stone_giant_hand_002",
+      "name": "Grey granite 002 \u00b7 lit",
+      "category": "stone_giant_hands",
+      "lights": "LIGHTS_ON",
+      "description": "a colossal weathered stone hand emerging from the earth, fingers half-curled, moss in the knuckle creases, grey granite, hand holding a young tree, roughly six feet tall, human height, self-emissive at night, softly radiating light: a warm ember cupped in the palm",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "40a21cf5-8052-46af-855b-a17b8ca5e993",
+      "sprite": "stone_giant_hands/stone_giant_hand_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
