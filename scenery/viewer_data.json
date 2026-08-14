@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 775,
+  "scenery_count": 776,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 8,
+    "cliff_falls": 9,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 30,
@@ -4234,6 +4234,28 @@
       "status": "complete",
       "pixellab_object_id": "25269638-02cd-42a7-a243-0e44063a77b0",
       "sprite": "cliff_falls/cliff_fall_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_013",
+      "rel": "cliff_falls/cliff_fall_013",
+      "name": "Brown with spring meltwater 013",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_OFF",
+      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, brown with spring meltwater, an old thick growth with young shoots around it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 15.65,
+        "world_px_height": 589,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dc7b852c-1671-4087-8adf-3e20d9013fd8",
+      "sprite": "cliff_falls/cliff_fall_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
