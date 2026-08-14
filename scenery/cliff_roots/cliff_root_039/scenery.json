@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:48:57+00:00",
+  "id": "cliff_root_039",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 39,
+  "name": "Two great roots twined together 039",
+  "lights": "LIGHTS_OFF",
+  "variety": "two great roots twined together",
+  "modifier": "one thick root with two thin ones far off",
+  "glow_concept": null,
+  "prompt": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, two great roots twined together, one thick root with two thin ones far off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_039/sprite.webp",
+  "placement": {
+    "world_height_m": 7.81,
+    "world_px_height": 294,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "418ea66a-7791-450a-8381-1b8473e78afd",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
