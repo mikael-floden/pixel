@@ -898,7 +898,7 @@ const monsterLore = (m) => m.loreDesc ?? m.lore ?? `Travellers tell of the ${m.n
 // loreSlot reserves the height of the tallest blurb by mapping ONE function
 // over the domain, so the visible text and the ghost list must come from the
 // same accessor or the reserve stops being the true maximum.
-const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? ` · ${o.category}` : ""}${state.admin && o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
+const objectBlurb = (o) => `${o.loreDesc ?? o.description ?? ""}${o.category ? ` · ${titleish(o.category)}` : ""}${state.admin && o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
 /** What a hero IS, in words a player understands — "Human · Female", never
  *  the pipeline folder id (maintainer 2026-07-30). */
 const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
@@ -2178,7 +2178,7 @@ function viewObjects() {
     ...(q.sort === "newest"
       ? [h("div", { class: "grid" }, ...list.map(card))]
       : cats.map((cat) => h("div", {},
-          h("h2", {}, cat),
+          h("h2", { title: cat }, titleish(cat)),
           h("div", { class: "grid" }, ...list.filter((o) => o.category === cat).map(card))))));
 }
 // THE HEADER MUST BE ONE HEIGHT FOR EVERY PIECE (maintainer 2026-08-13: "The
@@ -2716,7 +2716,14 @@ function sfxLibraryList() {
   }
   return out;
 }
-const titleish = (s) => String(s).replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+// A slug is how the domains talk to each other; it is not how a page should
+// read (maintainer 2026-08-14: "the sub titles on the Scenery overview page is
+// a bit technical with _ … 'ancient_trees' should be 'Ancient Trees'"). Little
+// joining words stay lowercase unless they lead — "Chairs and Benches", not
+// "Chairs And Benches".
+const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "with"]);
+const titleish = (s) => String(s).replace(/[_-]+/g, " ").trim().toLowerCase()
+  .replace(/\S+/g, (w, i) => (i && SMALL_WORDS.has(w) ? w : w.replace(/./, (c) => c.toUpperCase())));
 function openSoundPicker({ title, forWhat, onPick }) {
   // NOTHING MAY BE SOUNDING WHEN THE PICKER OPENS (maintainer 2026-08-06).
   // The modal blocks every control that could stop it, and the game's own

@@ -270,6 +270,19 @@ const list = await p.evaluate(() => {
     other: [...new Set(subs.filter((s) => !/^static/.test(s)))] };
 });
 console.log("list:", JSON.stringify(list));
+// GROUP HEADINGS ARE FOR READERS, NOT FOR MACHINES (maintainer 2026-08-14:
+// "the sub titles on the Scenery overview page is a bit technical with _ …
+// 'ancient_trees' should be 'Ancient Trees'"). The slug survives as the
+// heading's tooltip, so nothing is lost for whoever needs the real id.
+const heads = await p.evaluate(() => [...document.querySelectorAll("h2")]
+  .map((x) => ({ text: x.textContent, slug: x.getAttribute("title") })));
+const rawHeads = heads.filter((h2) => /_/.test(h2.text));
+console.log(`headings: ${heads.length}, e.g. ${heads.slice(1, 4).map((h2) => `${h2.slug} → ${h2.text}`).join(", ")}`);
+ok(heads.length > 20, `the overview really is grouped (${heads.length} headings)`);
+ok(rawHeads.length === 0, `no heading shows a raw slug${rawHeads.length ? ` — ${rawHeads.slice(0, 3).map((h2) => h2.text).join(", ")}` : ""}`);
+ok(heads.every((h2) => h2.slug && !/_/.test(h2.text)), "and each keeps its id in the tooltip");
+ok(heads.some((h2) => /\band\b/.test(h2.text)) === heads.some((h2) => /_and_/.test(h2.slug ?? "")),
+  "joining words stay lowercase — “Chairs and Benches”, not “Chairs And Benches”");
 ok(list.still === 0, "no card claims a “still” animation");
 ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
 // Static and multi-view are not opposites — the card says both, so you know a
