@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:13:34+00:00",
+  "id": "lightning_oak_002",
+  "group": "lightning_oaks",
+  "rank": 121,
+  "index": 2,
+  "name": "Half-alive split oak 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "half-alive split oak",
+  "modifier": "regrowth sprouting from the burl",
+  "glow_concept": "the scar glowing faintly at dusk",
+  "prompt": "a massive oak split and charred by an old lightning strike, half the trunk black, the other half stubbornly alive and leafing, half-alive split oak, regrowth sprouting from the burl, large, twice human height, self-emissive at night, softly radiating light: the scar glowing faintly at dusk",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lightning_oaks/lightning_oak_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.41,
+    "world_px_height": 91,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7a78f332-c184-458e-9166-431cf51e767b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
