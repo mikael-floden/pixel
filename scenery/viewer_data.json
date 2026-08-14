@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 525,
+  "scenery_count": 526,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -118,7 +118,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 70,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 17,
@@ -934,7 +934,7 @@
     "fences": 9,
     "ferns": 7,
     "fish_drying_racks": 4,
-    "flame_niches": 8,
+    "flame_niches": 9,
     "flower_stands": 5,
     "flower_trellises": 2,
     "frozen_springs": 1,
@@ -5118,6 +5118,28 @@
       "status": "complete",
       "pixellab_object_id": "25db373f-cff2-4483-9eb2-92e12c011408",
       "sprite": "flame_niches/flame_niche_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flame_niche_018",
+      "rel": "flame_niches/flame_niche_018",
+      "name": "Clay oven-shaped niche 018 \u00b7 lit",
+      "category": "flame_niches",
+      "lights": "LIGHTS_ON",
+      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, clay oven-shaped niche, snow-dusted, roughly six feet tall, human height, self-emissive at night, softly radiating light: bed of ember coals glowing deep red",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.51,
+        "world_px_height": 57,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5cb7a091-250b-4ab5-90dc-d3b3439bb52e",
+      "sprite": "flame_niches/flame_niche_018/sprite.webp",
       "rotations": {},
       "animations": []
     },

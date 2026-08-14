@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:19:07+00:00",
+  "id": "flame_niche_018",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 18,
+  "name": "Clay oven-shaped niche 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "clay oven-shaped niche",
+  "modifier": "snow-dusted",
+  "glow_concept": "bed of ember coals glowing deep red",
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, clay oven-shaped niche, snow-dusted, roughly six feet tall, human height, self-emissive at night, softly radiating light: bed of ember coals glowing deep red",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flame_niches/flame_niche_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.51,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5cb7a091-250b-4ab5-90dc-d3b3439bb52e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
