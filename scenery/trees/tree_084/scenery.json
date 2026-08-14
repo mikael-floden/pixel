@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:57:44+00:00",
+  "id": "tree_084",
+  "group": "trees",
+  "rank": 1,
+  "index": 84,
+  "name": "Slim young aspen 084 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "slim young aspen",
+  "modifier": "with thick exposed roots",
+  "glow_concept": "golden sap veins glowing through bark cracks",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, slim young aspen, with thick exposed roots, towering, many times human height, self-emissive at night, softly radiating light: golden sap veins glowing through bark cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_084/sprite.webp",
+  "placement": {
+    "world_height_m": 4.75,
+    "world_px_height": 179,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e4f7fda9-06fa-480b-98e4-77cff06f6b9e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
