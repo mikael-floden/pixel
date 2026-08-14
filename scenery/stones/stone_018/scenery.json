@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:33:34+00:00",
+  "id": "stone_018",
+  "group": "stones",
+  "rank": 2,
+  "index": 18,
+  "name": "Split rock with sharp cleft 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "split rock with sharp cleft",
+  "modifier": "young and vigorous",
+  "glow_concept": "ring of ghost-blue lichen circles",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, split rock with sharp cleft, young and vigorous, small, knee-high, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_018/sprite.webp",
+  "placement": {
+    "world_height_m": 0.48,
+    "world_px_height": 18,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c824cb8f-046f-4cff-94ff-6b43d20cf7b8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
