@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:51:58+00:00",
+  "id": "reed_bed_014",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 14,
+  "name": "Tall green summer reeds 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tall green summer reeds",
+  "modifier": "unusually broad and squat",
+  "glow_concept": "a tiny hidden lantern glowing deep in the reeds",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, tall green summer reeds, unusually broad and squat, roughly six feet tall, human height, self-emissive at night, softly radiating light: a tiny hidden lantern glowing deep in the reeds",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "reed_beds/reed_bed_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.85,
+    "world_px_height": 70,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "296f0fdf-1cfd-4ab3-bd99-12a8c0208b5c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
