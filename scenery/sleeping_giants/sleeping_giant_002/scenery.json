@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:34:31+00:00",
+  "id": "sleeping_giant_002",
+  "group": "sleeping_giants",
+  "rank": 160,
+  "index": 2,
+  "name": "Weathered sleeping giant 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "weathered sleeping giant",
+  "modifier": "a knee breaking the turf",
+  "glow_concept": "light between the stone fingers",
+  "prompt": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass, weathered sleeping giant, a knee breaking the turf, tall, about three times human height, self-emissive at night, softly radiating light: light between the stone fingers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "sleeping_giants/sleeping_giant_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.15,
+    "world_px_height": 119,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "12b9fb55-491a-4112-8b82-80422c37d8e4",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
