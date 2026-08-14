@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:32:03+00:00",
+  "id": "orchard_tree_027",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 27,
+  "name": "Bare winter orchard tree 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "bare winter orchard tree",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": null,
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, bare winter orchard tree, with fallen leaves collected at its base, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_027/sprite.webp",
+  "placement": {
+    "world_height_m": 2.75,
+    "world_px_height": 104,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ab2a56b8-5f11-49f6-979e-20520a1894c3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
