@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:42:33+00:00",
+  "id": "chair_007",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 7,
+  "name": "Milking stool with initials burned away 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "milking stool with initials burned away",
+  "modifier": "slightly crooked with age",
+  "glow_concept": null,
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, milking stool with initials burned away, slightly crooked with age, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.02,
+    "world_px_height": 38,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2578a139-180e-4fb6-ac1a-ef92c4711167",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
