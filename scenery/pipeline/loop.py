@@ -128,6 +128,7 @@ def can_spend(cfg, state):
 # sits, and the builder runs roughly one deploy at a time instead of nine. The
 # per-piece COMMIT is unconditional, so a killed runner can lose at most the
 # pushes, never the work.
+STOP_FILE = os.path.join(factory.ROOT, ".stop")   # see the drain gate below
 PUSH_EVERY = 1          # legacy serial path (--once) pushes immediately
 PUSH_BATCH = 10         # pieces per push in the parallel pipeline
 PUSH_MAX_WAIT_S = 240   # ...or this long, whichever comes first
@@ -432,6 +433,14 @@ def main():
             stop_submitting = "time budget"
         if stop_submitting is None and submitted >= max_pieces:
             stop_submitting = f"piece cap ({max_pieces})"
+        # GRACEFUL DRAIN: `touch scenery/.stop` and the loop stops submitting
+        # but still finishes every job already in flight, so a pause costs no
+        # paid-for art and leaves no untagged orphans in the PixelLab store
+        # (maintainer 2026-08-14: "You can pause the generation when the ones
+        # already generating has completed"). SIGTERM cannot do this — it drops
+        # the in-flight jobs on the floor.
+        if stop_submitting is None and os.path.exists(STOP_FILE):
+            stop_submitting = "stop file (scenery/.stop) — draining in flight"
         # THE GOAL (maintainer 2026-08-14): stop at 1000 live pieces, full stop.
         goal = int((cfg.get("goal") or {}).get("target_pieces") or 0)
         if stop_submitting is None and goal:

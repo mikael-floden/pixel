@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:46:18+00:00",
+  "id": "cliff_vine_141",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 141,
+  "name": "Old thick-stemmed ancient fall 141",
+  "lights": "LIGHTS_OFF",
+  "variety": "old thick-stemmed ancient fall",
+  "modifier": "a lazy meander across the width",
+  "glow_concept": null,
+  "prompt": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, old thick-stemmed ancient fall, a lazy meander across the width, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_141/sprite.webp",
+  "placement": {
+    "world_height_m": 10.68,
+    "world_px_height": 402,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "99768043-c34f-4497-833d-e7e981d9acb7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
