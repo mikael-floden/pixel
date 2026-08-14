@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -3898,26 +3898,28 @@
       "id": "cliff_vines",
       "prefix": "cliff_vine",
       "name": "Cliff Vine",
-      "quota": 50,
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall",
+      "quota": 70,
+      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide",
       "world_height_m": [
-        3.5,
-        6.5
+        7.0,
+        16.0
       ],
-      "art_size": 160,
+      "art_size": 256,
       "variety": [
-        "dark green ivy curtain",
+        "dark green ivy fall",
         "red-leaved autumn creeper fall",
-        "flowering white bindweed cascade",
-        "moss-heavy dripping vine curtain",
-        "yellow honeysuckle cascade",
-        "frost-silvered winter vine fall",
+        "white-flowering bindweed fall",
+        "moss-heavy dripping fall",
+        "yellow honeysuckle fall",
+        "frost-silvered winter fall",
         "berry-dotted bramble fall",
-        "fern-mixed green cascade",
-        "pale lichen-strung vine curtain",
-        "wilted dry brown vine fall",
-        "broad double-width ivy curtain",
-        "wisteria fall in purple bloom"
+        "fern-mixed green fall",
+        "pale lichen-strung fall",
+        "dry brown wilted fall",
+        "purple wisteria fall",
+        "blue-flowered creeper fall",
+        "variegated cream-and-green fall",
+        "old thick-stemmed ancient fall"
       ],
       "glow_concepts": [
         "luminous sap veins glowing through the leaves",
@@ -3928,20 +3930,33 @@
       ],
       "animation_idea": "leaves rippling in a draft down the rock face",
       "lore_fit": "The mountains are the oldest memories in Nangijala, and green still climbs them wherever names are spoken often.",
-      "modifier_pool": "nature"
+      "modifiers": [
+        "a single narrow ribbon of growth",
+        "two falls side by side, one longer",
+        "widening as it descends",
+        "broken by a bare rock band mid-fall",
+        "reaching the ground and pooling",
+        "ending high, swinging free",
+        "tangled with dead stems",
+        "one side thinner than the other",
+        "with a bird nest deep in the leaves",
+        "stems thick as arms at the top",
+        "a thin trickle of water behind it",
+        "spilling over a ledge halfway down"
+      ]
     },
     {
       "rank": 102,
       "id": "cliff_features",
       "prefix": "cliff_feature",
       "name": "Cliff Feature",
-      "quota": 30,
+      "quota": 45,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid",
       "world_height_m": [
-        1.2,
-        3.0
+        2.0,
+        6.0
       ],
-      "art_size": 128,
+      "art_size": 192,
       "variety": [
         "jutting mossy stone ledge",
         "thick gnarled root bursting from the rock",
@@ -3962,7 +3977,18 @@
       ],
       "animation_idea": "a thin trickle of dust falling from the ledge",
       "lore_fit": "Even a wall of old stone keeps small lives and small lights in its cracks.",
-      "modifier_pool": "nature"
+      "modifiers": [
+        "jutting far out from the wall",
+        "a deep shadowed alcove",
+        "a diagonal band across the face",
+        "stacked as three small ledges",
+        "crumbling with fallen rock beneath",
+        "split by a wide vertical crack",
+        "wet and dark with seepage",
+        "crowned with tough grass",
+        "undercut, overhanging",
+        "with a small tree rooted on it"
+      ]
     },
     {
       "rank": 103,
@@ -5724,6 +5750,191 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max — variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
+    },
+    {
+      "rank": 155,
+      "id": "cliff_roots",
+      "prefix": "cliff_root",
+      "name": "Cliff Root",
+      "quota": 70,
+      "description": "a mass of enormous tree roots spilling down a vertical rock face, thick woody ropes gripping the stone all the way down, soil and moss caught between them",
+      "world_height_m": [
+        6.0,
+        14.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "pale bleached roots",
+        "dark wet roots",
+        "moss-furred roots",
+        "roots with ferns rooted between them",
+        "fine hair-roots in a dense veil",
+        "two great roots twined together"
+      ],
+      "modifiers": [
+        "one great root twisted alone down the face",
+        "a wide fan of roots spreading as it falls",
+        "roots braided into a rope",
+        "clumps of soil still held aloft",
+        "roots ending in a knot above the ground",
+        "a hollow behind the roots"
+      ],
+      "glow_concepts": [
+        "soul-light running up the roots",
+        "glow-moss packed between them",
+        "the root tips glowing faintly"
+      ],
+      "animation_idea": "slow drift or fall",
+      "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
+      "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
+    },
+    {
+      "rank": 156,
+      "id": "cliff_falls",
+      "prefix": "cliff_fall",
+      "name": "Cliff Fall",
+      "quota": 50,
+      "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side",
+      "world_height_m": [
+        8.0,
+        18.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "a thin silver thread",
+        "a broad white curtain",
+        "stepped, breaking on two ledges",
+        "half-frozen with ice columns",
+        "brown with spring meltwater",
+        "a fine misting veil"
+      ],
+      "modifiers": [
+        "splitting into two threads midway",
+        "blown sideways at the bottom",
+        "landing in a small rock basin",
+        "disappearing into a crack",
+        "framed by hanging ferns",
+        "with a rainbow of spray at its foot"
+      ],
+      "glow_concepts": [
+        "the water glowing white as it falls",
+        "light welling from the mist",
+        "the whole fall shining like moonlight"
+      ],
+      "animation_idea": "slow drift or fall",
+      "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
+      "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
+    },
+    {
+      "rank": 157,
+      "id": "cliff_shrubs",
+      "prefix": "cliff_shrub",
+      "name": "Cliff Shrub",
+      "quota": 60,
+      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack",
+      "world_height_m": [
+        1.5,
+        4.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "wind-flattened juniper",
+        "flowering broom in yellow",
+        "dark holly bush",
+        "autumn-red rowan sapling",
+        "grey-leaved sea buckthorn",
+        "stunted twisted pine"
+      ],
+      "modifiers": [
+        "growing from a narrow crack",
+        "perched on a tiny ledge",
+        "hanging almost upside down",
+        "two shrubs from one crack",
+        "half its branches dead",
+        "a bird nest in its crown"
+      ],
+      "glow_concepts": [
+        "blossoms glowing along the branches",
+        "light in the crack at its root",
+        "the leaves shining faintly"
+      ],
+      "animation_idea": "slow drift or fall",
+      "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
+      "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
+    },
+    {
+      "rank": 158,
+      "id": "cliff_mosses",
+      "prefix": "cliff_moss",
+      "name": "Cliff Moss",
+      "quota": 50,
+      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense",
+      "world_height_m": [
+        3.0,
+        9.0
+      ],
+      "art_size": 192,
+      "variety": [
+        "deep emerald cushion moss",
+        "grey-green lichen crust",
+        "rust-orange lichen patches",
+        "black wet moss",
+        "frost-tipped winter moss",
+        "moss with tiny ferns through it"
+      ],
+      "modifiers": [
+        "a tall narrow stripe down the wall",
+        "spreading in wide blotches",
+        "thickest where water seeps",
+        "peeling away at one edge",
+        "broken by bare rock",
+        "with liverworts at the base"
+      ],
+      "glow_concepts": [
+        "the moss glowing soft green",
+        "light seeping from beneath the cushions",
+        "glow-lichen in bright rings"
+      ],
+      "animation_idea": "slow drift or fall",
+      "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
+      "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
+    },
+    {
+      "rank": 159,
+      "id": "cliff_ledgetrees",
+      "prefix": "cliff_ledgetree",
+      "name": "Cliff Ledge Tree",
+      "quota": 45,
+      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone",
+      "world_height_m": [
+        4.0,
+        9.0
+      ],
+      "art_size": 256,
+      "variety": [
+        "wind-bent pine",
+        "white birch leaning far out",
+        "gnarled oak on a wide ledge",
+        "autumn-gold larch",
+        "dead silvered snag",
+        "blossoming cherry"
+      ],
+      "modifiers": [
+        "roots spilling over the ledge lip",
+        "leaning out at a hard angle",
+        "sharing the ledge with a boulder",
+        "with a rope swing hanging from it",
+        "half its roots in air",
+        "grass and flowers around its base"
+      ],
+      "glow_concepts": [
+        "lanterns hung in its branches",
+        "the trunk glowing where it grips",
+        "fireflies around its crown"
+      ],
+      "animation_idea": "slow drift or fall",
+      "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
+      "lore_fit": "The mountains are the oldest memories; green and water still work down their faces."
     }
   ],
   "modifier_pools": {
