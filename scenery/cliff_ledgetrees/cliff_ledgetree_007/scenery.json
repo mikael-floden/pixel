@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:36:52+00:00",
+  "id": "cliff_ledgetree_007",
+  "group": "cliff_ledgetrees",
+  "rank": 159,
+  "index": 7,
+  "name": "Wind-bent pine 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "wind-bent pine",
+  "modifier": "roots spilling over the ledge lip",
+  "glow_concept": null,
+  "prompt": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, wind-bent pine, roots spilling over the ledge lip, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_ledgetrees/cliff_ledgetree_007/sprite.webp",
+  "placement": {
+    "world_height_m": 6.3,
+    "world_px_height": 237,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "24e55dd9-b272-40cc-bb7e-905763b55214",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

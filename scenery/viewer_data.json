@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 656,
+  "scenery_count": 657,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 160,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 3,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 3,
+    "cliff_ledgetrees": 4,
     "cliff_mosses": 7,
     "cliff_roots": 6,
     "cliff_shrubs": 7,
@@ -4383,6 +4383,28 @@
       "status": "complete",
       "pixellab_object_id": "a6569275-3c51-4ed2-b7ba-1111985322d2",
       "sprite": "cliff_ledgetrees/cliff_ledgetree_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_007",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_007",
+      "name": "Wind-bent pine 007",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_OFF",
+      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, wind-bent pine, roots spilling over the ledge lip, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 6.3,
+        "world_px_height": 237,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "24e55dd9-b272-40cc-bb7e-905763b55214",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_007/sprite.webp",
       "rotations": {},
       "animations": []
     },
