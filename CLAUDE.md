@@ -86,6 +86,15 @@ symptom. Currently excluded from the image while remaining in the repo:
 34 MB, served by nothing — see the comment there and the board messages to
 tiles2/maps2/wiki, 2026-07-31).
 
+**OFF-GITHUB BACKUP.** No human keeps a clone — the agents are the only ones
+who touch git — so GitHub is a single point of failure. `.github/workflows/
+backup-gdrive.yml` drops a nightly `git archive HEAD` zip (current state, no
+history; 274 MB) into the maintainer's personal Drive via rclone, keeping the
+newest 14. A GitHub runner does the whole job; the only human step is a
+one-time Google OAuth consent. Note the archive ships **tracked files only**,
+which is what keeps the gitignored `.env` out of cloud storage — a `tar` of the
+working tree would leak `PIXELLAB_API_KEY`. Setup + restore: `.github/BACKUP.md`.
+
 The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
 cleanly. The only real cross-domain hazard is editing a *shared* file at once;
 each domain currently keeps its own copy of `pixellab_client.py` (full

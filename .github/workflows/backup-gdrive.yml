@@ -1,0 +1,175 @@
+name: backup to gdrive
+
+# OFF-GITHUB BACKUP (maintainer 2026-08-14: "usually every person in the team
+# has a backup of the entire project — since only AI agents use git here, I
+# want something that zips and sends the project to my gdrive").
+#
+# WHY THIS EXISTS: with no human clone anywhere, GitHub is a single point of
+# failure — an account lockout, a bad force-push, or a repo deletion takes the
+# whole project. This drops a self-contained zip into a Drive folder the
+# maintainer owns personally, which is a DIFFERENT blast radius from both
+# GitHub and the GCP project.
+#
+# WHAT IT SHIPS: `git archive HEAD` — the current state of every TRACKED file,
+# no history (the maintainer: "only has to contain the current state"). That
+# definition is doing real work:
+#   • no .git/ (2.3 GB of history; GitHub is the history)
+#   • no node_modules/ (gitignored — `npm ci` restores it)
+#   • no .env, so PIXELLAB_API_KEY can never ride along in a file that ends up
+#     in cloud storage. A tar of the working tree would have leaked it.
+# Measured 2026-08-14: 42,920 entries, ~325 MB uncompressed, 274 MB zipped.
+#
+# THE BYTES NEVER TOUCH A CHAT SESSION: rclone streams runner → Drive directly.
+# (The Claude Drive connector can only take inline base64, which for this zip
+# is ~477x a model context — see .github/BACKUP.md.)
+
+on:
+  schedule:
+    # 08:17 UTC — after the art loops' 02:30 pass has normally finished, so the
+    # snapshot catches the day's generated art. Off-round minute on purpose.
+    - cron: "17 8 * * *"
+  workflow_dispatch:
+    inputs:
+      keep:
+        description: "How many backups to keep in Drive (older ones are deleted)"
+        default: "14"
+
+# One backup at a time. A scheduled run and a manual one racing would upload
+# two near-identical 274 MB zips and confuse the prune step's count.
+concurrency:
+  group: backup-gdrive
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # measured ~6 min; a ceiling to catch a hung upload
+    permissions:
+      contents: read
+    steps:
+      # Shallow: we archive HEAD's tree, so history would be pure download cost.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build the snapshot zip
+        run: |
+          set -euo pipefail
+          NAME="nangijala-$(date -u +%Y%m%d-%H%M)-$(git rev-parse --short HEAD).zip"
+          # Name sorts lexicographically == chronologically, which is what the
+          # prune step below relies on to find the oldest.
+          echo "NAME=$NAME" >> "$GITHUB_ENV"
+          git archive --format=zip -9 -o "$NAME" HEAD
+          ls -lh "$NAME"
+
+      # A backup that silently uploads a truncated zip is worse than no backup,
+      # because it looks like success. Test the actual archive, then floor-check
+      # the entry count so a "valid but nearly empty" zip also fails loudly.
+      - name: Verify the zip before trusting it
+        run: |
+          set -euo pipefail
+          unzip -t "$NAME" > /dev/null
+          ENTRIES=$(unzip -l "$NAME" | tail -1 | awk '{print $2}')
+          BYTES=$(stat -c%s "$NAME")
+          echo "entries=$ENTRIES bytes=$BYTES"
+          # Real archive is ~42,900 entries / ~274 MB. These floors catch a
+          # broken checkout or an empty tree, not normal growth or shrinkage.
+          [ "$ENTRIES" -gt 20000 ] || { echo "only $ENTRIES entries — refusing to upload"; exit 1; }
+          [ "$BYTES" -gt 50000000 ] || { echo "only $BYTES bytes — refusing to upload"; exit 1; }
+          echo "BYTES=$BYTES" >> "$GITHUB_ENV"
+
+      - name: Install rclone (pinned)
+        run: |
+          set -euo pipefail
+          V=v1.68.2
+          curl -fsSL -o rclone.zip "https://downloads.rclone.org/${V}/rclone-${V}-linux-amd64.zip"
+          unzip -q rclone.zip
+          sudo install -m 755 rclone-*-linux-amd64/rclone /usr/local/bin/rclone
+          rclone version | head -1
+
+      # rclone is configured ENTIRELY from env vars (RCLONE_CONFIG_<REMOTE>_<KEY>)
+      # so no credential file is ever written to the runner's disk.
+      - name: Upload to Drive
+        env:
+          RCLONE_CONFIG_GD_TYPE: drive
+          RCLONE_CONFIG_GD_SCOPE: drive
+          RCLONE_CONFIG_GD_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          RCLONE_CONFIG_GD_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          RCLONE_CONFIG_GD_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
+          RCLONE_CONFIG_GD_ROOT_FOLDER_ID: ${{ vars.GDRIVE_FOLDER_ID }}
+        run: |
+          set -euo pipefail
+          rclone copy "$NAME" gd: \
+            --drive-chunk-size 64M \
+            --transfers 1 \
+            --retries 5 --retries-sleep 20s \
+            --low-level-retries 20 \
+            --stats 30s --stats-one-line
+
+      # VERIFY IT LANDED. rclone copy exiting 0 is not proof the object is
+      # readable at the far end at the right size — ask Drive what it has.
+      - name: Confirm the upload is really there, at the right size
+        env:
+          RCLONE_CONFIG_GD_TYPE: drive
+          RCLONE_CONFIG_GD_SCOPE: drive
+          RCLONE_CONFIG_GD_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          RCLONE_CONFIG_GD_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          RCLONE_CONFIG_GD_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
+          RCLONE_CONFIG_GD_ROOT_FOLDER_ID: ${{ vars.GDRIVE_FOLDER_ID }}
+        run: |
+          set -euo pipefail
+          REMOTE=$(rclone lsjson gd: --files-only | jq -r --arg n "$NAME" '.[] | select(.Name==$n) | .Size')
+          echo "local=$BYTES remote=${REMOTE:-MISSING}"
+          [ "$REMOTE" = "$BYTES" ] || { echo "size mismatch or missing — backup NOT trustworthy"; exit 1; }
+          echo "verified $NAME ($BYTES bytes) in Drive"
+
+      # Retention. Drive's Trash keeps counting against the 15 GB quota for 30
+      # days, so delete permanently (--drive-use-trash=false) or pruning frees
+      # nothing for a month.
+      - name: Prune old backups
+        env:
+          KEEP: ${{ inputs.keep || '14' }}
+          RCLONE_CONFIG_GD_TYPE: drive
+          RCLONE_CONFIG_GD_SCOPE: drive
+          RCLONE_CONFIG_GD_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          RCLONE_CONFIG_GD_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          RCLONE_CONFIG_GD_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
+          RCLONE_CONFIG_GD_ROOT_FOLDER_ID: ${{ vars.GDRIVE_FOLDER_ID }}
+        run: |
+          set -euo pipefail
+          # Only ever considers files matching OUR naming scheme, so anything
+          # else in the folder (the README, a manual copy) is never touched.
+          rclone lsjson gd: --files-only \
+            | jq -r --argjson k "${KEEP}" \
+                '[.[] | select(.Name | test("^nangijala-[0-9]{8}-[0-9]{4}-.*\\.zip$"))]
+                 | sort_by(.Name) | reverse | .[$k:] | .[].Name' > old.txt
+          if [ -s old.txt ]; then
+            while read -r f; do
+              echo "deleting $f"
+              rclone deletefile "gd:$f" --drive-use-trash=false
+            done < old.txt
+          else
+            echo "nothing to prune (keeping newest $KEEP)"
+          fi
+
+      - name: Summary
+        env:
+          RCLONE_CONFIG_GD_TYPE: drive
+          RCLONE_CONFIG_GD_SCOPE: drive
+          RCLONE_CONFIG_GD_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          RCLONE_CONFIG_GD_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          RCLONE_CONFIG_GD_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
+          RCLONE_CONFIG_GD_ROOT_FOLDER_ID: ${{ vars.GDRIVE_FOLDER_ID }}
+        run: |
+          {
+            echo "### Backup uploaded"
+            echo ""
+            echo "\`$NAME\` — $(numfmt --to=iec "$BYTES")"
+            echo ""
+            echo "Now in Drive:"
+            echo ""
+            rclone lsjson gd: --files-only \
+              | jq -r '[.[] | select(.Name | test("^nangijala-.*\\.zip$"))]
+                       | sort_by(.Name) | reverse | .[]
+                       | "- \(.Name) — \(.Size/1048576 | floor) MB"'
+          } >> "$GITHUB_STEP_SUMMARY"
