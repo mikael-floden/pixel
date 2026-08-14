@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 600,
-  "target_count": 2651,
+  "scenery_count": 601,
+  "target_count": 2529,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -26,14 +26,14 @@
       "rank": 3,
       "id": "graves",
       "name": "Grave",
-      "quota": 11,
+      "quota": 12,
       "done": 12
     },
     {
       "rank": 4,
       "id": "braziers",
       "name": "Brazier",
-      "quota": 14,
+      "quota": 16,
       "done": 16
     },
     {
@@ -47,7 +47,7 @@
       "rank": 6,
       "id": "waystones",
       "name": "Waystone",
-      "quota": 90,
+      "quota": 14,
       "done": 14
     },
     {
@@ -109,8 +109,8 @@
     {
       "rank": 15,
       "id": "streetlights",
-      "name": "Streetlight",
-      "quota": 5,
+      "name": "Road Light",
+      "quota": 40,
       "done": 5
     },
     {
@@ -159,7 +159,7 @@
       "rank": 22,
       "id": "offering_tables",
       "name": "Offering Table",
-      "quota": 58,
+      "quota": 11,
       "done": 11
     },
     {
@@ -181,7 +181,7 @@
       "id": "bushes",
       "name": "Bush",
       "quota": 52,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 26,
@@ -236,7 +236,7 @@
       "rank": 33,
       "id": "cattail_clumps",
       "name": "Cattail Clump",
-      "quota": 36,
+      "quota": 6,
       "done": 6
     },
     {
@@ -782,7 +782,7 @@
       "rank": 111,
       "id": "giant_fallen_bells",
       "name": "Giant Fallen Bell",
-      "quota": 3,
+      "quota": 1,
       "done": 1
     },
     {
@@ -859,7 +859,7 @@
       "rank": 122,
       "id": "fairy_stumps",
       "name": "Fairy Stump",
-      "quota": 3,
+      "quota": 1,
       "done": 1
     },
     {
@@ -929,7 +929,7 @@
       "rank": 132,
       "id": "bone_arbors",
       "name": "Bone Arbor",
-      "quota": 3,
+      "quota": 0,
       "done": 0
     },
     {
@@ -1142,7 +1142,7 @@
     "braziers": 16,
     "briar_thickets": 13,
     "broken_columns": 2,
-    "bushes": 9,
+    "bushes": 10,
     "cairns": 15,
     "light": 1,
     "carts": 7,
@@ -3103,6 +3103,28 @@
       "status": "complete",
       "pixellab_object_id": "40a3bcc9-c4c5-45e8-ae7a-cf1b8478f0ab",
       "sprite": "bushes/bush_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bush_013",
+      "rel": "bushes/bush_013",
+      "name": "Grey-leaved sea buckthorn with orange berries 013",
+      "category": "bushes",
+      "lights": "LIGHTS_OFF",
+      "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, grey-leaved sea buckthorn with orange berries, with berries scattered beneath it, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ff80c4b3-008c-4dcd-abcd-faa0725ba434",
+      "sprite": "bushes/bush_013/sprite.webp",
       "rotations": {},
       "animations": []
     },

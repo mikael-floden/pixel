@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five).",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -209,8 +209,8 @@
       "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
       "lore_fit": "A grave with a legible name is a spoken fact holding its shape — the first defense against the Quiet.",
       "modifier_pool": "structure",
-      "quota": 11,
-      "_saturated": "maintainer said ENOUGH (2 note(s)) — frozen at 11 on 2026-08-14. Saturation is not quality: braziers and graves are among his favourites, he simply has plenty. Unfreeze only on his word."
+      "quota": 12,
+      "_saturated": "maintainer: enough of these (2 note(s)) — frozen at 12, 2026-08-14"
     },
     {
       "rank": 4,
@@ -252,8 +252,8 @@
       "animation_idea": "flames licking upward with sparks drifting off",
       "lore_fit": "A tended brazier is sacred infrastructure — the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
       "modifier_pool": "structure",
-      "quota": 14,
-      "_saturated": "maintainer said ENOUGH (1 note(s)) — frozen at 14 on 2026-08-14. Saturation is not quality: braziers and graves are among his favourites, he simply has plenty. Unfreeze only on his word."
+      "quota": 16,
+      "_saturated": "maintainer: enough of these (2 note(s)) — frozen at 16, 2026-08-14"
     },
     {
       "rank": 5,
@@ -328,7 +328,9 @@
       ],
       "animation_idea": "rune glow pulsing slowly brighter and dimmer",
       "lore_fit": "Waystones are facts pressed toward mineral — direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 14,
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 14, 2026-08-14"
     },
     {
       "rank": 7,
@@ -523,7 +525,7 @@
       "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does.",
       "modifier_pool": "structure",
       "quota": 12,
-      "_saturated": "maintainer said ENOUGH (2 note(s)) — frozen at 12 on 2026-08-14. Saturation is not quality: braziers and graves are among his favourites, he simply has plenty. Unfreeze only on his word."
+      "_saturated": "maintainer: enough of these (2 note(s)) — frozen at 12, 2026-08-14"
     },
     {
       "rank": 12,
@@ -650,42 +652,62 @@
       "rank": 15,
       "id": "streetlights",
       "prefix": "streetlight",
-      "name": "Streetlight",
-      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground",
+      "name": "Road Light",
+      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME — a fire basket, a horn lantern with a candle, an oil cresset — no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn",
       "world_height_m": [
-        2.6,
-        4.2
+        2.0,
+        3.4
       ],
-      "art_size": 128,
+      "art_size": 96,
       "variety": [
-        "ornate cast-iron gas lamp",
-        "square-headed medieval wooden post",
-        "green-enameled telegraph-era lamp",
-        "curved-neck art nouveau lamp",
-        "double-headed twin lantern post",
-        "fluted stone column lamp",
-        "onion-domed brass head",
-        "black wrought iron with scrollwork",
-        "verdigris copper-headed lamp",
-        "hexagonal glass head lamp",
-        "white-painted village lamp",
-        "ivy-overgrown leaning lamp",
-        "rope-wrapped harbor lamp",
-        "cracked derelict tilted lamp"
+        "iron fire cresset on a stone pillar",
+        "horn-paned lantern on a carved post",
+        "hanging oil cup under a timber bracket",
+        "fat candle inside a pierced tin lantern",
+        "pitch-soaked rope torch in an iron ring",
+        "fire basket on a tripod of poles",
+        "clay oil lamp in a wall niche on a plinth",
+        "whale-oil lantern on a driftwood post",
+        "candle lantern hung from a curved branch",
+        "brazier-topped stone stump",
+        "paper-and-wood festival lantern on a pole",
+        "glass jar of fireflies hung on a hook",
+        "resin torch bundled in birch bark",
+        "soulstone shard set in an iron cage",
+        "hollowed pumpkin lantern on a stake",
+        "antler bracket holding a stubby candle",
+        "ship's oil lamp on a mooring post",
+        "tallow candle under a little shingled roof"
       ],
       "glow_concepts": [
-        "warm gas mantle flame behind glass panes",
-        "pale blue soul-light orb hovering inside",
-        "fireflies swarming and filling the lamp head",
-        "amber soulstone shard mounted as the bulb",
-        "cluster of dripping candles behind the panes",
-        "cold gas-blue ring flame at the mantle"
+        "the open flame burning warm and steady",
+        "a low guttering flame nearly out",
+        "flame with a curl of smoke rising",
+        "embers glowing in the basket",
+        "a candle flame small and clear",
+        "blue soul-flame instead of fire",
+        "fireflies glowing in the jar",
+        "the flame throwing pooled light on the ground"
       ],
       "animation_idea": "flame guttering inside the head, halo slowly breathing",
       "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind.",
       "modifier_pool": "structure",
-      "quota": 5,
-      "_throttled": "maintainer approval 5/23 (22%) over 23 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "quota": 40,
+      "modifiers": [
+        "wax run thick down the post",
+        "soot-blackened at the top",
+        "wound with rope at the base",
+        "leaning from an old knock",
+        "ringed by dropped matches and ash",
+        "a fresh candle just set in",
+        "moss creeping up the post",
+        "two lights on one crossbar",
+        "a tin cup hung beside it for spare tapers",
+        "iron work twisted into leaf shapes",
+        "charred wood where the flame licks",
+        "a spare torch bundle leaning against it"
+      ],
+      "_reformed": "maintainer 2026-08-14: 'I always get streetlamps looking the same. This is an RPG after all, so think more candle and fire then lamp.' Concept rebuilt around open flame, candle, cresset and horn lantern — hand-made materials only, no glass-and-iron lamppost. Unfrozen with 40 quota and 18 varieties x 12 modifiers so no two read alike."
     },
     {
       "rank": 16,
@@ -727,7 +749,7 @@
       "lore_fit": "A sheltered ever-burning flame is sacred infrastructure — a tended fire small enough to keep one memory warm.",
       "modifier_pool": "structure",
       "quota": 10,
-      "_saturated": "maintainer said ENOUGH (1 note(s)) — frozen at 10 on 2026-08-14. Saturation is not quality: braziers and graves are among his favourites, he simply has plenty. Unfreeze only on his word."
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 10, 2026-08-14"
     },
     {
       "rank": 17,
@@ -973,7 +995,9 @@
       ],
       "animation_idea": "luminous steam curling up from the offering bowl",
       "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 11,
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 11, 2026-08-14"
     },
     {
       "rank": 23,
@@ -1409,7 +1433,9 @@
       ],
       "animation_idea": "heads nodding while loose fluff drifts away",
       "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water.",
-      "modifier_pool": "nature"
+      "modifier_pool": "nature",
+      "quota": 6,
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 6, 2026-08-14"
     },
     {
       "rank": 34,
@@ -1643,7 +1669,7 @@
       "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else.",
       "modifier_pool": "nature",
       "quota": 11,
-      "_saturated": "maintainer said ENOUGH (1 note(s)) — frozen at 11 on 2026-08-14. Saturation is not quality: braziers and graves are among his favourites, he simply has plenty. Unfreeze only on his word."
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 11, 2026-08-14"
     },
     {
       "rank": 40,
@@ -4286,7 +4312,7 @@
       "id": "giant_fallen_bells",
       "prefix": "giant_fallen_bell",
       "name": "Giant Fallen Bell",
-      "quota": 3,
+      "quota": 1,
       "description": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground",
       "world_height_m": [
         1.2,
@@ -4314,7 +4340,8 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 1, 2026-08-14"
     },
     {
       "rank": 112,
@@ -4673,7 +4700,7 @@
       "id": "fairy_stumps",
       "prefix": "fairy_stump",
       "name": "Fairy Stump",
-      "quota": 3,
+      "quota": 1,
       "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world",
       "world_height_m": [
         0.6,
@@ -4701,7 +4728,8 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 1, 2026-08-14"
     },
     {
       "rank": 123,
@@ -5013,7 +5041,7 @@
       "id": "bone_arbors",
       "prefix": "bone_arbor",
       "name": "Bone Arbor",
-      "quota": 3,
+      "quota": 0,
       "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it",
       "world_height_m": [
         1.8,
@@ -5039,7 +5067,8 @@
       ],
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
+      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 0, 2026-08-14"
     },
     {
       "rank": 133,
