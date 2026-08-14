@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 594,
-  "target_count": 2415,
+  "scenery_count": 595,
+  "target_count": 2725,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -712,14 +712,14 @@
       "rank": 101,
       "id": "cliff_vines",
       "name": "Cliff Vine",
-      "quota": 50,
+      "quota": 70,
       "done": 4
     },
     {
       "rank": 102,
       "id": "cliff_features",
       "name": "Cliff Feature",
-      "quota": 30,
+      "quota": 45,
       "done": 6
     },
     {
@@ -860,7 +860,7 @@
       "id": "fairy_stumps",
       "name": "Fairy Stump",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 123,
@@ -1085,6 +1085,41 @@
       "name": "Tide Stone",
       "quota": 3,
       "done": 0
+    },
+    {
+      "rank": 155,
+      "id": "cliff_roots",
+      "name": "Cliff Root",
+      "quota": 70,
+      "done": 0
+    },
+    {
+      "rank": 156,
+      "id": "cliff_falls",
+      "name": "Cliff Fall",
+      "quota": 50,
+      "done": 0
+    },
+    {
+      "rank": 157,
+      "id": "cliff_shrubs",
+      "name": "Cliff Shrub",
+      "quota": 60,
+      "done": 0
+    },
+    {
+      "rank": 158,
+      "id": "cliff_mosses",
+      "name": "Cliff Moss",
+      "quota": 50,
+      "done": 0
+    },
+    {
+      "rank": 159,
+      "id": "cliff_ledgetrees",
+      "name": "Cliff Ledge Tree",
+      "quota": 45,
+      "done": 0
     }
   ],
   "categories": {
@@ -1128,7 +1163,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
-    "fairy_stumps": 1,
+    "fairy_stumps": 2,
     "fallen_logs": 9,
     "fences": 5,
     "ferns": 12,
@@ -4882,6 +4917,28 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fairy_stump_001",
+      "rel": "fairy_stumps/fairy_stump_001",
+      "name": "Oak fairy stump 001",
+      "category": "fairy_stumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world, oak fairy stump, with a miniature washing line, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.97,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8c378e40-3c31-4e43-ba8a-33eaf158f93c",
+      "sprite": "fairy_stumps/fairy_stump_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
