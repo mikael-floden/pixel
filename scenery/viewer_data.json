@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 727,
+  "scenery_count": 728,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 29
+      "done": 30
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 15,
     "cliff_roots": 24,
     "cliff_shrubs": 11,
-    "cliff_vines": 29,
+    "cliff_vines": 30,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -5994,6 +5994,28 @@
       "status": "complete",
       "pixellab_object_id": "c5bef938-ce05-4c72-8751-ba24c52020bf",
       "sprite": "cliff_vines/cliff_vine_052/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_053",
+      "rel": "cliff_vines/cliff_vine_053",
+      "name": "Dry brown wilted fall 053",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, dry brown wilted fall, heavy growth on one side thinning to bare on the other, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 10.64,
+        "world_px_height": 401,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "79c96c48-1827-4ac3-923e-271f4183d5f7",
+      "sprite": "cliff_vines/cliff_vine_053/sprite.webp",
       "rotations": {},
       "animations": []
     },
