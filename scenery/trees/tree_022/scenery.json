@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:33:20+00:00",
+  "id": "tree_022",
+  "group": "trees",
+  "rank": 1,
+  "index": 22,
+  "name": "Heart-leaved linden 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "heart-leaved linden",
+  "modifier": "with a small sapling beside it",
+  "glow_concept": "swarm of fireflies drifting through the crown",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, heart-leaved linden, with a small sapling beside it, towering, many times human height, self-emissive at night, softly radiating light: swarm of fireflies drifting through the crown",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_022/sprite.webp",
+  "placement": {
+    "world_height_m": 4.5,
+    "world_px_height": 169,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c0b17439-7b99-4e2a-a2b4-31e6714ffa69",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
