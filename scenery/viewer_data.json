@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 618,
+  "scenery_count": 619,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 40
+      "done": 41
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 40,
+    "trees": 41,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13508,6 +13508,28 @@
       "status": "complete",
       "pixellab_object_id": "f1a9b4b0-fccb-4fc3-8cbb-e3dd41db8d21",
       "sprite": "trees/tree_046/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_048",
+      "rel": "trees/tree_048",
+      "name": "Golden larch in autumn colour 048 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, golden larch in autumn colour, with fallen leaves collected at its base, tall, about three times human height, self-emissive at night, softly radiating light: pale blossoms shining faintly across the branches",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.25,
+        "world_px_height": 160,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2138f7b4-6510-45f9-a5c6-f556cfbe0a5f",
+      "sprite": "trees/tree_048/sprite.webp",
       "rotations": {},
       "animations": []
     },

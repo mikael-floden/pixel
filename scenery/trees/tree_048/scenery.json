@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:11:46+00:00",
+  "id": "tree_048",
+  "group": "trees",
+  "rank": 1,
+  "index": 48,
+  "name": "Golden larch in autumn colour 048 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "golden larch in autumn colour",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": "pale blossoms shining faintly across the branches",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, golden larch in autumn colour, with fallen leaves collected at its base, tall, about three times human height, self-emissive at night, softly radiating light: pale blossoms shining faintly across the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_048/sprite.webp",
+  "placement": {
+    "world_height_m": 4.25,
+    "world_px_height": 160,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2138f7b4-6510-45f9-a5c6-f556cfbe0a5f",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
