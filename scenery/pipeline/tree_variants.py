@@ -46,7 +46,12 @@ LIT = [f"LIT_{i}" for i in range(1, 5)]
 ALL_STATES = NOT_LIT + LIT
 TAGS = ["SCENERY", "TREE"]
 PARALLEL = 8
-COMMIT_EVERY = 12
+# Was 12. Thirty workflow runs fired in the twenty minutes before GitHub
+# stopped allocating runners on 2026-08-14 — roughly 1.5 full Docker builds a
+# minute, because every 12 generated pieces pushed. The art is committed every
+# batch either way; only the PUSH (and therefore the deploy) is batched. 60
+# turns a 497-piece run into ~8 deploys instead of ~40.
+COMMIT_EVERY = 60
 MAX_PROMPT_TRIES = 10
 
 # The maintainer, watching a third of first attempts come back as the same
