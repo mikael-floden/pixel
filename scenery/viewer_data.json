@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 551,
+  "scenery_count": 552,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 98,
-      "done": 19
+      "done": 20
     },
     {
       "rank": 3,
@@ -988,7 +988,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 19,
+    "stones": 20,
     "story_posts": 8,
     "streetlights": 8,
     "stumps": 11,
@@ -9885,6 +9885,28 @@
       "status": "complete",
       "pixellab_object_id": "c824cb8f-046f-4cff-94ff-6b43d20cf7b8",
       "sprite": "stones/stone_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_019",
+      "rel": "stones/stone_019",
+      "name": "Flat lichen-covered slab 019",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flat lichen-covered slab, heavily weathered and gnarled, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.15,
+        "world_px_height": 43,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e2107ea0-8fb1-4565-8dc8-8512cc16d71c",
+      "sprite": "stones/stone_019/sprite.webp",
       "rotations": {},
       "animations": []
     },

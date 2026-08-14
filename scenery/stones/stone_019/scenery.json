@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:40:05+00:00",
+  "id": "stone_019",
+  "group": "stones",
+  "rank": 2,
+  "index": 19,
+  "name": "Flat lichen-covered slab 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "flat lichen-covered slab",
+  "modifier": "heavily weathered and gnarled",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flat lichen-covered slab, heavily weathered and gnarled, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_019/sprite.webp",
+  "placement": {
+    "world_height_m": 1.15,
+    "world_px_height": 43,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e2107ea0-8fb1-4565-8dc8-8512cc16d71c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
