@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 554,
+  "scenery_count": 555,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 98,
-      "done": 21
+      "done": 22
     },
     {
       "rank": 3,
@@ -987,7 +987,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 21,
+    "stones": 22,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -9774,6 +9774,28 @@
       "status": "complete",
       "pixellab_object_id": "83171a85-2b16-4eb3-9f58-0b2c4d515c6a",
       "sprite": "stones/stone_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_021",
+      "rel": "stones/stone_021",
+      "name": "Dark basalt block 021",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, dark basalt block, wrapped in thin creeper vines, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.91,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "49e2f823-a804-4420-9b94-2c895f14cd77",
+      "sprite": "stones/stone_021/sprite.webp",
       "rotations": {},
       "animations": []
     },
