@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 593,
+  "scenery_count": 594,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 7,
@@ -1244,7 +1244,7 @@
     "water_pumps": 2,
     "waterwheels": 3,
     "wayside_shrines": 6,
-    "waystones": 13,
+    "waystones": 14,
     "web_frames": 1,
     "wells": 12,
     "windmills": 3,
@@ -13863,6 +13863,28 @@
       "status": "complete",
       "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
       "sprite": "waystones/waystone_026/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_028",
+      "rel": "waystones/waystone_028",
+      "name": "Red-painted mark stone 028 \u00b7 lit",
+      "category": "waystones",
+      "lights": "LIGHTS_ON",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, red-painted mark stone, overgrown at the base, waist-high, self-emissive at night, softly radiating light: engraved pointing hand lit like a signpost",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fd773f39-4880-48f2-a1e8-3510e6e343e5",
+      "sprite": "waystones/waystone_028/sprite.webp",
       "rotations": {},
       "animations": []
     },

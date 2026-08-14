@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:29:07+00:00",
+  "id": "waystone_028",
+  "group": "waystones",
+  "rank": 6,
+  "index": 28,
+  "name": "Red-painted mark stone 028 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "red-painted mark stone",
+  "modifier": "overgrown at the base",
+  "glow_concept": "engraved pointing hand lit like a signpost",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, red-painted mark stone, overgrown at the base, waist-high, self-emissive at night, softly radiating light: engraved pointing hand lit like a signpost",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_028/sprite.webp",
+  "placement": {
+    "world_height_m": 0.98,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fd773f39-4880-48f2-a1e8-3510e6e343e5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
