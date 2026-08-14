@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:09:16+00:00",
+  "id": "tree_036",
+  "group": "trees",
+  "rank": 1,
+  "index": 36,
+  "name": "Coppiced stool with many stems 036 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "coppiced stool with many stems",
+  "modifier": "with thick exposed roots",
+  "glow_concept": "golden sap veins glowing through bark cracks",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, coppiced stool with many stems, with thick exposed roots, towering, many times human height, self-emissive at night, softly radiating light: golden sap veins glowing through bark cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_036/sprite.webp",
+  "placement": {
+    "world_height_m": 4.94,
+    "world_px_height": 186,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "87e13399-f871-4c32-a6e6-fb0bc36b6942",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
