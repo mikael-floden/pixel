@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:43:57+00:00",
+  "id": "window_030",
+  "group": "windows",
+  "rank": 25,
+  "index": 30,
+  "name": "A rectangular window in dark stained oak with a thick sill 030",
+  "lights": "LIGHTS_OFF",
+  "variety": "a rectangular window in dark stained oak with a thick sill",
+  "modifier": "boarded over with nailed planks",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in dark stained oak with a thick sill, boarded over with nailed planks, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_030/rotations/south-east.webp",
+    "south-west": "windows/window_030/rotations/south-west.webp",
+    "south": "windows/window_030/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_030/sprite.webp",
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      20,
+      11,
+      79,
+      86
+    ],
+    "content_px_height": 75,
+    "canvas_render_px": 63
+  },
+  "pixellab_object_id": "dcd75296-0567-4a19-ad67-28f258e00f6b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
