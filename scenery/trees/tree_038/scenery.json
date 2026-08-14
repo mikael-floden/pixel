@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:02:02+00:00",
+  "id": "tree_038",
+  "group": "trees",
+  "rank": 1,
+  "index": 38,
+  "name": "Dark narrow spruce 038 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dark narrow spruce",
+  "modifier": "standing in a patch of wildflowers",
+  "glow_concept": "swarm of fireflies drifting through the crown",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, dark narrow spruce, standing in a patch of wildflowers, tall, about three times human height, self-emissive at night, softly radiating light: swarm of fireflies drifting through the crown",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_038/sprite.webp",
+  "placement": {
+    "world_height_m": 3.27,
+    "world_px_height": 123,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3f65aaca-5826-4fb3-8e78-51025e2d43f3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
