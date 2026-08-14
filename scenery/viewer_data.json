@@ -19487,6 +19487,18 @@
       "type": "TREE",
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trees/tree_067/lit_1/sprite.webp",
+          "pixellab_object_id": "fbd59315-58e3-4495-985b-a7bea18d1348",
+          "difference_from_source": 0.4543,
+          "glow_score": 0.0291
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_067/lit_2/sprite.webp",
+          "pixellab_object_id": "a245492a-37f9-486d-babd-0c7d07fdf519",
+          "difference_from_source": 0.5414,
+          "glow_score": 0.0367
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_067/sprite.webp",
           "pixellab_object_id": "22469b07-222d-4df2-99ff-a749829d4b0a",
@@ -19541,10 +19553,46 @@
       "type": "TREE",
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trees/tree_069/lit_1/sprite.webp",
+          "pixellab_object_id": "a41404c7-1e56-4296-b111-0a0185878f44",
+          "difference_from_source": 0.4746,
+          "glow_score": 0.0302
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_069/lit_2/sprite.webp",
+          "pixellab_object_id": "36ef9e4c-5c8a-443b-bec2-be6ef3bd58d5",
+          "difference_from_source": 0.2436,
+          "glow_score": 0.0355
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_069/sprite.webp",
           "pixellab_object_id": "63b2529a-5094-4283-9991-d98890657d38",
           "glow_score": 0.0073
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_069/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b0c0fe6a-3aa1-449e-94b2-9f0b4e112586",
+          "difference_from_source": 0.8609,
+          "glow_score": 0.0076
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_069/not_lit_3/sprite.webp",
+          "pixellab_object_id": "21d3acb3-3c46-4479-99ef-479566f3c464",
+          "difference_from_source": 0.4627,
+          "glow_score": 0.0087
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_069/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e8ea7462-5920-4716-844f-9e686b3110f0",
+          "difference_from_source": 0.8208,
+          "glow_score": 0.0039
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_069/not_lit_5/sprite.webp",
+          "pixellab_object_id": "20b81fc9-8f81-4025-a7a5-a62750189b1b",
+          "difference_from_source": 0.2641,
+          "glow_score": 0.008
         }
       },
       "animations": []
@@ -19575,6 +19623,30 @@
           "sprite": "trees/tree_070/sprite.webp",
           "pixellab_object_id": "37ae769d-c6a3-47e1-be33-f171c61dfe2b",
           "glow_score": 0.0126
+        },
+        "LIT_2": {
+          "sprite": "trees/tree_070/lit_2/sprite.webp",
+          "pixellab_object_id": "0281d233-c15b-4654-8784-baca24527efb",
+          "difference_from_source": 0.1597,
+          "glow_score": 0.0835
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_070/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e7caa4ec-7fb8-4d67-a876-a4ee3d7017c7",
+          "difference_from_source": 0.1355,
+          "glow_score": 0.0092
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_070/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0bdc1666-80c4-448f-abc0-67ce7f2702e5",
+          "difference_from_source": 0.1249,
+          "glow_score": 0.0094
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_070/not_lit_5/sprite.webp",
+          "pixellab_object_id": "26badd18-a0ef-4125-8124-9d17f12e4219",
+          "difference_from_source": 0.132,
+          "glow_score": 0.0117
         }
       },
       "animations": []
@@ -19605,6 +19677,12 @@
           "sprite": "trees/tree_071/sprite.webp",
           "pixellab_object_id": "26cfaf51-ce02-49d2-bf95-f2646438cb29",
           "glow_score": 0.2045
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_071/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f3c4c72b-ccfe-4550-b7eb-4282afbf0916",
+          "difference_from_source": 0.8352,
+          "glow_score": 0.1435
         }
       },
       "animations": []
