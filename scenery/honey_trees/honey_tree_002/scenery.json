@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:56+00:00",
+  "id": "honey_tree_002",
+  "group": "honey_trees",
+  "rank": 118,
+  "index": 2,
+  "name": "Storm-topped honey stump 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "storm-topped honey stump",
+  "modifier": "autumn-leaved and heavy",
+  "glow_concept": "honey runs shining like resin light",
+  "prompt": "a stout hollow tree trunk with wild honeycomb bulging from its split, bees drifting around, bark dark with old honey runs, storm-topped honey stump, autumn-leaved and heavy, roughly six feet tall, human height, self-emissive at night, softly radiating light: honey runs shining like resin light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "honey_trees/honey_tree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.46,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d5972c66-793a-4fbb-a0db-868654ef5e68",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
