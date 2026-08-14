@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:57:18+00:00",
+  "id": "cliff_moss_044",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 44,
+  "name": "Deep emerald cushion moss 044 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "deep emerald cushion moss",
+  "modifier": "dense in the middle, ragged at both ends",
+  "glow_concept": "the moss glowing soft green",
+  "prompt": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, deep emerald cushion moss, dense in the middle, ragged at both ends, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_044/sprite.webp",
+  "placement": {
+    "world_height_m": 5.06,
+    "world_px_height": 190,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d2003d3c-f3ef-4924-9c17-fa0ab7ff8377",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
