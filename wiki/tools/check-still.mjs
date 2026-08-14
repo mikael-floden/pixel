@@ -26,21 +26,36 @@ const real = objs.filter((o) => !o.stillOnly);
 console.log(`data: ${objs.length} scenery — ${still.length} still, ${real.length} animated`);
 ok(objs.every((o) => Object.keys(o.animations ?? {}).length > 0),
   `every piece now has something to show (${objs.filter((o) => !Object.keys(o.animations ?? {}).length).length} with nothing)`);
+// A static piece's clips are STATES, not frames: the lone `still` when the
+// scenery domain gives it nothing else, or one per entry of its `states` map
+// (LIGHTS_ON / LIGHTS_OFF, 2026-08-14). Helpers so the rest reads either shape.
+const clips = (o) => Object.values(o.animations ?? {}).flatMap((a) => Object.values(a.dirs ?? {}));
+const dirCount = (o) => Math.max(0, ...Object.values(o.animations ?? {}).map((a) => Object.keys(a.dirs ?? {}).length));
+const baseClip = (o) => Object.values(o.animations ?? {})[0]?.dirs?.south;
 // The "only if no real animation exists" rule, in both directions.
-ok(still.every((o) => Object.keys(o.animations).length === 1 && o.animations.still),
-  "a still piece has exactly one clip, and it is the still");
+ok(still.every((o) => clips(o).every((c) => c.frames === 1)),
+  "a still piece is one frame per clip, however many states it has");
 ok(real.every((o) => !o.animations.still),
   `a piece with real animation is untouched (${real.map((o) => `${o.id}: ${Object.keys(o.animations).join("+")}`).join(", ")})`);
 ok(real.length === 3, `the three generated pieces are still the only animated ones (${real.length})`);
-// The still must BE the sprite, and every direction one frame — not a guess.
-const bad = still.filter((o) => {
-  const d = o.animations.still.dirs;
-  const s = d.south;
-  return !s || s.strip !== o.preview || Object.values(d).some((c) => c.frames !== 1);
-});
-ok(bad.length === 0, `each still is 1 frame per direction, and its south IS the sprite${bad.length ? ` — ${bad.slice(0, 3).map((o) => o.id).join(", ")}` : ""}`);
-ok(still.every((o) => Object.values(o.animations.still.dirs).every((c) => c.bb)),
-  "and every one is measured, so it draws cropped at true scale rather than padded");
+// The FIRST state must BE the sprite the rest of the wiki shows — the card
+// thumbnail, the story art and the review queue all use `preview`, so if the
+// viewer opened on some other state you would be judging a different picture
+// than the one you clicked.
+const bad = still.filter((o) => baseClip(o)?.strip !== o.preview);
+ok(bad.length === 0, `each still opens on the sprite the list showed you${bad.length ? ` — ${bad.slice(0, 3).map((o) => `${o.id}: ${baseClip(o)?.strip}`).join(", ")}` : ""}`);
+ok(still.every((o) => clips(o).every((c) => c.bb)),
+  "and every clip is measured, so it draws cropped at true scale rather than padded");
+
+// STATES. The scenery domain ships `states` (LIGHTS_ON / LIGHTS_OFF), each with
+// its own sprite AND its own rotations (maintainer 2026-08-14: "different
+// scenerys can have different states … I want to see different states in the
+// previewer"). Same ground-truth rule as rotations: publish what exists.
+const withStates = still.filter((o) => Object.keys(o.animations).length > 1);
+console.log(`states: ${withStates.length} stills carry more than one state (${[...new Set(withStates.flatMap((o) => Object.keys(o.animations)))].join(", ")})`);
+ok(withStates.length > 0, "the pieces with states reach the wiki at all");
+ok(withStates.every((o) => new Set(clips(o).map((c) => c.strip)).size === clips(o).length),
+  "every state × direction is its OWN file — no state is another one relabelled");
 
 // ROTATIONS. Since 2026-08-14 the scenery domain ships a `rotations` map beside
 // the sprite (maintainer: "the scenery may now have a SE, S and SW direction —
@@ -57,23 +72,22 @@ for (const o of objs) {
   try { j = JSON.parse(readFileSync(new URL(`${rel}/scenery.json`, SCEN), "utf8")); } catch { /* legacy layout */ }
   if (j) onDisk.set(o.id, Object.keys(j.rotations ?? {}));
 }
-const rot = still.filter((o) => Object.keys(o.animations.still.dirs).length > 1);
+const rot = still.filter((o) => dirCount(o) > 1);
 const diskRot = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1).length;
 console.log(`rotations: ${rot.length} of ${still.length} stills face more than one way; disk says ${diskRot}`
   + ` (the legacy animated pieces carry rotations too, and rightly get no still)`);
 ok(rot.length > 0, "the pieces with rotations reach the wiki at all");
 const missed = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1
-  && Object.keys(o.animations.still.dirs).length !== (onDisk.get(o.id) ?? []).length);
+  && dirCount(o) !== (onDisk.get(o.id) ?? []).length);
 ok(missed.length === 0, `every direction on disk is published${missed.length ? ` — short on: ${missed.slice(0, 3).map((o) => o.id).join(", ")}` : ` (${rot.length} pieces)`}`);
-ok(rot.every((o) => new Set(Object.values(o.animations.still.dirs).map((c) => c.strip)).size
-  === Object.keys(o.animations.still.dirs).length),
+ok(rot.every((o) => new Set(clips(o).map((c) => c.strip)).size === clips(o).length),
   "each direction points at its OWN file — not one sprite relabelled three times");
-ok(still.every((o) => (onDisk.get(o.id) ?? []).length > 1 || Object.keys(o.animations.still.dirs).length === 1),
+ok(still.every((o) => (onDisk.get(o.id) ?? []).length > 1 || dirCount(o) === 1),
   "and a piece with no rotations map is still a lone south — nothing invented");
 // Whole-frame vs measured: the padding really is being cropped, or the viewer
 // is no better than the thumbnail it was added to improve on.
-const cropped = still.filter((o) => { const s = o.animations.still.dirs.south;
-  return s.bb[2] - s.bb[0] < s.fw || s.bb[3] - s.bb[1] < s.fh; });
+const cropped = still.filter((o) => { const s = baseClip(o);
+  return s && (s.bb[2] - s.bb[0] < s.fw || s.bb[3] - s.bb[1] < s.fh); });
 ok(cropped.length > still.length / 2, `most stills genuinely crop padding away (${cropped.length}/${still.length})`);
 
 // ------------------------------------------------------------------ the page
@@ -107,8 +121,10 @@ console.log("still (small):", JSON.stringify(tiny));
 console.log("still (giant):", JSON.stringify(big));
 console.log("animated:     ", JSON.stringify(anim));
 ok(!tiny.noAnims && !big.noAnims, "the dead-end “No animations.” line is gone");
-ok(tiny.title.includes("Still") && big.title.includes("Still"), "a static piece is headed Still, not Animations");
-ok(anim.title.includes("Animations"), "a generated piece is still headed Animations");
+ok(tiny.title.includes("Still") && big.title.includes("Still"), "a lone static piece is headed Still, with no pill to add");
+// The pill rides along on animated pieces too, so match the word, not the
+// whole node text ("Animations" + "8 directions").
+ok(anim.title.some((t) => /^Animations/.test(t)), `a generated piece is still headed Animations (${anim.title[0]})`);
 ok(tiny.painted > 100 && big.painted > 5000, `both actually draw (${tiny.painted}px, ${big.painted}px)`);
 // The controls a one-frame clip cannot use are not offered; the one it exists
 // for is.
@@ -128,14 +144,14 @@ ok(tiny.stage === big.stage && big.stage === anim.stage, `one stage for the whol
 // state to choose. And the pad must not push the art down — it rides BELOW the
 // stage with the zoom buttons, so a 3-view piece and a 1-view piece put the
 // viewer in the same place while paging ‹ › (maintainer 2026-08-13).
-const rotId = rot[0].id;
+const rotId = rot.find((o) => Object.keys(o.animations).length === 1)?.id ?? rot[0].id;
 const many = await look(rotId);
-console.log(`still (${rotId}, ${Object.keys(rot[0].animations.still.dirs).join("+")}):`, JSON.stringify(many));
-ok(many.dirpad === Object.keys(rot[0].animations.still.dirs).length,
+console.log(`still (${rotId}):`, JSON.stringify(many));
+ok(many.dirpad === dirCount(objs.find((o) => o.id === rotId)),
   `a rotated still offers one button per direction it has (${many.dirpad})`);
 ok(many.transport.length === 0 && many.states === 0,
   `and still offers nothing to play or choose (${many.transport.length} transport, ${many.states} states)`);
-ok(/Still · \d+ views/.test(many.title.join(" ")), `headed with the count (${many.title.join(", ")})`);
+ok(/Still\d+ directions/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
 ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
 // THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on
 // monsters and players the direction is OVER the preview … please make it
@@ -207,6 +223,42 @@ const zoomed = await p.evaluate(async () => {
 console.log("zoom:", JSON.stringify(zoomed));
 ok(zoomed.after === zoomed.before * 2, `4× doubles the 2× default (${zoomed.before} → ${zoomed.after})`);
 
+// ---------------------------------------------------- reviewing the STATES
+// A piece with LIGHTS_ON/LIGHTS_OFF gets a state row in the same place a
+// monster's is, reading in words rather than in the scenery domain's CAPS
+// ("Lights On", not "LIGHTS_ON" — maintainer 2026-08-14), and the row must
+// really swap the art.
+const stId = withStates[0].id;
+await p.goto(`${W}#/objects/${stId}`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const stInfo = await p.evaluate(async () => {
+  const stage = document.querySelector(".player-stage").getBoundingClientRect();
+  const seg = document.querySelector(".seg-states")?.getBoundingClientRect();
+  const pad = document.querySelector(".dirpad")?.getBoundingClientRect();
+  const paint = () => { const cv = document.querySelector(".player-stage canvas");
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let s = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 8) s += d[i] + d[i + 1] * 3 + d[i + 2] * 7;
+    return s; };
+  const labels = [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent);
+  const before = paint();
+  [...document.querySelectorAll(".seg-states button")].find((x) => !x.classList.contains("on"))?.click();
+  await new Promise((r) => setTimeout(r, 500));
+  return { labels, before, after: paint(),
+    pill: document.querySelector(".panel-title .pill")?.textContent ?? null,
+    aboveStage: !!(seg && seg.bottom <= stage.top + 2),
+    aboveDirs: !!(seg && pad && seg.bottom <= pad.top + 2),
+    transport: [...document.querySelectorAll(".player-controls button")].filter((x) => ["⏸", "▶", "⏮", "⏭"].includes(x.textContent)).length };
+});
+console.log(`states (${stId}):`, JSON.stringify(stInfo));
+ok(stInfo.labels.length === Object.keys(withStates[0].animations).length,
+  `every state is a button (${stInfo.labels.join(", ")})`);
+ok(stInfo.labels.every((l) => /^[A-Z][a-z]+( [A-Z][a-z]+)*$/.test(l)),
+  `and reads as words, not as a CAPS key (${stInfo.labels.join(", ")})`);
+ok(stInfo.aboveStage && stInfo.aboveDirs, "the state row sits over the preview and above the direction pad, like a monster's");
+ok(/\d+ states × \d+ directions/.test(stInfo.pill ?? ""), `the pill counts both, like a monster's (${stInfo.pill})`);
+ok(stInfo.transport === 0, `still nothing to play — states are not frames (${stInfo.transport} transport buttons)`);
+ok(stInfo.after !== stInfo.before, `switching state really changes the art (${stInfo.before} → ${stInfo.after})`);
+
 // The list must keep calling these static — it is where you scan for movement.
 await p.goto(`${W}#/objects`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
@@ -214,6 +266,7 @@ const list = await p.evaluate(() => {
   const subs = [...document.querySelectorAll(".card-sub")].map((x) => x.textContent);
   return { n: subs.length, static: subs.filter((s) => /^static/.test(s)).length, still: subs.filter((s) => /still/i.test(s)).length,
     views: subs.filter((s) => /^static · \d+ views$/.test(s)).length,
+    states: subs.filter((s) => /^static · \d+ states/.test(s)).length,
     other: [...new Set(subs.filter((s) => !/^static/.test(s)))] };
 });
 console.log("list:", JSON.stringify(list));
@@ -221,7 +274,8 @@ ok(list.still === 0, "no card claims a “still” animation");
 ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
 // Static and multi-view are not opposites — the card says both, so you know a
 // piece has more to look at before you open it.
-ok(list.views === rot.length, `and the ${rot.length} rotated ones say how many views they have (${list.views})`);
+ok(list.views + list.states === rot.length, `and the ${rot.length} rotated ones say what they have (${list.views} by views, ${list.states} by states)`);
+ok(list.states === withStates.length, `including the ${withStates.length} with states (${list.states})`);
 ok(list.other.length > 0 && list.other.every((s) => !/still/i.test(s)), `and the animated ones name their real states (${list.other.join(", ")})`);
 
 // PAGING ‹ › MUST NOT MOVE THE VIEWER (maintainer 2026-08-13: "The scenery
