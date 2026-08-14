@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:57:45+00:00",
+  "id": "wall_hanging_015",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 15,
+  "name": "Weather-house with two doors 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "weather-house with two doors",
+  "modifier": "with carved decorative trim",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, weather-house with two doors, with carved decorative trim, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_015/sprite.webp",
+  "placement": {
+    "world_height_m": 0.81,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4b1bc17d-c6c0-40d4-8f01-750062448f84",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
