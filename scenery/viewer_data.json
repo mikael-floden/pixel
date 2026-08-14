@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 627,
+  "scenery_count": 628,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 46
+      "done": 47
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 46,
+    "trees": 47,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13706,6 +13706,28 @@
       "status": "complete",
       "pixellab_object_id": "23b0a8c0-413e-4636-8f84-76245176d656",
       "sprite": "trees/tree_052/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_054",
+      "rel": "trees/tree_054",
+      "name": "Bird cherry hung with white racemes 054 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, bird cherry hung with white racemes, half-swallowed by tall grass, tall, about three times human height, self-emissive at night, softly radiating light: swarm of fireflies drifting through the crown",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.98,
+        "world_px_height": 150,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "472fd23f-42e7-4869-9cc2-661753c427b7",
+      "sprite": "trees/tree_054/sprite.webp",
       "rotations": {},
       "animations": []
     },
