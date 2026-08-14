@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:32:40+00:00",
+  "id": "signpost_022",
+  "group": "signposts",
+  "rank": 8,
+  "index": 22,
+  "name": "Snow-capped mountain signpost 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-capped mountain signpost",
+  "modifier": "snow-dusted",
+  "glow_concept": "small oil lamp bracketed beneath the arms",
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, snow-capped mountain signpost, snow-dusted, large, twice human height, self-emissive at night, softly radiating light: small oil lamp bracketed beneath the arms",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_022/sprite.webp",
+  "placement": {
+    "world_height_m": 2.1,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "396b1ee6-fffe-40f7-9279-540a628970fd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
