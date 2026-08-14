@@ -32,9 +32,21 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
+    "LIT_1": {
+      "sprite": "trees/tree_043/lit_1/sprite.webp",
+      "pixellab_object_id": "67cd63a7-a1d4-4d66-ade7-74c43bf4cbd6",
+      "difference_from_source": 0.202,
+      "glow_score": 0.0396
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_043/sprite.webp",
       "pixellab_object_id": "a27cd375-6fe7-4ad4-89ef-afc1cecde6c3",
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "trees/tree_043/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d1ae49f6-cad8-4203-8f31-fb291858cf39",
+      "difference_from_source": 0.4235,
       "glow_score": 0.0
     },
     "NOT_LIT_3": {

@@ -17401,6 +17401,12 @@
           "difference_from_source": 0.1343,
           "glow_score": 0.0
         },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_032/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4cedcbd1-78c4-4d12-86e1-c6aea647b082",
+          "difference_from_source": 0.4541,
+          "glow_score": 0.0002
+        },
         "NOT_LIT_3": {
           "sprite": "trees/tree_032/not_lit_3/sprite.webp",
           "pixellab_object_id": "4dcafab4-51db-4cf6-82d2-be5a5e4865a3",
@@ -17411,6 +17417,12 @@
           "sprite": "trees/tree_032/not_lit_4/sprite.webp",
           "pixellab_object_id": "aa2e0487-e85f-4684-8fc5-e740931c7c62",
           "difference_from_source": 0.6453,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_032/not_lit_5/sprite.webp",
+          "pixellab_object_id": "12dd5703-0706-4968-960f-1b50e4ecf9cf",
+          "difference_from_source": 0.3198,
           "glow_score": 0.0
         }
       },
@@ -17802,6 +17814,12 @@
           "pixellab_object_id": "d7de80dd-737b-4736-aa44-3f7c228d2748",
           "difference_from_source": 0.2549,
           "glow_score": 0.1663
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_040/not_lit_5/sprite.webp",
+          "pixellab_object_id": "16a91e0d-8eb5-48e8-9e3d-c8c71315b578",
+          "difference_from_source": 0.3582,
+          "glow_score": 0.1765
         }
       },
       "animations": []
@@ -17856,6 +17874,18 @@
           "pixellab_object_id": "ed688442-fa83-4ade-b2a0-3b0379437812",
           "difference_from_source": 0.7812,
           "glow_score": 0.082
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_041/not_lit_4/sprite.webp",
+          "pixellab_object_id": "bcea8bd4-74c5-417c-b8dc-778db3e889ae",
+          "difference_from_source": 0.344,
+          "glow_score": 0.1166
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_041/not_lit_5/sprite.webp",
+          "pixellab_object_id": "2ea8f462-c93b-43fb-840a-6967d3b499cf",
+          "difference_from_source": 0.4123,
+          "glow_score": 0.0982
         }
       },
       "animations": []
@@ -17892,6 +17922,36 @@
           "pixellab_object_id": "a45fd0a7-3e3c-4bcc-8d4a-3f66abe1c06d",
           "difference_from_source": 0.2305,
           "glow_score": 0.0238
+        },
+        "NOT_LIT_1": {
+          "sprite": "trees/tree_042/not_lit_1/sprite.webp",
+          "pixellab_object_id": "48167ac9-a002-46a3-8b31-7570cbee98f6",
+          "difference_from_source": 0.2991,
+          "glow_score": 0.0074
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_042/not_lit_2/sprite.webp",
+          "pixellab_object_id": "36f1b4b2-afd2-48cf-b741-cea0a7a4628e",
+          "difference_from_source": 0.2997,
+          "glow_score": 0.0061
+        },
+        "NOT_LIT_3": {
+          "sprite": "trees/tree_042/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1cc8f072-cfc8-4a2b-ad73-749511523a9a",
+          "difference_from_source": 0.5521,
+          "glow_score": 0.0022
+        },
+        "NOT_LIT_4": {
+          "sprite": "trees/tree_042/not_lit_4/sprite.webp",
+          "pixellab_object_id": "059e8b18-725c-4f3a-9fa9-525beb5c9334",
+          "difference_from_source": 0.2791,
+          "glow_score": 0.0046
+        },
+        "NOT_LIT_5": {
+          "sprite": "trees/tree_042/not_lit_5/sprite.webp",
+          "pixellab_object_id": "ae4acc4f-87e4-472f-8795-3b7dac2fe2e5",
+          "difference_from_source": 0.6403,
+          "glow_score": 0.0017
         }
       },
       "animations": []
@@ -17918,9 +17978,21 @@
       "type": "TREE",
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trees/tree_043/lit_1/sprite.webp",
+          "pixellab_object_id": "67cd63a7-a1d4-4d66-ade7-74c43bf4cbd6",
+          "difference_from_source": 0.202,
+          "glow_score": 0.0396
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_043/sprite.webp",
           "pixellab_object_id": "a27cd375-6fe7-4ad4-89ef-afc1cecde6c3",
+          "glow_score": 0.0
+        },
+        "NOT_LIT_2": {
+          "sprite": "trees/tree_043/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d1ae49f6-cad8-4203-8f31-fb291858cf39",
+          "difference_from_source": 0.4235,
           "glow_score": 0.0
         },
         "NOT_LIT_3": {
