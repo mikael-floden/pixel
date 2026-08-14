@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 665,
+  "scenery_count": 666,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 8,
+    "cliff_mosses": 9,
     "cliff_roots": 2,
     "cliff_shrubs": 11,
     "cliff_vines": 9,
@@ -4382,6 +4382,28 @@
       "status": "complete",
       "pixellab_object_id": "86c02868-3d74-4dca-8e4c-177609a88914",
       "sprite": "cliff_mosses/cliff_moss_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_009",
+      "rel": "cliff_mosses/cliff_moss_009",
+      "name": "Moss with tiny ferns through it 009",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_OFF",
+      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss with tiny ferns through it, one heavy strand with fine ones branching off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 5.58,
+        "world_px_height": 210,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bf34019a-774c-48e2-a5c9-8e8885348db7",
+      "sprite": "cliff_mosses/cliff_moss_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
