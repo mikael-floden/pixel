@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 504,
+  "scenery_count": 505,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -118,7 +118,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 70,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 17,
@@ -932,7 +932,7 @@
     "fences": 8,
     "ferns": 7,
     "fish_drying_racks": 4,
-    "flame_niches": 7,
+    "flame_niches": 8,
     "flower_stands": 5,
     "flower_trellises": 2,
     "frozen_springs": 1,
@@ -4852,6 +4852,28 @@
       "status": "complete",
       "pixellab_object_id": "15e46c75-896f-4938-92ab-99b9b4f91763",
       "sprite": "flame_niches/flame_niche_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "flame_niche_015",
+      "rel": "flame_niches/flame_niche_015",
+      "name": "Mossy ruined half-niche 015",
+      "category": "flame_niches",
+      "lights": "LIGHTS_OFF",
+      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, mossy ruined half-niche, patched with mismatched materials, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.99,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8d216dbc-3128-4a64-abdb-24f1e545cf3b",
+      "sprite": "flame_niches/flame_niche_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
