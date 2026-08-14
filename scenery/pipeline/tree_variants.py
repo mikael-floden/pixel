@@ -75,6 +75,10 @@ LEAD_FALLBACKS = [
     "Same tree type and style. Move the branches and reshape the crown.",
     "Draw a second tree that belongs beside this one. Same type, same style.",
     "The same tree seen as a different specimen. Same style, new shape.",
+    "Same species and style. Give it a DIFFERENT TRUNK SHAPE and put the big "
+    "branches somewhere else.",
+    "Same tree type. Change the whole shape: trunk, main branches, crown "
+    "outline. It must not match the old one.",
 ]
 
 
@@ -157,7 +161,12 @@ MIN_DIFFERENCE = 0.12          # below this it is the same picture again
 # he rejected while wrongly failing 4% of the ones he approved. Deliberately
 # conservative — a gate that fires on good art costs more than one that misses,
 # and the subtler "too close in structure" calls stay his to make.
-SIBLING_MIN = 0.15
+# Raised to 0.25 after sweeping all 438: his rejections sat at a median of
+# 0.196 structural difference and his approvals at 0.425, so 0.25 separates the
+# two without touching what he liked. A GENERATION-time floor can afford to be
+# strict in a way a delete-existing-art gate cannot -- failing here costs one
+# re-roll, not a piece of approved work.
+SIBLING_MIN = 0.25
 
 
 def _gray_norm(img):
@@ -217,6 +226,12 @@ def finalize(client, rel, man, state, new_oid, source_img):
         raise PixelLabError(
             f"RETRY {rel}/{state}: near-copy of the original "
             f"({diff:.0%} different, need {MIN_DIFFERENCE:.0%})")
+    src_struct = structural_difference(source_img, img)
+    if src_struct < SIBLING_MIN:
+        client.delete_object(new_oid)
+        raise PixelLabError(
+            f"RETRY {rel}/{state}: same structure as the original "
+            f"({src_struct:.2f}, need {SIBLING_MIN:.2f})")
     fresh0 = factory.read_manifest(rel) or man
     for other, oe in (fresh0.get("states") or {}).items():
         if other == state:
