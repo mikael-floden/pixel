@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:52:21+00:00",
+  "id": "window_058",
+  "group": "windows",
+  "rank": 25,
+  "index": 58,
+  "name": "A cottage window in peeling white-painted wood 058",
+  "lights": "LIGHTS_OFF",
+  "variety": "a cottage window in peeling white-painted wood",
+  "modifier": "one pane cracked in a spider-web",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a cottage window in peeling white-painted wood, one pane cracked in a spider-web, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_058/rotations/south-east.webp",
+    "south-west": "windows/window_058/rotations/south-west.webp",
+    "south": "windows/window_058/sprite.webp"
+  },
+  "size": 80,
+  "sprite": "windows/window_058/sprite.webp",
+  "placement": {
+    "world_height_m": 1.06,
+    "world_px_height": 40,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      9,
+      5,
+      73,
+      76
+    ],
+    "content_px_height": 71,
+    "canvas_render_px": 45
+  },
+  "pixellab_object_id": "3d07377e-e9e4-461a-8532-0a7149340d27",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
