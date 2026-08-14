@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:54:54+00:00",
+  "id": "tree_072",
+  "group": "trees",
+  "rank": 1,
+  "index": 72,
+  "name": "Wild pear, upright crown 072 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wild pear, upright crown",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": "blue-white soul-light spilling from a knot hole",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, wild pear, upright crown, with fallen leaves collected at its base, tall, about three times human height, self-emissive at night, softly radiating light: blue-white soul-light spilling from a knot hole",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_072/sprite.webp",
+  "placement": {
+    "world_height_m": 3.34,
+    "world_px_height": 126,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c19db7a9-cac6-4aee-ab2e-f36e3a6db7ae",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
