@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 513,
+  "scenery_count": 437,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 4,
@@ -41,14 +41,14 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 8
+      "done": 5
     },
     {
       "rank": 6,
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 7,
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 5
+      "done": 3
     },
     {
       "rank": 9,
@@ -76,35 +76,35 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 8
+      "done": 3
     },
     {
       "rank": 11,
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 12,
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 6
+      "done": 2
     },
     {
       "rank": 13,
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 8
+      "done": 6
     },
     {
       "rank": 14,
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 7
+      "done": 2
     },
     {
       "rank": 15,
@@ -118,28 +118,28 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 70,
-      "done": 8
+      "done": 6
     },
     {
       "rank": 17,
       "id": "haystacks",
       "name": "Haystack",
       "quota": 68,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 18,
       "id": "orchard_trees",
       "name": "Orchard Tree",
       "quota": 66,
-      "done": 3
+      "done": 0
     },
     {
       "rank": 19,
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
       "quota": 64,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 20,
@@ -188,35 +188,35 @@
       "id": "scarecrows",
       "name": "Scarecrow",
       "quota": 50,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 27,
       "id": "carts",
       "name": "Cart",
       "quota": 48,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 28,
       "id": "barrels",
       "name": "Barrel",
       "quota": 46,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 29,
       "id": "lantern_stands",
       "name": "Hanging Lantern Stand",
       "quota": 44,
-      "done": 6
+      "done": 4
     },
     {
       "rank": 30,
       "id": "beehives",
       "name": "Beehive",
       "quota": 42,
-      "done": 7
+      "done": 4
     },
     {
       "rank": 31,
@@ -230,21 +230,21 @@
       "id": "reed_beds",
       "name": "Reed Bed",
       "quota": 38,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 33,
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 34,
       "id": "flower_stands",
       "name": "Flower Stand",
       "quota": 34,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 35,
@@ -272,7 +272,7 @@
       "id": "standing_stones",
       "name": "Standing Stone",
       "quota": 26,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 39,
@@ -293,7 +293,7 @@
       "id": "ivy_posts",
       "name": "Ivy Post",
       "quota": 20,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 42,
@@ -307,42 +307,42 @@
       "id": "telegraph_poles",
       "name": "Telegraph Pole",
       "quota": 16,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 44,
       "id": "fish_drying_racks",
       "name": "Fish Drying Rack",
       "quota": 14,
-      "done": 7
+      "done": 5
     },
     {
       "rank": 45,
       "id": "moss_clumps",
       "name": "Moss Clump",
       "quota": 12,
-      "done": 8
+      "done": 5
     },
     {
       "rank": 46,
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 47,
       "id": "windmills",
       "name": "Windmill",
       "quota": 8,
-      "done": 4
+      "done": 3
     },
     {
       "rank": 48,
       "id": "maypoles",
       "name": "Maypole",
       "quota": 6,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 49,
@@ -356,7 +356,7 @@
       "id": "chimney_stacks",
       "name": "Chimney Stack",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 51,
@@ -384,7 +384,7 @@
       "id": "soulstone_plinths",
       "name": "Soulstone Plinth",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 55,
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 63,
@@ -517,7 +517,7 @@
       "id": "flower_garlands",
       "name": "Flower Garland",
       "quota": 2,
-      "done": 2
+      "done": 0
     },
     {
       "rank": 74,
@@ -601,7 +601,7 @@
       "id": "geodes",
       "name": "Geode",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 86,
@@ -622,7 +622,7 @@
       "id": "letter_boxes",
       "name": "Letter Box",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 89,
@@ -678,7 +678,7 @@
       "id": "dovecotes",
       "name": "Dovecote",
       "quota": 2,
-      "done": 2
+      "done": 0
     },
     {
       "rank": 97,
@@ -699,28 +699,28 @@
       "id": "charcoal_kilns",
       "name": "Charcoal Kiln",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 100,
       "id": "beaver_lodges",
       "name": "Beaver Lodge",
       "quota": 2,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 101,
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 50,
-      "done": 7
+      "done": 4
     },
     {
       "rank": 102,
       "id": "cliff_features",
       "name": "Cliff Feature",
       "quota": 30,
-      "done": 8
+      "done": 6
     },
     {
       "rank": 103,
@@ -734,21 +734,21 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 105,
       "id": "beds",
       "name": "Bed",
       "quota": 30,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 106,
       "id": "cupboards_and_shelves",
       "name": "Cupboard",
       "quota": 40,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 107,
@@ -785,86 +785,82 @@
     "ant_hills": 2,
     "anvils": 2,
     "aqueduct_fragments": 2,
-    "barrels": 8,
+    "barrels": 7,
     "beached_rowboats": 2,
-    "beacons": 8,
+    "beacons": 7,
     "beast_skulls": 2,
-    "beaver_lodges": 2,
-    "beds": 5,
-    "beehives": 7,
-    "bell_posts": 7,
+    "beaver_lodges": 1,
+    "beds": 4,
+    "beehives": 4,
+    "bell_posts": 2,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 8,
-    "briar_thickets": 8,
+    "briar_thickets": 6,
     "broken_columns": 2,
     "bushes": 8,
     "cairns": 8,
     "light": 1,
-    "carts": 7,
-    "cattail_clumps": 7,
-    "chairs_and_benches": 7,
-    "charcoal_kilns": 2,
-    "chimney_stacks": 2,
-    "cliff_features": 8,
+    "carts": 5,
+    "cattail_clumps": 5,
+    "chairs_and_benches": 6,
+    "charcoal_kilns": 1,
+    "chimney_stacks": 1,
+    "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_vines": 7,
+    "cliff_vines": 4,
     "crystals": 8,
     "cup_fungi": 2,
-    "cupboards_and_shelves": 7,
+    "cupboards_and_shelves": 6,
     "dock_pilings": 8,
-    "dovecotes": 2,
     "driftwood_logs": 2,
-    "fading_relics": 1,
     "fallen_logs": 8,
-    "fences": 8,
+    "fences": 3,
     "ferns": 7,
-    "fish_drying_racks": 7,
-    "flame_niches": 8,
-    "flower_garlands": 2,
-    "flower_stands": 7,
+    "fish_drying_racks": 5,
+    "flame_niches": 6,
+    "flower_stands": 5,
     "flower_trellises": 2,
-    "geodes": 2,
+    "geodes": 1,
     "giant_mushrooms": 2,
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 8,
+    "graves": 7,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "haystacks": 7,
+    "haystacks": 6,
     "hearths": 7,
-    "hedges": 6,
+    "hedges": 2,
     "hop_poles": 2,
     "house_clutter": 7,
-    "ivy_posts": 7,
-    "lantern_posts": 8,
-    "lantern_stands": 6,
-    "letter_boxes": 2,
+    "ivy_posts": 5,
+    "lantern_posts": 5,
+    "lantern_stands": 4,
+    "letter_boxes": 1,
     "market_stalls": 4,
-    "maypoles": 6,
-    "moss_clumps": 8,
+    "maypoles": 5,
+    "moss_clumps": 5,
     "mushrooms": 8,
     "nest_posts": 1,
     "offering_tables": 7,
-    "orchard_trees": 3,
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 2,
     "puffballs": 2,
-    "reed_beds": 7,
+    "reed_beds": 6,
     "rock_spires": 2,
     "rope_swings": 2,
     "rugs_and_hides": 5,
     "ruined_arches": 2,
     "rusted_machines": 2,
-    "scarecrows": 6,
+    "scarecrows": 5,
     "sheaf_poles": 2,
-    "signposts": 5,
+    "signposts": 3,
     "soulstone_outcrops": 8,
-    "soulstone_plinths": 2,
+    "soulstone_plinths": 1,
     "spring_basins": 2,
-    "standing_stones": 6,
+    "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 14,
@@ -873,7 +869,7 @@
     "stumps": 8,
     "sundials": 2,
     "tables": 7,
-    "telegraph_poles": 5,
+    "telegraph_poles": 4,
     "toadstool_rings": 8,
     "torch_posts": 7,
     "trailing_planters": 2,
@@ -884,11 +880,11 @@
     "water_lily_clumps": 2,
     "water_pumps": 2,
     "waterwheels": 2,
-    "wayside_shrines": 7,
-    "waystones": 8,
+    "wayside_shrines": 6,
+    "waystones": 7,
     "web_frames": 1,
-    "wells": 8,
-    "windmills": 4,
+    "wells": 7,
+    "windmills": 3,
     "wisteria_snags": 2,
     "woodpiles": 2
   },
@@ -1268,28 +1264,6 @@
       "animations": []
     },
     {
-      "id": "barrel_012",
-      "rel": "barrels/barrel_012",
-      "name": "Snow-lidded winter barrel 012 \u00b7 lit",
-      "category": "barrels",
-      "lights": "LIGHTS_ON",
-      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, snow-lidded winter barrel, waist-high, self-emissive at night, softly radiating light: foxfire fungus fringing the damp base",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.13,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "3434449a-db02-4231-ad22-87758303c606",
-      "sprite": "barrels/barrel_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "beached_rowboat_001",
       "rel": "beached_rowboats/beached_rowboat_001",
       "name": "Small dinghy with rope coil 001",
@@ -1444,28 +1418,6 @@
       "animations": []
     },
     {
-      "id": "beacon_009",
-      "rel": "beacons/beacon_009",
-      "name": "Banner-flying festival beacon 009",
-      "category": "beacons",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, banner-flying festival beacon, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.41,
-        "world_px_height": 166,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1432a742-69e9-4bbf-8e8c-410499685d1d",
-      "sprite": "beacons/beacon_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "beacon_010",
       "rel": "beacons/beacon_010",
       "name": "Tarred timber mast beacon 010 \u00b7 lit",
@@ -1576,28 +1528,6 @@
       "animations": []
     },
     {
-      "id": "beaver_lodge_900",
-      "rel": "beaver_lodges/beaver_lodge_900",
-      "name": "Lodge with gnawed stumps beside 900 \u00b7 lit",
-      "category": "beaver_lodges",
-      "lights": "LIGHTS_ON",
-      "description": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, lodge with gnawed stumps beside, waist-high, self-emissive at night, softly radiating light: ghostly beaver light glimpsed inside the lattice",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.01,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "36dbf6da-0cd3-46d0-81d1-cfe9c5aca84d",
-      "sprite": "beaver_lodges/beaver_lodge_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "bed_001",
       "rel": "beds/bed_001",
       "name": "Sturdy iron-frame bed with brass knobs 001",
@@ -1682,28 +1612,6 @@
       "status": "complete",
       "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
       "sprite": "beds/bed_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bed_900",
-      "rel": "beds/bed_900",
-      "name": "Small child's bed with a rag doll 900 \u00b7 lit",
-      "category": "beds",
-      "lights": "LIGHTS_ON",
-      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, small child's bed with a rag doll, small, knee-high, self-emissive at night, softly radiating light: a warming pan glowing at the foot of the bed",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.65,
-        "world_px_height": 24,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7a028b65-0da2-4ebf-a8e4-4c543d87331d",
-      "sprite": "beds/bed_900/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -1796,72 +1704,6 @@
       "animations": []
     },
     {
-      "id": "beehive_013",
-      "rel": "beehives/beehive_013",
-      "name": "Honey-stained wicker skep 013",
-      "category": "beehives",
-      "lights": "LIGHTS_OFF",
-      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, honey-stained wicker skep, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.78,
-        "world_px_height": 29,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "fba4684e-93f6-4086-b043-4f2a6c1f68c2",
-      "sprite": "beehives/beehive_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "beehive_900",
-      "rel": "beehives/beehive_900",
-      "name": "Stone-slab roofed log hive 900 \u00b7 lit",
-      "category": "beehives",
-      "lights": "LIGHTS_ON",
-      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, stone-slab roofed log hive, waist-high, self-emissive at night, softly radiating light: entrance hole glowing warm honey-gold from within",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.98,
-        "world_px_height": 37,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "84aadae7-1794-4ca1-b9d7-6d0cc15098c1",
-      "sprite": "beehives/beehive_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "beehive_901",
-      "rel": "beehives/beehive_901",
-      "name": "Twin skeps on shared bench 901",
-      "category": "beehives",
-      "lights": "LIGHTS_OFF",
-      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, twin skeps on shared bench, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.88,
-        "world_px_height": 33,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8909a1d8-4556-4bcd-97ce-631f406f4393",
-      "sprite": "beehives/beehive_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "bell_post_003",
       "rel": "bell_posts/bell_post_003",
       "name": "Snow-capped winter post 003",
@@ -1902,116 +1744,6 @@
       "status": "complete",
       "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
       "sprite": "bell_posts/bell_post_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_013",
-      "rel": "bell_posts/bell_post_013",
-      "name": "Weathered oak post, green patina bell 013",
-      "category": "bell_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, weathered oak post, green patina bell, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.69,
-        "world_px_height": 101,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5acb72e8-eb49-48e0-8ab5-f8eaadb87944",
-      "sprite": "bell_posts/bell_post_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_900",
-      "rel": "bell_posts/bell_post_900",
-      "name": "Shingle-roofed bell cap 900 \u00b7 lit",
-      "category": "bell_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, shingle-roofed bell cap, large, twice human height, self-emissive at night, softly radiating light: glowing pull-rope with luminous tassel",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.76,
-        "world_px_height": 104,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "82436798-2364-474a-a847-f391906d0f0d",
-      "sprite": "bell_posts/bell_post_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_901",
-      "rel": "bell_posts/bell_post_901",
-      "name": "Tall post, rope and tassel 901",
-      "category": "bell_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, tall post, rope and tassel, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.22,
-        "world_px_height": 84,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8e0dba8a-778a-49f9-b593-3daebf12e55c",
-      "sprite": "bell_posts/bell_post_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_902",
-      "rel": "bell_posts/bell_post_902",
-      "name": "Crooked birch post, small bell 902 \u00b7 lit",
-      "category": "bell_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, crooked birch post, small bell, large, twice human height, self-emissive at night, softly radiating light: light-moths circling the bell",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.59,
-        "world_px_height": 98,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "29c79ac2-b82f-447b-ab57-9114e8189b7a",
-      "sprite": "bell_posts/bell_post_902/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bell_post_903",
-      "rel": "bell_posts/bell_post_903",
-      "name": "Rune-carved post, patina bell 903",
-      "category": "bell_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, rune-carved post, patina bell, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.37,
-        "world_px_height": 89,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "de504521-91f3-4576-b14e-b34588b4c58f",
-      "sprite": "bell_posts/bell_post_903/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2394,50 +2126,6 @@
       "status": "complete",
       "pixellab_object_id": "33920291-ff33-4607-8f1d-bd0cb0c06855",
       "sprite": "briar_thickets/briar_thicket_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "briar_thicket_017",
-      "rel": "briar_thickets/briar_thicket_017",
-      "name": "Blackberry bramble tangle 017",
-      "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, blackberry bramble tangle, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.47,
-        "world_px_height": 55,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d21cbfb2-7a91-473b-9da3-701133af7055",
-      "sprite": "briar_thickets/briar_thicket_017/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "briar_thicket_902",
-      "rel": "briar_thickets/briar_thicket_902",
-      "name": "Scarlet rose hip clusters 902 \u00b7 lit",
-      "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
-      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, scarlet rose hip clusters, waist-high, self-emissive at night, softly radiating light: glowworms strung along the arching canes",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.03,
-        "world_px_height": 39,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "da3debd2-6628-4730-9c0f-7f55243a3813",
-      "sprite": "briar_thickets/briar_thicket_902/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2974,28 +2662,6 @@
       "animations": []
     },
     {
-      "id": "cart_900",
-      "rel": "carts/cart_900",
-      "name": "Falu-red market cart 900 \u00b7 lit",
-      "category": "carts",
-      "lights": "LIGHTS_ON",
-      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, falu-red market cart, waist-high, self-emissive at night, softly radiating light: warm soul-light seeping between the floor slats",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.19,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "74c82fd8-230c-4b84-9ac0-2a6d90138e09",
-      "sprite": "carts/cart_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cart_901",
       "rel": "carts/cart_901",
       "name": "Firewood-stacked cart 901",
@@ -3014,28 +2680,6 @@
       "status": "complete",
       "pixellab_object_id": "92d8bb37-78a8-4e52-94d7-7c7940430128",
       "sprite": "carts/cart_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cart_902",
-      "rel": "carts/cart_902",
-      "name": "Broken wheel, propped on stones 902 \u00b7 lit",
-      "category": "carts",
-      "lights": "LIGHTS_ON",
-      "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, broken wheel, propped on stones, large, twice human height, self-emissive at night, softly radiating light: glowing chalk waymarks scrawled on the sideboards",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.97,
-        "world_px_height": 74,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7c81e7e3-dcb6-424c-825e-27b9e4209762",
-      "sprite": "carts/cart_902/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3128,28 +2772,6 @@
       "animations": []
     },
     {
-      "id": "cattail_clump_009",
-      "rel": "cattail_clumps/cattail_clump_009",
-      "name": "Thick mature brown heads 009",
-      "category": "cattail_clumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, thick mature brown heads, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.77,
-        "world_px_height": 67,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "44a191d9-2ac6-421c-92e9-ed2f40570c4c",
-      "sprite": "cattail_clumps/cattail_clump_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cattail_clump_900",
       "rel": "cattail_clumps/cattail_clump_900",
       "name": "Dark marsh cattails 900 \u00b7 lit",
@@ -3168,28 +2790,6 @@
       "status": "complete",
       "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
       "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cattail_clump_902",
-      "rel": "cattail_clumps/cattail_clump_902",
-      "name": "Single stately tall cattail 902 \u00b7 lit",
-      "category": "cattail_clumps",
-      "lights": "LIGHTS_ON",
-      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, single stately tall cattail, roughly six feet tall, human height, self-emissive at night, softly radiating light: a soulstone pebble shining among the roots",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.59,
-        "world_px_height": 60,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5bc15bab-503f-4c48-8ddd-6b1823e62068",
-      "sprite": "cattail_clumps/cattail_clump_902/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3326,28 +2926,6 @@
       "animations": []
     },
     {
-      "id": "chair_900",
-      "rel": "chairs_and_benches/chair_900",
-      "name": "Carved high-back chair 900 \u00b7 lit",
-      "category": "chairs_and_benches",
-      "lights": "LIGHTS_ON",
-      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, carved high-back chair, waist-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.09,
-        "world_px_height": 41,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f651649f-b699-43e5-9729-90c633135d3a",
-      "sprite": "chairs_and_benches/chair_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "charcoal_kiln_002",
       "rel": "charcoal_kilns/charcoal_kiln_002",
       "name": "Squat rounded kiln 002 \u00b7 lit",
@@ -3370,28 +2948,6 @@
       "animations": []
     },
     {
-      "id": "charcoal_kiln_901",
-      "rel": "charcoal_kilns/charcoal_kiln_901",
-      "name": "Snow-dusted winter kiln 901",
-      "category": "charcoal_kilns",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall clay-domed charcoal kiln mound with ridged earthen sides, pocked with small vent holes seeping thin smoke, snow-dusted winter kiln, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.85,
-        "world_px_height": 70,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "0533f456-8678-4742-b5c8-e6a83f86787b",
-      "sprite": "charcoal_kilns/charcoal_kiln_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "chimney_stack_002",
       "rel": "chimney_stacks/chimney_stack_002",
       "name": "Chimney with intact mantel shelf 002 \u00b7 lit",
@@ -3410,28 +2966,6 @@
       "status": "complete",
       "pixellab_object_id": "5c55e2df-28eb-4bd3-ac02-0410dd7bb250",
       "sprite": "chimney_stacks/chimney_stack_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "chimney_stack_903",
-      "rel": "chimney_stacks/chimney_stack_903",
-      "name": "Cracked leaning chimney 903",
-      "category": "chimney_stacks",
-      "lights": "LIGHTS_OFF",
-      "description": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown, cracked leaning chimney, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 3.1,
-        "world_px_height": 117,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d5b4ee12-3bfd-4237-9d60-a766c1aff20a",
-      "sprite": "chimney_stacks/chimney_stack_903/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3480,28 +3014,6 @@
       "animations": []
     },
     {
-      "id": "cliff_feature_009",
-      "rel": "cliff_features/cliff_feature_009",
-      "name": "Spiral fossil embedded in the stone face 009",
-      "category": "cliff_features",
-      "lights": "LIGHTS_OFF",
-      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, spiral fossil embedded in the stone face, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.42,
-        "world_px_height": 53,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d07ef316-7979-4e3e-bc25-48f2bdafcdc4",
-      "sprite": "cliff_features/cliff_feature_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_feature_010",
       "rel": "cliff_features/cliff_feature_010",
       "name": "Deep cracked seam with ferns growing out 010 \u00b7 lit",
@@ -3542,28 +3054,6 @@
       "status": "complete",
       "pixellab_object_id": "2bae38db-6dba-4a1a-8c0a-129f138159c2",
       "sprite": "cliff_features/cliff_feature_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_feature_901",
-      "rel": "cliff_features/cliff_feature_901",
-      "name": "Thick gnarled root bursting from the rock 901",
-      "category": "cliff_features",
-      "lights": "LIGHTS_OFF",
-      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, thick gnarled root bursting from the rock, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.76,
-        "world_px_height": 104,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "19dd6034-ba9e-4021-956c-9ac51473f61e",
-      "sprite": "cliff_features/cliff_feature_901/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3718,72 +3208,6 @@
       "status": "complete",
       "pixellab_object_id": "24c1ea44-a0ed-4d92-ae47-2c2bf90793b7",
       "sprite": "cliff_vines/cliff_vine_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_009",
-      "rel": "cliff_vines/cliff_vine_009",
-      "name": "Red-leaved autumn creeper fall 009",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, red-leaved autumn creeper fall, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 4.34,
-        "world_px_height": 163,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b7cc6f18-aa02-474f-82e4-03186acf64c3",
-      "sprite": "cliff_vines/cliff_vine_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_900",
-      "rel": "cliff_vines/cliff_vine_900",
-      "name": "Broad double-width ivy curtain 900 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, broad double-width ivy curtain, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 4.7,
-        "world_px_height": 177,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "67deaeb5-06f8-43ef-af35-52fd6a7609f0",
-      "sprite": "cliff_vines/cliff_vine_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_901",
-      "rel": "cliff_vines/cliff_vine_901",
-      "name": "Fern-mixed green cascade 901",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, fern-mixed green cascade, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 5.08,
-        "world_px_height": 191,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bbd9f024-0b54-4745-920c-3a6678f52d6a",
-      "sprite": "cliff_vines/cliff_vine_901/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4162,28 +3586,6 @@
       "animations": []
     },
     {
-      "id": "cupboard_900",
-      "rel": "cupboards_and_shelves/cupboard_900",
-      "name": "Welsh dresser stacked with plates 900 \u00b7 lit",
-      "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_ON",
-      "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, welsh dresser stacked with plates, large, twice human height, self-emissive at night, softly radiating light: lamplight seeping from behind the cupboard doors",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.19,
-        "world_px_height": 82,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "6b211716-e5b9-4a6f-a582-e8215873e0f9",
-      "sprite": "cupboards_and_shelves/cupboard_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "dock_piling_001",
       "rel": "dock_pilings/dock_piling_001",
       "name": "Pilings with tarred rope wraps 001",
@@ -4360,50 +3762,6 @@
       "animations": []
     },
     {
-      "id": "dovecote_900",
-      "rel": "dovecotes/dovecote_900",
-      "name": "Whitewashed round dovecote tower 900 \u00b7 lit",
-      "category": "dovecotes",
-      "lights": "LIGHTS_ON",
-      "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, whitewashed round dovecote tower, large, twice human height, self-emissive at night, softly radiating light: white doves glowing faintly as they roost",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.97,
-        "world_px_height": 112,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "30fe7611-ba67-49ce-bfb4-172aeff9468e",
-      "sprite": "dovecotes/dovecote_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "dovecote_901",
-      "rel": "dovecotes/dovecote_901",
-      "name": "Snow-capped winter dovecote 901",
-      "category": "dovecotes",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout free-standing dovecote tower of stone and timber standing directly on the ground on a wide base, rows of arched pigeon holes up its sides, landing ledges, and a shingled roof, snow-capped winter dovecote, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.09,
-        "world_px_height": 79,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "97bf8ffe-a00d-486b-97cd-73c5ca43220b",
-      "sprite": "dovecotes/dovecote_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "driftwood_log_002",
       "rel": "driftwood_logs/driftwood_log_002",
       "name": "Moss-capped old log 002 \u00b7 lit",
@@ -4444,28 +3802,6 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fading_relic_901",
-      "rel": "fading_relics/fading_relic_901",
-      "name": "Fading grandfather clock 901",
-      "category": "fading_relics",
-      "lights": "LIGHTS_OFF",
-      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, fading grandfather clock, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.83,
-        "world_px_height": 31,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9520ad8b-83d7-482e-8d89-18ec69b03d9b",
-      "sprite": "fading_relics/fading_relic_901/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4708,116 +4044,6 @@
       "status": "complete",
       "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
       "sprite": "fences/fence_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_011",
-      "rel": "fences/fence_011",
-      "name": "Split-rail birch, bark on 011",
-      "category": "fences",
-      "lights": "LIGHTS_OFF",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, split-rail birch, bark on, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.17,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "c1df7277-3199-4869-9aa2-0d4c5dd605de",
-      "sprite": "fences/fence_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_012",
-      "rel": "fences/fence_012",
-      "name": "Run with small wicket gate 012 \u00b7 lit",
-      "category": "fences",
-      "lights": "LIGHTS_ON",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, run with small wicket gate, roughly six feet tall, human height, self-emissive at night, softly radiating light: golden glow where hands wore the top rail smooth",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a837802a-173e-4e46-b118-eed10c708db5",
-      "sprite": "fences/fence_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_900",
-      "rel": "fences/fence_900",
-      "name": "Falu-red painted farm rails 900 \u00b7 lit",
-      "category": "fences",
-      "lights": "LIGHTS_ON",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, falu-red painted farm rails, roughly six feet tall, human height, self-emissive at night, softly radiating light: foxfire fungus shelves on a rotting rail",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.2,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "79370684-548c-48f1-b90f-fecd5d0809b9",
-      "sprite": "fences/fence_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_901",
-      "rel": "fences/fence_901",
-      "name": "Weathered grey picket run 901",
-      "category": "fences",
-      "lights": "LIGHTS_OFF",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, weathered grey picket run, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.84,
-        "world_px_height": 32,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4566568b-1291-4e21-90a3-f2d7238688f4",
-      "sprite": "fences/fence_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_902",
-      "rel": "fences/fence_902",
-      "name": "Briar rose climbing one post 902 \u00b7 lit",
-      "category": "fences",
-      "lights": "LIGHTS_ON",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, briar rose climbing one post, waist-high, self-emissive at night, softly radiating light: carved farm-mark rune shining on a post",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.79,
-        "world_px_height": 30,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "210d6a5e-227a-45c2-95ea-0d8bc036133e",
-      "sprite": "fences/fence_902/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5086,50 +4312,6 @@
       "animations": []
     },
     {
-      "id": "fish_drying_rack_009",
-      "rel": "fish_drying_racks/fish_drying_rack_009",
-      "name": "Old grey lichened rack 009",
-      "category": "fish_drying_racks",
-      "lights": "LIGHTS_OFF",
-      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, old grey lichened rack, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.71,
-        "world_px_height": 64,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "c119283c-5368-436c-af55-129881e78c23",
-      "sprite": "fish_drying_racks/fish_drying_rack_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fish_drying_rack_900",
-      "rel": "fish_drying_racks/fish_drying_rack_900",
-      "name": "Empty rack with bare lines 900 \u00b7 lit",
-      "category": "fish_drying_racks",
-      "lights": "LIGHTS_ON",
-      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, empty rack with bare lines, large, twice human height, self-emissive at night, softly radiating light: fireflies gathered on the top pole",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.94,
-        "world_px_height": 73,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d29908cb-6d1d-49d0-845b-e51f4e6c1909",
-      "sprite": "fish_drying_racks/fish_drying_rack_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "flame_niche_005",
       "rel": "flame_niches/flame_niche_005",
       "name": "Rune-bordered niche 005",
@@ -5218,28 +4400,6 @@
       "animations": []
     },
     {
-      "id": "flame_niche_011",
-      "rel": "flame_niches/flame_niche_011",
-      "name": "Column-flanked tall niche 011",
-      "category": "flame_niches",
-      "lights": "LIGHTS_OFF",
-      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, column-flanked tall niche, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.0,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "812869d7-d1a8-4761-af26-12740dd964c1",
-      "sprite": "flame_niches/flame_niche_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "flame_niche_012",
       "rel": "flame_niches/flame_niche_012",
       "name": "Niche with offering sill 012 \u00b7 lit",
@@ -5280,72 +4440,6 @@
       "status": "complete",
       "pixellab_object_id": "3fa021ad-35b6-4be4-a5ea-74f02f78d5c3",
       "sprite": "flame_niches/flame_niche_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "flame_niche_902",
-      "rel": "flame_niches/flame_niche_902",
-      "name": "Twin-arch double niche 902 \u00b7 lit",
-      "category": "flame_niches",
-      "lights": "LIGHTS_ON",
-      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, twin-arch double niche, roughly six feet tall, human height, self-emissive at night, softly radiating light: sparks drifting up from the flame",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.55,
-        "world_px_height": 58,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "dfd83730-2968-4fb6-9f18-69a2fc366a0f",
-      "sprite": "flame_niches/flame_niche_902/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "flower_garland_900",
-      "rel": "flower_garlands/flower_garland_900",
-      "name": "Paper-flower festival garland 900 \u00b7 lit",
-      "category": "flower_garlands",
-      "lights": "LIGHTS_ON",
-      "description": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, paper-flower festival garland, roughly six feet tall, human height, self-emissive at night, softly radiating light: dew beads shining lamp-bright along the swag",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.55,
-        "world_px_height": 58,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "da698531-a81b-4934-b5e2-0a505c8876bf",
-      "sprite": "flower_garlands/flower_garland_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "flower_garland_901",
-      "rel": "flower_garlands/flower_garland_901",
-      "name": "Red rowan-berry garland 901",
-      "category": "flower_garlands",
-      "lights": "LIGHTS_OFF",
-      "description": "a thick lush rope of flowers and greenery swagged between two stout timber posts set solidly in the ground, heavy with dense blooms, red rowan-berry garland, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.49,
-        "world_px_height": 56,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "af7fafda-c686-4e89-b623-e20ee5e97fe8",
-      "sprite": "flower_garlands/flower_garland_901/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5460,50 +4554,6 @@
       "animations": []
     },
     {
-      "id": "flower_stand_011",
-      "rel": "flower_stands/flower_stand_011",
-      "name": "Harebells on thin stems 011",
-      "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
-      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, harebells on thin stems, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.14,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "eb296321-24d9-4f07-8310-94c61a3f2bc3",
-      "sprite": "flower_stands/flower_stand_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "flower_stand_901",
-      "rel": "flower_stands/flower_stand_901",
-      "name": "Midsummer wildflower mix 901",
-      "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
-      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, midsummer wildflower mix, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.97,
-        "world_px_height": 37,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bc6ee861-82dd-4f9b-9f32-e403a5aec500",
-      "sprite": "flower_stands/flower_stand_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "flower_trellis_001",
       "rel": "flower_trellises/flower_trellis_001",
       "name": "Mixed pastel sweet peas 001",
@@ -5566,28 +4616,6 @@
       "status": "complete",
       "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
       "sprite": "geodes/geode_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "geode_900",
-      "rel": "geodes/geode_900",
-      "name": "Agate-banded open geode 900 \u00b7 lit",
-      "category": "geodes",
-      "lights": "LIGHTS_ON",
-      "description": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals, agate-banded open geode, small, knee-high, self-emissive at night, softly radiating light: interior glow pulsing like a slow heartbeat",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.7,
-        "world_px_height": 26,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b191c5e3-572c-4a4f-822f-b316662c8949",
-      "sprite": "geodes/geode_900/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6049,28 +5077,6 @@
       "animations": []
     },
     {
-      "id": "grave_900",
-      "rel": "graves/grave_900",
-      "name": "Toppled half-sunk stone 900 \u00b7 lit",
-      "category": "graves",
-      "lights": "LIGHTS_ON",
-      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, waist-high, self-emissive at night, softly radiating light: single votive candle flickering at the base",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.93,
-        "world_px_height": 35,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "cfb62270-5d68-437d-9e13-d6337abefbdc",
-      "sprite": "graves/grave_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "hanging_basket_005",
       "rel": "hanging_baskets/hanging_basket_005",
       "name": "Trailing red geraniums 005",
@@ -6243,28 +5249,6 @@
       "status": "complete",
       "pixellab_object_id": "d359b86d-e62b-4e2a-9d7a-54e6588d0683",
       "sprite": "haystacks/haystack_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "haystack_015",
-      "rel": "haystacks/haystack_015",
-      "name": "Snow-dusted winter stack 015",
-      "category": "haystacks",
-      "lights": "LIGHTS_OFF",
-      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, snow-dusted winter stack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.46,
-        "world_px_height": 93,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f5c992d5-614d-4d66-8476-5d398429b8c0",
-      "sprite": "haystacks/haystack_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6507,94 +5491,6 @@
       "status": "complete",
       "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
       "sprite": "hedges/hedge_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_015",
-      "rel": "hedges/hedge_015",
-      "name": "Gap-toothed old hedge 015",
-      "category": "hedges",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, gap-toothed old hedge, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.03,
-        "world_px_height": 39,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e36a5aae-355a-46b3-b02d-2c613ffe73b3",
-      "sprite": "hedges/hedge_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_900",
-      "rel": "hedges/hedge_900",
-      "name": "Hedge with bird nest tuft 900 \u00b7 lit",
-      "category": "hedges",
-      "lights": "LIGHTS_ON",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, hedge with bird nest tuft, waist-high, self-emissive at night, softly radiating light: small iron lanterns set into clipped niches",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.17,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "92e5bc85-99e9-4b97-9257-c5a2a20a8f7e",
-      "sprite": "hedges/hedge_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_901",
-      "rel": "hedges/hedge_901",
-      "name": "Neat boxwood hedge 901",
-      "category": "hedges",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, neat boxwood hedge, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.02,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "0a706d11-29ca-4f47-92a7-93497405733b",
-      "sprite": "hedges/hedge_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_903",
-      "rel": "hedges/hedge_903",
-      "name": "Privet hedge with berries 903",
-      "category": "hedges",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, privet hedge with berries, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.68,
-        "world_px_height": 63,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "78c1618a-ac9c-4958-999f-cbb395e8a89b",
-      "sprite": "hedges/hedge_903/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6885,28 +5781,6 @@
       "animations": []
     },
     {
-      "id": "ivy_post_009",
-      "rel": "ivy_posts/ivy_post_009",
-      "name": "White-edged variegated ivy 009",
-      "category": "ivy_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, white-edged variegated ivy, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.73,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f8f23640-eb94-4965-8af6-3dd23024185d",
-      "sprite": "ivy_posts/ivy_post_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "ivy_post_010",
       "rel": "ivy_posts/ivy_post_010",
       "name": "Frost-dusted winter ivy 010 \u00b7 lit",
@@ -6925,28 +5799,6 @@
       "status": "complete",
       "pixellab_object_id": "486a4507-e8c9-4377-9de0-3740511971cf",
       "sprite": "ivy_posts/ivy_post_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "ivy_post_901",
-      "rel": "ivy_posts/ivy_post_901",
-      "name": "Common green ivy, oak post 901",
-      "category": "ivy_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, common green ivy, oak post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.01,
-        "world_px_height": 76,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "66753264-56a4-4b36-ab90-974368606bfa",
-      "sprite": "ivy_posts/ivy_post_901/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -7061,72 +5913,6 @@
       "animations": []
     },
     {
-      "id": "lantern_post_010",
-      "rel": "lantern_posts/lantern_post_010",
-      "name": "Whitewashed garden post 010 \u00b7 lit",
-      "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, whitewashed garden post, roughly six feet tall, human height, self-emissive at night, softly radiating light: smokeless white soul-flame floating on the wick",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.72,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4329e6f4-ae57-4569-ac52-d85672276719",
-      "sprite": "lantern_posts/lantern_post_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "lantern_post_011",
-      "rel": "lantern_posts/lantern_post_011",
-      "name": "Iron-banded dark post 011",
-      "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, iron-banded dark post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 2.02,
-        "world_px_height": 76,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d8104adb-93d5-4ad2-a37c-9c5a67b7e94f",
-      "sprite": "lantern_posts/lantern_post_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "lantern_post_901",
-      "rel": "lantern_posts/lantern_post_901",
-      "name": "Carved spiral post 901",
-      "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, carved spiral post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.83,
-        "world_px_height": 69,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f58698de-0dbb-4a1b-a214-400f05754787",
-      "sprite": "lantern_posts/lantern_post_901/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "lantern_stand_004",
       "rel": "lantern_stands/lantern_stand_004",
       "name": "Double-hook twin lantern stand 004 \u00b7 lit",
@@ -7193,50 +5979,6 @@
       "animations": []
     },
     {
-      "id": "lantern_stand_011",
-      "rel": "lantern_stands/lantern_stand_011",
-      "name": "Gallows-arm timber stand 011",
-      "category": "lantern_stands",
-      "lights": "LIGHTS_OFF",
-      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, gallows-arm timber stand, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.21,
-        "world_px_height": 83,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "37a376b1-02bb-4c56-82f6-3b6aeaa031aa",
-      "sprite": "lantern_stands/lantern_stand_011/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "lantern_stand_900",
-      "rel": "lantern_stands/lantern_stand_900",
-      "name": "Brass-hooked garden stand 900 \u00b7 lit",
-      "category": "lantern_stands",
-      "lights": "LIGHTS_ON",
-      "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, brass-hooked garden stand, large, twice human height, self-emissive at night, softly radiating light: green foxfire fungus packed behind the glass",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.42,
-        "world_px_height": 91,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f0cf5df7-0bd7-4236-b479-2369674f115e",
-      "sprite": "lantern_stands/lantern_stand_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "lantern_stand_902",
       "rel": "lantern_stands/lantern_stand_902",
       "name": "Slender reed-thin stand 902 \u00b7 lit",
@@ -7277,28 +6019,6 @@
       "status": "complete",
       "pixellab_object_id": "0b076865-875e-4228-9fd5-9c31c131b18b",
       "sprite": "letter_boxes/letter_box_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "letter_box_900",
-      "rel": "letter_boxes/letter_box_900",
-      "name": "Blue enamel box, brass slot 900 \u00b7 lit",
-      "category": "letter_boxes",
-      "lights": "LIGHTS_ON",
-      "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base, blue enamel box, brass slot, waist-high, self-emissive at night, softly radiating light: wax seals glowing like small embers",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.18,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a8425e3c-89ee-44c6-9aea-c3589e6ef5d4",
-      "sprite": "letter_boxes/letter_box_900/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -7501,28 +6221,6 @@
       "animations": []
     },
     {
-      "id": "maypole_900",
-      "rel": "maypoles/maypole_900",
-      "name": "Pole topped with small flag 900 \u00b7 lit",
-      "category": "maypoles",
-      "lights": "LIGHTS_ON",
-      "description": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, pole topped with small flag, tall, about three times human height, self-emissive at night, softly radiating light: ghost-pale ring of dancers' light in the grass below",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 4.2,
-        "world_px_height": 158,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8407f2db-bb34-47f7-936a-943e95fb249d",
-      "sprite": "maypoles/maypole_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "moss_clump_008",
       "rel": "moss_clumps/moss_clump_008",
       "name": "Moss-capped boulder 008 \u00b7 lit",
@@ -7589,28 +6287,6 @@
       "animations": []
     },
     {
-      "id": "moss_clump_013",
-      "rel": "moss_clumps/moss_clump_013",
-      "name": "Red-tinged autumn moss patch 013",
-      "category": "moss_clumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, red-tinged autumn moss patch, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.22,
-        "world_px_height": 8,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "11e9bbf4-0c22-4ef6-a491-442489bedf30",
-      "sprite": "moss_clumps/moss_clump_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "moss_clump_014",
       "rel": "moss_clumps/moss_clump_014",
       "name": "Frost-rimed moss flat spread 014 \u00b7 lit",
@@ -7633,28 +6309,6 @@
       "animations": []
     },
     {
-      "id": "moss_clump_015",
-      "rel": "moss_clumps/moss_clump_015",
-      "name": "Lichen-patched moss dome 015",
-      "category": "moss_clumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, lichen-patched moss dome, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.54,
-        "world_px_height": 20,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "87950820-d97a-4c0d-a5f6-8f3cc19d1974",
-      "sprite": "moss_clumps/moss_clump_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "moss_clump_900",
       "rel": "moss_clumps/moss_clump_900",
       "name": "Moss-swallowed stump 900 \u00b7 lit",
@@ -7673,28 +6327,6 @@
       "status": "complete",
       "pixellab_object_id": "d5d79a1e-ba0d-42fc-862f-f3e2021ad1ac",
       "sprite": "moss_clumps/moss_clump_900/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "moss_clump_903",
-      "rel": "moss_clumps/moss_clump_903",
-      "name": "Pillow moss hummock 903",
-      "category": "moss_clumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, pillow moss hummock, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.25,
-        "world_px_height": 9,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "b7496d74-d2a7-4e8a-b536-d77ae6d6d0d1",
-      "sprite": "moss_clumps/moss_clump_903/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -8051,72 +6683,6 @@
       "animations": []
     },
     {
-      "id": "orchard_tree_015",
-      "rel": "orchard_trees/orchard_tree_015",
-      "name": "Bare winter orchard tree 015",
-      "category": "orchard_trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, bare winter orchard tree, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 3.37,
-        "world_px_height": 127,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "dfc79091-c77f-4ea7-a147-0930a49caf94",
-      "sprite": "orchard_trees/orchard_tree_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "orchard_tree_016",
-      "rel": "orchard_trees/orchard_tree_016",
-      "name": "Autumn apple with windfalls 016 \u00b7 lit",
-      "category": "orchard_trees",
-      "lights": "LIGHTS_ON",
-      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, autumn apple with windfalls, tall, about three times human height, self-emissive at night, softly radiating light: harvest lanterns hung among the branches",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 3.28,
-        "world_px_height": 123,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a9640b8f-3574-4b58-b946-06c37d550667",
-      "sprite": "orchard_trees/orchard_tree_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "orchard_tree_021",
-      "rel": "orchard_trees/orchard_tree_021",
-      "name": "Cherry in full blossom 021",
-      "category": "orchard_trees",
-      "lights": "LIGHTS_OFF",
-      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, cherry in full blossom, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 3.17,
-        "world_px_height": 119,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "aac9c3af-eb64-47fb-87dd-ecf73b7689c8",
-      "sprite": "orchard_trees/orchard_tree_021/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "overgrown_archway_001",
       "rel": "overgrown_archways/overgrown_archway_001",
       "name": "Gray fieldstone arch, ivy 001",
@@ -8399,28 +6965,6 @@
       "status": "complete",
       "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
       "sprite": "reed_beds/reed_bed_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "reed_bed_009",
-      "rel": "reed_beds/reed_bed_009",
-      "name": "Reeds around an empty nest 009",
-      "category": "reed_beds",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds around an empty nest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.86,
-        "world_px_height": 70,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "6d0b8e7f-223e-4dc7-9737-729ebaa720df",
-      "sprite": "reed_beds/reed_bed_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -8755,28 +7299,6 @@
       "animations": []
     },
     {
-      "id": "scarecrow_013",
-      "rel": "scarecrows/scarecrow_013",
-      "name": "Tall thin twin-pole scarecrow 013",
-      "category": "scarecrows",
-      "lights": "LIGHTS_OFF",
-      "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, tall thin twin-pole scarecrow, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.83,
-        "world_px_height": 69,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "16c8112f-c7a9-4224-a872-4bf18f1aace8",
-      "sprite": "scarecrows/scarecrow_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "scarecrow_018",
       "rel": "scarecrows/scarecrow_018",
       "name": "Crow-feather trimmed hat 018 \u00b7 lit",
@@ -8971,50 +7493,6 @@
       "status": "complete",
       "pixellab_object_id": "bccbc74b-ff97-4d51-bee1-4e2b8e4a8c8d",
       "sprite": "signposts/signpost_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "signpost_015",
-      "rel": "signposts/signpost_015",
-      "name": "Tar-lettered harbor signpost 015",
-      "category": "signposts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, tar-lettered harbor signpost, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.83,
-        "world_px_height": 69,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a2dd6e63-19ba-4ec2-8011-09b216a4c805",
-      "sprite": "signposts/signpost_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "signpost_019",
-      "rel": "signposts/signpost_019",
-      "name": "Arrow-cluster crossroads post 019",
-      "category": "signposts",
-      "lights": "LIGHTS_OFF",
-      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, arrow-cluster crossroads post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.88,
-        "world_px_height": 71,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "10a2ff85-da4b-4f90-bb4d-04368b0a3196",
-      "sprite": "signposts/signpost_019/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -9217,28 +7695,6 @@
       "animations": []
     },
     {
-      "id": "soulstone_plinth_008",
-      "rel": "soulstone_plinths/soulstone_plinth_008",
-      "name": "Green stone, iron cradle 008 \u00b7 lit",
-      "category": "soulstone_plinths",
-      "lights": "LIGHTS_ON",
-      "description": "a faceted mineral soulstone resting on a carved stone plinth, ringed by small offerings at its base, green stone, iron cradle, roughly six feet tall, human height, self-emissive at night, softly radiating light: thin column of light rising from the stone",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.43,
-        "world_px_height": 54,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f2e3ef81-127c-4fd4-bfce-e3081b15c3b7",
-      "sprite": "soulstone_plinths/soulstone_plinth_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "spring_basin_003",
       "rel": "spring_basins/spring_basin_003",
       "name": "Moss-rimmed old basin 003",
@@ -9367,28 +7823,6 @@
       "status": "complete",
       "pixellab_object_id": "1a7a5a3a-3d2a-44f9-acf8-0e3b18129947",
       "sprite": "standing_stones/standing_stone_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "standing_stone_011",
-      "rel": "standing_stones/standing_stone_011",
-      "name": "Rose-wrapped stone 011",
-      "category": "standing_stones",
-      "lights": "LIGHTS_OFF",
-      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, rose-wrapped stone, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 2.39,
-        "world_px_height": 90,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d9368742-1b9d-4bd9-817a-ce337b7cd22e",
-      "sprite": "standing_stones/standing_stone_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -10537,28 +8971,6 @@
       "animations": []
     },
     {
-      "id": "telegraph_pole_015",
-      "rel": "telegraph_poles/telegraph_pole_015",
-      "name": "Bird nest on crossarm 015",
-      "category": "telegraph_poles",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, bird nest on crossarm, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.05,
-        "world_px_height": 190,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "5e3fc587-8eca-46e5-b968-51d3d0a27590",
-      "sprite": "telegraph_poles/telegraph_pole_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "toadstool_ring_001",
       "rel": "toadstool_rings/toadstool_ring_001",
       "name": "Ring of tiny brown caps 001",
@@ -11637,28 +10049,6 @@
       "animations": []
     },
     {
-      "id": "wayside_shrine_017",
-      "rel": "wayside_shrines/wayside_shrine_017",
-      "name": "Carved pole shrine 017",
-      "category": "wayside_shrines",
-      "lights": "LIGHTS_OFF",
-      "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, carved pole shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.71,
-        "world_px_height": 64,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8093cc98-6a91-4f6d-b570-e4adfa5ad799",
-      "sprite": "wayside_shrines/wayside_shrine_017/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "wayside_shrine_020",
       "rel": "wayside_shrines/wayside_shrine_020",
       "name": "Open-front stone hut shrine 020 \u00b7 lit",
@@ -11809,28 +10199,6 @@
       "status": "complete",
       "pixellab_object_id": "35ff9adf-a1bd-4764-8427-b25673fd0e92",
       "sprite": "waystones/waystone_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waystone_014",
-      "rel": "waystones/waystone_014",
-      "name": "Lichen-ringed old stone 014 \u00b7 lit",
-      "category": "waystones",
-      "lights": "LIGHTS_ON",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, lichen-ringed old stone, waist-high, self-emissive at night, softly radiating light: soulstone veins threading the rock alight",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.77,
-        "world_px_height": 29,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "c81db3f7-21ab-43a4-82af-d7958d0efd00",
-      "sprite": "waystones/waystone_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -12033,28 +10401,6 @@
       "animations": []
     },
     {
-      "id": "well_015",
-      "rel": "wells/well_015",
-      "name": "Worn brick rim, slate roof 015",
-      "category": "wells",
-      "lights": "LIGHTS_OFF",
-      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, worn brick rim, slate roof, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.07,
-        "world_px_height": 78,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "6470e4f2-aa3a-4bba-8f63-bfba0167c933",
-      "sprite": "wells/well_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "windmill_003",
       "rel": "windmills/windmill_003",
       "name": "Ivy-grown abandoned mill 003",
@@ -12095,28 +10441,6 @@
       "status": "complete",
       "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
       "sprite": "windmills/windmill_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "windmill_011",
-      "rel": "windmills/windmill_011",
-      "name": "Wooden post mill 011",
-      "category": "windmills",
-      "lights": "LIGHTS_OFF",
-      "description": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, wooden post mill, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.11,
-        "world_px_height": 155,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "76e7be2e-cebb-478b-9a05-cb506f426ddd",
-      "sprite": "windmills/windmill_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
