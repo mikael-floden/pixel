@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:15:34+00:00",
+  "id": "tree_062",
+  "group": "trees",
+  "rank": 1,
+  "index": 62,
+  "name": "Lightning-split trunk 062 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lightning-split trunk",
+  "modifier": "standing in a patch of wildflowers",
+  "glow_concept": "memorial candles nestled between the roots",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, lightning-split trunk, standing in a patch of wildflowers, large, twice human height, self-emissive at night, softly radiating light: memorial candles nestled between the roots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_062/sprite.webp",
+  "placement": {
+    "world_height_m": 2.91,
+    "world_px_height": 110,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f790d101-1b76-4581-be2d-9be9750bf4f5",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
