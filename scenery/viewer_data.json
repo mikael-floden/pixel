@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 732,
+  "scenery_count": 733,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 56
+      "done": 57
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 56,
+    "cliff_vines": 57,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6145,6 +6145,28 @@
       "status": "complete",
       "pixellab_object_id": "d71d257f-b7a8-40c7-a659-f14894b23762",
       "sprite": "cliff_vines/cliff_vine_139/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_140",
+      "rel": "cliff_vines/cliff_vine_140",
+      "name": "Variegated cream-and-green fall 140 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, variegated cream-and-green fall, two roots winding side by side, touching once, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 5.92,
+        "world_px_height": 223,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b7b27675-2884-48d5-8524-43582332288a",
+      "sprite": "cliff_vines/cliff_vine_140/sprite.webp",
       "rotations": {},
       "animations": []
     },
