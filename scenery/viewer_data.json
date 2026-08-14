@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 503,
+  "scenery_count": 504,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 9,
@@ -979,7 +979,7 @@
     "scarecrows": 5,
     "sheaf_poles": 2,
     "shipwreck_prows": 1,
-    "signposts": 8,
+    "signposts": 9,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spirit_gates": 1,
@@ -8587,6 +8587,28 @@
       "status": "complete",
       "pixellab_object_id": "efb8ef82-19fc-435e-a1d2-e35f1641aff9",
       "sprite": "signposts/signpost_031/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_032",
+      "rel": "signposts/signpost_032",
+      "name": "Arrow-cluster crossroads post 032 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, arrow-cluster crossroads post, old and settling into the ground, large, twice human height, self-emissive at night, softly radiating light: arrow edges limned with firefly light",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.06,
+        "world_px_height": 78,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "24b34858-53b2-42e4-81f8-60b2fe1a97d1",
+      "sprite": "signposts/signpost_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
