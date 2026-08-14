@@ -215,7 +215,11 @@ def next_batch(cfg: dict, done_by_group: dict[str, set[str]],
         # groups while trees sat at 30/100; by ratio, the big nature groups
         # absorb most of every pass once all groups are seeded — which is
         # exactly how often a world-builder reaches for each type.
-        key = (len(done) / quota, group["rank"])
+        # ALWAYS-WANTED groups (maintainer 2026-08-14: "Trees are ofc always
+        # welcomed") carry a `demand` multiplier below 1.0, which makes them
+        # read as emptier than they are and keeps a steady stream flowing no
+        # matter what else is unfilled. Stateless, so every run agrees.
+        key = (len(done) / quota * float(group.get("demand", 1.0)), group["rank"])
         if best is None or key < best[0]:
             best = (key, group, done)
     if best is None:
