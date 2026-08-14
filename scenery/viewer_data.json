@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 604,
+  "scenery_count": 605,
   "target_count": 2529,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -860,7 +860,7 @@
       "id": "fairy_stumps",
       "name": "Fairy Stump",
       "quota": 1,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 123,
@@ -1162,7 +1162,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fairy_stumps": 1,
+    "fairy_stumps": 2,
     "fallen_logs": 9,
     "fences": 3,
     "ferns": 12,
@@ -5110,6 +5110,28 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fairy_stump_003",
+      "rel": "fairy_stumps/fairy_stump_003",
+      "name": "Birch fairy stump 003",
+      "category": "fairy_stumps",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world, birch fairy stump, two doors quarreling neighbors apart, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.79,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d549d486-03a6-4838-a734-0ff53381f7d4",
+      "sprite": "fairy_stumps/fairy_stump_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
