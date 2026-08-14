@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 592,
+  "scenery_count": 593,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 160,
@@ -1237,6 +1237,7 @@
     "chimney_stacks": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
+    "cliff_ledgetrees": 1,
     "cliff_mosses": 1,
     "cliff_shrubs": 1,
     "cliff_vines": 4,
@@ -4270,6 +4271,28 @@
       "status": "complete",
       "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
       "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_002",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_002",
+      "name": "White birch leaning far out 002 \u00b7 lit",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_ON",
+      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, white birch leaning far out, grass and flowers around its base, towering, many times human height, self-emissive at night, softly radiating light: fireflies around its crown",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 6.92,
+        "world_px_height": 261,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "51e8f0b2-79a2-4569-a679-8cea0f93e21f",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_002/sprite.webp",
       "rotations": {},
       "animations": []
     },

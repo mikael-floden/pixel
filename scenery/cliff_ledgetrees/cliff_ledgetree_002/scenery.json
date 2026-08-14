@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:07:12+00:00",
+  "id": "cliff_ledgetree_002",
+  "group": "cliff_ledgetrees",
+  "rank": 159,
+  "index": 2,
+  "name": "White birch leaning far out 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white birch leaning far out",
+  "modifier": "grass and flowers around its base",
+  "glow_concept": "fireflies around its crown",
+  "prompt": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, white birch leaning far out, grass and flowers around its base, towering, many times human height, self-emissive at night, softly radiating light: fireflies around its crown",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_ledgetrees/cliff_ledgetree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 6.92,
+    "world_px_height": 261,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "51e8f0b2-79a2-4569-a679-8cea0f93e21f",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
