@@ -209,8 +209,8 @@
       "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
       "lore_fit": "A grave with a legible name is a spoken fact holding its shape — the first defense against the Quiet.",
       "modifier_pool": "structure",
-      "quota": 13,
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 13"
+      "quota": 11,
+      "_saturated": "maintainer said enough (3 note(s)) — frozen at 11"
     },
     {
       "rank": 4,
@@ -252,8 +252,8 @@
       "animation_idea": "flames licking upward with sparks drifting off",
       "lore_fit": "A tended brazier is sacred infrastructure — the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
       "modifier_pool": "structure",
-      "quota": 18,
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 18"
+      "quota": 14,
+      "_saturated": "maintainer said enough (2 note(s)) — frozen at 14"
     },
     {
       "rank": 5,
@@ -289,8 +289,8 @@
       "animation_idea": "candle flame wavering with faint light spill",
       "lore_fit": "Lantern courtesy is how neighbors tell each other a path is still remembered, so a lit post means the way beyond it has not gone soft.",
       "modifier_pool": "structure",
-      "quota": 17,
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 17"
+      "quota": 13,
+      "_saturated": "maintainer said enough (4 note(s)) — frozen at 13"
     },
     {
       "rank": 6,
@@ -329,8 +329,8 @@
       "animation_idea": "rune glow pulsing slowly brighter and dimmer",
       "lore_fit": "Waystones are facts pressed toward mineral — direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
       "modifier_pool": "structure",
-      "quota": 16,
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 16"
+      "quota": 13,
+      "_saturated": "maintainer said enough (3 note(s)) — frozen at 13"
     },
     {
       "rank": 7,
@@ -367,8 +367,8 @@
       "animation_idea": "flame streaming sideways as if in wind",
       "lore_fit": "Torch posts line the roads between fires, planted by walkers who wanted the dark stretches between remembered places to stay short.",
       "modifier_pool": "structure",
-      "quota": 17,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 17"
+      "quota": 15,
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 15"
     },
     {
       "rank": 8,
@@ -605,8 +605,8 @@
       "animation_idea": "a loose petal breaking free and drifting to the ground",
       "lore_fit": "Briar roses bloomed over Cherry Valley in every story the dead tell of it, so here they bloom in stubborn thorny plenty, keeping the Quiet out at the meadow edges.",
       "modifier_pool": "nature",
-      "quota": 14,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 14"
+      "quota": 12,
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 12"
     },
     {
       "rank": 14,
@@ -958,8 +958,8 @@
       "animation_idea": "ribbons fluttering in the wind",
       "lore_fit": "These are the told-aloud stations where stories must be retold, because what is spoken of holds its shape.",
       "modifier_pool": "structure",
-      "quota": 11,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 11"
+      "quota": 9,
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 9"
     },
     {
       "rank": 22,
@@ -1000,8 +1000,8 @@
       "animation_idea": "luminous steam curling up from the offering bowl",
       "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body.",
       "modifier_pool": "structure",
-      "quota": 11,
-      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 11, 2026-08-14"
+      "quota": 10,
+      "_saturated": "maintainer said enough (2 note(s)) — frozen at 10"
     },
     {
       "rank": 23,
@@ -1442,8 +1442,8 @@
       "animation_idea": "heads nodding while loose fluff drifts away",
       "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water.",
       "modifier_pool": "nature",
-      "quota": 7,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 7"
+      "quota": 6,
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 6"
     },
     {
       "rank": 34,
@@ -4084,7 +4084,7 @@
       "id": "chairs_and_benches",
       "prefix": "chair",
       "name": "Chair",
-      "quota": 40,
+      "quota": 8,
       "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor",
       "world_height_m": [
         0.5,
@@ -4111,7 +4111,8 @@
       ],
       "animation_idea": "the rocking chair rocking slowly on its own",
       "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready.",
-      "modifier_pool": "indoor"
+      "modifier_pool": "indoor",
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 8"
     },
     {
       "rank": 105,
@@ -4710,7 +4711,7 @@
       "id": "fairy_stumps",
       "prefix": "fairy_stump",
       "name": "Fairy Stump",
-      "quota": 2,
+      "quota": 1,
       "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world",
       "world_height_m": [
         0.6,
@@ -4739,7 +4740,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 2"
+      "_saturated": "maintainer said enough (3 note(s)) — frozen at 1"
     },
     {
       "rank": 123,
@@ -5051,7 +5052,7 @@
       "id": "bone_arbors",
       "prefix": "bone_arbor",
       "name": "Bone Arbor",
-      "quota": 1,
+      "quota": 0,
       "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it",
       "world_height_m": [
         1.8,
@@ -5078,7 +5079,7 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "_saturated": "maintainer: enough of these (1 note(s), incl. on pieces he APPROVED) — frozen at 1, 2026-08-14"
+      "_saturated": "maintainer said enough (2 note(s)) — frozen at 0"
     },
     {
       "rank": 133,
