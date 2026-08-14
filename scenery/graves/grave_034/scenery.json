@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:15:50+00:00",
+  "id": "grave_034",
+  "group": "graves",
+  "rank": 3,
+  "index": 34,
+  "name": "Rounded granite headstone 034 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rounded granite headstone",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": "the epitaph glowing in unreadable soul-script",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, reinforced with iron bands, small, knee-high, self-emissive at night, softly radiating light: the epitaph glowing in unreadable soul-script",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_034/sprite.webp",
+  "placement": {
+    "world_height_m": 0.55,
+    "world_px_height": 21,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "48187bc1-ad36-4d92-849c-85cf1216fd1a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

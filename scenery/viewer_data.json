@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 583,
+  "scenery_count": 584,
   "target_count": 2437,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 4,
@@ -1021,7 +1021,7 @@
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 12,
+    "graves": 13,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 1,
@@ -6489,6 +6489,28 @@
       "status": "complete",
       "pixellab_object_id": "e7a36a17-f2af-4e15-bd4a-37724f700825",
       "sprite": "graves/grave_032/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_034",
+      "rel": "graves/grave_034",
+      "name": "Rounded granite headstone 034 \u00b7 lit",
+      "category": "graves",
+      "lights": "LIGHTS_ON",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, reinforced with iron bands, small, knee-high, self-emissive at night, softly radiating light: the epitaph glowing in unreadable soul-script",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.55,
+        "world_px_height": 21,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "48187bc1-ad36-4d92-849c-85cf1216fd1a",
+      "sprite": "graves/grave_034/sprite.webp",
       "rotations": {},
       "animations": []
     },
