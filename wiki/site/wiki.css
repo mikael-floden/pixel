@@ -190,9 +190,16 @@ button { font: inherit; cursor: pointer; }
 .seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 
 /* ---- feedback controls ---- */
-.stars { display: inline-flex; gap: 1px; }
+/* BIG ENOUGH TO HIT (maintainer 2026-08-14: "I also want all stars in the
+   entire application to be a bit bigger, hard to click"). 17px glyphs with 1px
+   of padding gave a ~19x17 target on a phone — well under the ~44px a thumb
+   wants, and he rates hundreds of pieces in a session. The glyph grows and the
+   tap area grows more; touch-action kills the double-tap zoom that a quick
+   second star press would otherwise trigger. */
+.stars { display: inline-flex; gap: 2px; }
 .stars button {
-  background: none; border: none; padding: 0 1px; font-size: 17px; line-height: 1;
+  background: none; border: none; padding: 4px 3px; font-size: 21px; line-height: 1;
+  min-width: 30px; min-height: 34px; touch-action: manipulation;
   color: var(--border-strong);
 }
 .stars button.lit { color: var(--star); }
@@ -210,14 +217,16 @@ button { font: inherit; cursor: pointer; }
    half-reviewed library moved the animation viewer by exactly that, the
    jumping this page was rebuilt to stop (maintainer 2026-08-07). Admin rows
    hold buttons and are taller; a minimum can only ever help them. */
-.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 22px; }
+.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 24px; }
 /* PER-STATE FEEDBACK, under the preview (maintainer 2026-08-14). It sits
    inside the same card as the art, so it needs a line above it to read as a
    separate act from judging the whole piece — which happens in the header. */
 .facet-fb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   border-top: 1px solid var(--border); padding-top: 10px; }
-.facet-fb .facet-label { font-size: 12.5px; white-space: nowrap; }
 .facet-fb .fb-row { flex: 1; min-width: 0; }
+/* "Judging <state · direction>" above the selectors it describes. */
+.facet-head { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; min-height: 22px; }
+.facet-head .facet-label { font-size: 12.5px; white-space: nowrap; }
 .fb-note {
   width: 100%; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
@@ -395,7 +404,7 @@ label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px
 .tile-cell img { width: 64px; height: auto; display: block; }
 .tile-cell.rejected { outline: 2px solid var(--bad); opacity: 0.45; }
 .tile-cell.approved { outline: 2px solid var(--good); }
-.tile-cell .stars button { font-size: 12px; }
+.tile-cell .stars button { font-size: 15px; padding: 2px; min-width: 22px; min-height: 24px; }
 .tile-cell .tile-x {
   position: absolute; top: 2px; right: 2px; border: none; background: none;
   color: var(--muted); font-size: 12px; padding: 2px 4px; border-radius: 5px;
@@ -540,7 +549,10 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 
 /* ---- public (read-only) faces + admin login ---- */
-.stars.ro { color: var(--star); font-size: 13px; letter-spacing: 1px; }
+/* Read-only stars: line-height pinned so a rated piece and an unrated one are
+   the SAME row height. Bumping the glyph to 15px made a rated piece's row 1px
+   taller, which paged the whole viewer up and down by 2px. */
+.stars.ro { color: var(--star); font-size: 15px; line-height: 1; letter-spacing: 1px; }
 .stat-grid.ro .stat-value {
   font-size: 15px; font-weight: 600; color: var(--fg);
   padding: 6px 0 2px; font-variant-numeric: tabular-nums;

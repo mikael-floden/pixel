@@ -179,12 +179,16 @@ function noteWidget(domain, id) {
 // second whole-entity verdict — he reported on 2026-08-14 that he could not
 // give feedback per animation at all, on a page that had carried it for six
 // weeks. A two-word label is the middle ground.
-function facetPanel(box, namePill) {
+function facetPanel(box) {
   if (!state.admin) return null;
-  return h("div", { class: "facet-fb", style: "margin-top:12px" },
-    h("span", { class: "muted facet-label" }, "Judging"), namePill, box);
+  return h("div", { class: "facet-fb", style: "margin-top:12px" }, box);
 }
-/** The pill that says exactly which generated file the row below judges. */
+/** The line above the selectors: what the row under the preview will judge. */
+function facetHead(pillBox) {
+  if (!state.admin) return null;
+  return h("div", { class: "facet-head" }, h("span", { class: "muted facet-label" }, "Judging"), pillBox);
+}
+/** The pill that says exactly which generated file is being judged. */
 const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir}` },
   `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
 function feedbackRow(domain, id, opts = {}) {
@@ -600,6 +604,12 @@ function makePlayer(entity, kind, opts = {}) {
   }
   loadClip();
   const rootEl = h("div", { class: "player" },
+    // "Judging <state · direction>" rides ABOVE the selectors it describes
+    // (maintainer 2026-08-14: "can you put the Judging over the state/
+    // animation selection instead?") — you read what is about to be judged,
+    // then pick it. The controls that DO the judging stay under the preview,
+    // where the whole-entity verdict is not.
+    opts.headerEl ?? null,
     // BOTH ROWS, ALWAYS. A row that appears only on the pieces that have
     // something in it moves the preview up and down as you page ‹ › — the
     // maintainer reviews hundreds of pieces in a row and the art has to stay
@@ -1560,10 +1570,10 @@ function zoneMapPanel(monsterId) {
 function viewMonster(id) {
   const m = state.data.domains.monsters.find((x) => x.id === id);
   if (!m) return h("p", {}, "Unknown monster.");
-  const player = makePlayer(m, "monster");
+  const facetPill = h("span", {});
+  const player = makePlayer(m, "monster", { headerEl: facetHead(facetPill) });
   activePlayers.push(player);
   const facetBox = h("div", {});
-  const facetPill = h("span", {});
   // ONE ANIMATION IN ONE DIRECTION is the unit that gets regenerated, so it is
   // the unit that gets judged (maintainer 2026-08-14). "Walk is fine except
   // north-east" was previously unsayable — the only verdict available covered
@@ -1610,7 +1620,7 @@ function viewMonster(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,
-      facetPanel(facetBox, facetPill)),
+      facetPanel(facetBox)),
     zoneMapPanel(m.id),
     // What it drops, each row a link to that item's page.
     dropsPanel(m.id),
@@ -1762,10 +1772,10 @@ function viewCharacters() {
 function viewCharacter(id) {
   const c = state.data.domains.characters.find((x) => x.id === id);
   if (!c) return h("p", {}, "Unknown character.");
-  const player = makePlayer(c, "character");
+  const facetPill = h("span", {});
+  const player = makePlayer(c, "character", { headerEl: facetHead(facetPill) });
   activePlayers.push(player);
   const facetBox = h("div", {});
-  const facetPill = h("span", {});
   // Per animation AND direction, same as monsters — a walk that breaks only
   // when facing north-west is regenerated for north-west alone.
   const renderFacet = () => {
@@ -1842,7 +1852,7 @@ function viewCharacter(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
-      facetPanel(facetBox, facetPill)),
+      facetPanel(facetBox)),
     // Standing in the world? Then the map showing roughly where.
     npcMapPanel(c),
     // The character's OWN sound events — their jump/fall voice today — with
@@ -2360,7 +2370,7 @@ function viewObject(id) {
     }));
   };
   if (hasAnims) {
-    player = makePlayer(o, "object", ref ? { humanRef: { ...ref, on: humanOn } } : {});
+    player = makePlayer(o, "object", { headerEl: facetHead(facetPill), ...(ref ? { humanRef: { ...ref, on: humanOn } } : {}) });
     activePlayers.push(player);
     playerEl = player.el;
     player.onFacetChange = renderFacet;
@@ -2417,7 +2427,7 @@ function viewObject(id) {
           playerEl,
           // Under the preview, never over it: the whole piece is judged in the
           // header, this judges the one state on screen.
-          facetPanel(facetBox, facetPill))
+          facetPanel(facetBox))
       : h("p", { class: "muted" }, "No animations."),
     entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last
