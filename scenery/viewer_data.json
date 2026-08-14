@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 778,
+  "scenery_count": 744,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 47
+      "done": 41
     },
     {
       "rank": 102,
@@ -1091,14 +1091,14 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 37
+      "done": 25
     },
     {
       "rank": 156,
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 9
+      "done": 5
     },
     {
       "rank": 157,
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 30
+      "done": 22
     },
     {
       "rank": 159,
@@ -1126,7 +1126,7 @@
       "id": "sleeping_giants",
       "name": "Sleeping Giant",
       "quota": 3,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 161,
@@ -1140,7 +1140,7 @@
       "id": "door_trees",
       "name": "Door Tree",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 163,
@@ -1175,14 +1175,14 @@
       "id": "giant_feathers",
       "name": "Giant Feather",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 168,
       "id": "petrified_waves",
       "name": "Petrified Wave",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 169,
@@ -1235,19 +1235,18 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 9,
+    "cliff_falls": 5,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 30,
-    "cliff_roots": 37,
+    "cliff_mosses": 22,
+    "cliff_roots": 25,
     "cliff_shrubs": 12,
-    "cliff_vines": 47,
+    "cliff_vines": 41,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
     "dock_pilings": 12,
-    "door_trees": 1,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
     "fallen_logs": 9,
@@ -1261,7 +1260,6 @@
     "frozen_springs": 1,
     "geodes": 1,
     "giant_fallen_bells": 1,
-    "giant_feathers": 1,
     "giant_mushrooms": 2,
     "giant_skulls": 1,
     "giant_snail_shells": 3,
@@ -1295,7 +1293,6 @@
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 2,
-    "petrified_waves": 1,
     "puffballs": 2,
     "reed_beds": 7,
     "rock_spires": 2,
@@ -1308,7 +1305,7 @@
     "shipwreck_prows": 1,
     "signposts": 5,
     "sky_stairs": 2,
-    "sleeping_giants": 2,
+    "sleeping_giants": 1,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -4150,94 +4147,6 @@
       "animations": []
     },
     {
-      "id": "cliff_fall_007",
-      "rel": "cliff_falls/cliff_fall_007",
-      "name": "Brown with spring meltwater 007",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, brown with spring meltwater, with a rainbow of spray at its foot, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.88,
-        "world_px_height": 334,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "fb6d7421-816b-4f94-8b25-45ac6511bc96",
-      "sprite": "cliff_falls/cliff_fall_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_009",
-      "rel": "cliff_falls/cliff_fall_009",
-      "name": "A thin silver thread 009",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, a thin silver thread, blown sideways at the bottom, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 16.51,
-        "world_px_height": 622,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4f55f302-6f71-4aec-b7fa-eec9333b766f",
-      "sprite": "cliff_falls/cliff_fall_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_010",
-      "rel": "cliff_falls/cliff_fall_010",
-      "name": "A broad white curtain 010 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, a broad white curtain, landing in a small rock basin, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 17.45,
-        "world_px_height": 657,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "71f30068-b360-4379-87a3-6880bdfc800f",
-      "sprite": "cliff_falls/cliff_fall_010/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_012",
-      "rel": "cliff_falls/cliff_fall_012",
-      "name": "Half-frozen with ice columns 012 \u00b7 lit",
-      "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
-      "description": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, half-frozen with ice columns, framed by hanging ferns, towering, many times human height, self-emissive at night, softly radiating light: light welling from the mist",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.79,
-        "world_px_height": 369,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "25269638-02cd-42a7-a243-0e44063a77b0",
-      "sprite": "cliff_falls/cliff_fall_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_fall_013",
       "rel": "cliff_falls/cliff_fall_013",
       "name": "Brown with spring meltwater 013",
@@ -4634,50 +4543,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_019",
-      "rel": "cliff_mosses/cliff_moss_019",
-      "name": "Grey-green lichen crust 019",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, grey-green lichen crust, a long diagonal drift of growth, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 5.16,
-        "world_px_height": 194,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "82467741-e196-4b65-81a5-f2a2f4aa458f",
-      "sprite": "cliff_mosses/cliff_moss_019/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_021",
-      "rel": "cliff_mosses/cliff_moss_021",
-      "name": "Moss with tiny ferns through it 021",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss with tiny ferns through it, one heavy strand with fine ones branching off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 7.14,
-        "world_px_height": 269,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d86f7f1c-a087-4fd1-8175-52051219e47a",
-      "sprite": "cliff_mosses/cliff_moss_021/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_023",
       "rel": "cliff_mosses/cliff_moss_023",
       "name": "Black wet moss 023",
@@ -4696,28 +4561,6 @@
       "status": "complete",
       "pixellab_object_id": "ebbd3a61-3f9e-4e1b-b498-c841162b5559",
       "sprite": "cliff_mosses/cliff_moss_023/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_025",
-      "rel": "cliff_mosses/cliff_moss_025",
-      "name": "Grey-green lichen crust 025",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, grey-green lichen crust, fine and lacy throughout, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 6.78,
-        "world_px_height": 255,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8919c551-39d4-4f2f-b968-47492fef14fc",
-      "sprite": "cliff_mosses/cliff_moss_025/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4766,28 +4609,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_030",
-      "rel": "cliff_mosses/cliff_moss_030",
-      "name": "Rust-orange lichen patches 030 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, rust-orange lichen patches, two loose clusters joined by a single runner, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.99,
-        "world_px_height": 338,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "457f9829-2783-466b-a8ab-709970bd7d66",
-      "sprite": "cliff_mosses/cliff_moss_030/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_031",
       "rel": "cliff_mosses/cliff_moss_031",
       "name": "Grey-green lichen crust 031",
@@ -4806,28 +4627,6 @@
       "status": "complete",
       "pixellab_object_id": "97004c65-1092-42e6-8033-7c9c37afe10c",
       "sprite": "cliff_mosses/cliff_moss_031/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_032",
-      "rel": "cliff_mosses/cliff_moss_032",
-      "name": "Deep emerald cushion moss 032 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, deep emerald cushion moss, scattered evenly and thinly, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 7.13,
-        "world_px_height": 268,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e8eaab93-eff7-4d14-b4dd-8a27c11c5e74",
-      "sprite": "cliff_mosses/cliff_moss_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4854,28 +4653,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_034",
-      "rel": "cliff_mosses/cliff_moss_034",
-      "name": "Frost-tipped winter moss 034 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-tipped winter moss, a ring-shaped spread with an empty middle, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 9.29,
-        "world_px_height": 350,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9c12293c-9b86-43d0-80df-11ada29c2ef0",
-      "sprite": "cliff_mosses/cliff_moss_034/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_035",
       "rel": "cliff_mosses/cliff_moss_035",
       "name": "Black wet moss 035",
@@ -4898,28 +4675,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_036",
-      "rel": "cliff_mosses/cliff_moss_036",
-      "name": "Rust-orange lichen patches 036 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, rust-orange lichen patches, one thick tendril reaching far out alone, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 6.77,
-        "world_px_height": 255,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "59673669-fa31-4783-8fe8-621349136392",
-      "sprite": "cliff_mosses/cliff_moss_036/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_037",
       "rel": "cliff_mosses/cliff_moss_037",
       "name": "Grey-green lichen crust 037",
@@ -4938,28 +4693,6 @@
       "status": "complete",
       "pixellab_object_id": "029c03a0-43ae-4b50-b673-cd670a2b67a6",
       "sprite": "cliff_mosses/cliff_moss_037/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_038",
-      "rel": "cliff_mosses/cliff_moss_038",
-      "name": "Deep emerald cushion moss 038 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, deep emerald cushion moss, a wide loose spread with big gaps, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.93,
-        "world_px_height": 336,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d8e58e06-5aaf-42dd-a914-451243243757",
-      "sprite": "cliff_mosses/cliff_moss_038/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -5180,270 +4913,6 @@
       "status": "complete",
       "pixellab_object_id": "bc54c1af-e971-4491-adf7-e945d62fd042",
       "sprite": "cliff_roots/cliff_root_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_027",
-      "rel": "cliff_roots/cliff_root_027",
-      "name": "Two great roots twined together 027",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, two great roots twined together, one heavy strand with fine ones branching off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.26,
-        "world_px_height": 349,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a49c4ced-8a76-4f7b-b13f-89bef1dbdd1b",
-      "sprite": "cliff_roots/cliff_root_027/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_028",
-      "rel": "cliff_roots/cliff_root_028",
-      "name": "Pale bleached roots 028 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, pale bleached roots, sparse at the top, gathering lower, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.1,
-        "world_px_height": 380,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f8e4b9f4-e527-48e6-896b-b401266ca304",
-      "sprite": "cliff_roots/cliff_root_028/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_029",
-      "rel": "cliff_roots/cliff_root_029",
-      "name": "Dark wet roots 029",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dark wet roots, a long diagonal drift of growth, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.32,
-        "world_px_height": 276,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "329a9ef7-29ce-4c3d-b36d-92891df671b2",
-      "sprite": "cliff_roots/cliff_root_029/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_030",
-      "rel": "cliff_roots/cliff_root_030",
-      "name": "Moss-furred roots 030 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss-furred roots, a few isolated tufts drifting away from the main spread, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.08,
-        "world_px_height": 342,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "66313f2e-7de1-4025-a43c-b332cf0dfcbe",
-      "sprite": "cliff_roots/cliff_root_030/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_031",
-      "rel": "cliff_roots/cliff_root_031",
-      "name": "Roots with ferns rooted between them 031",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, roots with ferns rooted between them, a denser knot in one corner, thin elsewhere, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.37,
-        "world_px_height": 315,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d4c2a580-96cc-4ae8-81c0-2f9e886035bf",
-      "sprite": "cliff_roots/cliff_root_031/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_032",
-      "rel": "cliff_roots/cliff_root_032",
-      "name": "Fine hair-roots in a dense veil 032 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, fine hair-roots in a dense veil, a ring-shaped spread with an empty middle, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.0,
-        "world_px_height": 264,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "992460a0-2d01-4266-bfe3-9ebd94c6863e",
-      "sprite": "cliff_roots/cliff_root_032/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_033",
-      "rel": "cliff_roots/cliff_root_033",
-      "name": "Two great roots twined together 033",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, two great roots twined together, a broken chain of small patches, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.57,
-        "world_px_height": 360,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8e1163ef-974c-48a9-b740-ba1f0a719b10",
-      "sprite": "cliff_roots/cliff_root_033/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_034",
-      "rel": "cliff_roots/cliff_root_034",
-      "name": "Pale bleached roots 034 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, pale bleached roots, scattered evenly and thinly, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.26,
-        "world_px_height": 349,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7f0ec869-d807-452a-8d2d-063a5ab2c61a",
-      "sprite": "cliff_roots/cliff_root_034/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_035",
-      "rel": "cliff_roots/cliff_root_035",
-      "name": "Dark wet roots 035",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "thick gnarled old tree roots creeping down over stone, heavy woody roots with moss and small ferns growing where they meet, a few fine rootlets trailing off, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, dark wet roots, an old thick growth with young shoots around it, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.23,
-        "world_px_height": 310,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d4bd941a-8358-4d7b-bb4e-7ef6e5787f58",
-      "sprite": "cliff_roots/cliff_root_035/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_036",
-      "rel": "cliff_roots/cliff_root_036",
-      "name": "Moss-furred roots 036 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss-furred roots, two loose clusters joined by a single runner, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 6.97,
-        "world_px_height": 262,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "9dd54dc4-8859-4759-9e2a-6b632e2cbdef",
-      "sprite": "cliff_roots/cliff_root_036/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_037",
-      "rel": "cliff_roots/cliff_root_037",
-      "name": "Roots with ferns rooted between them 037",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
-      "description": "thick gnarled old tree roots creeping down over stone, heavy woody roots with moss and small ferns growing where they meet, a few fine rootlets trailing off, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, roots with ferns rooted between them, a diagonal band of growth, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.65,
-        "world_px_height": 363,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a15c1285-63e3-481f-8e53-2f75fd2eec75",
-      "sprite": "cliff_roots/cliff_root_037/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_038",
-      "rel": "cliff_roots/cliff_root_038",
-      "name": "Fine hair-roots in a dense veil 038 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "thick gnarled old tree roots creeping down over stone, heavy woody roots with moss and small ferns growing where they meet, a few fine rootlets trailing off, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, fine hair-roots in a dense veil, a wide loose spread with big gaps, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 8.73,
-        "world_px_height": 329,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7d3f744b-05a7-4450-924a-f418535a7951",
-      "sprite": "cliff_roots/cliff_root_038/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6416,50 +5885,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_035",
-      "rel": "cliff_vines/cliff_vine_035",
-      "name": "Frost-silvered winter fall 035",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-silvered winter fall, sparse at the top, gathering lower, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.82,
-        "world_px_height": 370,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "30e014ac-fe5d-4afe-8f6c-5396607706c5",
-      "sprite": "cliff_vines/cliff_vine_035/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_037",
-      "rel": "cliff_vines/cliff_vine_037",
-      "name": "Fern-mixed green fall 037",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, fern-mixed green fall, a few isolated tufts drifting away from the main spread, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.96,
-        "world_px_height": 300,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1f2d3feb-aa76-4bb5-bce9-95a75f5b6acb",
-      "sprite": "cliff_vines/cliff_vine_037/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_039",
       "rel": "cliff_vines/cliff_vine_039",
       "name": "Dry brown wilted fall 039",
@@ -6504,28 +5929,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_043",
-      "rel": "cliff_vines/cliff_vine_043",
-      "name": "Old thick-stemmed ancient fall 043",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, old thick-stemmed ancient fall, heavy growth on one side thinning to bare on the other, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.89,
-        "world_px_height": 448,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "409ae35b-c246-460b-9bb8-6a6bba7d945f",
-      "sprite": "cliff_vines/cliff_vine_043/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_044",
       "rel": "cliff_vines/cliff_vine_044",
       "name": "Dark green ivy fall 044 \u00b7 lit",
@@ -6566,28 +5969,6 @@
       "status": "complete",
       "pixellab_object_id": "8d5e3e71-0d91-44b1-b541-1aae2864e95d",
       "sprite": "cliff_vines/cliff_vine_045/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_046",
-      "rel": "cliff_vines/cliff_vine_046",
-      "name": "White-flowering bindweed fall 046 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, white-flowering bindweed fall, a broken chain of small patches, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.79,
-        "world_px_height": 218,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "642c78ef-a850-4f22-b471-6967969362b7",
-      "sprite": "cliff_vines/cliff_vine_046/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6658,28 +6039,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_050",
-      "rel": "cliff_vines/cliff_vine_050",
-      "name": "Berry-dotted bramble fall 050 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, berry-dotted bramble fall, growth trailing off in three directions, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.89,
-        "world_px_height": 448,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7b8fd11c-88c7-400f-9b9d-ec9c9d27ffcc",
-      "sprite": "cliff_vines/cliff_vine_050/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_051",
       "rel": "cliff_vines/cliff_vine_051",
       "name": "Fern-mixed green fall 051",
@@ -6742,28 +6101,6 @@
       "status": "complete",
       "pixellab_object_id": "79c96c48-1827-4ac3-923e-271f4183d5f7",
       "sprite": "cliff_vines/cliff_vine_053/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_054",
-      "rel": "cliff_vines/cliff_vine_054",
-      "name": "Purple wisteria fall 054 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, purple wisteria fall, an old thick growth with young shoots around it, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.64,
-        "world_px_height": 438,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bd9d67a4-d350-47c7-95e3-0761a43a96a6",
-      "sprite": "cliff_vines/cliff_vine_054/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -7886,28 +7223,6 @@
       "status": "complete",
       "pixellab_object_id": "4a0cefd2-42c4-4993-a021-2d3936ea6bf0",
       "sprite": "dock_pilings/dock_piling_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "door_tree_002",
-      "rel": "door_trees/door_tree_002",
-      "name": "Weathered door tree 002 \u00b7 lit",
-      "category": "door_trees",
-      "lights": "LIGHTS_ON",
-      "description": "a living tree with a real wooden door fitted into its trunk, hinges set into the bark, a worn step of stone at its foot, weathered door tree, door standing slightly open, tall, about three times human height, self-emissive at night, softly radiating light: warm light spilling from the gap",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.73,
-        "world_px_height": 140,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2604059e-3886-4aca-91f8-0f58adeb1d02",
-      "sprite": "door_trees/door_tree_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -9074,28 +8389,6 @@
       "status": "complete",
       "pixellab_object_id": "714c2112-1200-40bc-86d9-cea7d00824af",
       "sprite": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "giant_feather_002",
-      "rel": "giant_feathers/giant_feather_002",
-      "name": "Ancient giant feather 002 \u00b7 lit",
-      "category": "giant_feathers",
-      "lights": "LIGHTS_ON",
-      "description": "a single enormous feather planted quill-down in the earth like a monument, barbs taller than a person, faintly iridescent, ancient giant feather, black raven-feather, large, twice human height, self-emissive at night, softly radiating light: an iridescent shimmer moving across it",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.82,
-        "world_px_height": 106,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "36f4623c-9af1-416f-bd0f-941579402362",
-      "sprite": "giant_feathers/giant_feather_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11977,28 +11270,6 @@
       "animations": []
     },
     {
-      "id": "petrified_wave_002",
-      "rel": "petrified_waves/petrified_wave_002",
-      "name": "Ancient petrified wave 002 \u00b7 lit",
-      "category": "petrified_waves",
-      "lights": "LIGHTS_ON",
-      "description": "a breaking wave turned entirely to grey stone, crest curled and frozen mid-fall, standing alone in dry grass, ancient petrified wave, the crest just about to break, tall, about three times human height, self-emissive at night, softly radiating light: blue light caught inside the stone crest",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.21,
-        "world_px_height": 121,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2619aac7-0294-4c61-8f89-6bb15f6398ca",
-      "sprite": "petrified_waves/petrified_wave_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "puffball_001",
       "rel": "puffballs/puffball_001",
       "name": "Cracked leathery earthball 001",
@@ -12831,28 +12102,6 @@
       "status": "complete",
       "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
       "sprite": "sky_stairs/sky_stair_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "sleeping_giant_001",
-      "rel": "sleeping_giants/sleeping_giant_001",
-      "name": "Ancient sleeping giant 001",
-      "category": "sleeping_giants",
-      "lights": "LIGHTS_OFF",
-      "description": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass, ancient sleeping giant, the head end mossed over, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.42,
-        "world_px_height": 129,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "17f6c26f-b6a8-426c-b903-4760ace6386d",
-      "sprite": "sleeping_giants/sleeping_giant_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
