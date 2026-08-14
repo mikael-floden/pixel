@@ -301,6 +301,33 @@ def single_pixel_fraction(img):
 # minus a hair: by construction it spares ~95% of art he has blessed while
 # still catching the upscaled failures (26 of 28 at 96px, 13 of 20 at 128px).
 # Sizes with no labelled failures (48/192/256) get the same rule for safety.
+def edge_bleed(img):
+    """Largest fraction of any ONE canvas border (top/bottom/left/right) that is
+    opaque — i.e. how much of the art the frame cuts off.
+
+    The style laws already ask for "a single centered prop fully inside the
+    frame with margin, nothing cropped", but asking is not enforcing: measured
+    2026-08-14, 18% of cliff_vines ran off the TOP AND BOTTOM edges and the
+    maintainer rejected them on sight ("Some graphics was also cut at the top
+    and bottom (not a preview bug this time)"). A cropped piece is unplaceable
+    — you cannot scatter it on a wall when its stem is sheared flat — so it is
+    cheaper to re-roll than to ship."""
+    a = img.convert("RGBA").split()[3]
+    w, h = a.size
+    px = a.load()
+    return max(
+        sum(1 for x in range(w) if px[x, 0] > 16) / w,
+        sum(1 for x in range(w) if px[x, h - 1] > 16) / w,
+        sum(1 for y in range(h) if px[0, y] > 16) / h,
+        sum(1 for y in range(h) if px[w - 1, y] > 16) / h,
+    )
+
+
+# A hair of contact is fine (a stray leaf tip); a sheared-off stem is not.
+# Clean groups (falls/mosses/shrubs/features) all measure <=0.01 here, so this
+# sits well above normal art and only catches genuine cropping.
+EDGE_BLEED_MAX = 0.06
+
 PIXEL_GRID_MIN_BY_SIZE = {
     48: 0.453, 64: 0.581, 96: 0.597, 128: 0.507,
     160: 0.526, 192: 0.551, 256: 0.586,

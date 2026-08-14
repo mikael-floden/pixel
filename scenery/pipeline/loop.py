@@ -202,6 +202,19 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
             f"GATE {spec['id']}: PIXEL GRID FAIL (single-pixel fraction "
             f"{ones:.3f} < {gate_min} at {size}px) — upscaled art, not saved")
 
+    # THE EDGE GATE: art the frame cuts off never reaches his queue either.
+    bleed = factory.edge_bleed(img)
+    if bleed > factory.EDGE_BLEED_MAX:
+        try:
+            client.delete_object(oid)
+        except Exception:
+            pass
+        print(f"  x GATE {group['id']}/{spec['id']}: cropped at the canvas edge "
+              f"({bleed:.0%} of a border is art) — re-rolling")
+        raise PixelLabError(
+            f"GATE {spec['id']}: EDGE CROP ({bleed:.0%} of a border is opaque, "
+            f"max {factory.EDGE_BLEED_MAX:.0%}) — cut-off art, not saved")
+
     img = factory._normalize(img, size)
     rel = f"{group['id']}/{spec['id']}"
     factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")
