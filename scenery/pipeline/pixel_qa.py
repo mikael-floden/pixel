@@ -26,7 +26,15 @@ stamps the rest. The log (config/qa_log.json) records every verdict so a
 piece is inspected exactly once; pieces the maintainer already approved on
 the wiki count as checked by his eyes.
 
-Calibration (2026-08-13, after table_002 passed this gate and the maintainer
+Calibration v2 (2026-08-14, after NINE statistical detectors failed on his
+own labels — global stats cannot see what his eyes see): judge every piece
+against spec/QA_RUBRIC.png, built from his broken-noted rejections beside
+his 4-5 star approvals at matched canvas sizes. At 128px and above, doubt
+means DEATH: his broken notes run 10x denser there than at 64px. The star
+column is the bar; stair-step chunking, smeared micro-detail, or fat pixels
+of inconsistent width = condemn on sight.
+
+Calibration v1 (2026-08-13, after table_002 passed this gate and the maintainer
 called it broken): WHEN IN DOUBT, CONDEMN. A re-roll costs $0.09; the
 maintainer's review time is the expensive resource. Judge each piece at 3x+
 zoom against the best approved art of the same canvas size — braziers and
