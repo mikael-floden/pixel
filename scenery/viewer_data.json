@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 492,
+  "scenery_count": 493,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 16,
@@ -991,7 +991,7 @@
     "stone_fountains": 2,
     "stones": 14,
     "story_posts": 8,
-    "streetlights": 5,
+    "streetlights": 6,
     "stumps": 8,
     "sundials": 2,
     "sunken_statues": 1,
@@ -9469,6 +9469,28 @@
       "status": "complete",
       "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
       "sprite": "streetlights/streetlight_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_026",
+      "rel": "streetlights/streetlight_026",
+      "name": "Rope-wrapped harbor lamp 026 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, rope-wrapped harbor lamp, old and settling into the ground, tall, about three times human height, self-emissive at night, softly radiating light: cluster of dripping candles behind the panes",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.17,
+        "world_px_height": 119,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0c94b9bd-7e15-4a34-9d48-95d2205ad7db",
+      "sprite": "streetlights/streetlight_026/sprite.webp",
       "rotations": {},
       "animations": []
     },
