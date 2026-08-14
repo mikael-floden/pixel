@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:45:07+00:00",
+  "id": "briar_thicket_022",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 22,
+  "name": "Briar swallowing a fallen log 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "briar swallowing a fallen log",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "rose blossoms glowing like paper lanterns",
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, briar swallowing a fallen log, leaning noticeably to one side, waist-high, self-emissive at night, softly radiating light: rose blossoms glowing like paper lanterns",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_022/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4ddcbb94-5378-4ef8-ac42-f0c2b1dfefaa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
