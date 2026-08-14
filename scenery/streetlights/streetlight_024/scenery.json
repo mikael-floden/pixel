@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:50:26+00:00",
+  "id": "streetlight_024",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 24,
+  "name": "Onion-domed brass head 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "onion-domed brass head",
+  "modifier": "overgrown at the base",
+  "glow_concept": "amber soulstone shard mounted as the bulb",
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, onion-domed brass head, overgrown at the base, tall, about three times human height, self-emissive at night, softly radiating light: amber soulstone shard mounted as the bulb",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "streetlights/streetlight_024/sprite.webp",
+  "placement": {
+    "world_height_m": 3.44,
+    "world_px_height": 130,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
