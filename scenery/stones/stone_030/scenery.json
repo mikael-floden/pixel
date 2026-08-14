@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:16:07+00:00",
+  "id": "stone_030",
+  "group": "stones",
+  "rank": 2,
+  "index": 30,
+  "name": "Flaking layered slate stone 030 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flaking layered slate stone",
+  "modifier": "unusually broad and squat",
+  "glow_concept": "ember light leaking from a hollow beneath",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flaking layered slate stone, unusually broad and squat, small, knee-high, self-emissive at night, softly radiating light: ember light leaking from a hollow beneath",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_030/sprite.webp",
+  "placement": {
+    "world_height_m": 0.66,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "11b51c4c-b08d-4503-a8b0-e20c1c13b550",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
