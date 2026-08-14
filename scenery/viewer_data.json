@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 746,
+  "scenery_count": 747,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 36
+      "done": 37
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 20,
     "cliff_roots": 31,
     "cliff_shrubs": 11,
-    "cliff_vines": 36,
+    "cliff_vines": 37,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6522,6 +6522,28 @@
       "status": "complete",
       "pixellab_object_id": "9b4f4e6f-6680-4d12-a5f6-26c620fdeaa4",
       "sprite": "cliff_vines/cliff_vine_068/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_070",
+      "rel": "cliff_vines/cliff_vine_070",
+      "name": "Variegated cream-and-green fall 070 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, variegated cream-and-green fall, a broad patch with smaller islands around it, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 9.16,
+        "world_px_height": 345,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
+      "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
       "rotations": {},
       "animations": []
     },
