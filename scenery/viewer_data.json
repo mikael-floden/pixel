@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 804,
+  "scenery_count": 764,
   "target_count": 2382,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1210,7 +1210,7 @@
       "id": "windows",
       "name": "Window",
       "quota": 400,
-      "done": 79
+      "done": 39
     }
   ],
   "categories": {
@@ -1342,7 +1342,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 79,
+    "windows": 39,
     "wisteria_snags": 3,
     "witch_rings": 1,
     "woodpiles": 2
@@ -17218,84 +17218,6 @@
       "animations": []
     },
     {
-      "id": "window_001",
-      "rel": "windows/window_001",
-      "name": "A diamond-leaded lattice window in a dark wood frame 001",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a diamond-leaded lattice window in a dark wood frame, a window box with a few hardy flowers, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.71,
-        "world_px_height": 27,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2c225282-cee0-47d6-85d8-915935179a10",
-      "sprite": "windows/window_001/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_001/rotations/south-east.webp",
-        "south-west": "windows/window_001/rotations/south-west.webp",
-        "south": "windows/window_001/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_002",
-      "rel": "windows/window_002",
-      "name": "A round porthole window ringed in stone 002",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a round porthole window ringed in stone, one pane cracked in a spider-web, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.61,
-        "world_px_height": 23,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d2a4b96e-d90b-474f-803e-451e16bb3b24",
-      "sprite": "windows/window_002/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_002/rotations/south-east.webp",
-        "south-west": "windows/window_002/rotations/south-west.webp",
-        "south": "windows/window_002/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_003",
-      "rel": "windows/window_003",
-      "name": "A square window in rough stone masonry 003",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square window in rough stone masonry, iron bars across the glass, a large window, taller than a person, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.87,
-        "world_px_height": 70,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "80c83be0-a269-4326-a1f8-81cd832afbb5",
-      "sprite": "windows/window_003/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_003/rotations/south-east.webp",
-        "south-west": "windows/window_003/rotations/south-west.webp",
-        "south": "windows/window_003/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_004",
       "rel": "windows/window_004",
       "name": "An arched window set in cut stone 004",
@@ -17352,40 +17274,6 @@
         "south-east": "windows/window_005/rotations/south-east.webp",
         "south-west": "windows/window_005/rotations/south-west.webp",
         "south": "windows/window_005/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_006",
-      "rel": "windows/window_006",
-      "name": "A rectangular window in dark stained oak with a thick sill 006",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in dark stained oak with a thick sill, boarded over with nailed planks, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.69,
-        "world_px_height": 26,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          12,
-          9,
-          39,
-          41
-        ],
-        "content_px_height": 32,
-        "canvas_render_px": 39
-      },
-      "status": "complete",
-      "pixellab_object_id": "6ea1e038-c656-46f0-9d30-deb14a7a6144",
-      "sprite": "windows/window_006/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_006/rotations/south-east.webp",
-        "south-west": "windows/window_006/rotations/south-west.webp",
-        "south": "windows/window_006/sprite.webp"
       },
       "animations": []
     },
@@ -17458,108 +17346,6 @@
       "animations": []
     },
     {
-      "id": "window_009",
-      "rel": "windows/window_009",
-      "name": "A heavy rectangular stone window under a carved lintel 009",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a heavy rectangular stone window under a carved lintel, a cracked and sagging sill beneath, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.81,
-        "world_px_height": 30,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          11,
-          6,
-          54,
-          57
-        ],
-        "content_px_height": 51,
-        "canvas_render_px": 38
-      },
-      "status": "complete",
-      "pixellab_object_id": "9f24e3fc-a90c-4f93-a09b-c4e288551bfb",
-      "sprite": "windows/window_009/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_009/rotations/south-east.webp",
-        "south-west": "windows/window_009/rotations/south-west.webp",
-        "south": "windows/window_009/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_010",
-      "rel": "windows/window_010",
-      "name": "A cottage window in peeling white-painted wood 010",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a cottage window in peeling white-painted wood, one pane cracked in a spider-web, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.34,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          16,
-          7,
-          83,
-          94
-        ],
-        "content_px_height": 87,
-        "canvas_render_px": 55
-      },
-      "status": "complete",
-      "pixellab_object_id": "91927f70-1fad-4736-be36-4674e1ddae41",
-      "sprite": "windows/window_010/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_010/rotations/south-east.webp",
-        "south-west": "windows/window_010/rotations/south-west.webp",
-        "south": "windows/window_010/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_011",
-      "rel": "windows/window_011",
-      "name": "A wide mullioned window of six panes in old timber 011",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide mullioned window of six panes in old timber, ivy creeping across one corner, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.81,
-        "world_px_height": 30,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          10,
-          8,
-          56,
-          55
-        ],
-        "content_px_height": 47,
-        "canvas_render_px": 41
-      },
-      "status": "complete",
-      "pixellab_object_id": "402426ba-3886-4a23-a0b4-3e1ab0c28c7e",
-      "sprite": "windows/window_011/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_011/rotations/south-east.webp",
-        "south-west": "windows/window_011/rotations/south-west.webp",
-        "south": "windows/window_011/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_012",
       "rel": "windows/window_012",
       "name": "A square window in rough stone masonry 012",
@@ -17590,142 +17376,6 @@
         "south-east": "windows/window_012/rotations/south-east.webp",
         "south-west": "windows/window_012/rotations/south-west.webp",
         "south": "windows/window_012/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_013",
-      "rel": "windows/window_013",
-      "name": "A tall narrow wooden window with a weathered sill 013",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a tall narrow wooden window with a weathered sill, a window box with a few hardy flowers, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.13,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          27,
-          12,
-          72,
-          85
-        ],
-        "content_px_height": 73,
-        "canvas_render_px": 57
-      },
-      "status": "complete",
-      "pixellab_object_id": "75ac94b4-6889-4806-907d-263dff17c3f9",
-      "sprite": "windows/window_013/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_013/rotations/south-east.webp",
-        "south-west": "windows/window_013/rotations/south-west.webp",
-        "south": "windows/window_013/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_014",
-      "rel": "windows/window_014",
-      "name": "A square wooden-framed window of four panes, paint faded 014",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square wooden-framed window of four panes, paint faded, one shutter closed and one open, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.12,
-        "world_px_height": 42,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          9,
-          14,
-          76,
-          81
-        ],
-        "content_px_height": 67,
-        "canvas_render_px": 60
-      },
-      "status": "complete",
-      "pixellab_object_id": "f87c26c0-1d6f-42ae-9831-18748da3f367",
-      "sprite": "windows/window_014/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_014/rotations/south-east.webp",
-        "south-west": "windows/window_014/rotations/south-west.webp",
-        "south": "windows/window_014/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_015",
-      "rel": "windows/window_015",
-      "name": "A rectangular window with a rope-hung shutter 015",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window with a rope-hung shutter, iron bars across the glass, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.72,
-        "world_px_height": 27,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          10,
-          7,
-          46,
-          42
-        ],
-        "content_px_height": 35,
-        "canvas_render_px": 37
-      },
-      "status": "complete",
-      "pixellab_object_id": "7bd9be1b-f295-4afd-8b10-4c7fb95ebb39",
-      "sprite": "windows/window_015/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_015/rotations/south-east.webp",
-        "south-west": "windows/window_015/rotations/south-west.webp",
-        "south": "windows/window_015/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_016",
-      "rel": "windows/window_016",
-      "name": "A rectangular window set deep in a thick clay wall 016",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window set deep in a thick clay wall, rain streaks and old water stains, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 48,
-      "placement": {
-        "world_height_m": 0.6,
-        "world_px_height": 23,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          8,
-          6,
-          42,
-          43
-        ],
-        "content_px_height": 37,
-        "canvas_render_px": 30
-      },
-      "status": "complete",
-      "pixellab_object_id": "34278589-99ac-465b-bb34-af731ab56b99",
-      "sprite": "windows/window_016/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_016/rotations/south-east.webp",
-        "south-west": "windows/window_016/rotations/south-west.webp",
-        "south": "windows/window_016/sprite.webp"
       },
       "animations": []
     },
@@ -17798,74 +17448,6 @@
       "animations": []
     },
     {
-      "id": "window_019",
-      "rel": "windows/window_019",
-      "name": "A rectangular window in soot-darkened timber 019",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in soot-darkened timber, all the glass gone, only the empty frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.1,
-        "world_px_height": 41,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          18,
-          10,
-          64,
-          74
-        ],
-        "content_px_height": 64,
-        "canvas_render_px": 51
-      },
-      "status": "complete",
-      "pixellab_object_id": "9487b38f-9d20-414c-82a2-a9a9cbf8b3e2",
-      "sprite": "windows/window_019/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_019/rotations/south-east.webp",
-        "south-west": "windows/window_019/rotations/south-west.webp",
-        "south": "windows/window_019/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_020",
-      "rel": "windows/window_020",
-      "name": "A rectangular window framed in rough-hewn logs 020",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window framed in rough-hewn logs, frost and grime clouding the glass, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.91,
-        "world_px_height": 34,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          11,
-          8,
-          54,
-          56
-        ],
-        "content_px_height": 48,
-        "canvas_render_px": 45
-      },
-      "status": "complete",
-      "pixellab_object_id": "488c28c0-1327-48f0-81ea-227cfc84b7a4",
-      "sprite": "windows/window_020/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_020/rotations/south-east.webp",
-        "south-west": "windows/window_020/rotations/south-west.webp",
-        "south": "windows/window_020/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_021",
       "rel": "windows/window_021",
       "name": "A small-paned rectangular window in sun-bleached blue wood 021",
@@ -17934,40 +17516,6 @@
       "animations": []
     },
     {
-      "id": "window_023",
-      "rel": "windows/window_023",
-      "name": "A round porthole window ringed in stone 023",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a round porthole window ringed in stone, glass intact but dusty and dark, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          20,
-          11,
-          78,
-          89
-        ],
-        "content_px_height": 78,
-        "canvas_render_px": 60
-      },
-      "status": "complete",
-      "pixellab_object_id": "91caf69c-0130-48c0-af5f-15a74322e79a",
-      "sprite": "windows/window_023/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_023/rotations/south-east.webp",
-        "south-west": "windows/window_023/rotations/south-west.webp",
-        "south": "windows/window_023/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_024",
       "rel": "windows/window_024",
       "name": "An arched window set in cut stone 024",
@@ -17998,210 +17546,6 @@
         "south-east": "windows/window_024/rotations/south-east.webp",
         "south-west": "windows/window_024/rotations/south-west.webp",
         "south": "windows/window_024/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_025",
-      "rel": "windows/window_025",
-      "name": "A diamond-leaded lattice window in a dark rectangular frame 025",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a diamond-leaded lattice window in a dark rectangular frame, a clay pot of dry herbs on the sill, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.19,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          15,
-          11,
-          67,
-          72
-        ],
-        "content_px_height": 61,
-        "canvas_render_px": 59
-      },
-      "status": "complete",
-      "pixellab_object_id": "98a1fa16-5bb6-4c8b-baaa-ce50c3e73a07",
-      "sprite": "windows/window_025/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_025/rotations/south-east.webp",
-        "south-west": "windows/window_025/rotations/south-west.webp",
-        "south": "windows/window_025/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_026",
-      "rel": "windows/window_026",
-      "name": "A plain rectangular window in whitewashed plaster and wood 026",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a plain rectangular window in whitewashed plaster and wood, a window box of dead brown plants, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.17,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          22,
-          13,
-          60,
-          71
-        ],
-        "content_px_height": 58,
-        "canvas_render_px": 61
-      },
-      "status": "complete",
-      "pixellab_object_id": "0f7b1b54-245c-4bb7-8873-bd0b3837131a",
-      "sprite": "windows/window_026/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_026/rotations/south-east.webp",
-        "south-west": "windows/window_026/rotations/south-west.webp",
-        "south": "windows/window_026/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_027",
-      "rel": "windows/window_027",
-      "name": "A tall rectangular window of many small panes in dark wood 027",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a tall rectangular window of many small panes in dark wood, a cracked pane patched with cloth, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          20,
-          9,
-          79,
-          88
-        ],
-        "content_px_height": 79,
-        "canvas_render_px": 60
-      },
-      "status": "complete",
-      "pixellab_object_id": "84fd1cb1-a3df-4fdd-baeb-fe778b20e67e",
-      "sprite": "windows/window_027/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_027/rotations/south-east.webp",
-        "south-west": "windows/window_027/rotations/south-west.webp",
-        "south": "windows/window_027/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_028",
-      "rel": "windows/window_028",
-      "name": "A shuttered rectangular window in bleached grey timber 028",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a shuttered rectangular window in bleached grey timber, one shutter hanging loose from its hinge, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.26,
-        "world_px_height": 47,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          16,
-          88,
-          83
-        ],
-        "content_px_height": 67,
-        "canvas_render_px": 67
-      },
-      "status": "complete",
-      "pixellab_object_id": "739cfea8-d4c4-4037-917e-40b3753c1086",
-      "sprite": "windows/window_028/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_028/rotations/south-east.webp",
-        "south-west": "windows/window_028/rotations/south-west.webp",
-        "south": "windows/window_028/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_029",
-      "rel": "windows/window_029",
-      "name": "A wide rectangular window in mossy fieldstone 029",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide rectangular window in mossy fieldstone, moss creeping along the bottom of the frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.21,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          10,
-          14,
-          72,
-          68
-        ],
-        "content_px_height": 54,
-        "canvas_render_px": 68
-      },
-      "status": "complete",
-      "pixellab_object_id": "cecdc7e0-7dcf-4a15-8160-5131abcd1afe",
-      "sprite": "windows/window_029/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_029/rotations/south-east.webp",
-        "south-west": "windows/window_029/rotations/south-west.webp",
-        "south": "windows/window_029/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_030",
-      "rel": "windows/window_030",
-      "name": "A rectangular window in dark stained oak with a thick sill 030",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in dark stained oak with a thick sill, boarded over with nailed planks, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          20,
-          11,
-          79,
-          86
-        ],
-        "content_px_height": 75,
-        "canvas_render_px": 63
-      },
-      "status": "complete",
-      "pixellab_object_id": "dcd75296-0567-4a19-ad67-28f258e00f6b",
-      "sprite": "windows/window_030/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_030/rotations/south-east.webp",
-        "south-west": "windows/window_030/rotations/south-west.webp",
-        "south": "windows/window_030/sprite.webp"
       },
       "animations": []
     },
@@ -18240,176 +17584,6 @@
       "animations": []
     },
     {
-      "id": "window_032",
-      "rel": "windows/window_032",
-      "name": "A crooked rectangular window in warped rotting timber 032",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a crooked rectangular window in warped rotting timber, several panes broken out, empty gaps, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.2,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          13,
-          5,
-          69,
-          77
-        ],
-        "content_px_height": 72,
-        "canvas_render_px": 50
-      },
-      "status": "complete",
-      "pixellab_object_id": "a987e5f4-d7ef-466d-9130-d8ff1b27b046",
-      "sprite": "windows/window_032/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_032/rotations/south-east.webp",
-        "south-west": "windows/window_032/rotations/south-west.webp",
-        "south": "windows/window_032/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_034",
-      "rel": "windows/window_034",
-      "name": "A cottage window in peeling white-painted wood 034",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a cottage window in peeling white-painted wood, one pane cracked in a spider-web, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          21,
-          8,
-          78,
-          91
-        ],
-        "content_px_height": 83,
-        "canvas_render_px": 57
-      },
-      "status": "complete",
-      "pixellab_object_id": "e3b315bc-2b88-4d9e-96c5-fbbecdcb6717",
-      "sprite": "windows/window_034/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_034/rotations/south-east.webp",
-        "south-west": "windows/window_034/rotations/south-west.webp",
-        "south": "windows/window_034/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_035",
-      "rel": "windows/window_035",
-      "name": "A wide mullioned window of six panes in old timber 035",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide mullioned window of six panes in old timber, ivy creeping across one corner, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.17,
-        "world_px_height": 44,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          13,
-          5,
-          69,
-          76
-        ],
-        "content_px_height": 71,
-        "canvas_render_px": 50
-      },
-      "status": "complete",
-      "pixellab_object_id": "a4b6dc19-d8e8-4d7f-bd7b-b3e9ca3a30aa",
-      "sprite": "windows/window_035/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_035/rotations/south-east.webp",
-        "south-west": "windows/window_035/rotations/south-west.webp",
-        "south": "windows/window_035/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_037",
-      "rel": "windows/window_037",
-      "name": "A tall narrow wooden window with a weathered sill 037",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a tall narrow wooden window with a weathered sill, a window box with a few hardy flowers, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.24,
-        "world_px_height": 47,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          9,
-          76,
-          88
-        ],
-        "content_px_height": 79,
-        "canvas_render_px": 57
-      },
-      "status": "complete",
-      "pixellab_object_id": "0b28495f-f435-4e24-99ee-a1046bd08af8",
-      "sprite": "windows/window_037/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_037/rotations/south-east.webp",
-        "south-west": "windows/window_037/rotations/south-west.webp",
-        "south": "windows/window_037/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_038",
-      "rel": "windows/window_038",
-      "name": "A square wooden-framed window of four panes, paint faded 038",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square wooden-framed window of four panes, paint faded, one shutter closed and one open, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          7,
-          9,
-          80,
-          89
-        ],
-        "content_px_height": 80,
-        "canvas_render_px": 59
-      },
-      "status": "complete",
-      "pixellab_object_id": "6954908d-1771-4d9d-86a2-5552b4777f6d",
-      "sprite": "windows/window_038/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_038/rotations/south-east.webp",
-        "south-west": "windows/window_038/rotations/south-west.webp",
-        "south": "windows/window_038/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_039",
       "rel": "windows/window_039",
       "name": "A rectangular window with a rope-hung shutter 039",
@@ -18440,74 +17614,6 @@
         "south-east": "windows/window_039/rotations/south-east.webp",
         "south-west": "windows/window_039/rotations/south-west.webp",
         "south": "windows/window_039/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_040",
-      "rel": "windows/window_040",
-      "name": "A rectangular window set deep in a thick clay wall 040",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window set deep in a thick clay wall, rain streaks and old water stains, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.11,
-        "world_px_height": 42,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          14,
-          8,
-          67,
-          76
-        ],
-        "content_px_height": 68,
-        "canvas_render_px": 49
-      },
-      "status": "complete",
-      "pixellab_object_id": "cacc6b6f-5f50-4d2f-b9a7-1a28dec3fbbf",
-      "sprite": "windows/window_040/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_040/rotations/south-east.webp",
-        "south-west": "windows/window_040/rotations/south-west.webp",
-        "south": "windows/window_040/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_041",
-      "rel": "windows/window_041",
-      "name": "A rectangular window in flaking green-painted wood 041",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in flaking green-painted wood, closed wooden shutters, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.32,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          16,
-          18,
-          83,
-          75
-        ],
-        "content_px_height": 57,
-        "canvas_render_px": 84
-      },
-      "status": "complete",
-      "pixellab_object_id": "c2d5ee30-7b32-42f2-89e9-d11aca66cf0e",
-      "sprite": "windows/window_041/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_041/rotations/south-east.webp",
-        "south-west": "windows/window_041/rotations/south-west.webp",
-        "south": "windows/window_041/sprite.webp"
       },
       "animations": []
     },
@@ -18546,40 +17652,6 @@
       "animations": []
     },
     {
-      "id": "window_043",
-      "rel": "windows/window_043",
-      "name": "A rectangular window in soot-darkened timber 043",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in soot-darkened timber, all the glass gone, only the empty frame, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.09,
-        "world_px_height": 41,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          12,
-          4,
-          69,
-          71
-        ],
-        "content_px_height": 67,
-        "canvas_render_px": 49
-      },
-      "status": "complete",
-      "pixellab_object_id": "a8667e82-d172-48d4-8986-106b667915e2",
-      "sprite": "windows/window_043/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_043/rotations/south-east.webp",
-        "south-west": "windows/window_043/rotations/south-west.webp",
-        "south": "windows/window_043/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_044",
       "rel": "windows/window_044",
       "name": "A rectangular window framed in rough-hewn logs 044",
@@ -18610,74 +17682,6 @@
         "south-east": "windows/window_044/rotations/south-east.webp",
         "south-west": "windows/window_044/rotations/south-west.webp",
         "south": "windows/window_044/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_045",
-      "rel": "windows/window_045",
-      "name": "A small-paned rectangular window in sun-bleached blue wood 045",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a small-paned rectangular window in sun-bleached blue wood, one pane missing, a jagged dark hole, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.32,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          16,
-          8,
-          81,
-          89
-        ],
-        "content_px_height": 81,
-        "canvas_render_px": 59
-      },
-      "status": "complete",
-      "pixellab_object_id": "92f7c4b0-e102-43cd-94cd-b4c99bd18d42",
-      "sprite": "windows/window_045/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_045/rotations/south-east.webp",
-        "south-west": "windows/window_045/rotations/south-west.webp",
-        "south": "windows/window_045/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_046",
-      "rel": "windows/window_046",
-      "name": "A rectangular window with a deep stone sill and iron catch 046",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window with a deep stone sill and iron catch, cobwebs strung in the corners of the panes, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.39,
-        "world_px_height": 52,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          18,
-          8,
-          80,
-          92
-        ],
-        "content_px_height": 84,
-        "canvas_render_px": 59
-      },
-      "status": "complete",
-      "pixellab_object_id": "fdc7717d-9289-462c-b127-22acf6be14db",
-      "sprite": "windows/window_046/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_046/rotations/south-east.webp",
-        "south-west": "windows/window_046/rotations/south-west.webp",
-        "south": "windows/window_046/sprite.webp"
       },
       "animations": []
     },
@@ -18746,40 +17750,6 @@
         "south-east": "windows/window_048/rotations/south-east.webp",
         "south-west": "windows/window_048/rotations/south-west.webp",
         "south": "windows/window_048/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_049",
-      "rel": "windows/window_049",
-      "name": "A diamond-leaded lattice window in a dark rectangular frame 049",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a diamond-leaded lattice window in a dark rectangular frame, a clay pot of dry herbs on the sill, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.35,
-        "world_px_height": 51,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          20,
-          11,
-          79,
-          86
-        ],
-        "content_px_height": 75,
-        "canvas_render_px": 65
-      },
-      "status": "complete",
-      "pixellab_object_id": "e03707a5-ded1-4200-b1ad-16ad639071b8",
-      "sprite": "windows/window_049/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_049/rotations/south-east.webp",
-        "south-west": "windows/window_049/rotations/south-west.webp",
-        "south": "windows/window_049/sprite.webp"
       },
       "animations": []
     },
@@ -18954,40 +17924,6 @@
       "animations": []
     },
     {
-      "id": "window_056",
-      "rel": "windows/window_056",
-      "name": "A crooked rectangular window in warped rotting timber 056",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a crooked rectangular window in warped rotting timber, several panes broken out, empty gaps, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.32,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          19,
-          12,
-          78,
-          85
-        ],
-        "content_px_height": 73,
-        "canvas_render_px": 66
-      },
-      "status": "complete",
-      "pixellab_object_id": "676ecd15-5004-4d7c-98b2-61d8f5cd40e8",
-      "sprite": "windows/window_056/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_056/rotations/south-east.webp",
-        "south-west": "windows/window_056/rotations/south-west.webp",
-        "south": "windows/window_056/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_057",
       "rel": "windows/window_057",
       "name": "A heavy rectangular stone window under a carved lintel 057",
@@ -19086,40 +18022,6 @@
         "south-east": "windows/window_059/rotations/south-east.webp",
         "south-west": "windows/window_059/rotations/south-west.webp",
         "south": "windows/window_059/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_060",
-      "rel": "windows/window_060",
-      "name": "A square window in rough stone masonry 060",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square window in rough stone masonry, paint peeling and curling from the frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.15,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          10,
-          1,
-          71,
-          80
-        ],
-        "content_px_height": 79,
-        "canvas_render_px": 44
-      },
-      "status": "complete",
-      "pixellab_object_id": "d2972586-640f-4447-8544-096ad2be5923",
-      "sprite": "windows/window_060/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_060/rotations/south-east.webp",
-        "south-west": "windows/window_060/rotations/south-west.webp",
-        "south": "windows/window_060/sprite.webp"
       },
       "animations": []
     },
@@ -19396,74 +18298,6 @@
       "animations": []
     },
     {
-      "id": "window_069",
-      "rel": "windows/window_069",
-      "name": "A small-paned rectangular window in sun-bleached blue wood 069",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a small-paned rectangular window in sun-bleached blue wood, one pane missing, a jagged dark hole, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.31,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          13,
-          76,
-          85
-        ],
-        "content_px_height": 72,
-        "canvas_render_px": 65
-      },
-      "status": "complete",
-      "pixellab_object_id": "b447e397-6202-4e04-b6bb-b48773eaaa8e",
-      "sprite": "windows/window_069/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_069/rotations/south-east.webp",
-        "south-west": "windows/window_069/rotations/south-west.webp",
-        "south": "windows/window_069/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_070",
-      "rel": "windows/window_070",
-      "name": "A rectangular window with a deep stone sill and iron catch 070",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window with a deep stone sill and iron catch, cobwebs strung in the corners of the panes, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.22,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          13,
-          75,
-          86
-        ],
-        "content_px_height": 73,
-        "canvas_render_px": 60
-      },
-      "status": "complete",
-      "pixellab_object_id": "9baf3f08-6f5c-4083-92c6-469e922f5c6e",
-      "sprite": "windows/window_070/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_070/rotations/south-east.webp",
-        "south-west": "windows/window_070/rotations/south-west.webp",
-        "south": "windows/window_070/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_071",
       "rel": "windows/window_071",
       "name": "A round porthole window ringed in stone 071",
@@ -19600,108 +18434,6 @@
       "animations": []
     },
     {
-      "id": "window_075",
-      "rel": "windows/window_075",
-      "name": "A tall rectangular window of many small panes in dark wood 075",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a tall rectangular window of many small panes in dark wood, a cracked pane patched with cloth, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.27,
-        "world_px_height": 48,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          16,
-          5,
-          81,
-          93
-        ],
-        "content_px_height": 88,
-        "canvas_render_px": 52
-      },
-      "status": "complete",
-      "pixellab_object_id": "ec2e618a-febb-45ff-b278-675d362632ee",
-      "sprite": "windows/window_075/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_075/rotations/south-east.webp",
-        "south-west": "windows/window_075/rotations/south-west.webp",
-        "south": "windows/window_075/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_076",
-      "rel": "windows/window_076",
-      "name": "A shuttered rectangular window in bleached grey timber 076",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a shuttered rectangular window in bleached grey timber, one shutter hanging loose from its hinge, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          15,
-          20,
-          78,
-          75
-        ],
-        "content_px_height": 55,
-        "canvas_render_px": 86
-      },
-      "status": "complete",
-      "pixellab_object_id": "2f285524-1b4a-47d0-b7aa-d32173ac2452",
-      "sprite": "windows/window_076/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_076/rotations/south-east.webp",
-        "south-west": "windows/window_076/rotations/south-west.webp",
-        "south": "windows/window_076/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_077",
-      "rel": "windows/window_077",
-      "name": "A wide rectangular window in mossy fieldstone 077",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide rectangular window in mossy fieldstone, moss creeping along the bottom of the frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.14,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          7,
-          4,
-          75,
-          78
-        ],
-        "content_px_height": 74,
-        "canvas_render_px": 46
-      },
-      "status": "complete",
-      "pixellab_object_id": "6ef2b2de-3442-4a62-ba99-ffaeb264d337",
-      "sprite": "windows/window_077/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_077/rotations/south-east.webp",
-        "south-west": "windows/window_077/rotations/south-west.webp",
-        "south": "windows/window_077/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_078",
       "rel": "windows/window_078",
       "name": "A rectangular window in dark stained oak with a thick sill 078",
@@ -19736,40 +18468,6 @@
       "animations": []
     },
     {
-      "id": "window_080",
-      "rel": "windows/window_080",
-      "name": "A crooked rectangular window in warped rotting timber 080",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a crooked rectangular window in warped rotting timber, several panes broken out, empty gaps, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.21,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          12,
-          3,
-          70,
-          79
-        ],
-        "content_px_height": 76,
-        "canvas_render_px": 48
-      },
-      "status": "complete",
-      "pixellab_object_id": "6c96abc7-2361-423a-a7e5-b45f92c7ec40",
-      "sprite": "windows/window_080/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_080/rotations/south-east.webp",
-        "south-west": "windows/window_080/rotations/south-west.webp",
-        "south": "windows/window_080/sprite.webp"
-      },
-      "animations": []
-    },
-    {
       "id": "window_081",
       "rel": "windows/window_081",
       "name": "A heavy rectangular stone window under a carved lintel 081",
@@ -19800,40 +18498,6 @@
         "south-east": "windows/window_081/rotations/south-east.webp",
         "south-west": "windows/window_081/rotations/south-west.webp",
         "south": "windows/window_081/sprite.webp"
-      },
-      "animations": []
-    },
-    {
-      "id": "window_082",
-      "rel": "windows/window_082",
-      "name": "A cottage window in peeling white-painted wood 082",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a cottage window in peeling white-painted wood, one pane cracked in a spider-web, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          24,
-          8,
-          75,
-          89
-        ],
-        "content_px_height": 81,
-        "canvas_render_px": 58
-      },
-      "status": "complete",
-      "pixellab_object_id": "fdbd9857-dc1f-4c66-87c3-9ea663d4259c",
-      "sprite": "windows/window_082/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_082/rotations/south-east.webp",
-        "south-west": "windows/window_082/rotations/south-west.webp",
-        "south": "windows/window_082/sprite.webp"
       },
       "animations": []
     },
