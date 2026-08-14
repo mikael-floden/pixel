@@ -638,21 +638,39 @@ function buildObjects() {
       // exactly the directions that have a clip — does the rest untouched.
       // Paths in `rotations` are relative to scenery/ and the extension is
       // resolved against the disk, same as the animation strips above.
-      const rots = Object.entries(oj.rotations ?? {})
-        .map(([dir, p]) => [dir, art(`scenery/${String(p).replace(/\.(png|webp)$/i, "")}`)])
-        .filter(([dir, p]) => DIRS.includes(dir) && p);
-      const dirs = {};
-      for (const dir of DIRS) {
-        const strip = rots.find(([d]) => d === dir)?.[1] ?? (dir === "south" ? preview : null);
-        if (!strip) continue;
-        const dims = imageSize(join(ROOT, strip));
-        if (dims) dirs[dir] = { frames: 1, strip, fw: dims.w, fh: dims.h };
+      const dirsFrom = (rotations, spriteRel) => {
+        const pick = (p) => art(`scenery/${String(p).replace(/\.(png|webp)$/i, "")}`);
+        const out = {};
+        for (const dir of DIRS) {
+          const strip = rotations?.[dir] != null ? pick(rotations[dir])
+            : (dir === "south" && spriteRel ? pick(spriteRel) : null);
+          if (!strip) continue;
+          const dims = imageSize(join(ROOT, strip));
+          if (dims) out[dir] = { frames: 1, strip, fw: dims.w, fh: dims.h };
+        }
+        return out;
+      };
+      // STATES (scenery domain, 2026-08-14): a piece can now exist in more than
+      // one condition — LIGHTS_ON / LIGHTS_OFF today, each with its own sprite
+      // and its own rotations. Each becomes a state in the viewer, exactly like
+      // a monster's idle/walk/angry, so the maintainer switches between them
+      // with the same control in the same place. The piece's own `lights` value
+      // names the state the base sprite is in, and that one leads.
+      const states = Object.entries(oj.states ?? {}).filter(([, st]) => st && typeof st === "object");
+      const ordered = [...states.filter(([n]) => n === oj.lights), ...states.filter(([n]) => n !== oj.lights)];
+      for (const [name, st] of ordered) {
+        const dirs = dirsFrom(st.rotations, st.sprite);
+        // The UI title-cases this; the CAPS key is the scenery domain's.
+        if (Object.keys(dirs).length) anims[name.toLowerCase()] = { description: st.edit_description ?? "", dirs };
       }
-      if (Object.keys(dirs).length) {
-        anims.still = {
-          description: "No animation was generated for this piece — this is the sprite as it is placed in the world.",
-          dirs,
-        };
+      if (!Object.keys(anims).length) {
+        const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
+        if (Object.keys(dirs).length) {
+          anims.still = {
+            description: "No animation was generated for this piece — this is the sprite as it is placed in the world.",
+            dirs,
+          };
+        }
       }
     }
     objects.push({
@@ -664,8 +682,11 @@ function buildObjects() {
       path: `scenery/${rel}`,
       preview,
       // So the page can say "Still" rather than claim an animation, and the
-      // list can keep calling these "static".
-      stillOnly: stillOnly && !!anims.still,
+      // list can keep calling these "static". A piece with LIGHTS_ON/LIGHTS_OFF
+      // states is still static — its clips are synthesised sprites, not frames
+      // — so this asks whether anything was SYNTHESISED, not for the `still`
+      // key specifically.
+      stillOnly: stillOnly && Object.keys(anims).length > 0,
       // When the art that is there NOW arrived, plus its content hash — the
       // hash is what a verdict is really ABOUT, and wiki.js stamps it into
       // every new verdict so staleness is byte-exact from here on. addedGuess

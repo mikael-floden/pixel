@@ -557,14 +557,16 @@ function makePlayer(entity, kind, opts = {}) {
   // should make it possible to review the directions the Scenery has"), so
   // hiding the pad because nothing MOVES would hide two thirds of the art.
   const maxDirs = Math.max(0, ...stateNames.map((s) => Object.keys(anims[s]?.dirs ?? {}).length));
-  const singleStill = stateNames.length === 1
-    && maxDirs <= 1
-    && (Object.values(anims[stateNames[0]]?.dirs ?? {})[0]?.frames ?? 1) <= 1;
-  // Nothing to transport, but more than one way to face: drop play/step/speed
-  // and the one-button state row, keep the pad.
-  const stillMultiDir = !singleStill && stateNames.length === 1 && maxDirs > 1
-    && Object.values(anims[stateNames[0]]?.dirs ?? {}).every((d) => (d?.frames ?? 1) <= 1);
-  const noTransport = singleStill || stillMultiDir;
+  const maxFrames = Math.max(0, ...stateNames.flatMap((s) => Object.values(anims[s]?.dirs ?? {}).map((d) => d?.frames ?? 1)));
+  // Each control is judged by what it would DO here, one at a time:
+  //   transport — nothing moves at one frame, whatever else the piece has;
+  //   state row — a lone state is not a choice (but an animated piece keeps
+  //     its row, because the row also NAMES the animation you are watching);
+  //   direction pad — shown whenever there is more than one way to face.
+  // A still scenery piece with LIGHTS_ON/LIGHTS_OFF × S/SE/SW therefore gets
+  // the state row and the pad and no transport at all.
+  const noTransport = maxFrames <= 1;
+  const hideStates = noTransport && stateNames.length <= 1;
   const controls2 = h("div", { class: "player-controls" },
     noTransport ? null : playBtn,
     noTransport ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
@@ -584,7 +586,7 @@ function makePlayer(entity, kind, opts = {}) {
   }
   loadClip();
   const rootEl = h("div", { class: "player" },
-    noTransport ? null : h("div", { class: "player-controls" }, stateSeg),
+    hideStates ? null : h("div", { class: "player-controls" }, stateSeg),
     // ONE PLACE FOR THE DIRECTION PAD, whatever the entity (maintainer
     // 2026-08-14: "on monsters and players the direction is OVER the preview
     // — please make it similar looking"). A still's pad sat under the stage
@@ -905,7 +907,10 @@ const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
  *  lowercase and underscored — and the viewer prints them on its buttons
  *  (maintainer 2026-08-01: "no technical names to the end user"). Anything
  *  genuinely technical is fixed where it is BUILT, not papered over here. */
-const stateLabel = (s) => String(s).replace(/[_-]+/g, " ").replace(/^./, (c) => c.toUpperCase());
+// "LIGHTS_ON" is the scenery domain's key; "Lights On" is what a reader wants
+// to see (maintainer 2026-08-14). Every word, not just the first.
+const stateLabel = (s) => String(s).replace(/[_-]+/g, " ").toLowerCase()
+  .replace(/\b./g, (c) => c.toUpperCase());
 /** Authored in characters2/metadata.json; the placeholder only runs for a
  *  hero the characters agent has not written up yet. */
 const heroLore = (c) => c.loreDesc ?? c.lore ?? (c.kind === "npc"
@@ -2064,8 +2069,18 @@ const OBJ_FILTER_KEY = "wiki-obj-filter";
 // south-east and south-west so far — and the builder turns each one into a
 // one-frame clip on the synthesised `still`. So "how many ways does this piece
 // face" is just how many directions that still has.
-const stillDirList = (o) => Object.keys(o?.animations?.still?.dirs ?? {});
-const stillDirs = (o) => stillDirList(o).length;
+// Since 2026-08-14 a piece can also carry STATES (LIGHTS_ON / LIGHTS_OFF), one
+// sprite set each, so "still" is no longer the only key a static piece has.
+const stillStates = (o) => Object.keys(o?.animations ?? {});
+const stillDirs = (o) => Math.max(0, ...stillStates(o).map((s) => Object.keys(o.animations[s]?.dirs ?? {}).length));
+/** "2 states × 3 directions", "3 directions", or "" when there is one of each. */
+function stillShape(o) {
+  const st = stillStates(o).length, d = stillDirs(o);
+  if (st > 1 && d > 1) return `${st} states × ${d} directions`;
+  if (st > 1) return `${st} states`;
+  if (d > 1) return `${d} directions`;
+  return "";
+}
 
 /** Card/page badges for a scenery piece, honest about stale verdicts. */
 function objBadges(o) {
@@ -2127,8 +2142,9 @@ function viewObjects() {
     // The synthesised `still` must not read as an animation here — the
     // list is where you scan for what actually moves.
     h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length
-      // Static, but not necessarily one-sided: say so before you open it.
-      ? (stillDirs(o) > 1 ? `static · ${stillDirs(o)} views` : "static")
+      // Static, but not necessarily one-sided or single-state: say so before
+      // you open it. Kept short — this is a card, not a header.
+      ? (stillShape(o) ? `static · ${stillShape(o).replace(" directions", " views")}` : "static")
       : Object.keys(o.animations).join(", ")),
     // A stale verdict must not wear the badge of a live one — "remove" on a
     // piece regenerated since that call would read as a decision about the
@@ -2277,13 +2293,15 @@ function viewObject(id) {
     objectHead(o),
     hasAnims
       ? h("div", { class: "panel" },
-          // "Still · 3 views" rather than a longer sentence: the note below is
-          // a fixed piece of copy on EVERY still, and lengthening it for the
-          // pieces that have rotations would wrap to another line and push the
-          // stage down on just those pieces. The S/SE/SW pad under the stage
-          // is the affordance; the title only says how many there are.
+          // Headed like a monster is — a word, then a pill counting what there
+          // is to look at ("2 states × 3 directions"). The controls under it
+          // are the same controls in the same order, so the two pages read as
+          // one wiki (maintainer 2026-08-14: "it's the same wiki so we want
+          // the same look and feel").
           h("div", { class: "panel-title" },
-            o.stillOnly ? (stillDirs(o) > 1 ? `Still · ${stillDirs(o)} views` : "Still") : "Animations", humanBtn),
+            o.stillOnly ? "Still" : "Animations",
+            stillShape(o) ? h("span", { class: "pill" }, stillShape(o)) : null,
+            humanBtn),
           o.stillOnly ? h("p", { class: "muted", style: "margin:0 0 8px" }, "This piece has no animation — shown at its true size, padding cropped away.") : null,
           playerEl)
       : h("p", { class: "muted" }, "No animations."),
