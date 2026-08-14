@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:11:29+00:00",
+  "id": "tree_039",
+  "group": "trees",
+  "rank": 1,
+  "index": 39,
+  "name": "Hollow-trunked veteran oak 039",
+  "lights": "LIGHTS_OFF",
+  "variety": "hollow-trunked veteran oak",
+  "modifier": "one side die-back, the other thriving",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, hollow-trunked veteran oak, one side die-back, the other thriving, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_039/sprite.webp",
+  "placement": {
+    "world_height_m": 4.66,
+    "world_px_height": 175,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "66f151cf-db72-4dd9-baa5-58e072c84762",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
