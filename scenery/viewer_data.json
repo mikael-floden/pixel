@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 613,
+  "scenery_count": 614,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 15
+      "done": 16
     },
     {
       "rank": 10,
@@ -1145,7 +1145,7 @@
     "briar_thickets": 13,
     "broken_columns": 2,
     "bushes": 10,
-    "cairns": 15,
+    "cairns": 16,
     "light": 1,
     "carts": 7,
     "cattail_clumps": 7,
@@ -3567,6 +3567,28 @@
       "status": "complete",
       "pixellab_object_id": "4fb51ce1-bd36-41ea-ae65-1236c3cbc0b8",
       "sprite": "cairns/cairn_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_025",
+      "rel": "cairns/cairn_025",
+      "name": "Snow-capped mountain cairn 025",
+      "category": "cairns",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, snow-capped mountain cairn, young and vigorous, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.67,
+        "world_px_height": 25,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7bc9d34f-54c4-419f-a021-6e57bbfd1441",
+      "sprite": "cairns/cairn_025/sprite.webp",
       "rotations": {},
       "animations": []
     },
