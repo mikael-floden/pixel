@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 765,
+  "scenery_count": 766,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 6,
+    "cliff_falls": 7,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 27,
@@ -4234,6 +4234,28 @@
       "status": "complete",
       "pixellab_object_id": "25269638-02cd-42a7-a243-0e44063a77b0",
       "sprite": "cliff_falls/cliff_fall_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_014",
+      "rel": "cliff_falls/cliff_fall_014",
+      "name": "A fine misting veil 014 \u00b7 lit",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_ON",
+      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a fine misting veil, one thick tendril reaching far out alone, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 17.96,
+        "world_px_height": 676,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b3aabb45-1dfa-4d31-afac-af599412dfbf",
+      "sprite": "cliff_falls/cliff_fall_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
