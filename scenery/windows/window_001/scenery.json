@@ -1,0 +1,43 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:13:45+00:00",
+  "id": "window_001",
+  "group": "windows",
+  "rank": 25,
+  "index": 1,
+  "name": "A diamond-leaded lattice window in a dark wood frame 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "a diamond-leaded lattice window in a dark wood frame",
+  "modifier": "a window box with a few hardy flowers",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a diamond-leaded lattice window in a dark wood frame, a window box with a few hardy flowers, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_001/rotations/south-east.webp",
+    "south-west": "windows/window_001/rotations/south-west.webp",
+    "south": "windows/window_001/sprite.webp"
+  },
+  "size": 128,
+  "sprite": "windows/window_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.71,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2c225282-cee0-47d6-85d8-915935179a10",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
