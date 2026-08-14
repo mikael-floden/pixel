@@ -49,7 +49,14 @@ PARALLEL = 8
 COMMIT_EVERY = 12
 MAX_PROMPT_TRIES = 10
 
-LEAD = "Redraw the tree in same style, but another variant of the same tree type."
+# The maintainer, watching a third of first attempts come back as the same
+# picture: "maybe it's as easy as telling the AI this should be a new looking
+# tree and MUST not be the same tree again?" Negating a BEHAVIOUR works on
+# these models — his windows prompt did exactly that ("DON'T CHANGE ANYTHING
+# ELSE") and held. It is negating NOUNS that backfires, by naming the very
+# things you want left alone.
+LEAD = ("Redraw the tree in same style, but another variant of the same tree "
+        "type. It MUST look different. Do not draw the same tree again.")
 
 # Ten rewordings of the LEAD, tried in order when a state keeps failing. The
 # maintainer: "You should only give up on a generation if you have tried 10
