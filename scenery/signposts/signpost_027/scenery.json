@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:45:29+00:00",
+  "id": "signpost_027",
+  "group": "signposts",
+  "rank": 8,
+  "index": 27,
+  "name": "Rope-and-plank trail sign 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "rope-and-plank trail sign",
+  "modifier": "recently maintained",
+  "glow_concept": null,
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, recently maintained, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_027/sprite.webp",
+  "placement": {
+    "world_height_m": 2.2,
+    "world_px_height": 83,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ea80087f-a201-489b-9178-66fa2c9dabfd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
