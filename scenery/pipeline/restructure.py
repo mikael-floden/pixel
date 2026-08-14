@@ -86,19 +86,19 @@ def main():
 
     client = PixelLabClient()
     cfg = factory.load_config()
-    # drop the old art first so the sibling comparison cannot match it
+    # GENERATE FIRST, SWAP AFTER. An earlier version deleted every target up
+    # front "so the sibling comparison cannot match the art being replaced" --
+    # but finalize already skips the state it is regenerating, so the deletion
+    # bought nothing and left the maintainer looking at a wiki full of trees
+    # missing most of their variants for an hour ("I can also see now that not
+    # all trees has 7 states in the wiki", 2026-08-14). The old art now stays
+    # until its replacement has passed the gate and overwritten it; only the
+    # superseded PixelLab object is deleted, once that has happened.
+    superseded = {}
     for rel, s, _, _ in todo:
-        man = factory.read_manifest(rel) or {}
-        states = man.get("states") or {}
-        e = states.pop(s, None)
-        if e and e.get("pixellab_object_id"):
-            try:
-                client.delete_object(e["pixellab_object_id"])
-            except PixelLabError:
-                pass
-        shutil.rmtree(os.path.join(factory.ROOT, tv.state_dir(rel, s)), ignore_errors=True)
-        man["states"] = states
-        factory.write_manifest(rel, man)
+        e = ((factory.read_manifest(rel) or {}).get("states") or {}).get(s) or {}
+        if e.get("pixellab_object_id"):
+            superseded[(rel, s)] = e["pixellab_object_id"]
 
     queue = list(todo)
     flight, ok, fail, since = [], 0, 0, 0
@@ -131,6 +131,12 @@ def main():
             if not retry:
                 try:
                     d = tv.finalize(client, rel, man, s, oid, src, glow)
+                    old_oid = superseded.pop((rel, s), None)
+                    if old_oid and old_oid != oid:
+                        try:
+                            client.delete_object(old_oid)
+                        except PixelLabError:
+                            pass
                     ok += 1; since += 1
                     print(f"  = {rel} {s} reshaped ({d:.0%} different) [{ok}]", flush=True)
                 except PixelLabError as ex:
