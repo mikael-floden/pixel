@@ -44,10 +44,31 @@
       "difference_from_source": 0.4518,
       "glow_score": 0.2466
     },
+    "LIT_3": {
+      "sprite": "trees/tree_015/lit_3/sprite.webp",
+      "pixellab_object_id": "560e3c63-8c16-4b48-bed8-d89b087dee4c",
+      "glow_concept": "pale blossoms shining faintly across the branches",
+      "difference_from_source": 0.5408,
+      "glow_score": 0.1083
+    },
+    "LIT_4": {
+      "sprite": "trees/tree_015/lit_4/sprite.webp",
+      "pixellab_object_id": "bfd396b6-24b9-4bf0-afa0-8d72e60e1bd2",
+      "glow_concept": "iron lantern hung from a low branch",
+      "difference_from_source": 0.7368,
+      "glow_score": 0.2317
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_015/sprite.webp",
       "pixellab_object_id": "7af4867e-24cc-45e0-b408-577088856895",
       "glow_score": 0.0104
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_015/not_lit_10/sprite.webp",
+      "pixellab_object_id": "21c6ab1d-3137-4315-b388-6d231f480d46",
+      "glow_concept": null,
+      "difference_from_source": 0.8823,
+      "glow_score": 0.0
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_015/not_lit_2/sprite.webp",
@@ -79,6 +100,27 @@
       "glow_concept": null,
       "difference_from_source": 0.2111,
       "glow_score": 0.0
+    },
+    "NOT_LIT_7": {
+      "sprite": "trees/tree_015/not_lit_7/sprite.webp",
+      "pixellab_object_id": "aef29e90-976c-43ba-b6c2-83b73218c8be",
+      "glow_concept": null,
+      "difference_from_source": 0.229,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_8": {
+      "sprite": "trees/tree_015/not_lit_8/sprite.webp",
+      "pixellab_object_id": "6244e212-160a-4a4d-b40f-e1adcf279962",
+      "glow_concept": null,
+      "difference_from_source": 0.9638,
+      "glow_score": 0.0003
+    },
+    "NOT_LIT_9": {
+      "sprite": "trees/tree_015/not_lit_9/sprite.webp",
+      "pixellab_object_id": "f7de60bc-555a-4350-9d42-b844c76c5bd8",
+      "glow_concept": null,
+      "difference_from_source": 0.8445,
+      "glow_score": 0.0024
     }
   },
   "must_be_imbplemented_with_random_hflip": true
