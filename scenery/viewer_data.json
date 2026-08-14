@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 543,
+  "scenery_count": 544,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -20,7 +20,7 @@
       "id": "stones",
       "name": "Stone",
       "quota": 98,
-      "done": 18
+      "done": 19
     },
     {
       "rank": 3,
@@ -988,7 +988,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 18,
+    "stones": 19,
     "story_posts": 8,
     "streetlights": 8,
     "stumps": 10,
@@ -9863,6 +9863,28 @@
       "status": "complete",
       "pixellab_object_id": "63b91831-915b-4391-80a4-bf83682c1a23",
       "sprite": "stones/stone_022/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stone_024",
+      "rel": "stones/stone_024",
+      "name": "Smooth river-worn boulder 024 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, smooth river-worn boulder, split into a double form, waist-high, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.77,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
+      "sprite": "stones/stone_024/sprite.webp",
       "rotations": {},
       "animations": []
     },

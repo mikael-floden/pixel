@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:16+00:00",
+  "id": "stone_024",
+  "group": "stones",
+  "rank": 2,
+  "index": 24,
+  "name": "Smooth river-worn boulder 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "smooth river-worn boulder",
+  "modifier": "split into a double form",
+  "glow_concept": "molten orange soulstone veins in deep cracks",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, smooth river-worn boulder, split into a double form, waist-high, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_024/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
