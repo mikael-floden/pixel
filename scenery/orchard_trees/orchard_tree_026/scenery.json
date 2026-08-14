@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:24:59+00:00",
+  "id": "orchard_tree_026",
+  "group": "orchard_trees",
+  "rank": 18,
+  "index": 26,
+  "name": "Young staked fruit tree 026 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "young staked fruit tree",
+  "modifier": "with butterflies resting on it",
+  "glow_concept": "ripe fruit glowing like warm paper lanterns",
+  "prompt": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, young staked fruit tree, with butterflies resting on it, large, twice human height, self-emissive at night, softly radiating light: ripe fruit glowing like warm paper lanterns",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "orchard_trees/orchard_tree_026/sprite.webp",
+  "placement": {
+    "world_height_m": 2.87,
+    "world_px_height": 108,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "69539b03-083e-4b58-9cfb-0344dadba9da",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
