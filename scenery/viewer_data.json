@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 624,
+  "scenery_count": 625,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1098,7 +1098,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 157,
@@ -1235,7 +1235,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
-    "cliff_falls": 2,
+    "cliff_falls": 3,
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_ledgetrees": 3,
@@ -4119,6 +4119,28 @@
       "status": "complete",
       "pixellab_object_id": "d854723a-5cab-47f3-9600-713be3138b15",
       "sprite": "cliff_falls/cliff_fall_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_fall_003",
+      "rel": "cliff_falls/cliff_fall_003",
+      "name": "A thin silver thread 003",
+      "category": "cliff_falls",
+      "lights": "LIGHTS_OFF",
+      "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a thin silver thread, blown sideways at the bottom, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.95,
+        "world_px_height": 337,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4ded6316-6b5a-43b9-a582-a50d143ef38b",
+      "sprite": "cliff_falls/cliff_fall_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
