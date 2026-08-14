@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:18:41+00:00",
+  "id": "cattail_clump_014",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 14,
+  "name": "Slim young cattails 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "slim young cattails",
+  "modifier": "with a bird nest tucked in it",
+  "glow_concept": "seed heads smoldering like ember torches",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, slim young cattails, with a bird nest tucked in it, roughly six feet tall, human height, self-emissive at night, softly radiating light: seed heads smoldering like ember torches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cattail_clumps/cattail_clump_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.55,
+    "world_px_height": 58,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "600351ec-5609-4044-b896-02d78c43f90f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
