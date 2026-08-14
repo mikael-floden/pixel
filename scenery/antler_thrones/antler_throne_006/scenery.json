@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:39:14+00:00",
+  "id": "antler_throne_006",
+  "group": "antler_thrones",
+  "rank": 128,
+  "index": 6,
+  "name": "Great-moose antler 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "great-moose antler",
+  "modifier": "a crown left on the seat",
+  "glow_concept": "glow-moss cushion shining softly",
+  "prompt": "a wild throne woven from shed antlers and dark wood, moss-cushioned, standing alone in the grass, great-moose antler, a crown left on the seat, large, twice human height, self-emissive at night, softly radiating light: glow-moss cushion shining softly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "antler_thrones/antler_throne_006/sprite.webp",
+  "placement": {
+    "world_height_m": 1.97,
+    "world_px_height": 74,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5453b8f7-6923-4bbf-adfe-31a4c32f60ac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 603,
+  "scenery_count": 604,
   "target_count": 2529,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -902,7 +902,7 @@
       "id": "antler_thrones",
       "name": "Antler Throne",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 129,
@@ -1126,6 +1126,7 @@
     "anchors": 2,
     "ancient_trees": 2,
     "ant_hills": 2,
+    "antler_thrones": 1,
     "anvils": 2,
     "aqueduct_fragments": 2,
     "barrels": 9,
@@ -1379,6 +1380,28 @@
       "status": "complete",
       "pixellab_object_id": "67384c42-d3b1-494d-9d59-28ad6c157555",
       "sprite": "ant_hills/ant_hill_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "antler_throne_006",
+      "rel": "antler_thrones/antler_throne_006",
+      "name": "Great-moose antler 006 \u00b7 lit",
+      "category": "antler_thrones",
+      "lights": "LIGHTS_ON",
+      "description": "a wild throne woven from shed antlers and dark wood, moss-cushioned, standing alone in the grass, great-moose antler, a crown left on the seat, large, twice human height, self-emissive at night, softly radiating light: glow-moss cushion shining softly",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.97,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5453b8f7-6923-4bbf-adfe-31a4c32f60ac",
+      "sprite": "antler_thrones/antler_throne_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
