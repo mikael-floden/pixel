@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:28:25+00:00",
+  "id": "cart_016",
+  "group": "carts",
+  "rank": 27,
+  "index": 16,
+  "name": "Barrel-laden cooper's cart 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "barrel-laden cooper's cart",
+  "modifier": "old and settling into the ground",
+  "glow_concept": "cargo of softly glowing lantern-fruit",
+  "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, barrel-laden cooper's cart, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: cargo of softly glowing lantern-fruit",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "carts/cart_016/sprite.webp",
+  "placement": {
+    "world_height_m": 1.23,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6f621a02-374a-4708-ae36-25c14c2039ff",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
