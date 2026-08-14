@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:31:10+00:00",
+  "id": "cliff_fall_007",
+  "group": "cliff_falls",
+  "rank": 156,
+  "index": 7,
+  "name": "Brown with spring meltwater 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "brown with spring meltwater",
+  "modifier": "with a rainbow of spray at its foot",
+  "glow_concept": null,
+  "prompt": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, brown with spring meltwater, with a rainbow of spray at its foot, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_falls/cliff_fall_007/sprite.webp",
+  "placement": {
+    "world_height_m": 8.88,
+    "world_px_height": 334,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fb6d7421-816b-4f94-8b25-45ac6511bc96",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
