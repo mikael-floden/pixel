@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:29:28+00:00",
+  "id": "cliff_moss_043",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 43,
+  "name": "Lichen-crusted little ledge 043",
+  "lights": "LIGHTS_OFF",
+  "variety": "lichen-crusted little ledge",
+  "modifier": "pale lichen ringing the moss",
+  "glow_concept": null,
+  "prompt": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background, lichen-crusted little ledge, pale lichen ringing the moss, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cliff_mosses/cliff_moss_043/sprite.webp",
+  "placement": {
+    "world_height_m": 0.42,
+    "world_px_height": 16,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a944be31-a2a4-4682-a373-0764b62f040d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
