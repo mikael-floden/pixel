@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:50:09+00:00",
+  "id": "window_049",
+  "group": "windows",
+  "rank": 25,
+  "index": 49,
+  "name": "A diamond-leaded lattice window in a dark rectangular frame 049",
+  "lights": "LIGHTS_OFF",
+  "variety": "a diamond-leaded lattice window in a dark rectangular frame",
+  "modifier": "a clay pot of dry herbs on the sill",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a diamond-leaded lattice window in a dark rectangular frame, a clay pot of dry herbs on the sill, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_049/rotations/south-east.webp",
+    "south-west": "windows/window_049/rotations/south-west.webp",
+    "south": "windows/window_049/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_049/sprite.webp",
+  "placement": {
+    "world_height_m": 1.35,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      20,
+      11,
+      79,
+      86
+    ],
+    "content_px_height": 75,
+    "canvas_render_px": 65
+  },
+  "pixellab_object_id": "e03707a5-ded1-4200-b1ad-16ad639071b8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
