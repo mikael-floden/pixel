@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:17:05+00:00",
+  "id": "lantern_post_020",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 20,
+  "name": "Moss-capped old post 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-capped old post",
+  "modifier": "overgrown at the base",
+  "glow_concept": "green foxfire packed behind the panes",
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, moss-capped old post, overgrown at the base, roughly six feet tall, human height, self-emissive at night, softly radiating light: green foxfire packed behind the panes",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "lantern_posts/lantern_post_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.52,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f00b57a1-d1b0-4064-be8c-5b36858241c4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
