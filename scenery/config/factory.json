@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect \u2014 the language of the dead. Rune glow concepts seeded first across the script-bearing groups.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect \u2014 the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces \u2014 those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count \u2014 the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), bold readable shapes built from clean deliberate pixel clusters, every detail drawn at least a few pixels wide, no fine-grained noisy texture, no sub-pixel detail, sturdy chunky forms with generous thickness and NO hair-thin parts, the object sitting solidly on the ground with visible weight, absolutely no written text, no letters, no numbers, no words and no readable signage anywhere on it, no people, no human figures and no characters anywhere in the image, a single centered inanimate game prop on a transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -396,7 +396,9 @@
       ],
       "animation_idea": "loosest arm creaking and rocking slightly",
       "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 5,
+      "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 9,
@@ -471,7 +473,9 @@
       ],
       "animation_idea": "a loose rail rocking gently in the wind",
       "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 5,
+      "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 11,
@@ -508,7 +512,9 @@
       ],
       "animation_idea": "the windlass rope swaying and light glinting on the water below",
       "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 13,
+      "_saturated": "maintainer 2026-08-14 review note: we have enough of these \u2014 quota frozen at the 13 already generated; raise only if he asks"
     },
     {
       "rank": 12,
@@ -543,7 +549,9 @@
       ],
       "animation_idea": "waves of leaf-shiver running along the trimmed surface in the wind",
       "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them.",
-      "modifier_pool": "nature"
+      "modifier_pool": "nature",
+      "quota": 4,
+      "_throttled": "maintainer approval 2/34 (6%) over 34 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 13,
@@ -666,7 +674,9 @@
       ],
       "animation_idea": "flame guttering inside the head, halo slowly breathing",
       "lore_fit": "Every era's dead remember their own street lighting, so gas lamps and iron lampposts stand along the same remembered lanes, each one lit only while somebody still keeps its street in mind.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 5,
+      "_throttled": "maintainer approval 5/23 (22%) over 23 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 16,
@@ -743,7 +753,9 @@
       ],
       "animation_idea": "loose straws lifting off and drifting away in the breeze",
       "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 6,
+      "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 18,
@@ -823,7 +835,9 @@
       ],
       "animation_idea": "hanging lamp swinging slightly, its light wavering",
       "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 6,
+      "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 20,
@@ -1106,7 +1120,9 @@
       ],
       "animation_idea": "coat hem and straw fingers fluttering in the wind",
       "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 5,
+      "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 27,
@@ -1255,7 +1271,9 @@
       ],
       "animation_idea": "a few bees looping lazily around the entrance hole",
       "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 4,
+      "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 31,
@@ -1607,7 +1625,9 @@
       ],
       "animation_idea": "spore mist slowly circling around the inside of the ring",
       "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else.",
-      "modifier_pool": "nature"
+      "modifier_pool": "nature",
+      "quota": 11,
+      "_saturated": "maintainer 2026-08-14 review note: we have enough of these \u2014 quota frozen at the 11 already generated; raise only if he asks"
     },
     {
       "rank": 40,
@@ -1833,7 +1853,9 @@
       ],
       "animation_idea": "dew beads glinting as the cushion slowly swells and settles",
       "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently.",
-      "modifier_pool": "nature"
+      "modifier_pool": "nature",
+      "quota": 5,
+      "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 46,
@@ -1906,7 +1928,9 @@
       ],
       "animation_idea": "the sails turning slowly in the wind",
       "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 3,
+      "_throttled": "maintainer approval 3/17 (18%) over 17 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 48,
@@ -1943,7 +1967,9 @@
       ],
       "animation_idea": "ribbons and wreaths swaying gently in the breeze",
       "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet.",
-      "modifier_pool": "structure"
+      "modifier_pool": "structure",
+      "quota": 2,
+      "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 49,
