@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 582,
+  "scenery_count": 583,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -804,7 +804,7 @@
       "id": "spirit_gates",
       "name": "Spirit Gate",
       "quota": 7,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 115,
@@ -1057,6 +1057,7 @@
     "signposts": 5,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
+    "spirit_gates": 1,
     "spring_basins": 2,
     "standing_stones": 5,
     "statues": 2,
@@ -9562,6 +9563,28 @@
       "status": "complete",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "spirit_gate_004",
+      "rel": "spirit_gates/spirit_gate_004",
+      "name": "Grey granite gate 004 \u00b7 lit",
+      "category": "spirit_gates",
+      "lights": "LIGHTS_ON",
+      "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass, grey granite gate, moss-hung and ancient, tall, about three times human height, self-emissive at night, softly radiating light: unreadable script kindling across the lintel",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.33,
+        "world_px_height": 125,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "75773695-dc57-4a9f-b237-ce1b8b323264",
+      "sprite": "spirit_gates/spirit_gate_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
