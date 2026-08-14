@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 608,
+  "scenery_count": 609,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 5,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 34,
@@ -1148,7 +1148,7 @@
     "cairns": 15,
     "light": 1,
     "carts": 7,
-    "cattail_clumps": 6,
+    "cattail_clumps": 7,
     "cauldron_camps": 2,
     "chairs_and_benches": 8,
     "charcoal_kilns": 1,
@@ -3901,6 +3901,28 @@
       "status": "complete",
       "pixellab_object_id": "4cfac2a1-64ae-4418-be9a-72bc2ffe70fe",
       "sprite": "cattail_clumps/cattail_clump_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cattail_clump_020",
+      "rel": "cattail_clumps/cattail_clump_020",
+      "name": "Dark marsh cattails 020 \u00b7 lit",
+      "category": "cattail_clumps",
+      "lights": "LIGHTS_ON",
+      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dark marsh cattails, on a low grassy hummock, roughly six feet tall, human height, self-emissive at night, softly radiating light: a foxfire ring around the wet base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.73,
+        "world_px_height": 65,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "45063c7c-e88d-452e-b792-a27d08e11510",
+      "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:46:01+00:00",
+  "id": "cattail_clump_020",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 20,
+  "name": "Dark marsh cattails 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dark marsh cattails",
+  "modifier": "on a low grassy hummock",
+  "glow_concept": "a foxfire ring around the wet base",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dark marsh cattails, on a low grassy hummock, roughly six feet tall, human height, self-emissive at night, softly radiating light: a foxfire ring around the wet base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.73,
+    "world_px_height": 65,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "45063c7c-e88d-452e-b792-a27d08e11510",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
