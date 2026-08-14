@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 735,
+  "scenery_count": 736,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 59
+      "done": 60
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 10,
     "cliff_roots": 9,
     "cliff_shrubs": 12,
-    "cliff_vines": 59,
+    "cliff_vines": 60,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -6343,6 +6343,28 @@
       "status": "complete",
       "pixellab_object_id": "afe56da7-7dfe-4e9c-84eb-3268a9f7e9ea",
       "sprite": "cliff_vines/cliff_vine_149/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_150",
+      "rel": "cliff_vines/cliff_vine_150",
+      "name": "Pale lichen-strung fall 150 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, pale lichen-strung fall, two roots winding side by side, touching once, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 5.54,
+        "world_px_height": 209,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f6c9ee48-8e48-43ec-aaa9-9db39eb20c17",
+      "sprite": "cliff_vines/cliff_vine_150/sprite.webp",
       "rotations": {},
       "animations": []
     },
