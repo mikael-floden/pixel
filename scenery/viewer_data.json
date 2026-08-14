@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 720,
+  "scenery_count": 721,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1161,7 +1161,7 @@
       "id": "sky_stairs",
       "name": "Sky Stair",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 166,
@@ -1304,6 +1304,7 @@
     "sheaf_poles": 2,
     "shipwreck_prows": 1,
     "signposts": 5,
+    "sky_stairs": 1,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -11615,6 +11616,28 @@
       "status": "complete",
       "pixellab_object_id": "2a01fa09-625f-4910-9887-295ea32e140b",
       "sprite": "signposts/signpost_028/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sky_stair_002",
+      "rel": "sky_stairs/sky_stair_002",
+      "name": "Weathered sky stair 002 \u00b7 lit",
+      "category": "sky_stairs",
+      "lights": "LIGHTS_ON",
+      "description": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, weathered sky stair, crumbling at the top step, tall, about three times human height, self-emissive at night, softly radiating light: each tread glowing faintly upward",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.25,
+        "world_px_height": 160,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
+      "sprite": "sky_stairs/sky_stair_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
