@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 543,
+  "scenery_count": 544,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 10,
@@ -912,7 +912,7 @@
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
-    "cairns": 13,
+    "cairns": 14,
     "light": 1,
     "carts": 6,
     "cattail_clumps": 5,
@@ -3021,6 +3021,28 @@
       "status": "complete",
       "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
       "sprite": "cairns/cairn_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_021",
+      "rel": "cairns/cairn_021",
+      "name": "Rounded fieldstone cairn 021",
+      "category": "cairns",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, rounded fieldstone cairn, one side die-back, the other thriving, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.73,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "45672381-2d66-4d2d-be0d-a0bb0a3d646e",
+      "sprite": "cairns/cairn_021/sprite.webp",
       "rotations": {},
       "animations": []
     },
