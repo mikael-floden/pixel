@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 610,
+  "scenery_count": 600,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 11,
-      "done": 14
+      "done": 12
     },
     {
       "rank": 4,
@@ -41,14 +41,14 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 15
+      "done": 13
     },
     {
       "rank": 6,
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 15
+      "done": 14
     },
     {
       "rank": 7,
@@ -118,7 +118,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "quota": 10,
-      "done": 11
+      "done": 10
     },
     {
       "rank": 17,
@@ -153,14 +153,14 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 11
+      "done": 10
     },
     {
       "rank": 22,
       "id": "offering_tables",
       "name": "Offering Table",
       "quota": 58,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 23,
@@ -244,7 +244,7 @@
       "id": "flower_stands",
       "name": "Flower Stand",
       "quota": 34,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 35,
@@ -783,7 +783,7 @@
       "id": "giant_fallen_bells",
       "name": "Giant Fallen Bell",
       "quota": 3,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 112,
@@ -860,7 +860,7 @@
       "id": "fairy_stumps",
       "name": "Fairy Stump",
       "quota": 3,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 123,
@@ -916,7 +916,7 @@
       "id": "lantern_trees",
       "name": "Lantern Tree",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 131,
@@ -1161,25 +1161,25 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fairy_stumps": 2,
+    "fairy_stumps": 1,
     "fallen_logs": 9,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
-    "flame_niches": 11,
-    "flower_stands": 6,
+    "flame_niches": 10,
+    "flower_stands": 5,
     "flower_trellises": 2,
     "frost_flowers": 1,
     "frozen_springs": 2,
     "geodes": 1,
-    "giant_fallen_bells": 2,
+    "giant_fallen_bells": 1,
     "giant_mushrooms": 2,
     "giant_skulls": 1,
     "giant_snail_shells": 2,
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 14,
+    "graves": 12,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 2,
@@ -1191,9 +1191,8 @@
     "hot_springs": 1,
     "house_clutter": 9,
     "ivy_posts": 5,
-    "lantern_posts": 15,
+    "lantern_posts": 13,
     "lantern_stands": 6,
-    "lantern_trees": 1,
     "letter_boxes": 1,
     "lightning_oaks": 1,
     "market_stalls": 4,
@@ -1202,7 +1201,7 @@
     "moon_pools": 1,
     "moss_clumps": 5,
     "mushrooms": 13,
-    "offering_tables": 10,
+    "offering_tables": 11,
     "orchard_trees": 2,
     "overgrown_archways": 2,
     "owl_snags": 2,
@@ -1225,7 +1224,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 23,
-    "story_posts": 11,
+    "story_posts": 10,
     "streetlights": 5,
     "stumps": 13,
     "sundials": 2,
@@ -1242,7 +1241,7 @@
     "water_pumps": 2,
     "waterwheels": 3,
     "wayside_shrines": 6,
-    "waystones": 15,
+    "waystones": 14,
     "web_frames": 1,
     "wells": 12,
     "windmills": 3,
@@ -5048,28 +5047,6 @@
       "animations": []
     },
     {
-      "id": "fairy_stump_001",
-      "rel": "fairy_stumps/fairy_stump_001",
-      "name": "Oak fairy stump 001",
-      "category": "fairy_stumps",
-      "lights": "LIGHTS_OFF",
-      "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world, oak fairy stump, with a miniature washing line, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.97,
-        "world_px_height": 37,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8c378e40-3c31-4e43-ba8a-33eaf158f93c",
-      "sprite": "fairy_stumps/fairy_stump_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "fairy_stump_008",
       "rel": "fairy_stumps/fairy_stump_008",
       "name": "Mossy pine fairy stump 008 \u00b7 lit",
@@ -5906,28 +5883,6 @@
       "animations": []
     },
     {
-      "id": "flame_niche_024",
-      "rel": "flame_niches/flame_niche_024",
-      "name": "Twin-arch double niche 024 \u00b7 lit",
-      "category": "flame_niches",
-      "lights": "LIGHTS_ON",
-      "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, twin-arch double niche, reinforced with iron bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: sparks drifting up from the flame",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "472304a5-ee6d-473d-8f58-dbe82fff250c",
-      "sprite": "flame_niches/flame_niche_024/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "flame_niche_900",
       "rel": "flame_niches/flame_niche_900",
       "name": "Brick niche, iron grate 900 \u00b7 lit",
@@ -6060,28 +6015,6 @@
       "animations": []
     },
     {
-      "id": "flower_stand_013",
-      "rel": "flower_stands/flower_stand_013",
-      "name": "Purple lupine spires 013",
-      "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
-      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, purple lupine spires, one side die-back, the other thriving, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.97,
-        "world_px_height": 37,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2f50a412-d2f3-401c-83c4-abc04e70982f",
-      "sprite": "flower_stands/flower_stand_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "flower_trellis_001",
       "rel": "flower_trellises/flower_trellis_001",
       "name": "Mixed pastel sweet peas 001",
@@ -6210,28 +6143,6 @@
       "status": "complete",
       "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
       "sprite": "geodes/geode_001/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "giant_fallen_bell_001",
-      "rel": "giant_fallen_bells/giant_fallen_bell_001",
-      "name": "Green-bronze giant bell 001",
-      "category": "giant_fallen_bells",
-      "lights": "LIGHTS_OFF",
-      "description": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground, green-bronze giant bell, upright but leaning, rim buried, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.22,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "813a8fc8-5660-4602-9e0d-2c1815383a36",
-      "sprite": "giant_fallen_bells/giant_fallen_bell_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6825,28 +6736,6 @@
       "animations": []
     },
     {
-      "id": "grave_031",
-      "rel": "graves/grave_031",
-      "name": "Marble stone, gilded name 031",
-      "category": "graves",
-      "lights": "LIGHTS_OFF",
-      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, patched with mismatched materials, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.34,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "67095ddd-cbd6-40f5-af84-0bbba97edfc9",
-      "sprite": "graves/grave_031/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "grave_034",
       "rel": "graves/grave_034",
       "name": "Rounded granite headstone 034 \u00b7 lit",
@@ -6865,28 +6754,6 @@
       "status": "complete",
       "pixellab_object_id": "48187bc1-ad36-4d92-849c-85cf1216fd1a",
       "sprite": "graves/grave_034/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "grave_035",
-      "rel": "graves/grave_035",
-      "name": "Cracked slate slab 035",
-      "category": "graves",
-      "lights": "LIGHTS_OFF",
-      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, cracked slate slab, with climbing flowers at one corner, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.29,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "2b66a18f-f923-40b5-8c97-6b14b5d4a030",
-      "sprite": "graves/grave_035/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -8079,50 +7946,6 @@
       "animations": []
     },
     {
-      "id": "lantern_post_025",
-      "rel": "lantern_posts/lantern_post_025",
-      "name": "Weathered oak post 025",
-      "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, weathered oak post, half-repainted, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 2.13,
-        "world_px_height": 80,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "80aca6a4-6d96-49a2-80b3-49baab398a6c",
-      "sprite": "lantern_posts/lantern_post_025/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "lantern_post_027",
-      "rel": "lantern_posts/lantern_post_027",
-      "name": "Leaning crooked post 027",
-      "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
-      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, leaning crooked post, with climbing flowers at one corner, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.66,
-        "world_px_height": 62,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8ea62b7f-30bf-42b7-8b58-98f2ff760b03",
-      "sprite": "lantern_posts/lantern_post_027/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "lantern_post_029",
       "rel": "lantern_posts/lantern_post_029",
       "name": "Driftwood post with barnacles 029",
@@ -8273,28 +8096,6 @@
       "status": "complete",
       "pixellab_object_id": "b71ccedf-6201-405b-8158-70819f84e62c",
       "sprite": "lantern_stands/lantern_stand_902/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "lantern_tree_004",
-      "rel": "lantern_trees/lantern_tree_004",
-      "name": "Spreading beech 004 \u00b7 lit",
-      "category": "lantern_trees",
-      "lights": "LIGHTS_ON",
-      "description": "a broad tree hung with dozens of small memory lanterns on ribbons, each a different shape and color, spreading beech, paper and iron lanterns mixed, tall, about three times human height, self-emissive at night, softly radiating light: every lantern lit warm",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 3.04,
-        "world_px_height": 114,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "53a7b779-971d-4e41-a758-96c79792de77",
-      "sprite": "lantern_trees/lantern_tree_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -9131,6 +8932,28 @@
       "status": "complete",
       "pixellab_object_id": "46beb370-b45f-4225-b1a7-57482330a390",
       "sprite": "offering_tables/offering_table_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "offering_table_020",
+      "rel": "offering_tables/offering_table_020",
+      "name": "Low table, folded letters 020 \u00b7 lit",
+      "category": "offering_tables",
+      "lights": "LIGHTS_ON",
+      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, low table, folded letters, recently maintained, small, knee-high, self-emissive at night, softly radiating light: glowing runes carved along the table edge",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.73,
+        "world_px_height": 27,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2b4709fd-2d4f-46d7-8862-8f22e2bd0fd9",
+      "sprite": "offering_tables/offering_table_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11243,28 +11066,6 @@
       "status": "complete",
       "pixellab_object_id": "55383ea1-d29e-407b-93df-f9d2fbea894a",
       "sprite": "story_posts/story_post_020/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "story_post_022",
-      "rel": "story_posts/story_post_022",
-      "name": "Antler-topped tale post 022 \u00b7 lit",
-      "category": "story_posts",
-      "lights": "LIGHTS_ON",
-      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, antler-topped tale post, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: glowing symbol hovering above the finial",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 2.38,
-        "world_px_height": 90,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f554e8b3-31a4-454c-b944-78edfeb9869b",
-      "sprite": "story_posts/story_post_022/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -14125,28 +13926,6 @@
       "status": "complete",
       "pixellab_object_id": "daf27ead-0bf8-41d2-8857-cffdf1ec5024",
       "sprite": "waystones/waystone_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "waystone_023",
-      "rel": "waystones/waystone_023",
-      "name": "Half-sunken meadow stone 023",
-      "category": "waystones",
-      "lights": "LIGHTS_OFF",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, half-sunken meadow stone, half-repainted, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.84,
-        "world_px_height": 32,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "15cac82d-9c4c-47b3-a801-fa181777dc40",
-      "sprite": "waystones/waystone_023/sprite.webp",
       "rotations": {},
       "animations": []
     },

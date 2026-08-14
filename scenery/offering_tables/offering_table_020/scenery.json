@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:37:35+00:00",
+  "id": "offering_table_020",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 20,
+  "name": "Low table, folded letters 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "low table, folded letters",
+  "modifier": "recently maintained",
+  "glow_concept": "glowing runes carved along the table edge",
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, low table, folded letters, recently maintained, small, knee-high, self-emissive at night, softly radiating light: glowing runes carved along the table edge",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_020/sprite.webp",
+  "placement": {
+    "world_height_m": 0.73,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2b4709fd-2d4f-46d7-8862-8f22e2bd0fd9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
