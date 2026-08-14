@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:52:42+00:00",
+  "id": "cliff_vine_051",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 51,
+  "name": "Fern-mixed green fall 051",
+  "lights": "LIGHTS_OFF",
+  "variety": "fern-mixed green fall",
+  "modifier": "clustered thickly at the top corner, trailing below",
+  "glow_concept": null,
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, fern-mixed green fall, clustered thickly at the top corner, trailing below, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_051/sprite.webp",
+  "placement": {
+    "world_height_m": 5.5,
+    "world_px_height": 207,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "98a63398-8bb8-46f7-b9a6-4e1047660264",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
