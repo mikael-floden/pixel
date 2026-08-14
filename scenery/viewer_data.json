@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 587,
-  "target_count": 2437,
+  "scenery_count": 588,
+  "target_count": 2415,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 22,
@@ -782,183 +782,309 @@
       "rank": 111,
       "id": "giant_fallen_bells",
       "name": "Giant Fallen Bell",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 112,
       "id": "meteor_stones",
       "name": "Meteor Stone",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 113,
       "id": "hot_springs",
       "name": "Hot Spring",
-      "quota": 8,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 114,
       "id": "spirit_gates",
       "name": "Spirit Gate",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 115,
       "id": "witch_rings",
       "name": "Witch Ring",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 116,
       "id": "giant_snail_shells",
       "name": "Giant Snail Shell",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 117,
       "id": "dragon_ribcages",
       "name": "Dragon Ribcage",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 118,
       "id": "honey_trees",
       "name": "Honey Tree",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 119,
       "id": "shipwreck_prows",
       "name": "Shipwreck Prow",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 120,
       "id": "frozen_springs",
       "name": "Frozen Spring",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 121,
       "id": "lightning_oaks",
       "name": "Lightning Oak",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 122,
       "id": "fairy_stumps",
       "name": "Fairy Stump",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 123,
       "id": "cauldron_camps",
       "name": "Cauldron Camp",
-      "quota": 7,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 124,
       "id": "harvest_altars",
       "name": "Harvest Altar",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 125,
       "id": "sunken_statues",
       "name": "Sunken Statue",
-      "quota": 6,
+      "quota": 3,
       "done": 0
     },
     {
       "rank": 126,
       "id": "bee_logs",
       "name": "Bee Log",
-      "quota": 6,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 127,
       "id": "stone_giant_hands",
       "name": "Stone Giant Hand",
-      "quota": 5,
+      "quota": 3,
       "done": 0
     },
     {
       "rank": 128,
       "id": "antler_thrones",
       "name": "Antler Throne",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 129,
       "id": "moon_pools",
       "name": "Moon Pool",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 130,
       "id": "lantern_trees",
       "name": "Lantern Tree",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 131,
       "id": "crystal_trees",
       "name": "Crystal Tree",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 132,
       "id": "bone_arbors",
       "name": "Bone Arbor",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 133,
       "id": "glow_hollows",
       "name": "Glow Hollow",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 134,
       "id": "giant_skulls",
       "name": "Giant Skull",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 135,
       "id": "root_arches",
       "name": "Root Arch",
-      "quota": 5,
+      "quota": 3,
       "done": 1
     },
     {
       "rank": 136,
       "id": "frost_flowers",
       "name": "Frost Flower",
-      "quota": 5,
+      "quota": 3,
       "done": 1
+    },
+    {
+      "rank": 137,
+      "id": "lone_doorframes",
+      "name": "Lone Doorframe",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 138,
+      "id": "stone_boats",
+      "name": "Stone Boat",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 139,
+      "id": "wishing_trees",
+      "name": "Wishing Tree",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 140,
+      "id": "weeping_stones",
+      "name": "Weeping Stone",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 141,
+      "id": "hollow_kings",
+      "name": "Hollow King",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 142,
+      "id": "echo_horns",
+      "name": "Echo Horn",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 143,
+      "id": "memory_mirrors",
+      "name": "Memory Mirror",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 144,
+      "id": "thread_poles",
+      "name": "Thread Pole",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 145,
+      "id": "star_wells",
+      "name": "Star Well",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 146,
+      "id": "pilgrim_piles",
+      "name": "Pilgrim Pile",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 147,
+      "id": "wind_harps",
+      "name": "Wind Harp",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 148,
+      "id": "giant_hourglasses",
+      "name": "Giant Hourglass",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 149,
+      "id": "stone_libraries",
+      "name": "Stone Library",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 150,
+      "id": "cradle_stones",
+      "name": "Cradle Stone",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 151,
+      "id": "sky_anchors",
+      "name": "Sky Anchor",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 152,
+      "id": "seed_vaults",
+      "name": "Seed Vault",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 153,
+      "id": "singing_reeds",
+      "name": "Singing Reed",
+      "quota": 3,
+      "done": 0
+    },
+    {
+      "rank": 154,
+      "id": "tide_stones",
+      "name": "Tide Stone",
+      "quota": 3,
+      "done": 0
     }
   ],
   "categories": {
@@ -1069,7 +1195,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 23,
-    "story_posts": 8,
+    "story_posts": 9,
     "streetlights": 5,
     "stumps": 13,
     "sundials": 2,
@@ -10713,6 +10839,28 @@
       "status": "complete",
       "pixellab_object_id": "55383ea1-d29e-407b-93df-f9d2fbea894a",
       "sprite": "story_posts/story_post_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_022",
+      "rel": "story_posts/story_post_022",
+      "name": "Antler-topped tale post 022 \u00b7 lit",
+      "category": "story_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, antler-topped tale post, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: glowing symbol hovering above the finial",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.38,
+        "world_px_height": 90,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f554e8b3-31a4-454c-b944-78edfeb9869b",
+      "sprite": "story_posts/story_post_022/sprite.webp",
       "rotations": {},
       "animations": []
     },
