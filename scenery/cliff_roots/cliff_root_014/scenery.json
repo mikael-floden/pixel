@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:08:54+00:00",
+  "id": "cliff_root_014",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 14,
+  "name": "Fine hair-roots in a dense veil 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fine hair-roots in a dense veil",
+  "modifier": "strands drifting apart toward one side",
+  "glow_concept": "soul-light running up the roots",
+  "prompt": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, fine hair-roots in a dense veil, strands drifting apart toward one side, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_014/sprite.webp",
+  "placement": {
+    "world_height_m": 11.99,
+    "world_px_height": 451,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d7b37e99-9c0b-473d-862f-2ecc256669c6",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
