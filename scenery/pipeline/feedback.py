@@ -97,8 +97,16 @@ def apply_rejections(client):
             stale.append(rel)
             continue
         meta = factory.read_manifest(rel, {}) or {}
-        oid = meta.get("pixellab_object_id")
-        if oid:
+        # EVERY store object the piece owns, not just its base one. A piece can
+        # now carry STATES (windows: lights on/off; trees: 7 variants), each a
+        # separate PixelLab object sharing the piece's group_id. Deleting only
+        # `pixellab_object_id` would have left six tagged orphans per rejected
+        # tree, sitting in the store with nothing in the repo tracking them —
+        # this function predates states and quietly stopped being complete.
+        oids = [meta.get("pixellab_object_id")]
+        for st in (meta.get("states") or {}).values():
+            oids.append((st or {}).get("pixellab_object_id"))
+        for oid in [o for o in dict.fromkeys(oids) if o]:
             try:
                 client.delete_object(oid)
             except Exception as e:

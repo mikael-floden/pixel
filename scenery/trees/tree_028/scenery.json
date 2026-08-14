@@ -33,9 +33,11 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
     "LIT_1": {
-      "sprite": "trees/tree_028/sprite.webp",
-      "pixellab_object_id": "d8a8771e-89e0-449a-a7bc-65da9649df9f",
-      "glow_score": 0.0135
+      "sprite": "trees/tree_028/lit_1/sprite.webp",
+      "pixellab_object_id": "dc30dd19-379e-4d30-88eb-cdaad3e0500e",
+      "glow_concept": "blue-white soul-light spilling from a knot hole",
+      "difference_from_source": 0.5069,
+      "glow_score": 0.0194
     },
     "LIT_2": {
       "sprite": "trees/tree_028/lit_2/sprite.webp",
