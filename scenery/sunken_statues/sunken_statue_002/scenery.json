@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:14:30+00:00",
+  "id": "sunken_statue_002",
+  "group": "sunken_statues",
+  "rank": 125,
+  "index": 2,
+  "name": "Laughing buried head 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "laughing buried head",
+  "modifier": "split diagonally, both halves near",
+  "glow_concept": "glowing moss marking old tear lines",
+  "prompt": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, laughing buried head, split diagonally, both halves near, large, twice human height, self-emissive at night, softly radiating light: glowing moss marking old tear lines",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "sunken_statues/sunken_statue_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.54,
+    "world_px_height": 96,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8b24494f-b734-4060-a080-199aa1d4b1fe",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

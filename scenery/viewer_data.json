@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 511,
+  "scenery_count": 512,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -881,7 +881,7 @@
       "id": "sunken_statues",
       "name": "Sunken Statue",
       "quota": 6,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 126,
@@ -993,6 +993,7 @@
     "streetlights": 8,
     "stumps": 8,
     "sundials": 2,
+    "sunken_statues": 1,
     "tables": 7,
     "telegraph_poles": 4,
     "toadstool_rings": 8,
@@ -10127,6 +10128,28 @@
       "status": "complete",
       "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
       "sprite": "sundials/sundial_003/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "sunken_statue_002",
+      "rel": "sunken_statues/sunken_statue_002",
+      "name": "Laughing buried head 002 \u00b7 lit",
+      "category": "sunken_statues",
+      "lights": "LIGHTS_ON",
+      "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, laughing buried head, split diagonally, both halves near, large, twice human height, self-emissive at night, softly radiating light: glowing moss marking old tear lines",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.54,
+        "world_px_height": 96,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8b24494f-b734-4060-a080-199aa1d4b1fe",
+      "sprite": "sunken_statues/sunken_statue_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
