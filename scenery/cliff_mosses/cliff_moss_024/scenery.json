@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:27:03+00:00",
+  "id": "cliff_moss_024",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 24,
+  "name": "Rust-orange lichen patches 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rust-orange lichen patches",
+  "modifier": "a few isolated tufts drifting away from the main spread",
+  "glow_concept": "light seeping from beneath the cushions",
+  "prompt": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, rust-orange lichen patches, a few isolated tufts drifting away from the main spread, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_024/sprite.webp",
+  "placement": {
+    "world_height_m": 9.78,
+    "world_px_height": 368,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "22c47661-6872-4f9d-9457-8912e2a2833c",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
