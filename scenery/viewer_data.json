@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 544,
+  "scenery_count": 545,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -251,7 +251,7 @@
       "id": "dock_pilings",
       "name": "Dock Piling",
       "quota": 32,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 36,
@@ -926,7 +926,7 @@
     "crystals": 8,
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
-    "dock_pilings": 9,
+    "dock_pilings": 10,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
     "fallen_logs": 8,
@@ -4367,6 +4367,28 @@
       "status": "complete",
       "pixellab_object_id": "ccbb52d9-34eb-4e85-a73e-c9699aa94b3c",
       "sprite": "dock_pilings/dock_piling_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dock_piling_011",
+      "rel": "dock_pilings/dock_piling_011",
+      "name": "Split storm-broken piling 011",
+      "category": "dock_pilings",
+      "lights": "LIGHTS_OFF",
+      "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, split storm-broken piling, weathered silver-grey, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.0,
+        "world_px_height": 38,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3cff0a7e-5215-4a46-aba2-9d786fe05ae0",
+      "sprite": "dock_pilings/dock_piling_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
