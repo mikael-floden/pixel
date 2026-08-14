@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:35:34+00:00",
+  "id": "cliff_ledgetree_008",
+  "group": "cliff_ledgetrees",
+  "rank": 159,
+  "index": 8,
+  "name": "White birch leaning far out 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white birch leaning far out",
+  "modifier": "grass and flowers around its base",
+  "glow_concept": "fireflies around its crown",
+  "prompt": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, white birch leaning far out, grass and flowers around its base, towering, many times human height, self-emissive at night, softly radiating light: fireflies around its crown",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_ledgetrees/cliff_ledgetree_008/sprite.webp",
+  "placement": {
+    "world_height_m": 5.65,
+    "world_px_height": 213,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b5660e10-51d5-43e0-90f2-105a5a5bfc85",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
