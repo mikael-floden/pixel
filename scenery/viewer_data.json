@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 591,
+  "scenery_count": 592,
   "target_count": 2415,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -41,7 +41,7 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 6,
@@ -1159,7 +1159,7 @@
     "hot_springs": 1,
     "house_clutter": 8,
     "ivy_posts": 5,
-    "lantern_posts": 12,
+    "lantern_posts": 13,
     "lantern_stands": 6,
     "lantern_trees": 1,
     "letter_boxes": 1,
@@ -7825,6 +7825,28 @@
       "status": "complete",
       "pixellab_object_id": "b690b1ca-e1c2-4d1d-9af1-b8a4b5a46ebb",
       "sprite": "lantern_posts/lantern_post_021/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_post_025",
+      "rel": "lantern_posts/lantern_post_025",
+      "name": "Weathered oak post 025",
+      "category": "lantern_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, weathered oak post, half-repainted, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.13,
+        "world_px_height": 80,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "80aca6a4-6d96-49a2-80b3-49baab398a6c",
+      "sprite": "lantern_posts/lantern_post_025/sprite.webp",
       "rotations": {},
       "animations": []
     },
