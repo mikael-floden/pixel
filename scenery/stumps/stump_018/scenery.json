@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:40:03+00:00",
+  "id": "stump_018",
+  "group": "stumps",
+  "rank": 24,
+  "index": 18,
+  "name": "Fresh-cut, sap still bright 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fresh-cut, sap still bright",
+  "modifier": "standing in a patch of wildflowers",
+  "glow_concept": "growth rings glowing like concentric embers",
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, fresh-cut, sap still bright, standing in a patch of wildflowers, waist-high, self-emissive at night, softly radiating light: growth rings glowing like concentric embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_018/sprite.webp",
+  "placement": {
+    "world_height_m": 0.85,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e49077a1-f664-4f25-b891-c3159fa7a53c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
