@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 514,
+  "scenery_count": 515,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 14,
@@ -796,7 +796,7 @@
     "effect": 1,
     "bone_piles": 2,
     "braziers": 10,
-    "briar_thickets": 8,
+    "briar_thickets": 9,
     "broken_columns": 2,
     "bushes": 8,
     "cairns": 9,
@@ -2373,6 +2373,28 @@
       "status": "complete",
       "pixellab_object_id": "c610f7e5-5cc9-4c67-8945-435d9346d693",
       "sprite": "briar_thickets/briar_thicket_019/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_020",
+      "rel": "briar_thickets/briar_thicket_020",
+      "name": "Dead grey thorn tangle 020 \u00b7 lit",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_ON",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dead grey thorn tangle, unusually tall and narrow, roughly six feet tall, human height, self-emissive at night, softly radiating light: petals shedding slow drifting motes of light",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.41,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5bc32c42-1c84-4966-b16a-fc7670ee6700",
+      "sprite": "briar_thickets/briar_thicket_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
