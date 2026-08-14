@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:44:19+00:00",
+  "id": "waystone_030",
+  "group": "waystones",
+  "rank": 6,
+  "index": 30,
+  "name": "Knot-pattern carved stone 030 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "knot-pattern carved stone",
+  "modifier": "old and settling into the ground",
+  "glow_concept": "inner light leaking through hairline cracks",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, knot-pattern carved stone, old and settling into the ground, waist-high, self-emissive at night, softly radiating light: inner light leaking through hairline cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_030/sprite.webp",
+  "placement": {
+    "world_height_m": 0.84,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "12d8a42d-8090-4de5-81aa-22bf1953cca2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
