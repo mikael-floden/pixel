@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:28:41+00:00",
+  "id": "cliff_root_025",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 25,
+  "name": "Roots with ferns rooted between them 025",
+  "lights": "LIGHTS_OFF",
+  "variety": "roots with ferns rooted between them",
+  "modifier": "growth trailing off in three directions",
+  "glow_concept": null,
+  "prompt": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, roots with ferns rooted between them, growth trailing off in three directions, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_025/sprite.webp",
+  "placement": {
+    "world_height_m": 6.96,
+    "world_px_height": 262,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "073de325-92da-4307-a753-0dd22f271f8e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
