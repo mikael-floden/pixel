@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:11+00:00",
+  "id": "whale_bone_001",
+  "group": "whale_bones",
+  "rank": 161,
+  "index": 1,
+  "name": "Whale bones 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "whale bones",
+  "modifier": "sunk to the spine in turf",
+  "glow_concept": null,
+  "prompt": "the enormous ribcage and jaw of a whale lying in a green meadow far from any sea, bones bleached and lichen-mapped, grass growing through, whale bones, sunk to the spine in turf, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "whale_bones/whale_bone_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.76,
+    "world_px_height": 142,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "260c65b5-441e-45d9-abdd-07b5d80aeb66",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

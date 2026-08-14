@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 727,
+  "scenery_count": 728,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1133,7 +1133,7 @@
       "id": "whale_bones",
       "name": "Whale Bones",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 162,
@@ -1335,6 +1335,7 @@
     "waystones": 13,
     "web_frames": 1,
     "wells": 12,
+    "whale_bones": 1,
     "windmills": 3,
     "wisteria_snags": 3,
     "witch_rings": 1,
@@ -17185,6 +17186,28 @@
       "status": "complete",
       "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
       "sprite": "wells/well_019/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "whale_bone_001",
+      "rel": "whale_bones/whale_bone_001",
+      "name": "Whale bones 001",
+      "category": "whale_bones",
+      "lights": "LIGHTS_OFF",
+      "description": "the enormous ribcage and jaw of a whale lying in a green meadow far from any sea, bones bleached and lichen-mapped, grass growing through, whale bones, sunk to the spine in turf, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 3.76,
+        "world_px_height": 142,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "260c65b5-441e-45d9-abdd-07b5d80aeb66",
+      "sprite": "whale_bones/whale_bone_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
