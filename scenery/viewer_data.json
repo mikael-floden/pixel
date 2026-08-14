@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 518,
+  "scenery_count": 519,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -41,7 +41,7 @@
       "id": "lantern_posts",
       "name": "Lantern Post",
       "quota": 92,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 6,
@@ -838,7 +838,7 @@
     "hop_poles": 2,
     "house_clutter": 7,
     "ivy_posts": 5,
-    "lantern_posts": 10,
+    "lantern_posts": 11,
     "lantern_stands": 5,
     "letter_boxes": 1,
     "market_stalls": 4,
@@ -6926,6 +6926,28 @@
       "status": "complete",
       "pixellab_object_id": "d38fac50-94c2-46ca-b8be-f01fb1ca9e05",
       "sprite": "lantern_posts/lantern_post_015/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_post_016",
+      "rel": "lantern_posts/lantern_post_016",
+      "name": "Rune-notched waymark post 016 \u00b7 lit",
+      "category": "lantern_posts",
+      "lights": "LIGHTS_ON",
+      "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rune-notched waymark post, snow-dusted, roughly six feet tall, human height, self-emissive at night, softly radiating light: thread of woven light burning like a wick",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.86,
+        "world_px_height": 70,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "90590b09-8c04-4a2e-b327-9fa275a5a2fa",
+      "sprite": "lantern_posts/lantern_post_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
