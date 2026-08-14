@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 688,
+  "scenery_count": 689,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 156,
@@ -1239,7 +1239,7 @@
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 12,
-    "cliff_roots": 11,
+    "cliff_roots": 12,
     "cliff_shrubs": 11,
     "cliff_vines": 19,
     "crystal_trees": 1,
@@ -4756,6 +4756,28 @@
       "status": "complete",
       "pixellab_object_id": "1887bd5b-808d-40d1-9895-3b0c140b17e8",
       "sprite": "cliff_roots/cliff_root_022/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_023",
+      "rel": "cliff_roots/cliff_root_023",
+      "name": "Dark wet roots 023",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_OFF",
+      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dark wet roots, fine and lacy throughout, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 9.07,
+        "world_px_height": 341,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "6157272d-ac0f-4419-9cfd-1329a92b303b",
+      "sprite": "cliff_roots/cliff_root_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
