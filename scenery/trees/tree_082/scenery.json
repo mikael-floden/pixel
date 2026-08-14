@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:56:27+00:00",
+  "id": "tree_082",
+  "group": "trees",
+  "rank": 1,
+  "index": 82,
+  "name": "Golden autumn beech 082 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "golden autumn beech",
+  "modifier": "rain-dark and glistening",
+  "glow_concept": "iron lantern hung from a low branch",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, golden autumn beech, rain-dark and glistening, tall, about three times human height, self-emissive at night, softly radiating light: iron lantern hung from a low branch",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_082/sprite.webp",
+  "placement": {
+    "world_height_m": 3.21,
+    "world_px_height": 121,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "64d83453-11ec-42a0-bad5-4b4554633637",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
