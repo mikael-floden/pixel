@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 731,
+  "scenery_count": 732,
   "target_count": 2122,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1210,7 +1210,7 @@
       "id": "windows",
       "name": "Window",
       "quota": 140,
-      "done": 6
+      "done": 7
     }
   ],
   "categories": {
@@ -1342,7 +1342,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 6,
+    "windows": 7,
     "wisteria_snags": 3,
     "witch_rings": 1,
     "woodpiles": 2
@@ -17352,6 +17352,40 @@
         "south-east": "windows/window_005/rotations/south-east.webp",
         "south-west": "windows/window_005/rotations/south-west.webp",
         "south": "windows/window_005/sprite.webp"
+      },
+      "animations": []
+    },
+    {
+      "id": "window_006",
+      "rel": "windows/window_006",
+      "name": "A rectangular window in dark stained oak with a thick sill 006",
+      "category": "windows",
+      "lights": "LIGHTS_OFF",
+      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in dark stained oak with a thick sill, boarded over with nailed planks, a SMALL window, about half a person tall, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.69,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          12,
+          9,
+          39,
+          41
+        ],
+        "content_px_height": 32,
+        "canvas_render_px": 39
+      },
+      "status": "complete",
+      "pixellab_object_id": "6ea1e038-c656-46f0-9d30-deb14a7a6144",
+      "sprite": "windows/window_006/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_006/rotations/south-east.webp",
+        "south-west": "windows/window_006/rotations/south-west.webp",
+        "south": "windows/window_006/sprite.webp"
       },
       "animations": []
     },
