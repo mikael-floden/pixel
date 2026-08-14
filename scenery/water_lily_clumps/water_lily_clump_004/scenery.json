@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:56:43+00:00",
+  "id": "water_lily_clump_004",
+  "group": "water_lily_clumps",
+  "rank": 63,
+  "index": 4,
+  "name": "Pads beaded with dew 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pads beaded with dew",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "dew beads lit like tiny stars",
+  "prompt": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, pads beaded with dew, leaning noticeably to one side, tiny, only ankle-high, self-emissive at night, softly radiating light: dew beads lit like tiny stars",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_lily_clumps/water_lily_clump_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.14,
+    "world_px_height": 5,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b14bbdf1-439e-4475-9c4f-c1c76503f3bc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
