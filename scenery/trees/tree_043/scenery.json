@@ -32,27 +32,9 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
-    "LIT_1": {
-      "sprite": "trees/tree_043/lit_1/sprite.webp",
-      "pixellab_object_id": "9b1fa222-a5fd-47fb-870a-67c8269a2968",
-      "difference_from_source": 0.5718,
-      "glow_score": 0.0947
-    },
-    "LIT_2": {
-      "sprite": "trees/tree_043/lit_2/sprite.webp",
-      "pixellab_object_id": "2768f5bc-b6c1-4612-b08d-cdcdd48d64e3",
-      "difference_from_source": 0.7273,
-      "glow_score": 0.2282
-    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_043/sprite.webp",
       "pixellab_object_id": "a27cd375-6fe7-4ad4-89ef-afc1cecde6c3",
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "trees/tree_043/not_lit_2/sprite.webp",
-      "pixellab_object_id": "c5df5c67-6594-4fa4-843c-753a749cd468",
-      "difference_from_source": 0.1313,
       "glow_score": 0.0
     },
     "NOT_LIT_3": {

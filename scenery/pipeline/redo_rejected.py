@@ -15,6 +15,26 @@ from PIL import Image
 FEEDBACK = os.path.join(os.path.dirname(factory.ROOT), "live", "feedback", "objects.json")
 
 
+# His rejection note IS the correction. "Remove the cave/nest at the bottom",
+# "Change the shape", "DON'T LEAN RIGHT" are all usable instructions, and
+# feeding them straight back is far better than guessing what he meant. Notes
+# that only DESCRIBE the fault ("To similar in structure", "E+A here is ugly")
+# are skipped: they are already handled by the structural gate, or they are
+# taste, and pasting them in would only confuse a literal model.
+ACTIONABLE = ("remove", "don't", "dont", "do not", "change", "should",
+              "not every", "must")
+
+
+def corrective(note):
+    n = (note or "").strip()
+    if not n:
+        return ""
+    low = n.lower()
+    if not any(w in low for w in ACTIONABLE):
+        return ""
+    return " " + (n if n.endswith((".", "!")) else n + ".")
+
+
 def rejected_states():
     e = json.load(open(FEEDBACK)).get("entries") or {}
     out = []
@@ -40,6 +60,10 @@ def main():
 
     client = PixelLabClient()
     cfg = factory.load_config()
+    note_for = {(rel, st): corrective(note) for rel, st, note in todo}
+    for (rel, st), extra in sorted(note_for.items()):
+        if extra:
+            print(f"  correction for {rel} {st}:{extra}")
     # 1) remove the rejected art, repo and store
     for rel, st, _ in todo:
         man = factory.read_manifest(rel) or {}
@@ -64,7 +88,7 @@ def main():
         _, plan = tv.plan_for(man, cfg)
         glow = dict((s, g) for s, g in plan).get(st)
         src = Image.open(os.path.join(factory.ROOT, man["sprite"])).convert("RGBA")
-        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, 0)
+        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, 0) + note_for.get((rel, st), "")
         try:
             flight.append([rel, st, glow, tv.submit(client, man["pixellab_object_id"], p, st),
                            0, src, man])
@@ -101,7 +125,7 @@ def main():
                     fail += 1
                     print(f"  x {rel} {st}: gave up after {tv.MAX_PROMPT_TRIES} prompts", flush=True)
                     continue
-                p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt)
+                p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt) + note_for.get((rel, st), "")
                 try:
                     entry[3] = tv.submit(client, man["pixellab_object_id"], p, st)
                     entry[4] = nxt
