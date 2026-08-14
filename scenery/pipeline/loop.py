@@ -263,6 +263,9 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "id": spec["id"],
         "group": group["id"],
+        # The domain-owned TYPE, stamped at birth so a piece can never
+        # exist without one (viewer_build refuses to publish untyped groups).
+        "type": group.get("type"),
         "rank": group["rank"],
         "index": spec["index"],
         "name": spec["name"],

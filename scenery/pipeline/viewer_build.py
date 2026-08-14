@@ -19,8 +19,32 @@ ROOT = factory.ROOT
 DATA_PATH = os.path.join(ROOT, "viewer_data.json")
 
 
+def _types_by_group(cfg):
+    """group id -> TYPE, and refuse to build if any group is missing or wrong.
+
+    The scenery domain OWNS this taxonomy (maintainer 2026-08-14: "the type is
+    your responsibility the very second he commits"). The wiki filters on it and
+    pages through a filtered set, so an untyped group silently becomes OTHER and
+    its pieces vanish from the filter the maintainer is browsing. Failing the
+    build is the only thing that keeps a NEW group from shipping untyped —
+    a default would rot quietly."""
+    allowed = set((cfg.get("types") or {}).get("values") or [])
+    out, bad = {}, []
+    for g in cfg.get("groups", []):
+        t = g.get("type")
+        if t not in allowed:
+            bad.append(f"{g['id']}={t!r}")
+        out[g["id"]] = t
+    if bad:
+        raise ValueError(
+            "scenery groups with a missing/unknown `type` (add one to "
+            f"config/factory.json, allowed: {sorted(allowed)}): {', '.join(bad)}")
+    return out
+
+
 def build():
     cfg = factory.load_config()
+    types_by_group = _types_by_group(cfg)
     pieces, categories = [], {}
     for rel, meta in factory.discover():
         grouped = "/" in rel
@@ -50,6 +74,10 @@ def build():
             "status": meta.get("status"),
             "pixellab_object_id": meta.get("pixellab_object_id"),
             "sprite": meta.get("sprite", f"{rel}/sprite.webp"),
+            # The TYPE this domain owns (config `types`). Published per piece so
+            # a consumer never has to join against the catalog to filter by it.
+            # A piece may override its group; otherwise it inherits.
+            "type": meta.get("type") or types_by_group.get(cat) or "OTHER",
             "rotations": meta.get("rotations") or {},
             # LIGHTING STATES, when a piece has more than one. Windows ship
             # "lights_off" (the default, and what `sprite` points at) and
@@ -72,6 +100,7 @@ def build():
         "scale": cfg.get("scale"),
         "groups": [{
             "rank": g["rank"], "id": g["id"], "name": g["name"],
+            "type": g.get("type"),
             "quota": catalog.group_quota(g, cfg),
             "done": len(done.get(g["id"], set())),
         } for g in cfg.get("groups", [])],

@@ -937,7 +937,7 @@
       "lore_fit": "Even a tree's death is remembered here; a fallen trunk is the storm somebody still tells the story of.",
       "modifier_pool": "nature",
       "demand": 0.7,
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 21,
@@ -1109,7 +1109,7 @@
       "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years.",
       "modifier_pool": "nature",
       "demand": 0.7,
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 25,
@@ -1517,7 +1517,7 @@
       "modifier_pool": "nature",
       "quota": 7,
       "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 7",
-      "type": "NATURE"
+      "type": "TOWN"
     },
     {
       "rank": 35,
@@ -1680,7 +1680,7 @@
       "animation_idea": "runes brightening in sequence from base to tip",
       "lore_fit": "The oldest dead raised them to keep telling their names, and names still spoken stand harder than anything else in Nangijala.",
       "modifier_pool": "nature",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 39,
@@ -2185,7 +2185,7 @@
       "animation_idea": "briar rose vines swaying against the stonework",
       "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 52,
@@ -2301,7 +2301,7 @@
       "animation_idea": "core light pulsing like a slow heartbeat with orbiting motes",
       "lore_fit": "When a memory has thinned to one mineral fact, displaying its soulstone keeps that last fact spoken for.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 55,
@@ -2374,7 +2374,7 @@
       "animation_idea": "remembered water trickling and dripping from the broken channel",
       "lore_fit": "The oldest dead still trust their empire's stonework, so its arches stand beside cherry orchards, carrying water only they remember.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 57,
@@ -2412,7 +2412,7 @@
       "animation_idea": "a caught gull feather fluttering on a branch stub",
       "lore_fit": "Every drowned sailor and river child remembers wood the water gave back, so the shores of Nangijala are strewn with it.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 58,
@@ -2556,7 +2556,7 @@
       "animation_idea": "ivy leaves fluttering against the shaft",
       "lore_fit": "A temple nobody fully remembers has thinned to its last certain piece: one column somebody once leaned against and never forgot.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 62,
@@ -2713,7 +2713,7 @@
       "animation_idea": "amber ring-light breathing slowly while spore motes rise",
       "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 66,
@@ -2828,7 +2828,7 @@
       "animation_idea": "a gauge needle twitching with an occasional puff of steam",
       "lore_fit": "An engineer's pride outlasts its factory: the machine idles in a meadow, kept solid by everyone who ever bragged about it.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 69,
@@ -3321,7 +3321,7 @@
       "animation_idea": "the web rippling gently in the breeze while the spider bobs at the hub",
       "lore_fit": "Frames whose houses have gone quiet stand alone in the meadows, and spiders web over the gaps the Quiet left.",
       "modifier_pool": "structure",
-      "type": "OTHER"
+      "type": "NATURE"
     },
     {
       "rank": 82,
@@ -4468,7 +4468,7 @@
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
       "_saturated": "maintainer: enough of these (1 note(s)) \u2014 frozen at 1, 2026-08-14",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 112,
@@ -4504,7 +4504,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "NATURE"
     },
     {
       "rank": 113,
@@ -4577,7 +4577,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 115,
@@ -4614,7 +4614,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 116,
@@ -4758,7 +4758,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 120,
@@ -4867,7 +4867,7 @@
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
       "_saturated": "maintainer said enough (3 note(s)) \u2014 frozen at 0",
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 123,
@@ -4975,7 +4975,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 126,
@@ -5011,7 +5011,7 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 127,
@@ -5079,7 +5079,7 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 129,
@@ -5216,7 +5216,7 @@
       "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
       "_saturated": "maintainer said enough (2 note(s)) \u2014 frozen at 0",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 133,
@@ -5250,7 +5250,7 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
-      "type": "TREE"
+      "type": "NATURE"
     },
     {
       "rank": 134,
@@ -5387,7 +5387,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 138,
@@ -5421,7 +5421,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 139,
@@ -5489,7 +5489,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "NATURE"
     },
     {
       "rank": 141,
@@ -5524,7 +5524,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 142,
@@ -5558,7 +5558,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 143,
@@ -5592,7 +5592,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 144,
@@ -5626,7 +5626,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 145,
@@ -5660,7 +5660,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 146,
@@ -5694,7 +5694,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 147,
@@ -5728,7 +5728,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 148,
@@ -5762,7 +5762,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 149,
@@ -5796,7 +5796,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 150,
@@ -5830,7 +5830,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "NATURE"
     },
     {
       "rank": 151,
@@ -5898,7 +5898,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 153,
@@ -5966,7 +5966,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it.",
-      "type": "OTHER"
+      "type": "NATURE"
     },
     {
       "rank": 155,
@@ -6445,7 +6445,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 167,
@@ -6585,7 +6585,7 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by.",
-      "type": "OTHER"
+      "type": "TOWN"
     },
     {
       "rank": 171,
