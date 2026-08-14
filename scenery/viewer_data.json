@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 542,
+  "scenery_count": 543,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -300,7 +300,7 @@
       "id": "ferns",
       "name": "Fern",
       "quota": 18,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 43,
@@ -931,7 +931,7 @@
     "driftwood_logs": 1,
     "fallen_logs": 8,
     "fences": 3,
-    "ferns": 9,
+    "ferns": 10,
     "fish_drying_racks": 4,
     "flame_niches": 9,
     "flower_stands": 5,
@@ -4851,6 +4851,28 @@
       "status": "complete",
       "pixellab_object_id": "44c451e7-b0de-496d-9dd4-bb5422249084",
       "sprite": "ferns/fern_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fern_009",
+      "rel": "ferns/fern_009",
+      "name": "Ostrich fern vase 009",
+      "category": "ferns",
+      "lights": "LIGHTS_OFF",
+      "description": "a bushy clump of arching ferns rising from a shaggy root crown, ostrich fern vase, grown around a half-buried stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.42,
+        "world_px_height": 16,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3139a97d-036a-4483-9507-ec0953590a8c",
+      "sprite": "ferns/fern_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
