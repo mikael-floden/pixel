@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 589,
+  "scenery_count": 590,
   "target_count": 2415,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -160,7 +160,7 @@
       "id": "offering_tables",
       "name": "Offering Table",
       "quota": 58,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 23,
@@ -1170,7 +1170,7 @@
     "moon_pools": 1,
     "moss_clumps": 5,
     "mushrooms": 13,
-    "offering_tables": 8,
+    "offering_tables": 9,
     "orchard_trees": 2,
     "overgrown_archways": 2,
     "owl_snags": 2,
@@ -8749,6 +8749,28 @@
       "status": "complete",
       "pixellab_object_id": "2dc174d9-73e1-46a0-be0d-9f68c3c0f015",
       "sprite": "offering_tables/offering_table_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "offering_table_018",
+      "rel": "offering_tables/offering_table_018",
+      "name": "Birch log table, berries 018 \u00b7 lit",
+      "category": "offering_tables",
+      "lights": "LIGHTS_ON",
+      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, birch log table, berries, patched with mismatched materials, small, knee-high, self-emissive at night, softly radiating light: the offerings themselves glowing faintly gold",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.62,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "46beb370-b45f-4225-b1a7-57482330a390",
+      "sprite": "offering_tables/offering_table_018/sprite.webp",
       "rotations": {},
       "animations": []
     },
