@@ -56,7 +56,8 @@ MAX_PROMPT_TRIES = 10
 # ELSE") and held. It is negating NOUNS that backfires, by naming the very
 # things you want left alone.
 LEAD = ("Redraw the tree in same style, but another variant of the same tree "
-        "type. It MUST look different. Do not draw the same tree again.")
+        "type. It MUST look different. Do not draw the same tree again. "
+        "The tree must stand straight up. Do not lean it to the right.")
 
 # Ten rewordings of the LEAD, tried in order when a state keeps failing. The
 # maintainer: "You should only give up on a generation if you have tried 10
@@ -142,6 +143,41 @@ def difference(a_img, b_img):
 
 MIN_DIFFERENCE = 0.12          # below this it is the same picture again
 
+# COLOUR-BLIND structural similarity. The pixel `difference` above is fooled by
+# a recolour: tree_065's rejected LIT_2 was the original silhouette painted gold
+# and scored 57% different while being, in the maintainer's words, "TO CLOSE TO
+# ORIGINAL (ONLY LIGHTS/COLOR CHANGED)". Normalising brightness before compar-
+# ing makes the measure about structure — where the branches are — not palette.
+#
+# It is also compared against every SIBLING, not just the source: he rejected
+# tree_086's NOT_LIT_5 as "To similar to #4", a duplicate the source comparison
+# could never catch.
+#
+# Calibrated on his 151 per-state verdicts: a floor of 0.15 catches 4 of the 10
+# he rejected while wrongly failing 4% of the ones he approved. Deliberately
+# conservative — a gate that fires on good art costs more than one that misses,
+# and the subtler "too close in structure" calls stay his to make.
+SIBLING_MIN = 0.15
+
+
+def _gray_norm(img):
+    a = np.asarray(img.convert("RGBA")).astype(float)
+    op = a[:, :, 3] > 16
+    g = np.where(op, a[:, :, :3].mean(2), 0.0)
+    if op.sum() < 50:
+        return g, op
+    return np.where(op, (g - g[op].mean()) / (g[op].std() + 1e-6), 0.0), op
+
+
+def structural_difference(a_img, b_img):
+    """Difference in STRUCTURE, blind to palette."""
+    ga, oa = _gray_norm(a_img)
+    gb, ob = _gray_norm(b_img)
+    if ga.shape != gb.shape:
+        return 1.0
+    u = oa | ob
+    return float(np.abs(ga - gb)[u].mean()) if u.sum() else 1.0
+
 
 def glow_score(img):
     """How much bright, saturated light the piece carries — used to confirm a
@@ -181,6 +217,19 @@ def finalize(client, rel, man, state, new_oid, source_img):
         raise PixelLabError(
             f"RETRY {rel}/{state}: near-copy of the original "
             f"({diff:.0%} different, need {MIN_DIFFERENCE:.0%})")
+    fresh0 = factory.read_manifest(rel) or man
+    for other, oe in (fresh0.get("states") or {}).items():
+        if other == state:
+            continue
+        op = os.path.join(factory.ROOT, oe.get("sprite", ""))
+        if not os.path.exists(op):
+            continue
+        sd = structural_difference(img, Image.open(op).convert("RGBA"))
+        if sd < SIBLING_MIN:
+            client.delete_object(new_oid)
+            raise PixelLabError(
+                f"RETRY {rel}/{state}: too close to {other} "
+                f"(structure {sd:.2f}, need {SIBLING_MIN:.2f})")
 
     out = f"{state_dir(rel, state)}/sprite.webp"
     factory.save_webp(img, os.path.join(factory.ROOT, out))
