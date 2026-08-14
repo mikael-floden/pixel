@@ -41,8 +41,8 @@ import viewer_build
 from pixellab_client import V2_BASE, PixelLabClient, PixelLabError
 from PIL import Image
 
-NOT_LIT = [f"NOT_LIT_{i}" for i in range(1, 6)]
-LIT = [f"LIT_{i}" for i in range(1, 3)]
+NOT_LIT = [f"NOT_LIT_{i}" for i in range(1, 11)]
+LIT = [f"LIT_{i}" for i in range(1, 5)]
 ALL_STATES = NOT_LIT + LIT
 TAGS = ["SCENERY", "TREE"]
 PARALLEL = 8
@@ -119,10 +119,12 @@ def plan_for(man, cfg):
     # slot gets a DIFFERENT concept so the two lit variants are not near-twins.
     others = [g for g in glow_pool if g != own] or glow_pool
     seed = factory._seed(man["id"], "glow")
-    lit_glow = {
-        "LIT_1": own or others[seed % len(others)],
-        "LIT_2": others[(seed + 1) % len(others)],
-    }
+    lit_glow = {}
+    for i, st in enumerate(LIT):
+        if i == 0 and own:
+            lit_glow[st] = own
+        else:
+            lit_glow[st] = others[(seed + i) % len(others)] if others else own
     todo = []
     for st in ALL_STATES:
         if st == anchor or st in have:
