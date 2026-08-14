@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:43:55+00:00",
+  "id": "cliff_vine_128",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 128,
+  "name": "Dark green ivy fall 128 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dark green ivy fall",
+  "modifier": "S-curving with leaves at every bend",
+  "glow_concept": "moonlit silver shimmer across the leaves",
+  "prompt": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, dark green ivy fall, S-curving with leaves at every bend, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_128/sprite.webp",
+  "placement": {
+    "world_height_m": 8.95,
+    "world_px_height": 337,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "208fbb01-b484-4140-b5b1-76cb806c5e3b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
