@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:44:44+00:00",
+  "id": "cattail_clump_018",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 18,
+  "name": "Dense double clump 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "dense double clump",
+  "modifier": "with bracket fungi steps",
+  "glow_concept": "a firefly cluster nested in the leaves",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dense double clump, with bracket fungi steps, roughly six feet tall, human height, self-emissive at night, softly radiating light: a firefly cluster nested in the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cattail_clumps/cattail_clump_018/sprite.webp",
+  "placement": {
+    "world_height_m": 1.51,
+    "world_px_height": 57,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "4cfac2a1-64ae-4418-be9a-72bc2ffe70fe",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
