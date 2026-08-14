@@ -46,7 +46,16 @@ EDIT_PROMPT = (
     "DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE "
     "WINDOW REPRESENTS SOMEONE IS HOME."
 )
-STATE = "lights_on"
+# Caps to match the domain's own vocabulary: every manifest already
+# carries lights: "LIGHTS_ON" / "LIGHTS_OFF", and the state keys are the
+# same two values, so they read the same everywhere (maintainer
+# 2026-08-14). The DARK art is the default state and keeps the piece's
+# top-level `sprite`.
+STATE = "LIGHTS_ON"
+STATE_OFF = "LIGHTS_OFF"
+# ...but the DIRECTORY stays lowercase. Manifest keys are domain vocabulary;
+# paths are paths, and every other path in this repo is lowercase.
+STATE_DIR = "lights_on"
 KEEP = ("south-east", "south", "south-west")
 PARALLEL = 6
 # Fraction of opaque pixels whose alpha may differ before we call it a redraw.
@@ -58,7 +67,8 @@ def windows_missing_state():
     for pid in sorted(factory.done_by_group().get("windows", ())):
         rel = f"windows/{pid}"
         man = factory.read_manifest(rel) or {}
-        if STATE in (man.get("states") or {}):
+        have = {k.upper() for k in (man.get("states") or {})}
+        if STATE in have:
             continue
         if man.get("pixellab_object_id"):
             out.append((rel, man))
@@ -101,18 +111,21 @@ def finalize(client, rel, man, oid):
                 raise PixelLabError(
                     f"GATE {rel}: silhouette moved {delta:.1%} (max "
                     f"{SILHOUETTE_MAX:.0%}) — the window was redrawn, not lit")
-        out = f"{rel}/{STATE}/sprite.webp" if d == "south" \
-            else f"{rel}/{STATE}/rotations/{d}.webp"
+        out = f"{rel}/{STATE_DIR}/sprite.webp" if d == "south" \
+            else f"{rel}/{STATE_DIR}/rotations/{d}.webp"
         factory.save_webp(img, os.path.join(factory.ROOT, out))
         saved[d] = out
 
     client.set_tags(oid, ["SCENERY"])
     states = dict(man.get("states") or {})
-    states.setdefault("lights_off", {"sprite": man["sprite"],
+    states.setdefault(STATE_OFF, {"sprite": man["sprite"],
                                      "rotations": man.get("rotations") or {},
                                      "pixellab_object_id": man.get("pixellab_object_id")})
+    # `rotations` carries all three facings INCLUDING south, matching the
+    # lights_off entry exactly — a consumer switching states iterates the same
+    # keys either way instead of special-casing south on one of them.
     states[STATE] = {"sprite": saved["south"],
-                     "rotations": {d: p for d, p in saved.items() if d != "south"},
+                     "rotations": dict(saved),
                      "pixellab_object_id": oid,
                      "edit_description": EDIT_PROMPT}
     man["states"] = states

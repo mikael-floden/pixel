@@ -51,6 +51,15 @@ def build():
             "pixellab_object_id": meta.get("pixellab_object_id"),
             "sprite": meta.get("sprite", f"{rel}/sprite.webp"),
             "rotations": meta.get("rotations") or {},
+            # LIGHTING STATES, when a piece has more than one. Windows ship
+            # "lights_off" (the default, and what `sprite` points at) and
+            # "lights_on"; each carries its own sprite + rotations, generated as
+            # a text edit of the same art so the two are PIXEL-ALIGNED. The game
+            # crossfades between them on interior brightness, which only reads
+            # right because the silhouettes match exactly — so a viewer should
+            # switch states in place, the way it switches animations, rather
+            # than treating them as separate pieces.
+            "states": meta.get("states") or {},
             "animations": anims,
         })
 

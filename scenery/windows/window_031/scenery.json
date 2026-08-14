@@ -49,7 +49,17 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
-    "lights_off": {
+    "LIGHTS_ON": {
+      "sprite": "windows/window_031/lights_on/sprite.webp",
+      "rotations": {
+        "south": "windows/window_031/lights_on/sprite.webp",
+        "south-east": "windows/window_031/lights_on/rotations/south-east.webp",
+        "south-west": "windows/window_031/lights_on/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "51d92d90-5e50-409c-be65-fc6f92049987",
+      "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME."
+    },
+    "LIGHTS_OFF": {
       "sprite": "windows/window_031/sprite.webp",
       "rotations": {
         "south-east": "windows/window_031/rotations/south-east.webp",
@@ -57,15 +67,6 @@
         "south": "windows/window_031/sprite.webp"
       },
       "pixellab_object_id": "edc091c6-0b2a-492e-8bdd-68a5e76db970"
-    },
-    "lights_on": {
-      "sprite": "windows/window_031/lights_on/sprite.webp",
-      "rotations": {
-        "south-east": "windows/window_031/lights_on/rotations/south-east.webp",
-        "south-west": "windows/window_031/lights_on/rotations/south-west.webp"
-      },
-      "pixellab_object_id": "51d92d90-5e50-409c-be65-fc6f92049987",
-      "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME."
     }
   }
 }
