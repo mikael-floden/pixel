@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 632,
+  "scenery_count": 633,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 2,
+    "cliff_mosses": 3,
     "cliff_roots": 1,
     "cliff_shrubs": 2,
     "cliff_vines": 7,
@@ -4338,6 +4338,28 @@
       "status": "complete",
       "pixellab_object_id": "bdc75a15-3ab4-4902-8c6c-c0cd6ac12187",
       "sprite": "cliff_mosses/cliff_moss_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_008",
+      "rel": "cliff_mosses/cliff_moss_008",
+      "name": "Deep emerald cushion moss 008 \u00b7 lit",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_ON",
+      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, deep emerald cushion moss, broken by bare rock, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 8.89,
+        "world_px_height": 335,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "34c24513-d96b-4c18-825b-2733267b74e5",
+      "sprite": "cliff_mosses/cliff_moss_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
