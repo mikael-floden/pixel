@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 594,
+  "scenery_count": 595,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -160,7 +160,7 @@
       "id": "offering_tables",
       "name": "Offering Table",
       "quota": 58,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 23,
@@ -1204,7 +1204,7 @@
     "moon_pools": 1,
     "moss_clumps": 5,
     "mushrooms": 13,
-    "offering_tables": 9,
+    "offering_tables": 10,
     "orchard_trees": 2,
     "overgrown_archways": 2,
     "owl_snags": 2,
@@ -8803,6 +8803,28 @@
       "status": "complete",
       "pixellab_object_id": "45e176bf-4a2d-44e3-925a-9acd70e82d03",
       "sprite": "offering_tables/offering_table_009/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "offering_table_011",
+      "rel": "offering_tables/offering_table_011",
+      "name": "Winter table, evergreen sprigs 011",
+      "category": "offering_tables",
+      "lights": "LIGHTS_OFF",
+      "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, winter table, evergreen sprigs, weathered silver-grey, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.08,
+        "world_px_height": 41,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bf4f62d2-f74d-4100-ac1f-9e8a178fc950",
+      "sprite": "offering_tables/offering_table_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
