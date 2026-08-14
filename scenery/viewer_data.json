@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 644,
+  "scenery_count": 645,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 102,
@@ -1242,7 +1242,7 @@
     "cliff_mosses": 5,
     "cliff_roots": 4,
     "cliff_shrubs": 6,
-    "cliff_vines": 6,
+    "cliff_vines": 7,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4867,6 +4867,28 @@
       "status": "complete",
       "pixellab_object_id": "6ebd05d0-2c86-4f4f-93fe-e47224391fb0",
       "sprite": "cliff_vines/cliff_vine_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_020",
+      "rel": "cliff_vines/cliff_vine_020",
+      "name": "Yellow honeysuckle fall 020 \u00b7 lit",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_ON",
+      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, yellow honeysuckle fall, two falls side by side, one longer, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 10.47,
+        "world_px_height": 394,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "227ff4e9-2d1e-47ef-a972-09e009124901",
+      "sprite": "cliff_vines/cliff_vine_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
