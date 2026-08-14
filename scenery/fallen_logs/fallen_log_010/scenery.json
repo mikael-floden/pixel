@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:48:05+00:00",
+  "id": "fallen_log_010",
+  "group": "fallen_logs",
+  "rank": 20,
+  "index": 10,
+  "name": "Fern-flanked damp log 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fern-flanked damp log",
+  "modifier": "scarred by an old lightning strike",
+  "glow_concept": "ember-orange glow inside the hollow end",
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fern-flanked damp log, scarred by an old lightning strike, waist-high, self-emissive at night, softly radiating light: ember-orange glow inside the hollow end",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.98,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

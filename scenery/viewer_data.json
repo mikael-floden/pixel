@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 556,
+  "scenery_count": 557,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -146,7 +146,7 @@
       "id": "fallen_logs",
       "name": "Fallen Log",
       "quota": 62,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 21,
@@ -929,7 +929,7 @@
     "dock_pilings": 10,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
-    "fallen_logs": 8,
+    "fallen_logs": 9,
     "fences": 3,
     "ferns": 10,
     "fish_drying_racks": 4,
@@ -4719,6 +4719,28 @@
       "status": "complete",
       "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
       "sprite": "fallen_logs/fallen_log_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_010",
+      "rel": "fallen_logs/fallen_log_010",
+      "name": "Fern-flanked damp log 010 \u00b7 lit",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_ON",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fern-flanked damp log, scarred by an old lightning strike, waist-high, self-emissive at night, softly radiating light: ember-orange glow inside the hollow end",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.98,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
+      "sprite": "fallen_logs/fallen_log_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
