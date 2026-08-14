@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:36:49+00:00",
+  "id": "cliff_vine_028",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 28,
+  "name": "Variegated cream-and-green fall 028 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "variegated cream-and-green fall",
+  "modifier": "ending high, swinging free",
+  "glow_concept": "moonlit silver shimmer across the leaves",
+  "prompt": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, variegated cream-and-green fall, ending high, swinging free, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
+  "placement": {
+    "world_height_m": 11.47,
+    "world_px_height": 432,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
