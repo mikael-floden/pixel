@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:07:25+00:00",
+  "id": "fence_023",
+  "group": "fences",
+  "rank": 10,
+  "index": 23,
+  "name": "Split-rail birch, bark on 023",
+  "lights": "LIGHTS_OFF",
+  "variety": "split-rail birch, bark on",
+  "modifier": "snow-dusted",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, split-rail birch, bark on, snow-dusted, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_023/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "68436717-3afe-4578-a3db-7db97d3c6e30",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

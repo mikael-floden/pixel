@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 583,
+  "scenery_count": 581,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 11,
@@ -804,7 +804,7 @@
       "id": "spirit_gates",
       "name": "Spirit Gate",
       "quota": 7,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 115,
@@ -881,7 +881,7 @@
       "id": "sunken_statues",
       "name": "Sunken Statue",
       "quota": 6,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 126,
@@ -895,7 +895,7 @@
       "id": "stone_giant_hands",
       "name": "Stone Giant Hand",
       "quota": 5,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 128,
@@ -1004,7 +1004,7 @@
     "driftwood_logs": 1,
     "fairy_stumps": 1,
     "fallen_logs": 9,
-    "fences": 4,
+    "fences": 5,
     "ferns": 12,
     "fish_drying_racks": 4,
     "flame_niches": 8,
@@ -1063,18 +1063,15 @@
     "signposts": 5,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
-    "spirit_gates": 1,
     "spring_basins": 2,
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stone_giant_hands": 1,
     "stones": 23,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
     "sundials": 2,
-    "sunken_statues": 1,
     "tables": 10,
     "telegraph_poles": 4,
     "toadstool_rings": 11,
@@ -5088,6 +5085,28 @@
       "status": "complete",
       "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
       "sprite": "fences/fence_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_023",
+      "rel": "fences/fence_023",
+      "name": "Split-rail birch, bark on 023",
+      "category": "fences",
+      "lights": "LIGHTS_OFF",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, split-rail birch, bark on, snow-dusted, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.86,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "68436717-3afe-4578-a3db-7db97d3c6e30",
+      "sprite": "fences/fence_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -9619,28 +9638,6 @@
       "animations": []
     },
     {
-      "id": "spirit_gate_004",
-      "rel": "spirit_gates/spirit_gate_004",
-      "name": "Grey granite gate 004 \u00b7 lit",
-      "category": "spirit_gates",
-      "lights": "LIGHTS_ON",
-      "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass, grey granite gate, moss-hung and ancient, tall, about three times human height, self-emissive at night, softly radiating light: unreadable script kindling across the lintel",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 3.33,
-        "world_px_height": 125,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "75773695-dc57-4a9f-b237-ce1b8b323264",
-      "sprite": "spirit_gates/spirit_gate_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "spring_basin_003",
       "rel": "spring_basins/spring_basin_003",
       "name": "Moss-rimmed old basin 003",
@@ -9879,28 +9876,6 @@
       "status": "complete",
       "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
       "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "stone_giant_hand_002",
-      "rel": "stone_giant_hands/stone_giant_hand_002",
-      "name": "Grey granite 002 \u00b7 lit",
-      "category": "stone_giant_hands",
-      "lights": "LIGHTS_ON",
-      "description": "a colossal weathered stone hand emerging from the earth, fingers half-curled, moss in the knuckle creases, grey granite, hand holding a young tree, roughly six feet tall, human height, self-emissive at night, softly radiating light: a warm ember cupped in the palm",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.73,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "40a21cf5-8052-46af-855b-a17b8ca5e993",
-      "sprite": "stone_giant_hands/stone_giant_hand_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -11023,28 +10998,6 @@
       "status": "complete",
       "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
       "sprite": "sundials/sundial_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "sunken_statue_004",
-      "rel": "sunken_statues/sunken_statue_004",
-      "name": "Stern buried head 004 \u00b7 lit",
-      "category": "sunken_statues",
-      "lights": "LIGHTS_ON",
-      "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, stern buried head, children's chalk-free games worn on the crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light welling from the buried mouth",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.73,
-        "world_px_height": 65,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d1e0cc99-6ff8-4cc2-979b-748e937239c7",
-      "sprite": "sunken_statues/sunken_statue_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
