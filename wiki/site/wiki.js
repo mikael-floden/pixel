@@ -13,8 +13,50 @@
 
 // The directory that serves the art domains: /assets/ in the game (prod +
 // vite dev), the repo root when served locally — always two levels up.
-const ROOT = new URL("../../", location.href);
+//
+// MUTABLE, because a signed-in admin reads the WHOLE repo instead (see
+// useStagingRoot). Since 2026-08-14 the deployed image contains only what the
+// game can reach, so the art the wiki exists to REVIEW — the ~2,640 scenery
+// pieces nothing places yet, the unspawned monsters — is not on this origin at
+// all. An admin re-points ROOT at GitHub and gets everything.
+let ROOT = new URL("../../", location.href);
 const assetUrl = (rel) => new URL(rel, ROOT).href;
+
+/** The repo, as a CDN base. jsDelivr rather than raw.githubusercontent because
+ *  a sha-pinned jsDelivr URL answers `cache-control: max-age=31536000,
+ *  immutable` (measured 2026-08-14) — the same contract the in-image `?v=<sha>`
+ *  trick gives — while raw answers max-age=300 EVEN for a commit-pinned ref.
+ *
+ *  INJECTABLE on purpose: `ml-staging-base` in localStorage overrides it, which
+ *  is how this path gets tested. The agent sandbox blocks browser egress to
+ *  external origins, so gates point this at a second local server that sends
+ *  `access-control-allow-origin: *` — a genuinely different origin, exercising
+ *  the identical cross-origin + canvas-tainting path with no internet. */
+const STAGING_REPO = "mikael-floden/pixel";
+function stagingBase(sha) {
+  const override = (() => { try { return localStorage.getItem("ml-staging-base"); } catch { return null; } })();
+  if (override) return new URL(override.endsWith("/") ? override : override + "/");
+  return new URL(`https://cdn.jsdelivr.net/gh/${STAGING_REPO}@${sha}/`);
+}
+
+/** The commit to pin staging reads to. HEAD of main, not the deployed sha —
+ *  reviewing content that is not in the game yet is the entire point, and the
+ *  newest art is by definition newer than the image. Cached per tab. */
+async function stagingSha() {
+  try {
+    const hit = sessionStorage.getItem("ml-staging-sha");
+    if (hit) return hit;
+  } catch {}
+  try {
+    const r = await fetch(`https://api.github.com/repos/${STAGING_REPO}/commits/main`);
+    const sha = (await r.json())?.sha;
+    if (sha) {
+      try { sessionStorage.setItem("ml-staging-sha", sha); } catch {}
+      return sha;
+    }
+  } catch {}
+  return "main"; // still correct, just not immutably cacheable
+}
 /** A feedback id is a repo path WITHOUT the extension, which is what lets the
  *  maintainer's verdicts survive the art changing format underneath them (the
  *  fleet's PNG → lossless WebP migration, 2026-07-31). Strip every image
@@ -4024,14 +4066,37 @@ async function checkAdmin() {
   } catch { return false; }
 }
 
+/** ADMIN SEES THE WHOLE REPO. The deployed data.json is built from the image's
+ *  curated /assets, so it lists only in-game entities — correct for a player,
+ *  useless for reviewing content that is not in the game yet. The repo's
+ *  COMMITTED data.json is built from the full tree by the wiki agent, so an
+ *  admin simply reads that one, and re-points ROOT so every thumbnail resolves
+ *  against the repo too.
+ *
+ *  Falls back to the local copy on any failure: a CDN hiccup, a rate-limited
+ *  GitHub API or an offline phone must degrade to "the wiki shows in-game
+ *  content", never to a blank page. */
+async function useStagingRoot() {
+  const sha = await stagingSha();
+  const base = stagingBase(sha);
+  const full = await fetchJson(new URL("wiki/site/data.json", base));
+  if (!full) return null;
+  ROOT = base; // every assetUrl() from here resolves against the repo
+  return full;
+}
+
 (async function boot() {
   initChrome();
-  const [data, admin] = await Promise.all([
+  let [data, admin] = await Promise.all([
     fetchJson(new URL("data.json", location.href)),
     checkAdmin(),
   ]);
   if (admin) setAdmin(true); // before first route() so widgets render editable
   else localStorage.removeItem("wiki-admin-token");
+  if (admin) {
+    const full = await useStagingRoot();
+    if (full) data = full;
+  }
   if (!data) {
     $("#content").replaceChildren(h("p", {}, "data.json missing — run ", h("code", {}, "node wiki/build.mjs"), " and reload."));
     return;
