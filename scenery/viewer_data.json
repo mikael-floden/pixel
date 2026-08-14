@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 563,
+  "scenery_count": 564,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 100,
-      "done": 24
+      "done": 25
     },
     {
       "rank": 2,
@@ -997,7 +997,7 @@
     "toadstool_rings": 12,
     "torch_posts": 17,
     "trailing_planters": 2,
-    "trees": 24,
+    "trees": 25,
     "wall_hangings": 6,
     "washing_lines": 6,
     "wasp_nest_trees": 2,
@@ -12150,6 +12150,28 @@
       "status": "complete",
       "pixellab_object_id": "d8a8771e-89e0-449a-a7bc-65da9649df9f",
       "sprite": "trees/tree_028/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_030",
+      "rel": "trees/tree_030",
+      "name": "Wild pear, upright crown 030 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, wild pear, upright crown, half-swallowed by tall grass, tall, about three times human height, self-emissive at night, softly radiating light: memorial candles nestled between the roots",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.18,
+        "world_px_height": 120,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "4c2f99f3-2673-4b8b-9d48-6c08a55b4a63",
+      "sprite": "trees/tree_030/sprite.webp",
       "rotations": {},
       "animations": []
     },
