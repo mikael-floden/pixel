@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:39:03+00:00",
+  "id": "cliff_vine_144",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 144,
+  "name": "White-flowering bindweed fall 144 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white-flowering bindweed fall",
+  "modifier": "wandering diagonally with leaf clusters low and high",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, white-flowering bindweed fall, wandering diagonally with leaf clusters low and high, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_144/sprite.webp",
+  "placement": {
+    "world_height_m": 6.29,
+    "world_px_height": 237,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5d61d6cc-17bc-4781-8b8b-03b12cd2cb79",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
