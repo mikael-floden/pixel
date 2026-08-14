@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 598,
+  "scenery_count": 599,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1105,7 +1105,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 158,
@@ -1241,7 +1241,7 @@
     "cliff_ledgetrees": 1,
     "cliff_mosses": 2,
     "cliff_roots": 1,
-    "cliff_shrubs": 2,
+    "cliff_shrubs": 3,
     "cliff_vines": 4,
     "crystal_trees": 1,
     "crystals": 8,
@@ -4427,6 +4427,28 @@
       "status": "complete",
       "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
       "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_shrub_004",
+      "rel": "cliff_shrubs/cliff_shrub_004",
+      "name": "Grey-leaved sea buckthorn 004 \u00b7 lit",
+      "category": "cliff_shrubs",
+      "lights": "LIGHTS_ON",
+      "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, grey-leaved sea buckthorn, perched on a tiny ledge, tall, about three times human height, self-emissive at night, softly radiating light: the leaves shining faintly",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.45,
+        "world_px_height": 130,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "23afea37-daab-4e5f-ad07-f10b74b0e351",
+      "sprite": "cliff_shrubs/cliff_shrub_004/sprite.webp",
       "rotations": {},
       "animations": []
     },

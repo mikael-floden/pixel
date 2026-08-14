@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:08:28+00:00",
+  "id": "cliff_shrub_004",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 4,
+  "name": "Grey-leaved sea buckthorn 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "grey-leaved sea buckthorn",
+  "modifier": "perched on a tiny ledge",
+  "glow_concept": "the leaves shining faintly",
+  "prompt": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, grey-leaved sea buckthorn, perched on a tiny ledge, tall, about three times human height, self-emissive at night, softly radiating light: the leaves shining faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_004/sprite.webp",
+  "placement": {
+    "world_height_m": 3.45,
+    "world_px_height": 130,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "23afea37-daab-4e5f-ad07-f10b74b0e351",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
