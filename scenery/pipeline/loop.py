@@ -279,6 +279,9 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
         # `sprite` stays SOUTH so every existing consumer keeps working; a
         # multi-direction piece additionally publishes `rotations`.
         "directions": sorted(rotations) if rotations else ["south"],
+        # A SOUTH-only piece may be mirrored at placement time — free variety.
+        # False when the piece carries facings, since flipping SE yields SW.
+        "must_be_imbplemented_with_random_hflip": not rotations,
         "rotations": rotations or None,
         "size": size,
         "sprite": f"{rel}/sprite.webp",

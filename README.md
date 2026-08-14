@@ -6,6 +6,25 @@ backend. This repo holds **all** graphics for the game, split into self-containe
 **domains** — each is its own directory with its own automated loop that
 generates art and pushes it to `main`.
 
+## Scenery must be placed with a random horizontal flip
+
+Almost every scenery piece is drawn facing SOUTH only, and a south-facing sprite
+is still itself when mirrored. So **the game must place scenery with a random
+horizontal flip (~50%)**: it doubles the visual variety of every group at zero
+generation cost — 511 tree variants become 1,022, and the same applies to every
+other south-only group.
+
+Each piece carries the flag in its manifest and in `scenery/viewer_data.json`:
+
+```json
+"must_be_imbplemented_with_random_hflip": true
+```
+
+**Honour the flag, do not assume it.** It is `false` on the 42 pieces that carry
+facings — the windows (south-east / south / south-west) and the three legacy
+8-direction pieces. Those already encode left and right, so flipping a
+south-east window turns it into a south-west one and puts it on the wrong wall.
+
 ## Domains
 
 | Domain | What it makes | Docs |

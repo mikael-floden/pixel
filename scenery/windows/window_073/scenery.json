@@ -67,5 +67,7 @@
       },
       "pixellab_object_id": "ab18d91c-1981-4555-ac7b-5aae6a7b9532"
     }
-  }
+  },
+  "must_be_imbplemented_with_random_hflip": false,
+  "must_be_imbplemented_with_random_hflip_note": "false: this piece carries facings (SE/S/SW or 8-way); a horizontal flip maps one facing onto another, so orientation is already encoded"
 }

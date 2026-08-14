@@ -1,15 +1,12 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-08-14T07:03:39+00:00",
+  "updated_at": "2026-08-14T15:20:16+00:00",
   "health": "running",
-  "current": "generated windows/window_082",
+  "current": "trees: 7 variants each (511), reshape sweep running",
   "progress": {
-    "scenery_complete": 801,
-    "scenery_target": 2379,
-    "groups_total": 172,
-    "groups_started": 129
+    "pieces": 764
   },
-  "budget_remaining": 0.0,
+  "budget_remaining": null,
   "notes": [
     "scenery domain (formerly objects/): freely placeable, optionally animated set dressing \u2014 campfires, grave crosses, street lamps... Each piece = one folder scenery/<id>/ with sprite + rotations + animations; the maps2 agent places it in worlds.",
     "[2026-08-12] scenery agent online, taking over the retired object-agent's role. Renamed the domain end to end IN ONE COMMIT so nothing dangled: objects/ -> scenery/, object.json -> scenery.json, config/objects.json -> config/scenery.json, workflow objects.yml -> scenery.yml, this board file objects.json -> scenery.json (the stale objects.json was removed, same as the retired first-gen boards). Generation stays PARKED (targets.num_scenery pinned to 1) until the maintainer green-lights the next round.",
@@ -17,7 +14,8 @@
     "[2026-08-12] V2 FACTORY LIVE (maintainer's structure): 100 ranked types, quota max(2,102-2*rank) = 2650 pieces, half LIGHTS_ON / half LIGHTS_OFF, SOUTH-only 1-direction PixelLab objects, every one tagged SCENERY. Batched create-1-direction-object calls make it affordable (16 pieces/call at <=85px; measured $0.09/call in USD overage with the subscription pool at 0). Daily ~100-piece pass at 02:30 UTC (scenery.yml). Deterministic planner: the filesystem alone decides what is next. See scenery/README.md + spec/SCENERY_SPEC.md.",
     "[2026-08-13] v2.1 QUALITY REWORK (maintainer's call after seeing the first pieces): multi-candidate batching RETIRED \u2014 shared-canvas candidates read as icons, stranded a review popup in his UI, and carried the broken-pixel bug (the first 16 graves were per-pixel mush; deleted from repo AND store, replanned). Now one full canvas per piece: create-8-direction-object at <=168px keeping only SOUTH ('fool PixelLab' \u2014 stays first-class + animatable), single create-1-direction-object above 168. Same ~$0.09/piece either way; pushes every 8 pieces. Quality first: 'this is a AAA project, not a coupon hunt.'",
     "[2026-08-13] WIKI VERDICTS ARE STANDING ORDERS (maintainer): a rejection in live/feedback/objects.json means the piece gets DELETED (PixelLab store + repo) \u2014 pipeline/feedback.py runs at every loop startup, then the planner refills the freed slots with fresh rolls. First sweep removed the 59 pieces rejected in his A-F review (64 approved). Fully-rejected groups got their prompts rewritten first: briar_thickets (drew rose arches, now a dense ground tangle), cairns (pebble columns -> broad rock piles), anvils (floating tools -> bare face), dovecotes (birdhouse-on-a-stick -> grounded tower), fading_relics (solid furniture -> unmistakable ghost); bell_posts variety pruned toward the simple posts he kept. Stale-verdict guard: a rejection older than the sprite's last commit judged the PREVIOUS roll and never kills the re-roll.",
-    "[2026-08-13] SECOND REVIEW ROUND + THE TWO LAWS. Maintainer reviewed all 100 groups (438 verdicts, 213 approved / 225 rejected); the 225 rejected pieces are deleted from the repo AND the PixelLab store. 19 groups failed 100%. Diagnosis from reading the art: NOT a canvas-size problem (96-160px hosts both the best and worst groups) but a FORM problem, in two rules now baked into config style_base for all 100 groups: (1) NO baked-in text \u2014 waystones/soulstone_outcrops came back as slabs reading SOUTH/TOWN/MEMORY/SOUL; (2) NO hair-thin parts \u2014 every 100%-approved group is a solid grounded mass (fallen logs, braziers, broken columns, cliff fragments, bone piles), every heavy failure is poles, ropes, chains, spokes or lattice. 24 group descriptions rewritten toward mass + ground contact. Approval rate is the metric to watch next round."
+    "[2026-08-13] SECOND REVIEW ROUND + THE TWO LAWS. Maintainer reviewed all 100 groups (438 verdicts, 213 approved / 225 rejected); the 225 rejected pieces are deleted from the repo AND the PixelLab store. 19 groups failed 100%. Diagnosis from reading the art: NOT a canvas-size problem (96-160px hosts both the best and worst groups) but a FORM problem, in two rules now baked into config style_base for all 100 groups: (1) NO baked-in text \u2014 waystones/soulstone_outcrops came back as slabs reading SOUTH/TOWN/MEMORY/SOUL; (2) NO hair-thin parts \u2014 every 100%-approved group is a solid grounded mass (fallen logs, braziers, broken columns, cliff fragments, bone piles), every heavy failure is poles, ropes, chains, spokes or lattice. 24 group descriptions rewritten toward mass + ground contact. Approval rate is the metric to watch next round.",
+    "[2026-08-14] RANDOM HORIZONTAL FLIP \u2014 FOR THE GAME AGENT. Scenery is drawn SOUTH-only, and a south-facing sprite is still itself mirrored. The maintainer asks that the game place scenery with a RANDOM ~50% horizontal flip: it doubles the variety of every group at zero generation cost (the 73 trees x 7 variants become 1,022 distinct trees on screen). Every piece now publishes must_be_imbplemented_with_random_hflip in its scenery.json and in scenery/viewer_data.json. HONOUR THE FLAG, DO NOT ASSUME IT: it is false on 42 pieces that carry facings \u2014 the 39 windows (south-east/south/south-west) and the 3 legacy 8-direction pieces. For those, left and right already mean something; mirroring a south-east window yields a south-west one and hangs it on the wrong wall."
   ],
   "requests": [
     {

@@ -78,6 +78,12 @@ def build():
             # a consumer never has to join against the catalog to filter by it.
             # A piece may override its group; otherwise it inherits.
             "type": meta.get("type") or types_by_group.get(cat) or "OTHER",
+            # A SOUTH-only piece may be mirrored horizontally at placement time,
+            # which doubles the variety of every group for free (maintainer's
+            # idea, 2026-08-14). FALSE on pieces that carry facings: flipping a
+            # south-east window yields a south-west one.
+            "must_be_imbplemented_with_random_hflip":
+                meta.get("must_be_imbplemented_with_random_hflip", True),
             "rotations": meta.get("rotations") or {},
             # LIGHTING STATES, when a piece has more than one. Windows ship
             # "lights_off" (the default, and what `sprite` points at) and

@@ -1,159 +1,161 @@
 {
- "id": "blood_spatter",
- "name": "Blood spatter",
- "category": "effect",
- "description": "a burst of blood dispersing into particles \u2014 the game's hit effect",
- "view": "low top-down",
- "size": 34,
- "placement": {
-  "world_height_m": 0.5,
-  "world_px_height": 34,
-  "character_height_px": 64,
-  "character_height_m": 1.7,
-  "note": "Overlay effect: rendered 1:1 on the struck body, not placed in the world."
- },
- "procedural": false,
- "source": "pixellab.ai create-8-direction-object (persistent, syncable; the maintainer's object)",
- "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
- "style_version": 2,
- "sprite": "blood_spatter/sprite.webp",
- "directions": [
-  "east",
-  "north",
-  "north-east",
-  "north-west",
-  "south",
-  "south-east",
-  "south-west",
-  "west"
- ],
- "edited": "DELIBERATELY TRIMMED vs PixelLab (maintainer 2026-08-05, calibrated to his green-circle reference on the south strip): the source 16-frame loop opens with the blood drop sliding in, peaks in compact clumps, and closes with the drop reappearing; the game keeps ONLY the already-scattered dispersal window \u2014 east 6-11, north 5-13, north-east 3-10, north-west 3-10, south 5-10, south-east 3-10, south-west 3-10, west 5-12 of the original 0-15. A resync from PixelLab must re-apply these trims, not mirror verbatim.",
- "animations": {
-  "spatter": {
-   "group_id": "blood-spatter-edited",
-   "description": "blood spatter in all directions, trimmed to burst->dispersal",
-   "frame_count": {
-    "east": 6,
-    "north": 9,
-    "north-east": 8,
-    "north-west": 8,
-    "south": 6,
-    "south-east": 8,
-    "south-west": 8,
-    "west": 8
-   },
-   "directions": {
-    "east": {
-     "frames": 6,
-     "strip": "blood_spatter/animations/spatter__east.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/east/00.webp",
-      "blood_spatter/animations/spatter/east/01.webp",
-      "blood_spatter/animations/spatter/east/02.webp",
-      "blood_spatter/animations/spatter/east/03.webp",
-      "blood_spatter/animations/spatter/east/04.webp",
-      "blood_spatter/animations/spatter/east/05.webp"
-     ]
-    },
-    "north": {
-     "frames": 9,
-     "strip": "blood_spatter/animations/spatter__north.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/north/00.webp",
-      "blood_spatter/animations/spatter/north/01.webp",
-      "blood_spatter/animations/spatter/north/02.webp",
-      "blood_spatter/animations/spatter/north/03.webp",
-      "blood_spatter/animations/spatter/north/04.webp",
-      "blood_spatter/animations/spatter/north/05.webp",
-      "blood_spatter/animations/spatter/north/06.webp",
-      "blood_spatter/animations/spatter/north/07.webp",
-      "blood_spatter/animations/spatter/north/08.webp"
-     ]
-    },
-    "north-east": {
-     "frames": 8,
-     "strip": "blood_spatter/animations/spatter__north-east.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/north-east/00.webp",
-      "blood_spatter/animations/spatter/north-east/01.webp",
-      "blood_spatter/animations/spatter/north-east/02.webp",
-      "blood_spatter/animations/spatter/north-east/03.webp",
-      "blood_spatter/animations/spatter/north-east/04.webp",
-      "blood_spatter/animations/spatter/north-east/05.webp",
-      "blood_spatter/animations/spatter/north-east/06.webp",
-      "blood_spatter/animations/spatter/north-east/07.webp"
-     ]
-    },
-    "north-west": {
-     "frames": 8,
-     "strip": "blood_spatter/animations/spatter__north-west.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/north-west/00.webp",
-      "blood_spatter/animations/spatter/north-west/01.webp",
-      "blood_spatter/animations/spatter/north-west/02.webp",
-      "blood_spatter/animations/spatter/north-west/03.webp",
-      "blood_spatter/animations/spatter/north-west/04.webp",
-      "blood_spatter/animations/spatter/north-west/05.webp",
-      "blood_spatter/animations/spatter/north-west/06.webp",
-      "blood_spatter/animations/spatter/north-west/07.webp"
-     ]
-    },
-    "south": {
-     "frames": 6,
-     "strip": "blood_spatter/animations/spatter__south.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/south/00.webp",
-      "blood_spatter/animations/spatter/south/01.webp",
-      "blood_spatter/animations/spatter/south/02.webp",
-      "blood_spatter/animations/spatter/south/03.webp",
-      "blood_spatter/animations/spatter/south/04.webp",
-      "blood_spatter/animations/spatter/south/05.webp"
-     ]
-    },
-    "south-east": {
-     "frames": 8,
-     "strip": "blood_spatter/animations/spatter__south-east.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/south-east/00.webp",
-      "blood_spatter/animations/spatter/south-east/01.webp",
-      "blood_spatter/animations/spatter/south-east/02.webp",
-      "blood_spatter/animations/spatter/south-east/03.webp",
-      "blood_spatter/animations/spatter/south-east/04.webp",
-      "blood_spatter/animations/spatter/south-east/05.webp",
-      "blood_spatter/animations/spatter/south-east/06.webp",
-      "blood_spatter/animations/spatter/south-east/07.webp"
-     ]
-    },
-    "south-west": {
-     "frames": 8,
-     "strip": "blood_spatter/animations/spatter__south-west.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/south-west/00.webp",
-      "blood_spatter/animations/spatter/south-west/01.webp",
-      "blood_spatter/animations/spatter/south-west/02.webp",
-      "blood_spatter/animations/spatter/south-west/03.webp",
-      "blood_spatter/animations/spatter/south-west/04.webp",
-      "blood_spatter/animations/spatter/south-west/05.webp",
-      "blood_spatter/animations/spatter/south-west/06.webp",
-      "blood_spatter/animations/spatter/south-west/07.webp"
-     ]
-    },
-    "west": {
-     "frames": 8,
-     "strip": "blood_spatter/animations/spatter__west.webp",
-     "frame_paths": [
-      "blood_spatter/animations/spatter/west/00.webp",
-      "blood_spatter/animations/spatter/west/01.webp",
-      "blood_spatter/animations/spatter/west/02.webp",
-      "blood_spatter/animations/spatter/west/03.webp",
-      "blood_spatter/animations/spatter/west/04.webp",
-      "blood_spatter/animations/spatter/west/05.webp",
-      "blood_spatter/animations/spatter/west/06.webp",
-      "blood_spatter/animations/spatter/west/07.webp"
-     ]
+  "id": "blood_spatter",
+  "name": "Blood spatter",
+  "category": "effect",
+  "description": "a burst of blood dispersing into particles \u2014 the game's hit effect",
+  "view": "low top-down",
+  "size": 34,
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Overlay effect: rendered 1:1 on the struck body, not placed in the world."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable; the maintainer's object)",
+  "pixellab_object_id": "ad26dfbd-3566-4c25-ae0f-b9c13e1dbf8b",
+  "style_version": 2,
+  "sprite": "blood_spatter/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "edited": "DELIBERATELY TRIMMED vs PixelLab (maintainer 2026-08-05, calibrated to his green-circle reference on the south strip): the source 16-frame loop opens with the blood drop sliding in, peaks in compact clumps, and closes with the drop reappearing; the game keeps ONLY the already-scattered dispersal window \u2014 east 6-11, north 5-13, north-east 3-10, north-west 3-10, south 5-10, south-east 3-10, south-west 3-10, west 5-12 of the original 0-15. A resync from PixelLab must re-apply these trims, not mirror verbatim.",
+  "animations": {
+    "spatter": {
+      "group_id": "blood-spatter-edited",
+      "description": "blood spatter in all directions, trimmed to burst->dispersal",
+      "frame_count": {
+        "east": 6,
+        "north": 9,
+        "north-east": 8,
+        "north-west": 8,
+        "south": 6,
+        "south-east": 8,
+        "south-west": 8,
+        "west": 8
+      },
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "blood_spatter/animations/spatter__east.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/east/00.webp",
+            "blood_spatter/animations/spatter/east/01.webp",
+            "blood_spatter/animations/spatter/east/02.webp",
+            "blood_spatter/animations/spatter/east/03.webp",
+            "blood_spatter/animations/spatter/east/04.webp",
+            "blood_spatter/animations/spatter/east/05.webp"
+          ]
+        },
+        "north": {
+          "frames": 9,
+          "strip": "blood_spatter/animations/spatter__north.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/north/00.webp",
+            "blood_spatter/animations/spatter/north/01.webp",
+            "blood_spatter/animations/spatter/north/02.webp",
+            "blood_spatter/animations/spatter/north/03.webp",
+            "blood_spatter/animations/spatter/north/04.webp",
+            "blood_spatter/animations/spatter/north/05.webp",
+            "blood_spatter/animations/spatter/north/06.webp",
+            "blood_spatter/animations/spatter/north/07.webp",
+            "blood_spatter/animations/spatter/north/08.webp"
+          ]
+        },
+        "north-east": {
+          "frames": 8,
+          "strip": "blood_spatter/animations/spatter__north-east.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/north-east/00.webp",
+            "blood_spatter/animations/spatter/north-east/01.webp",
+            "blood_spatter/animations/spatter/north-east/02.webp",
+            "blood_spatter/animations/spatter/north-east/03.webp",
+            "blood_spatter/animations/spatter/north-east/04.webp",
+            "blood_spatter/animations/spatter/north-east/05.webp",
+            "blood_spatter/animations/spatter/north-east/06.webp",
+            "blood_spatter/animations/spatter/north-east/07.webp"
+          ]
+        },
+        "north-west": {
+          "frames": 8,
+          "strip": "blood_spatter/animations/spatter__north-west.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/north-west/00.webp",
+            "blood_spatter/animations/spatter/north-west/01.webp",
+            "blood_spatter/animations/spatter/north-west/02.webp",
+            "blood_spatter/animations/spatter/north-west/03.webp",
+            "blood_spatter/animations/spatter/north-west/04.webp",
+            "blood_spatter/animations/spatter/north-west/05.webp",
+            "blood_spatter/animations/spatter/north-west/06.webp",
+            "blood_spatter/animations/spatter/north-west/07.webp"
+          ]
+        },
+        "south": {
+          "frames": 6,
+          "strip": "blood_spatter/animations/spatter__south.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/south/00.webp",
+            "blood_spatter/animations/spatter/south/01.webp",
+            "blood_spatter/animations/spatter/south/02.webp",
+            "blood_spatter/animations/spatter/south/03.webp",
+            "blood_spatter/animations/spatter/south/04.webp",
+            "blood_spatter/animations/spatter/south/05.webp"
+          ]
+        },
+        "south-east": {
+          "frames": 8,
+          "strip": "blood_spatter/animations/spatter__south-east.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/south-east/00.webp",
+            "blood_spatter/animations/spatter/south-east/01.webp",
+            "blood_spatter/animations/spatter/south-east/02.webp",
+            "blood_spatter/animations/spatter/south-east/03.webp",
+            "blood_spatter/animations/spatter/south-east/04.webp",
+            "blood_spatter/animations/spatter/south-east/05.webp",
+            "blood_spatter/animations/spatter/south-east/06.webp",
+            "blood_spatter/animations/spatter/south-east/07.webp"
+          ]
+        },
+        "south-west": {
+          "frames": 8,
+          "strip": "blood_spatter/animations/spatter__south-west.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/south-west/00.webp",
+            "blood_spatter/animations/spatter/south-west/01.webp",
+            "blood_spatter/animations/spatter/south-west/02.webp",
+            "blood_spatter/animations/spatter/south-west/03.webp",
+            "blood_spatter/animations/spatter/south-west/04.webp",
+            "blood_spatter/animations/spatter/south-west/05.webp",
+            "blood_spatter/animations/spatter/south-west/06.webp",
+            "blood_spatter/animations/spatter/south-west/07.webp"
+          ]
+        },
+        "west": {
+          "frames": 8,
+          "strip": "blood_spatter/animations/spatter__west.webp",
+          "frame_paths": [
+            "blood_spatter/animations/spatter/west/00.webp",
+            "blood_spatter/animations/spatter/west/01.webp",
+            "blood_spatter/animations/spatter/west/02.webp",
+            "blood_spatter/animations/spatter/west/03.webp",
+            "blood_spatter/animations/spatter/west/04.webp",
+            "blood_spatter/animations/spatter/west/05.webp",
+            "blood_spatter/animations/spatter/west/06.webp",
+            "blood_spatter/animations/spatter/west/07.webp"
+          ]
+        }
+      }
     }
-   }
-  }
- },
- "type": "OTHER"
+  },
+  "type": "OTHER",
+  "must_be_imbplemented_with_random_hflip": false,
+  "must_be_imbplemented_with_random_hflip_note": "false: this piece carries facings (SE/S/SW or 8-way); a horizontal flip maps one facing onto another, so orientation is already encoded"
 }

@@ -141,6 +141,28 @@ Art resolution ≠ world size. Each piece carries `placement.world_px_height`
 scaled to that height and everything composes at believable scale. Group art
 sizes live in the config; heights vary per piece inside the group's range.
 
+## Random horizontal flip — the game's half of the deal
+
+Scenery is generated SOUTH-only, and a south-facing sprite is still itself
+mirrored. The maintainer's observation (2026-08-14): placing each piece with a
+random horizontal flip doubles the variety of every group for nothing. The 73
+trees × 7 variants become 1,022 distinct trees on screen.
+
+Every piece therefore publishes:
+
+```json
+"must_be_imbplemented_with_random_hflip": true
+```
+
+It is written into each `scenery.json` and republished in `viewer_data.json`, so
+a consumer never has to infer it. `loop.py` stamps it at birth, which is what
+keeps it true for pieces that do not exist yet.
+
+**It is `false` on 42 pieces and that matters.** The windows carry SE/S/SW
+facings and the three legacy pieces carry all eight; for those, left and right
+are already meaningful. Mirroring a south-east window produces a south-west one,
+which the game would then hang on an east-facing wall. Read the flag per piece.
+
 ## Who consumes this domain
 
 - **games2** — bakes `scenery/` into its image (`/assets/scenery/...`); draws
