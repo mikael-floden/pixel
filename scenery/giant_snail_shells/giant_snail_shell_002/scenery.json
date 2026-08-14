@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:28+00:00",
+  "id": "giant_snail_shell_002",
+  "group": "giant_snail_shells",
+  "rank": 116,
+  "index": 2,
+  "name": "Banded brown shell 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "banded brown shell",
+  "modifier": "striped in faded bands",
+  "glow_concept": "pearly shimmer along the whorls",
+  "prompt": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, banded brown shell, striped in faded bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: pearly shimmer along the whorls",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_snail_shells/giant_snail_shell_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.36,
+    "world_px_height": 51,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b4789150-ed75-405b-aae1-7c6080dad867",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
