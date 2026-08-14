@@ -18,6 +18,15 @@ const OUT = join(GAME_ROOT, "client", "public", "worlds.json");
 // Thumbnail stems the maps agent may render, and the extensions to try for
 // each. WebP wins when a world ships both (a conversion in flight); a PNG-only
 // world is unaffected, so the picker keeps its thumbnail either way.
+// Which worlds an END USER may pick. Read from the publication policy so there
+// is ONE place that answers "what is the real game" — an empty/missing list
+// means "no gate", i.e. every world is offered, which is the pre-split
+// behaviour and the safe default if the policy ever goes missing.
+let USER_WORLDS = [];
+try {
+  USER_WORLDS = JSON.parse(readFileSync(join(GAME_ROOT, "config", "publish.json"), "utf8")).userWorlds ?? [];
+} catch {}
+
 const THUMB_STEMS = ["minimap", "overview", "preview", "demo"];
 const THUMB_EXTS = ["webp", ...IMG_EXTS.filter((e) => e !== "webp")];
 
@@ -60,6 +69,12 @@ function scan() {
       label: label(name),
       ...meta,
       preview: img ? `maps2/worlds/${name}/${img}` : null,
+      // DEV MAP? Everything outside config/publish.json's `userWorlds` ships so
+      // it WORKS (the server reads world.json off disk, so an absent map cannot
+      // be joined at all) but is hidden from the picker unless you are signed in
+      // as admin — see loadWorldsList. A product gate, not a security boundary:
+      // the repo is public. The point is the game never OFFERS these.
+      ...(USER_WORLDS.length && !USER_WORLDS.includes(name) ? { dev: true } : {}),
     });
   }
   // Stable order, with ring_test (the default) first.

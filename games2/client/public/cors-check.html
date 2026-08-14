@@ -1,0 +1,127 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CORS endstate check</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 0; padding: 16px; background: #14161c; color: #e8e8ea; }
+  h1 { font-size: 17px; margin: 0 0 4px; }
+  p.sub { margin: 0 0 16px; color: #9aa0aa; font-size: 13px; }
+  .row { padding: 10px 12px; border-radius: 10px; background: #1e212a; margin-bottom: 8px; }
+  .ok { border-left: 4px solid #4ccb6f; }
+  .bad { border-left: 4px solid #e2564c; }
+  .pend { border-left: 4px solid #6b7280; }
+  .t { font-weight: 600; }
+  .d { color: #9aa0aa; font-size: 12px; word-break: break-all; margin-top: 3px; }
+  #verdict { margin-top: 14px; padding: 14px; border-radius: 10px; font-weight: 700; text-align: center; font-size: 16px; }
+  canvas { image-rendering: pixelated; margin-top: 10px; border: 1px solid #333; background: #000; }
+</style>
+<h1>Can the game load staging content from GitHub?</h1>
+<p class="sub">
+  Tests the exact mechanism the "lean container" plan needs: a page on
+  <b id="org"></b> loading a world and its art from GitHub cross-origin.
+  Nothing here is part of the game — it is a diagnostic.
+</p>
+<div id="rows"></div>
+<div id="verdict" class="pend">running…</div>
+<canvas id="cv" width="64" height="64"></canvas>
+
+<script>
+  // house_demo is a DEV world. Whether or not it is inside the container, this
+  // page always pulls it from GitHub — that is the point.
+  const REPO = "mikael-floden/pixel";
+  const WORLD = "maps2/worlds/house_demo/world.json";
+  const rows = document.getElementById("rows");
+  document.getElementById("org").textContent = location.origin;
+  const add = (t) => {
+    const d = document.createElement("div");
+    d.className = "row pend";
+    d.innerHTML = `<div class="t">${t}</div><div class="d">…</div>`;
+    rows.appendChild(d);
+    return (ok, msg) => {
+      d.className = "row " + (ok ? "ok" : "bad");
+      d.querySelector(".t").textContent = (ok ? "PASS — " : "FAIL — ") + t;
+      d.querySelector(".d").textContent = msg;
+      return ok;
+    };
+  };
+
+  const loadImg = (url) =>
+    new Promise((res) => {
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = () => res({ ok: true, im });
+      im.onerror = () => res({ ok: false });
+      im.src = url;
+    });
+
+  (async () => {
+    const results = [];
+    // Resolve the commit the repo is on, so asset URLs can be sha-pinned
+    // (a sha-pinned jsDelivr URL is immutable and cacheable for a year).
+    let sha = "main";
+    const rSha = add("resolve latest commit (GitHub API, cross-origin)");
+    try {
+      const r = await fetch(`https://api.github.com/repos/${REPO}/commits/main`);
+      const j = await r.json();
+      sha = j.sha || "main";
+      results.push(rSha(true, sha));
+    } catch (e) {
+      results.push(rSha(false, String(e)));
+    }
+
+    const jsd = (p) => `https://cdn.jsdelivr.net/gh/${REPO}@${sha}/${p}`;
+    const raw = (p) => `https://raw.githubusercontent.com/${REPO}/${sha}/${p}`;
+
+    // 1. WORLD DATA cross-origin.
+    let firstTile = null;
+    const r1 = add("fetch a staging world.json from GitHub");
+    try {
+      const r = await fetch(jsd(WORLD));
+      const j = await r.json();
+      firstTile = (j.paths || [])[0];
+      results.push(r1(true, `house_demo — ${j.size?.w}x${j.size?.h}, ${(j.paths || []).length} tiles`));
+    } catch (e) {
+      results.push(r1(false, String(e)));
+    }
+
+    // 2. ART decodes as an image.
+    let img = null;
+    const r2 = add("decode a tile image from GitHub (jsDelivr)");
+    if (firstTile) {
+      const g = await loadImg(jsd(firstTile));
+      img = g.im;
+      results.push(r2(g.ok, g.ok ? `${g.im.naturalWidth}x${g.im.naturalHeight} — ${firstTile}` : "image failed to load"));
+    } else results.push(r2(false, "no tile path (previous step failed)"));
+
+    // 3. THE ONE THAT MATTERS: canvas not tainted. The renderer reads pixels
+    // back; a tainted canvas throws here and would break the game silently.
+    const r3 = add("canvas is READABLE after drawing it (not tainted)");
+    if (img) {
+      try {
+        const cv = document.getElementById("cv");
+        const cx = cv.getContext("2d");
+        cx.clearRect(0, 0, cv.width, cv.height);
+        cx.drawImage(img, 0, 0);
+        const px = cx.getImageData(0, 0, 1, 1).data;
+        results.push(r3(true, `getImageData OK — first pixel rgba(${px[0]},${px[1]},${px[2]},${px[3]})`));
+      } catch (e) {
+        results.push(r3(false, String(e).slice(0, 140)));
+      }
+    } else results.push(r3(false, "no image (previous step failed)"));
+
+    // 4. Fallback origin, for commits jsDelivr has not picked up yet.
+    const r4 = add("fallback: same tile from raw.githubusercontent.com");
+    if (firstTile) {
+      const g = await loadImg(raw(firstTile));
+      results.push(r4(g.ok, g.ok ? "loaded" : "failed"));
+    } else results.push(r4(false, "skipped"));
+
+    const pass = results.every(Boolean);
+    const v = document.getElementById("verdict");
+    v.className = pass ? "ok" : "bad";
+    v.style.background = pass ? "#16351f" : "#3a1a17";
+    v.textContent = pass
+      ? "PROVEN — staging content can be loaded from GitHub"
+      : "FAILED — see the red rows above";
+  })();
+</script>

@@ -157,7 +157,13 @@ export interface JoinChoice {
 export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
-    const showWorlds = worlds.length > 0;
+    // THE PICKER ONLY EXISTS WHEN THERE IS A CHOICE (maintainer 2026-08-14:
+    // "hiding everything but The Island2 has been on the todo for a long time —
+    // the entire dropdown should be removed"). An end user is offered exactly
+    // one world, so the control is not filtered down to a single row, it is not
+    // rendered at all. A signed-in admin gets the full list back and with it
+    // the dropdown. `worlds` empty still means demo mode (DEFAULT_WORLD).
+    const showWorlds = worlds.length > 1;
 
     // PRESELECT the player's last map + character (localStorage ml-last-choice,
     // written on every commit, read by the dead-connection rejoin in main.ts).
@@ -367,7 +373,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
     function commit() {
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
-      const world = showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD;
+      // NOT gated on showWorlds: with exactly one world the dropdown is
+      // hidden but that world is still the one to join, so read the list
+      // whenever it has anything in it.
+      const world = worlds.length ? worlds[selectedWorld].name : DEFAULT_WORLD;
       // Remember the choice so a dead-connection rejoin (main.ts) can skip
       // this screen and go straight back into the world.
       try {
@@ -434,7 +443,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       selected: () => selected,
       worlds: () => worlds.map((w) => w.name),
       pickWorld: (i: number) => worldRows[i]?.click(),
-      selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
+      selectedWorld: () => (worlds.length ? worlds[selectedWorld].name : DEFAULT_WORLD),
       installVisible: () => !installBtn.hidden,
       wikiHref: () => wikiBtn.getAttribute("href"),
       tagline: taglineInfo,

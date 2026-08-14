@@ -100,6 +100,9 @@ export interface WorldInfo {
   schema?: string | null;
   spawn?: [number, number] | null;
   preview?: string | null;
+  /** A DEV map: shipped and joinable, but offered only to a signed-in admin.
+   * Set by build-worlds for anything outside config/publish.json's userWorlds. */
+  dev?: boolean;
 }
 
 /** The list of playable worlds for the selector, DEFAULT_WORLD first. Falls back
@@ -110,10 +113,53 @@ export async function loadWorldsList(): Promise<WorldInfo[]> {
     const res = await fetch("/worlds.json", { cache: "no-cache" });
     if (res.ok) {
       const list = (await res.json()) as WorldInfo[];
-      if (Array.isArray(list) && list.length) return orderWorlds(list);
+      if (Array.isArray(list) && list.length) {
+        // DEV MAPS are shipped so they WORK (the server reads world.json off
+        // disk — a map the image lacks cannot be joined at all) but they are
+        // not the game. An end user is offered only `userWorlds`; a signed-in
+        // admin gets everything, which is how the maintainer keeps testing
+        // house_demo/glow_test on the live site with no laptop.
+        //
+        // Fail CLOSED: any error, no token, or a server that says no ⇒ the
+        // player-facing list. The gate is a product boundary, not a security
+        // one (the repo is public and the maps are readable on GitHub) — the
+        // point is that the game never OFFERS them.
+        //
+        // DEV BUILDS ARE EXEMPT. `npm run dev` is the harness every verify gate
+        // drives, and those gates call __mlSelect.pickWorld() to reach
+        // house_demo / glow_test / monster_demo. Filtering there would not make
+        // anything safer (it is localhost against the working tree) and would
+        // silently break the whole gate suite.
+        const hasDev = list.some((w) => w.dev);
+        if (!hasDev || import.meta.env.DEV || (await isAdmin())) return orderWorlds(list);
+        return orderWorlds(list.filter((w) => !w.dev));
+      }
     }
   } catch {}
   return [{ name: DEFAULT_WORLD, label: "The Island2" }];
+}
+
+/** Is this browser signed in as the game designer? Asks the SERVER — the token
+ * in localStorage is only a claim, and the server is the thing that can check
+ * the HMAC. Cached for the page's lifetime: the picker asks once at boot. */
+let adminCache: Promise<boolean> | null = null;
+function isAdmin(): Promise<boolean> {
+  if (adminCache) return adminCache;
+  adminCache = (async () => {
+    try {
+      const token = localStorage.getItem("wiki-admin-token");
+      if (!token) return false;
+      const res = await fetch("/api/wiki/me", {
+        headers: { authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (!res.ok) return false;
+      return !!(await res.json())?.admin;
+    } catch {
+      return false;
+    }
+  })();
+  return adminCache;
 }
 
 /** Put DEFAULT_WORLD (the world closest to the real game) at the TOP of the

@@ -16,14 +16,43 @@
     "with it, which is what makes the image and the tile atlas rebuild."
   ],
 
-  "worlds": ["the_island2"],
+  "userWorlds": ["the_island2"],
+  "$comment_userWorlds": [
+    "What an END USER may select. Everything else in `worlds` below is a dev",
+    "map: shipped so it WORKS, but hidden from the picker unless you are signed",
+    "in as admin (build-worlds marks them dev:true, loadWorldsList filters them).",
+    "",
+    "This is a product gate, not a security boundary — the repo is public, so",
+    "the maps are readable on GitHub by anyone who looks. The point is that the",
+    "game never OFFERS them, which is what 'always prepared for the final",
+    "release' actually needs."
+  ],
 
+  "worlds": [
+    "the_island2",
+    "the_island",
+    "demo_isle",
+    "demo_lost",
+    "glow_test",
+    "house_demo",
+    "monster_demo",
+    "occlusion_test",
+    "prop_demo",
+    "ring_test",
+    "trans_demo"
+  ],
   "$comment_worlds": [
-    "The real game. The other nine worlds under maps2/worlds are generator",
-    "fixtures and renderer test beds (glow_test, ring_test, trans_demo,",
-    "prop_demo, occlusion_test, house_demo, monster_demo, demo_isle, demo_lost).",
-    "They stay in the repo — the verify gates run against them on the dev server,",
-    "which reads the working tree, not the image — but they are not the game."
+    "Every world that ships. The dev maps are here because THE SERVER IS",
+    "AUTHORITATIVE: WorldRoom.loadWorldGrid reads world.json and spawns.json",
+    "from disk, so a map the image lacks cannot be joined at all — browser CORS",
+    "cannot fix that, only a server-side GitHub fetch could.",
+    "",
+    "Cost of keeping them: 87 MB of art instead of 57 MB. Still 126 MB less than",
+    "before the split, because the real win was never the worlds — it was the",
+    "unused tiles, scenery and monsters the closure drops either way.",
+    "",
+    "To go leaner later, teach the server to fetch an unknown world from GitHub",
+    "and pull the dev maps out of this list; the userWorlds gate above stays."
   ],
 
   "playableCharacters": ["humans/default_boy", "humans/default_girl"],
