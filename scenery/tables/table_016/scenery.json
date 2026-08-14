@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:46:17+00:00",
+  "id": "table_016",
+  "group": "tables",
+  "rank": 103,
+  "index": 16,
+  "name": "Map table with rolled charts 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "map table with rolled charts",
+  "modifier": "with carved decorative trim",
+  "glow_concept": "a small glass-hooded oil lamp glowing at its center",
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, map table with rolled charts, with carved decorative trim, waist-high, self-emissive at night, softly radiating light: a small glass-hooded oil lamp glowing at its center",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
