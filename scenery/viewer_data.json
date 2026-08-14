@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 456,
+  "scenery_count": 457,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 5,
     "sheaf_poles": 2,
-    "signposts": 5,
+    "signposts": 6,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -7916,6 +7916,28 @@
       "status": "complete",
       "pixellab_object_id": "55a2f4a9-67bb-4097-a5b9-b2f4eb708398",
       "sprite": "signposts/signpost_021/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_023",
+      "rel": "signposts/signpost_023",
+      "name": "Crooked many-armed post 023",
+      "category": "signposts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, crooked many-armed post, leaning slightly, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.25,
+        "world_px_height": 85,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7080604f-15aa-4297-aaea-7c74e87fc7a6",
+      "sprite": "signposts/signpost_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
