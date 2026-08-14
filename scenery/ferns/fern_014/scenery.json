@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:40:15+00:00",
+  "id": "fern_014",
+  "group": "ferns",
+  "rank": 42,
+  "index": 14,
+  "name": "Copper autumn bracken 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "copper autumn bracken",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": "luminous spore dots lining the frond undersides",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, copper autumn bracken, with fallen leaves collected at its base, waist-high, self-emissive at night, softly radiating light: luminous spore dots lining the frond undersides",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.97,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c9758c21-5383-489b-8044-bb51ff28c1cf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
