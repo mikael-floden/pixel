@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:13+00:00",
+  "id": "sky_stair_001",
+  "group": "sky_stairs",
+  "rank": 165,
+  "index": 1,
+  "name": "Ancient sky stair 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "ancient sky stair",
+  "modifier": "seven steps and gone",
+  "glow_concept": null,
+  "prompt": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, ancient sky stair, seven steps and gone, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "sky_stairs/sky_stair_001/sprite.webp",
+  "placement": {
+    "world_height_m": 4.36,
+    "world_px_height": 164,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "01f0fe53-214b-43ef-b5dc-d96e6040ab1b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
