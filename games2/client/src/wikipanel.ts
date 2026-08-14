@@ -92,39 +92,44 @@ const ANIM_MS = 280;
 // ── THE SPOT STORE (maintainer 2026-08-13: "the player comes back to where
 // in the wiki the player was when the player closes the wiki and opens it
 // again"). The wiki is hash-routed (#/monsters/…) with window scroll, so a
-// spot is exactly {hash, scroll}. Saved when the drawer CLOSES and on
-// pagehide (a logout reload while reading must not lose the place); applied
-// on the next open — the hash goes into the iframe src so the wiki boots
+// spot is exactly {hash, scroll}. Saved when the drawer CLOSES; applied on
+// the next open — the hash goes into the iframe src so the wiki boots
 // straight onto the page, and the scroll is restored once the page is tall
 // enough to hold it (the wiki fetches data.json before it renders, so the
 // document is short for a beat and an immediate scrollTo would be clamped
 // to nothing).
+//
+// IT LIVES EXACTLY AS LONG AS THE PLAYING SESSION — a module variable, no
+// storage of any kind (maintainer 2026-08-14: "If I restart the game, the
+// wiki should go back to overview when opened ofc. I said it should remember
+// the page while playing and the user open and closes it. Not remembering it
+// when I restart the entire game!"). It was localStorage, which outlives
+// everything: reopening the app days later still dropped you into whatever
+// monster you last read. A page load is precisely what a restart IS — boot,
+// logout reload, reconnect fallback — so a variable that dies with the page
+// draws the line in the one place that needs no upkeep and no expiry guess.
+// The pagehide save went with it: writing a spot as the page dies only ever
+// served the storage that is gone.
 const SPOT_KEY = "ml-wiki-spot";
 const WIKI_BASE = "/assets/wiki/site/index.html";
 let openFrame: HTMLIFrameElement | null = null;
+let spot: { hash: string; scroll: number } | null = null;
+// Sweep the retired key once, so a player carrying an old stored spot is not
+// left with a dead entry that nothing will ever read or clear.
+try { localStorage.removeItem(SPOT_KEY); } catch { /* private mode */ }
 
 function readSpot(): { hash: string; scroll: number } | null {
-  try {
-    const raw = localStorage.getItem(SPOT_KEY);
-    if (!raw) return null;
-    const s = JSON.parse(raw) as { hash?: unknown; scroll?: unknown };
-    // The hash reaches an iframe src — accept only a plain wiki route.
-    if (typeof s.hash !== "string" || !/^(#[\w\-/%.~]*)?$/.test(s.hash)) return null;
-    return { hash: s.hash, scroll: Math.max(0, Number(s.scroll) || 0) };
-  } catch {
-    return null;
-  }
+  // Still validated: the hash reaches an iframe src.
+  if (!spot || !/^(#[\w\-/%.~]*)?$/.test(spot.hash)) return null;
+  return spot;
 }
 
 function saveSpot(): void {
   const cw = openFrame?.contentWindow;
   try {
     if (!cw || !cw.location.pathname.startsWith("/assets/wiki/")) return;
-    localStorage.setItem(
-      SPOT_KEY,
-      JSON.stringify({ hash: cw.location.hash || "", scroll: Math.round(cw.scrollY || 0) }),
-    );
-  } catch {}
+    spot = { hash: cw.location.hash || "", scroll: Math.round(cw.scrollY || 0) };
+  } catch { /* cross-origin (never, same-origin iframe) */ }
 }
 
 function ensureCss(): void {
@@ -195,7 +200,6 @@ export function openWikiPanel(): void {
   frame.src = WIKI_BASE + (spot?.hash ?? "");
   frame.title = "Nangijala Wiki";
   openFrame = frame;
-  window.addEventListener("pagehide", saveSpot);
   panel.appendChild(frame);
   root.append(back, panel);
   document.body.appendChild(root);
@@ -304,7 +308,6 @@ export function closeWikiPanel(opts?: { fromBack?: boolean }): void {
   thawGame();
   saveSpot(); // remember the page + scroll for the next open
   openFrame = null;
-  window.removeEventListener("pagehide", saveSpot);
   const r = root;
   root = null;
   if (onResize) { window.removeEventListener("resize", onResize); onResize = null; }

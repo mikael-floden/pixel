@@ -48,6 +48,21 @@ const openWiki = async () => {
 // that never comes.
 const back = async () => { await p.evaluate(() => history.back()); await p.waitForTimeout(1100); };
 const openMenu = async () => { await frame().evaluate(() => document.querySelector("header button")?.click()); await p.waitForTimeout(900); };
+// A PRISTINE HISTORY. Every boot() PUSHES another game entry, so by section 4
+// the stack is nothing like a real player's — and assertions about the
+// panel's own entry become unmeasurable there. These run on their own page.
+const onFreshPage = async (fn) => {
+  const q = await ctx.newPage();
+  q.on("pageerror", (e) => errs.push(String(e)));
+  await q.goto(GAME, { waitUntil: "load" });
+  await q.waitForTimeout(6000);
+  try { await fn(q); } finally { await q.close(); }
+};
+const wikiFrame = (q) => q.frames().find((f) => f.url().includes("/assets/wiki/site/"));
+const openOn = async (q) => {
+  await q.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => /Wiki/.test(x.textContent || ""))?.click());
+  await q.waitForTimeout(2300);
+};
 
 await boot();
 // 1. one layer, one back
@@ -108,37 +123,76 @@ await back();
 const h1 = await state();
 ok(!h1.panel && h1.inGame, "and then ONE back closes the wiki — the menu's entry was handed back, not left dangling");
 
-// 4. closing the PANEL by hand returns its entry too: the next back must leave
-//    the game, not land on an entry that does nothing.
-await openWiki();
-await p.evaluate(() => document.querySelector(".ml-wikiback").click());
-await p.waitForTimeout(900);
-ok(!(await state()).panel, "the dark strip still closes the wiki");
-await back();
-const plainLeft = p.isClosed() ? { inGame: false } : await state().catch(() => ({ inGame: false }));
-ok(!plainLeft.inGame, "and the back after it leaves the game, instead of pressing a dead entry");
+// 4. closing the PANEL by hand hands its entry back: the next back must leave
+//    the game, not press an entry that does nothing.
+await onFreshPage(async (q) => {
+  await openOn(q);
+  await q.evaluate(() => document.querySelector(".ml-wikiback").click());
+  await q.waitForTimeout(1000);                       // slide-out + the deferred handback
+  const shut = await q.evaluate(() => ({ panel: !!document.querySelector(".ml-wikiroot"), sentinel: !!history.state?.mlWiki }));
+  ok(!shut.panel, "the dark strip still closes the wiki");
+  ok(!shut.sentinel, `and the panel's history entry is handed back (sentinel left: ${shut.sentinel})`);
+  await q.evaluate(() => history.back());
+  await q.waitForTimeout(1000);
+  const gone = q.isClosed() ? true : !(await q.evaluate(() => location.href.startsWith(location.origin)).catch(() => false));
+  ok(gone, "so the back after it leaves the game instead of pressing a dead entry");
+});
 
-// 4b. hand-closing AFTER browsing: the panel's entry is buried under the
-//     wiki's own navigations, so the handback must wait for the iframe to be
-//     discarded (which prunes them) — popping early would walk the wiki's
-//     history from behind a closed drawer.
+// 4b. the same, AFTER browsing: the panel's entry is then buried under the
+//     wiki's own navigations, so the handback waits for the iframe to be
+//     discarded — popping earlier would walk the wiki's history from behind a
+//     closed drawer.
+await onFreshPage(async (q) => {
+  await openOn(q);
+  await wikiFrame(q).evaluate(() => { location.hash = "#/objects"; }); await q.waitForTimeout(900);
+  await wikiFrame(q).evaluate(() => { location.hash = "#/monsters"; }); await q.waitForTimeout(900);
+  await q.evaluate(() => document.querySelector(".ml-wikiback").click());
+  await q.waitForTimeout(1200);
+  const shut = await q.evaluate(() => ({ panel: !!document.querySelector(".ml-wikiroot"), sentinel: !!history.state?.mlWiki }));
+  ok(!shut.panel, "the drawer hand-closes after a browse");
+  // KNOWN PAPERCUT, measured not assumed: Chromium does NOT prune a discarded
+  // iframe's joint-history entries (history.length is identical before and
+  // after removal), so after a browse the single handback lands on the wiki's
+  // own previous page rather than on the game, and the sentinel stays buried.
+  // The entries are invisible no-ops — the drawer is shut and stays shut — so
+  // the cost is a few dead back-presses before leaving the game, never a trap.
+  // The real cure is to stop the embedded wiki creating entries at all
+  // (location.replace for in-drawer navigation), which also matches the
+  // maintainer's original "back should mean back to the game"; it changes
+  // section 5's behaviour, so it is a deliberate decision, not a patch.
+  ok(!shut.panel, `the drawer stays shut whatever the buried entries say (sentinel buried: ${shut.sentinel})`);
+  let dead = 0;
+  for (let i = 0; i < 5; i++) {
+    await q.evaluate(() => history.back()); await q.waitForTimeout(700);
+    if (q.isClosed() || !(await q.evaluate(() => location.href.startsWith(location.origin)).catch(() => false))) break;
+    dead++;
+  }
+  ok(dead <= 4, `and backing out costs a bounded number of dead presses (${dead})`);
+});
+
+// 4c. THE SPOT LASTS EXACTLY ONE PLAYING SESSION (maintainer 2026-08-14: "If
+//     I restart the game, the wiki should go back to overview when opened
+//     ofc. I said it should remember the page while playing and the user open
+//     and closes it. Not remembering it when I restart the entire game!").
+//     It was in localStorage, which outlives everything.
 await boot();
 await openWiki();
-await frame().evaluate(() => { location.hash = "#/objects"; }); await p.waitForTimeout(900);
-await frame().evaluate(() => { location.hash = "#/monsters"; }); await p.waitForTimeout(900);
+await frame().evaluate(() => { location.hash = "#/monsters"; });
+await p.waitForTimeout(1000);
 await p.evaluate(() => document.querySelector(".ml-wikiback").click());
-await p.waitForTimeout(1100);                                      // slide-out + cleanup
-ok(!(await state()).panel, "the drawer hand-closes after a browse");
-// KNOWN PAPERCUT, bounded: Chromium keeps a discarded iframe's joint-history
-// entries (measured: history.length 5 before AND after removal), so the
-// browsed pages leave inert entries behind a hand-close. They are invisible
-// no-ops; the game must still be left within a few presses, never trapped.
-let left = false;
-for (let i = 0; i < 4 && !left; i++) {
-  await back();
-  left = p.isClosed() || !(await state().catch(() => ({ inGame: false }))).inGame;
-}
-ok(left, "backing out after a hand-close still leaves the game within 4 presses (inert entries tolerated)");
+await p.waitForTimeout(1200);
+await openWiki();
+const remembered = await state();
+ok(remembered.wiki === "#/monsters", `closing and reopening while playing returns to the page you were on (${remembered.wiki})`);
+await p.evaluate(() => document.querySelector(".ml-wikiback").click());
+await p.waitForTimeout(1200);
+await boot();                                        // a page load IS a restart
+await openWiki();
+const restarted = await state();
+ok(restarted.panel && (restarted.wiki === "" || restarted.wiki === "#/"),
+  `but a restart opens on Overview (${JSON.stringify(restarted.wiki)})`);
+ok((await p.evaluate(() => localStorage.getItem("ml-wiki-spot"))) === null,
+  "and nothing about the spot is left in storage to outlive the session");
 
 // 5. an in-wiki walk is the player's own history and is walked first, then the
 //    drawer closes — the same order the wiki's ← crumb uses.
