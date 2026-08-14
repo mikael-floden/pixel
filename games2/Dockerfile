@@ -45,7 +45,12 @@ COPY wiki/ wiki/
 COPY live/ live/
 # --check fails the BUILD on a reachable-but-missing file, which is the one
 # error that would otherwise become a silent 404 in production.
-RUN ASSETS_ROOT=/src node games2/scripts/shipset.mjs --emit /shipped --check --report
+# --write also emits the COMPACT shipset.json (digest + per-domain stats, ~2 KB)
+# computed from the FULL tree — the authoritative digest, which the copy in the
+# final image below serves. Computing it here rather than in the final image
+# matters: by then ASSETS_ROOT is already the curated root, so a digest derived
+# there would describe the output rather than the decision that produced it.
+RUN ASSETS_ROOT=/src node games2/scripts/shipset.mjs --emit /shipped --check --report --write
 
 FROM node:22-slim
 
@@ -94,6 +99,14 @@ ENV ASSETS_ROOT=/assets
 
 # Game source (changes every deploy — keep below the art layers).
 COPY games2/ ./
+
+# The ship-set summary, from the curate stage's FULL-tree computation. It is
+# gitignored (generated) so the COPY above cannot carry it, and `npm run
+# manifest` does not build it — without this line /shipset.json falls through
+# to the SPA's index.html and parses as HTML, which is exactly what production
+# served on the first curated deploy. Must land BEFORE build:client, since vite
+# copies client/public into the bundle.
+COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
 
 # The deployed commit, baked into the bundle so testers can see which version
 # they're running (bottom-left in-game + console) and into the wiki's build
